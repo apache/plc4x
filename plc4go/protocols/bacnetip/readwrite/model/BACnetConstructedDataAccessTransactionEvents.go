@@ -54,6 +54,16 @@ type _BACnetConstructedDataAccessTransactionEvents struct {
 var _ BACnetConstructedDataAccessTransactionEvents = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessTransactionEvents)(nil)
 
+// NewBACnetConstructedDataAccessTransactionEvents factory function for _BACnetConstructedDataAccessTransactionEvents
+func NewBACnetConstructedDataAccessTransactionEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessTransactionEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
+	_result := &_BACnetConstructedDataAccessTransactionEvents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessTransactionEvents:       accessTransactionEvents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) GetAccessTransactionEven
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessTransactionEvents factory function for _BACnetConstructedDataAccessTransactionEvents
-func NewBACnetConstructedDataAccessTransactionEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessTransactionEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessTransactionEvents {
-	_result := &_BACnetConstructedDataAccessTransactionEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessTransactionEvents:       accessTransactionEvents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessTransactionEvents(structType any) BACnetConstructedDataAccessTransactionEvents {

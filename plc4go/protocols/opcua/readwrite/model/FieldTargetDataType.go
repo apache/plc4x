@@ -72,6 +72,37 @@ type _FieldTargetDataType struct {
 var _ FieldTargetDataType = (*_FieldTargetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FieldTargetDataType)(nil)
 
+// NewFieldTargetDataType factory function for _FieldTargetDataType
+func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) *_FieldTargetDataType {
+	if dataSetFieldId == nil {
+		panic("dataSetFieldId of type GuidValue for FieldTargetDataType must not be nil")
+	}
+	if receiverIndexRange == nil {
+		panic("receiverIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type NodeId for FieldTargetDataType must not be nil")
+	}
+	if writeIndexRange == nil {
+		panic("writeIndexRange of type PascalString for FieldTargetDataType must not be nil")
+	}
+	if overrideValue == nil {
+		panic("overrideValue of type Variant for FieldTargetDataType must not be nil")
+	}
+	_result := &_FieldTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		DataSetFieldId:                    dataSetFieldId,
+		ReceiverIndexRange:                receiverIndexRange,
+		TargetNodeId:                      targetNodeId,
+		AttributeId:                       attributeId,
+		WriteIndexRange:                   writeIndexRange,
+		OverrideValueHandling:             overrideValueHandling,
+		OverrideValue:                     overrideValue,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -127,37 +158,6 @@ func (m *_FieldTargetDataType) GetOverrideValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFieldTargetDataType factory function for _FieldTargetDataType
-func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) *_FieldTargetDataType {
-	if dataSetFieldId == nil {
-		panic("dataSetFieldId of type GuidValue for FieldTargetDataType must not be nil")
-	}
-	if receiverIndexRange == nil {
-		panic("receiverIndexRange of type PascalString for FieldTargetDataType must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type NodeId for FieldTargetDataType must not be nil")
-	}
-	if writeIndexRange == nil {
-		panic("writeIndexRange of type PascalString for FieldTargetDataType must not be nil")
-	}
-	if overrideValue == nil {
-		panic("overrideValue of type Variant for FieldTargetDataType must not be nil")
-	}
-	_result := &_FieldTargetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		DataSetFieldId:                    dataSetFieldId,
-		ReceiverIndexRange:                receiverIndexRange,
-		TargetNodeId:                      targetNodeId,
-		AttributeId:                       attributeId,
-		WriteIndexRange:                   writeIndexRange,
-		OverrideValueHandling:             overrideValueHandling,
-		OverrideValue:                     overrideValue,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFieldTargetDataType(structType any) FieldTargetDataType {

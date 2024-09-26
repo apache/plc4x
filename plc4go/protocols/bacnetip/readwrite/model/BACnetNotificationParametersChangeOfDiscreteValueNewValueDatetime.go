@@ -54,6 +54,19 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime struct {
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime)(nil)
 
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateTimeValue BACnetDateTimeEnclosed, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		DateTimeValue: dateTimeValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) Get
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateTimeValue BACnetDateTimeEnclosed, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		DateTimeValue: dateTimeValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {

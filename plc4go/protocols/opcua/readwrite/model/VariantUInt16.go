@@ -57,6 +57,17 @@ type _VariantUInt16 struct {
 var _ VariantUInt16 = (*_VariantUInt16)(nil)
 var _ VariantRequirements = (*_VariantUInt16)(nil)
 
+// NewVariantUInt16 factory function for _VariantUInt16
+func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint16) *_VariantUInt16 {
+	_result := &_VariantUInt16{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantUInt16) GetValue() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantUInt16 factory function for _VariantUInt16
-func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint16) *_VariantUInt16 {
-	_result := &_VariantUInt16{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantUInt16(structType any) VariantUInt16 {

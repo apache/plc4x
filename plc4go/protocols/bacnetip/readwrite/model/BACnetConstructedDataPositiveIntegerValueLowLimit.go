@@ -56,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueLowLimit struct {
 var _ BACnetConstructedDataPositiveIntegerValueLowLimit = (*_BACnetConstructedDataPositiveIntegerValueLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueLowLimit)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueLowLimit factory function for _BACnetConstructedDataPositiveIntegerValueLowLimit
+func NewBACnetConstructedDataPositiveIntegerValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueLowLimit {
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowLimit:                      lowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueLowLimit) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueLowLimit factory function for _BACnetConstructedDataPositiveIntegerValueLowLimit
-func NewBACnetConstructedDataPositiveIntegerValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueLowLimit {
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LowLimit:                      lowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueLowLimit(structType any) BACnetConstructedDataPositiveIntegerValueLowLimit {

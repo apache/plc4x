@@ -57,6 +57,17 @@ type _BACnetDailySchedule struct {
 
 var _ BACnetDailySchedule = (*_BACnetDailySchedule)(nil)
 
+// NewBACnetDailySchedule factory function for _BACnetDailySchedule
+func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
+	}
+	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetDailySchedule) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDailySchedule factory function for _BACnetDailySchedule
-func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
-	}
-	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDailySchedule(structType any) BACnetDailySchedule {

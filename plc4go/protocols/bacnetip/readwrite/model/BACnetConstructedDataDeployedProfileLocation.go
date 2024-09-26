@@ -56,6 +56,19 @@ type _BACnetConstructedDataDeployedProfileLocation struct {
 var _ BACnetConstructedDataDeployedProfileLocation = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeployedProfileLocation)(nil)
 
+// NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
+func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deployedProfileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
+	if deployedProfileLocation == nil {
+		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeployedProfileLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeployedProfileLocation:       deployedProfileLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDeployedProfileLocation) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeployedProfileLocation factory function for _BACnetConstructedDataDeployedProfileLocation
-func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deployedProfileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeployedProfileLocation {
-	if deployedProfileLocation == nil {
-		panic("deployedProfileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeployedProfileLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeployedProfileLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeployedProfileLocation:       deployedProfileLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeployedProfileLocation(structType any) BACnetConstructedDataDeployedProfileLocation {

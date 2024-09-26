@@ -56,6 +56,19 @@ type _CIPEncapsulationReadRequest struct {
 var _ CIPEncapsulationReadRequest = (*_CIPEncapsulationReadRequest)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadRequest)(nil)
 
+// NewCIPEncapsulationReadRequest factory function for _CIPEncapsulationReadRequest
+func NewCIPEncapsulationReadRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, request DF1RequestMessage) *_CIPEncapsulationReadRequest {
+	if request == nil {
+		panic("request of type DF1RequestMessage for CIPEncapsulationReadRequest must not be nil")
+	}
+	_result := &_CIPEncapsulationReadRequest{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Request:                        request,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_CIPEncapsulationReadRequest) GetRequest() DF1RequestMessage {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationReadRequest factory function for _CIPEncapsulationReadRequest
-func NewCIPEncapsulationReadRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, request DF1RequestMessage) *_CIPEncapsulationReadRequest {
-	if request == nil {
-		panic("request of type DF1RequestMessage for CIPEncapsulationReadRequest must not be nil")
-	}
-	_result := &_CIPEncapsulationReadRequest{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-		Request:                        request,
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationReadRequest(structType any) CIPEncapsulationReadRequest {

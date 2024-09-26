@@ -59,6 +59,17 @@ type _FirmataMessageDigitalIO struct {
 var _ FirmataMessageDigitalIO = (*_FirmataMessageDigitalIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageDigitalIO)(nil)
 
+// NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
+func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
+	_result := &_FirmataMessageDigitalIO{
+		FirmataMessageContract: NewFirmataMessage(response),
+		PinBlock:               pinBlock,
+		Data:                   data,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_FirmataMessageDigitalIO) GetData() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
-func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
-	_result := &_FirmataMessageDigitalIO{
-		FirmataMessageContract: NewFirmataMessage(response),
-		PinBlock:               pinBlock,
-		Data:                   data,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageDigitalIO(structType any) FirmataMessageDigitalIO {

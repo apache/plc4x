@@ -56,6 +56,19 @@ type _BACnetConstructedDataActiveAuthenticationPolicy struct {
 var _ BACnetConstructedDataActiveAuthenticationPolicy = (*_BACnetConstructedDataActiveAuthenticationPolicy)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveAuthenticationPolicy)(nil)
 
+// NewBACnetConstructedDataActiveAuthenticationPolicy factory function for _BACnetConstructedDataActiveAuthenticationPolicy
+func NewBACnetConstructedDataActiveAuthenticationPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveAuthenticationPolicy {
+	if activeAuthenticationPolicy == nil {
+		panic("activeAuthenticationPolicy of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataActiveAuthenticationPolicy must not be nil")
+	}
+	_result := &_BACnetConstructedDataActiveAuthenticationPolicy{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveAuthenticationPolicy:    activeAuthenticationPolicy,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveAuthenticationPolicy factory function for _BACnetConstructedDataActiveAuthenticationPolicy
-func NewBACnetConstructedDataActiveAuthenticationPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveAuthenticationPolicy {
-	if activeAuthenticationPolicy == nil {
-		panic("activeAuthenticationPolicy of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataActiveAuthenticationPolicy must not be nil")
-	}
-	_result := &_BACnetConstructedDataActiveAuthenticationPolicy{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveAuthenticationPolicy:    activeAuthenticationPolicy,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveAuthenticationPolicy(structType any) BACnetConstructedDataActiveAuthenticationPolicy {

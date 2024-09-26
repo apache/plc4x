@@ -76,6 +76,11 @@ type _COTPPacket struct {
 
 var _ COTPPacketContract = (*_COTPPacket)(nil)
 
+// NewCOTPPacket factory function for _COTPPacket
+func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
+	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -93,11 +98,6 @@ func (m *_COTPPacket) GetPayload() S7Message {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacket factory function for _COTPPacket
-func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
-	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacket(structType any) COTPPacket {

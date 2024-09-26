@@ -49,6 +49,15 @@ type _FirmataCommandSystemReset struct {
 var _ FirmataCommandSystemReset = (*_FirmataCommandSystemReset)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSystemReset)(nil)
 
+// NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
+func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
+	_result := &_FirmataCommandSystemReset{
+		FirmataCommandContract: NewFirmataCommand(response),
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_FirmataCommandSystemReset) GetCommandCode() uint8 {
 
 func (m *_FirmataCommandSystemReset) GetParent() FirmataCommandContract {
 	return m.FirmataCommandContract
-}
-
-// NewFirmataCommandSystemReset factory function for _FirmataCommandSystemReset
-func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
-	_result := &_FirmataCommandSystemReset{
-		FirmataCommandContract: NewFirmataCommand(response),
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

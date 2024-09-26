@@ -62,6 +62,17 @@ type _ExtensionObject struct {
 
 var _ ExtensionObject = (*_ExtensionObject)(nil)
 
+// NewExtensionObject factory function for _ExtensionObject
+func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
+	if typeId == nil {
+		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
+	}
+	if body == nil {
+		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
+	}
+	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -100,17 +111,6 @@ func (m *_ExtensionObject) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionObject factory function for _ExtensionObject
-func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
-	if typeId == nil {
-		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
-	}
-	if body == nil {
-		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
-	}
-	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObject(structType any) ExtensionObject {

@@ -63,6 +63,28 @@ type _EndpointType struct {
 var _ EndpointType = (*_EndpointType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointType)(nil)
 
+// NewEndpointType factory function for _EndpointType
+func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) *_EndpointType {
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for EndpointType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for EndpointType must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for EndpointType must not be nil")
+	}
+	_result := &_EndpointType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		EndpointUrl:                       endpointUrl,
+		SecurityMode:                      securityMode,
+		SecurityPolicyUri:                 securityPolicyUri,
+		TransportProfileUri:               transportProfileUri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_EndpointType) GetTransportProfileUri() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointType factory function for _EndpointType
-func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) *_EndpointType {
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for EndpointType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for EndpointType must not be nil")
-	}
-	if transportProfileUri == nil {
-		panic("transportProfileUri of type PascalString for EndpointType must not be nil")
-	}
-	_result := &_EndpointType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		EndpointUrl:                       endpointUrl,
-		SecurityMode:                      securityMode,
-		SecurityPolicyUri:                 securityPolicyUri,
-		TransportProfileUri:               transportProfileUri,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointType(structType any) EndpointType {

@@ -58,6 +58,14 @@ type _BACnetWriteStatusTagged struct {
 
 var _ BACnetWriteStatusTagged = (*_BACnetWriteStatusTagged)(nil)
 
+// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
+func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
+	}
+	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetWriteStatusTagged) GetValue() BACnetWriteStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
-func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
-	}
-	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWriteStatusTagged(structType any) BACnetWriteStatusTagged {

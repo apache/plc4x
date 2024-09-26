@@ -79,6 +79,11 @@ type _S7Message struct {
 
 var _ S7MessageContract = (*_S7Message)(nil)
 
+// NewS7Message factory function for _S7Message
+func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
+	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +118,6 @@ func (m *_S7Message) GetProtocolId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7Message factory function for _S7Message
-func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
-	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7Message(structType any) S7Message {

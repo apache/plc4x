@@ -56,6 +56,19 @@ type _BACnetConstructedDataProtocolObjectTypesSupported struct {
 var _ BACnetConstructedDataProtocolObjectTypesSupported = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
 
+// NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
+func NewBACnetConstructedDataProtocolObjectTypesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
+	if protocolObjectTypesSupported == nil {
+		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
-func NewBACnetConstructedDataProtocolObjectTypesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
-	if protocolObjectTypesSupported == nil {
-		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolObjectTypesSupported(structType any) BACnetConstructedDataProtocolObjectTypesSupported {

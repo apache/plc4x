@@ -57,6 +57,23 @@ type _SignedSoftwareCertificate struct {
 var _ SignedSoftwareCertificate = (*_SignedSoftwareCertificate)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SignedSoftwareCertificate)(nil)
 
+// NewSignedSoftwareCertificate factory function for _SignedSoftwareCertificate
+func NewSignedSoftwareCertificate(certificateData PascalByteString, signature PascalByteString) *_SignedSoftwareCertificate {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignedSoftwareCertificate must not be nil")
+	}
+	_result := &_SignedSoftwareCertificate{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		CertificateData:                   certificateData,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_SignedSoftwareCertificate) GetSignature() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSignedSoftwareCertificate factory function for _SignedSoftwareCertificate
-func NewSignedSoftwareCertificate(certificateData PascalByteString, signature PascalByteString) *_SignedSoftwareCertificate {
-	if certificateData == nil {
-		panic("certificateData of type PascalByteString for SignedSoftwareCertificate must not be nil")
-	}
-	if signature == nil {
-		panic("signature of type PascalByteString for SignedSoftwareCertificate must not be nil")
-	}
-	_result := &_SignedSoftwareCertificate{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		CertificateData:                   certificateData,
-		Signature:                         signature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSignedSoftwareCertificate(structType any) SignedSoftwareCertificate {

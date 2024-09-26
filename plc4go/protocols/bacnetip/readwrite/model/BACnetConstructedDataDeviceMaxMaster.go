@@ -56,6 +56,19 @@ type _BACnetConstructedDataDeviceMaxMaster struct {
 var _ BACnetConstructedDataDeviceMaxMaster = (*_BACnetConstructedDataDeviceMaxMaster)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceMaxMaster)(nil)
 
+// NewBACnetConstructedDataDeviceMaxMaster factory function for _BACnetConstructedDataDeviceMaxMaster
+func NewBACnetConstructedDataDeviceMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxMaster must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeviceMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDeviceMaxMaster) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeviceMaxMaster factory function for _BACnetConstructedDataDeviceMaxMaster
-func NewBACnetConstructedDataDeviceMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceMaxMaster {
-	if maxMaster == nil {
-		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDeviceMaxMaster must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeviceMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxMaster:                     maxMaster,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeviceMaxMaster(structType any) BACnetConstructedDataDeviceMaxMaster {

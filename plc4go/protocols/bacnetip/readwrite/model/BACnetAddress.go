@@ -60,6 +60,17 @@ type _BACnetAddress struct {
 
 var _ BACnetAddress = (*_BACnetAddress)(nil)
 
+// NewBACnetAddress factory function for _BACnetAddress
+func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) *_BACnetAddress {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetAddress must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetApplicationTagOctetString for BACnetAddress must not be nil")
+	}
+	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,17 +115,6 @@ func (m *_BACnetAddress) GetIsBroadcast() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddress factory function for _BACnetAddress
-func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) *_BACnetAddress {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetAddress must not be nil")
-	}
-	if macAddress == nil {
-		panic("macAddress of type BACnetApplicationTagOctetString for BACnetAddress must not be nil")
-	}
-	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddress(structType any) BACnetAddress {

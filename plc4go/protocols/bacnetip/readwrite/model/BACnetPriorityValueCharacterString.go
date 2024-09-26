@@ -54,6 +54,19 @@ type _BACnetPriorityValueCharacterString struct {
 var _ BACnetPriorityValueCharacterString = (*_BACnetPriorityValueCharacterString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueCharacterString)(nil)
 
+// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
+func NewBACnetPriorityValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
+	}
+	_result := &_BACnetPriorityValueCharacterString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		CharacterStringValue:        characterStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueCharacterString) GetCharacterStringValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
-func NewBACnetPriorityValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
-	if characterStringValue == nil {
-		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
-	}
-	_result := &_BACnetPriorityValueCharacterString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		CharacterStringValue:        characterStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueCharacterString(structType any) BACnetPriorityValueCharacterString {

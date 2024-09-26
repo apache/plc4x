@@ -63,6 +63,14 @@ type _BACnetLifeSafetyModeTagged struct {
 
 var _ BACnetLifeSafetyModeTagged = (*_BACnetLifeSafetyModeTagged)(nil)
 
+// NewBACnetLifeSafetyModeTagged factory function for _BACnetLifeSafetyModeTagged
+func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLifeSafetyModeTagged must not be nil")
+	}
+	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetLifeSafetyModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLifeSafetyModeTagged factory function for _BACnetLifeSafetyModeTagged
-func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLifeSafetyModeTagged must not be nil")
-	}
-	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLifeSafetyModeTagged(structType any) BACnetLifeSafetyModeTagged {

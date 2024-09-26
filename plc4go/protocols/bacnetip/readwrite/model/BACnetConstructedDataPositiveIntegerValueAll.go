@@ -49,6 +49,15 @@ type _BACnetConstructedDataPositiveIntegerValueAll struct {
 var _ BACnetConstructedDataPositiveIntegerValueAll = (*_BACnetConstructedDataPositiveIntegerValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueAll)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueAll factory function for _BACnetConstructedDataPositiveIntegerValueAll
+func NewBACnetConstructedDataPositiveIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueAll {
+	_result := &_BACnetConstructedDataPositiveIntegerValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueAll) GetPropertyIdentifierArg
 
 func (m *_BACnetConstructedDataPositiveIntegerValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataPositiveIntegerValueAll factory function for _BACnetConstructedDataPositiveIntegerValueAll
-func NewBACnetConstructedDataPositiveIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueAll {
-	_result := &_BACnetConstructedDataPositiveIntegerValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -56,6 +56,19 @@ type _BACnetConstructedDataInstantaneousPower struct {
 var _ BACnetConstructedDataInstantaneousPower = (*_BACnetConstructedDataInstantaneousPower)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstantaneousPower)(nil)
 
+// NewBACnetConstructedDataInstantaneousPower factory function for _BACnetConstructedDataInstantaneousPower
+func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstantaneousPower {
+	if instantaneousPower == nil {
+		panic("instantaneousPower of type BACnetApplicationTagReal for BACnetConstructedDataInstantaneousPower must not be nil")
+	}
+	_result := &_BACnetConstructedDataInstantaneousPower{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InstantaneousPower:            instantaneousPower,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInstantaneousPower) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInstantaneousPower factory function for _BACnetConstructedDataInstantaneousPower
-func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instantaneousPower BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstantaneousPower {
-	if instantaneousPower == nil {
-		panic("instantaneousPower of type BACnetApplicationTagReal for BACnetConstructedDataInstantaneousPower must not be nil")
-	}
-	_result := &_BACnetConstructedDataInstantaneousPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InstantaneousPower:            instantaneousPower,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInstantaneousPower(structType any) BACnetConstructedDataInstantaneousPower {

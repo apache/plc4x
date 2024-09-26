@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumTimeChange struct {
 var _ BACnetLogRecordLogDatumTimeChange = (*_BACnetLogRecordLogDatumTimeChange)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumTimeChange)(nil)
 
+// NewBACnetLogRecordLogDatumTimeChange factory function for _BACnetLogRecordLogDatumTimeChange
+func NewBACnetLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogRecordLogDatumTimeChange {
+	if timeChange == nil {
+		panic("timeChange of type BACnetContextTagReal for BACnetLogRecordLogDatumTimeChange must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumTimeChange{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeChange:                      timeChange,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetTimeChange() BACnetContextTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumTimeChange factory function for _BACnetLogRecordLogDatumTimeChange
-func NewBACnetLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogRecordLogDatumTimeChange {
-	if timeChange == nil {
-		panic("timeChange of type BACnetContextTagReal for BACnetLogRecordLogDatumTimeChange must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumTimeChange{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		TimeChange:                      timeChange,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumTimeChange(structType any) BACnetLogRecordLogDatumTimeChange {

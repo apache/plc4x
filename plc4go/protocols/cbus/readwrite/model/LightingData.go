@@ -70,6 +70,11 @@ type _LightingData struct {
 
 var _ LightingDataContract = (*_LightingData)(nil)
 
+// NewLightingData factory function for _LightingData
+func NewLightingData(commandTypeContainer LightingCommandTypeContainer) *_LightingData {
+	return &_LightingData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (pm *_LightingData) GetCommandType() LightingCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingData factory function for _LightingData
-func NewLightingData(commandTypeContainer LightingCommandTypeContainer) *_LightingData {
-	return &_LightingData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingData(structType any) LightingData {

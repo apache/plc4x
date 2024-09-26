@@ -66,6 +66,26 @@ type _BACnetEventPriorities struct {
 
 var _ BACnetEventPriorities = (*_BACnetEventPriorities)(nil)
 
+// NewBACnetEventPriorities factory function for _BACnetEventPriorities
+func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
+	}
+	if toOffnormal == nil {
+		panic("toOffnormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toFault == nil {
+		panic("toFault of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if toNormal == nil {
+		panic("toNormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
+	}
+	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -95,26 +115,6 @@ func (m *_BACnetEventPriorities) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventPriorities factory function for _BACnetEventPriorities
-func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApplicationTagUnsignedInteger, toFault BACnetApplicationTagUnsignedInteger, toNormal BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventPriorities {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventPriorities must not be nil")
-	}
-	if toOffnormal == nil {
-		panic("toOffnormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if toFault == nil {
-		panic("toFault of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if toNormal == nil {
-		panic("toNormal of type BACnetApplicationTagUnsignedInteger for BACnetEventPriorities must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventPriorities must not be nil")
-	}
-	return &_BACnetEventPriorities{OpeningTag: openingTag, ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventPriorities(structType any) BACnetEventPriorities {

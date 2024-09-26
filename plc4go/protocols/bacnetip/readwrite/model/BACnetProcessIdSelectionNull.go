@@ -54,6 +54,19 @@ type _BACnetProcessIdSelectionNull struct {
 var _ BACnetProcessIdSelectionNull = (*_BACnetProcessIdSelectionNull)(nil)
 var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionNull)(nil)
 
+// NewBACnetProcessIdSelectionNull factory function for _BACnetProcessIdSelectionNull
+func NewBACnetProcessIdSelectionNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetProcessIdSelectionNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetProcessIdSelectionNull must not be nil")
+	}
+	_result := &_BACnetProcessIdSelectionNull{
+		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
+		NullValue:                        nullValue,
+	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetProcessIdSelectionNull) GetNullValue() BACnetApplicationTagNull 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelectionNull factory function for _BACnetProcessIdSelectionNull
-func NewBACnetProcessIdSelectionNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetProcessIdSelectionNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetProcessIdSelectionNull must not be nil")
-	}
-	_result := &_BACnetProcessIdSelectionNull{
-		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
-		NullValue:                        nullValue,
-	}
-	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelectionNull(structType any) BACnetProcessIdSelectionNull {

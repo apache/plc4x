@@ -54,6 +54,19 @@ type _BACnetPropertyStatesEscalatorOperationDirection struct {
 var _ BACnetPropertyStatesEscalatorOperationDirection = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorOperationDirection)(nil)
 
+// NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
+func NewBACnetPropertyStatesEscalatorOperationDirection(peekedTagHeader BACnetTagHeader, escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) *_BACnetPropertyStatesEscalatorOperationDirection {
+	if escalatorOperationDirection == nil {
+		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorOperationDirection:  escalatorOperationDirection,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesEscalatorOperationDirection) GetEscalatorOperation
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEscalatorOperationDirection factory function for _BACnetPropertyStatesEscalatorOperationDirection
-func NewBACnetPropertyStatesEscalatorOperationDirection(peekedTagHeader BACnetTagHeader, escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) *_BACnetPropertyStatesEscalatorOperationDirection {
-	if escalatorOperationDirection == nil {
-		panic("escalatorOperationDirection of type BACnetEscalatorOperationDirectionTagged for BACnetPropertyStatesEscalatorOperationDirection must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEscalatorOperationDirection{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EscalatorOperationDirection:  escalatorOperationDirection,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEscalatorOperationDirection(structType any) BACnetPropertyStatesEscalatorOperationDirection {

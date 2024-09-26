@@ -67,6 +67,18 @@ type _RequestCommand struct {
 var _ RequestCommand = (*_RequestCommand)(nil)
 var _ RequestRequirements = (*_RequestCommand)(nil)
 
+// NewRequestCommand factory function for _RequestCommand
+func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
+	_result := &_RequestCommand{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CbusCommand:     cbusCommand,
+		Chksum:          chksum,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -140,18 +152,6 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
-	_result := &_RequestCommand{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CbusCommand:     cbusCommand,
-		Chksum:          chksum,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestCommand(structType any) RequestCommand {

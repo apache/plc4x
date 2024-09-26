@@ -54,6 +54,19 @@ type _BACnetErrorGeneral struct {
 var _ BACnetErrorGeneral = (*_BACnetErrorGeneral)(nil)
 var _ BACnetErrorRequirements = (*_BACnetErrorGeneral)(nil)
 
+// NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
+func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
+	if error == nil {
+		panic("error of type Error for BACnetErrorGeneral must not be nil")
+	}
+	_result := &_BACnetErrorGeneral{
+		BACnetErrorContract: NewBACnetError(),
+		Error:               error,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_BACnetErrorGeneral) GetError() Error {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetErrorGeneral factory function for _BACnetErrorGeneral
-func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
-	if error == nil {
-		panic("error of type Error for BACnetErrorGeneral must not be nil")
-	}
-	_result := &_BACnetErrorGeneral{
-		BACnetErrorContract: NewBACnetError(),
-		Error:               error,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetErrorGeneral(structType any) BACnetErrorGeneral {

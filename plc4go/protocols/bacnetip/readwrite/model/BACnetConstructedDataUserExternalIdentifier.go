@@ -56,6 +56,19 @@ type _BACnetConstructedDataUserExternalIdentifier struct {
 var _ BACnetConstructedDataUserExternalIdentifier = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
 
+// NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
+func NewBACnetConstructedDataUserExternalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userExternalIdentifier BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
+	if userExternalIdentifier == nil {
+		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserExternalIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserExternalIdentifier:        userExternalIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetActualValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
-func NewBACnetConstructedDataUserExternalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userExternalIdentifier BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
-	if userExternalIdentifier == nil {
-		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserExternalIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserExternalIdentifier:        userExternalIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConstructedDataUserExternalIdentifier {

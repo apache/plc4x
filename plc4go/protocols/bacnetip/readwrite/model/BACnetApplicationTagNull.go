@@ -49,6 +49,15 @@ type _BACnetApplicationTagNull struct {
 var _ BACnetApplicationTagNull = (*_BACnetApplicationTagNull)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
+// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
+func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
+	_result := &_BACnetApplicationTagNull{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
 func (m *_BACnetApplicationTagNull) GetParent() BACnetApplicationTagContract {
 	return m.BACnetApplicationTagContract
-}
-
-// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
-func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
-	_result := &_BACnetApplicationTagNull{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -57,6 +57,17 @@ type _BACnetUnconfirmedServiceRequestWhoIs struct {
 var _ BACnetUnconfirmedServiceRequestWhoIs = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoIs)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoIs factory function for _BACnetUnconfirmedServiceRequestWhoIs
+func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoIs {
+	_result := &_BACnetUnconfirmedServiceRequestWhoIs{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
+		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) GetDeviceInstanceRangeHighLimit(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoIs factory function for _BACnetUnconfirmedServiceRequestWhoIs
-func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoIs {
-	_result := &_BACnetUnconfirmedServiceRequestWhoIs{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
-		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoIs(structType any) BACnetUnconfirmedServiceRequestWhoIs {

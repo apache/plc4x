@@ -61,6 +61,17 @@ type _FirmataMessageSubscribeDigitalPinValue struct {
 var _ FirmataMessageSubscribeDigitalPinValue = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageSubscribeDigitalPinValue)(nil)
 
+// NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
+func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
+	_result := &_FirmataMessageSubscribeDigitalPinValue{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Enable:                 enable,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,17 +107,6 @@ func (m *_FirmataMessageSubscribeDigitalPinValue) GetEnable() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageSubscribeDigitalPinValue factory function for _FirmataMessageSubscribeDigitalPinValue
-func NewFirmataMessageSubscribeDigitalPinValue(pin uint8, enable bool, response bool) *_FirmataMessageSubscribeDigitalPinValue {
-	_result := &_FirmataMessageSubscribeDigitalPinValue{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Pin:                    pin,
-		Enable:                 enable,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageSubscribeDigitalPinValue(structType any) FirmataMessageSubscribeDigitalPinValue {

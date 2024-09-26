@@ -60,6 +60,18 @@ type _AdsMultiRequestItemWrite struct {
 var _ AdsMultiRequestItemWrite = (*_AdsMultiRequestItemWrite)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemWrite)(nil)
 
+// NewAdsMultiRequestItemWrite factory function for _AdsMultiRequestItemWrite
+func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *_AdsMultiRequestItemWrite {
+	_result := &_AdsMultiRequestItemWrite{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemWriteLength:             itemWriteLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_AdsMultiRequestItemWrite) GetItemWriteLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemWrite factory function for _AdsMultiRequestItemWrite
-func NewAdsMultiRequestItemWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemWriteLength uint32) *_AdsMultiRequestItemWrite {
-	_result := &_AdsMultiRequestItemWrite{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemWriteLength:             itemWriteLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemWrite(structType any) AdsMultiRequestItemWrite {

@@ -54,6 +54,19 @@ type _BACnetChannelValueUnsigned struct {
 var _ BACnetChannelValueUnsigned = (*_BACnetChannelValueUnsigned)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueUnsigned)(nil)
 
+// NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
+func NewBACnetChannelValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetChannelValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
+	}
+	_result := &_BACnetChannelValueUnsigned{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		UnsignedValue:              unsignedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueUnsigned) GetUnsignedValue() BACnetApplicationTagUns
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueUnsigned factory function for _BACnetChannelValueUnsigned
-func NewBACnetChannelValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetChannelValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetChannelValueUnsigned must not be nil")
-	}
-	_result := &_BACnetChannelValueUnsigned{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		UnsignedValue:              unsignedValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueUnsigned(structType any) BACnetChannelValueUnsigned {

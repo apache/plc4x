@@ -66,6 +66,29 @@ type _BACnetConfirmedServiceRequestAtomicWriteFile struct {
 var _ BACnetConfirmedServiceRequestAtomicWriteFile = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicWriteFile)(nil)
 
+// NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for _BACnetConfirmedServiceRequestAtomicWriteFile
+func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, closingTag BACnetClosingTag, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicWriteFile {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
+	}
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAtomicWriteFile{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		DeviceIdentifier:                      deviceIdentifier,
+		OpeningTag:                            openingTag,
+		FileStartPosition:                     fileStartPosition,
+		FileData:                              fileData,
+		ClosingTag:                            closingTag,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,29 +136,6 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) GetClosingTag() BACnetCl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAtomicWriteFile factory function for _BACnetConfirmedServiceRequestAtomicWriteFile
-func NewBACnetConfirmedServiceRequestAtomicWriteFile(deviceIdentifier BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, closingTag BACnetClosingTag, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicWriteFile {
-	if deviceIdentifier == nil {
-		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
-	}
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
-	}
-	if fileData == nil {
-		panic("fileData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestAtomicWriteFile must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		DeviceIdentifier:                      deviceIdentifier,
-		OpeningTag:                            openingTag,
-		FileStartPosition:                     fileStartPosition,
-		FileData:                              fileData,
-		ClosingTag:                            closingTag,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType any) BACnetConfirmedServiceRequestAtomicWriteFile {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueDeadband struct {
 var _ BACnetConstructedDataPositiveIntegerValueDeadband = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueDeadband)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for _BACnetConstructedDataPositiveIntegerValueDeadband
+func NewBACnetConstructedDataPositiveIntegerValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueDeadband must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueDeadband) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueDeadband factory function for _BACnetConstructedDataPositiveIntegerValueDeadband
-func NewBACnetConstructedDataPositiveIntegerValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueDeadband {
-	if deadband == nil {
-		panic("deadband of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueDeadband must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Deadband:                      deadband,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueDeadband(structType any) BACnetConstructedDataPositiveIntegerValueDeadband {

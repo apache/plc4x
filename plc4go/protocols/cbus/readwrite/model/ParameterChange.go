@@ -52,6 +52,11 @@ type _ParameterChange struct {
 
 var _ ParameterChange = (*_ParameterChange)(nil)
 
+// NewParameterChange factory function for _ParameterChange
+func NewParameterChange() *_ParameterChange {
+	return &_ParameterChange{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -69,11 +74,6 @@ func (m *_ParameterChange) GetSpecialChar2() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterChange factory function for _ParameterChange
-func NewParameterChange() *_ParameterChange {
-	return &_ParameterChange{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterChange(structType any) ParameterChange {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataResolution struct {
 var _ BACnetConstructedDataResolution = (*_BACnetConstructedDataResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataResolution)(nil)
 
+// NewBACnetConstructedDataResolution factory function for _BACnetConstructedDataResolution
+func NewBACnetConstructedDataResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagReal for BACnetConstructedDataResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataResolution) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataResolution factory function for _BACnetConstructedDataResolution
-func NewBACnetConstructedDataResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagReal for BACnetConstructedDataResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataResolution(structType any) BACnetConstructedDataResolution {

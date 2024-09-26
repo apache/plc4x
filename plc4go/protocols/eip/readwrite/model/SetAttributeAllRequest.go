@@ -49,6 +49,15 @@ type _SetAttributeAllRequest struct {
 var _ SetAttributeAllRequest = (*_SetAttributeAllRequest)(nil)
 var _ CipServiceRequirements = (*_SetAttributeAllRequest)(nil)
 
+// NewSetAttributeAllRequest factory function for _SetAttributeAllRequest
+func NewSetAttributeAllRequest(serviceLen uint16) *_SetAttributeAllRequest {
+	_result := &_SetAttributeAllRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_SetAttributeAllRequest) GetConnected() bool {
 
 func (m *_SetAttributeAllRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeAllRequest factory function for _SetAttributeAllRequest
-func NewSetAttributeAllRequest(serviceLen uint16) *_SetAttributeAllRequest {
-	_result := &_SetAttributeAllRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

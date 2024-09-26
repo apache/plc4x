@@ -54,6 +54,19 @@ type _BACnetPropertyStatesBackupState struct {
 var _ BACnetPropertyStatesBackupState = (*_BACnetPropertyStatesBackupState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBackupState)(nil)
 
+// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
+func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupState BACnetBackupStateTagged) *_BACnetPropertyStatesBackupState {
+	if backupState == nil {
+		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBackupState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BackupState:                  backupState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesBackupState) GetBackupState() BACnetBackupStateTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
-func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupState BACnetBackupStateTagged) *_BACnetPropertyStatesBackupState {
-	if backupState == nil {
-		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBackupState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BackupState:                  backupState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBackupState(structType any) BACnetPropertyStatesBackupState {

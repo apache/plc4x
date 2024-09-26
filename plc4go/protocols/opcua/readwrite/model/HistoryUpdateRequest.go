@@ -60,6 +60,21 @@ type _HistoryUpdateRequest struct {
 var _ HistoryUpdateRequest = (*_HistoryUpdateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateRequest)(nil)
 
+// NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
+func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
+	}
+	_result := &_HistoryUpdateRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
+		HistoryUpdateDetails:              historyUpdateDetails,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_HistoryUpdateRequest) GetHistoryUpdateDetails() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryUpdateRequest factory function for _HistoryUpdateRequest
-func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) *_HistoryUpdateRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryUpdateRequest must not be nil")
-	}
-	_result := &_HistoryUpdateRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfHistoryUpdateDetails:          noOfHistoryUpdateDetails,
-		HistoryUpdateDetails:              historyUpdateDetails,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryUpdateRequest(structType any) HistoryUpdateRequest {

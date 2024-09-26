@@ -66,6 +66,35 @@ type _BACnetNotificationParametersChangeOfReliability struct {
 var _ BACnetNotificationParametersChangeOfReliability = (*_BACnetNotificationParametersChangeOfReliability)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfReliability)(nil)
 
+// NewBACnetNotificationParametersChangeOfReliability factory function for _BACnetNotificationParametersChangeOfReliability
+func NewBACnetNotificationParametersChangeOfReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, reliability BACnetReliabilityTagged, statusFlags BACnetStatusFlagsTagged, propertyValues BACnetPropertyValues, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfReliability {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfReliability must not be nil")
+	}
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetNotificationParametersChangeOfReliability must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfReliability must not be nil")
+	}
+	if propertyValues == nil {
+		panic("propertyValues of type BACnetPropertyValues for BACnetNotificationParametersChangeOfReliability must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfReliability must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfReliability{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		Reliability:                          reliability,
+		StatusFlags:                          statusFlags,
+		PropertyValues:                       propertyValues,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,35 +138,6 @@ func (m *_BACnetNotificationParametersChangeOfReliability) GetInnerClosingTag() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfReliability factory function for _BACnetNotificationParametersChangeOfReliability
-func NewBACnetNotificationParametersChangeOfReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, reliability BACnetReliabilityTagged, statusFlags BACnetStatusFlagsTagged, propertyValues BACnetPropertyValues, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfReliability {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfReliability must not be nil")
-	}
-	if reliability == nil {
-		panic("reliability of type BACnetReliabilityTagged for BACnetNotificationParametersChangeOfReliability must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfReliability must not be nil")
-	}
-	if propertyValues == nil {
-		panic("propertyValues of type BACnetPropertyValues for BACnetNotificationParametersChangeOfReliability must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfReliability must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfReliability{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		Reliability:                          reliability,
-		StatusFlags:                          statusFlags,
-		PropertyValues:                       propertyValues,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfReliability(structType any) BACnetNotificationParametersChangeOfReliability {

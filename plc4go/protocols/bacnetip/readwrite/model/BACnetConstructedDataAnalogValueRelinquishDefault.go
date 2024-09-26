@@ -56,6 +56,19 @@ type _BACnetConstructedDataAnalogValueRelinquishDefault struct {
 var _ BACnetConstructedDataAnalogValueRelinquishDefault = (*_BACnetConstructedDataAnalogValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValueRelinquishDefault)(nil)
 
+// NewBACnetConstructedDataAnalogValueRelinquishDefault factory function for _BACnetConstructedDataAnalogValueRelinquishDefault
+func NewBACnetConstructedDataAnalogValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataAnalogValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAnalogValueRelinquishDefault) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAnalogValueRelinquishDefault factory function for _BACnetConstructedDataAnalogValueRelinquishDefault
-func NewBACnetConstructedDataAnalogValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataAnalogValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAnalogValueRelinquishDefault(structType any) BACnetConstructedDataAnalogValueRelinquishDefault {

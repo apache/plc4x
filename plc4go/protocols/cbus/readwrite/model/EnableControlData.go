@@ -59,6 +59,11 @@ type _EnableControlData struct {
 
 var _ EnableControlData = (*_EnableControlData)(nil)
 
+// NewEnableControlData factory function for _EnableControlData
+func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
+	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -95,11 +100,6 @@ func (m *_EnableControlData) GetCommandType() EnableControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEnableControlData factory function for _EnableControlData
-func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
-	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEnableControlData(structType any) EnableControlData {

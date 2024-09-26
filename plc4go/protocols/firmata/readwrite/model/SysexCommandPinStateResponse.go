@@ -60,6 +60,18 @@ type _SysexCommandPinStateResponse struct {
 var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateResponse)(nil)
 
+// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
+func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
+	_result := &_SysexCommandPinStateResponse{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+		PinMode:              pinMode,
+		PinState:             pinState,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -103,18 +115,6 @@ func (m *_SysexCommandPinStateResponse) GetPinState() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
-func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
-	_result := &_SysexCommandPinStateResponse{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-		PinMode:              pinMode,
-		PinState:             pinState,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateResponse(structType any) SysexCommandPinStateResponse {

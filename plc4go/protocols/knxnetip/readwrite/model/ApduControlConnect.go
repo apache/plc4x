@@ -49,6 +49,15 @@ type _ApduControlConnect struct {
 var _ ApduControlConnect = (*_ApduControlConnect)(nil)
 var _ ApduControlRequirements = (*_ApduControlConnect)(nil)
 
+// NewApduControlConnect factory function for _ApduControlConnect
+func NewApduControlConnect() *_ApduControlConnect {
+	_result := &_ApduControlConnect{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduControlConnect) GetControlType() uint8 {
 
 func (m *_ApduControlConnect) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlConnect factory function for _ApduControlConnect
-func NewApduControlConnect() *_ApduControlConnect {
-	_result := &_ApduControlConnect{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

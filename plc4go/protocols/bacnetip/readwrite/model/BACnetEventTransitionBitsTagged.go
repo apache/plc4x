@@ -64,6 +64,17 @@ type _BACnetEventTransitionBitsTagged struct {
 
 var _ BACnetEventTransitionBitsTagged = (*_BACnetEventTransitionBitsTagged)(nil)
 
+// NewBACnetEventTransitionBitsTagged factory function for _BACnetEventTransitionBitsTagged
+func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetEventTransitionBitsTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEventTransitionBitsTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetEventTransitionBitsTagged must not be nil")
+	}
+	return &_BACnetEventTransitionBitsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,17 +119,6 @@ func (m *_BACnetEventTransitionBitsTagged) GetToNormal() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventTransitionBitsTagged factory function for _BACnetEventTransitionBitsTagged
-func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetEventTransitionBitsTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEventTransitionBitsTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetEventTransitionBitsTagged must not be nil")
-	}
-	return &_BACnetEventTransitionBitsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventTransitionBitsTagged(structType any) BACnetEventTransitionBitsTagged {

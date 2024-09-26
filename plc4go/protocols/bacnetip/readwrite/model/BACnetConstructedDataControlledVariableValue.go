@@ -56,6 +56,19 @@ type _BACnetConstructedDataControlledVariableValue struct {
 var _ BACnetConstructedDataControlledVariableValue = (*_BACnetConstructedDataControlledVariableValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableValue)(nil)
 
+// NewBACnetConstructedDataControlledVariableValue factory function for _BACnetConstructedDataControlledVariableValue
+func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableValue {
+	if controlledVariableValue == nil {
+		panic("controlledVariableValue of type BACnetApplicationTagReal for BACnetConstructedDataControlledVariableValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataControlledVariableValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ControlledVariableValue:       controlledVariableValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataControlledVariableValue) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataControlledVariableValue factory function for _BACnetConstructedDataControlledVariableValue
-func NewBACnetConstructedDataControlledVariableValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableValue {
-	if controlledVariableValue == nil {
-		panic("controlledVariableValue of type BACnetApplicationTagReal for BACnetConstructedDataControlledVariableValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataControlledVariableValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ControlledVariableValue:       controlledVariableValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataControlledVariableValue(structType any) BACnetConstructedDataControlledVariableValue {

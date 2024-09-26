@@ -57,6 +57,17 @@ type _VariantSByte struct {
 var _ VariantSByte = (*_VariantSByte)(nil)
 var _ VariantRequirements = (*_VariantSByte)(nil)
 
+// NewVariantSByte factory function for _VariantSByte
+func NewVariantSByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantSByte {
+	_result := &_VariantSByte{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantSByte) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantSByte factory function for _VariantSByte
-func NewVariantSByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantSByte {
-	_result := &_VariantSByte{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantSByte(structType any) VariantSByte {

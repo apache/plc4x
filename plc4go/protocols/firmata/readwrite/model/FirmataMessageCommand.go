@@ -56,6 +56,19 @@ type _FirmataMessageCommand struct {
 var _ FirmataMessageCommand = (*_FirmataMessageCommand)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageCommand)(nil)
 
+// NewFirmataMessageCommand factory function for _FirmataMessageCommand
+func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
+	if command == nil {
+		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
+	}
+	_result := &_FirmataMessageCommand{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Command:                command,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_FirmataMessageCommand) GetCommand() FirmataCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageCommand factory function for _FirmataMessageCommand
-func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMessageCommand {
-	if command == nil {
-		panic("command of type FirmataCommand for FirmataMessageCommand must not be nil")
-	}
-	_result := &_FirmataMessageCommand{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Command:                command,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageCommand(structType any) FirmataMessageCommand {

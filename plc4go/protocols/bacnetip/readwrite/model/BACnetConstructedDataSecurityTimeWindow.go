@@ -56,6 +56,19 @@ type _BACnetConstructedDataSecurityTimeWindow struct {
 var _ BACnetConstructedDataSecurityTimeWindow = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityTimeWindow)(nil)
 
+// NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
+func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
+	if securityTimeWindow == nil {
+		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
+	}
+	_result := &_BACnetConstructedDataSecurityTimeWindow{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SecurityTimeWindow:            securityTimeWindow,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSecurityTimeWindow) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSecurityTimeWindow factory function for _BACnetConstructedDataSecurityTimeWindow
-func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityTimeWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityTimeWindow {
-	if securityTimeWindow == nil {
-		panic("securityTimeWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityTimeWindow must not be nil")
-	}
-	_result := &_BACnetConstructedDataSecurityTimeWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SecurityTimeWindow:            securityTimeWindow,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSecurityTimeWindow(structType any) BACnetConstructedDataSecurityTimeWindow {

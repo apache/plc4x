@@ -58,6 +58,14 @@ type _NPDUNetworkPriorityTagged struct {
 
 var _ NPDUNetworkPriorityTagged = (*_NPDUNetworkPriorityTagged)(nil)
 
+// NewNPDUNetworkPriorityTagged factory function for _NPDUNetworkPriorityTagged
+func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPriority, tagNumber uint8, tagClass TagClass) *_NPDUNetworkPriorityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for NPDUNetworkPriorityTagged must not be nil")
+	}
+	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_NPDUNetworkPriorityTagged) GetValue() NPDUNetworkPriority {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNPDUNetworkPriorityTagged factory function for _NPDUNetworkPriorityTagged
-func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPriority, tagNumber uint8, tagClass TagClass) *_NPDUNetworkPriorityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for NPDUNetworkPriorityTagged must not be nil")
-	}
-	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNPDUNetworkPriorityTagged(structType any) NPDUNetworkPriorityTagged {

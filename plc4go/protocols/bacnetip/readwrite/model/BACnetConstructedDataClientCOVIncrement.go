@@ -56,6 +56,19 @@ type _BACnetConstructedDataClientCOVIncrement struct {
 var _ BACnetConstructedDataClientCOVIncrement = (*_BACnetConstructedDataClientCOVIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataClientCOVIncrement)(nil)
 
+// NewBACnetConstructedDataClientCOVIncrement factory function for _BACnetConstructedDataClientCOVIncrement
+func NewBACnetConstructedDataClientCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetClientCOV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataClientCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetClientCOV for BACnetConstructedDataClientCOVIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataClientCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataClientCOVIncrement) GetActualValue() BACnetClient
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataClientCOVIncrement factory function for _BACnetConstructedDataClientCOVIncrement
-func NewBACnetConstructedDataClientCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetClientCOV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataClientCOVIncrement {
-	if covIncrement == nil {
-		panic("covIncrement of type BACnetClientCOV for BACnetConstructedDataClientCOVIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataClientCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovIncrement:                  covIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataClientCOVIncrement(structType any) BACnetConstructedDataClientCOVIncrement {

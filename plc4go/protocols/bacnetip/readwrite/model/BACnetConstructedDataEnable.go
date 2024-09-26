@@ -56,6 +56,19 @@ type _BACnetConstructedDataEnable struct {
 var _ BACnetConstructedDataEnable = (*_BACnetConstructedDataEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnable)(nil)
 
+// NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
+func NewBACnetConstructedDataEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
+	if enable == nil {
+		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Enable:                        enable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEnable) GetActualValue() BACnetApplicationTagBool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEnable factory function for _BACnetConstructedDataEnable
-func NewBACnetConstructedDataEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnable {
-	if enable == nil {
-		panic("enable of type BACnetApplicationTagBoolean for BACnetConstructedDataEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Enable:                        enable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEnable(structType any) BACnetConstructedDataEnable {

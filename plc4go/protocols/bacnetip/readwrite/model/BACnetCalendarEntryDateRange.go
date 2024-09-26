@@ -54,6 +54,19 @@ type _BACnetCalendarEntryDateRange struct {
 var _ BACnetCalendarEntryDateRange = (*_BACnetCalendarEntryDateRange)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryDateRange)(nil)
 
+// NewBACnetCalendarEntryDateRange factory function for _BACnetCalendarEntryDateRange
+func NewBACnetCalendarEntryDateRange(peekedTagHeader BACnetTagHeader, dateRange BACnetDateRangeEnclosed) *_BACnetCalendarEntryDateRange {
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRangeEnclosed for BACnetCalendarEntryDateRange must not be nil")
+	}
+	_result := &_BACnetCalendarEntryDateRange{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		DateRange:                   dateRange,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetCalendarEntryDateRange) GetDateRange() BACnetDateRangeEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryDateRange factory function for _BACnetCalendarEntryDateRange
-func NewBACnetCalendarEntryDateRange(peekedTagHeader BACnetTagHeader, dateRange BACnetDateRangeEnclosed) *_BACnetCalendarEntryDateRange {
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRangeEnclosed for BACnetCalendarEntryDateRange must not be nil")
-	}
-	_result := &_BACnetCalendarEntryDateRange{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		DateRange:                   dateRange,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryDateRange(structType any) BACnetCalendarEntryDateRange {

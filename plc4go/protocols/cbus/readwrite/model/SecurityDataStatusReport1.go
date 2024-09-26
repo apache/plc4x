@@ -63,6 +63,28 @@ type _SecurityDataStatusReport1 struct {
 var _ SecurityDataStatusReport1 = (*_SecurityDataStatusReport1)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatusReport1)(nil)
 
+// NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
+func NewSecurityDataStatusReport1(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) *_SecurityDataStatusReport1 {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
+	}
+	if tamperStatus == nil {
+		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	if panicStatus == nil {
+		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
+	}
+	_result := &_SecurityDataStatusReport1{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+		TamperStatus:         tamperStatus,
+		PanicStatus:          panicStatus,
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,28 +124,6 @@ func (m *_SecurityDataStatusReport1) GetZoneStatus() []ZoneStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
-func NewSecurityDataStatusReport1(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) *_SecurityDataStatusReport1 {
-	if armCodeType == nil {
-		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
-	}
-	if tamperStatus == nil {
-		panic("tamperStatus of type TamperStatus for SecurityDataStatusReport1 must not be nil")
-	}
-	if panicStatus == nil {
-		panic("panicStatus of type PanicStatus for SecurityDataStatusReport1 must not be nil")
-	}
-	_result := &_SecurityDataStatusReport1{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmCodeType:          armCodeType,
-		TamperStatus:         tamperStatus,
-		PanicStatus:          panicStatus,
-		ZoneStatus:           zoneStatus,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataStatusReport1(structType any) SecurityDataStatusReport1 {

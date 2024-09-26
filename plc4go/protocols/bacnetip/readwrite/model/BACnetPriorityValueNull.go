@@ -54,6 +54,19 @@ type _BACnetPriorityValueNull struct {
 var _ BACnetPriorityValueNull = (*_BACnetPriorityValueNull)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueNull)(nil)
 
+// NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
+func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
+	}
+	_result := &_BACnetPriorityValueNull{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		NullValue:                   nullValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
-func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
-	}
-	_result := &_BACnetPriorityValueNull{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		NullValue:                   nullValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueNull(structType any) BACnetPriorityValueNull {

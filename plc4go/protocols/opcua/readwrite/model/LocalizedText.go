@@ -62,6 +62,11 @@ type _LocalizedText struct {
 
 var _ LocalizedText = (*_LocalizedText)(nil)
 
+// NewLocalizedText factory function for _LocalizedText
+func NewLocalizedText(textSpecified bool, localeSpecified bool, locale PascalString, text PascalString) *_LocalizedText {
+	return &_LocalizedText{TextSpecified: textSpecified, LocaleSpecified: localeSpecified, Locale: locale, Text: text}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -87,11 +92,6 @@ func (m *_LocalizedText) GetText() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLocalizedText factory function for _LocalizedText
-func NewLocalizedText(textSpecified bool, localeSpecified bool, locale PascalString, text PascalString) *_LocalizedText {
-	return &_LocalizedText{TextSpecified: textSpecified, LocaleSpecified: localeSpecified, Locale: locale, Text: text}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLocalizedText(structType any) LocalizedText {

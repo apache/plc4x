@@ -56,6 +56,19 @@ type _BACnetConstructedDataBelongsTo struct {
 var _ BACnetConstructedDataBelongsTo = (*_BACnetConstructedDataBelongsTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBelongsTo)(nil)
 
+// NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
+func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
+	if belongsTo == nil {
+		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
+	}
+	_result := &_BACnetConstructedDataBelongsTo{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BelongsTo:                     belongsTo,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBelongsTo) GetActualValue() BACnetDeviceObjectRef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
-func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
-	if belongsTo == nil {
-		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
-	}
-	_result := &_BACnetConstructedDataBelongsTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BelongsTo:                     belongsTo,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBelongsTo(structType any) BACnetConstructedDataBelongsTo {

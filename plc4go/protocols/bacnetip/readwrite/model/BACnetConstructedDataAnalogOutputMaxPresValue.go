@@ -56,6 +56,19 @@ type _BACnetConstructedDataAnalogOutputMaxPresValue struct {
 var _ BACnetConstructedDataAnalogOutputMaxPresValue = (*_BACnetConstructedDataAnalogOutputMaxPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogOutputMaxPresValue)(nil)
 
+// NewBACnetConstructedDataAnalogOutputMaxPresValue factory function for _BACnetConstructedDataAnalogOutputMaxPresValue
+func NewBACnetConstructedDataAnalogOutputMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogOutputMaxPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAnalogOutputMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAnalogOutputMaxPresValue factory function for _BACnetConstructedDataAnalogOutputMaxPresValue
-func NewBACnetConstructedDataAnalogOutputMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogOutputMaxPresValue {
-	if maxPresValue == nil {
-		panic("maxPresValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogOutputMaxPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAnalogOutputMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxPresValue:                  maxPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAnalogOutputMaxPresValue(structType any) BACnetConstructedDataAnalogOutputMaxPresValue {

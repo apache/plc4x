@@ -54,6 +54,11 @@ type _XmlElement struct {
 
 var _ XmlElement = (*_XmlElement)(nil)
 
+// NewXmlElement factory function for _XmlElement
+func NewXmlElement(length int32, value []string) *_XmlElement {
+	return &_XmlElement{Length: length, Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_XmlElement) GetValue() []string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewXmlElement factory function for _XmlElement
-func NewXmlElement(length int32, value []string) *_XmlElement {
-	return &_XmlElement{Length: length, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastXmlElement(structType any) XmlElement {

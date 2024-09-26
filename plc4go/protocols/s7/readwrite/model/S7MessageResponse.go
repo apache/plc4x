@@ -57,6 +57,17 @@ type _S7MessageResponse struct {
 var _ S7MessageResponse = (*_S7MessageResponse)(nil)
 var _ S7MessageRequirements = (*_S7MessageResponse)(nil)
 
+// NewS7MessageResponse factory function for _S7MessageResponse
+func NewS7MessageResponse(tpduReference uint16, parameter S7Parameter, payload S7Payload, errorClass uint8, errorCode uint8) *_S7MessageResponse {
+	_result := &_S7MessageResponse{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+		ErrorClass:        errorClass,
+		ErrorCode:         errorCode,
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_S7MessageResponse) GetErrorCode() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageResponse factory function for _S7MessageResponse
-func NewS7MessageResponse(tpduReference uint16, parameter S7Parameter, payload S7Payload, errorClass uint8, errorCode uint8) *_S7MessageResponse {
-	_result := &_S7MessageResponse{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-		ErrorClass:        errorClass,
-		ErrorCode:         errorCode,
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageResponse(structType any) S7MessageResponse {

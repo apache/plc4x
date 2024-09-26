@@ -49,6 +49,15 @@ type _ApduDataExtDomainAddressWrite struct {
 var _ ApduDataExtDomainAddressWrite = (*_ApduDataExtDomainAddressWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressWrite)(nil)
 
+// NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
+func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
+	_result := &_ApduDataExtDomainAddressWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtDomainAddressWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressWrite factory function for _ApduDataExtDomainAddressWrite
-func NewApduDataExtDomainAddressWrite(length uint8) *_ApduDataExtDomainAddressWrite {
-	_result := &_ApduDataExtDomainAddressWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

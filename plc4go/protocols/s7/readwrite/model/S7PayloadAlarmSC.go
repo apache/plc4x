@@ -54,6 +54,19 @@ type _S7PayloadAlarmSC struct {
 var _ S7PayloadAlarmSC = (*_S7PayloadAlarmSC)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadAlarmSC)(nil)
 
+// NewS7PayloadAlarmSC factory function for _S7PayloadAlarmSC
+func NewS7PayloadAlarmSC(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessagePushType) *_S7PayloadAlarmSC {
+	if alarmMessage == nil {
+		panic("alarmMessage of type AlarmMessagePushType for S7PayloadAlarmSC must not be nil")
+	}
+	_result := &_S7PayloadAlarmSC{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		AlarmMessage:                  alarmMessage,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,19 +106,6 @@ func (m *_S7PayloadAlarmSC) GetAlarmMessage() AlarmMessagePushType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadAlarmSC factory function for _S7PayloadAlarmSC
-func NewS7PayloadAlarmSC(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessagePushType) *_S7PayloadAlarmSC {
-	if alarmMessage == nil {
-		panic("alarmMessage of type AlarmMessagePushType for S7PayloadAlarmSC must not be nil")
-	}
-	_result := &_S7PayloadAlarmSC{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		AlarmMessage:                  alarmMessage,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadAlarmSC(structType any) S7PayloadAlarmSC {

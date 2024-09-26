@@ -66,6 +66,20 @@ type _MPropReadReq struct {
 var _ MPropReadReq = (*_MPropReadReq)(nil)
 var _ CEMIRequirements = (*_MPropReadReq)(nil)
 
+// NewMPropReadReq factory function for _MPropReadReq
+func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
+	_result := &_MPropReadReq{
+		CEMIContract:        NewCEMI(size),
+		InterfaceObjectType: interfaceObjectType,
+		ObjectInstance:      objectInstance,
+		PropertyId:          propertyId,
+		NumberOfElements:    numberOfElements,
+		StartIndex:          startIndex,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,20 +127,6 @@ func (m *_MPropReadReq) GetStartIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMPropReadReq factory function for _MPropReadReq
-func NewMPropReadReq(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, size uint16) *_MPropReadReq {
-	_result := &_MPropReadReq{
-		CEMIContract:        NewCEMI(size),
-		InterfaceObjectType: interfaceObjectType,
-		ObjectInstance:      objectInstance,
-		PropertyId:          propertyId,
-		NumberOfElements:    numberOfElements,
-		StartIndex:          startIndex,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMPropReadReq(structType any) MPropReadReq {

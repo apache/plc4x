@@ -56,6 +56,16 @@ type _BVLCResult struct {
 var _ BVLCResult = (*_BVLCResult)(nil)
 var _ BVLCRequirements = (*_BVLCResult)(nil)
 
+// NewBVLCResult factory function for _BVLCResult
+func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
+	_result := &_BVLCResult{
+		BVLCContract: NewBVLC(),
+		Code:         code,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,16 +97,6 @@ func (m *_BVLCResult) GetCode() BVLCResultCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCResult factory function for _BVLCResult
-func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
-	_result := &_BVLCResult{
-		BVLCContract: NewBVLC(),
-		Code:         code,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCResult(structType any) BVLCResult {

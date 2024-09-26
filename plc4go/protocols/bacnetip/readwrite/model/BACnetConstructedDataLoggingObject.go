@@ -56,6 +56,19 @@ type _BACnetConstructedDataLoggingObject struct {
 var _ BACnetConstructedDataLoggingObject = (*_BACnetConstructedDataLoggingObject)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingObject)(nil)
 
+// NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
+func NewBACnetConstructedDataLoggingObject(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingObject BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
+	if loggingObject == nil {
+		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoggingObject{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingObject:                 loggingObject,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLoggingObject) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoggingObject factory function for _BACnetConstructedDataLoggingObject
-func NewBACnetConstructedDataLoggingObject(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingObject BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingObject {
-	if loggingObject == nil {
-		panic("loggingObject of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLoggingObject must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoggingObject{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LoggingObject:                 loggingObject,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoggingObject(structType any) BACnetConstructedDataLoggingObject {

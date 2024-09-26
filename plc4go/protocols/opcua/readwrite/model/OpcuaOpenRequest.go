@@ -60,6 +60,23 @@ type _OpcuaOpenRequest struct {
 var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
 
+// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
+func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenRequest {
+	if openRequest == nil {
+		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaOpenRequest must not be nil")
+	}
+	_result := &_OpcuaOpenRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		OpenRequest:        openRequest,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,23 +116,6 @@ func (m *_OpcuaOpenRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
-func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenRequest {
-	if openRequest == nil {
-		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaOpenRequest must not be nil")
-	}
-	_result := &_OpcuaOpenRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		OpenRequest:        openRequest,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaOpenRequest(structType any) OpcuaOpenRequest {

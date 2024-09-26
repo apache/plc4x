@@ -60,6 +60,24 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 var _ BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
 
+// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		VendorId:                                vendorId,
+		ServiceNumber:                           serviceNumber,
+		ServiceParameters:                       serviceParameters,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceP
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
-	}
-	if serviceNumber == nil {
-		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		VendorId:                                vendorId,
-		ServiceNumber:                           serviceNumber,
-		ServiceParameters:                       serviceParameters,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType any) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {

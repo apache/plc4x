@@ -56,6 +56,19 @@ type _BACnetConstructedDataDefaultSubordinateRelationship struct {
 var _ BACnetConstructedDataDefaultSubordinateRelationship = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultSubordinateRelationship)(nil)
 
+// NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
+func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultSubordinateRelationship BACnetRelationshipTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
+	if defaultSubordinateRelationship == nil {
+		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultSubordinateRelationship: defaultSubordinateRelationship,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDefaultSubordinateRelationship) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultSubordinateRelationship factory function for _BACnetConstructedDataDefaultSubordinateRelationship
-func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultSubordinateRelationship BACnetRelationshipTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultSubordinateRelationship {
-	if defaultSubordinateRelationship == nil {
-		panic("defaultSubordinateRelationship of type BACnetRelationshipTagged for BACnetConstructedDataDefaultSubordinateRelationship must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultSubordinateRelationship{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultSubordinateRelationship: defaultSubordinateRelationship,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultSubordinateRelationship(structType any) BACnetConstructedDataDefaultSubordinateRelationship {

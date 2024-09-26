@@ -59,6 +59,17 @@ type _BACnetConstructedDataAccessDoors struct {
 var _ BACnetConstructedDataAccessDoors = (*_BACnetConstructedDataAccessDoors)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoors)(nil)
 
+// NewBACnetConstructedDataAccessDoors factory function for _BACnetConstructedDataAccessDoors
+func NewBACnetConstructedDataAccessDoors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, accessDoors []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoors {
+	_result := &_BACnetConstructedDataAccessDoors{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AccessDoors:                   accessDoors,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataAccessDoors) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessDoors factory function for _BACnetConstructedDataAccessDoors
-func NewBACnetConstructedDataAccessDoors(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, accessDoors []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoors {
-	_result := &_BACnetConstructedDataAccessDoors{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AccessDoors:                   accessDoors,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessDoors(structType any) BACnetConstructedDataAccessDoors {

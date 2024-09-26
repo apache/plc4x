@@ -63,6 +63,28 @@ type _OpenSecureChannelResponse struct {
 var _ OpenSecureChannelResponse = (*_OpenSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpenSecureChannelResponse)(nil)
 
+// NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
+func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if securityToken == nil {
+		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
+	}
+	_result := &_OpenSecureChannelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		ServerProtocolVersion:             serverProtocolVersion,
+		SecurityToken:                     securityToken,
+		ServerNonce:                       serverNonce,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_OpenSecureChannelResponse) GetServerNonce() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpenSecureChannelResponse factory function for _OpenSecureChannelResponse
-func NewOpenSecureChannelResponse(responseHeader ExtensionObjectDefinition, serverProtocolVersion uint32, securityToken ExtensionObjectDefinition, serverNonce PascalByteString) *_OpenSecureChannelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
-	}
-	if securityToken == nil {
-		panic("securityToken of type ExtensionObjectDefinition for OpenSecureChannelResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for OpenSecureChannelResponse must not be nil")
-	}
-	_result := &_OpenSecureChannelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		ServerProtocolVersion:             serverProtocolVersion,
-		SecurityToken:                     securityToken,
-		ServerNonce:                       serverNonce,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpenSecureChannelResponse(structType any) OpenSecureChannelResponse {

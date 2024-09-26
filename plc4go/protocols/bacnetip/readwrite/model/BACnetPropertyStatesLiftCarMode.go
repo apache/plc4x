@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLiftCarMode struct {
 var _ BACnetPropertyStatesLiftCarMode = (*_BACnetPropertyStatesLiftCarMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarMode)(nil)
 
+// NewBACnetPropertyStatesLiftCarMode factory function for _BACnetPropertyStatesLiftCarMode
+func NewBACnetPropertyStatesLiftCarMode(peekedTagHeader BACnetTagHeader, liftCarMode BACnetLiftCarModeTagged) *_BACnetPropertyStatesLiftCarMode {
+	if liftCarMode == nil {
+		panic("liftCarMode of type BACnetLiftCarModeTagged for BACnetPropertyStatesLiftCarMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftCarMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarMode:                  liftCarMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLiftCarMode) GetLiftCarMode() BACnetLiftCarModeTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftCarMode factory function for _BACnetPropertyStatesLiftCarMode
-func NewBACnetPropertyStatesLiftCarMode(peekedTagHeader BACnetTagHeader, liftCarMode BACnetLiftCarModeTagged) *_BACnetPropertyStatesLiftCarMode {
-	if liftCarMode == nil {
-		panic("liftCarMode of type BACnetLiftCarModeTagged for BACnetPropertyStatesLiftCarMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftCarMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftCarMode:                  liftCarMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftCarMode(structType any) BACnetPropertyStatesLiftCarMode {

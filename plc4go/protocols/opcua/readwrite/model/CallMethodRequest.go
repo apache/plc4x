@@ -63,6 +63,25 @@ type _CallMethodRequest struct {
 var _ CallMethodRequest = (*_CallMethodRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodRequest)(nil)
 
+// NewCallMethodRequest factory function for _CallMethodRequest
+func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
+	if objectId == nil {
+		panic("objectId of type NodeId for CallMethodRequest must not be nil")
+	}
+	if methodId == nil {
+		panic("methodId of type NodeId for CallMethodRequest must not be nil")
+	}
+	_result := &_CallMethodRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ObjectId:                          objectId,
+		MethodId:                          methodId,
+		NoOfInputArguments:                noOfInputArguments,
+		InputArguments:                    inputArguments,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_CallMethodRequest) GetInputArguments() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallMethodRequest factory function for _CallMethodRequest
-func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) *_CallMethodRequest {
-	if objectId == nil {
-		panic("objectId of type NodeId for CallMethodRequest must not be nil")
-	}
-	if methodId == nil {
-		panic("methodId of type NodeId for CallMethodRequest must not be nil")
-	}
-	_result := &_CallMethodRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ObjectId:                          objectId,
-		MethodId:                          methodId,
-		NoOfInputArguments:                noOfInputArguments,
-		InputArguments:                    inputArguments,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallMethodRequest(structType any) CallMethodRequest {

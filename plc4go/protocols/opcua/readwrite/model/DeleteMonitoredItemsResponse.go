@@ -66,6 +66,23 @@ type _DeleteMonitoredItemsResponse struct {
 var _ DeleteMonitoredItemsResponse = (*_DeleteMonitoredItemsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteMonitoredItemsResponse)(nil)
 
+// NewDeleteMonitoredItemsResponse factory function for _DeleteMonitoredItemsResponse
+func NewDeleteMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteMonitoredItemsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsResponse must not be nil")
+	}
+	_result := &_DeleteMonitoredItemsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_DeleteMonitoredItemsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteMonitoredItemsResponse factory function for _DeleteMonitoredItemsResponse
-func NewDeleteMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteMonitoredItemsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsResponse must not be nil")
-	}
-	_result := &_DeleteMonitoredItemsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteMonitoredItemsResponse(structType any) DeleteMonitoredItemsResponse {

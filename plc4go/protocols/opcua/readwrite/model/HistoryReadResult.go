@@ -60,6 +60,27 @@ type _HistoryReadResult struct {
 var _ HistoryReadResult = (*_HistoryReadResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadResult)(nil)
 
+// NewHistoryReadResult factory function for _HistoryReadResult
+func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
+	}
+	if historyData == nil {
+		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
+	}
+	_result := &_HistoryReadResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		ContinuationPoint:                 continuationPoint,
+		HistoryData:                       historyData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,27 +120,6 @@ func (m *_HistoryReadResult) GetHistoryData() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadResult factory function for _HistoryReadResult
-func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
-	}
-	if historyData == nil {
-		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
-	}
-	_result := &_HistoryReadResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		ContinuationPoint:                 continuationPoint,
-		HistoryData:                       historyData,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadResult(structType any) HistoryReadResult {

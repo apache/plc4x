@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPAddress struct {
 var _ BACnetConstructedDataIPAddress = (*_BACnetConstructedDataIPAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPAddress)(nil)
 
+// NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
+func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpAddress:                     ipAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPAddress) GetActualValue() BACnetApplicationTagO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
-func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
-	if ipAddress == nil {
-		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpAddress:                     ipAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPAddress(structType any) BACnetConstructedDataIPAddress {

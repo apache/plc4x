@@ -57,6 +57,17 @@ type _RelativePath struct {
 var _ RelativePath = (*_RelativePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePath)(nil)
 
+// NewRelativePath factory function for _RelativePath
+func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *_RelativePath {
+	_result := &_RelativePath{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElements:                      noOfElements,
+		Elements:                          elements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_RelativePath) GetElements() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativePath factory function for _RelativePath
-func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *_RelativePath {
-	_result := &_RelativePath{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
-		Elements:                          elements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativePath(structType any) RelativePath {

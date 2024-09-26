@@ -73,6 +73,21 @@ type _MeasurementDataChannelMeasurementData struct {
 var _ MeasurementDataChannelMeasurementData = (*_MeasurementDataChannelMeasurementData)(nil)
 var _ MeasurementDataRequirements = (*_MeasurementDataChannelMeasurementData)(nil)
 
+// NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
+func NewMeasurementDataChannelMeasurementData(commandTypeContainer MeasurementCommandTypeContainer, deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) *_MeasurementDataChannelMeasurementData {
+	_result := &_MeasurementDataChannelMeasurementData{
+		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
+		DeviceId:                deviceId,
+		Channel:                 channel,
+		Units:                   units,
+		Multiplier:              multiplier,
+		Msb:                     msb,
+		Lsb:                     lsb,
+	}
+	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,21 +156,6 @@ func (m *_MeasurementDataChannelMeasurementData) GetValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
-func NewMeasurementDataChannelMeasurementData(commandTypeContainer MeasurementCommandTypeContainer, deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) *_MeasurementDataChannelMeasurementData {
-	_result := &_MeasurementDataChannelMeasurementData{
-		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
-		DeviceId:                deviceId,
-		Channel:                 channel,
-		Units:                   units,
-		Multiplier:              multiplier,
-		Msb:                     msb,
-		Lsb:                     lsb,
-	}
-	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeasurementDataChannelMeasurementData(structType any) MeasurementDataChannelMeasurementData {

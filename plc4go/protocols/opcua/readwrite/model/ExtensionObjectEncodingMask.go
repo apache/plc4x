@@ -59,6 +59,11 @@ type _ExtensionObjectEncodingMask struct {
 
 var _ ExtensionObjectEncodingMask = (*_ExtensionObjectEncodingMask)(nil)
 
+// NewExtensionObjectEncodingMask factory function for _ExtensionObjectEncodingMask
+func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
+	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, Xmlbody: xmlbody, BinaryBody: binaryBody}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -80,11 +85,6 @@ func (m *_ExtensionObjectEncodingMask) GetBinaryBody() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionObjectEncodingMask factory function for _ExtensionObjectEncodingMask
-func NewExtensionObjectEncodingMask(typeIdSpecified bool, xmlbody bool, binaryBody bool) *_ExtensionObjectEncodingMask {
-	return &_ExtensionObjectEncodingMask{TypeIdSpecified: typeIdSpecified, Xmlbody: xmlbody, BinaryBody: binaryBody}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObjectEncodingMask(structType any) ExtensionObjectEncodingMask {

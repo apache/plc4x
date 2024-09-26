@@ -54,6 +54,19 @@ type _AdsDiscoveryBlockHostName struct {
 var _ AdsDiscoveryBlockHostName = (*_AdsDiscoveryBlockHostName)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockHostName)(nil)
 
+// NewAdsDiscoveryBlockHostName factory function for _AdsDiscoveryBlockHostName
+func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostName {
+	if hostName == nil {
+		panic("hostName of type AmsString for AdsDiscoveryBlockHostName must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockHostName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		HostName:                  hostName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_AdsDiscoveryBlockHostName) GetHostName() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockHostName factory function for _AdsDiscoveryBlockHostName
-func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostName {
-	if hostName == nil {
-		panic("hostName of type AmsString for AdsDiscoveryBlockHostName must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockHostName{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		HostName:                  hostName,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockHostName(structType any) AdsDiscoveryBlockHostName {

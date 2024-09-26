@@ -49,6 +49,15 @@ type _HistoryReadDetails struct {
 var _ HistoryReadDetails = (*_HistoryReadDetails)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadDetails)(nil)
 
+// NewHistoryReadDetails factory function for _HistoryReadDetails
+func NewHistoryReadDetails() *_HistoryReadDetails {
+	_result := &_HistoryReadDetails{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_HistoryReadDetails) GetIdentifier() string {
 
 func (m *_HistoryReadDetails) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewHistoryReadDetails factory function for _HistoryReadDetails
-func NewHistoryReadDetails() *_HistoryReadDetails {
-	_result := &_HistoryReadDetails{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

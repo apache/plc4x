@@ -57,6 +57,20 @@ type _MonitoredItemNotification struct {
 var _ MonitoredItemNotification = (*_MonitoredItemNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemNotification)(nil)
 
+// NewMonitoredItemNotification factory function for _MonitoredItemNotification
+func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_MonitoredItemNotification {
+	if value == nil {
+		panic("value of type DataValue for MonitoredItemNotification must not be nil")
+	}
+	_result := &_MonitoredItemNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_MonitoredItemNotification) GetValue() DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemNotification factory function for _MonitoredItemNotification
-func NewMonitoredItemNotification(clientHandle uint32, value DataValue) *_MonitoredItemNotification {
-	if value == nil {
-		panic("value of type DataValue for MonitoredItemNotification must not be nil")
-	}
-	_result := &_MonitoredItemNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemNotification(structType any) MonitoredItemNotification {

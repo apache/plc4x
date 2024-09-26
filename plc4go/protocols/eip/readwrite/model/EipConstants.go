@@ -52,6 +52,11 @@ type _EipConstants struct {
 
 var _ EipConstants = (*_EipConstants)(nil)
 
+// NewEipConstants factory function for _EipConstants
+func NewEipConstants() *_EipConstants {
+	return &_EipConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -69,11 +74,6 @@ func (m *_EipConstants) GetEipTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipConstants factory function for _EipConstants
-func NewEipConstants() *_EipConstants {
-	return &_EipConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipConstants(structType any) EipConstants {

@@ -54,6 +54,16 @@ type _SecurityDataArmReadyNotReady struct {
 var _ SecurityDataArmReadyNotReady = (*_SecurityDataArmReadyNotReady)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataArmReadyNotReady)(nil)
 
+// NewSecurityDataArmReadyNotReady factory function for _SecurityDataArmReadyNotReady
+func NewSecurityDataArmReadyNotReady(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataArmReadyNotReady {
+	_result := &_SecurityDataArmReadyNotReady{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataArmReadyNotReady) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataArmReadyNotReady factory function for _SecurityDataArmReadyNotReady
-func NewSecurityDataArmReadyNotReady(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataArmReadyNotReady {
-	_result := &_SecurityDataArmReadyNotReady{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataArmReadyNotReady(structType any) SecurityDataArmReadyNotReady {

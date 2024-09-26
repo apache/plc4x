@@ -54,6 +54,14 @@ type _ByteStringNodeId struct {
 
 var _ ByteStringNodeId = (*_ByteStringNodeId)(nil)
 
+// NewByteStringNodeId factory function for _ByteStringNodeId
+func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
+	}
+	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_ByteStringNodeId) GetIdentifier() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewByteStringNodeId factory function for _ByteStringNodeId
-func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
-	}
-	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastByteStringNodeId(structType any) ByteStringNodeId {

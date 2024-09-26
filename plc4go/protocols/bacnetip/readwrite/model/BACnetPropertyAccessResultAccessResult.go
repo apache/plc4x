@@ -81,6 +81,14 @@ type _BACnetPropertyAccessResultAccessResult struct {
 
 var _ BACnetPropertyAccessResultAccessResultContract = (*_BACnetPropertyAccessResultAccessResult)(nil)
 
+// NewBACnetPropertyAccessResultAccessResult factory function for _BACnetPropertyAccessResultAccessResult
+func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResult {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyAccessResultAccessResult must not be nil")
+	}
+	return &_BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,14 +118,6 @@ func (pm *_BACnetPropertyAccessResultAccessResult) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResultAccessResult factory function for _BACnetPropertyAccessResultAccessResult
-func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResult {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyAccessResultAccessResult must not be nil")
-	}
-	return &_BACnetPropertyAccessResultAccessResult{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, PropertyArrayIndexArgument: propertyArrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResultAccessResult(structType any) BACnetPropertyAccessResultAccessResult {

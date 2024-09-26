@@ -57,6 +57,17 @@ type _ConfigurationVersionDataType struct {
 var _ ConfigurationVersionDataType = (*_ConfigurationVersionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ConfigurationVersionDataType)(nil)
 
+// NewConfigurationVersionDataType factory function for _ConfigurationVersionDataType
+func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *_ConfigurationVersionDataType {
+	_result := &_ConfigurationVersionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MajorVersion:                      majorVersion,
+		MinorVersion:                      minorVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ConfigurationVersionDataType) GetMinorVersion() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConfigurationVersionDataType factory function for _ConfigurationVersionDataType
-func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *_ConfigurationVersionDataType {
-	_result := &_ConfigurationVersionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MajorVersion:                      majorVersion,
-		MinorVersion:                      minorVersion,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConfigurationVersionDataType(structType any) ConfigurationVersionDataType {

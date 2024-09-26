@@ -50,6 +50,15 @@ type _RoutingIndication struct {
 var _ RoutingIndication = (*_RoutingIndication)(nil)
 var _ KnxNetIpMessageRequirements = (*_RoutingIndication)(nil)
 
+// NewRoutingIndication factory function for _RoutingIndication
+func NewRoutingIndication() *_RoutingIndication {
+	_result := &_RoutingIndication{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -66,15 +75,6 @@ func (m *_RoutingIndication) GetMsgType() uint16 {
 
 func (m *_RoutingIndication) GetParent() KnxNetIpMessageContract {
 	return m.KnxNetIpMessageContract
-}
-
-// NewRoutingIndication factory function for _RoutingIndication
-func NewRoutingIndication() *_RoutingIndication {
-	_result := &_RoutingIndication{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

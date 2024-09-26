@@ -56,6 +56,19 @@ type _BACnetConstructedDataDefaultRampRate struct {
 var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRampRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultRampRate)(nil)
 
+// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
+func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
+	if defaultRampRate == nil {
+		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultRampRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultRampRate:               defaultRampRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
-	if defaultRampRate == nil {
-		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultRampRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultRampRate:               defaultRampRate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultRampRate(structType any) BACnetConstructedDataDefaultRampRate {

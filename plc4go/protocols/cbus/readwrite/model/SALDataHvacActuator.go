@@ -54,6 +54,19 @@ type _SALDataHvacActuator struct {
 var _ SALDataHvacActuator = (*_SALDataHvacActuator)(nil)
 var _ SALDataRequirements = (*_SALDataHvacActuator)(nil)
 
+// NewSALDataHvacActuator factory function for _SALDataHvacActuator
+func NewSALDataHvacActuator(salData SALData, hvacActuatorData LightingData) *_SALDataHvacActuator {
+	if hvacActuatorData == nil {
+		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
+	}
+	_result := &_SALDataHvacActuator{
+		SALDataContract:  NewSALData(salData),
+		HvacActuatorData: hvacActuatorData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataHvacActuator) GetHvacActuatorData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataHvacActuator factory function for _SALDataHvacActuator
-func NewSALDataHvacActuator(salData SALData, hvacActuatorData LightingData) *_SALDataHvacActuator {
-	if hvacActuatorData == nil {
-		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
-	}
-	_result := &_SALDataHvacActuator{
-		SALDataContract:  NewSALData(salData),
-		HvacActuatorData: hvacActuatorData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataHvacActuator(structType any) SALDataHvacActuator {

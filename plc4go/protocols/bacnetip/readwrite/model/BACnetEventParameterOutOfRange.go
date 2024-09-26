@@ -69,6 +69,39 @@ type _BACnetEventParameterOutOfRange struct {
 var _ BACnetEventParameterOutOfRange = (*_BACnetEventParameterOutOfRange)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterOutOfRange)(nil)
 
+// NewBACnetEventParameterOutOfRange factory function for _BACnetEventParameterOutOfRange
+func NewBACnetEventParameterOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) *_BACnetEventParameterOutOfRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterOutOfRange must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterOutOfRange must not be nil")
+	}
+	if lowDiffLimit == nil {
+		panic("lowDiffLimit of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
+	}
+	if highDiffLimit == nil {
+		panic("highDiffLimit of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterOutOfRange must not be nil")
+	}
+	_result := &_BACnetEventParameterOutOfRange{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		LowDiffLimit:                 lowDiffLimit,
+		HighDiffLimit:                highDiffLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,39 +149,6 @@ func (m *_BACnetEventParameterOutOfRange) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterOutOfRange factory function for _BACnetEventParameterOutOfRange
-func NewBACnetEventParameterOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) *_BACnetEventParameterOutOfRange {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterOutOfRange must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterOutOfRange must not be nil")
-	}
-	if lowDiffLimit == nil {
-		panic("lowDiffLimit of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
-	}
-	if highDiffLimit == nil {
-		panic("highDiffLimit of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagReal for BACnetEventParameterOutOfRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterOutOfRange must not be nil")
-	}
-	_result := &_BACnetEventParameterOutOfRange{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		LowDiffLimit:                 lowDiffLimit,
-		HighDiffLimit:                highDiffLimit,
-		Deadband:                     deadband,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterOutOfRange(structType any) BACnetEventParameterOutOfRange {

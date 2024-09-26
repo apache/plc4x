@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLifeSafetyState struct {
 var _ BACnetPropertyStatesLifeSafetyState = (*_BACnetPropertyStatesLifeSafetyState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLifeSafetyState)(nil)
 
+// NewBACnetPropertyStatesLifeSafetyState factory function for _BACnetPropertyStatesLifeSafetyState
+func NewBACnetPropertyStatesLifeSafetyState(peekedTagHeader BACnetTagHeader, lifeSafetyState BACnetLifeSafetyStateTagged) *_BACnetPropertyStatesLifeSafetyState {
+	if lifeSafetyState == nil {
+		panic("lifeSafetyState of type BACnetLifeSafetyStateTagged for BACnetPropertyStatesLifeSafetyState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLifeSafetyState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LifeSafetyState:              lifeSafetyState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLifeSafetyState) GetLifeSafetyState() BACnetLifeSa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLifeSafetyState factory function for _BACnetPropertyStatesLifeSafetyState
-func NewBACnetPropertyStatesLifeSafetyState(peekedTagHeader BACnetTagHeader, lifeSafetyState BACnetLifeSafetyStateTagged) *_BACnetPropertyStatesLifeSafetyState {
-	if lifeSafetyState == nil {
-		panic("lifeSafetyState of type BACnetLifeSafetyStateTagged for BACnetPropertyStatesLifeSafetyState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLifeSafetyState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LifeSafetyState:              lifeSafetyState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLifeSafetyState(structType any) BACnetPropertyStatesLifeSafetyState {

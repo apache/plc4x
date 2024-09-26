@@ -54,6 +54,16 @@ type _AdsDiscoveryBlockVersion struct {
 var _ AdsDiscoveryBlockVersion = (*_AdsDiscoveryBlockVersion)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockVersion)(nil)
 
+// NewAdsDiscoveryBlockVersion factory function for _AdsDiscoveryBlockVersion
+func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion {
+	_result := &_AdsDiscoveryBlockVersion{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		VersionData:               versionData,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_AdsDiscoveryBlockVersion) GetVersionData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockVersion factory function for _AdsDiscoveryBlockVersion
-func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion {
-	_result := &_AdsDiscoveryBlockVersion{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		VersionData:               versionData,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockVersion(structType any) AdsDiscoveryBlockVersion {

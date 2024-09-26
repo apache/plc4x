@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaximumValueTimestamp struct {
 var _ BACnetConstructedDataMaximumValueTimestamp = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
 
+// NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
+func NewBACnetConstructedDataMaximumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
+	if maximumValueTimestamp == nil {
+		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaximumValueTimestamp{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumValueTimestamp:         maximumValueTimestamp,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
-func NewBACnetConstructedDataMaximumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
-	if maximumValueTimestamp == nil {
-		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaximumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaximumValueTimestamp:         maximumValueTimestamp,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaximumValueTimestamp(structType any) BACnetConstructedDataMaximumValueTimestamp {

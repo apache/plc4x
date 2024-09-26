@@ -60,6 +60,20 @@ type _BACnetObjectPropertyReferenceEnclosed struct {
 
 var _ BACnetObjectPropertyReferenceEnclosed = (*_BACnetObjectPropertyReferenceEnclosed)(nil)
 
+// NewBACnetObjectPropertyReferenceEnclosed factory function for _BACnetObjectPropertyReferenceEnclosed
+func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetObjectPropertyReferenceEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if objectPropertyReference == nil {
+		panic("objectPropertyReference of type BACnetObjectPropertyReference for BACnetObjectPropertyReferenceEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
+	}
+	return &_BACnetObjectPropertyReferenceEnclosed{OpeningTag: openingTag, ObjectPropertyReference: objectPropertyReference, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetObjectPropertyReferenceEnclosed) GetClosingTag() BACnetClosingTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectPropertyReferenceEnclosed factory function for _BACnetObjectPropertyReferenceEnclosed
-func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objectPropertyReference BACnetObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetObjectPropertyReferenceEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
-	}
-	if objectPropertyReference == nil {
-		panic("objectPropertyReference of type BACnetObjectPropertyReference for BACnetObjectPropertyReferenceEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetObjectPropertyReferenceEnclosed must not be nil")
-	}
-	return &_BACnetObjectPropertyReferenceEnclosed{OpeningTag: openingTag, ObjectPropertyReference: objectPropertyReference, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectPropertyReferenceEnclosed(structType any) BACnetObjectPropertyReferenceEnclosed {

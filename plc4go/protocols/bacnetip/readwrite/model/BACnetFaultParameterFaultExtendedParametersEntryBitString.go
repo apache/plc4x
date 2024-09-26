@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBitString struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryBitString = (*_BACnetFaultParameterFaultExtendedParametersEntryBitString)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryBitString)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryBitString factory function for _BACnetFaultParameterFaultExtendedParametersEntryBitString
+func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetFaultParameterFaultExtendedParametersEntryBitString must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		BitStringValue: bitStringValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) GetBitStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryBitString factory function for _BACnetFaultParameterFaultExtendedParametersEntryBitString
-func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetFaultParameterFaultExtendedParametersEntryBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetFaultParameterFaultExtendedParametersEntryBitString must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBitString{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		BitStringValue: bitStringValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryBitString(structType any) BACnetFaultParameterFaultExtendedParametersEntryBitString {

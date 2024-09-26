@@ -56,6 +56,19 @@ type _BACnetConstructedDataExtendedTimeEnable struct {
 var _ BACnetConstructedDataExtendedTimeEnable = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExtendedTimeEnable)(nil)
 
+// NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
+func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
+	if extendedTimeEnable == nil {
+		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataExtendedTimeEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExtendedTimeEnable:            extendedTimeEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
-func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
-	if extendedTimeEnable == nil {
-		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataExtendedTimeEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ExtendedTimeEnable:            extendedTimeEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstructedDataExtendedTimeEnable {

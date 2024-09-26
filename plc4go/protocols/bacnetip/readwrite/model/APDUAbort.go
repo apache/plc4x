@@ -62,6 +62,21 @@ type _APDUAbort struct {
 var _ APDUAbort = (*_APDUAbort)(nil)
 var _ APDURequirements = (*_APDUAbort)(nil)
 
+// NewAPDUAbort factory function for _APDUAbort
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
+	if abortReason == nil {
+		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
+	}
+	_result := &_APDUAbort{
+		APDUContract:     NewAPDU(apduLength),
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		AbortReason:      abortReason,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,21 +116,6 @@ func (m *_APDUAbort) GetAbortReason() BACnetAbortReasonTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUAbort factory function for _APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
-	if abortReason == nil {
-		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
-	}
-	_result := &_APDUAbort{
-		APDUContract:     NewAPDU(apduLength),
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUAbort(structType any) APDUAbort {

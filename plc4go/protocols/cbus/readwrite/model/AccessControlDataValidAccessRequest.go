@@ -57,6 +57,17 @@ type _AccessControlDataValidAccessRequest struct {
 var _ AccessControlDataValidAccessRequest = (*_AccessControlDataValidAccessRequest)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataValidAccessRequest)(nil)
 
+// NewAccessControlDataValidAccessRequest factory function for _AccessControlDataValidAccessRequest
+func NewAccessControlDataValidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataValidAccessRequest {
+	_result := &_AccessControlDataValidAccessRequest{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDirection:    accessControlDirection,
+		Data:                      data,
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_AccessControlDataValidAccessRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlDataValidAccessRequest factory function for _AccessControlDataValidAccessRequest
-func NewAccessControlDataValidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataValidAccessRequest {
-	_result := &_AccessControlDataValidAccessRequest{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-		AccessControlDirection:    accessControlDirection,
-		Data:                      data,
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlDataValidAccessRequest(structType any) AccessControlDataValidAccessRequest {

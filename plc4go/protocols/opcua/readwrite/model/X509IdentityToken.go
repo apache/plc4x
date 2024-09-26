@@ -54,6 +54,19 @@ type _X509IdentityToken struct {
 var _ X509IdentityToken = (*_X509IdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_X509IdentityToken)(nil)
 
+// NewX509IdentityToken factory function for _X509IdentityToken
+func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
+	if certificateData == nil {
+		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
+	}
+	_result := &_X509IdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		CertificateData:                     certificateData,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_X509IdentityToken) GetCertificateData() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewX509IdentityToken factory function for _X509IdentityToken
-func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
-	if certificateData == nil {
-		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
-	}
-	_result := &_X509IdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		CertificateData:                     certificateData,
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastX509IdentityToken(structType any) X509IdentityToken {

@@ -49,6 +49,15 @@ type _QosDataType struct {
 var _ QosDataType = (*_QosDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QosDataType)(nil)
 
+// NewQosDataType factory function for _QosDataType
+func NewQosDataType() *_QosDataType {
+	_result := &_QosDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_QosDataType) GetIdentifier() string {
 
 func (m *_QosDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewQosDataType factory function for _QosDataType
-func NewQosDataType() *_QosDataType {
-	_result := &_QosDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

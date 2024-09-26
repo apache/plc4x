@@ -54,6 +54,19 @@ type _BACnetChannelValueLightingCommand struct {
 var _ BACnetChannelValueLightingCommand = (*_BACnetChannelValueLightingCommand)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueLightingCommand)(nil)
 
+// NewBACnetChannelValueLightingCommand factory function for _BACnetChannelValueLightingCommand
+func NewBACnetChannelValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed) *_BACnetChannelValueLightingCommand {
+	if ligthingCommandValue == nil {
+		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetChannelValueLightingCommand must not be nil")
+	}
+	_result := &_BACnetChannelValueLightingCommand{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		LigthingCommandValue:       ligthingCommandValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueLightingCommand) GetLigthingCommandValue() BACnetLig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueLightingCommand factory function for _BACnetChannelValueLightingCommand
-func NewBACnetChannelValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed) *_BACnetChannelValueLightingCommand {
-	if ligthingCommandValue == nil {
-		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetChannelValueLightingCommand must not be nil")
-	}
-	_result := &_BACnetChannelValueLightingCommand{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		LigthingCommandValue:       ligthingCommandValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueLightingCommand(structType any) BACnetChannelValueLightingCommand {

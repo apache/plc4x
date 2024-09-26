@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLiftCarDoorCommand struct {
 var _ BACnetPropertyStatesLiftCarDoorCommand = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDoorCommand)(nil)
 
+// NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
+func NewBACnetPropertyStatesLiftCarDoorCommand(peekedTagHeader BACnetTagHeader, liftCarDoorCommand BACnetLiftCarDoorCommandTagged) *_BACnetPropertyStatesLiftCarDoorCommand {
+	if liftCarDoorCommand == nil {
+		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarDoorCommand:           liftCarDoorCommand,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLiftCarDoorCommand) GetLiftCarDoorCommand() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftCarDoorCommand factory function for _BACnetPropertyStatesLiftCarDoorCommand
-func NewBACnetPropertyStatesLiftCarDoorCommand(peekedTagHeader BACnetTagHeader, liftCarDoorCommand BACnetLiftCarDoorCommandTagged) *_BACnetPropertyStatesLiftCarDoorCommand {
-	if liftCarDoorCommand == nil {
-		panic("liftCarDoorCommand of type BACnetLiftCarDoorCommandTagged for BACnetPropertyStatesLiftCarDoorCommand must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftCarDoorCommand{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftCarDoorCommand:           liftCarDoorCommand,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftCarDoorCommand(structType any) BACnetPropertyStatesLiftCarDoorCommand {

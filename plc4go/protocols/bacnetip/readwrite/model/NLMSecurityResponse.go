@@ -63,6 +63,19 @@ type _NLMSecurityResponse struct {
 var _ NLMSecurityResponse = (*_NLMSecurityResponse)(nil)
 var _ NLMRequirements = (*_NLMSecurityResponse)(nil)
 
+// NewNLMSecurityResponse factory function for _NLMSecurityResponse
+func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
+	_result := &_NLMSecurityResponse{
+		NLMContract:        NewNLM(apduLength),
+		ResponseCode:       responseCode,
+		OriginalMessageId:  originalMessageId,
+		OriginalTimestamp:  originalTimestamp,
+		VariableParameters: variableParameters,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_NLMSecurityResponse) GetVariableParameters() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityResponse factory function for _NLMSecurityResponse
-func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
-	_result := &_NLMSecurityResponse{
-		NLMContract:        NewNLM(apduLength),
-		ResponseCode:       responseCode,
-		OriginalMessageId:  originalMessageId,
-		OriginalTimestamp:  originalTimestamp,
-		VariableParameters: variableParameters,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityResponse(structType any) NLMSecurityResponse {

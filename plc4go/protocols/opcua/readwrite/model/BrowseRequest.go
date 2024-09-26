@@ -66,6 +66,26 @@ type _BrowseRequest struct {
 var _ BrowseRequest = (*_BrowseRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseRequest)(nil)
 
+// NewBrowseRequest factory function for _BrowseRequest
+func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
+	_result := &_BrowseRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		View:                              view,
+		RequestedMaxReferencesPerNode:     requestedMaxReferencesPerNode,
+		NoOfNodesToBrowse:                 noOfNodesToBrowse,
+		NodesToBrowse:                     nodesToBrowse,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,26 +133,6 @@ func (m *_BrowseRequest) GetNodesToBrowse() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseRequest factory function for _BrowseRequest
-func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
-	}
-	if view == nil {
-		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
-	}
-	_result := &_BrowseRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		View:                              view,
-		RequestedMaxReferencesPerNode:     requestedMaxReferencesPerNode,
-		NoOfNodesToBrowse:                 noOfNodesToBrowse,
-		NodesToBrowse:                     nodesToBrowse,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseRequest(structType any) BrowseRequest {

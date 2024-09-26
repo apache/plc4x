@@ -54,6 +54,16 @@ type _MeteringDataOtherWaterConsumption struct {
 var _ MeteringDataOtherWaterConsumption = (*_MeteringDataOtherWaterConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataOtherWaterConsumption)(nil)
 
+// NewMeteringDataOtherWaterConsumption factory function for _MeteringDataOtherWaterConsumption
+func NewMeteringDataOtherWaterConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kL uint32) *_MeteringDataOtherWaterConsumption {
+	_result := &_MeteringDataOtherWaterConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KL:                   kL,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MeteringDataOtherWaterConsumption) GetKL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataOtherWaterConsumption factory function for _MeteringDataOtherWaterConsumption
-func NewMeteringDataOtherWaterConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kL uint32) *_MeteringDataOtherWaterConsumption {
-	_result := &_MeteringDataOtherWaterConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KL:                   kL,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataOtherWaterConsumption(structType any) MeteringDataOtherWaterConsumption {

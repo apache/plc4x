@@ -56,6 +56,19 @@ type _BACnetContextTagReal struct {
 var _ BACnetContextTagReal = (*_BACnetContextTagReal)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagReal)(nil)
 
+// NewBACnetContextTagReal factory function for _BACnetContextTagReal
+func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal, tagNumberArgument uint8) *_BACnetContextTagReal {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
+	}
+	_result := &_BACnetContextTagReal{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_BACnetContextTagReal) GetActualValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagReal factory function for _BACnetContextTagReal
-func NewBACnetContextTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal, tagNumberArgument uint8) *_BACnetContextTagReal {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadReal for BACnetContextTagReal must not be nil")
-	}
-	_result := &_BACnetContextTagReal{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagReal(structType any) BACnetContextTagReal {

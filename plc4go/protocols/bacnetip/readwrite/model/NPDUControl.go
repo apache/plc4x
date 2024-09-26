@@ -66,6 +66,11 @@ type _NPDUControl struct {
 
 var _ NPDUControl = (*_NPDUControl)(nil)
 
+// NewNPDUControl factory function for _NPDUControl
+func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *_NPDUControl {
+	return &_NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -95,11 +100,6 @@ func (m *_NPDUControl) GetNetworkPriority() NPDUNetworkPriority {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNPDUControl factory function for _NPDUControl
-func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *_NPDUControl {
-	return &_NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNPDUControl(structType any) NPDUControl {

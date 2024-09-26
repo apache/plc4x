@@ -58,6 +58,11 @@ type _BACnetAbortReasonTagged struct {
 
 var _ BACnetAbortReasonTagged = (*_BACnetAbortReasonTagged)(nil)
 
+// NewBACnetAbortReasonTagged factory function for _BACnetAbortReasonTagged
+func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
+	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -90,11 +95,6 @@ func (m *_BACnetAbortReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAbortReasonTagged factory function for _BACnetAbortReasonTagged
-func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
-	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAbortReasonTagged(structType any) BACnetAbortReasonTagged {

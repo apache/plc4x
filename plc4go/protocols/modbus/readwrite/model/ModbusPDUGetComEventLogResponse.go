@@ -63,6 +63,19 @@ type _ModbusPDUGetComEventLogResponse struct {
 var _ ModbusPDUGetComEventLogResponse = (*_ModbusPDUGetComEventLogResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUGetComEventLogResponse)(nil)
 
+// NewModbusPDUGetComEventLogResponse factory function for _ModbusPDUGetComEventLogResponse
+func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *_ModbusPDUGetComEventLogResponse {
+	_result := &_ModbusPDUGetComEventLogResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Status:            status,
+		EventCount:        eventCount,
+		MessageCount:      messageCount,
+		Events:            events,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -114,19 +127,6 @@ func (m *_ModbusPDUGetComEventLogResponse) GetEvents() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUGetComEventLogResponse factory function for _ModbusPDUGetComEventLogResponse
-func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []byte) *_ModbusPDUGetComEventLogResponse {
-	_result := &_ModbusPDUGetComEventLogResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Status:            status,
-		EventCount:        eventCount,
-		MessageCount:      messageCount,
-		Events:            events,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUGetComEventLogResponse(structType any) ModbusPDUGetComEventLogResponse {

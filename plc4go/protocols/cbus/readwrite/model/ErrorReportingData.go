@@ -70,6 +70,11 @@ type _ErrorReportingData struct {
 
 var _ ErrorReportingDataContract = (*_ErrorReportingData)(nil)
 
+// NewErrorReportingData factory function for _ErrorReportingData
+func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingData {
+	return &_ErrorReportingData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (pm *_ErrorReportingData) GetCommandType() ErrorReportingCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingData factory function for _ErrorReportingData
-func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingData {
-	return &_ErrorReportingData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingData(structType any) ErrorReportingData {

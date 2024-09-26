@@ -59,6 +59,17 @@ type _FirmataCommandSetDigitalPinValue struct {
 var _ FirmataCommandSetDigitalPinValue = (*_FirmataCommandSetDigitalPinValue)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetDigitalPinValue)(nil)
 
+// NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
+func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
+	_result := &_FirmataCommandSetDigitalPinValue{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		On:                     on,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_FirmataCommandSetDigitalPinValue) GetOn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSetDigitalPinValue factory function for _FirmataCommandSetDigitalPinValue
-func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_FirmataCommandSetDigitalPinValue {
-	_result := &_FirmataCommandSetDigitalPinValue{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Pin:                    pin,
-		On:                     on,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSetDigitalPinValue(structType any) FirmataCommandSetDigitalPinValue {

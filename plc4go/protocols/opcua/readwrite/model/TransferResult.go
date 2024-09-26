@@ -60,6 +60,21 @@ type _TransferResult struct {
 var _ TransferResult = (*_TransferResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferResult)(nil)
 
+// NewTransferResult factory function for _TransferResult
+func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for TransferResult must not be nil")
+	}
+	_result := &_TransferResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
+		AvailableSequenceNumbers:          availableSequenceNumbers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_TransferResult) GetAvailableSequenceNumbers() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferResult factory function for _TransferResult
-func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) *_TransferResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for TransferResult must not be nil")
-	}
-	_result := &_TransferResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfAvailableSequenceNumbers:      noOfAvailableSequenceNumbers,
-		AvailableSequenceNumbers:          availableSequenceNumbers,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferResult(structType any) TransferResult {

@@ -49,6 +49,15 @@ type _MeteringDataMeasureOtherWater struct {
 var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
+// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
+func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
+	_result := &_MeteringDataMeasureOtherWater{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
 func (m *_MeteringDataMeasureOtherWater) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
-func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
-	_result := &_MeteringDataMeasureOtherWater{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

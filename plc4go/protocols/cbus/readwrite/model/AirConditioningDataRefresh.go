@@ -54,6 +54,16 @@ type _AirConditioningDataRefresh struct {
 var _ AirConditioningDataRefresh = (*_AirConditioningDataRefresh)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataRefresh)(nil)
 
+// NewAirConditioningDataRefresh factory function for _AirConditioningDataRefresh
+func NewAirConditioningDataRefresh(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte) *_AirConditioningDataRefresh {
+	_result := &_AirConditioningDataRefresh{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_AirConditioningDataRefresh) GetZoneGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataRefresh factory function for _AirConditioningDataRefresh
-func NewAirConditioningDataRefresh(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte) *_AirConditioningDataRefresh {
-	_result := &_AirConditioningDataRefresh{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataRefresh(structType any) AirConditioningDataRefresh {

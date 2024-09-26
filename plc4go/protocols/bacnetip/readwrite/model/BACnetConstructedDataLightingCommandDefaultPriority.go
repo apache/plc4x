@@ -56,6 +56,19 @@ type _BACnetConstructedDataLightingCommandDefaultPriority struct {
 var _ BACnetConstructedDataLightingCommandDefaultPriority = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingCommandDefaultPriority)(nil)
 
+// NewBACnetConstructedDataLightingCommandDefaultPriority factory function for _BACnetConstructedDataLightingCommandDefaultPriority
+func NewBACnetConstructedDataLightingCommandDefaultPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
+	if lightingCommandDefaultPriority == nil {
+		panic("lightingCommandDefaultPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLightingCommandDefaultPriority must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLightingCommandDefaultPriority) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingCommandDefaultPriority factory function for _BACnetConstructedDataLightingCommandDefaultPriority
-func NewBACnetConstructedDataLightingCommandDefaultPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lightingCommandDefaultPriority BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingCommandDefaultPriority {
-	if lightingCommandDefaultPriority == nil {
-		panic("lightingCommandDefaultPriority of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLightingCommandDefaultPriority must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingCommandDefaultPriority{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LightingCommandDefaultPriority: lightingCommandDefaultPriority,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingCommandDefaultPriority(structType any) BACnetConstructedDataLightingCommandDefaultPriority {

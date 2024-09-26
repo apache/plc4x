@@ -57,6 +57,17 @@ type _CALDataRecall struct {
 var _ CALDataRecall = (*_CALDataRecall)(nil)
 var _ CALDataRequirements = (*_CALDataRecall)(nil)
 
+// NewCALDataRecall factory function for _CALDataRecall
+func NewCALDataRecall(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataRecall {
+	_result := &_CALDataRecall{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Count:           count,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_CALDataRecall) GetCount() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataRecall factory function for _CALDataRecall
-func NewCALDataRecall(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataRecall {
-	_result := &_CALDataRecall{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		Count:           count,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataRecall(structType any) CALDataRecall {

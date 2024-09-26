@@ -49,6 +49,15 @@ type _ApduDataExtFileStreamInfoReport struct {
 var _ ApduDataExtFileStreamInfoReport = (*_ApduDataExtFileStreamInfoReport)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtFileStreamInfoReport)(nil)
 
+// NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
+func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
+	_result := &_ApduDataExtFileStreamInfoReport{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtFileStreamInfoReport) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtFileStreamInfoReport) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtFileStreamInfoReport factory function for _ApduDataExtFileStreamInfoReport
-func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInfoReport {
-	_result := &_ApduDataExtFileStreamInfoReport{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

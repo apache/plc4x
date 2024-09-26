@@ -58,6 +58,14 @@ type _BACnetNodeTypeTagged struct {
 
 var _ BACnetNodeTypeTagged = (*_BACnetNodeTypeTagged)(nil)
 
+// NewBACnetNodeTypeTagged factory function for _BACnetNodeTypeTagged
+func NewBACnetNodeTypeTagged(header BACnetTagHeader, value BACnetNodeType, tagNumber uint8, tagClass TagClass) *_BACnetNodeTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNodeTypeTagged must not be nil")
+	}
+	return &_BACnetNodeTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetNodeTypeTagged) GetValue() BACnetNodeType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNodeTypeTagged factory function for _BACnetNodeTypeTagged
-func NewBACnetNodeTypeTagged(header BACnetTagHeader, value BACnetNodeType, tagNumber uint8, tagClass TagClass) *_BACnetNodeTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNodeTypeTagged must not be nil")
-	}
-	return &_BACnetNodeTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNodeTypeTagged(structType any) BACnetNodeTypeTagged {

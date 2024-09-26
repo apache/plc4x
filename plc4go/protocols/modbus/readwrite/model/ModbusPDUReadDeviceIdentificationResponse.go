@@ -72,6 +72,21 @@ type _ModbusPDUReadDeviceIdentificationResponse struct {
 var _ ModbusPDUReadDeviceIdentificationResponse = (*_ModbusPDUReadDeviceIdentificationResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadDeviceIdentificationResponse)(nil)
 
+// NewModbusPDUReadDeviceIdentificationResponse factory function for _ModbusPDUReadDeviceIdentificationResponse
+func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) *_ModbusPDUReadDeviceIdentificationResponse {
+	_result := &_ModbusPDUReadDeviceIdentificationResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Level:             level,
+		IndividualAccess:  individualAccess,
+		ConformityLevel:   conformityLevel,
+		MoreFollows:       moreFollows,
+		NextObjectId:      nextObjectId,
+		Objects:           objects,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -144,21 +159,6 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) GetMeiType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadDeviceIdentificationResponse factory function for _ModbusPDUReadDeviceIdentificationResponse
-func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) *_ModbusPDUReadDeviceIdentificationResponse {
-	_result := &_ModbusPDUReadDeviceIdentificationResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Level:             level,
-		IndividualAccess:  individualAccess,
-		ConformityLevel:   conformityLevel,
-		MoreFollows:       moreFollows,
-		NextObjectId:      nextObjectId,
-		Objects:           objects,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadDeviceIdentificationResponse(structType any) ModbusPDUReadDeviceIdentificationResponse {

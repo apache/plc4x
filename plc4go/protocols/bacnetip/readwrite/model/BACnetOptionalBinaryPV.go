@@ -70,6 +70,14 @@ type _BACnetOptionalBinaryPV struct {
 
 var _ BACnetOptionalBinaryPVContract = (*_BACnetOptionalBinaryPV)(nil)
 
+// NewBACnetOptionalBinaryPV factory function for _BACnetOptionalBinaryPV
+func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalBinaryPV must not be nil")
+	}
+	return &_BACnetOptionalBinaryPV{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetOptionalBinaryPV) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPV factory function for _BACnetOptionalBinaryPV
-func NewBACnetOptionalBinaryPV(peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPV {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalBinaryPV must not be nil")
-	}
-	return &_BACnetOptionalBinaryPV{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPV(structType any) BACnetOptionalBinaryPV {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataEventParameters struct {
 var _ BACnetConstructedDataEventParameters = (*_BACnetConstructedDataEventParameters)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventParameters)(nil)
 
+// NewBACnetConstructedDataEventParameters factory function for _BACnetConstructedDataEventParameters
+func NewBACnetConstructedDataEventParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventParameter BACnetEventParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventParameters {
+	if eventParameter == nil {
+		panic("eventParameter of type BACnetEventParameter for BACnetConstructedDataEventParameters must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventParameters{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventParameter:                eventParameter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEventParameters) GetActualValue() BACnetEventPara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventParameters factory function for _BACnetConstructedDataEventParameters
-func NewBACnetConstructedDataEventParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventParameter BACnetEventParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventParameters {
-	if eventParameter == nil {
-		panic("eventParameter of type BACnetEventParameter for BACnetConstructedDataEventParameters must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventParameters{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventParameter:                eventParameter,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventParameters(structType any) BACnetConstructedDataEventParameters {

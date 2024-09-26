@@ -54,6 +54,19 @@ type _BACnetCalendarEntryDate struct {
 var _ BACnetCalendarEntryDate = (*_BACnetCalendarEntryDate)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryDate)(nil)
 
+// NewBACnetCalendarEntryDate factory function for _BACnetCalendarEntryDate
+func NewBACnetCalendarEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetContextTagDate) *_BACnetCalendarEntryDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetContextTagDate for BACnetCalendarEntryDate must not be nil")
+	}
+	_result := &_BACnetCalendarEntryDate{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		DateValue:                   dateValue,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetCalendarEntryDate) GetDateValue() BACnetContextTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryDate factory function for _BACnetCalendarEntryDate
-func NewBACnetCalendarEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetContextTagDate) *_BACnetCalendarEntryDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetContextTagDate for BACnetCalendarEntryDate must not be nil")
-	}
-	_result := &_BACnetCalendarEntryDate{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		DateValue:                   dateValue,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryDate(structType any) BACnetCalendarEntryDate {

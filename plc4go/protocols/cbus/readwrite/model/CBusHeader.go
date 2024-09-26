@@ -60,6 +60,11 @@ type _CBusHeader struct {
 
 var _ CBusHeader = (*_CBusHeader)(nil)
 
+// NewCBusHeader factory function for _CBusHeader
+func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
+	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_CBusHeader) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusHeader factory function for _CBusHeader
-func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
-	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusHeader(structType any) CBusHeader {

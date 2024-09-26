@@ -57,6 +57,11 @@ type _NLMUpdateKeyUpdateKeyEntry struct {
 
 var _ NLMUpdateKeyUpdateKeyEntry = (*_NLMUpdateKeyUpdateKeyEntry)(nil)
 
+// NewNLMUpdateKeyUpdateKeyEntry factory function for _NLMUpdateKeyUpdateKeyEntry
+func NewNLMUpdateKeyUpdateKeyEntry(keyIdentifier uint16, keySize uint8, key []byte) *_NLMUpdateKeyUpdateKeyEntry {
+	return &_NLMUpdateKeyUpdateKeyEntry{KeyIdentifier: keyIdentifier, KeySize: keySize, Key: key}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) GetKey() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdateKeyEntry factory function for _NLMUpdateKeyUpdateKeyEntry
-func NewNLMUpdateKeyUpdateKeyEntry(keyIdentifier uint16, keySize uint8, key []byte) *_NLMUpdateKeyUpdateKeyEntry {
-	return &_NLMUpdateKeyUpdateKeyEntry{KeyIdentifier: keyIdentifier, KeySize: keySize, Key: key}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdateKeyEntry(structType any) NLMUpdateKeyUpdateKeyEntry {

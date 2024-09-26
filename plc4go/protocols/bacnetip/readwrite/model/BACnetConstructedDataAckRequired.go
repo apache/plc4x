@@ -56,6 +56,19 @@ type _BACnetConstructedDataAckRequired struct {
 var _ BACnetConstructedDataAckRequired = (*_BACnetConstructedDataAckRequired)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAckRequired)(nil)
 
+// NewBACnetConstructedDataAckRequired factory function for _BACnetConstructedDataAckRequired
+func NewBACnetConstructedDataAckRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackRequired BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckRequired {
+	if ackRequired == nil {
+		panic("ackRequired of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckRequired must not be nil")
+	}
+	_result := &_BACnetConstructedDataAckRequired{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AckRequired:                   ackRequired,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAckRequired) GetActualValue() BACnetEventTransiti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAckRequired factory function for _BACnetConstructedDataAckRequired
-func NewBACnetConstructedDataAckRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackRequired BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckRequired {
-	if ackRequired == nil {
-		panic("ackRequired of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckRequired must not be nil")
-	}
-	_result := &_BACnetConstructedDataAckRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AckRequired:                   ackRequired,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAckRequired(structType any) BACnetConstructedDataAckRequired {

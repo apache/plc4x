@@ -60,6 +60,11 @@ type _AssociatedValueType struct {
 
 var _ AssociatedValueType = (*_AssociatedValueType)(nil)
 
+// NewAssociatedValueType factory function for _AssociatedValueType
+func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
+	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_AssociatedValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedValueType factory function for _AssociatedValueType
-func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
-	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedValueType(structType any) AssociatedValueType {

@@ -63,6 +63,31 @@ type _HistoryReadValueId struct {
 var _ HistoryReadValueId = (*_HistoryReadValueId)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadValueId)(nil)
 
+// NewHistoryReadValueId factory function for _HistoryReadValueId
+func NewHistoryReadValueId(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) *_HistoryReadValueId {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for HistoryReadValueId must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for HistoryReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for HistoryReadValueId must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadValueId must not be nil")
+	}
+	_result := &_HistoryReadValueId{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		IndexRange:                        indexRange,
+		DataEncoding:                      dataEncoding,
+		ContinuationPoint:                 continuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,31 +131,6 @@ func (m *_HistoryReadValueId) GetContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadValueId factory function for _HistoryReadValueId
-func NewHistoryReadValueId(nodeId NodeId, indexRange PascalString, dataEncoding QualifiedName, continuationPoint PascalByteString) *_HistoryReadValueId {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for HistoryReadValueId must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for HistoryReadValueId must not be nil")
-	}
-	if dataEncoding == nil {
-		panic("dataEncoding of type QualifiedName for HistoryReadValueId must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for HistoryReadValueId must not be nil")
-	}
-	_result := &_HistoryReadValueId{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		IndexRange:                        indexRange,
-		DataEncoding:                      dataEncoding,
-		ContinuationPoint:                 continuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadValueId(structType any) HistoryReadValueId {

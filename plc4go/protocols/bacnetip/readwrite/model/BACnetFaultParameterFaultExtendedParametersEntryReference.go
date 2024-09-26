@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReference struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryReference = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryReference)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
+func NewBACnetFaultParameterFaultExtendedParametersEntryReference(peekedTagHeader BACnetTagHeader, reference BACnetDeviceObjectPropertyReferenceEnclosed) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
+	if reference == nil {
+		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		Reference: reference,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetReferenc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryReference factory function for _BACnetFaultParameterFaultExtendedParametersEntryReference
-func NewBACnetFaultParameterFaultExtendedParametersEntryReference(peekedTagHeader BACnetTagHeader, reference BACnetDeviceObjectPropertyReferenceEnclosed) *_BACnetFaultParameterFaultExtendedParametersEntryReference {
-	if reference == nil {
-		panic("reference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultExtendedParametersEntryReference must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		Reference: reference,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryReference(structType any) BACnetFaultParameterFaultExtendedParametersEntryReference {

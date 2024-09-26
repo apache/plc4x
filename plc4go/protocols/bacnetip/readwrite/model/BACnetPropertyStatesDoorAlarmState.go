@@ -54,6 +54,19 @@ type _BACnetPropertyStatesDoorAlarmState struct {
 var _ BACnetPropertyStatesDoorAlarmState = (*_BACnetPropertyStatesDoorAlarmState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorAlarmState)(nil)
 
+// NewBACnetPropertyStatesDoorAlarmState factory function for _BACnetPropertyStatesDoorAlarmState
+func NewBACnetPropertyStatesDoorAlarmState(peekedTagHeader BACnetTagHeader, doorAlarmState BACnetDoorAlarmStateTagged) *_BACnetPropertyStatesDoorAlarmState {
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetPropertyStatesDoorAlarmState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorAlarmState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorAlarmState:               doorAlarmState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesDoorAlarmState) GetDoorAlarmState() BACnetDoorAlar
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorAlarmState factory function for _BACnetPropertyStatesDoorAlarmState
-func NewBACnetPropertyStatesDoorAlarmState(peekedTagHeader BACnetTagHeader, doorAlarmState BACnetDoorAlarmStateTagged) *_BACnetPropertyStatesDoorAlarmState {
-	if doorAlarmState == nil {
-		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetPropertyStatesDoorAlarmState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorAlarmState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorAlarmState:               doorAlarmState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorAlarmState(structType any) BACnetPropertyStatesDoorAlarmState {

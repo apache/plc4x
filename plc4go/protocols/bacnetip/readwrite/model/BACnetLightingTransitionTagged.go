@@ -63,6 +63,14 @@ type _BACnetLightingTransitionTagged struct {
 
 var _ BACnetLightingTransitionTagged = (*_BACnetLightingTransitionTagged)(nil)
 
+// NewBACnetLightingTransitionTagged factory function for _BACnetLightingTransitionTagged
+func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingTransitionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingTransitionTagged must not be nil")
+	}
+	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetLightingTransitionTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingTransitionTagged factory function for _BACnetLightingTransitionTagged
-func NewBACnetLightingTransitionTagged(header BACnetTagHeader, value BACnetLightingTransition, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingTransitionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingTransitionTagged must not be nil")
-	}
-	return &_BACnetLightingTransitionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingTransitionTagged(structType any) BACnetLightingTransitionTagged {

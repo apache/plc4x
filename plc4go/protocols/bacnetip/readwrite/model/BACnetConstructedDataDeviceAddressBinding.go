@@ -54,6 +54,16 @@ type _BACnetConstructedDataDeviceAddressBinding struct {
 var _ BACnetConstructedDataDeviceAddressBinding = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceAddressBinding)(nil)
 
+// NewBACnetConstructedDataDeviceAddressBinding factory function for _BACnetConstructedDataDeviceAddressBinding
+func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
+	_result := &_BACnetConstructedDataDeviceAddressBinding{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeviceAddressBinding:          deviceAddressBinding,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) GetDeviceAddressBinding() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeviceAddressBinding factory function for _BACnetConstructedDataDeviceAddressBinding
-func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceAddressBinding {
-	_result := &_BACnetConstructedDataDeviceAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeviceAddressBinding:          deviceAddressBinding,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstructedDataDeviceAddressBinding {

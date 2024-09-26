@@ -57,6 +57,17 @@ type _VariantByteString struct {
 var _ VariantByteString = (*_VariantByteString)(nil)
 var _ VariantRequirements = (*_VariantByteString)(nil)
 
+// NewVariantByteString factory function for _VariantByteString
+func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
+	_result := &_VariantByteString{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantByteString) GetValue() []ByteStringArray {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantByteString factory function for _VariantByteString
-func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
-	_result := &_VariantByteString{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantByteString(structType any) VariantByteString {

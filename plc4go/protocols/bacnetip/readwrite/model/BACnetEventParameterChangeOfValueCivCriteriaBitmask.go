@@ -54,6 +54,19 @@ type _BACnetEventParameterChangeOfValueCivCriteriaBitmask struct {
 var _ BACnetEventParameterChangeOfValueCivCriteriaBitmask = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaBitmask)(nil)
 
+// NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
+func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
+	if bitmask == nil {
+		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Bitmask: bitmask,
+	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) GetBitmask() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfValueCivCriteriaBitmask factory function for _BACnetEventParameterChangeOfValueCivCriteriaBitmask
-func NewBACnetEventParameterChangeOfValueCivCriteriaBitmask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitmask BACnetContextTagBitString, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaBitmask {
-	if bitmask == nil {
-		panic("bitmask of type BACnetContextTagBitString for BACnetEventParameterChangeOfValueCivCriteriaBitmask must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
-		Bitmask: bitmask,
-	}
-	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfValueCivCriteriaBitmask(structType any) BACnetEventParameterChangeOfValueCivCriteriaBitmask {

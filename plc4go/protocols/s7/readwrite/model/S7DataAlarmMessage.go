@@ -69,6 +69,11 @@ type _S7DataAlarmMessage struct {
 
 var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
 
+// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
+func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
+	return &_S7DataAlarmMessage{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -86,11 +91,6 @@ func (m *_S7DataAlarmMessage) GetNumberMessageObj() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
-func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
-	return &_S7DataAlarmMessage{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7DataAlarmMessage(structType any) S7DataAlarmMessage {

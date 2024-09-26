@@ -54,6 +54,19 @@ type _SALDataMeasurement struct {
 var _ SALDataMeasurement = (*_SALDataMeasurement)(nil)
 var _ SALDataRequirements = (*_SALDataMeasurement)(nil)
 
+// NewSALDataMeasurement factory function for _SALDataMeasurement
+func NewSALDataMeasurement(salData SALData, measurementData MeasurementData) *_SALDataMeasurement {
+	if measurementData == nil {
+		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
+	}
+	_result := &_SALDataMeasurement{
+		SALDataContract: NewSALData(salData),
+		MeasurementData: measurementData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataMeasurement) GetMeasurementData() MeasurementData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMeasurement factory function for _SALDataMeasurement
-func NewSALDataMeasurement(salData SALData, measurementData MeasurementData) *_SALDataMeasurement {
-	if measurementData == nil {
-		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
-	}
-	_result := &_SALDataMeasurement{
-		SALDataContract: NewSALData(salData),
-		MeasurementData: measurementData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMeasurement(structType any) SALDataMeasurement {

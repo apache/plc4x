@@ -56,6 +56,19 @@ type _BACnetConstructedDataCalendarPresentValue struct {
 var _ BACnetConstructedDataCalendarPresentValue = (*_BACnetConstructedDataCalendarPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarPresentValue)(nil)
 
+// NewBACnetConstructedDataCalendarPresentValue factory function for _BACnetConstructedDataCalendarPresentValue
+func NewBACnetConstructedDataCalendarPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagBoolean for BACnetConstructedDataCalendarPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataCalendarPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCalendarPresentValue) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCalendarPresentValue factory function for _BACnetConstructedDataCalendarPresentValue
-func NewBACnetConstructedDataCalendarPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetApplicationTagBoolean for BACnetConstructedDataCalendarPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataCalendarPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCalendarPresentValue(structType any) BACnetConstructedDataCalendarPresentValue {

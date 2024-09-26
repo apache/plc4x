@@ -56,6 +56,19 @@ type _BACnetConstructedDataNetworkType struct {
 var _ BACnetConstructedDataNetworkType = (*_BACnetConstructedDataNetworkType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkType)(nil)
 
+// NewBACnetConstructedDataNetworkType factory function for _BACnetConstructedDataNetworkType
+func NewBACnetConstructedDataNetworkType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkType BACnetNetworkTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkType {
+	if networkType == nil {
+		panic("networkType of type BACnetNetworkTypeTagged for BACnetConstructedDataNetworkType must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkType:                   networkType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNetworkType) GetActualValue() BACnetNetworkTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkType factory function for _BACnetConstructedDataNetworkType
-func NewBACnetConstructedDataNetworkType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkType BACnetNetworkTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkType {
-	if networkType == nil {
-		panic("networkType of type BACnetNetworkTypeTagged for BACnetConstructedDataNetworkType must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkType:                   networkType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkType(structType any) BACnetConstructedDataNetworkType {

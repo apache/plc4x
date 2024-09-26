@@ -54,6 +54,19 @@ type _BACnetPropertyStatesAccessEvent struct {
 var _ BACnetPropertyStatesAccessEvent = (*_BACnetPropertyStatesAccessEvent)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessEvent)(nil)
 
+// NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
+func NewBACnetPropertyStatesAccessEvent(peekedTagHeader BACnetTagHeader, accessEvent BACnetAccessEventTagged) *_BACnetPropertyStatesAccessEvent {
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAccessEvent{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AccessEvent:                  accessEvent,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesAccessEvent) GetAccessEvent() BACnetAccessEventTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAccessEvent factory function for _BACnetPropertyStatesAccessEvent
-func NewBACnetPropertyStatesAccessEvent(peekedTagHeader BACnetTagHeader, accessEvent BACnetAccessEventTagged) *_BACnetPropertyStatesAccessEvent {
-	if accessEvent == nil {
-		panic("accessEvent of type BACnetAccessEventTagged for BACnetPropertyStatesAccessEvent must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAccessEvent{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		AccessEvent:                  accessEvent,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAccessEvent(structType any) BACnetPropertyStatesAccessEvent {

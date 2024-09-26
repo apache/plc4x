@@ -54,6 +54,19 @@ type _BACnetPriorityValueOctetString struct {
 var _ BACnetPriorityValueOctetString = (*_BACnetPriorityValueOctetString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueOctetString)(nil)
 
+// NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
+func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
+	}
+	_result := &_BACnetPriorityValueOctetString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		OctetStringValue:            octetStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueOctetString) GetOctetStringValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueOctetString factory function for _BACnetPriorityValueOctetString
-func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetPriorityValueOctetString must not be nil")
-	}
-	_result := &_BACnetPriorityValueOctetString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		OctetStringValue:            octetStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueOctetString(structType any) BACnetPriorityValueOctetString {

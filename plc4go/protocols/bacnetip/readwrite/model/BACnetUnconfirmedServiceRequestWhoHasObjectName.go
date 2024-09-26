@@ -54,6 +54,19 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectName struct {
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectName = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectRequirements = (*_BACnetUnconfirmedServiceRequestWhoHasObjectName)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectName factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectName
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(peekedTagHeader BACnetTagHeader, objectName BACnetContextTagCharacterString) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
+	if objectName == nil {
+		panic("objectName of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestWhoHasObjectName must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
+		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
+		ObjectName: objectName,
+	}
+	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetObjectName() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObjectName factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectName
-func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(peekedTagHeader BACnetTagHeader, objectName BACnetContextTagCharacterString) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
-	if objectName == nil {
-		panic("objectName of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestWhoHasObjectName must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectName{
-		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
-		ObjectName: objectName,
-	}
-	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObjectName(structType any) BACnetUnconfirmedServiceRequestWhoHasObjectName {

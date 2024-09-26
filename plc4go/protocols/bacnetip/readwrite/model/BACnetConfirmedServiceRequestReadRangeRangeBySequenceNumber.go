@@ -57,6 +57,23 @@ type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
 var _ BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
 var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
 
+// NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber factory function for _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+	if referenceSequenceNumber == nil {
+		panic("referenceSequenceNumber of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+		ReferenceSequenceNumber:                             referenceSequenceNumber,
+		Count:                                               count,
+	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,23 +105,6 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetCount(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber factory function for _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
-	if referenceSequenceNumber == nil {
-		panic("referenceSequenceNumber of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
-	}
-	if count == nil {
-		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
-		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
-		ReferenceSequenceNumber:                             referenceSequenceNumber,
-		Count:                                               count,
-	}
-	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType any) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {

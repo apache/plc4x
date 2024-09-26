@@ -49,6 +49,15 @@ type _BACnetConstructedDataCredentialDataInputAll struct {
 var _ BACnetConstructedDataCredentialDataInputAll = (*_BACnetConstructedDataCredentialDataInputAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputAll)(nil)
 
+// NewBACnetConstructedDataCredentialDataInputAll factory function for _BACnetConstructedDataCredentialDataInputAll
+func NewBACnetConstructedDataCredentialDataInputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputAll {
+	_result := &_BACnetConstructedDataCredentialDataInputAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataCredentialDataInputAll) GetPropertyIdentifierArgu
 
 func (m *_BACnetConstructedDataCredentialDataInputAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataCredentialDataInputAll factory function for _BACnetConstructedDataCredentialDataInputAll
-func NewBACnetConstructedDataCredentialDataInputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputAll {
-	_result := &_BACnetConstructedDataCredentialDataInputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

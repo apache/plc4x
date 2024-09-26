@@ -54,6 +54,17 @@ type _BACnetLandingDoorStatusLandingDoorsListEntry struct {
 
 var _ BACnetLandingDoorStatusLandingDoorsListEntry = (*_BACnetLandingDoorStatusLandingDoorsListEntry)(nil)
 
+// NewBACnetLandingDoorStatusLandingDoorsListEntry factory function for _BACnetLandingDoorStatusLandingDoorsListEntry
+func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) *_BACnetLandingDoorStatusLandingDoorsListEntry {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
+	}
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
+	}
+	return &_BACnetLandingDoorStatusLandingDoorsListEntry{FloorNumber: floorNumber, DoorStatus: doorStatus}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) GetDoorStatus() BACnetDo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingDoorStatusLandingDoorsListEntry factory function for _BACnetLandingDoorStatusLandingDoorsListEntry
-func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) *_BACnetLandingDoorStatusLandingDoorsListEntry {
-	if floorNumber == nil {
-		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
-	}
-	if doorStatus == nil {
-		panic("doorStatus of type BACnetDoorStatusTagged for BACnetLandingDoorStatusLandingDoorsListEntry must not be nil")
-	}
-	return &_BACnetLandingDoorStatusLandingDoorsListEntry{FloorNumber: floorNumber, DoorStatus: doorStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingDoorStatusLandingDoorsListEntry(structType any) BACnetLandingDoorStatusLandingDoorsListEntry {

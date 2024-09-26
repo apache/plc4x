@@ -59,6 +59,17 @@ type _BACnetConstructedDataPositiveAccessRules struct {
 var _ BACnetConstructedDataPositiveAccessRules = (*_BACnetConstructedDataPositiveAccessRules)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveAccessRules)(nil)
 
+// NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
+func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
+	_result := &_BACnetConstructedDataPositiveAccessRules{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PositiveAccessRules:           positiveAccessRules,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataPositiveAccessRules) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveAccessRules factory function for _BACnetConstructedDataPositiveAccessRules
-func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, positiveAccessRules []BACnetAccessRule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveAccessRules {
-	_result := &_BACnetConstructedDataPositiveAccessRules{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PositiveAccessRules:           positiveAccessRules,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveAccessRules(structType any) BACnetConstructedDataPositiveAccessRules {

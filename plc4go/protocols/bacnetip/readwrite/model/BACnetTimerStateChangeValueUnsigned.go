@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueUnsigned struct {
 var _ BACnetTimerStateChangeValueUnsigned = (*_BACnetTimerStateChangeValueUnsigned)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueUnsigned)(nil)
 
+// NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
+func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueUnsigned{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		UnsignedValue:                       unsignedValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetUnsignedValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
-func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueUnsigned{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		UnsignedValue:                       unsignedValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueUnsigned(structType any) BACnetTimerStateChangeValueUnsigned {

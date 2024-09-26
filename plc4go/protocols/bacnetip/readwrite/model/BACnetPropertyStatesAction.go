@@ -54,6 +54,19 @@ type _BACnetPropertyStatesAction struct {
 var _ BACnetPropertyStatesAction = (*_BACnetPropertyStatesAction)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAction)(nil)
 
+// NewBACnetPropertyStatesAction factory function for _BACnetPropertyStatesAction
+func NewBACnetPropertyStatesAction(peekedTagHeader BACnetTagHeader, action BACnetActionTagged) *_BACnetPropertyStatesAction {
+	if action == nil {
+		panic("action of type BACnetActionTagged for BACnetPropertyStatesAction must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAction{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Action:                       action,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesAction) GetAction() BACnetActionTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAction factory function for _BACnetPropertyStatesAction
-func NewBACnetPropertyStatesAction(peekedTagHeader BACnetTagHeader, action BACnetActionTagged) *_BACnetPropertyStatesAction {
-	if action == nil {
-		panic("action of type BACnetActionTagged for BACnetPropertyStatesAction must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAction{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Action:                       action,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAction(structType any) BACnetPropertyStatesAction {

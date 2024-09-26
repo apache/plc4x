@@ -54,6 +54,19 @@ type _BACnetShedLevelLevel struct {
 var _ BACnetShedLevelLevel = (*_BACnetShedLevelLevel)(nil)
 var _ BACnetShedLevelRequirements = (*_BACnetShedLevelLevel)(nil)
 
+// NewBACnetShedLevelLevel factory function for _BACnetShedLevelLevel
+func NewBACnetShedLevelLevel(peekedTagHeader BACnetTagHeader, level BACnetContextTagUnsignedInteger) *_BACnetShedLevelLevel {
+	if level == nil {
+		panic("level of type BACnetContextTagUnsignedInteger for BACnetShedLevelLevel must not be nil")
+	}
+	_result := &_BACnetShedLevelLevel{
+		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
+		Level:                   level,
+	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetShedLevelLevel) GetLevel() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevelLevel factory function for _BACnetShedLevelLevel
-func NewBACnetShedLevelLevel(peekedTagHeader BACnetTagHeader, level BACnetContextTagUnsignedInteger) *_BACnetShedLevelLevel {
-	if level == nil {
-		panic("level of type BACnetContextTagUnsignedInteger for BACnetShedLevelLevel must not be nil")
-	}
-	_result := &_BACnetShedLevelLevel{
-		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
-		Level:                   level,
-	}
-	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevelLevel(structType any) BACnetShedLevelLevel {

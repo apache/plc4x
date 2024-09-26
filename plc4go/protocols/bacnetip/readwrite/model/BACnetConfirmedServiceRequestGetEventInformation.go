@@ -54,6 +54,16 @@ type _BACnetConfirmedServiceRequestGetEventInformation struct {
 var _ BACnetConfirmedServiceRequestGetEventInformation = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEventInformation)(nil)
 
+// NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
+func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
+	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		LastReceivedObjectIdentifier:          lastReceivedObjectIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLastReceivedObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
-	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		LastReceivedObjectIdentifier:          lastReceivedObjectIdentifier,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnetConfirmedServiceRequestGetEventInformation {

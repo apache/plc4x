@@ -50,6 +50,15 @@ type _DF1SymbolMessageFrameACK struct {
 var _ DF1SymbolMessageFrameACK = (*_DF1SymbolMessageFrameACK)(nil)
 var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrameACK)(nil)
 
+// NewDF1SymbolMessageFrameACK factory function for _DF1SymbolMessageFrameACK
+func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
+	_result := &_DF1SymbolMessageFrameACK{
+		DF1SymbolContract: NewDF1Symbol(),
+	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -66,15 +75,6 @@ func (m *_DF1SymbolMessageFrameACK) GetSymbolType() uint8 {
 
 func (m *_DF1SymbolMessageFrameACK) GetParent() DF1SymbolContract {
 	return m.DF1SymbolContract
-}
-
-// NewDF1SymbolMessageFrameACK factory function for _DF1SymbolMessageFrameACK
-func NewDF1SymbolMessageFrameACK() *_DF1SymbolMessageFrameACK {
-	_result := &_DF1SymbolMessageFrameACK{
-		DF1SymbolContract: NewDF1Symbol(),
-	}
-	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

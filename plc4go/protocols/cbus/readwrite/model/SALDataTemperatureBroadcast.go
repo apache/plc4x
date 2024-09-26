@@ -54,6 +54,19 @@ type _SALDataTemperatureBroadcast struct {
 var _ SALDataTemperatureBroadcast = (*_SALDataTemperatureBroadcast)(nil)
 var _ SALDataRequirements = (*_SALDataTemperatureBroadcast)(nil)
 
+// NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
+func NewSALDataTemperatureBroadcast(salData SALData, temperatureBroadcastData TemperatureBroadcastData) *_SALDataTemperatureBroadcast {
+	if temperatureBroadcastData == nil {
+		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
+	}
+	_result := &_SALDataTemperatureBroadcast{
+		SALDataContract:          NewSALData(salData),
+		TemperatureBroadcastData: temperatureBroadcastData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataTemperatureBroadcast) GetTemperatureBroadcastData() Temperature
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
-func NewSALDataTemperatureBroadcast(salData SALData, temperatureBroadcastData TemperatureBroadcastData) *_SALDataTemperatureBroadcast {
-	if temperatureBroadcastData == nil {
-		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
-	}
-	_result := &_SALDataTemperatureBroadcast{
-		SALDataContract:          NewSALData(salData),
-		TemperatureBroadcastData: temperatureBroadcastData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataTemperatureBroadcast(structType any) SALDataTemperatureBroadcast {

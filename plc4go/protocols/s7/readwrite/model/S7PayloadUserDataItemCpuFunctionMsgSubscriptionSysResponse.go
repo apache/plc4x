@@ -57,6 +57,17 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Result:                        result,
+		Reserved01:                    reserved01,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetReserve
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Result:                        result,
-		Reserved01:                    reserved01,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {

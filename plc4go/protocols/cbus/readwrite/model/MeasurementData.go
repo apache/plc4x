@@ -70,6 +70,11 @@ type _MeasurementData struct {
 
 var _ MeasurementDataContract = (*_MeasurementData)(nil)
 
+// NewMeasurementData factory function for _MeasurementData
+func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
+	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (pm *_MeasurementData) GetCommandType() MeasurementCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeasurementData factory function for _MeasurementData
-func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
-	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeasurementData(structType any) MeasurementData {

@@ -49,6 +49,15 @@ type _Orientation struct {
 var _ Orientation = (*_Orientation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Orientation)(nil)
 
+// NewOrientation factory function for _Orientation
+func NewOrientation() *_Orientation {
+	_result := &_Orientation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_Orientation) GetIdentifier() string {
 
 func (m *_Orientation) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewOrientation factory function for _Orientation
-func NewOrientation() *_Orientation {
-	_result := &_Orientation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

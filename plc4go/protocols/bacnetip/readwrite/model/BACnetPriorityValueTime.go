@@ -54,6 +54,19 @@ type _BACnetPriorityValueTime struct {
 var _ BACnetPriorityValueTime = (*_BACnetPriorityValueTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueTime)(nil)
 
+// NewBACnetPriorityValueTime factory function for _BACnetPriorityValueTime
+func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetPriorityValueTime must not be nil")
+	}
+	_result := &_BACnetPriorityValueTime{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		TimeValue:                   timeValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueTime) GetTimeValue() BACnetApplicationTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueTime factory function for _BACnetPriorityValueTime
-func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetPriorityValueTime must not be nil")
-	}
-	_result := &_BACnetPriorityValueTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		TimeValue:                   timeValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueTime(structType any) BACnetPriorityValueTime {

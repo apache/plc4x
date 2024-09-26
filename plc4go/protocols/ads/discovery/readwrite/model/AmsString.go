@@ -54,6 +54,11 @@ type _AmsString struct {
 
 var _ AmsString = (*_AmsString)(nil)
 
+// NewAmsString factory function for _AmsString
+func NewAmsString(text string) *_AmsString {
+	return &_AmsString{Text: text}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,11 +72,6 @@ func (m *_AmsString) GetText() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsString factory function for _AmsString
-func NewAmsString(text string) *_AmsString {
-	return &_AmsString{Text: text}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsString(structType any) AmsString {

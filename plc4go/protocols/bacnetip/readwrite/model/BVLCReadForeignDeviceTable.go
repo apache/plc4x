@@ -50,6 +50,15 @@ type _BVLCReadForeignDeviceTable struct {
 var _ BVLCReadForeignDeviceTable = (*_BVLCReadForeignDeviceTable)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTable)(nil)
 
+// NewBVLCReadForeignDeviceTable factory function for _BVLCReadForeignDeviceTable
+func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
+	_result := &_BVLCReadForeignDeviceTable{
+		BVLCContract: NewBVLC(),
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -66,15 +75,6 @@ func (m *_BVLCReadForeignDeviceTable) GetBvlcFunction() uint8 {
 
 func (m *_BVLCReadForeignDeviceTable) GetParent() BVLCContract {
 	return m.BVLCContract
-}
-
-// NewBVLCReadForeignDeviceTable factory function for _BVLCReadForeignDeviceTable
-func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
-	_result := &_BVLCReadForeignDeviceTable{
-		BVLCContract: NewBVLC(),
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

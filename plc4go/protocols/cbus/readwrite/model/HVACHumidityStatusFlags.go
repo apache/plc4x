@@ -75,6 +75,11 @@ type _HVACHumidityStatusFlags struct {
 
 var _ HVACHumidityStatusFlags = (*_HVACHumidityStatusFlags)(nil)
 
+// NewHVACHumidityStatusFlags factory function for _HVACHumidityStatusFlags
+func NewHVACHumidityStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) *_HVACHumidityStatusFlags {
+	return &_HVACHumidityStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, DehumidifyingPlant: dehumidifyingPlant, HumidifyingPlant: humidifyingPlant}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -133,11 +138,6 @@ func (m *_HVACHumidityStatusFlags) GetIsDamperStateOpen() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidityStatusFlags factory function for _HVACHumidityStatusFlags
-func NewHVACHumidityStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) *_HVACHumidityStatusFlags {
-	return &_HVACHumidityStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, DehumidifyingPlant: dehumidifyingPlant, HumidifyingPlant: humidifyingPlant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidityStatusFlags(structType any) HVACHumidityStatusFlags {

@@ -51,6 +51,11 @@ type _ModbusConstants struct {
 
 var _ ModbusConstants = (*_ModbusConstants)(nil)
 
+// NewModbusConstants factory function for _ModbusConstants
+func NewModbusConstants() *_ModbusConstants {
+	return &_ModbusConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_ModbusConstants) GetModbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusConstants factory function for _ModbusConstants
-func NewModbusConstants() *_ModbusConstants {
-	return &_ModbusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusConstants(structType any) ModbusConstants {

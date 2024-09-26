@@ -56,6 +56,19 @@ type _BACnetConstructedDataAPDUSegmentTimeout struct {
 var _ BACnetConstructedDataAPDUSegmentTimeout = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDUSegmentTimeout)(nil)
 
+// NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
+func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
+	if apduSegmentTimeout == nil {
+		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApduSegmentTimeout:            apduSegmentTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAPDUSegmentTimeout) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAPDUSegmentTimeout factory function for _BACnetConstructedDataAPDUSegmentTimeout
-func NewBACnetConstructedDataAPDUSegmentTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduSegmentTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDUSegmentTimeout {
-	if apduSegmentTimeout == nil {
-		panic("apduSegmentTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDUSegmentTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataAPDUSegmentTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ApduSegmentTimeout:            apduSegmentTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAPDUSegmentTimeout(structType any) BACnetConstructedDataAPDUSegmentTimeout {

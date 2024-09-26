@@ -57,6 +57,23 @@ type _RepublishResponse struct {
 var _ RepublishResponse = (*_RepublishResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishResponse)(nil)
 
+// NewRepublishResponse factory function for _RepublishResponse
+func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	if notificationMessage == nil {
+		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
+	}
+	_result := &_RepublishResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NotificationMessage:               notificationMessage,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_RepublishResponse) GetNotificationMessage() ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRepublishResponse factory function for _RepublishResponse
-func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) *_RepublishResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RepublishResponse must not be nil")
-	}
-	if notificationMessage == nil {
-		panic("notificationMessage of type ExtensionObjectDefinition for RepublishResponse must not be nil")
-	}
-	_result := &_RepublishResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NotificationMessage:               notificationMessage,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRepublishResponse(structType any) RepublishResponse {

@@ -68,6 +68,23 @@ type _MonitoringParameters struct {
 var _ MonitoringParameters = (*_MonitoringParameters)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringParameters)(nil)
 
+// NewMonitoringParameters factory function for _MonitoringParameters
+func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
+	if filter == nil {
+		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
+	}
+	_result := &_MonitoringParameters{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		SamplingInterval:                  samplingInterval,
+		Filter:                            filter,
+		QueueSize:                         queueSize,
+		DiscardOldest:                     discardOldest,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,23 +132,6 @@ func (m *_MonitoringParameters) GetDiscardOldest() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoringParameters factory function for _MonitoringParameters
-func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
-	if filter == nil {
-		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
-	}
-	_result := &_MonitoringParameters{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		SamplingInterval:                  samplingInterval,
-		Filter:                            filter,
-		QueueSize:                         queueSize,
-		DiscardOldest:                     discardOldest,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoringParameters(structType any) MonitoringParameters {

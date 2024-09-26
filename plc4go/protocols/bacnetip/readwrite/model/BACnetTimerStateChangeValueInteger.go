@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueInteger struct {
 var _ BACnetTimerStateChangeValueInteger = (*_BACnetTimerStateChangeValueInteger)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueInteger)(nil)
 
+// NewBACnetTimerStateChangeValueInteger factory function for _BACnetTimerStateChangeValueInteger
+func NewBACnetTimerStateChangeValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetTimerStateChangeValueInteger must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueInteger{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		IntegerValue:                        integerValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueInteger) GetIntegerValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueInteger factory function for _BACnetTimerStateChangeValueInteger
-func NewBACnetTimerStateChangeValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetTimerStateChangeValueInteger must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueInteger{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		IntegerValue:                        integerValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueInteger(structType any) BACnetTimerStateChangeValueInteger {

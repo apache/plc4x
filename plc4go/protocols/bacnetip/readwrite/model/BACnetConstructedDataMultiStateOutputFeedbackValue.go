@@ -56,6 +56,19 @@ type _BACnetConstructedDataMultiStateOutputFeedbackValue struct {
 var _ BACnetConstructedDataMultiStateOutputFeedbackValue = (*_BACnetConstructedDataMultiStateOutputFeedbackValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputFeedbackValue)(nil)
 
+// NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for _BACnetConstructedDataMultiStateOutputFeedbackValue
+func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputFeedbackValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) GetActualValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateOutputFeedbackValue factory function for _BACnetConstructedDataMultiStateOutputFeedbackValue
-func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputFeedbackValue {
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputFeedbackValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMultiStateOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FeedbackValue:                 feedbackValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateOutputFeedbackValue(structType any) BACnetConstructedDataMultiStateOutputFeedbackValue {

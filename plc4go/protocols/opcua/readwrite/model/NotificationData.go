@@ -49,6 +49,15 @@ type _NotificationData struct {
 var _ NotificationData = (*_NotificationData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationData)(nil)
 
+// NewNotificationData factory function for _NotificationData
+func NewNotificationData() *_NotificationData {
+	_result := &_NotificationData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_NotificationData) GetIdentifier() string {
 
 func (m *_NotificationData) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewNotificationData factory function for _NotificationData
-func NewNotificationData() *_NotificationData {
-	_result := &_NotificationData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

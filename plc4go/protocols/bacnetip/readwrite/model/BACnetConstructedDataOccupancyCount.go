@@ -56,6 +56,19 @@ type _BACnetConstructedDataOccupancyCount struct {
 var _ BACnetConstructedDataOccupancyCount = (*_BACnetConstructedDataOccupancyCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCount)(nil)
 
+// NewBACnetConstructedDataOccupancyCount factory function for _BACnetConstructedDataOccupancyCount
+func NewBACnetConstructedDataOccupancyCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCount {
+	if occupancyCount == nil {
+		panic("occupancyCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyCount:                occupancyCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOccupancyCount) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyCount factory function for _BACnetConstructedDataOccupancyCount
-func NewBACnetConstructedDataOccupancyCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCount {
-	if occupancyCount == nil {
-		panic("occupancyCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataOccupancyCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyCount:                occupancyCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyCount(structType any) BACnetConstructedDataOccupancyCount {

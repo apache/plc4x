@@ -78,6 +78,17 @@ type _BACnetObjectTypesSupportedTagged struct {
 
 var _ BACnetObjectTypesSupportedTagged = (*_BACnetObjectTypesSupportedTagged)(nil)
 
+// NewBACnetObjectTypesSupportedTagged factory function for _BACnetObjectTypesSupportedTagged
+func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypesSupportedTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetObjectTypesSupportedTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetObjectTypesSupportedTagged must not be nil")
+	}
+	return &_BACnetObjectTypesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -164,17 +175,6 @@ func (m *_BACnetObjectTypesSupportedTagged) GetLift() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectTypesSupportedTagged factory function for _BACnetObjectTypesSupportedTagged
-func NewBACnetObjectTypesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetObjectTypesSupportedTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetObjectTypesSupportedTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetObjectTypesSupportedTagged must not be nil")
-	}
-	return &_BACnetObjectTypesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectTypesSupportedTagged(structType any) BACnetObjectTypesSupportedTagged {

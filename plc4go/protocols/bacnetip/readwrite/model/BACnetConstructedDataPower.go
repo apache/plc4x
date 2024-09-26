@@ -56,6 +56,19 @@ type _BACnetConstructedDataPower struct {
 var _ BACnetConstructedDataPower = (*_BACnetConstructedDataPower)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPower)(nil)
 
+// NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
+func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
+	if power == nil {
+		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
+	}
+	_result := &_BACnetConstructedDataPower{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Power:                         power,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPower) GetActualValue() BACnetApplicationTagReal 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
-func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
-	if power == nil {
-		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
-	}
-	_result := &_BACnetConstructedDataPower{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Power:                         power,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPower(structType any) BACnetConstructedDataPower {

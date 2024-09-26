@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryBooleanValue struct {
 var _ BACnetLogDataLogDataEntryBooleanValue = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
 
+// NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
+func NewBACnetLogDataLogDataEntryBooleanValue(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetLogDataLogDataEntryBooleanValue {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryBooleanValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BooleanValue:                      booleanValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetBooleanValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
-func NewBACnetLogDataLogDataEntryBooleanValue(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetLogDataLogDataEntryBooleanValue {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryBooleanValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		BooleanValue:                      booleanValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryBooleanValue(structType any) BACnetLogDataLogDataEntryBooleanValue {

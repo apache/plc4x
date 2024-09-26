@@ -56,6 +56,19 @@ type _BACnetConstructedDataProgramChange struct {
 var _ BACnetConstructedDataProgramChange = (*_BACnetConstructedDataProgramChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramChange)(nil)
 
+// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
+func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
+	if programChange == nil {
+		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramChange:                 programChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProgramChange) GetActualValue() BACnetProgramRequ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
-	if programChange == nil {
-		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramChange:                 programChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramChange(structType any) BACnetConstructedDataProgramChange {

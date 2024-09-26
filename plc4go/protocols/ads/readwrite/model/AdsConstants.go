@@ -51,6 +51,11 @@ type _AdsConstants struct {
 
 var _ AdsConstants = (*_AdsConstants)(nil)
 
+// NewAdsConstants factory function for _AdsConstants
+func NewAdsConstants() *_AdsConstants {
+	return &_AdsConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_AdsConstants) GetAdsTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsConstants factory function for _AdsConstants
-func NewAdsConstants() *_AdsConstants {
-	return &_AdsConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsConstants(structType any) AdsConstants {

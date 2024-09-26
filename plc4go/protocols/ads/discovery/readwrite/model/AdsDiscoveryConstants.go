@@ -51,6 +51,11 @@ type _AdsDiscoveryConstants struct {
 
 var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
 
+// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
+func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
+	return &_AdsDiscoveryConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_AdsDiscoveryConstants) GetAdsDiscoveryUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
-func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
-	return &_AdsDiscoveryConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryConstants(structType any) AdsDiscoveryConstants {

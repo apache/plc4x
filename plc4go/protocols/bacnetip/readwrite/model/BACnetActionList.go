@@ -57,6 +57,17 @@ type _BACnetActionList struct {
 
 var _ BACnetActionList = (*_BACnetActionList)(nil)
 
+// NewBACnetActionList factory function for _BACnetActionList
+func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
+	}
+	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetActionList) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetActionList factory function for _BACnetActionList
-func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
-	}
-	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetActionList(structType any) BACnetActionList {

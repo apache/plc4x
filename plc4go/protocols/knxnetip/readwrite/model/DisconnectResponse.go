@@ -59,6 +59,17 @@ type _DisconnectResponse struct {
 var _ DisconnectResponse = (*_DisconnectResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_DisconnectResponse)(nil)
 
+// NewDisconnectResponse factory function for _DisconnectResponse
+func NewDisconnectResponse(communicationChannelId uint8, status Status) *_DisconnectResponse {
+	_result := &_DisconnectResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		Status:                  status,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_DisconnectResponse) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDisconnectResponse factory function for _DisconnectResponse
-func NewDisconnectResponse(communicationChannelId uint8, status Status) *_DisconnectResponse {
-	_result := &_DisconnectResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		Status:                  status,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDisconnectResponse(structType any) DisconnectResponse {

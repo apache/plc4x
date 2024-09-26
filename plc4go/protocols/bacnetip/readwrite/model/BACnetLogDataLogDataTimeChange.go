@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataTimeChange struct {
 var _ BACnetLogDataLogDataTimeChange = (*_BACnetLogDataLogDataTimeChange)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogDataTimeChange)(nil)
 
+// NewBACnetLogDataLogDataTimeChange factory function for _BACnetLogDataLogDataTimeChange
+func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogDataLogDataTimeChange {
+	if timeChange == nil {
+		panic("timeChange of type BACnetContextTagReal for BACnetLogDataLogDataTimeChange must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataTimeChange{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeChange:            timeChange,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataTimeChange) GetTimeChange() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataTimeChange factory function for _BACnetLogDataLogDataTimeChange
-func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogDataLogDataTimeChange {
-	if timeChange == nil {
-		panic("timeChange of type BACnetContextTagReal for BACnetLogDataLogDataTimeChange must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataTimeChange{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		TimeChange:            timeChange,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataTimeChange(structType any) BACnetLogDataLogDataTimeChange {

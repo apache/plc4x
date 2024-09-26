@@ -63,6 +63,14 @@ type _BACnetLoggingTypeTagged struct {
 
 var _ BACnetLoggingTypeTagged = (*_BACnetLoggingTypeTagged)(nil)
 
+// NewBACnetLoggingTypeTagged factory function for _BACnetLoggingTypeTagged
+func NewBACnetLoggingTypeTagged(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLoggingTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLoggingTypeTagged must not be nil")
+	}
+	return &_BACnetLoggingTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetLoggingTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLoggingTypeTagged factory function for _BACnetLoggingTypeTagged
-func NewBACnetLoggingTypeTagged(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLoggingTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLoggingTypeTagged must not be nil")
-	}
-	return &_BACnetLoggingTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLoggingTypeTagged(structType any) BACnetLoggingTypeTagged {

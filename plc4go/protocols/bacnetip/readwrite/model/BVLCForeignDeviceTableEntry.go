@@ -60,6 +60,11 @@ type _BVLCForeignDeviceTableEntry struct {
 
 var _ BVLCForeignDeviceTableEntry = (*_BVLCForeignDeviceTableEntry)(nil)
 
+// NewBVLCForeignDeviceTableEntry factory function for _BVLCForeignDeviceTableEntry
+func NewBVLCForeignDeviceTableEntry(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) *_BVLCForeignDeviceTableEntry {
+	return &_BVLCForeignDeviceTableEntry{Ip: ip, Port: port, Ttl: ttl, SecondRemainingBeforePurge: secondRemainingBeforePurge}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_BVLCForeignDeviceTableEntry) GetSecondRemainingBeforePurge() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCForeignDeviceTableEntry factory function for _BVLCForeignDeviceTableEntry
-func NewBVLCForeignDeviceTableEntry(ip []uint8, port uint16, ttl uint16, secondRemainingBeforePurge uint16) *_BVLCForeignDeviceTableEntry {
-	return &_BVLCForeignDeviceTableEntry{Ip: ip, Port: port, Ttl: ttl, SecondRemainingBeforePurge: secondRemainingBeforePurge}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCForeignDeviceTableEntry(structType any) BVLCForeignDeviceTableEntry {

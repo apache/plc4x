@@ -66,6 +66,20 @@ type _ApduDataExtPropertyValueResponse struct {
 var _ ApduDataExtPropertyValueResponse = (*_ApduDataExtPropertyValueResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueResponse)(nil)
 
+// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
+func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
+	_result := &_ApduDataExtPropertyValueResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,20 +127,6 @@ func (m *_ApduDataExtPropertyValueResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
-func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
-	_result := &_ApduDataExtPropertyValueResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueResponse(structType any) ApduDataExtPropertyValueResponse {

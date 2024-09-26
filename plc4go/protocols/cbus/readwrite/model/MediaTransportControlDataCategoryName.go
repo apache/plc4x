@@ -54,6 +54,16 @@ type _MediaTransportControlDataCategoryName struct {
 var _ MediaTransportControlDataCategoryName = (*_MediaTransportControlDataCategoryName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataCategoryName)(nil)
 
+// NewMediaTransportControlDataCategoryName factory function for _MediaTransportControlDataCategoryName
+func NewMediaTransportControlDataCategoryName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryName string) *_MediaTransportControlDataCategoryName {
+	_result := &_MediaTransportControlDataCategoryName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		CategoryName:                      categoryName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MediaTransportControlDataCategoryName) GetCategoryName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataCategoryName factory function for _MediaTransportControlDataCategoryName
-func NewMediaTransportControlDataCategoryName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryName string) *_MediaTransportControlDataCategoryName {
-	_result := &_MediaTransportControlDataCategoryName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		CategoryName:                      categoryName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataCategoryName(structType any) MediaTransportControlDataCategoryName {

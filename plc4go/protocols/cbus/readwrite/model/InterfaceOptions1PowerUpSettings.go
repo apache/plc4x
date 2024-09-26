@@ -51,6 +51,14 @@ type _InterfaceOptions1PowerUpSettings struct {
 
 var _ InterfaceOptions1PowerUpSettings = (*_InterfaceOptions1PowerUpSettings)(nil)
 
+// NewInterfaceOptions1PowerUpSettings factory function for _InterfaceOptions1PowerUpSettings
+func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_InterfaceOptions1PowerUpSettings {
+	if interfaceOptions1 == nil {
+		panic("interfaceOptions1 of type InterfaceOptions1 for InterfaceOptions1PowerUpSettings must not be nil")
+	}
+	return &_InterfaceOptions1PowerUpSettings{InterfaceOptions1: interfaceOptions1}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,14 +72,6 @@ func (m *_InterfaceOptions1PowerUpSettings) GetInterfaceOptions1() InterfaceOpti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions1PowerUpSettings factory function for _InterfaceOptions1PowerUpSettings
-func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_InterfaceOptions1PowerUpSettings {
-	if interfaceOptions1 == nil {
-		panic("interfaceOptions1 of type InterfaceOptions1 for InterfaceOptions1PowerUpSettings must not be nil")
-	}
-	return &_InterfaceOptions1PowerUpSettings{InterfaceOptions1: interfaceOptions1}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions1PowerUpSettings(structType any) InterfaceOptions1PowerUpSettings {

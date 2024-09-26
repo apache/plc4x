@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryBoolean struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryBoolean = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryBoolean)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryBoolean factory function for _BACnetFaultParameterFaultExtendedParametersEntryBoolean
+func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetFaultParameterFaultExtendedParametersEntryBoolean must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		BooleanValue: booleanValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetBooleanVal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryBoolean factory function for _BACnetFaultParameterFaultExtendedParametersEntryBoolean
-func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetFaultParameterFaultExtendedParametersEntryBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetFaultParameterFaultExtendedParametersEntryBoolean must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryBoolean{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		BooleanValue: booleanValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryBoolean(structType any) BACnetFaultParameterFaultExtendedParametersEntryBoolean {

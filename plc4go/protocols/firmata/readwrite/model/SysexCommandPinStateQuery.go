@@ -54,6 +54,16 @@ type _SysexCommandPinStateQuery struct {
 var _ SysexCommandPinStateQuery = (*_SysexCommandPinStateQuery)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateQuery)(nil)
 
+// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
+func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
+	_result := &_SysexCommandPinStateQuery{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_SysexCommandPinStateQuery) GetPin() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
-func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
-	_result := &_SysexCommandPinStateQuery{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {

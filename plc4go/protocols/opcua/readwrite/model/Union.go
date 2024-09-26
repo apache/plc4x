@@ -49,6 +49,15 @@ type _Union struct {
 var _ Union = (*_Union)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Union)(nil)
 
+// NewUnion factory function for _Union
+func NewUnion() *_Union {
+	_result := &_Union{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_Union) GetIdentifier() string {
 
 func (m *_Union) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewUnion factory function for _Union
-func NewUnion() *_Union {
-	_result := &_Union{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

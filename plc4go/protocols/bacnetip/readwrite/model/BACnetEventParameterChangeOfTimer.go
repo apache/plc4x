@@ -66,6 +66,35 @@ type _BACnetEventParameterChangeOfTimer struct {
 var _ BACnetEventParameterChangeOfTimer = (*_BACnetEventParameterChangeOfTimer)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfTimer)(nil)
 
+// NewBACnetEventParameterChangeOfTimer factory function for _BACnetEventParameterChangeOfTimer
+func NewBACnetEventParameterChangeOfTimer(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfTimer {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if alarmValues == nil {
+		panic("alarmValues of type BACnetEventParameterChangeOfTimerAlarmValue for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if updateTimeReference == nil {
+		panic("updateTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimer must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfTimer{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		AlarmValues:                  alarmValues,
+		UpdateTimeReference:          updateTimeReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,35 +138,6 @@ func (m *_BACnetEventParameterChangeOfTimer) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfTimer factory function for _BACnetEventParameterChangeOfTimer
-func NewBACnetEventParameterChangeOfTimer(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, alarmValues BACnetEventParameterChangeOfTimerAlarmValue, updateTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfTimer {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if alarmValues == nil {
-		panic("alarmValues of type BACnetEventParameterChangeOfTimerAlarmValue for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if updateTimeReference == nil {
-		panic("updateTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimer must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfTimer{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		AlarmValues:                  alarmValues,
-		UpdateTimeReference:          updateTimeReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfTimer(structType any) BACnetEventParameterChangeOfTimer {

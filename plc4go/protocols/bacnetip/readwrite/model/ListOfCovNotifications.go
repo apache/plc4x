@@ -60,6 +60,20 @@ type _ListOfCovNotifications struct {
 
 var _ ListOfCovNotifications = (*_ListOfCovNotifications)(nil)
 
+// NewListOfCovNotifications factory function for _ListOfCovNotifications
+func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
+	}
+	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,20 +99,6 @@ func (m *_ListOfCovNotifications) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotifications factory function for _ListOfCovNotifications
-func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
-	}
-	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotifications(structType any) ListOfCovNotifications {

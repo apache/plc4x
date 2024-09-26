@@ -54,6 +54,19 @@ type _BACnetOptionalBinaryPVValue struct {
 var _ BACnetOptionalBinaryPVValue = (*_BACnetOptionalBinaryPVValue)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVValue)(nil)
 
+// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
+func NewBACnetOptionalBinaryPVValue(peekedTagHeader BACnetTagHeader, binaryPv BACnetBinaryPVTagged) *_BACnetOptionalBinaryPVValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVValue{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		BinaryPv:                       binaryPv,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalBinaryPVValue) GetBinaryPv() BACnetBinaryPVTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
-func NewBACnetOptionalBinaryPVValue(peekedTagHeader BACnetTagHeader, binaryPv BACnetBinaryPVTagged) *_BACnetOptionalBinaryPVValue {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVValue{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		BinaryPv:                       binaryPv,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue {

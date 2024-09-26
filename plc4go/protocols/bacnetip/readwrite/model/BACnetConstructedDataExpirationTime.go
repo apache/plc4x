@@ -56,6 +56,19 @@ type _BACnetConstructedDataExpirationTime struct {
 var _ BACnetConstructedDataExpirationTime = (*_BACnetConstructedDataExpirationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExpirationTime)(nil)
 
+// NewBACnetConstructedDataExpirationTime factory function for _BACnetConstructedDataExpirationTime
+func NewBACnetConstructedDataExpirationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expirationTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpirationTime {
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTime for BACnetConstructedDataExpirationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataExpirationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ExpirationTime:                expirationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataExpirationTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExpirationTime factory function for _BACnetConstructedDataExpirationTime
-func NewBACnetConstructedDataExpirationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, expirationTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExpirationTime {
-	if expirationTime == nil {
-		panic("expirationTime of type BACnetDateTime for BACnetConstructedDataExpirationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataExpirationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ExpirationTime:                expirationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExpirationTime(structType any) BACnetConstructedDataExpirationTime {

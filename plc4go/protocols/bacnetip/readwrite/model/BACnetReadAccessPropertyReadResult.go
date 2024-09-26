@@ -64,6 +64,14 @@ type _BACnetReadAccessPropertyReadResult struct {
 
 var _ BACnetReadAccessPropertyReadResult = (*_BACnetReadAccessPropertyReadResult)(nil)
 
+// NewBACnetReadAccessPropertyReadResult factory function for _BACnetReadAccessPropertyReadResult
+func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, propertyAccessError ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetReadAccessPropertyReadResult {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetReadAccessPropertyReadResult must not be nil")
+	}
+	return &_BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,14 +112,6 @@ func (m *_BACnetReadAccessPropertyReadResult) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessPropertyReadResult factory function for _BACnetReadAccessPropertyReadResult
-func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, propertyAccessError ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetReadAccessPropertyReadResult {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetReadAccessPropertyReadResult must not be nil")
-	}
-	return &_BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessPropertyReadResult(structType any) BACnetReadAccessPropertyReadResult {

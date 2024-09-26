@@ -54,6 +54,19 @@ type _AdsDiscoveryBlockUserName struct {
 var _ AdsDiscoveryBlockUserName = (*_AdsDiscoveryBlockUserName)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockUserName)(nil)
 
+// NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
+func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
+	if userName == nil {
+		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockUserName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		UserName:                  userName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_AdsDiscoveryBlockUserName) GetUserName() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockUserName factory function for _AdsDiscoveryBlockUserName
-func NewAdsDiscoveryBlockUserName(userName AmsString) *_AdsDiscoveryBlockUserName {
-	if userName == nil {
-		panic("userName of type AmsString for AdsDiscoveryBlockUserName must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockUserName{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		UserName:                  userName,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockUserName(structType any) AdsDiscoveryBlockUserName {

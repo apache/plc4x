@@ -56,6 +56,19 @@ type _BACnetConstructedDataTimerMaxPresValue struct {
 var _ BACnetConstructedDataTimerMaxPresValue = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
 
+// NewBACnetConstructedDataTimerMaxPresValue factory function for _BACnetConstructedDataTimerMaxPresValue
+func NewBACnetConstructedDataTimerMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMaxPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimerMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimerMaxPresValue factory function for _BACnetConstructedDataTimerMaxPresValue
-func NewBACnetConstructedDataTimerMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
-	if maxPresValue == nil {
-		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMaxPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimerMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxPresValue:                  maxPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructedDataTimerMaxPresValue {

@@ -81,6 +81,26 @@ type _ErrorReportingDataGeneric struct {
 var _ ErrorReportingDataGeneric = (*_ErrorReportingDataGeneric)(nil)
 var _ ErrorReportingDataRequirements = (*_ErrorReportingDataGeneric)(nil)
 
+// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
+func NewErrorReportingDataGeneric(commandTypeContainer ErrorReportingCommandTypeContainer, systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) *_ErrorReportingDataGeneric {
+	if systemCategory == nil {
+		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
+	}
+	_result := &_ErrorReportingDataGeneric{
+		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
+		SystemCategory:             systemCategory,
+		MostRecent:                 mostRecent,
+		Acknowledge:                acknowledge,
+		MostSevere:                 mostSevere,
+		Severity:                   severity,
+		DeviceId:                   deviceId,
+		ErrorData1:                 errorData1,
+		ErrorData2:                 errorData2,
+	}
+	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -163,26 +183,6 @@ func (m *_ErrorReportingDataGeneric) GetIsMostRecentAndMostSevere() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
-func NewErrorReportingDataGeneric(commandTypeContainer ErrorReportingCommandTypeContainer, systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) *_ErrorReportingDataGeneric {
-	if systemCategory == nil {
-		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
-	}
-	_result := &_ErrorReportingDataGeneric{
-		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
-		SystemCategory:             systemCategory,
-		MostRecent:                 mostRecent,
-		Acknowledge:                acknowledge,
-		MostSevere:                 mostSevere,
-		Severity:                   severity,
-		DeviceId:                   deviceId,
-		ErrorData1:                 errorData1,
-		ErrorData2:                 errorData2,
-	}
-	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {

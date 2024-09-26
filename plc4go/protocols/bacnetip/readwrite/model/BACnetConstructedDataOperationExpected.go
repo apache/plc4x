@@ -56,6 +56,19 @@ type _BACnetConstructedDataOperationExpected struct {
 var _ BACnetConstructedDataOperationExpected = (*_BACnetConstructedDataOperationExpected)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOperationExpected)(nil)
 
+// NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
+func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
+	}
+	_result := &_BACnetConstructedDataOperationExpected{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LifeSafetyOperations:          lifeSafetyOperations,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOperationExpected) GetActualValue() BACnetLifeSaf
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOperationExpected factory function for _BACnetConstructedDataOperationExpected
-func NewBACnetConstructedDataOperationExpected(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lifeSafetyOperations BACnetLifeSafetyOperationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOperationExpected {
-	if lifeSafetyOperations == nil {
-		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetConstructedDataOperationExpected must not be nil")
-	}
-	_result := &_BACnetConstructedDataOperationExpected{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LifeSafetyOperations:          lifeSafetyOperations,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOperationExpected(structType any) BACnetConstructedDataOperationExpected {

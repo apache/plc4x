@@ -54,6 +54,16 @@ type _BinaryPayload struct {
 var _ BinaryPayload = (*_BinaryPayload)(nil)
 var _ PayloadRequirements = (*_BinaryPayload)(nil)
 
+// NewBinaryPayload factory function for _BinaryPayload
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
+	_result := &_BinaryPayload{
+		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		Payload:         payload,
+	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_BinaryPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
-	_result := &_BinaryPayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
-		Payload:         payload,
-	}
-	_result.PayloadContract.(*_Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBinaryPayload(structType any) BinaryPayload {

@@ -60,6 +60,20 @@ type _BACnetRecipientProcessEnclosed struct {
 
 var _ BACnetRecipientProcessEnclosed = (*_BACnetRecipientProcessEnclosed)(nil)
 
+// NewBACnetRecipientProcessEnclosed factory function for _BACnetRecipientProcessEnclosed
+func NewBACnetRecipientProcessEnclosed(openingTag BACnetOpeningTag, recipientProcess BACnetRecipientProcess, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetRecipientProcessEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetRecipientProcessEnclosed must not be nil")
+	}
+	if recipientProcess == nil {
+		panic("recipientProcess of type BACnetRecipientProcess for BACnetRecipientProcessEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetRecipientProcessEnclosed must not be nil")
+	}
+	return &_BACnetRecipientProcessEnclosed{OpeningTag: openingTag, RecipientProcess: recipientProcess, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetRecipientProcessEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientProcessEnclosed factory function for _BACnetRecipientProcessEnclosed
-func NewBACnetRecipientProcessEnclosed(openingTag BACnetOpeningTag, recipientProcess BACnetRecipientProcess, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetRecipientProcessEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetRecipientProcessEnclosed must not be nil")
-	}
-	if recipientProcess == nil {
-		panic("recipientProcess of type BACnetRecipientProcess for BACnetRecipientProcessEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetRecipientProcessEnclosed must not be nil")
-	}
-	return &_BACnetRecipientProcessEnclosed{OpeningTag: openingTag, RecipientProcess: recipientProcess, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientProcessEnclosed(structType any) BACnetRecipientProcessEnclosed {

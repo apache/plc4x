@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastUseTime struct {
 var _ BACnetConstructedDataLastUseTime = (*_BACnetConstructedDataLastUseTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastUseTime)(nil)
 
+// NewBACnetConstructedDataLastUseTime factory function for _BACnetConstructedDataLastUseTime
+func NewBACnetConstructedDataLastUseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastUseTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastUseTime {
+	if lastUseTime == nil {
+		panic("lastUseTime of type BACnetDateTime for BACnetConstructedDataLastUseTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastUseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastUseTime:                   lastUseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastUseTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastUseTime factory function for _BACnetConstructedDataLastUseTime
-func NewBACnetConstructedDataLastUseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastUseTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastUseTime {
-	if lastUseTime == nil {
-		panic("lastUseTime of type BACnetDateTime for BACnetConstructedDataLastUseTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastUseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastUseTime:                   lastUseTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastUseTime(structType any) BACnetConstructedDataLastUseTime {

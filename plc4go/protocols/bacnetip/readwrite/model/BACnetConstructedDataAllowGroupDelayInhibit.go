@@ -56,6 +56,19 @@ type _BACnetConstructedDataAllowGroupDelayInhibit struct {
 var _ BACnetConstructedDataAllowGroupDelayInhibit = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllowGroupDelayInhibit)(nil)
 
+// NewBACnetConstructedDataAllowGroupDelayInhibit factory function for _BACnetConstructedDataAllowGroupDelayInhibit
+func NewBACnetConstructedDataAllowGroupDelayInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allowGroupDelayInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllowGroupDelayInhibit {
+	if allowGroupDelayInhibit == nil {
+		panic("allowGroupDelayInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataAllowGroupDelayInhibit must not be nil")
+	}
+	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AllowGroupDelayInhibit:        allowGroupDelayInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAllowGroupDelayInhibit) GetActualValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAllowGroupDelayInhibit factory function for _BACnetConstructedDataAllowGroupDelayInhibit
-func NewBACnetConstructedDataAllowGroupDelayInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allowGroupDelayInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllowGroupDelayInhibit {
-	if allowGroupDelayInhibit == nil {
-		panic("allowGroupDelayInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataAllowGroupDelayInhibit must not be nil")
-	}
-	_result := &_BACnetConstructedDataAllowGroupDelayInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AllowGroupDelayInhibit:        allowGroupDelayInhibit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAllowGroupDelayInhibit(structType any) BACnetConstructedDataAllowGroupDelayInhibit {

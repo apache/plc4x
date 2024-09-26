@@ -58,6 +58,16 @@ type _MediaTransportControlDataPauseResume struct {
 var _ MediaTransportControlDataPauseResume = (*_MediaTransportControlDataPauseResume)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPauseResume)(nil)
 
+// NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
+func NewMediaTransportControlDataPauseResume(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataPauseResume {
+	_result := &_MediaTransportControlDataPauseResume{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_MediaTransportControlDataPauseResume) GetIsResume() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
-func NewMediaTransportControlDataPauseResume(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataPauseResume {
-	_result := &_MediaTransportControlDataPauseResume{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataPauseResume(structType any) MediaTransportControlDataPauseResume {

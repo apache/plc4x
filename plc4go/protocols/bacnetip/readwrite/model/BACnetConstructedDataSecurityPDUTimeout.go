@@ -56,6 +56,19 @@ type _BACnetConstructedDataSecurityPDUTimeout struct {
 var _ BACnetConstructedDataSecurityPDUTimeout = (*_BACnetConstructedDataSecurityPDUTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecurityPDUTimeout)(nil)
 
+// NewBACnetConstructedDataSecurityPDUTimeout factory function for _BACnetConstructedDataSecurityPDUTimeout
+func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
+	if securityPduTimeout == nil {
+		panic("securityPduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityPDUTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataSecurityPDUTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SecurityPduTimeout:            securityPduTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSecurityPDUTimeout) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSecurityPDUTimeout factory function for _BACnetConstructedDataSecurityPDUTimeout
-func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securityPduTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecurityPDUTimeout {
-	if securityPduTimeout == nil {
-		panic("securityPduTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSecurityPDUTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataSecurityPDUTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SecurityPduTimeout:            securityPduTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSecurityPDUTimeout(structType any) BACnetConstructedDataSecurityPDUTimeout {

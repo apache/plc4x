@@ -54,6 +54,19 @@ type _SALDataMediaTransport struct {
 var _ SALDataMediaTransport = (*_SALDataMediaTransport)(nil)
 var _ SALDataRequirements = (*_SALDataMediaTransport)(nil)
 
+// NewSALDataMediaTransport factory function for _SALDataMediaTransport
+func NewSALDataMediaTransport(salData SALData, mediaTransportControlData MediaTransportControlData) *_SALDataMediaTransport {
+	if mediaTransportControlData == nil {
+		panic("mediaTransportControlData of type MediaTransportControlData for SALDataMediaTransport must not be nil")
+	}
+	_result := &_SALDataMediaTransport{
+		SALDataContract:           NewSALData(salData),
+		MediaTransportControlData: mediaTransportControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataMediaTransport) GetMediaTransportControlData() MediaTransportCo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMediaTransport factory function for _SALDataMediaTransport
-func NewSALDataMediaTransport(salData SALData, mediaTransportControlData MediaTransportControlData) *_SALDataMediaTransport {
-	if mediaTransportControlData == nil {
-		panic("mediaTransportControlData of type MediaTransportControlData for SALDataMediaTransport must not be nil")
-	}
-	_result := &_SALDataMediaTransport{
-		SALDataContract:           NewSALData(salData),
-		MediaTransportControlData: mediaTransportControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMediaTransport(structType any) SALDataMediaTransport {

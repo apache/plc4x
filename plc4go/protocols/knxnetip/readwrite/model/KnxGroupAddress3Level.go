@@ -60,6 +60,18 @@ type _KnxGroupAddress3Level struct {
 var _ KnxGroupAddress3Level = (*_KnxGroupAddress3Level)(nil)
 var _ KnxGroupAddressRequirements = (*_KnxGroupAddress3Level)(nil)
 
+// NewKnxGroupAddress3Level factory function for _KnxGroupAddress3Level
+func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxGroupAddress3Level {
+	_result := &_KnxGroupAddress3Level{
+		KnxGroupAddressContract: NewKnxGroupAddress(),
+		MainGroup:               mainGroup,
+		MiddleGroup:             middleGroup,
+		SubGroup:                subGroup,
+	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_KnxGroupAddress3Level) GetSubGroup() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxGroupAddress3Level factory function for _KnxGroupAddress3Level
-func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxGroupAddress3Level {
-	_result := &_KnxGroupAddress3Level{
-		KnxGroupAddressContract: NewKnxGroupAddress(),
-		MainGroup:               mainGroup,
-		MiddleGroup:             middleGroup,
-		SubGroup:                subGroup,
-	}
-	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxGroupAddress3Level(structType any) KnxGroupAddress3Level {

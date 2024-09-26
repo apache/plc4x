@@ -60,6 +60,21 @@ type _RegisterNodesResponse struct {
 var _ RegisterNodesResponse = (*_RegisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesResponse)(nil)
 
+// NewRegisterNodesResponse factory function for _RegisterNodesResponse
+func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
+	}
+	_result := &_RegisterNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
+		RegisteredNodeIds:                 registeredNodeIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_RegisterNodesResponse) GetRegisteredNodeIds() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterNodesResponse factory function for _RegisterNodesResponse
-func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) *_RegisterNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterNodesResponse must not be nil")
-	}
-	_result := &_RegisterNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfRegisteredNodeIds:             noOfRegisteredNodeIds,
-		RegisteredNodeIds:                 registeredNodeIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterNodesResponse(structType any) RegisterNodesResponse {

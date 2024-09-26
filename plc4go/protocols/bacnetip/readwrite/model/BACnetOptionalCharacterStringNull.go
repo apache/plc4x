@@ -54,6 +54,19 @@ type _BACnetOptionalCharacterStringNull struct {
 var _ BACnetOptionalCharacterStringNull = (*_BACnetOptionalCharacterStringNull)(nil)
 var _ BACnetOptionalCharacterStringRequirements = (*_BACnetOptionalCharacterStringNull)(nil)
 
+// NewBACnetOptionalCharacterStringNull factory function for _BACnetOptionalCharacterStringNull
+func NewBACnetOptionalCharacterStringNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalCharacterStringNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalCharacterStringNull must not be nil")
+	}
+	_result := &_BACnetOptionalCharacterStringNull{
+		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
+		NullValue:                             nullValue,
+	}
+	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalCharacterStringNull) GetNullValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalCharacterStringNull factory function for _BACnetOptionalCharacterStringNull
-func NewBACnetOptionalCharacterStringNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalCharacterStringNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalCharacterStringNull must not be nil")
-	}
-	_result := &_BACnetOptionalCharacterStringNull{
-		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
-		NullValue:                             nullValue,
-	}
-	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalCharacterStringNull(structType any) BACnetOptionalCharacterStringNull {

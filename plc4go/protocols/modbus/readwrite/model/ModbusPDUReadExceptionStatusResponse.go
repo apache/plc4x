@@ -54,6 +54,16 @@ type _ModbusPDUReadExceptionStatusResponse struct {
 var _ ModbusPDUReadExceptionStatusResponse = (*_ModbusPDUReadExceptionStatusResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusResponse)(nil)
 
+// NewModbusPDUReadExceptionStatusResponse factory function for _ModbusPDUReadExceptionStatusResponse
+func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExceptionStatusResponse {
+	_result := &_ModbusPDUReadExceptionStatusResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUReadExceptionStatusResponse) GetValue() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadExceptionStatusResponse factory function for _ModbusPDUReadExceptionStatusResponse
-func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExceptionStatusResponse {
-	_result := &_ModbusPDUReadExceptionStatusResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadExceptionStatusResponse(structType any) ModbusPDUReadExceptionStatusResponse {

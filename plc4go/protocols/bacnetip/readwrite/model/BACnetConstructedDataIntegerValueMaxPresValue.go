@@ -56,6 +56,19 @@ type _BACnetConstructedDataIntegerValueMaxPresValue struct {
 var _ BACnetConstructedDataIntegerValueMaxPresValue = (*_BACnetConstructedDataIntegerValueMaxPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueMaxPresValue)(nil)
 
+// NewBACnetConstructedDataIntegerValueMaxPresValue factory function for _BACnetConstructedDataIntegerValueMaxPresValue
+func NewBACnetConstructedDataIntegerValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueMaxPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegerValueMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIntegerValueMaxPresValue) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegerValueMaxPresValue factory function for _BACnetConstructedDataIntegerValueMaxPresValue
-func NewBACnetConstructedDataIntegerValueMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueMaxPresValue {
-	if maxPresValue == nil {
-		panic("maxPresValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueMaxPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegerValueMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxPresValue:                  maxPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegerValueMaxPresValue(structType any) BACnetConstructedDataIntegerValueMaxPresValue {

@@ -59,6 +59,17 @@ type _BACnetConstructedDataGlobalGroupPresentValue struct {
 var _ BACnetConstructedDataGlobalGroupPresentValue = (*_BACnetConstructedDataGlobalGroupPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupPresentValue)(nil)
 
+// NewBACnetConstructedDataGlobalGroupPresentValue factory function for _BACnetConstructedDataGlobalGroupPresentValue
+func NewBACnetConstructedDataGlobalGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, presentValue []BACnetPropertyAccessResult, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupPresentValue {
+	_result := &_BACnetConstructedDataGlobalGroupPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGlobalGroupPresentValue factory function for _BACnetConstructedDataGlobalGroupPresentValue
-func NewBACnetConstructedDataGlobalGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, presentValue []BACnetPropertyAccessResult, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupPresentValue {
-	_result := &_BACnetConstructedDataGlobalGroupPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGlobalGroupPresentValue(structType any) BACnetConstructedDataGlobalGroupPresentValue {

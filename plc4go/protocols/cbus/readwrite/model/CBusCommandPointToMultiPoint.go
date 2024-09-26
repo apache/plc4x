@@ -54,6 +54,19 @@ type _CBusCommandPointToMultiPoint struct {
 var _ CBusCommandPointToMultiPoint = (*_CBusCommandPointToMultiPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToMultiPoint)(nil)
 
+// NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
+func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
+	if command == nil {
+		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToMultiPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_CBusCommandPointToMultiPoint) GetCommand() CBusPointToMultiPointComman
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToMultiPoint factory function for _CBusCommandPointToMultiPoint
-func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToMultiPoint {
-	if command == nil {
-		panic("command of type CBusPointToMultiPointCommand for CBusCommandPointToMultiPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToMultiPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToMultiPoint(structType any) CBusCommandPointToMultiPoint {

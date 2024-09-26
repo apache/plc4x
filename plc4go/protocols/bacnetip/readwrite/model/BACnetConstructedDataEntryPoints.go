@@ -54,6 +54,16 @@ type _BACnetConstructedDataEntryPoints struct {
 var _ BACnetConstructedDataEntryPoints = (*_BACnetConstructedDataEntryPoints)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEntryPoints)(nil)
 
+// NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
+func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
+	_result := &_BACnetConstructedDataEntryPoints{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EntryPoints:                   entryPoints,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataEntryPoints) GetEntryPoints() []BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEntryPoints factory function for _BACnetConstructedDataEntryPoints
-func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, entryPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEntryPoints {
-	_result := &_BACnetConstructedDataEntryPoints{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EntryPoints:                   entryPoints,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEntryPoints(structType any) BACnetConstructedDataEntryPoints {

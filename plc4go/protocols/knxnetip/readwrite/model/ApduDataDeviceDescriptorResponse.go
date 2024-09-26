@@ -57,6 +57,17 @@ type _ApduDataDeviceDescriptorResponse struct {
 var _ ApduDataDeviceDescriptorResponse = (*_ApduDataDeviceDescriptorResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorResponse)(nil)
 
+// NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
+func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
+	_result := &_ApduDataDeviceDescriptorResponse{
+		ApduDataContract: NewApduData(dataLength),
+		DescriptorType:   descriptorType,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ApduDataDeviceDescriptorResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataDeviceDescriptorResponse factory function for _ApduDataDeviceDescriptorResponse
-func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, dataLength uint8) *_ApduDataDeviceDescriptorResponse {
-	_result := &_ApduDataDeviceDescriptorResponse{
-		ApduDataContract: NewApduData(dataLength),
-		DescriptorType:   descriptorType,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataDeviceDescriptorResponse(structType any) ApduDataDeviceDescriptorResponse {

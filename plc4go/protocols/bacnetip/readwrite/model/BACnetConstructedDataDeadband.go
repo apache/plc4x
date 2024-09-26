@@ -56,6 +56,19 @@ type _BACnetConstructedDataDeadband struct {
 var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeadband)(nil)
 
+// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
+func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDeadband) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
-func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
-	if deadband == nil {
-		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Deadband:                      deadband,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeadband(structType any) BACnetConstructedDataDeadband {

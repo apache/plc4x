@@ -54,6 +54,19 @@ type _BACnetPropertyStatesNetworkType struct {
 var _ BACnetPropertyStatesNetworkType = (*_BACnetPropertyStatesNetworkType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkType)(nil)
 
+// NewBACnetPropertyStatesNetworkType factory function for _BACnetPropertyStatesNetworkType
+func NewBACnetPropertyStatesNetworkType(peekedTagHeader BACnetTagHeader, networkType BACnetNetworkTypeTagged) *_BACnetPropertyStatesNetworkType {
+	if networkType == nil {
+		panic("networkType of type BACnetNetworkTypeTagged for BACnetPropertyStatesNetworkType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNetworkType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NetworkType:                  networkType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesNetworkType) GetNetworkType() BACnetNetworkTypeTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNetworkType factory function for _BACnetPropertyStatesNetworkType
-func NewBACnetPropertyStatesNetworkType(peekedTagHeader BACnetTagHeader, networkType BACnetNetworkTypeTagged) *_BACnetPropertyStatesNetworkType {
-	if networkType == nil {
-		panic("networkType of type BACnetNetworkTypeTagged for BACnetPropertyStatesNetworkType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNetworkType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NetworkType:                  networkType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNetworkType(structType any) BACnetPropertyStatesNetworkType {

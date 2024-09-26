@@ -57,6 +57,17 @@ type _BACnetLandingCallStatus struct {
 
 var _ BACnetLandingCallStatus = (*_BACnetLandingCallStatus)(nil)
 
+// NewBACnetLandingCallStatus factory function for _BACnetLandingCallStatus
+func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand, floorText BACnetContextTagCharacterString) *_BACnetLandingCallStatus {
+	if floorNumber == nil {
+		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatus must not be nil")
+	}
+	if command == nil {
+		panic("command of type BACnetLandingCallStatusCommand for BACnetLandingCallStatus must not be nil")
+	}
+	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetLandingCallStatus) GetFloorText() BACnetContextTagCharacterStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatus factory function for _BACnetLandingCallStatus
-func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand, floorText BACnetContextTagCharacterString) *_BACnetLandingCallStatus {
-	if floorNumber == nil {
-		panic("floorNumber of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatus must not be nil")
-	}
-	if command == nil {
-		panic("command of type BACnetLandingCallStatusCommand for BACnetLandingCallStatus must not be nil")
-	}
-	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {

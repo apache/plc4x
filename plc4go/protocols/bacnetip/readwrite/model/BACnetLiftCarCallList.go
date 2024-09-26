@@ -51,6 +51,14 @@ type _BACnetLiftCarCallList struct {
 
 var _ BACnetLiftCarCallList = (*_BACnetLiftCarCallList)(nil)
 
+// NewBACnetLiftCarCallList factory function for _BACnetLiftCarCallList
+func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BACnetLiftCarCallList {
+	if floorNumbers == nil {
+		panic("floorNumbers of type BACnetLiftCarCallListFloorList for BACnetLiftCarCallList must not be nil")
+	}
+	return &_BACnetLiftCarCallList{FloorNumbers: floorNumbers}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,14 +72,6 @@ func (m *_BACnetLiftCarCallList) GetFloorNumbers() BACnetLiftCarCallListFloorLis
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarCallList factory function for _BACnetLiftCarCallList
-func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BACnetLiftCarCallList {
-	if floorNumbers == nil {
-		panic("floorNumbers of type BACnetLiftCarCallListFloorList for BACnetLiftCarCallList must not be nil")
-	}
-	return &_BACnetLiftCarCallList{FloorNumbers: floorNumbers}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarCallList(structType any) BACnetLiftCarCallList {

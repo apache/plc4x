@@ -69,6 +69,11 @@ type _InterfaceOptions1 struct {
 
 var _ InterfaceOptions1 = (*_InterfaceOptions1)(nil)
 
+// NewInterfaceOptions1 factory function for _InterfaceOptions1
+func NewInterfaceOptions1(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) *_InterfaceOptions1 {
+	return &_InterfaceOptions1{Idmon: idmon, Monitor: monitor, Smart: smart, Srchk: srchk, XonXoff: xonXoff, Connect: connect}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -102,11 +107,6 @@ func (m *_InterfaceOptions1) GetConnect() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions1 factory function for _InterfaceOptions1
-func NewInterfaceOptions1(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) *_InterfaceOptions1 {
-	return &_InterfaceOptions1{Idmon: idmon, Monitor: monitor, Smart: smart, Srchk: srchk, XonXoff: xonXoff, Connect: connect}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions1(structType any) InterfaceOptions1 {

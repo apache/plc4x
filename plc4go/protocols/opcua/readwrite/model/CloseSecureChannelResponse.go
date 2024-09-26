@@ -54,6 +54,19 @@ type _CloseSecureChannelResponse struct {
 var _ CloseSecureChannelResponse = (*_CloseSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSecureChannelResponse)(nil)
 
+// NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
+func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
+	}
+	_result := &_CloseSecureChannelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_CloseSecureChannelResponse) GetResponseHeader() ExtensionObjectDefinit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
-func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
-	}
-	_result := &_CloseSecureChannelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSecureChannelResponse(structType any) CloseSecureChannelResponse {

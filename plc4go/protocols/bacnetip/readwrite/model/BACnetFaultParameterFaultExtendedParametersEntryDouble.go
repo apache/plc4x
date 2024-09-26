@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryDouble struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryDouble = (*_BACnetFaultParameterFaultExtendedParametersEntryDouble)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryDouble)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryDouble factory function for _BACnetFaultParameterFaultExtendedParametersEntryDouble
+func NewBACnetFaultParameterFaultExtendedParametersEntryDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble) *_BACnetFaultParameterFaultExtendedParametersEntryDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultExtendedParametersEntryDouble must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		DoubleValue: doubleValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetDoubleValue
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryDouble factory function for _BACnetFaultParameterFaultExtendedParametersEntryDouble
-func NewBACnetFaultParameterFaultExtendedParametersEntryDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble) *_BACnetFaultParameterFaultExtendedParametersEntryDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultExtendedParametersEntryDouble must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDouble{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		DoubleValue: doubleValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryDouble(structType any) BACnetFaultParameterFaultExtendedParametersEntryDouble {

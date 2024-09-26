@@ -56,6 +56,19 @@ type _BACnetConstructedDataReliability struct {
 var _ BACnetConstructedDataReliability = (*_BACnetConstructedDataReliability)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliability)(nil)
 
+// NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
+func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
+	}
+	_result := &_BACnetConstructedDataReliability{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Reliability:                   reliability,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataReliability) GetActualValue() BACnetReliabilityTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
-	if reliability == nil {
-		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
-	}
-	_result := &_BACnetConstructedDataReliability{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Reliability:                   reliability,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReliability(structType any) BACnetConstructedDataReliability {

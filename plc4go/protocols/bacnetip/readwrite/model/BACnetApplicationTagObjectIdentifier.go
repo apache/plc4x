@@ -58,6 +58,19 @@ type _BACnetApplicationTagObjectIdentifier struct {
 var _ BACnetApplicationTagObjectIdentifier = (*_BACnetApplicationTagObjectIdentifier)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagObjectIdentifier)(nil)
 
+// NewBACnetApplicationTagObjectIdentifier factory function for _BACnetApplicationTagObjectIdentifier
+func NewBACnetApplicationTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier) *_BACnetApplicationTagObjectIdentifier {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetApplicationTagObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetApplicationTagObjectIdentifier{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetApplicationTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagObjectIdentifier factory function for _BACnetApplicationTagObjectIdentifier
-func NewBACnetApplicationTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier) *_BACnetApplicationTagObjectIdentifier {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetApplicationTagObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetApplicationTagObjectIdentifier{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagObjectIdentifier(structType any) BACnetApplicationTagObjectIdentifier {

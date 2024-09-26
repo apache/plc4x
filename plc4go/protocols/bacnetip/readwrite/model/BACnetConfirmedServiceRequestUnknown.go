@@ -57,6 +57,16 @@ type _BACnetConfirmedServiceRequestUnknown struct {
 var _ BACnetConfirmedServiceRequestUnknown = (*_BACnetConfirmedServiceRequestUnknown)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestUnknown)(nil)
 
+// NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
+func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestUnknown {
+	_result := &_BACnetConfirmedServiceRequestUnknown{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		UnknownBytes:                          unknownBytes,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,16 +98,6 @@ func (m *_BACnetConfirmedServiceRequestUnknown) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestUnknown factory function for _BACnetConfirmedServiceRequestUnknown
-func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestUnknown {
-	_result := &_BACnetConfirmedServiceRequestUnknown{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		UnknownBytes:                          unknownBytes,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestUnknown(structType any) BACnetConfirmedServiceRequestUnknown {

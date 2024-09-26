@@ -53,6 +53,11 @@ type _DeviceStatus struct {
 
 var _ DeviceStatus = (*_DeviceStatus)(nil)
 
+// NewDeviceStatus factory function for _DeviceStatus
+func NewDeviceStatus(programMode bool) *_DeviceStatus {
+	return &_DeviceStatus{ProgramMode: programMode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -66,11 +71,6 @@ func (m *_DeviceStatus) GetProgramMode() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceStatus factory function for _DeviceStatus
-func NewDeviceStatus(programMode bool) *_DeviceStatus {
-	return &_DeviceStatus{ProgramMode: programMode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceStatus(structType any) DeviceStatus {

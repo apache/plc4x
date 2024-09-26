@@ -66,6 +66,26 @@ type _AirConditioningDataZoneHvacPlantStatus struct {
 var _ AirConditioningDataZoneHvacPlantStatus = (*_AirConditioningDataZoneHvacPlantStatus)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneHvacPlantStatus)(nil)
 
+// NewAirConditioningDataZoneHvacPlantStatus factory function for _AirConditioningDataZoneHvacPlantStatus
+func NewAirConditioningDataZoneHvacPlantStatus(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError) *_AirConditioningDataZoneHvacPlantStatus {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
+	if hvacStatus == nil {
+		panic("hvacStatus of type HVACStatusFlags for AirConditioningDataZoneHvacPlantStatus must not be nil")
+	}
+	_result := &_AirConditioningDataZoneHvacPlantStatus{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HvacType:                    hvacType,
+		HvacStatus:                  hvacStatus,
+		HvacErrorCode:               hvacErrorCode,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,26 +129,6 @@ func (m *_AirConditioningDataZoneHvacPlantStatus) GetHvacErrorCode() HVACError {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataZoneHvacPlantStatus factory function for _AirConditioningDataZoneHvacPlantStatus
-func NewAirConditioningDataZoneHvacPlantStatus(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacType HVACType, hvacStatus HVACStatusFlags, hvacErrorCode HVACError) *_AirConditioningDataZoneHvacPlantStatus {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHvacPlantStatus must not be nil")
-	}
-	if hvacStatus == nil {
-		panic("hvacStatus of type HVACStatusFlags for AirConditioningDataZoneHvacPlantStatus must not be nil")
-	}
-	_result := &_AirConditioningDataZoneHvacPlantStatus{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		HvacType:                    hvacType,
-		HvacStatus:                  hvacStatus,
-		HvacErrorCode:               hvacErrorCode,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataZoneHvacPlantStatus(structType any) AirConditioningDataZoneHvacPlantStatus {

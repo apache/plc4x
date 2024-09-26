@@ -70,6 +70,14 @@ type _BACnetOptionalREAL struct {
 
 var _ BACnetOptionalREALContract = (*_BACnetOptionalREAL)(nil)
 
+// NewBACnetOptionalREAL factory function for _BACnetOptionalREAL
+func NewBACnetOptionalREAL(peekedTagHeader BACnetTagHeader) *_BACnetOptionalREAL {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalREAL must not be nil")
+	}
+	return &_BACnetOptionalREAL{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetOptionalREAL) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalREAL factory function for _BACnetOptionalREAL
-func NewBACnetOptionalREAL(peekedTagHeader BACnetTagHeader) *_BACnetOptionalREAL {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalREAL must not be nil")
-	}
-	return &_BACnetOptionalREAL{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalREAL(structType any) BACnetOptionalREAL {

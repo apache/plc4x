@@ -56,6 +56,19 @@ type _SearchRequest struct {
 var _ SearchRequest = (*_SearchRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_SearchRequest)(nil)
 
+// NewSearchRequest factory function for _SearchRequest
+func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
+	if hpaiIDiscoveryEndpoint == nil {
+		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
+	}
+	_result := &_SearchRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_SearchRequest) GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSearchRequest factory function for _SearchRequest
-func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
-	if hpaiIDiscoveryEndpoint == nil {
-		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
-	}
-	_result := &_SearchRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSearchRequest(structType any) SearchRequest {

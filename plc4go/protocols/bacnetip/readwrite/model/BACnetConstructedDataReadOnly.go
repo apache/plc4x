@@ -56,6 +56,19 @@ type _BACnetConstructedDataReadOnly struct {
 var _ BACnetConstructedDataReadOnly = (*_BACnetConstructedDataReadOnly)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReadOnly)(nil)
 
+// NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
+func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
+	if readOnly == nil {
+		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
+	}
+	_result := &_BACnetConstructedDataReadOnly{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReadOnly:                      readOnly,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataReadOnly) GetActualValue() BACnetApplicationTagBo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
-func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
-	if readOnly == nil {
-		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
-	}
-	_result := &_BACnetConstructedDataReadOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReadOnly:                      readOnly,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataReadOnly {

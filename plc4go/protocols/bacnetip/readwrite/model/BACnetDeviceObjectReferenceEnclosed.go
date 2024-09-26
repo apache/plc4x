@@ -60,6 +60,20 @@ type _BACnetDeviceObjectReferenceEnclosed struct {
 
 var _ BACnetDeviceObjectReferenceEnclosed = (*_BACnetDeviceObjectReferenceEnclosed)(nil)
 
+// NewBACnetDeviceObjectReferenceEnclosed factory function for _BACnetDeviceObjectReferenceEnclosed
+func NewBACnetDeviceObjectReferenceEnclosed(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectReferenceEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	if objectReference == nil {
+		panic("objectReference of type BACnetDeviceObjectReference for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	return &_BACnetDeviceObjectReferenceEnclosed{OpeningTag: openingTag, ObjectReference: objectReference, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetDeviceObjectReferenceEnclosed) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceObjectReferenceEnclosed factory function for _BACnetDeviceObjectReferenceEnclosed
-func NewBACnetDeviceObjectReferenceEnclosed(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectReferenceEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	if objectReference == nil {
-		panic("objectReference of type BACnetDeviceObjectReference for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	return &_BACnetDeviceObjectReferenceEnclosed{OpeningTag: openingTag, ObjectReference: objectReference, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceObjectReferenceEnclosed(structType any) BACnetDeviceObjectReferenceEnclosed {

@@ -66,6 +66,32 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
 var _ BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple)(nil)
 
+// NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple factory function for _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
+	}
+	if listOfCovNotifications == nil {
+		panic("listOfCovNotifications of type ListOfCovNotificationsList for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:             subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
+		TimeRemaining:                           timeRemaining,
+		Timestamp:                               timestamp,
+		ListOfCovNotifications:                  listOfCovNotifications,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,32 +139,6 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Get
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple factory function for _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, timeRemaining BACnetContextTagUnsignedInteger, timestamp BACnetTimeStampEnclosed, listOfCovNotifications ListOfCovNotificationsList, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
-	if subscriberProcessIdentifier == nil {
-		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
-	}
-	if initiatingDeviceIdentifier == nil {
-		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
-	}
-	if timeRemaining == nil {
-		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
-	}
-	if listOfCovNotifications == nil {
-		panic("listOfCovNotifications of type ListOfCovNotificationsList for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		SubscriberProcessIdentifier:             subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:              initiatingDeviceIdentifier,
-		TimeRemaining:                           timeRemaining,
-		Timestamp:                               timestamp,
-		ListOfCovNotifications:                  listOfCovNotifications,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType any) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {

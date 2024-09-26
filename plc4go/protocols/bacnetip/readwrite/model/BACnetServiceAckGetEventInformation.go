@@ -57,6 +57,23 @@ type _BACnetServiceAckGetEventInformation struct {
 var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformation)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
 
+// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+	if listOfEventSummaries == nil {
+		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	if moreEvents == nil {
+		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	_result := &_BACnetServiceAckGetEventInformation{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ListOfEventSummaries:     listOfEventSummaries,
+		MoreEvents:               moreEvents,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_BACnetServiceAckGetEventInformation) GetMoreEvents() BACnetContextTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
-	if listOfEventSummaries == nil {
-		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	if moreEvents == nil {
-		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	_result := &_BACnetServiceAckGetEventInformation{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ListOfEventSummaries:     listOfEventSummaries,
-		MoreEvents:               moreEvents,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGetEventInformation {

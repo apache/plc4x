@@ -54,6 +54,14 @@ type _BACnetBDTEntry struct {
 
 var _ BACnetBDTEntry = (*_BACnetBDTEntry)(nil)
 
+// NewBACnetBDTEntry factory function for _BACnetBDTEntry
+func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
+	if bbmdAddress == nil {
+		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
+	}
+	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_BACnetBDTEntry) GetBroadcastMask() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetBDTEntry factory function for _BACnetBDTEntry
-func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
-	if bbmdAddress == nil {
-		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
-	}
-	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetBDTEntry(structType any) BACnetBDTEntry {

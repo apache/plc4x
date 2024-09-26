@@ -56,6 +56,19 @@ type _BACnetConstructedDataGroupMode struct {
 var _ BACnetConstructedDataGroupMode = (*_BACnetConstructedDataGroupMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMode)(nil)
 
+// NewBACnetConstructedDataGroupMode factory function for _BACnetConstructedDataGroupMode
+func NewBACnetConstructedDataGroupMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupMode BACnetLiftGroupModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
+	if groupMode == nil {
+		panic("groupMode of type BACnetLiftGroupModeTagged for BACnetConstructedDataGroupMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataGroupMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		GroupMode:                     groupMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataGroupMode) GetActualValue() BACnetLiftGroupModeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGroupMode factory function for _BACnetConstructedDataGroupMode
-func NewBACnetConstructedDataGroupMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, groupMode BACnetLiftGroupModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMode {
-	if groupMode == nil {
-		panic("groupMode of type BACnetLiftGroupModeTagged for BACnetConstructedDataGroupMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataGroupMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		GroupMode:                     groupMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGroupMode(structType any) BACnetConstructedDataGroupMode {

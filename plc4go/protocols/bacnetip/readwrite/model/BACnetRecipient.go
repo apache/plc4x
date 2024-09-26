@@ -70,6 +70,14 @@ type _BACnetRecipient struct {
 
 var _ BACnetRecipientContract = (*_BACnetRecipient)(nil)
 
+// NewBACnetRecipient factory function for _BACnetRecipient
+func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
+	}
+	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetRecipient) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipient factory function for _BACnetRecipient
-func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
-	}
-	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipient(structType any) BACnetRecipient {

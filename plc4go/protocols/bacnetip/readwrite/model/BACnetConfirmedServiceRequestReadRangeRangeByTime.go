@@ -57,6 +57,23 @@ type _BACnetConfirmedServiceRequestReadRangeRangeByTime struct {
 var _ BACnetConfirmedServiceRequestReadRangeRangeByTime = (*_BACnetConfirmedServiceRequestReadRangeRangeByTime)(nil)
 var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeByTime)(nil)
 
+// NewBACnetConfirmedServiceRequestReadRangeRangeByTime factory function for _BACnetConfirmedServiceRequestReadRangeRangeByTime
+func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceTime BACnetDateTime, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeByTime {
+	if referenceTime == nil {
+		panic("referenceTime of type BACnetDateTime for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+		ReferenceTime: referenceTime,
+		Count:         count,
+	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,23 +105,6 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByTime) GetCount() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRangeByTime factory function for _BACnetConfirmedServiceRequestReadRangeRangeByTime
-func NewBACnetConfirmedServiceRequestReadRangeRangeByTime(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceTime BACnetDateTime, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeByTime {
-	if referenceTime == nil {
-		panic("referenceTime of type BACnetDateTime for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
-	}
-	if count == nil {
-		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByTime must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReadRangeRangeByTime{
-		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
-		ReferenceTime: referenceTime,
-		Count:         count,
-	}
-	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRangeByTime(structType any) BACnetConfirmedServiceRequestReadRangeRangeByTime {

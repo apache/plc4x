@@ -57,6 +57,23 @@ type _WritePropertyMultipleError struct {
 var _ WritePropertyMultipleError = (*_WritePropertyMultipleError)(nil)
 var _ BACnetErrorRequirements = (*_WritePropertyMultipleError)(nil)
 
+// NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
+func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	if firstFailedWriteAttempt == nil {
+		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	_result := &_WritePropertyMultipleError{
+		BACnetErrorContract:     NewBACnetError(),
+		ErrorType:               errorType,
+		FirstFailedWriteAttempt: firstFailedWriteAttempt,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_WritePropertyMultipleError) GetFirstFailedWriteAttempt() BACnetObjectP
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
-func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
-	}
-	if firstFailedWriteAttempt == nil {
-		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
-	}
-	_result := &_WritePropertyMultipleError{
-		BACnetErrorContract:     NewBACnetError(),
-		ErrorType:               errorType,
-		FirstFailedWriteAttempt: firstFailedWriteAttempt,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWritePropertyMultipleError(structType any) WritePropertyMultipleError {

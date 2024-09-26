@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccessEventTime struct {
 var _ BACnetConstructedDataAccessEventTime = (*_BACnetConstructedDataAccessEventTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventTime)(nil)
 
+// NewBACnetConstructedDataAccessEventTime factory function for _BACnetConstructedDataAccessEventTime
+func NewBACnetConstructedDataAccessEventTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTime {
+	if accessEventTime == nil {
+		panic("accessEventTime of type BACnetTimeStamp for BACnetConstructedDataAccessEventTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessEventTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessEventTime:               accessEventTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccessEventTime) GetActualValue() BACnetTimeStamp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessEventTime factory function for _BACnetConstructedDataAccessEventTime
-func NewBACnetConstructedDataAccessEventTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTime {
-	if accessEventTime == nil {
-		panic("accessEventTime of type BACnetTimeStamp for BACnetConstructedDataAccessEventTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessEventTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessEventTime:               accessEventTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessEventTime(structType any) BACnetConstructedDataAccessEventTime {

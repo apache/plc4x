@@ -54,6 +54,19 @@ type _SecurityDataSystemArmedDisarmed struct {
 var _ SecurityDataSystemArmedDisarmed = (*_SecurityDataSystemArmedDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemArmedDisarmed)(nil)
 
+// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
+func NewSecurityDataSystemArmedDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode) *_SecurityDataSystemArmedDisarmed {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
+	}
+	_result := &_SecurityDataSystemArmedDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_SecurityDataSystemArmedDisarmed) GetArmCodeType() SecurityArmCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
-func NewSecurityDataSystemArmedDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode) *_SecurityDataSystemArmedDisarmed {
-	if armCodeType == nil {
-		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
-	}
-	_result := &_SecurityDataSystemArmedDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmCodeType:          armCodeType,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmedDisarmed {

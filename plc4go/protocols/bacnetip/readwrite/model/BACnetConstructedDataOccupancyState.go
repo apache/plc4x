@@ -56,6 +56,19 @@ type _BACnetConstructedDataOccupancyState struct {
 var _ BACnetConstructedDataOccupancyState = (*_BACnetConstructedDataOccupancyState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyState)(nil)
 
+// NewBACnetConstructedDataOccupancyState factory function for _BACnetConstructedDataOccupancyState
+func NewBACnetConstructedDataOccupancyState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyState BACnetAccessZoneOccupancyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyState {
+	if occupancyState == nil {
+		panic("occupancyState of type BACnetAccessZoneOccupancyStateTagged for BACnetConstructedDataOccupancyState must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyState:                occupancyState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOccupancyState) GetActualValue() BACnetAccessZone
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyState factory function for _BACnetConstructedDataOccupancyState
-func NewBACnetConstructedDataOccupancyState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyState BACnetAccessZoneOccupancyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyState {
-	if occupancyState == nil {
-		panic("occupancyState of type BACnetAccessZoneOccupancyStateTagged for BACnetConstructedDataOccupancyState must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyState:                occupancyState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyState(structType any) BACnetConstructedDataOccupancyState {

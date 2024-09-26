@@ -50,6 +50,15 @@ type _CIPEncapsulationConnectionResponse struct {
 var _ CIPEncapsulationConnectionResponse = (*_CIPEncapsulationConnectionResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationConnectionResponse)(nil)
 
+// NewCIPEncapsulationConnectionResponse factory function for _CIPEncapsulationConnectionResponse
+func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionResponse {
+	_result := &_CIPEncapsulationConnectionResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -66,15 +75,6 @@ func (m *_CIPEncapsulationConnectionResponse) GetCommandType() uint16 {
 
 func (m *_CIPEncapsulationConnectionResponse) GetParent() CIPEncapsulationPacketContract {
 	return m.CIPEncapsulationPacketContract
-}
-
-// NewCIPEncapsulationConnectionResponse factory function for _CIPEncapsulationConnectionResponse
-func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionResponse {
-	_result := &_CIPEncapsulationConnectionResponse{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

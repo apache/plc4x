@@ -60,6 +60,11 @@ type _BACnetTagPayloadBitString struct {
 
 var _ BACnetTagPayloadBitString = (*_BACnetTagPayloadBitString)(nil)
 
+// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
+func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
+	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_BACnetTagPayloadBitString) GetUnused() []bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
-func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
-	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {

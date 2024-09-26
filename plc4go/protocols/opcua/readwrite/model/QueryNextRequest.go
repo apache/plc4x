@@ -62,6 +62,24 @@ type _QueryNextRequest struct {
 var _ QueryNextRequest = (*_QueryNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextRequest)(nil)
 
+// NewQueryNextRequest factory function for _QueryNextRequest
+func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
+	}
+	_result := &_QueryNextRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ReleaseContinuationPoint:          releaseContinuationPoint,
+		ContinuationPoint:                 continuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,24 +119,6 @@ func (m *_QueryNextRequest) GetContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryNextRequest factory function for _QueryNextRequest
-func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
-	}
-	_result := &_QueryNextRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ReleaseContinuationPoint:          releaseContinuationPoint,
-		ContinuationPoint:                 continuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryNextRequest(structType any) QueryNextRequest {

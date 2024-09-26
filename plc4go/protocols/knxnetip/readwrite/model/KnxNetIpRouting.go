@@ -54,6 +54,16 @@ type _KnxNetIpRouting struct {
 var _ KnxNetIpRouting = (*_KnxNetIpRouting)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpRouting)(nil)
 
+// NewKnxNetIpRouting factory function for _KnxNetIpRouting
+func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
+	_result := &_KnxNetIpRouting{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetIpRouting) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpRouting factory function for _KnxNetIpRouting
-func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
-	_result := &_KnxNetIpRouting{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpRouting(structType any) KnxNetIpRouting {

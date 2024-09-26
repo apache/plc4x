@@ -70,6 +70,11 @@ type _MessagePDU struct {
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)
 
+// NewMessagePDU factory function for _MessagePDU
+func NewMessagePDU(chunk ChunkType) *_MessagePDU {
+	return &_MessagePDU{Chunk: chunk}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -83,11 +88,6 @@ func (m *_MessagePDU) GetChunk() ChunkType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMessagePDU factory function for _MessagePDU
-func NewMessagePDU(chunk ChunkType) *_MessagePDU {
-	return &_MessagePDU{Chunk: chunk}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMessagePDU(structType any) MessagePDU {

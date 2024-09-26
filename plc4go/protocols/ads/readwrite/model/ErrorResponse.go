@@ -49,6 +49,15 @@ type _ErrorResponse struct {
 var _ ErrorResponse = (*_ErrorResponse)(nil)
 var _ AmsPacketRequirements = (*_ErrorResponse)(nil)
 
+// NewErrorResponse factory function for _ErrorResponse
+func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_ErrorResponse {
+	_result := &_ErrorResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_ErrorResponse) GetResponse() bool {
 
 func (m *_ErrorResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewErrorResponse factory function for _ErrorResponse
-func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_ErrorResponse {
-	_result := &_ErrorResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

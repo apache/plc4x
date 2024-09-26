@@ -54,6 +54,19 @@ type _BACnetPropertyStatesTimerTransition struct {
 var _ BACnetPropertyStatesTimerTransition = (*_BACnetPropertyStatesTimerTransition)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerTransition)(nil)
 
+// NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
+func NewBACnetPropertyStatesTimerTransition(peekedTagHeader BACnetTagHeader, timerTransition BACnetTimerTransitionTagged) *_BACnetPropertyStatesTimerTransition {
+	if timerTransition == nil {
+		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
+	}
+	_result := &_BACnetPropertyStatesTimerTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		TimerTransition:              timerTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesTimerTransition) GetTimerTransition() BACnetTimerT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesTimerTransition factory function for _BACnetPropertyStatesTimerTransition
-func NewBACnetPropertyStatesTimerTransition(peekedTagHeader BACnetTagHeader, timerTransition BACnetTimerTransitionTagged) *_BACnetPropertyStatesTimerTransition {
-	if timerTransition == nil {
-		panic("timerTransition of type BACnetTimerTransitionTagged for BACnetPropertyStatesTimerTransition must not be nil")
-	}
-	_result := &_BACnetPropertyStatesTimerTransition{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		TimerTransition:              timerTransition,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesTimerTransition(structType any) BACnetPropertyStatesTimerTransition {

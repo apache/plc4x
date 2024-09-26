@@ -54,6 +54,16 @@ type _SecurityDataDisplayMessage struct {
 var _ SecurityDataDisplayMessage = (*_SecurityDataDisplayMessage)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDisplayMessage)(nil)
 
+// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
+func NewSecurityDataDisplayMessage(commandTypeContainer SecurityCommandTypeContainer, argument byte, message string) *_SecurityDataDisplayMessage {
+	_result := &_SecurityDataDisplayMessage{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Message:              message,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataDisplayMessage) GetMessage() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
-func NewSecurityDataDisplayMessage(commandTypeContainer SecurityCommandTypeContainer, argument byte, message string) *_SecurityDataDisplayMessage {
-	_result := &_SecurityDataDisplayMessage{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Message:              message,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {

@@ -54,6 +54,17 @@ type _BACnetHostNPort struct {
 
 var _ BACnetHostNPort = (*_BACnetHostNPort)(nil)
 
+// NewBACnetHostNPort factory function for _BACnetHostNPort
+func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
+	if host == nil {
+		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
+	}
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
+	}
+	return &_BACnetHostNPort{Host: host, Port: port}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetHostNPort) GetPort() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostNPort factory function for _BACnetHostNPort
-func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
-	if host == nil {
-		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
-	}
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
-	}
-	return &_BACnetHostNPort{Host: host, Port: port}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostNPort(structType any) BACnetHostNPort {

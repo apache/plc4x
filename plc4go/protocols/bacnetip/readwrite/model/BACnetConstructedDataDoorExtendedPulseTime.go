@@ -56,6 +56,19 @@ type _BACnetConstructedDataDoorExtendedPulseTime struct {
 var _ BACnetConstructedDataDoorExtendedPulseTime = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorExtendedPulseTime)(nil)
 
+// NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
+func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
+	if doorExtendedPulseTime == nil {
+		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorExtendedPulseTime:         doorExtendedPulseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorExtendedPulseTime factory function for _BACnetConstructedDataDoorExtendedPulseTime
-func NewBACnetConstructedDataDoorExtendedPulseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorExtendedPulseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorExtendedPulseTime {
-	if doorExtendedPulseTime == nil {
-		panic("doorExtendedPulseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorExtendedPulseTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorExtendedPulseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorExtendedPulseTime:         doorExtendedPulseTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorExtendedPulseTime(structType any) BACnetConstructedDataDoorExtendedPulseTime {

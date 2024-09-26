@@ -56,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueCOVIncrement struct {
 var _ BACnetConstructedDataLargeAnalogValueCOVIncrement = (*_BACnetConstructedDataLargeAnalogValueCOVIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueCOVIncrement)(nil)
 
+// NewBACnetConstructedDataLargeAnalogValueCOVIncrement factory function for _BACnetConstructedDataLargeAnalogValueCOVIncrement
+func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueCOVIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueCOVIncrement factory function for _BACnetConstructedDataLargeAnalogValueCOVIncrement
-func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueCOVIncrement {
-	if covIncrement == nil {
-		panic("covIncrement of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueCOVIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovIncrement:                  covIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueCOVIncrement(structType any) BACnetConstructedDataLargeAnalogValueCOVIncrement {

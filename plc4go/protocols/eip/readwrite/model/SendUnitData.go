@@ -60,6 +60,17 @@ type _SendUnitData struct {
 var _ SendUnitData = (*_SendUnitData)(nil)
 var _ EipPacketRequirements = (*_SendUnitData)(nil)
 
+// NewSendUnitData factory function for _SendUnitData
+func NewSendUnitData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, timeout uint16, typeIds []TypeId) *_SendUnitData {
+	_result := &_SendUnitData{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		Timeout:           timeout,
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,17 +127,6 @@ func (m *_SendUnitData) GetInterfaceHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSendUnitData factory function for _SendUnitData
-func NewSendUnitData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, timeout uint16, typeIds []TypeId) *_SendUnitData {
-	_result := &_SendUnitData{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		Timeout:           timeout,
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSendUnitData(structType any) SendUnitData {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastAccessPoint struct {
 var _ BACnetConstructedDataLastAccessPoint = (*_BACnetConstructedDataLastAccessPoint)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastAccessPoint)(nil)
 
+// NewBACnetConstructedDataLastAccessPoint factory function for _BACnetConstructedDataLastAccessPoint
+func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessPoint {
+	if lastAccessPoint == nil {
+		panic("lastAccessPoint of type BACnetDeviceObjectReference for BACnetConstructedDataLastAccessPoint must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastAccessPoint{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastAccessPoint:               lastAccessPoint,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastAccessPoint) GetActualValue() BACnetDeviceObj
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastAccessPoint factory function for _BACnetConstructedDataLastAccessPoint
-func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastAccessPoint BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastAccessPoint {
-	if lastAccessPoint == nil {
-		panic("lastAccessPoint of type BACnetDeviceObjectReference for BACnetConstructedDataLastAccessPoint must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastAccessPoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastAccessPoint:               lastAccessPoint,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastAccessPoint(structType any) BACnetConstructedDataLastAccessPoint {

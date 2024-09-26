@@ -56,6 +56,19 @@ type _BACnetConstructedDataNotificationClass struct {
 var _ BACnetConstructedDataNotificationClass = (*_BACnetConstructedDataNotificationClass)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationClass)(nil)
 
+// NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
+func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
+	if notificationClass == nil {
+		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
+	}
+	_result := &_BACnetConstructedDataNotificationClass{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NotificationClass:             notificationClass,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNotificationClass) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNotificationClass factory function for _BACnetConstructedDataNotificationClass
-func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, notificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClass {
-	if notificationClass == nil {
-		panic("notificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNotificationClass must not be nil")
-	}
-	_result := &_BACnetConstructedDataNotificationClass{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NotificationClass:             notificationClass,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNotificationClass(structType any) BACnetConstructedDataNotificationClass {

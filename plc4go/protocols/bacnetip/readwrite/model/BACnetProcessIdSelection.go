@@ -70,6 +70,14 @@ type _BACnetProcessIdSelection struct {
 
 var _ BACnetProcessIdSelectionContract = (*_BACnetProcessIdSelection)(nil)
 
+// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
+func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
+	}
+	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
-func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
-	}
-	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelection(structType any) BACnetProcessIdSelection {

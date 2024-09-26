@@ -54,6 +54,19 @@ type _SALDataIrrigationControl struct {
 var _ SALDataIrrigationControl = (*_SALDataIrrigationControl)(nil)
 var _ SALDataRequirements = (*_SALDataIrrigationControl)(nil)
 
+// NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
+func NewSALDataIrrigationControl(salData SALData, irrigationControlData LightingData) *_SALDataIrrigationControl {
+	if irrigationControlData == nil {
+		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
+	}
+	_result := &_SALDataIrrigationControl{
+		SALDataContract:       NewSALData(salData),
+		IrrigationControlData: irrigationControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataIrrigationControl) GetIrrigationControlData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
-func NewSALDataIrrigationControl(salData SALData, irrigationControlData LightingData) *_SALDataIrrigationControl {
-	if irrigationControlData == nil {
-		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
-	}
-	_result := &_SALDataIrrigationControl{
-		SALDataContract:       NewSALData(salData),
-		IrrigationControlData: irrigationControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataIrrigationControl(structType any) SALDataIrrigationControl {

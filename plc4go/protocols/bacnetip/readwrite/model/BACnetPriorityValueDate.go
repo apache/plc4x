@@ -54,6 +54,19 @@ type _BACnetPriorityValueDate struct {
 var _ BACnetPriorityValueDate = (*_BACnetPriorityValueDate)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDate)(nil)
 
+// NewBACnetPriorityValueDate factory function for _BACnetPriorityValueDate
+func NewBACnetPriorityValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetPriorityValueDate must not be nil")
+	}
+	_result := &_BACnetPriorityValueDate{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DateValue:                   dateValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueDate) GetDateValue() BACnetApplicationTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueDate factory function for _BACnetPriorityValueDate
-func NewBACnetPriorityValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetPriorityValueDate must not be nil")
-	}
-	_result := &_BACnetPriorityValueDate{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		DateValue:                   dateValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueDate(structType any) BACnetPriorityValueDate {

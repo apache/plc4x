@@ -57,6 +57,17 @@ type _S7PayloadUserDataItemCyclicServicesChangeDrivenPush struct {
 var _ S7PayloadUserDataItemCyclicServicesChangeDrivenPush = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)(nil)
 
+// NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush factory function for _S7PayloadUserDataItemCyclicServicesChangeDrivenPush
+func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedQueryValueType) *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush {
+	_result := &_S7PayloadUserDataItemCyclicServicesChangeDrivenPush{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		ItemsCount:                    itemsCount,
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) GetItems() []Asso
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush factory function for _S7PayloadUserDataItemCyclicServicesChangeDrivenPush
-func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedQueryValueType) *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush {
-	_result := &_S7PayloadUserDataItemCyclicServicesChangeDrivenPush{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		ItemsCount:                    itemsCount,
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCyclicServicesChangeDrivenPush(structType any) S7PayloadUserDataItemCyclicServicesChangeDrivenPush {

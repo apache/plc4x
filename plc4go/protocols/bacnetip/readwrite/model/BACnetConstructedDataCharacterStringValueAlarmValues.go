@@ -59,6 +59,17 @@ type _BACnetConstructedDataCharacterStringValueAlarmValues struct {
 var _ BACnetConstructedDataCharacterStringValueAlarmValues = (*_BACnetConstructedDataCharacterStringValueAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCharacterStringValueAlarmValues)(nil)
 
+// NewBACnetConstructedDataCharacterStringValueAlarmValues factory function for _BACnetConstructedDataCharacterStringValueAlarmValues
+func NewBACnetConstructedDataCharacterStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueAlarmValues {
+	_result := &_BACnetConstructedDataCharacterStringValueAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) GetZero() uint64
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCharacterStringValueAlarmValues factory function for _BACnetConstructedDataCharacterStringValueAlarmValues
-func NewBACnetConstructedDataCharacterStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueAlarmValues {
-	_result := &_BACnetConstructedDataCharacterStringValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCharacterStringValueAlarmValues(structType any) BACnetConstructedDataCharacterStringValueAlarmValues {

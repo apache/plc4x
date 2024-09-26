@@ -49,6 +49,15 @@ type _TDataConnectedReq struct {
 var _ TDataConnectedReq = (*_TDataConnectedReq)(nil)
 var _ CEMIRequirements = (*_TDataConnectedReq)(nil)
 
+// NewTDataConnectedReq factory function for _TDataConnectedReq
+func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
+	_result := &_TDataConnectedReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_TDataConnectedReq) GetMessageCode() uint8 {
 
 func (m *_TDataConnectedReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewTDataConnectedReq factory function for _TDataConnectedReq
-func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
-	_result := &_TDataConnectedReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaximumValue struct {
 var _ BACnetConstructedDataMaximumValue = (*_BACnetConstructedDataMaximumValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumValue)(nil)
 
+// NewBACnetConstructedDataMaximumValue factory function for _BACnetConstructedDataMaximumValue
+func NewBACnetConstructedDataMaximumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValue {
+	if maximumValue == nil {
+		panic("maximumValue of type BACnetApplicationTagReal for BACnetConstructedDataMaximumValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaximumValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumValue:                  maximumValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaximumValue) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaximumValue factory function for _BACnetConstructedDataMaximumValue
-func NewBACnetConstructedDataMaximumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValue {
-	if maximumValue == nil {
-		panic("maximumValue of type BACnetApplicationTagReal for BACnetConstructedDataMaximumValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaximumValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaximumValue:                  maximumValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaximumValue(structType any) BACnetConstructedDataMaximumValue {

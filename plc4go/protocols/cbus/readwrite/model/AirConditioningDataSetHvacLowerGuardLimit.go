@@ -63,6 +63,28 @@ type _AirConditioningDataSetHvacLowerGuardLimit struct {
 var _ AirConditioningDataSetHvacLowerGuardLimit = (*_AirConditioningDataSetHvacLowerGuardLimit)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHvacLowerGuardLimit)(nil)
 
+// NewAirConditioningDataSetHvacLowerGuardLimit factory function for _AirConditioningDataSetHvacLowerGuardLimit
+func NewAirConditioningDataSetHvacLowerGuardLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags) *_AirConditioningDataSetHvacLowerGuardLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACTemperature for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
+	}
+	_result := &_AirConditioningDataSetHvacLowerGuardLimit{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Limit:                       limit,
+		HvacModeAndFlags:            hvacModeAndFlags,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,28 +124,6 @@ func (m *_AirConditioningDataSetHvacLowerGuardLimit) GetHvacModeAndFlags() HVACM
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetHvacLowerGuardLimit factory function for _AirConditioningDataSetHvacLowerGuardLimit
-func NewAirConditioningDataSetHvacLowerGuardLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags) *_AirConditioningDataSetHvacLowerGuardLimit {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
-	}
-	if limit == nil {
-		panic("limit of type HVACTemperature for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetHvacLowerGuardLimit must not be nil")
-	}
-	_result := &_AirConditioningDataSetHvacLowerGuardLimit{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Limit:                       limit,
-		HvacModeAndFlags:            hvacModeAndFlags,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetHvacLowerGuardLimit(structType any) AirConditioningDataSetHvacLowerGuardLimit {

@@ -59,6 +59,17 @@ type _BACnetConstructedDataAssignedAccessRights struct {
 var _ BACnetConstructedDataAssignedAccessRights = (*_BACnetConstructedDataAssignedAccessRights)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedAccessRights)(nil)
 
+// NewBACnetConstructedDataAssignedAccessRights factory function for _BACnetConstructedDataAssignedAccessRights
+func NewBACnetConstructedDataAssignedAccessRights(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedAccessRights []BACnetAssignedAccessRights, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedAccessRights {
+	_result := &_BACnetConstructedDataAssignedAccessRights{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AssignedAccessRights:          assignedAccessRights,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataAssignedAccessRights) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAssignedAccessRights factory function for _BACnetConstructedDataAssignedAccessRights
-func NewBACnetConstructedDataAssignedAccessRights(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedAccessRights []BACnetAssignedAccessRights, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedAccessRights {
-	_result := &_BACnetConstructedDataAssignedAccessRights{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AssignedAccessRights:          assignedAccessRights,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAssignedAccessRights(structType any) BACnetConstructedDataAssignedAccessRights {

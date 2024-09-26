@@ -54,6 +54,14 @@ type _BACnetReadAccessResult struct {
 
 var _ BACnetReadAccessResult = (*_BACnetReadAccessResult)(nil)
 
+// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
+func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
+	}
+	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_BACnetReadAccessResult) GetListOfResults() BACnetReadAccessResultListO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
-func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
-	}
-	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {

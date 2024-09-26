@@ -56,6 +56,19 @@ type _BACnetConstructedDataDoorUnlockDelayTime struct {
 var _ BACnetConstructedDataDoorUnlockDelayTime = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorUnlockDelayTime)(nil)
 
+// NewBACnetConstructedDataDoorUnlockDelayTime factory function for _BACnetConstructedDataDoorUnlockDelayTime
+func NewBACnetConstructedDataDoorUnlockDelayTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
+	if doorUnlockDelayTime == nil {
+		panic("doorUnlockDelayTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorUnlockDelayTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorUnlockDelayTime:           doorUnlockDelayTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDoorUnlockDelayTime) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorUnlockDelayTime factory function for _BACnetConstructedDataDoorUnlockDelayTime
-func NewBACnetConstructedDataDoorUnlockDelayTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorUnlockDelayTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorUnlockDelayTime {
-	if doorUnlockDelayTime == nil {
-		panic("doorUnlockDelayTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDoorUnlockDelayTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorUnlockDelayTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorUnlockDelayTime:           doorUnlockDelayTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstructedDataDoorUnlockDelayTime {

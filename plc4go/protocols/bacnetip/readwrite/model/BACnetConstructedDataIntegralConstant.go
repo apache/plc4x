@@ -56,6 +56,19 @@ type _BACnetConstructedDataIntegralConstant struct {
 var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstant)(nil)
 
+// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
+func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
+	if integralConstant == nil {
+		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegralConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IntegralConstant:              integralConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIntegralConstant) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
-func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
-	if integralConstant == nil {
-		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegralConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IntegralConstant:              integralConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructedDataIntegralConstant {

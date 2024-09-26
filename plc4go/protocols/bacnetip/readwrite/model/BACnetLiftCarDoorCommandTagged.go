@@ -58,6 +58,14 @@ type _BACnetLiftCarDoorCommandTagged struct {
 
 var _ BACnetLiftCarDoorCommandTagged = (*_BACnetLiftCarDoorCommandTagged)(nil)
 
+// NewBACnetLiftCarDoorCommandTagged factory function for _BACnetLiftCarDoorCommandTagged
+func NewBACnetLiftCarDoorCommandTagged(header BACnetTagHeader, value BACnetLiftCarDoorCommand, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDoorCommandTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDoorCommandTagged must not be nil")
+	}
+	return &_BACnetLiftCarDoorCommandTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetLiftCarDoorCommandTagged) GetValue() BACnetLiftCarDoorCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarDoorCommandTagged factory function for _BACnetLiftCarDoorCommandTagged
-func NewBACnetLiftCarDoorCommandTagged(header BACnetTagHeader, value BACnetLiftCarDoorCommand, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDoorCommandTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftCarDoorCommandTagged must not be nil")
-	}
-	return &_BACnetLiftCarDoorCommandTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarDoorCommandTagged(structType any) BACnetLiftCarDoorCommandTagged {

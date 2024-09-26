@@ -54,6 +54,16 @@ type _IdentifyReplyCommandFirmwareVersion struct {
 var _ IdentifyReplyCommandFirmwareVersion = (*_IdentifyReplyCommandFirmwareVersion)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandFirmwareVersion)(nil)
 
+// NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
+func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
+	_result := &_IdentifyReplyCommandFirmwareVersion{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		FirmwareVersion:              firmwareVersion,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandFirmwareVersion) GetFirmwareVersion() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandFirmwareVersion factory function for _IdentifyReplyCommandFirmwareVersion
-func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uint8) *_IdentifyReplyCommandFirmwareVersion {
-	_result := &_IdentifyReplyCommandFirmwareVersion{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		FirmwareVersion:              firmwareVersion,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandFirmwareVersion(structType any) IdentifyReplyCommandFirmwareVersion {

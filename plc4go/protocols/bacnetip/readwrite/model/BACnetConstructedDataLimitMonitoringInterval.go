@@ -56,6 +56,19 @@ type _BACnetConstructedDataLimitMonitoringInterval struct {
 var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 
+// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
+func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+	if limitMonitoringInterval == nil {
+		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataLimitMonitoringInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LimitMonitoringInterval:       limitMonitoringInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
-	if limitMonitoringInterval == nil {
-		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataLimitMonitoringInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LimitMonitoringInterval:       limitMonitoringInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetConstructedDataLimitMonitoringInterval {

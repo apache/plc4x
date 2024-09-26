@@ -56,6 +56,19 @@ type _BACnetConstructedDataObjectType struct {
 var _ BACnetConstructedDataObjectType = (*_BACnetConstructedDataObjectType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectType)(nil)
 
+// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
+func NewBACnetConstructedDataObjectType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectType BACnetObjectTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
+	if objectType == nil {
+		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ObjectType:                    objectType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataObjectType) GetActualValue() BACnetObjectTypeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
-func NewBACnetConstructedDataObjectType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectType BACnetObjectTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
-	if objectType == nil {
-		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ObjectType:                    objectType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectType(structType any) BACnetConstructedDataObjectType {

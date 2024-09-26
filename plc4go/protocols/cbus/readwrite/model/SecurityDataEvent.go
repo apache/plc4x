@@ -54,6 +54,16 @@ type _SecurityDataEvent struct {
 var _ SecurityDataEvent = (*_SecurityDataEvent)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataEvent)(nil)
 
+// NewSecurityDataEvent factory function for _SecurityDataEvent
+func NewSecurityDataEvent(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataEvent {
+	_result := &_SecurityDataEvent{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Data:                 data,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataEvent) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataEvent factory function for _SecurityDataEvent
-func NewSecurityDataEvent(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataEvent {
-	_result := &_SecurityDataEvent{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Data:                 data,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataEvent(structType any) SecurityDataEvent {

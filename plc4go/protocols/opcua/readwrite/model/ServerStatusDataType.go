@@ -69,6 +69,27 @@ type _ServerStatusDataType struct {
 var _ ServerStatusDataType = (*_ServerStatusDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerStatusDataType)(nil)
 
+// NewServerStatusDataType factory function for _ServerStatusDataType
+func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
+	if buildInfo == nil {
+		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
+	}
+	if shutdownReason == nil {
+		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
+	}
+	_result := &_ServerStatusDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StartTime:                         startTime,
+		CurrentTime:                       currentTime,
+		State:                             state,
+		BuildInfo:                         buildInfo,
+		SecondsTillShutdown:               secondsTillShutdown,
+		ShutdownReason:                    shutdownReason,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,27 +141,6 @@ func (m *_ServerStatusDataType) GetShutdownReason() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerStatusDataType factory function for _ServerStatusDataType
-func NewServerStatusDataType(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) *_ServerStatusDataType {
-	if buildInfo == nil {
-		panic("buildInfo of type ExtensionObjectDefinition for ServerStatusDataType must not be nil")
-	}
-	if shutdownReason == nil {
-		panic("shutdownReason of type LocalizedText for ServerStatusDataType must not be nil")
-	}
-	_result := &_ServerStatusDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StartTime:                         startTime,
-		CurrentTime:                       currentTime,
-		State:                             state,
-		BuildInfo:                         buildInfo,
-		SecondsTillShutdown:               secondsTillShutdown,
-		ShutdownReason:                    shutdownReason,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerStatusDataType(structType any) ServerStatusDataType {

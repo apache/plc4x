@@ -57,6 +57,17 @@ type _VariantXmlElement struct {
 var _ VariantXmlElement = (*_VariantXmlElement)(nil)
 var _ VariantRequirements = (*_VariantXmlElement)(nil)
 
+// NewVariantXmlElement factory function for _VariantXmlElement
+func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantXmlElement {
+	_result := &_VariantXmlElement{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantXmlElement) GetValue() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantXmlElement factory function for _VariantXmlElement
-func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantXmlElement {
-	_result := &_VariantXmlElement{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantXmlElement(structType any) VariantXmlElement {

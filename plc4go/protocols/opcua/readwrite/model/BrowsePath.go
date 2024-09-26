@@ -57,6 +57,23 @@ type _BrowsePath struct {
 var _ BrowsePath = (*_BrowsePath)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePath)(nil)
 
+// NewBrowsePath factory function for _BrowsePath
+func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
+	if startingNode == nil {
+		panic("startingNode of type NodeId for BrowsePath must not be nil")
+	}
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
+	}
+	_result := &_BrowsePath{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StartingNode:                      startingNode,
+		RelativePath:                      relativePath,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_BrowsePath) GetRelativePath() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowsePath factory function for _BrowsePath
-func NewBrowsePath(startingNode NodeId, relativePath ExtensionObjectDefinition) *_BrowsePath {
-	if startingNode == nil {
-		panic("startingNode of type NodeId for BrowsePath must not be nil")
-	}
-	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for BrowsePath must not be nil")
-	}
-	_result := &_BrowsePath{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StartingNode:                      startingNode,
-		RelativePath:                      relativePath,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowsePath(structType any) BrowsePath {

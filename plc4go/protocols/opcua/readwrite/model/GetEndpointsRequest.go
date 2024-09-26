@@ -69,6 +69,27 @@ type _GetEndpointsRequest struct {
 var _ GetEndpointsRequest = (*_GetEndpointsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsRequest)(nil)
 
+// NewGetEndpointsRequest factory function for _GetEndpointsRequest
+func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
+	}
+	_result := &_GetEndpointsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		EndpointUrl:                       endpointUrl,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		NoOfProfileUris:                   noOfProfileUris,
+		ProfileUris:                       profileUris,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,27 +141,6 @@ func (m *_GetEndpointsRequest) GetProfileUris() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetEndpointsRequest factory function for _GetEndpointsRequest
-func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) *_GetEndpointsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for GetEndpointsRequest must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for GetEndpointsRequest must not be nil")
-	}
-	_result := &_GetEndpointsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		EndpointUrl:                       endpointUrl,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		NoOfProfileUris:                   noOfProfileUris,
-		ProfileUris:                       profileUris,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetEndpointsRequest(structType any) GetEndpointsRequest {

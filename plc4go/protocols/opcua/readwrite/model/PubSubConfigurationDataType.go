@@ -68,6 +68,20 @@ type _PubSubConfigurationDataType struct {
 var _ PubSubConfigurationDataType = (*_PubSubConfigurationDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationDataType)(nil)
 
+// NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
+func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
+	_result := &_PubSubConfigurationDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfPublishedDataSets:             noOfPublishedDataSets,
+		PublishedDataSets:                 publishedDataSets,
+		NoOfConnections:                   noOfConnections,
+		Connections:                       connections,
+		Enabled:                           enabled,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,20 +129,6 @@ func (m *_PubSubConfigurationDataType) GetEnabled() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConfigurationDataType factory function for _PubSubConfigurationDataType
-func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) *_PubSubConfigurationDataType {
-	_result := &_PubSubConfigurationDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfPublishedDataSets:             noOfPublishedDataSets,
-		PublishedDataSets:                 publishedDataSets,
-		NoOfConnections:                   noOfConnections,
-		Connections:                       connections,
-		Enabled:                           enabled,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConfigurationDataType(structType any) PubSubConfigurationDataType {

@@ -54,6 +54,19 @@ type _ServiceFault struct {
 var _ ServiceFault = (*_ServiceFault)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServiceFault)(nil)
 
+// NewServiceFault factory function for _ServiceFault
+func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
+	}
+	_result := &_ServiceFault{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ServiceFault) GetResponseHeader() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServiceFault factory function for _ServiceFault
-func NewServiceFault(responseHeader ExtensionObjectDefinition) *_ServiceFault {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ServiceFault must not be nil")
-	}
-	_result := &_ServiceFault{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServiceFault(structType any) ServiceFault {

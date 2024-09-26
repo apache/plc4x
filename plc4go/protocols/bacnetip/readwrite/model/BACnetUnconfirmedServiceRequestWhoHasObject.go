@@ -70,6 +70,14 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectContract = (*_BACnetUnconfirmedServiceRequestWhoHasObject)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
+func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
-func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObject(structType any) BACnetUnconfirmedServiceRequestWhoHasObject {

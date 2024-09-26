@@ -57,6 +57,23 @@ type _BACnetServiceAckAtomicReadFileStream struct {
 var _ BACnetServiceAckAtomicReadFileStream = (*_BACnetServiceAckAtomicReadFileStream)(nil)
 var _ BACnetServiceAckAtomicReadFileStreamOrRecordRequirements = (*_BACnetServiceAckAtomicReadFileStream)(nil)
 
+// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
+func NewBACnetServiceAckAtomicReadFileStream(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) *_BACnetServiceAckAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicReadFileStream{
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
+		FileStartPosition: fileStartPosition,
+		FileData:          fileData,
+	}
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,23 +105,6 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetFileData() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
-func NewBACnetServiceAckAtomicReadFileStream(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) *_BACnetServiceAckAtomicReadFileStream {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	if fileData == nil {
-		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicReadFileStream{
-		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-	}
-	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicReadFileStream(structType any) BACnetServiceAckAtomicReadFileStream {

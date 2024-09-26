@@ -54,6 +54,16 @@ type _MediaTransportControlDataTrackName struct {
 var _ MediaTransportControlDataTrackName = (*_MediaTransportControlDataTrackName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTrackName)(nil)
 
+// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
+func NewMediaTransportControlDataTrackName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackName string) *_MediaTransportControlDataTrackName {
+	_result := &_MediaTransportControlDataTrackName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackName:                         trackName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MediaTransportControlDataTrackName) GetTrackName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
-func NewMediaTransportControlDataTrackName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackName string) *_MediaTransportControlDataTrackName {
-	_result := &_MediaTransportControlDataTrackName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TrackName:                         trackName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataTrackName(structType any) MediaTransportControlDataTrackName {

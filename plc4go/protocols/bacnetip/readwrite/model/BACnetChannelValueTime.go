@@ -54,6 +54,19 @@ type _BACnetChannelValueTime struct {
 var _ BACnetChannelValueTime = (*_BACnetChannelValueTime)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueTime)(nil)
 
+// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
+func NewBACnetChannelValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetChannelValueTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
+	}
+	_result := &_BACnetChannelValueTime{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		TimeValue:                  timeValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueTime) GetTimeValue() BACnetApplicationTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
-func NewBACnetChannelValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetChannelValueTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
-	}
-	_result := &_BACnetChannelValueTime{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		TimeValue:                  timeValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueTime(structType any) BACnetChannelValueTime {

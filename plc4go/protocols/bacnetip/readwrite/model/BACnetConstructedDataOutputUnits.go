@@ -56,6 +56,19 @@ type _BACnetConstructedDataOutputUnits struct {
 var _ BACnetConstructedDataOutputUnits = (*_BACnetConstructedDataOutputUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutputUnits)(nil)
 
+// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
+func NewBACnetConstructedDataOutputUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataOutputUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOutputUnits) GetActualValue() BACnetEngineeringUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
-func NewBACnetConstructedDataOutputUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataOutputUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOutputUnits(structType any) BACnetConstructedDataOutputUnits {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataVendorIdentifier struct {
 var _ BACnetConstructedDataVendorIdentifier = (*_BACnetConstructedDataVendorIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorIdentifier)(nil)
 
+// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
+func NewBACnetConstructedDataVendorIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorIdentifier BACnetVendorIdTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
+	if vendorIdentifier == nil {
+		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataVendorIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VendorIdentifier:              vendorIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataVendorIdentifier) GetActualValue() BACnetVendorId
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
-func NewBACnetConstructedDataVendorIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorIdentifier BACnetVendorIdTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
-	if vendorIdentifier == nil {
-		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataVendorIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VendorIdentifier:              vendorIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVendorIdentifier(structType any) BACnetConstructedDataVendorIdentifier {

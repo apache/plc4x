@@ -57,6 +57,17 @@ type _XVType struct {
 var _ XVType = (*_XVType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_XVType)(nil)
 
+// NewXVType factory function for _XVType
+func NewXVType(x float64, value float32) *_XVType {
+	_result := &_XVType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		X:                                 x,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_XVType) GetValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewXVType factory function for _XVType
-func NewXVType(x float64, value float32) *_XVType {
-	_result := &_XVType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		X:                                 x,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastXVType(structType any) XVType {

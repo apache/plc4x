@@ -57,6 +57,20 @@ type _CBusPointToPointToMultiPointCommandNormal struct {
 var _ CBusPointToPointToMultiPointCommandNormal = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
 var _ CBusPointToPointToMultiPointCommandRequirements = (*_CBusPointToPointToMultiPointCommandNormal)(nil)
 
+// NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
+func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
+	if salData == nil {
+		panic("salData of type SALData for CBusPointToPointToMultiPointCommandNormal must not be nil")
+	}
+	_result := &_CBusPointToPointToMultiPointCommandNormal{
+		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
+		Application: application,
+		SalData:     salData,
+	}
+	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,20 +102,6 @@ func (m *_CBusPointToPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointToMultiPointCommandNormal factory function for _CBusPointToPointToMultiPointCommandNormal
-func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, networkRoute NetworkRoute, peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToPointToMultiPointCommandNormal {
-	if salData == nil {
-		panic("salData of type SALData for CBusPointToPointToMultiPointCommandNormal must not be nil")
-	}
-	_result := &_CBusPointToPointToMultiPointCommandNormal{
-		CBusPointToPointToMultiPointCommandContract: NewCBusPointToPointToMultiPointCommand(bridgeAddress, networkRoute, peekedApplication, cBusOptions),
-		Application: application,
-		SalData:     salData,
-	}
-	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointToMultiPointCommandNormal(structType any) CBusPointToPointToMultiPointCommandNormal {

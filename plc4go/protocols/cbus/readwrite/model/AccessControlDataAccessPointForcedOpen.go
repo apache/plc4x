@@ -49,6 +49,15 @@ type _AccessControlDataAccessPointForcedOpen struct {
 var _ AccessControlDataAccessPointForcedOpen = (*_AccessControlDataAccessPointForcedOpen)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointForcedOpen)(nil)
 
+// NewAccessControlDataAccessPointForcedOpen factory function for _AccessControlDataAccessPointForcedOpen
+func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointForcedOpen {
+	_result := &_AccessControlDataAccessPointForcedOpen{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataAccessPointForcedOpen)
 
 func (m *_AccessControlDataAccessPointForcedOpen) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataAccessPointForcedOpen factory function for _AccessControlDataAccessPointForcedOpen
-func NewAccessControlDataAccessPointForcedOpen(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataAccessPointForcedOpen {
-	_result := &_AccessControlDataAccessPointForcedOpen{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

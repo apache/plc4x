@@ -54,6 +54,11 @@ type _BACnetVMACEntry struct {
 
 var _ BACnetVMACEntry = (*_BACnetVMACEntry)(nil)
 
+// NewBACnetVMACEntry factory function for _BACnetVMACEntry
+func NewBACnetVMACEntry(virtualMacAddress BACnetContextTagOctetString, nativeMacAddress BACnetContextTagOctetString) *_BACnetVMACEntry {
+	return &_BACnetVMACEntry{VirtualMacAddress: virtualMacAddress, NativeMacAddress: nativeMacAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_BACnetVMACEntry) GetNativeMacAddress() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetVMACEntry factory function for _BACnetVMACEntry
-func NewBACnetVMACEntry(virtualMacAddress BACnetContextTagOctetString, nativeMacAddress BACnetContextTagOctetString) *_BACnetVMACEntry {
-	return &_BACnetVMACEntry{VirtualMacAddress: virtualMacAddress, NativeMacAddress: nativeMacAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetVMACEntry(structType any) BACnetVMACEntry {

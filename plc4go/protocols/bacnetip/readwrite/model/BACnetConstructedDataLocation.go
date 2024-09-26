@@ -56,6 +56,19 @@ type _BACnetConstructedDataLocation struct {
 var _ BACnetConstructedDataLocation = (*_BACnetConstructedDataLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocation)(nil)
 
+// NewBACnetConstructedDataLocation factory function for _BACnetConstructedDataLocation
+func NewBACnetConstructedDataLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, location BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocation {
+	if location == nil {
+		panic("location of type BACnetApplicationTagCharacterString for BACnetConstructedDataLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Location:                      location,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLocation) GetActualValue() BACnetApplicationTagCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLocation factory function for _BACnetConstructedDataLocation
-func NewBACnetConstructedDataLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, location BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocation {
-	if location == nil {
-		panic("location of type BACnetApplicationTagCharacterString for BACnetConstructedDataLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Location:                      location,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLocation(structType any) BACnetConstructedDataLocation {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccessEventCredential struct {
 var _ BACnetConstructedDataAccessEventCredential = (*_BACnetConstructedDataAccessEventCredential)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventCredential)(nil)
 
+// NewBACnetConstructedDataAccessEventCredential factory function for _BACnetConstructedDataAccessEventCredential
+func NewBACnetConstructedDataAccessEventCredential(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventCredential BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventCredential {
+	if accessEventCredential == nil {
+		panic("accessEventCredential of type BACnetDeviceObjectReference for BACnetConstructedDataAccessEventCredential must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessEventCredential{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessEventCredential:         accessEventCredential,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccessEventCredential) GetActualValue() BACnetDev
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessEventCredential factory function for _BACnetConstructedDataAccessEventCredential
-func NewBACnetConstructedDataAccessEventCredential(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventCredential BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventCredential {
-	if accessEventCredential == nil {
-		panic("accessEventCredential of type BACnetDeviceObjectReference for BACnetConstructedDataAccessEventCredential must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessEventCredential{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessEventCredential:         accessEventCredential,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessEventCredential(structType any) BACnetConstructedDataAccessEventCredential {

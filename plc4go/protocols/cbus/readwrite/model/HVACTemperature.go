@@ -53,6 +53,11 @@ type _HVACTemperature struct {
 
 var _ HVACTemperature = (*_HVACTemperature)(nil)
 
+// NewHVACTemperature factory function for _HVACTemperature
+func NewHVACTemperature(temperatureValue int16) *_HVACTemperature {
+	return &_HVACTemperature{TemperatureValue: temperatureValue}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_HVACTemperature) GetTemperatureInCelcius() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACTemperature factory function for _HVACTemperature
-func NewHVACTemperature(temperatureValue int16) *_HVACTemperature {
-	return &_HVACTemperature{TemperatureValue: temperatureValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACTemperature(structType any) HVACTemperature {

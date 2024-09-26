@@ -75,6 +75,23 @@ type _DataTypeSchemaHeader struct {
 var _ DataTypeSchemaHeader = (*_DataTypeSchemaHeader)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeSchemaHeader)(nil)
 
+// NewDataTypeSchemaHeader factory function for _DataTypeSchemaHeader
+func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) *_DataTypeSchemaHeader {
+	_result := &_DataTypeSchemaHeader{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfNamespaces:                    noOfNamespaces,
+		Namespaces:                        namespaces,
+		NoOfStructureDataTypes:            noOfStructureDataTypes,
+		StructureDataTypes:                structureDataTypes,
+		NoOfEnumDataTypes:                 noOfEnumDataTypes,
+		EnumDataTypes:                     enumDataTypes,
+		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
+		SimpleDataTypes:                   simpleDataTypes,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -134,23 +151,6 @@ func (m *_DataTypeSchemaHeader) GetSimpleDataTypes() []DataTypeDescription {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataTypeSchemaHeader factory function for _DataTypeSchemaHeader
-func NewDataTypeSchemaHeader(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) *_DataTypeSchemaHeader {
-	_result := &_DataTypeSchemaHeader{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaces:                    noOfNamespaces,
-		Namespaces:                        namespaces,
-		NoOfStructureDataTypes:            noOfStructureDataTypes,
-		StructureDataTypes:                structureDataTypes,
-		NoOfEnumDataTypes:                 noOfEnumDataTypes,
-		EnumDataTypes:                     enumDataTypes,
-		NoOfSimpleDataTypes:               noOfSimpleDataTypes,
-		SimpleDataTypes:                   simpleDataTypes,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataTypeSchemaHeader(structType any) DataTypeSchemaHeader {

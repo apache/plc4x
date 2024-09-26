@@ -69,6 +69,27 @@ type _ActivateSessionResponse struct {
 var _ ActivateSessionResponse = (*_ActivateSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionResponse)(nil)
 
+// NewActivateSessionResponse factory function for _ActivateSessionResponse
+func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
+	}
+	_result := &_ActivateSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		ServerNonce:                       serverNonce,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,27 +141,6 @@ func (m *_ActivateSessionResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewActivateSessionResponse factory function for _ActivateSessionResponse
-func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
-	}
-	_result := &_ActivateSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		ServerNonce:                       serverNonce,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastActivateSessionResponse(structType any) ActivateSessionResponse {

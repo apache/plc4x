@@ -83,6 +83,37 @@ type _DataSetWriterDataType struct {
 var _ DataSetWriterDataType = (*_DataSetWriterDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterDataType)(nil)
 
+// NewDataSetWriterDataType factory function for _DataSetWriterDataType
+func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
+	if name == nil {
+		panic("name of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if dataSetName == nil {
+		panic("dataSetName of type PascalString for DataSetWriterDataType must not be nil")
+	}
+	if transportSettings == nil {
+		panic("transportSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
+	if messageSettings == nil {
+		panic("messageSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
+	}
+	_result := &_DataSetWriterDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Enabled:                           enabled,
+		DataSetWriterId:                   dataSetWriterId,
+		DataSetFieldContentMask:           dataSetFieldContentMask,
+		KeyFrameCount:                     keyFrameCount,
+		DataSetName:                       dataSetName,
+		NoOfDataSetWriterProperties:       noOfDataSetWriterProperties,
+		DataSetWriterProperties:           dataSetWriterProperties,
+		TransportSettings:                 transportSettings,
+		MessageSettings:                   messageSettings,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -150,37 +181,6 @@ func (m *_DataSetWriterDataType) GetMessageSettings() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataSetWriterDataType factory function for _DataSetWriterDataType
-func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) *_DataSetWriterDataType {
-	if name == nil {
-		panic("name of type PascalString for DataSetWriterDataType must not be nil")
-	}
-	if dataSetName == nil {
-		panic("dataSetName of type PascalString for DataSetWriterDataType must not be nil")
-	}
-	if transportSettings == nil {
-		panic("transportSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
-	}
-	if messageSettings == nil {
-		panic("messageSettings of type ExtensionObject for DataSetWriterDataType must not be nil")
-	}
-	_result := &_DataSetWriterDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Enabled:                           enabled,
-		DataSetWriterId:                   dataSetWriterId,
-		DataSetFieldContentMask:           dataSetFieldContentMask,
-		KeyFrameCount:                     keyFrameCount,
-		DataSetName:                       dataSetName,
-		NoOfDataSetWriterProperties:       noOfDataSetWriterProperties,
-		DataSetWriterProperties:           dataSetWriterProperties,
-		TransportSettings:                 transportSettings,
-		MessageSettings:                   messageSettings,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataSetWriterDataType(structType any) DataSetWriterDataType {

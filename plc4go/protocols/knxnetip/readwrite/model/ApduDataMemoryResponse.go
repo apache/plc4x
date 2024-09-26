@@ -57,6 +57,17 @@ type _ApduDataMemoryResponse struct {
 var _ ApduDataMemoryResponse = (*_ApduDataMemoryResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryResponse)(nil)
 
+// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
+func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
+	_result := &_ApduDataMemoryResponse{
+		ApduDataContract: NewApduData(dataLength),
+		Address:          address,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ApduDataMemoryResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
-func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
-	_result := &_ApduDataMemoryResponse{
-		ApduDataContract: NewApduData(dataLength),
-		Address:          address,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataMemoryResponse(structType any) ApduDataMemoryResponse {

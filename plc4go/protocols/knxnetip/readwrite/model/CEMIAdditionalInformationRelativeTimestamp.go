@@ -57,6 +57,19 @@ type _CEMIAdditionalInformationRelativeTimestamp struct {
 var _ CEMIAdditionalInformationRelativeTimestamp = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
 var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationRelativeTimestamp)(nil)
 
+// NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
+func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
+	if relativeTimestamp == nil {
+		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
+	}
+	_result := &_CEMIAdditionalInformationRelativeTimestamp{
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		RelativeTimestamp:                 relativeTimestamp,
+	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,19 +114,6 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) GetLen() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCEMIAdditionalInformationRelativeTimestamp factory function for _CEMIAdditionalInformationRelativeTimestamp
-func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) *_CEMIAdditionalInformationRelativeTimestamp {
-	if relativeTimestamp == nil {
-		panic("relativeTimestamp of type RelativeTimestamp for CEMIAdditionalInformationRelativeTimestamp must not be nil")
-	}
-	_result := &_CEMIAdditionalInformationRelativeTimestamp{
-		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
-		RelativeTimestamp:                 relativeTimestamp,
-	}
-	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCEMIAdditionalInformationRelativeTimestamp(structType any) CEMIAdditionalInformationRelativeTimestamp {

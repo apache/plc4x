@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumEnumeratedValue struct {
 var _ BACnetLogRecordLogDatumEnumeratedValue = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 
+// NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
+func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		EnumeratedValue:                 enumeratedValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetEnumeratedValue() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
-func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		EnumeratedValue:                 enumeratedValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumEnumeratedValue(structType any) BACnetLogRecordLogDatumEnumeratedValue {

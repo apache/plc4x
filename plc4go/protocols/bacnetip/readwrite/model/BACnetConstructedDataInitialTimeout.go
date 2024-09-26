@@ -56,6 +56,19 @@ type _BACnetConstructedDataInitialTimeout struct {
 var _ BACnetConstructedDataInitialTimeout = (*_BACnetConstructedDataInitialTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInitialTimeout)(nil)
 
+// NewBACnetConstructedDataInitialTimeout factory function for _BACnetConstructedDataInitialTimeout
+func NewBACnetConstructedDataInitialTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, initialTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInitialTimeout {
+	if initialTimeout == nil {
+		panic("initialTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInitialTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataInitialTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InitialTimeout:                initialTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInitialTimeout) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInitialTimeout factory function for _BACnetConstructedDataInitialTimeout
-func NewBACnetConstructedDataInitialTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, initialTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInitialTimeout {
-	if initialTimeout == nil {
-		panic("initialTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInitialTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataInitialTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InitialTimeout:                initialTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInitialTimeout(structType any) BACnetConstructedDataInitialTimeout {

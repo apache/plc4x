@@ -57,6 +57,17 @@ type _FirmataCommandSetPinMode struct {
 var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
 
+// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
+	_result := &_FirmataCommandSetPinMode{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		Mode:                   mode,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_FirmataCommandSetPinMode) GetMode() PinMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
-	_result := &_FirmataCommandSetPinMode{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Pin:                    pin,
-		Mode:                   mode,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {

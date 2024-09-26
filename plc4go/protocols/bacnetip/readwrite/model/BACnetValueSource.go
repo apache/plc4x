@@ -70,6 +70,14 @@ type _BACnetValueSource struct {
 
 var _ BACnetValueSourceContract = (*_BACnetValueSource)(nil)
 
+// NewBACnetValueSource factory function for _BACnetValueSource
+func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetValueSource must not be nil")
+	}
+	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetValueSource) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSource factory function for _BACnetValueSource
-func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetValueSource must not be nil")
-	}
-	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSource(structType any) BACnetValueSource {

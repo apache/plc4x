@@ -66,6 +66,19 @@ type _ServicesResponse struct {
 var _ ServicesResponse = (*_ServicesResponse)(nil)
 var _ TypeIdRequirements = (*_ServicesResponse)(nil)
 
+// NewServicesResponse factory function for _ServicesResponse
+func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
+	_result := &_ServicesResponse{
+		TypeIdContract:           NewTypeId(),
+		EncapsulationProtocol:    encapsulationProtocol,
+		SupportsCIPEncapsulation: supportsCIPEncapsulation,
+		SupportsUDP:              supportsUDP,
+		Data:                     data,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,19 +122,6 @@ func (m *_ServicesResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServicesResponse factory function for _ServicesResponse
-func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
-	_result := &_ServicesResponse{
-		TypeIdContract:           NewTypeId(),
-		EncapsulationProtocol:    encapsulationProtocol,
-		SupportsCIPEncapsulation: supportsCIPEncapsulation,
-		SupportsUDP:              supportsUDP,
-		Data:                     data,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServicesResponse(structType any) ServicesResponse {

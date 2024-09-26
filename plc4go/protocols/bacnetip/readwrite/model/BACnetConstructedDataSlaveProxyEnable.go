@@ -56,6 +56,19 @@ type _BACnetConstructedDataSlaveProxyEnable struct {
 var _ BACnetConstructedDataSlaveProxyEnable = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
 
+// NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
+func NewBACnetConstructedDataSlaveProxyEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveProxyEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
+	if slaveProxyEnable == nil {
+		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataSlaveProxyEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SlaveProxyEnable:              slaveProxyEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
-func NewBACnetConstructedDataSlaveProxyEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveProxyEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
-	if slaveProxyEnable == nil {
-		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataSlaveProxyEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SlaveProxyEnable:              slaveProxyEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructedDataSlaveProxyEnable {

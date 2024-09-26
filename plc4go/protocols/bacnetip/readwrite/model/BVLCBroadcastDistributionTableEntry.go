@@ -57,6 +57,11 @@ type _BVLCBroadcastDistributionTableEntry struct {
 
 var _ BVLCBroadcastDistributionTableEntry = (*_BVLCBroadcastDistributionTableEntry)(nil)
 
+// NewBVLCBroadcastDistributionTableEntry factory function for _BVLCBroadcastDistributionTableEntry
+func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *_BVLCBroadcastDistributionTableEntry {
+	return &_BVLCBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetBroadcastDistributionMap() []u
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCBroadcastDistributionTableEntry factory function for _BVLCBroadcastDistributionTableEntry
-func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *_BVLCBroadcastDistributionTableEntry {
-	return &_BVLCBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCBroadcastDistributionTableEntry(structType any) BVLCBroadcastDistributionTableEntry {

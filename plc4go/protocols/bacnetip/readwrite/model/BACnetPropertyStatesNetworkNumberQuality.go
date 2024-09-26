@@ -54,6 +54,19 @@ type _BACnetPropertyStatesNetworkNumberQuality struct {
 var _ BACnetPropertyStatesNetworkNumberQuality = (*_BACnetPropertyStatesNetworkNumberQuality)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkNumberQuality)(nil)
 
+// NewBACnetPropertyStatesNetworkNumberQuality factory function for _BACnetPropertyStatesNetworkNumberQuality
+func NewBACnetPropertyStatesNetworkNumberQuality(peekedTagHeader BACnetTagHeader, networkNumberQuality BACnetNetworkNumberQualityTagged) *_BACnetPropertyStatesNetworkNumberQuality {
+	if networkNumberQuality == nil {
+		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetPropertyStatesNetworkNumberQuality must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNetworkNumberQuality{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NetworkNumberQuality:         networkNumberQuality,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesNetworkNumberQuality) GetNetworkNumberQuality() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNetworkNumberQuality factory function for _BACnetPropertyStatesNetworkNumberQuality
-func NewBACnetPropertyStatesNetworkNumberQuality(peekedTagHeader BACnetTagHeader, networkNumberQuality BACnetNetworkNumberQualityTagged) *_BACnetPropertyStatesNetworkNumberQuality {
-	if networkNumberQuality == nil {
-		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetPropertyStatesNetworkNumberQuality must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNetworkNumberQuality{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NetworkNumberQuality:         networkNumberQuality,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNetworkNumberQuality(structType any) BACnetPropertyStatesNetworkNumberQuality {

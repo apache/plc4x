@@ -70,6 +70,11 @@ type _KnxNetIpMessage struct {
 
 var _ KnxNetIpMessageContract = (*_KnxNetIpMessage)(nil)
 
+// NewKnxNetIpMessage factory function for _KnxNetIpMessage
+func NewKnxNetIpMessage() *_KnxNetIpMessage {
+	return &_KnxNetIpMessage{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -83,11 +88,6 @@ func (m *_KnxNetIpMessage) GetProtocolVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpMessage factory function for _KnxNetIpMessage
-func NewKnxNetIpMessage() *_KnxNetIpMessage {
-	return &_KnxNetIpMessage{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpMessage(structType any) KnxNetIpMessage {

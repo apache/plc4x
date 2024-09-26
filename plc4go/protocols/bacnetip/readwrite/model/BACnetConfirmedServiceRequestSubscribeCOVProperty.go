@@ -69,6 +69,30 @@ type _BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
 var _ BACnetConfirmedServiceRequestSubscribeCOVProperty = (*_BACnetConfirmedServiceRequestSubscribeCOVProperty)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOVProperty)(nil)
 
+// NewBACnetConfirmedServiceRequestSubscribeCOVProperty factory function for _BACnetConfirmedServiceRequestSubscribeCOVProperty
+func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, monitoredPropertyIdentifier BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVProperty {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
+	if monitoredPropertyIdentifier == nil {
+		panic("monitoredPropertyIdentifier of type BACnetPropertyReferenceEnclosed for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
+		IssueConfirmedNotifications:           issueConfirmedNotifications,
+		Lifetime:                              lifetime,
+		MonitoredPropertyIdentifier:           monitoredPropertyIdentifier,
+		CovIncrement:                          covIncrement,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,30 +144,6 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetCovIncrement() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestSubscribeCOVProperty factory function for _BACnetConfirmedServiceRequestSubscribeCOVProperty
-func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, monitoredPropertyIdentifier BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVProperty {
-	if subscriberProcessIdentifier == nil {
-		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
-	}
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
-	}
-	if monitoredPropertyIdentifier == nil {
-		panic("monitoredPropertyIdentifier of type BACnetPropertyReferenceEnclosed for BACnetConfirmedServiceRequestSubscribeCOVProperty must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
-		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
-		IssueConfirmedNotifications:           issueConfirmedNotifications,
-		Lifetime:                              lifetime,
-		MonitoredPropertyIdentifier:           monitoredPropertyIdentifier,
-		CovIncrement:                          covIncrement,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType any) BACnetConfirmedServiceRequestSubscribeCOVProperty {

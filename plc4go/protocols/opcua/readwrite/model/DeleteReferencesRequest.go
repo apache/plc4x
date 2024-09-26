@@ -60,6 +60,21 @@ type _DeleteReferencesRequest struct {
 var _ DeleteReferencesRequest = (*_DeleteReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesRequest)(nil)
 
+// NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
+func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
+	}
+	_result := &_DeleteReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToDelete:            noOfReferencesToDelete,
+		ReferencesToDelete:                referencesToDelete,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_DeleteReferencesRequest) GetReferencesToDelete() []ExtensionObjectDefi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteReferencesRequest factory function for _DeleteReferencesRequest
-func NewDeleteReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) *_DeleteReferencesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteReferencesRequest must not be nil")
-	}
-	_result := &_DeleteReferencesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfReferencesToDelete:            noOfReferencesToDelete,
-		ReferencesToDelete:                referencesToDelete,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteReferencesRequest(structType any) DeleteReferencesRequest {

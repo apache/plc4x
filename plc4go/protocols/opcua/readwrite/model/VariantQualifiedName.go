@@ -57,6 +57,17 @@ type _VariantQualifiedName struct {
 var _ VariantQualifiedName = (*_VariantQualifiedName)(nil)
 var _ VariantRequirements = (*_VariantQualifiedName)(nil)
 
+// NewVariantQualifiedName factory function for _VariantQualifiedName
+func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
+	_result := &_VariantQualifiedName{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantQualifiedName) GetValue() []QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantQualifiedName factory function for _VariantQualifiedName
-func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
-	_result := &_VariantQualifiedName{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantQualifiedName(structType any) VariantQualifiedName {

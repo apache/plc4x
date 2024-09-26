@@ -54,6 +54,16 @@ type _S7ParameterWriteVarResponse struct {
 var _ S7ParameterWriteVarResponse = (*_S7ParameterWriteVarResponse)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterWriteVarResponse)(nil)
 
+// NewS7ParameterWriteVarResponse factory function for _S7ParameterWriteVarResponse
+func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarResponse {
+	_result := &_S7ParameterWriteVarResponse{
+		S7ParameterContract: NewS7Parameter(),
+		NumItems:            numItems,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_S7ParameterWriteVarResponse) GetNumItems() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterWriteVarResponse factory function for _S7ParameterWriteVarResponse
-func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarResponse {
-	_result := &_S7ParameterWriteVarResponse{
-		S7ParameterContract: NewS7Parameter(),
-		NumItems:            numItems,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterWriteVarResponse(structType any) S7ParameterWriteVarResponse {

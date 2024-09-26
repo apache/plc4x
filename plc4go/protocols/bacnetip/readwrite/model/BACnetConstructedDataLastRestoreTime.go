@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastRestoreTime struct {
 var _ BACnetConstructedDataLastRestoreTime = (*_BACnetConstructedDataLastRestoreTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastRestoreTime)(nil)
 
+// NewBACnetConstructedDataLastRestoreTime factory function for _BACnetConstructedDataLastRestoreTime
+func NewBACnetConstructedDataLastRestoreTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestoreTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestoreTime {
+	if lastRestoreTime == nil {
+		panic("lastRestoreTime of type BACnetTimeStamp for BACnetConstructedDataLastRestoreTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastRestoreTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastRestoreTime:               lastRestoreTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastRestoreTime) GetActualValue() BACnetTimeStamp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastRestoreTime factory function for _BACnetConstructedDataLastRestoreTime
-func NewBACnetConstructedDataLastRestoreTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestoreTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestoreTime {
-	if lastRestoreTime == nil {
-		panic("lastRestoreTime of type BACnetTimeStamp for BACnetConstructedDataLastRestoreTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastRestoreTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastRestoreTime:               lastRestoreTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastRestoreTime(structType any) BACnetConstructedDataLastRestoreTime {

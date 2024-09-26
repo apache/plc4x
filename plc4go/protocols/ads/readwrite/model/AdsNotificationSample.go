@@ -57,6 +57,11 @@ type _AdsNotificationSample struct {
 
 var _ AdsNotificationSample = (*_AdsNotificationSample)(nil)
 
+// NewAdsNotificationSample factory function for _AdsNotificationSample
+func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
+	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_AdsNotificationSample) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsNotificationSample factory function for _AdsNotificationSample
-func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
-	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsNotificationSample(structType any) AdsNotificationSample {

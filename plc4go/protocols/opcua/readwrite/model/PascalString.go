@@ -53,6 +53,11 @@ type _PascalString struct {
 
 var _ PascalString = (*_PascalString)(nil)
 
+// NewPascalString factory function for _PascalString
+func NewPascalString(stringValue string) *_PascalString {
+	return &_PascalString{StringValue: stringValue}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_PascalString) GetStringLength() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPascalString factory function for _PascalString
-func NewPascalString(stringValue string) *_PascalString {
-	return &_PascalString{StringValue: stringValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPascalString(structType any) PascalString {

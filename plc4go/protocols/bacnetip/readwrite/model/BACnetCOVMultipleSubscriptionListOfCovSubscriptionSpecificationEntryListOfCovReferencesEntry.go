@@ -57,6 +57,17 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
 
 var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry)(nil)
 
+// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
+func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry(monitoredProperty BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, timestamped BACnetContextTagBoolean) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry {
+	if monitoredProperty == nil {
+		panic("monitoredProperty of type BACnetPropertyReferenceEnclosed for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
+	}
+	if timestamped == nil {
+		panic("timestamped of type BACnetContextTagBoolean for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
+	}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{MonitoredProperty: monitoredProperty, CovIncrement: covIncrement, Timestamped: timestamped}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry
-func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry(monitoredProperty BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, timestamped BACnetContextTagBoolean) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry {
-	if monitoredProperty == nil {
-		panic("monitoredProperty of type BACnetPropertyReferenceEnclosed for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
-	}
-	if timestamped == nil {
-		panic("timestamped of type BACnetContextTagBoolean for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry must not be nil")
-	}
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry{MonitoredProperty: monitoredProperty, CovIncrement: covIncrement, Timestamped: timestamped}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry(structType any) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry {

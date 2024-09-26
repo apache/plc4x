@@ -57,6 +57,11 @@ type _KnxAddress struct {
 
 var _ KnxAddress = (*_KnxAddress)(nil)
 
+// NewKnxAddress factory function for _KnxAddress
+func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxAddress {
+	return &_KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_KnxAddress) GetSubGroup() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxAddress factory function for _KnxAddress
-func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxAddress {
-	return &_KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxAddress(structType any) KnxAddress {

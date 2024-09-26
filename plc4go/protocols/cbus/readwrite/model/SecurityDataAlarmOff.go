@@ -49,6 +49,15 @@ type _SecurityDataAlarmOff struct {
 var _ SecurityDataAlarmOff = (*_SecurityDataAlarmOff)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataAlarmOff)(nil)
 
+// NewSecurityDataAlarmOff factory function for _SecurityDataAlarmOff
+func NewSecurityDataAlarmOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOff {
+	_result := &_SecurityDataAlarmOff{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataAlarmOff)(nil)
 
 func (m *_SecurityDataAlarmOff) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataAlarmOff factory function for _SecurityDataAlarmOff
-func NewSecurityDataAlarmOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOff {
-	_result := &_SecurityDataAlarmOff{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

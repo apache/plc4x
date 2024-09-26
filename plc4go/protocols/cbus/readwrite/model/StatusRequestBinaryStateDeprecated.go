@@ -57,6 +57,16 @@ type _StatusRequestBinaryStateDeprecated struct {
 var _ StatusRequestBinaryStateDeprecated = (*_StatusRequestBinaryStateDeprecated)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestBinaryStateDeprecated)(nil)
 
+// NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
+func NewStatusRequestBinaryStateDeprecated(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryStateDeprecated {
+	_result := &_StatusRequestBinaryStateDeprecated{
+		StatusRequestContract: NewStatusRequest(statusType),
+		Application:           application,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -84,16 +94,6 @@ func (m *_StatusRequestBinaryStateDeprecated) GetApplication() ApplicationIdCont
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
-func NewStatusRequestBinaryStateDeprecated(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryStateDeprecated {
-	_result := &_StatusRequestBinaryStateDeprecated{
-		StatusRequestContract: NewStatusRequest(statusType),
-		Application:           application,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestBinaryStateDeprecated(structType any) StatusRequestBinaryStateDeprecated {

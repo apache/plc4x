@@ -56,6 +56,19 @@ type _BACnetConstructedDataVarianceValue struct {
 var _ BACnetConstructedDataVarianceValue = (*_BACnetConstructedDataVarianceValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVarianceValue)(nil)
 
+// NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
+func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
+	if varianceValue == nil {
+		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataVarianceValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VarianceValue:                 varianceValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataVarianceValue) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVarianceValue factory function for _BACnetConstructedDataVarianceValue
-func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, varianceValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVarianceValue {
-	if varianceValue == nil {
-		panic("varianceValue of type BACnetApplicationTagReal for BACnetConstructedDataVarianceValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataVarianceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VarianceValue:                 varianceValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVarianceValue(structType any) BACnetConstructedDataVarianceValue {

@@ -54,6 +54,19 @@ type _SALDataSecurity struct {
 var _ SALDataSecurity = (*_SALDataSecurity)(nil)
 var _ SALDataRequirements = (*_SALDataSecurity)(nil)
 
+// NewSALDataSecurity factory function for _SALDataSecurity
+func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSecurity {
+	if securityData == nil {
+		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
+	}
+	_result := &_SALDataSecurity{
+		SALDataContract: NewSALData(salData),
+		SecurityData:    securityData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataSecurity) GetSecurityData() SecurityData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataSecurity factory function for _SALDataSecurity
-func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSecurity {
-	if securityData == nil {
-		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
-	}
-	_result := &_SALDataSecurity{
-		SALDataContract: NewSALData(salData),
-		SecurityData:    securityData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataSecurity(structType any) SALDataSecurity {

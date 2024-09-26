@@ -74,6 +74,14 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryContract = (*_BACnetFaultParameterFaultExtendedParametersEntry)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
+func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,14 +118,6 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
-func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
-	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntry(structType any) BACnetFaultParameterFaultExtendedParametersEntry {

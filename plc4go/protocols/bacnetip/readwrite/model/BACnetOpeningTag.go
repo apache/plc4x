@@ -54,6 +54,14 @@ type _BACnetOpeningTag struct {
 
 var _ BACnetOpeningTag = (*_BACnetOpeningTag)(nil)
 
+// NewBACnetOpeningTag factory function for _BACnetOpeningTag
+func NewBACnetOpeningTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetOpeningTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetOpeningTag must not be nil")
+	}
+	return &_BACnetOpeningTag{Header: header, TagNumberArgument: tagNumberArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,14 +75,6 @@ func (m *_BACnetOpeningTag) GetHeader() BACnetTagHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOpeningTag factory function for _BACnetOpeningTag
-func NewBACnetOpeningTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetOpeningTag {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetOpeningTag must not be nil")
-	}
-	return &_BACnetOpeningTag{Header: header, TagNumberArgument: tagNumberArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOpeningTag(structType any) BACnetOpeningTag {

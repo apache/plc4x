@@ -54,6 +54,19 @@ type _BACnetOptionalREALNull struct {
 var _ BACnetOptionalREALNull = (*_BACnetOptionalREALNull)(nil)
 var _ BACnetOptionalREALRequirements = (*_BACnetOptionalREALNull)(nil)
 
+// NewBACnetOptionalREALNull factory function for _BACnetOptionalREALNull
+func NewBACnetOptionalREALNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalREALNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalREALNull must not be nil")
+	}
+	_result := &_BACnetOptionalREALNull{
+		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
+		NullValue:                  nullValue,
+	}
+	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalREALNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalREALNull factory function for _BACnetOptionalREALNull
-func NewBACnetOptionalREALNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalREALNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalREALNull must not be nil")
-	}
-	_result := &_BACnetOptionalREALNull{
-		BACnetOptionalREALContract: NewBACnetOptionalREAL(peekedTagHeader),
-		NullValue:                  nullValue,
-	}
-	_result.BACnetOptionalREALContract.(*_BACnetOptionalREAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalREALNull(structType any) BACnetOptionalREALNull {

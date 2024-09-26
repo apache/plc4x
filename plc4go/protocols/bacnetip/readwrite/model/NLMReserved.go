@@ -54,6 +54,16 @@ type _NLMReserved struct {
 var _ NLMReserved = (*_NLMReserved)(nil)
 var _ NLMRequirements = (*_NLMReserved)(nil)
 
+// NewNLMReserved factory function for _NLMReserved
+func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
+	_result := &_NLMReserved{
+		NLMContract:  NewNLM(apduLength),
+		UnknownBytes: unknownBytes,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_NLMReserved) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMReserved factory function for _NLMReserved
-func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
-	_result := &_NLMReserved{
-		NLMContract:  NewNLM(apduLength),
-		UnknownBytes: unknownBytes,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMReserved(structType any) NLMReserved {

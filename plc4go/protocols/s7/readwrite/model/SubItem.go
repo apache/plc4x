@@ -57,6 +57,11 @@ type _SubItem struct {
 
 var _ SubItem = (*_SubItem)(nil)
 
+// NewSubItem factory function for _SubItem
+func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
+	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_SubItem) GetStartAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubItem factory function for _SubItem
-func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
-	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubItem(structType any) SubItem {

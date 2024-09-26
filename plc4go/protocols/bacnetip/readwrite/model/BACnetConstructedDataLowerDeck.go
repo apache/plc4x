@@ -56,6 +56,19 @@ type _BACnetConstructedDataLowerDeck struct {
 var _ BACnetConstructedDataLowerDeck = (*_BACnetConstructedDataLowerDeck)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLowerDeck)(nil)
 
+// NewBACnetConstructedDataLowerDeck factory function for _BACnetConstructedDataLowerDeck
+func NewBACnetConstructedDataLowerDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowerDeck BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowerDeck {
+	if lowerDeck == nil {
+		panic("lowerDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLowerDeck must not be nil")
+	}
+	_result := &_BACnetConstructedDataLowerDeck{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowerDeck:                     lowerDeck,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLowerDeck) GetActualValue() BACnetApplicationTagO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLowerDeck factory function for _BACnetConstructedDataLowerDeck
-func NewBACnetConstructedDataLowerDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowerDeck BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowerDeck {
-	if lowerDeck == nil {
-		panic("lowerDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLowerDeck must not be nil")
-	}
-	_result := &_BACnetConstructedDataLowerDeck{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LowerDeck:                     lowerDeck,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLowerDeck(structType any) BACnetConstructedDataLowerDeck {

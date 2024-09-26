@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumUnsignedValue struct {
 var _ BACnetLogRecordLogDatumUnsignedValue = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
 
+// NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
+func NewBACnetLogRecordLogDatumUnsignedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumUnsignedValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		UnsignedValue:                   unsignedValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetUnsignedValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
-func NewBACnetLogRecordLogDatumUnsignedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumUnsignedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		UnsignedValue:                   unsignedValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumUnsignedValue(structType any) BACnetLogRecordLogDatumUnsignedValue {

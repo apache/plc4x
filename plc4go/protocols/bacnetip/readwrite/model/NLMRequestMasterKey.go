@@ -57,6 +57,17 @@ type _NLMRequestMasterKey struct {
 var _ NLMRequestMasterKey = (*_NLMRequestMasterKey)(nil)
 var _ NLMRequirements = (*_NLMRequestMasterKey)(nil)
 
+// NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
+func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
+	_result := &_NLMRequestMasterKey{
+		NLMContract:                      NewNLM(apduLength),
+		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
+		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMRequestMasterKey) GetEncryptionAndSignatureAlgorithms() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRequestMasterKey factory function for _NLMRequestMasterKey
-func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte, apduLength uint16) *_NLMRequestMasterKey {
-	_result := &_NLMRequestMasterKey{
-		NLMContract:                      NewNLM(apduLength),
-		NumberOfSupportedKeyAlgorithms:   numberOfSupportedKeyAlgorithms,
-		EncryptionAndSignatureAlgorithms: encryptionAndSignatureAlgorithms,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {

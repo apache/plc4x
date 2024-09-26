@@ -57,6 +57,17 @@ type _VariantDataValue struct {
 var _ VariantDataValue = (*_VariantDataValue)(nil)
 var _ VariantRequirements = (*_VariantDataValue)(nil)
 
+// NewVariantDataValue factory function for _VariantDataValue
+func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DataValue) *_VariantDataValue {
+	_result := &_VariantDataValue{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantDataValue) GetValue() []DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDataValue factory function for _VariantDataValue
-func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DataValue) *_VariantDataValue {
-	_result := &_VariantDataValue{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDataValue(structType any) VariantDataValue {

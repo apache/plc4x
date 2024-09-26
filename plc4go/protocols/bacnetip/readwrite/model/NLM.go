@@ -74,6 +74,11 @@ type _NLM struct {
 
 var _ NLMContract = (*_NLM)(nil)
 
+// NewNLM factory function for _NLM
+func NewNLM(apduLength uint16) *_NLM {
+	return &_NLM{ApduLength: apduLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -90,11 +95,6 @@ func (pm *_NLM) GetIsVendorProprietaryMessage() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLM factory function for _NLM
-func NewNLM(apduLength uint16) *_NLM {
-	return &_NLM{ApduLength: apduLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLM(structType any) NLM {

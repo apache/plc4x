@@ -89,6 +89,42 @@ type _PubSubConnectionDataType struct {
 var _ PubSubConnectionDataType = (*_PubSubConnectionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConnectionDataType)(nil)
 
+// NewPubSubConnectionDataType factory function for _PubSubConnectionDataType
+func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) *_PubSubConnectionDataType {
+	if name == nil {
+		panic("name of type PascalString for PubSubConnectionDataType must not be nil")
+	}
+	if publisherId == nil {
+		panic("publisherId of type Variant for PubSubConnectionDataType must not be nil")
+	}
+	if transportProfileUri == nil {
+		panic("transportProfileUri of type PascalString for PubSubConnectionDataType must not be nil")
+	}
+	if address == nil {
+		panic("address of type ExtensionObject for PubSubConnectionDataType must not be nil")
+	}
+	if transportSettings == nil {
+		panic("transportSettings of type ExtensionObject for PubSubConnectionDataType must not be nil")
+	}
+	_result := &_PubSubConnectionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Enabled:                           enabled,
+		PublisherId:                       publisherId,
+		TransportProfileUri:               transportProfileUri,
+		Address:                           address,
+		NoOfConnectionProperties:          noOfConnectionProperties,
+		ConnectionProperties:              connectionProperties,
+		TransportSettings:                 transportSettings,
+		NoOfWriterGroups:                  noOfWriterGroups,
+		WriterGroups:                      writerGroups,
+		NoOfReaderGroups:                  noOfReaderGroups,
+		ReaderGroups:                      readerGroups,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -164,42 +200,6 @@ func (m *_PubSubConnectionDataType) GetReaderGroups() []PubSubGroupDataType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConnectionDataType factory function for _PubSubConnectionDataType
-func NewPubSubConnectionDataType(name PascalString, enabled bool, publisherId Variant, transportProfileUri PascalString, address ExtensionObject, noOfConnectionProperties int32, connectionProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, noOfWriterGroups int32, writerGroups []PubSubGroupDataType, noOfReaderGroups int32, readerGroups []PubSubGroupDataType) *_PubSubConnectionDataType {
-	if name == nil {
-		panic("name of type PascalString for PubSubConnectionDataType must not be nil")
-	}
-	if publisherId == nil {
-		panic("publisherId of type Variant for PubSubConnectionDataType must not be nil")
-	}
-	if transportProfileUri == nil {
-		panic("transportProfileUri of type PascalString for PubSubConnectionDataType must not be nil")
-	}
-	if address == nil {
-		panic("address of type ExtensionObject for PubSubConnectionDataType must not be nil")
-	}
-	if transportSettings == nil {
-		panic("transportSettings of type ExtensionObject for PubSubConnectionDataType must not be nil")
-	}
-	_result := &_PubSubConnectionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Enabled:                           enabled,
-		PublisherId:                       publisherId,
-		TransportProfileUri:               transportProfileUri,
-		Address:                           address,
-		NoOfConnectionProperties:          noOfConnectionProperties,
-		ConnectionProperties:              connectionProperties,
-		TransportSettings:                 transportSettings,
-		NoOfWriterGroups:                  noOfWriterGroups,
-		WriterGroups:                      writerGroups,
-		NoOfReaderGroups:                  noOfReaderGroups,
-		ReaderGroups:                      readerGroups,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConnectionDataType(structType any) PubSubConnectionDataType {

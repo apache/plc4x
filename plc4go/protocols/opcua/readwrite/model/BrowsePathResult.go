@@ -60,6 +60,21 @@ type _BrowsePathResult struct {
 var _ BrowsePathResult = (*_BrowsePathResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowsePathResult)(nil)
 
+// NewBrowsePathResult factory function for _BrowsePathResult
+func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
+	}
+	_result := &_BrowsePathResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfTargets:                       noOfTargets,
+		Targets:                           targets,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_BrowsePathResult) GetTargets() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowsePathResult factory function for _BrowsePathResult
-func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) *_BrowsePathResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for BrowsePathResult must not be nil")
-	}
-	_result := &_BrowsePathResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfTargets:                       noOfTargets,
-		Targets:                           targets,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowsePathResult(structType any) BrowsePathResult {

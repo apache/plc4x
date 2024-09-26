@@ -72,6 +72,11 @@ type _BACnetConfirmedServiceRequest struct {
 
 var _ BACnetConfirmedServiceRequestContract = (*_BACnetConfirmedServiceRequest)(nil)
 
+// NewBACnetConfirmedServiceRequest factory function for _BACnetConfirmedServiceRequest
+func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfirmedServiceRequest {
+	return &_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -88,11 +93,6 @@ func (pm *_BACnetConfirmedServiceRequest) GetServiceRequestPayloadLength() uint3
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequest factory function for _BACnetConfirmedServiceRequest
-func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfirmedServiceRequest {
-	return &_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequest(structType any) BACnetConfirmedServiceRequest {

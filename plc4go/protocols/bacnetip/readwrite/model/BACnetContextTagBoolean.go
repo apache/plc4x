@@ -59,6 +59,20 @@ type _BACnetContextTagBoolean struct {
 var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBoolean)(nil)
 
+// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
+	}
+	_result := &_BACnetContextTagBoolean{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Value:                    value,
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,20 +123,6 @@ func (m *_BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
-	}
-	_result := &_BACnetContextTagBoolean{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Value:                    value,
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {

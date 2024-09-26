@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPDefaultGateway struct {
 var _ BACnetConstructedDataIPDefaultGateway = (*_BACnetConstructedDataIPDefaultGateway)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDefaultGateway)(nil)
 
+// NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
+func NewBACnetConstructedDataIPDefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
+	if ipDefaultGateway == nil {
+		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDefaultGateway{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDefaultGateway:              ipDefaultGateway,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
-func NewBACnetConstructedDataIPDefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
-	if ipDefaultGateway == nil {
-		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDefaultGateway{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDefaultGateway:              ipDefaultGateway,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDefaultGateway(structType any) BACnetConstructedDataIPDefaultGateway {

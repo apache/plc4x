@@ -63,6 +63,22 @@ type _LBusmonInd struct {
 var _ LBusmonInd = (*_LBusmonInd)(nil)
 var _ CEMIRequirements = (*_LBusmonInd)(nil)
 
+// NewLBusmonInd factory function for _LBusmonInd
+func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8, size uint16) *_LBusmonInd {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LBusmonInd must not be nil")
+	}
+	_result := &_LBusmonInd{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+		Crc:                         crc,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,22 +122,6 @@ func (m *_LBusmonInd) GetCrc() *uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLBusmonInd factory function for _LBusmonInd
-func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, crc *uint8, size uint16) *_LBusmonInd {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LBusmonInd must not be nil")
-	}
-	_result := &_LBusmonInd{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-		Crc:                         crc,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLBusmonInd(structType any) LBusmonInd {

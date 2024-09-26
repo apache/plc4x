@@ -57,6 +57,17 @@ type _FirmataCommandProtocolVersion struct {
 var _ FirmataCommandProtocolVersion = (*_FirmataCommandProtocolVersion)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandProtocolVersion)(nil)
 
+// NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
+func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
+	_result := &_FirmataCommandProtocolVersion{
+		FirmataCommandContract: NewFirmataCommand(response),
+		MajorVersion:           majorVersion,
+		MinorVersion:           minorVersion,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_FirmataCommandProtocolVersion) GetMinorVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandProtocolVersion factory function for _FirmataCommandProtocolVersion
-func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, response bool) *_FirmataCommandProtocolVersion {
-	_result := &_FirmataCommandProtocolVersion{
-		FirmataCommandContract: NewFirmataCommand(response),
-		MajorVersion:           majorVersion,
-		MinorVersion:           minorVersion,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandProtocolVersion(structType any) FirmataCommandProtocolVersion {

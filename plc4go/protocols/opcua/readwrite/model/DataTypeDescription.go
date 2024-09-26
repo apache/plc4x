@@ -57,6 +57,23 @@ type _DataTypeDescription struct {
 var _ DataTypeDescription = (*_DataTypeDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeDescription)(nil)
 
+// NewDataTypeDescription factory function for _DataTypeDescription
+func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDescription {
+	if dataTypeId == nil {
+		panic("dataTypeId of type NodeId for DataTypeDescription must not be nil")
+	}
+	if name == nil {
+		panic("name of type QualifiedName for DataTypeDescription must not be nil")
+	}
+	_result := &_DataTypeDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		DataTypeId:                        dataTypeId,
+		Name:                              name,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_DataTypeDescription) GetName() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataTypeDescription factory function for _DataTypeDescription
-func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDescription {
-	if dataTypeId == nil {
-		panic("dataTypeId of type NodeId for DataTypeDescription must not be nil")
-	}
-	if name == nil {
-		panic("name of type QualifiedName for DataTypeDescription must not be nil")
-	}
-	_result := &_DataTypeDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		DataTypeId:                        dataTypeId,
-		Name:                              name,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataTypeDescription(structType any) DataTypeDescription {

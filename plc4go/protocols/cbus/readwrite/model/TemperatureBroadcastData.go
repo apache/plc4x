@@ -61,6 +61,11 @@ type _TemperatureBroadcastData struct {
 
 var _ TemperatureBroadcastData = (*_TemperatureBroadcastData)(nil)
 
+// NewTemperatureBroadcastData factory function for _TemperatureBroadcastData
+func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) *_TemperatureBroadcastData {
+	return &_TemperatureBroadcastData{CommandTypeContainer: commandTypeContainer, TemperatureGroup: temperatureGroup, TemperatureByte: temperatureByte}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -103,11 +108,6 @@ func (m *_TemperatureBroadcastData) GetTemperatureInCelsius() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTemperatureBroadcastData factory function for _TemperatureBroadcastData
-func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) *_TemperatureBroadcastData {
-	return &_TemperatureBroadcastData{CommandTypeContainer: commandTypeContainer, TemperatureGroup: temperatureGroup, TemperatureByte: temperatureByte}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {

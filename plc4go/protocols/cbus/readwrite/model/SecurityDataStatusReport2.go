@@ -54,6 +54,16 @@ type _SecurityDataStatusReport2 struct {
 var _ SecurityDataStatusReport2 = (*_SecurityDataStatusReport2)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatusReport2)(nil)
 
+// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
+func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneStatus []ZoneStatus) *_SecurityDataStatusReport2 {
+	_result := &_SecurityDataStatusReport2{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataStatusReport2) GetZoneStatus() []ZoneStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
-func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneStatus []ZoneStatus) *_SecurityDataStatusReport2 {
-	_result := &_SecurityDataStatusReport2{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneStatus:           zoneStatus,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataStatusReport2(structType any) SecurityDataStatusReport2 {

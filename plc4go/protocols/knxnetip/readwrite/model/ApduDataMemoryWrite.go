@@ -49,6 +49,15 @@ type _ApduDataMemoryWrite struct {
 var _ ApduDataMemoryWrite = (*_ApduDataMemoryWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryWrite)(nil)
 
+// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
+func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
+	_result := &_ApduDataMemoryWrite{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataMemoryWrite) GetApciType() uint8 {
 
 func (m *_ApduDataMemoryWrite) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
-func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
-	_result := &_ApduDataMemoryWrite{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

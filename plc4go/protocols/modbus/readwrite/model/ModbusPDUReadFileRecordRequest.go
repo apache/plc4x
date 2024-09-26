@@ -54,6 +54,16 @@ type _ModbusPDUReadFileRecordRequest struct {
 var _ ModbusPDUReadFileRecordRequest = (*_ModbusPDUReadFileRecordRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFileRecordRequest)(nil)
 
+// NewModbusPDUReadFileRecordRequest factory function for _ModbusPDUReadFileRecordRequest
+func NewModbusPDUReadFileRecordRequest(items []ModbusPDUReadFileRecordRequestItem) *_ModbusPDUReadFileRecordRequest {
+	_result := &_ModbusPDUReadFileRecordRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Items:             items,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUReadFileRecordRequest) GetItems() []ModbusPDUReadFileRecordRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFileRecordRequest factory function for _ModbusPDUReadFileRecordRequest
-func NewModbusPDUReadFileRecordRequest(items []ModbusPDUReadFileRecordRequestItem) *_ModbusPDUReadFileRecordRequest {
-	_result := &_ModbusPDUReadFileRecordRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Items:             items,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFileRecordRequest(structType any) ModbusPDUReadFileRecordRequest {

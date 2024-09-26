@@ -63,6 +63,19 @@ type _AdsMultiRequestItemReadWrite struct {
 var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemReadWrite)(nil)
 
+// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
+func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
+	_result := &_AdsMultiRequestItemReadWrite{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+		ItemWriteLength:             itemWriteLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_AdsMultiRequestItemReadWrite) GetItemWriteLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
-func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
-	_result := &_AdsMultiRequestItemReadWrite{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemReadLength:              itemReadLength,
-		ItemWriteLength:             itemWriteLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemReadWrite(structType any) AdsMultiRequestItemReadWrite {

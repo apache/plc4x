@@ -54,6 +54,19 @@ type _BACnetPriorityValueDouble struct {
 var _ BACnetPriorityValueDouble = (*_BACnetPriorityValueDouble)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDouble)(nil)
 
+// NewBACnetPriorityValueDouble factory function for _BACnetPriorityValueDouble
+func NewBACnetPriorityValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetPriorityValueDouble must not be nil")
+	}
+	_result := &_BACnetPriorityValueDouble{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DoubleValue:                 doubleValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueDouble) GetDoubleValue() BACnetApplicationTagDouble
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueDouble factory function for _BACnetPriorityValueDouble
-func NewBACnetPriorityValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetPriorityValueDouble must not be nil")
-	}
-	_result := &_BACnetPriorityValueDouble{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		DoubleValue:                 doubleValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueDouble(structType any) BACnetPriorityValueDouble {

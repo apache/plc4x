@@ -54,6 +54,19 @@ type _BACnetChannelValueEnumerated struct {
 var _ BACnetChannelValueEnumerated = (*_BACnetChannelValueEnumerated)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueEnumerated)(nil)
 
+// NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
+func NewBACnetChannelValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetChannelValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
+	}
+	_result := &_BACnetChannelValueEnumerated{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		EnumeratedValue:            enumeratedValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueEnumerated) GetEnumeratedValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueEnumerated factory function for _BACnetChannelValueEnumerated
-func NewBACnetChannelValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetChannelValueEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetChannelValueEnumerated must not be nil")
-	}
-	_result := &_BACnetChannelValueEnumerated{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		EnumeratedValue:            enumeratedValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueEnumerated(structType any) BACnetChannelValueEnumerated {

@@ -54,6 +54,19 @@ type _BACnetChannelValueDate struct {
 var _ BACnetChannelValueDate = (*_BACnetChannelValueDate)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueDate)(nil)
 
+// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
+func NewBACnetChannelValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetChannelValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
+	}
+	_result := &_BACnetChannelValueDate{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		DateValue:                  dateValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueDate) GetDateValue() BACnetApplicationTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
-func NewBACnetChannelValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetChannelValueDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
-	}
-	_result := &_BACnetChannelValueDate{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		DateValue:                  dateValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueDate(structType any) BACnetChannelValueDate {

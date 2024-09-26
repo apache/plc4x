@@ -60,6 +60,11 @@ type _ModbusPDUReadFileRecordRequestItem struct {
 
 var _ ModbusPDUReadFileRecordRequestItem = (*_ModbusPDUReadFileRecordRequestItem)(nil)
 
+// NewModbusPDUReadFileRecordRequestItem factory function for _ModbusPDUReadFileRecordRequestItem
+func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *_ModbusPDUReadFileRecordRequestItem {
+	return &_ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_ModbusPDUReadFileRecordRequestItem) GetRecordLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFileRecordRequestItem factory function for _ModbusPDUReadFileRecordRequestItem
-func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *_ModbusPDUReadFileRecordRequestItem {
-	return &_ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFileRecordRequestItem(structType any) ModbusPDUReadFileRecordRequestItem {

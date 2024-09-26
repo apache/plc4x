@@ -59,6 +59,16 @@ type _BVLCWriteBroadcastDistributionTable struct {
 var _ BVLCWriteBroadcastDistributionTable = (*_BVLCWriteBroadcastDistributionTable)(nil)
 var _ BVLCRequirements = (*_BVLCWriteBroadcastDistributionTable)(nil)
 
+// NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
+func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
+	_result := &_BVLCWriteBroadcastDistributionTable{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,16 +100,6 @@ func (m *_BVLCWriteBroadcastDistributionTable) GetTable() []BVLCBroadcastDistrib
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCWriteBroadcastDistributionTable factory function for _BVLCWriteBroadcastDistributionTable
-func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCWriteBroadcastDistributionTable {
-	_result := &_BVLCWriteBroadcastDistributionTable{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCWriteBroadcastDistributionTable(structType any) BVLCWriteBroadcastDistributionTable {

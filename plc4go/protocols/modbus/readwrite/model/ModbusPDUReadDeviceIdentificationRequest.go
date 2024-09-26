@@ -60,6 +60,17 @@ type _ModbusPDUReadDeviceIdentificationRequest struct {
 var _ ModbusPDUReadDeviceIdentificationRequest = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadDeviceIdentificationRequest)(nil)
 
+// NewModbusPDUReadDeviceIdentificationRequest factory function for _ModbusPDUReadDeviceIdentificationRequest
+func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *_ModbusPDUReadDeviceIdentificationRequest {
+	_result := &_ModbusPDUReadDeviceIdentificationRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Level:             level,
+		ObjectId:          objectId,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,17 +127,6 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetMeiType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadDeviceIdentificationRequest factory function for _ModbusPDUReadDeviceIdentificationRequest
-func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLevel, objectId uint8) *_ModbusPDUReadDeviceIdentificationRequest {
-	_result := &_ModbusPDUReadDeviceIdentificationRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Level:             level,
-		ObjectId:          objectId,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadDeviceIdentificationRequest(structType any) ModbusPDUReadDeviceIdentificationRequest {

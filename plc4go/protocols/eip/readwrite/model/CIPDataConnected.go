@@ -54,6 +54,11 @@ type _CIPDataConnected struct {
 
 var _ CIPDataConnected = (*_CIPDataConnected)(nil)
 
+// NewCIPDataConnected factory function for _CIPDataConnected
+func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
+	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_CIPDataConnected) GetTagStatus() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPDataConnected factory function for _CIPDataConnected
-func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
-	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPDataConnected(structType any) CIPDataConnected {

@@ -69,6 +69,30 @@ type _AxisInformation struct {
 var _ AxisInformation = (*_AxisInformation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AxisInformation)(nil)
 
+// NewAxisInformation factory function for _AxisInformation
+func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) *_AxisInformation {
+	if engineeringUnits == nil {
+		panic("engineeringUnits of type ExtensionObjectDefinition for AxisInformation must not be nil")
+	}
+	if eURange == nil {
+		panic("eURange of type ExtensionObjectDefinition for AxisInformation must not be nil")
+	}
+	if title == nil {
+		panic("title of type LocalizedText for AxisInformation must not be nil")
+	}
+	_result := &_AxisInformation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		EngineeringUnits:                  engineeringUnits,
+		EURange:                           eURange,
+		Title:                             title,
+		AxisScaleType:                     axisScaleType,
+		NoOfAxisSteps:                     noOfAxisSteps,
+		AxisSteps:                         axisSteps,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,30 +144,6 @@ func (m *_AxisInformation) GetAxisSteps() []float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAxisInformation factory function for _AxisInformation
-func NewAxisInformation(engineeringUnits ExtensionObjectDefinition, eURange ExtensionObjectDefinition, title LocalizedText, axisScaleType AxisScaleEnumeration, noOfAxisSteps int32, axisSteps []float64) *_AxisInformation {
-	if engineeringUnits == nil {
-		panic("engineeringUnits of type ExtensionObjectDefinition for AxisInformation must not be nil")
-	}
-	if eURange == nil {
-		panic("eURange of type ExtensionObjectDefinition for AxisInformation must not be nil")
-	}
-	if title == nil {
-		panic("title of type LocalizedText for AxisInformation must not be nil")
-	}
-	_result := &_AxisInformation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		EngineeringUnits:                  engineeringUnits,
-		EURange:                           eURange,
-		Title:                             title,
-		AxisScaleType:                     axisScaleType,
-		NoOfAxisSteps:                     noOfAxisSteps,
-		AxisSteps:                         axisSteps,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAxisInformation(structType any) AxisInformation {

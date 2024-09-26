@@ -49,6 +49,15 @@ type _MonitoringFilter struct {
 var _ MonitoringFilter = (*_MonitoringFilter)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringFilter)(nil)
 
+// NewMonitoringFilter factory function for _MonitoringFilter
+func NewMonitoringFilter() *_MonitoringFilter {
+	_result := &_MonitoringFilter{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MonitoringFilter) GetIdentifier() string {
 
 func (m *_MonitoringFilter) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewMonitoringFilter factory function for _MonitoringFilter
-func NewMonitoringFilter() *_MonitoringFilter {
-	_result := &_MonitoringFilter{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

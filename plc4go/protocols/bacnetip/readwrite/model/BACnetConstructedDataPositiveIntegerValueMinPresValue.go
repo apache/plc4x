@@ -56,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueMinPresValue struct {
 var _ BACnetConstructedDataPositiveIntegerValueMinPresValue = (*_BACnetConstructedDataPositiveIntegerValueMinPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueMinPresValue)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueMinPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMinPresValue
+func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	if minPresValue == nil {
+		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMinPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinPresValue:                  minPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueMinPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMinPresValue
-func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
-	if minPresValue == nil {
-		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMinPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinPresValue:                  minPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueMinPresValue(structType any) BACnetConstructedDataPositiveIntegerValueMinPresValue {

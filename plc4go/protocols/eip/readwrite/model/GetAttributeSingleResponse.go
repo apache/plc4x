@@ -49,6 +49,15 @@ type _GetAttributeSingleResponse struct {
 var _ GetAttributeSingleResponse = (*_GetAttributeSingleResponse)(nil)
 var _ CipServiceRequirements = (*_GetAttributeSingleResponse)(nil)
 
+// NewGetAttributeSingleResponse factory function for _GetAttributeSingleResponse
+func NewGetAttributeSingleResponse(serviceLen uint16) *_GetAttributeSingleResponse {
+	_result := &_GetAttributeSingleResponse{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_GetAttributeSingleResponse) GetConnected() bool {
 
 func (m *_GetAttributeSingleResponse) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewGetAttributeSingleResponse factory function for _GetAttributeSingleResponse
-func NewGetAttributeSingleResponse(serviceLen uint16) *_GetAttributeSingleResponse {
-	_result := &_GetAttributeSingleResponse{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

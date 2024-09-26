@@ -59,6 +59,17 @@ type _ConnectionStateResponse struct {
 var _ ConnectionStateResponse = (*_ConnectionStateResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionStateResponse)(nil)
 
+// NewConnectionStateResponse factory function for _ConnectionStateResponse
+func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_ConnectionStateResponse {
+	_result := &_ConnectionStateResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		Status:                  status,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_ConnectionStateResponse) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionStateResponse factory function for _ConnectionStateResponse
-func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_ConnectionStateResponse {
-	_result := &_ConnectionStateResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		Status:                  status,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionStateResponse(structType any) ConnectionStateResponse {

@@ -60,6 +60,20 @@ type _BACnetTimeStampEnclosed struct {
 
 var _ BACnetTimeStampEnclosed = (*_BACnetTimeStampEnclosed)(nil)
 
+// NewBACnetTimeStampEnclosed factory function for _BACnetTimeStampEnclosed
+func NewBACnetTimeStampEnclosed(openingTag BACnetOpeningTag, timestamp BACnetTimeStamp, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetTimeStampEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetTimeStampEnclosed must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStamp for BACnetTimeStampEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetTimeStampEnclosed must not be nil")
+	}
+	return &_BACnetTimeStampEnclosed{OpeningTag: openingTag, Timestamp: timestamp, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetTimeStampEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampEnclosed factory function for _BACnetTimeStampEnclosed
-func NewBACnetTimeStampEnclosed(openingTag BACnetOpeningTag, timestamp BACnetTimeStamp, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetTimeStampEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetTimeStampEnclosed must not be nil")
-	}
-	if timestamp == nil {
-		panic("timestamp of type BACnetTimeStamp for BACnetTimeStampEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetTimeStampEnclosed must not be nil")
-	}
-	return &_BACnetTimeStampEnclosed{OpeningTag: openingTag, Timestamp: timestamp, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampEnclosed(structType any) BACnetTimeStampEnclosed {

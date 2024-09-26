@@ -54,6 +54,19 @@ type _CloseSecureChannelRequest struct {
 var _ CloseSecureChannelRequest = (*_CloseSecureChannelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSecureChannelRequest)(nil)
 
+// NewCloseSecureChannelRequest factory function for _CloseSecureChannelRequest
+func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_CloseSecureChannelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSecureChannelRequest must not be nil")
+	}
+	_result := &_CloseSecureChannelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_CloseSecureChannelRequest) GetRequestHeader() ExtensionObjectDefinitio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSecureChannelRequest factory function for _CloseSecureChannelRequest
-func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_CloseSecureChannelRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CloseSecureChannelRequest must not be nil")
-	}
-	_result := &_CloseSecureChannelRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSecureChannelRequest(structType any) CloseSecureChannelRequest {

@@ -57,6 +57,16 @@ type _BACnetServiceAckReadPropertyMultiple struct {
 var _ BACnetServiceAckReadPropertyMultiple = (*_BACnetServiceAckReadPropertyMultiple)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadPropertyMultiple)(nil)
 
+// NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
+func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyMultiple {
+	_result := &_BACnetServiceAckReadPropertyMultiple{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		Data:                     data,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,16 +98,6 @@ func (m *_BACnetServiceAckReadPropertyMultiple) GetData() []BACnetReadAccessResu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckReadPropertyMultiple factory function for _BACnetServiceAckReadPropertyMultiple
-func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyMultiple {
-	_result := &_BACnetServiceAckReadPropertyMultiple{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		Data:                     data,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckReadPropertyMultiple(structType any) BACnetServiceAckReadPropertyMultiple {

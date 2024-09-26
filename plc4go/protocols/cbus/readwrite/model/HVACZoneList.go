@@ -74,6 +74,11 @@ type _HVACZoneList struct {
 
 var _ HVACZoneList = (*_HVACZoneList)(nil)
 
+// NewHVACZoneList factory function for _HVACZoneList
+func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) *_HVACZoneList {
+	return &_HVACZoneList{Expansion: expansion, Zone6: zone6, Zone5: zone5, Zone4: zone4, Zone3: zone3, Zone2: zone2, Zone1: zone1, Zone0: zone0}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -130,11 +135,6 @@ func (m *_HVACZoneList) GetUnswitchedZone() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACZoneList factory function for _HVACZoneList
-func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) *_HVACZoneList {
-	return &_HVACZoneList{Expansion: expansion, Zone6: zone6, Zone5: zone5, Zone4: zone4, Zone3: zone3, Zone2: zone2, Zone1: zone1, Zone0: zone0}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACZoneList(structType any) HVACZoneList {

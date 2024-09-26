@@ -71,6 +71,29 @@ type _CipUnconnectedRequest struct {
 var _ CipUnconnectedRequest = (*_CipUnconnectedRequest)(nil)
 var _ CipServiceRequirements = (*_CipUnconnectedRequest)(nil)
 
+// NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for CipUnconnectedRequest must not be nil")
+	}
+	if unconnectedService == nil {
+		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
+	}
+	_result := &_CipUnconnectedRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
+		UnconnectedService: unconnectedService,
+		BackPlane:          backPlane,
+		Slot:               slot,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -139,29 +162,6 @@ func (m *_CipUnconnectedRequest) GetRoute() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for CipUnconnectedRequest must not be nil")
-	}
-	if unconnectedService == nil {
-		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
-	}
-	_result := &_CipUnconnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
-		UnconnectedService: unconnectedService,
-		BackPlane:          backPlane,
-		Slot:               slot,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipUnconnectedRequest(structType any) CipUnconnectedRequest {

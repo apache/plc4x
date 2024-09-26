@@ -57,6 +57,20 @@ type _BACnetAuthenticationFactor struct {
 
 var _ BACnetAuthenticationFactor = (*_BACnetAuthenticationFactor)(nil)
 
+// NewBACnetAuthenticationFactor factory function for _BACnetAuthenticationFactor
+func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) *_BACnetAuthenticationFactor {
+	if formatType == nil {
+		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactor must not be nil")
+	}
+	if formatClass == nil {
+		panic("formatClass of type BACnetContextTagUnsignedInteger for BACnetAuthenticationFactor must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetContextTagOctetString for BACnetAuthenticationFactor must not be nil")
+	}
+	return &_BACnetAuthenticationFactor{FormatType: formatType, FormatClass: formatClass, Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,20 +92,6 @@ func (m *_BACnetAuthenticationFactor) GetValue() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactor factory function for _BACnetAuthenticationFactor
-func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) *_BACnetAuthenticationFactor {
-	if formatType == nil {
-		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactor must not be nil")
-	}
-	if formatClass == nil {
-		panic("formatClass of type BACnetContextTagUnsignedInteger for BACnetAuthenticationFactor must not be nil")
-	}
-	if value == nil {
-		panic("value of type BACnetContextTagOctetString for BACnetAuthenticationFactor must not be nil")
-	}
-	return &_BACnetAuthenticationFactor{FormatType: formatType, FormatClass: formatClass, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactor(structType any) BACnetAuthenticationFactor {

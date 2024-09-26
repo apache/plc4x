@@ -60,6 +60,21 @@ type _FindServersResponse struct {
 var _ FindServersResponse = (*_FindServersResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersResponse)(nil)
 
+// NewFindServersResponse factory function for _FindServersResponse
+func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for FindServersResponse must not be nil")
+	}
+	_result := &_FindServersResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfServers:                       noOfServers,
+		Servers:                           servers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_FindServersResponse) GetServers() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersResponse factory function for _FindServersResponse
-func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for FindServersResponse must not be nil")
-	}
-	_result := &_FindServersResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfServers:                       noOfServers,
-		Servers:                           servers,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersResponse(structType any) FindServersResponse {

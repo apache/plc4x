@@ -64,6 +64,16 @@ type _SecurityDataPasswordEntryStatus struct {
 var _ SecurityDataPasswordEntryStatus = (*_SecurityDataPasswordEntryStatus)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataPasswordEntryStatus)(nil)
 
+// NewSecurityDataPasswordEntryStatus factory function for _SecurityDataPasswordEntryStatus
+func NewSecurityDataPasswordEntryStatus(commandTypeContainer SecurityCommandTypeContainer, argument byte, code byte) *_SecurityDataPasswordEntryStatus {
+	_result := &_SecurityDataPasswordEntryStatus{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Code:                 code,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -130,16 +140,6 @@ func (m *_SecurityDataPasswordEntryStatus) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataPasswordEntryStatus factory function for _SecurityDataPasswordEntryStatus
-func NewSecurityDataPasswordEntryStatus(commandTypeContainer SecurityCommandTypeContainer, argument byte, code byte) *_SecurityDataPasswordEntryStatus {
-	_result := &_SecurityDataPasswordEntryStatus{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Code:                 code,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataPasswordEntryStatus(structType any) SecurityDataPasswordEntryStatus {

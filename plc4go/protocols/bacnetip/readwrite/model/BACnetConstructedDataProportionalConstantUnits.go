@@ -56,6 +56,19 @@ type _BACnetConstructedDataProportionalConstantUnits struct {
 var _ BACnetConstructedDataProportionalConstantUnits = (*_BACnetConstructedDataProportionalConstantUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstantUnits)(nil)
 
+// NewBACnetConstructedDataProportionalConstantUnits factory function for _BACnetConstructedDataProportionalConstantUnits
+func NewBACnetConstructedDataProportionalConstantUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstantUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataProportionalConstantUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataProportionalConstantUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProportionalConstantUnits) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProportionalConstantUnits factory function for _BACnetConstructedDataProportionalConstantUnits
-func NewBACnetConstructedDataProportionalConstantUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstantUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataProportionalConstantUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataProportionalConstantUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProportionalConstantUnits(structType any) BACnetConstructedDataProportionalConstantUnits {

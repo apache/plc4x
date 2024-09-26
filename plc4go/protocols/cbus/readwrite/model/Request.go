@@ -87,6 +87,14 @@ type _Request struct {
 
 var _ RequestContract = (*_Request)(nil)
 
+// NewRequest factory function for _Request
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
+	if termination == nil {
+		panic("termination of type RequestTermination for Request must not be nil")
+	}
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -136,14 +144,6 @@ func (pm *_Request) GetActualPeek() RequestType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
-	if termination == nil {
-		panic("termination of type RequestTermination for Request must not be nil")
-	}
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequest(structType any) Request {

@@ -75,6 +75,11 @@ type _MeteringData struct {
 
 var _ MeteringDataContract = (*_MeteringData)(nil)
 
+// NewMeteringData factory function for _MeteringData
+func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringData {
+	return &_MeteringData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +113,6 @@ func (pm *_MeteringData) GetCommandType() MeteringCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringData factory function for _MeteringData
-func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringData {
-	return &_MeteringData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringData(structType any) MeteringData {

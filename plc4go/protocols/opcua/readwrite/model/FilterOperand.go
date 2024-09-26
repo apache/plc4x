@@ -49,6 +49,15 @@ type _FilterOperand struct {
 var _ FilterOperand = (*_FilterOperand)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FilterOperand)(nil)
 
+// NewFilterOperand factory function for _FilterOperand
+func NewFilterOperand() *_FilterOperand {
+	_result := &_FilterOperand{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_FilterOperand) GetIdentifier() string {
 
 func (m *_FilterOperand) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewFilterOperand factory function for _FilterOperand
-func NewFilterOperand() *_FilterOperand {
-	_result := &_FilterOperand{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

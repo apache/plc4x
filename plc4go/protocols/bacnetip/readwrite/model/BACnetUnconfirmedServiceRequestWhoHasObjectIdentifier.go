@@ -54,6 +54,19 @@ type _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier struct {
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier = (*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier)(nil)
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectRequirements = (*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(peekedTagHeader BACnetTagHeader, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
+		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
+		ObjectIdentifier: objectIdentifier,
+	}
+	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) GetObjectIdenti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(peekedTagHeader BACnetTagHeader, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{
-		BACnetUnconfirmedServiceRequestWhoHasObjectContract: NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader),
-		ObjectIdentifier: objectIdentifier,
-	}
-	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(structType any) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {

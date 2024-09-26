@@ -59,6 +59,17 @@ type _BACnetConstructedDataStateChangeValues struct {
 var _ BACnetConstructedDataStateChangeValues = (*_BACnetConstructedDataStateChangeValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStateChangeValues)(nil)
 
+// NewBACnetConstructedDataStateChangeValues factory function for _BACnetConstructedDataStateChangeValues
+func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateChangeValues {
+	_result := &_BACnetConstructedDataStateChangeValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		StateChangeValues:             stateChangeValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataStateChangeValues) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStateChangeValues factory function for _BACnetConstructedDataStateChangeValues
-func NewBACnetConstructedDataStateChangeValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, stateChangeValues []BACnetTimerStateChangeValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateChangeValues {
-	_result := &_BACnetConstructedDataStateChangeValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		StateChangeValues:             stateChangeValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStateChangeValues(structType any) BACnetConstructedDataStateChangeValues {

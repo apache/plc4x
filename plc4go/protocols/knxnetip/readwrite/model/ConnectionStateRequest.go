@@ -61,6 +61,20 @@ type _ConnectionStateRequest struct {
 var _ ConnectionStateRequest = (*_ConnectionStateRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionStateRequest)(nil)
 
+// NewConnectionStateRequest factory function for _ConnectionStateRequest
+func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_ConnectionStateRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for ConnectionStateRequest must not be nil")
+	}
+	_result := &_ConnectionStateRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,20 +110,6 @@ func (m *_ConnectionStateRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionStateRequest factory function for _ConnectionStateRequest
-func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_ConnectionStateRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for ConnectionStateRequest must not be nil")
-	}
-	_result := &_ConnectionStateRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionStateRequest(structType any) ConnectionStateRequest {

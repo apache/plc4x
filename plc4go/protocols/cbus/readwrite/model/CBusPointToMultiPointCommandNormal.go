@@ -59,6 +59,20 @@ type _CBusPointToMultiPointCommandNormal struct {
 var _ CBusPointToMultiPointCommandNormal = (*_CBusPointToMultiPointCommandNormal)(nil)
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandNormal)(nil)
 
+// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
+func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
+	if salData == nil {
+		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
+	}
+	_result := &_CBusPointToMultiPointCommandNormal{
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		Application:                          application,
+		SalData:                              salData,
+	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,20 +104,6 @@ func (m *_CBusPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
-	if salData == nil {
-		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
-	}
-	_result := &_CBusPointToMultiPointCommandNormal{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
-		Application:                          application,
-		SalData:                              salData,
-	}
-	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommandNormal(structType any) CBusPointToMultiPointCommandNormal {

@@ -71,6 +71,27 @@ type _HistoryReadRequest struct {
 var _ HistoryReadRequest = (*_HistoryReadRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadRequest)(nil)
 
+// NewHistoryReadRequest factory function for _HistoryReadRequest
+func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
+	}
+	if historyReadDetails == nil {
+		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
+	}
+	_result := &_HistoryReadRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		HistoryReadDetails:                historyReadDetails,
+		TimestampsToReturn:                timestampsToReturn,
+		ReleaseContinuationPoints:         releaseContinuationPoints,
+		NoOfNodesToRead:                   noOfNodesToRead,
+		NodesToRead:                       nodesToRead,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -122,27 +143,6 @@ func (m *_HistoryReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadRequest factory function for _HistoryReadRequest
-func NewHistoryReadRequest(requestHeader ExtensionObjectDefinition, historyReadDetails ExtensionObject, timestampsToReturn TimestampsToReturn, releaseContinuationPoints bool, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_HistoryReadRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for HistoryReadRequest must not be nil")
-	}
-	if historyReadDetails == nil {
-		panic("historyReadDetails of type ExtensionObject for HistoryReadRequest must not be nil")
-	}
-	_result := &_HistoryReadRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		HistoryReadDetails:                historyReadDetails,
-		TimestampsToReturn:                timestampsToReturn,
-		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfNodesToRead:                   noOfNodesToRead,
-		NodesToRead:                       nodesToRead,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadRequest(structType any) HistoryReadRequest {

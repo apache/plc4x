@@ -49,6 +49,15 @@ type _BACnetConstructedDataBitstringValueAll struct {
 var _ BACnetConstructedDataBitstringValueAll = (*_BACnetConstructedDataBitstringValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitstringValueAll)(nil)
 
+// NewBACnetConstructedDataBitstringValueAll factory function for _BACnetConstructedDataBitstringValueAll
+func NewBACnetConstructedDataBitstringValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitstringValueAll {
+	_result := &_BACnetConstructedDataBitstringValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataBitstringValueAll) GetPropertyIdentifierArgument(
 
 func (m *_BACnetConstructedDataBitstringValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataBitstringValueAll factory function for _BACnetConstructedDataBitstringValueAll
-func NewBACnetConstructedDataBitstringValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitstringValueAll {
-	_result := &_BACnetConstructedDataBitstringValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

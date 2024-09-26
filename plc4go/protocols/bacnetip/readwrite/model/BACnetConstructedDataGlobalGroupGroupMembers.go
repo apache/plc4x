@@ -59,6 +59,17 @@ type _BACnetConstructedDataGlobalGroupGroupMembers struct {
 var _ BACnetConstructedDataGlobalGroupGroupMembers = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
 
+// NewBACnetConstructedDataGlobalGroupGroupMembers factory function for _BACnetConstructedDataGlobalGroupGroupMembers
+func NewBACnetConstructedDataGlobalGroupGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupGroupMembers {
+	_result := &_BACnetConstructedDataGlobalGroupGroupMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		GroupMembers:                  groupMembers,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataGlobalGroupGroupMembers) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGlobalGroupGroupMembers factory function for _BACnetConstructedDataGlobalGroupGroupMembers
-func NewBACnetConstructedDataGlobalGroupGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupGroupMembers {
-	_result := &_BACnetConstructedDataGlobalGroupGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		GroupMembers:                  groupMembers,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGlobalGroupGroupMembers(structType any) BACnetConstructedDataGlobalGroupGroupMembers {

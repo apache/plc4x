@@ -49,6 +49,15 @@ type _SecurityDataSystemDisarmed struct {
 var _ SecurityDataSystemDisarmed = (*_SecurityDataSystemDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
 
+// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
+func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
+	_result := &_SecurityDataSystemDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
 
 func (m *_SecurityDataSystemDisarmed) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
-func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
-	_result := &_SecurityDataSystemDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

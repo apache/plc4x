@@ -56,6 +56,19 @@ type _BACnetApplicationTagReal struct {
 var _ BACnetApplicationTagReal = (*_BACnetApplicationTagReal)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagReal)(nil)
 
+// NewBACnetApplicationTagReal factory function for _BACnetApplicationTagReal
+func NewBACnetApplicationTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal) *_BACnetApplicationTagReal {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadReal for BACnetApplicationTagReal must not be nil")
+	}
+	_result := &_BACnetApplicationTagReal{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -98,19 +111,6 @@ func (m *_BACnetApplicationTagReal) GetActualValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagReal factory function for _BACnetApplicationTagReal
-func NewBACnetApplicationTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal) *_BACnetApplicationTagReal {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadReal for BACnetApplicationTagReal must not be nil")
-	}
-	_result := &_BACnetApplicationTagReal{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagReal(structType any) BACnetApplicationTagReal {

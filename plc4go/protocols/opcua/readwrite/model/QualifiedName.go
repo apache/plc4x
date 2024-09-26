@@ -54,6 +54,14 @@ type _QualifiedName struct {
 
 var _ QualifiedName = (*_QualifiedName)(nil)
 
+// NewQualifiedName factory function for _QualifiedName
+func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
+	if name == nil {
+		panic("name of type PascalString for QualifiedName must not be nil")
+	}
+	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_QualifiedName) GetName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQualifiedName factory function for _QualifiedName
-func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
-	if name == nil {
-		panic("name of type PascalString for QualifiedName must not be nil")
-	}
-	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
-}
 
 // Deprecated: use the interface for direct cast
 func CastQualifiedName(structType any) QualifiedName {

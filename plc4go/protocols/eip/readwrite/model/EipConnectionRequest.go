@@ -55,6 +55,15 @@ type _EipConnectionRequest struct {
 var _ EipConnectionRequest = (*_EipConnectionRequest)(nil)
 var _ EipPacketRequirements = (*_EipConnectionRequest)(nil)
 
+// NewEipConnectionRequest factory function for _EipConnectionRequest
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
+	_result := &_EipConnectionRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -98,15 +107,6 @@ func (m *_EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipConnectionRequest factory function for _EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
-	_result := &_EipConnectionRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipConnectionRequest(structType any) EipConnectionRequest {

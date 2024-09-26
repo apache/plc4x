@@ -76,6 +76,22 @@ type _MonitoredSALLongFormSmartMode struct {
 var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
 
+// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
+func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+	_result := &_MonitoredSALLongFormSmartMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		TerminatingByte:      terminatingByte,
+		UnitAddress:          unitAddress,
+		BridgeAddress:        bridgeAddress,
+		Application:          application,
+		ReservedByte:         reservedByte,
+		ReplyNetwork:         replyNetwork,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -152,22 +168,6 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
-	_result := &_MonitoredSALLongFormSmartMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		TerminatingByte:      terminatingByte,
-		UnitAddress:          unitAddress,
-		BridgeAddress:        bridgeAddress,
-		Application:          application,
-		ReservedByte:         reservedByte,
-		ReplyNetwork:         replyNetwork,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALLongFormSmartMode(structType any) MonitoredSALLongFormSmartMode {

@@ -54,6 +54,16 @@ type _MeteringDataElectricityConsumption struct {
 var _ MeteringDataElectricityConsumption = (*_MeteringDataElectricityConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataElectricityConsumption)(nil)
 
+// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
+func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kWhr uint32) *_MeteringDataElectricityConsumption {
+	_result := &_MeteringDataElectricityConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KWhr:                 kWhr,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MeteringDataElectricityConsumption) GetKWhr() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
-func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kWhr uint32) *_MeteringDataElectricityConsumption {
-	_result := &_MeteringDataElectricityConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KWhr:                 kWhr,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataElectricityConsumption(structType any) MeteringDataElectricityConsumption {

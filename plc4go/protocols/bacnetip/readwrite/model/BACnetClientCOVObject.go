@@ -54,6 +54,19 @@ type _BACnetClientCOVObject struct {
 var _ BACnetClientCOVObject = (*_BACnetClientCOVObject)(nil)
 var _ BACnetClientCOVRequirements = (*_BACnetClientCOVObject)(nil)
 
+// NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
+func NewBACnetClientCOVObject(peekedTagHeader BACnetTagHeader, realIncrement BACnetApplicationTagReal) *_BACnetClientCOVObject {
+	if realIncrement == nil {
+		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
+	}
+	_result := &_BACnetClientCOVObject{
+		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
+		RealIncrement:           realIncrement,
+	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetClientCOVObject) GetRealIncrement() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
-func NewBACnetClientCOVObject(peekedTagHeader BACnetTagHeader, realIncrement BACnetApplicationTagReal) *_BACnetClientCOVObject {
-	if realIncrement == nil {
-		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
-	}
-	_result := &_BACnetClientCOVObject{
-		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
-		RealIncrement:           realIncrement,
-	}
-	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOVObject(structType any) BACnetClientCOVObject {

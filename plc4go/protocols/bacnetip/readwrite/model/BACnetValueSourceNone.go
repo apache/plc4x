@@ -54,6 +54,19 @@ type _BACnetValueSourceNone struct {
 var _ BACnetValueSourceNone = (*_BACnetValueSourceNone)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceNone)(nil)
 
+// NewBACnetValueSourceNone factory function for _BACnetValueSourceNone
+func NewBACnetValueSourceNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetValueSourceNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetValueSourceNone must not be nil")
+	}
+	_result := &_BACnetValueSourceNone{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		None:                      none,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetValueSourceNone) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceNone factory function for _BACnetValueSourceNone
-func NewBACnetValueSourceNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetValueSourceNone {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetValueSourceNone must not be nil")
-	}
-	_result := &_BACnetValueSourceNone{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		None:                      none,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceNone(structType any) BACnetValueSourceNone {

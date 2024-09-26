@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryFailure struct {
 var _ BACnetLogDataLogDataEntryFailure = (*_BACnetLogDataLogDataEntryFailure)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryFailure)(nil)
 
+// NewBACnetLogDataLogDataEntryFailure factory function for _BACnetLogDataLogDataEntryFailure
+func NewBACnetLogDataLogDataEntryFailure(peekedTagHeader BACnetTagHeader, failure ErrorEnclosed) *_BACnetLogDataLogDataEntryFailure {
+	if failure == nil {
+		panic("failure of type ErrorEnclosed for BACnetLogDataLogDataEntryFailure must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryFailure{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		Failure:                           failure,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryFailure) GetFailure() ErrorEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryFailure factory function for _BACnetLogDataLogDataEntryFailure
-func NewBACnetLogDataLogDataEntryFailure(peekedTagHeader BACnetTagHeader, failure ErrorEnclosed) *_BACnetLogDataLogDataEntryFailure {
-	if failure == nil {
-		panic("failure of type ErrorEnclosed for BACnetLogDataLogDataEntryFailure must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryFailure{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		Failure:                           failure,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryFailure(structType any) BACnetLogDataLogDataEntryFailure {

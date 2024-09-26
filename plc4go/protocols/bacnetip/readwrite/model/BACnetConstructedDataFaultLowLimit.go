@@ -56,6 +56,19 @@ type _BACnetConstructedDataFaultLowLimit struct {
 var _ BACnetConstructedDataFaultLowLimit = (*_BACnetConstructedDataFaultLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultLowLimit)(nil)
 
+// NewBACnetConstructedDataFaultLowLimit factory function for _BACnetConstructedDataFaultLowLimit
+func NewBACnetConstructedDataFaultLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultLowLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultLowLimit {
+	if faultLowLimit == nil {
+		panic("faultLowLimit of type BACnetApplicationTagReal for BACnetConstructedDataFaultLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultLowLimit:                 faultLowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFaultLowLimit) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultLowLimit factory function for _BACnetConstructedDataFaultLowLimit
-func NewBACnetConstructedDataFaultLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultLowLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultLowLimit {
-	if faultLowLimit == nil {
-		panic("faultLowLimit of type BACnetApplicationTagReal for BACnetConstructedDataFaultLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultLowLimit:                 faultLowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultLowLimit(structType any) BACnetConstructedDataFaultLowLimit {

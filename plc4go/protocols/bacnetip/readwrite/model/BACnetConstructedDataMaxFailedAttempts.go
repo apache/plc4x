@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaxFailedAttempts struct {
 var _ BACnetConstructedDataMaxFailedAttempts = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxFailedAttempts)(nil)
 
+// NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
+func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxFailedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
+	if maxFailedAttempts == nil {
+		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxFailedAttempts{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxFailedAttempts:             maxFailedAttempts,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxFailedAttempts factory function for _BACnetConstructedDataMaxFailedAttempts
-func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxFailedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxFailedAttempts {
-	if maxFailedAttempts == nil {
-		panic("maxFailedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxFailedAttempts must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxFailedAttempts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxFailedAttempts:             maxFailedAttempts,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructedDataMaxFailedAttempts {

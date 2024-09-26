@@ -63,6 +63,19 @@ type _RequestReset struct {
 var _ RequestReset = (*_RequestReset)(nil)
 var _ RequestRequirements = (*_RequestReset)(nil)
 
+// NewRequestReset factory function for _RequestReset
+func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, cBusOptions CBusOptions) *_RequestReset {
+	_result := &_RequestReset{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		TildePeek:       tildePeek,
+		SecondTilde:     secondTilde,
+		TildePeek2:      tildePeek2,
+		ThirdTilde:      thirdTilde,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_RequestReset) GetThirdTilde() *RequestType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestReset factory function for _RequestReset
-func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, cBusOptions CBusOptions) *_RequestReset {
-	_result := &_RequestReset{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		TildePeek:       tildePeek,
-		SecondTilde:     secondTilde,
-		TildePeek2:      tildePeek2,
-		ThirdTilde:      thirdTilde,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestReset(structType any) RequestReset {

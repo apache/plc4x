@@ -54,6 +54,19 @@ type _BACnetNotificationParametersComplexEventType struct {
 var _ BACnetNotificationParametersComplexEventType = (*_BACnetNotificationParametersComplexEventType)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersComplexEventType)(nil)
 
+// NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
+func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
+	if listOfValues == nil {
+		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
+	}
+	_result := &_BACnetNotificationParametersComplexEventType{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		ListOfValues:                         listOfValues,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetNotificationParametersComplexEventType) GetListOfValues() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
-func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
-	if listOfValues == nil {
-		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
-	}
-	_result := &_BACnetNotificationParametersComplexEventType{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		ListOfValues:                         listOfValues,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNotificationParametersComplexEventType {

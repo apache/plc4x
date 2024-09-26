@@ -56,6 +56,19 @@ type _BACnetConstructedDataActiveText struct {
 var _ BACnetConstructedDataActiveText = (*_BACnetConstructedDataActiveText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveText)(nil)
 
+// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
+func NewBACnetConstructedDataActiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeText BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
+	if activeText == nil {
+		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
+	}
+	_result := &_BACnetConstructedDataActiveText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveText:                    activeText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataActiveText) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
-func NewBACnetConstructedDataActiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeText BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
-	if activeText == nil {
-		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
-	}
-	_result := &_BACnetConstructedDataActiveText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveText:                    activeText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveText(structType any) BACnetConstructedDataActiveText {

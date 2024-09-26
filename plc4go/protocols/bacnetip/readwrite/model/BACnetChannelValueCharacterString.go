@@ -54,6 +54,19 @@ type _BACnetChannelValueCharacterString struct {
 var _ BACnetChannelValueCharacterString = (*_BACnetChannelValueCharacterString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueCharacterString)(nil)
 
+// NewBACnetChannelValueCharacterString factory function for _BACnetChannelValueCharacterString
+func NewBACnetChannelValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString) *_BACnetChannelValueCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetChannelValueCharacterString must not be nil")
+	}
+	_result := &_BACnetChannelValueCharacterString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		CharacterStringValue:       characterStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueCharacterString) GetCharacterStringValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueCharacterString factory function for _BACnetChannelValueCharacterString
-func NewBACnetChannelValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString) *_BACnetChannelValueCharacterString {
-	if characterStringValue == nil {
-		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetChannelValueCharacterString must not be nil")
-	}
-	_result := &_BACnetChannelValueCharacterString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		CharacterStringValue:       characterStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueCharacterString(structType any) BACnetChannelValueCharacterString {

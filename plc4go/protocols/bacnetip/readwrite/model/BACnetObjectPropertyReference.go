@@ -57,6 +57,17 @@ type _BACnetObjectPropertyReference struct {
 
 var _ BACnetObjectPropertyReference = (*_BACnetObjectPropertyReference)(nil)
 
+// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
+func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
+	}
+	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetObjectPropertyReference) GetArrayIndex() BACnetContextTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
-func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
-	}
-	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectPropertyReference(structType any) BACnetObjectPropertyReference {

@@ -54,6 +54,19 @@ type _BACnetServiceAckVTOpen struct {
 var _ BACnetServiceAckVTOpen = (*_BACnetServiceAckVTOpen)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTOpen)(nil)
 
+// NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
+func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
+	if remoteVtSessionIdentifier == nil {
+		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
+	}
+	_result := &_BACnetServiceAckVTOpen{
+		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
+		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_BACnetServiceAckVTOpen) GetRemoteVtSessionIdentifier() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckVTOpen factory function for _BACnetServiceAckVTOpen
-func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTOpen {
-	if remoteVtSessionIdentifier == nil {
-		panic("remoteVtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTOpen must not be nil")
-	}
-	_result := &_BACnetServiceAckVTOpen{
-		BACnetServiceAckContract:  NewBACnetServiceAck(serviceAckLength),
-		RemoteVtSessionIdentifier: remoteVtSessionIdentifier,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckVTOpen(structType any) BACnetServiceAckVTOpen {

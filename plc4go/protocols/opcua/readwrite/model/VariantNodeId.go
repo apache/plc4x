@@ -57,6 +57,17 @@ type _VariantNodeId struct {
 var _ VariantNodeId = (*_VariantNodeId)(nil)
 var _ VariantRequirements = (*_VariantNodeId)(nil)
 
+// NewVariantNodeId factory function for _VariantNodeId
+func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
+	_result := &_VariantNodeId{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantNodeId) GetValue() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantNodeId factory function for _VariantNodeId
-func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
-	_result := &_VariantNodeId{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantNodeId(structType any) VariantNodeId {

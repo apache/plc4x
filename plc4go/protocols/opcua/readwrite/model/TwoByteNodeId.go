@@ -51,6 +51,11 @@ type _TwoByteNodeId struct {
 
 var _ TwoByteNodeId = (*_TwoByteNodeId)(nil)
 
+// NewTwoByteNodeId factory function for _TwoByteNodeId
+func NewTwoByteNodeId(identifier uint8) *_TwoByteNodeId {
+	return &_TwoByteNodeId{Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_TwoByteNodeId) GetIdentifier() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTwoByteNodeId factory function for _TwoByteNodeId
-func NewTwoByteNodeId(identifier uint8) *_TwoByteNodeId {
-	return &_TwoByteNodeId{Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTwoByteNodeId(structType any) TwoByteNodeId {

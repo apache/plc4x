@@ -49,6 +49,15 @@ type _SysexCommandReportFirmwareRequest struct {
 var _ SysexCommandReportFirmwareRequest = (*_SysexCommandReportFirmwareRequest)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandReportFirmwareRequest)(nil)
 
+// NewSysexCommandReportFirmwareRequest factory function for _SysexCommandReportFirmwareRequest
+func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest {
+	_result := &_SysexCommandReportFirmwareRequest{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandReportFirmwareRequest) GetResponse() bool {
 
 func (m *_SysexCommandReportFirmwareRequest) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandReportFirmwareRequest factory function for _SysexCommandReportFirmwareRequest
-func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest {
-	_result := &_SysexCommandReportFirmwareRequest{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

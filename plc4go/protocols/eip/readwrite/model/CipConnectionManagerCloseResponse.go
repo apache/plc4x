@@ -72,6 +72,21 @@ type _CipConnectionManagerCloseResponse struct {
 var _ CipConnectionManagerCloseResponse = (*_CipConnectionManagerCloseResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerCloseResponse)(nil)
 
+// NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
+func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
+	_result := &_CipConnectionManagerCloseResponse{
+		CipServiceContract:     NewCipService(serviceLen),
+		Status:                 status,
+		AdditionalStatusWords:  additionalStatusWords,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		ApplicationReplySize:   applicationReplySize,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -131,21 +146,6 @@ func (m *_CipConnectionManagerCloseResponse) GetApplicationReplySize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
-func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
-	_result := &_CipConnectionManagerCloseResponse{
-		CipServiceContract:     NewCipService(serviceLen),
-		Status:                 status,
-		AdditionalStatusWords:  additionalStatusWords,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		ApplicationReplySize:   applicationReplySize,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerCloseResponse(structType any) CipConnectionManagerCloseResponse {

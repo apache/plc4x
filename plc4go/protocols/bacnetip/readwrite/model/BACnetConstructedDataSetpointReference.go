@@ -56,6 +56,19 @@ type _BACnetConstructedDataSetpointReference struct {
 var _ BACnetConstructedDataSetpointReference = (*_BACnetConstructedDataSetpointReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpointReference)(nil)
 
+// NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
+func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
+	if setpointReference == nil {
+		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataSetpointReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SetpointReference:             setpointReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSetpointReference) GetActualValue() BACnetSetpoin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSetpointReference factory function for _BACnetConstructedDataSetpointReference
-func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpointReference BACnetSetpointReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpointReference {
-	if setpointReference == nil {
-		panic("setpointReference of type BACnetSetpointReference for BACnetConstructedDataSetpointReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataSetpointReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SetpointReference:             setpointReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSetpointReference(structType any) BACnetConstructedDataSetpointReference {

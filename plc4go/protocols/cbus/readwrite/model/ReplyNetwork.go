@@ -54,6 +54,17 @@ type _ReplyNetwork struct {
 
 var _ ReplyNetwork = (*_ReplyNetwork)(nil)
 
+// NewReplyNetwork factory function for _ReplyNetwork
+func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for ReplyNetwork must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for ReplyNetwork must not be nil")
+	}
+	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_ReplyNetwork) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyNetwork factory function for _ReplyNetwork
-func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_ReplyNetwork {
-	if networkRoute == nil {
-		panic("networkRoute of type NetworkRoute for ReplyNetwork must not be nil")
-	}
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for ReplyNetwork must not be nil")
-	}
-	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyNetwork(structType any) ReplyNetwork {

@@ -57,6 +57,17 @@ type _ApduDataGroupValueResponse struct {
 var _ ApduDataGroupValueResponse = (*_ApduDataGroupValueResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueResponse)(nil)
 
+// NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
+func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
+	_result := &_ApduDataGroupValueResponse{
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ApduDataGroupValueResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataGroupValueResponse factory function for _ApduDataGroupValueResponse
-func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueResponse {
-	_result := &_ApduDataGroupValueResponse{
-		ApduDataContract: NewApduData(dataLength),
-		DataFirstByte:    dataFirstByte,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataGroupValueResponse(structType any) ApduDataGroupValueResponse {

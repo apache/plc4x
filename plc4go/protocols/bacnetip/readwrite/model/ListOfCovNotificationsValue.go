@@ -63,6 +63,17 @@ type _ListOfCovNotificationsValue struct {
 
 var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
 
+// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
+func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
+	}
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
+	}
+	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -88,17 +99,6 @@ func (m *_ListOfCovNotificationsValue) GetTimeOfChange() BACnetContextTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
-	}
-	if propertyValue == nil {
-		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
-	}
-	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue {

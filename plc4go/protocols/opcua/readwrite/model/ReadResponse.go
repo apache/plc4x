@@ -66,6 +66,23 @@ type _ReadResponse struct {
 var _ ReadResponse = (*_ReadResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadResponse)(nil)
 
+// NewReadResponse factory function for _ReadResponse
+func NewReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ReadResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ReadResponse must not be nil")
+	}
+	_result := &_ReadResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_ReadResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadResponse factory function for _ReadResponse
-func NewReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ReadResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ReadResponse must not be nil")
-	}
-	_result := &_ReadResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadResponse(structType any) ReadResponse {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataInstanceOf struct {
 var _ BACnetConstructedDataInstanceOf = (*_BACnetConstructedDataInstanceOf)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstanceOf)(nil)
 
+// NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
+func NewBACnetConstructedDataInstanceOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instanceOf BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
+	if instanceOf == nil {
+		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
+	}
+	_result := &_BACnetConstructedDataInstanceOf{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InstanceOf:                    instanceOf,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInstanceOf) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInstanceOf factory function for _BACnetConstructedDataInstanceOf
-func NewBACnetConstructedDataInstanceOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, instanceOf BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstanceOf {
-	if instanceOf == nil {
-		panic("instanceOf of type BACnetApplicationTagCharacterString for BACnetConstructedDataInstanceOf must not be nil")
-	}
-	_result := &_BACnetConstructedDataInstanceOf{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InstanceOf:                    instanceOf,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInstanceOf(structType any) BACnetConstructedDataInstanceOf {

@@ -66,6 +66,16 @@ type _SecurityDataArmSystem struct {
 var _ SecurityDataArmSystem = (*_SecurityDataArmSystem)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataArmSystem)(nil)
 
+// NewSecurityDataArmSystem factory function for _SecurityDataArmSystem
+func NewSecurityDataArmSystem(commandTypeContainer SecurityCommandTypeContainer, argument byte, armMode byte) *_SecurityDataArmSystem {
+	_result := &_SecurityDataArmSystem{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmMode:              armMode,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -138,16 +148,6 @@ func (m *_SecurityDataArmSystem) GetIsArmToHighestLevelOfProtection() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataArmSystem factory function for _SecurityDataArmSystem
-func NewSecurityDataArmSystem(commandTypeContainer SecurityCommandTypeContainer, argument byte, armMode byte) *_SecurityDataArmSystem {
-	_result := &_SecurityDataArmSystem{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmMode:              armMode,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataArmSystem(structType any) SecurityDataArmSystem {

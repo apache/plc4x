@@ -57,6 +57,17 @@ type _COTPPacketDisconnectResponse struct {
 var _ COTPPacketDisconnectResponse = (*_COTPPacketDisconnectResponse)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketDisconnectResponse)(nil)
 
+// NewCOTPPacketDisconnectResponse factory function for _COTPPacketDisconnectResponse
+func NewCOTPPacketDisconnectResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, cotpLen uint16) *_COTPPacketDisconnectResponse {
+	_result := &_COTPPacketDisconnectResponse{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_COTPPacketDisconnectResponse) GetSourceReference() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketDisconnectResponse factory function for _COTPPacketDisconnectResponse
-func NewCOTPPacketDisconnectResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, cotpLen uint16) *_COTPPacketDisconnectResponse {
-	_result := &_COTPPacketDisconnectResponse{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketDisconnectResponse(structType any) COTPPacketDisconnectResponse {

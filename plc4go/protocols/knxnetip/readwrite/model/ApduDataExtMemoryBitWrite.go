@@ -49,6 +49,15 @@ type _ApduDataExtMemoryBitWrite struct {
 var _ ApduDataExtMemoryBitWrite = (*_ApduDataExtMemoryBitWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtMemoryBitWrite)(nil)
 
+// NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
+func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
+	_result := &_ApduDataExtMemoryBitWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtMemoryBitWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtMemoryBitWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtMemoryBitWrite factory function for _ApduDataExtMemoryBitWrite
-func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
-	_result := &_ApduDataExtMemoryBitWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

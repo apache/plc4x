@@ -72,6 +72,11 @@ type _BVLC struct {
 
 var _ BVLCContract = (*_BVLC)(nil)
 
+// NewBVLC factory function for _BVLC
+func NewBVLC() *_BVLC {
+	return &_BVLC{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -101,11 +106,6 @@ func (m *_BVLC) GetBacnetType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLC factory function for _BVLC
-func NewBVLC() *_BVLC {
-	return &_BVLC{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLC(structType any) BVLC {

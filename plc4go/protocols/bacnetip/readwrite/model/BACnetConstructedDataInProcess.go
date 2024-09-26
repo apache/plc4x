@@ -56,6 +56,19 @@ type _BACnetConstructedDataInProcess struct {
 var _ BACnetConstructedDataInProcess = (*_BACnetConstructedDataInProcess)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInProcess)(nil)
 
+// NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
+func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
+	if inProcess == nil {
+		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
+	}
+	_result := &_BACnetConstructedDataInProcess{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InProcess:                     inProcess,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInProcess) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
-func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
-	if inProcess == nil {
-		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
-	}
-	_result := &_BACnetConstructedDataInProcess{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InProcess:                     inProcess,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInProcess(structType any) BACnetConstructedDataInProcess {

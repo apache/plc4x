@@ -60,6 +60,18 @@ type _ModbusPDUWriteMultipleCoilsRequest struct {
 var _ ModbusPDUWriteMultipleCoilsRequest = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleCoilsRequest)(nil)
 
+// NewModbusPDUWriteMultipleCoilsRequest factory function for _ModbusPDUWriteMultipleCoilsRequest
+func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleCoilsRequest {
+	_result := &_ModbusPDUWriteMultipleCoilsRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -107,18 +119,6 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteMultipleCoilsRequest factory function for _ModbusPDUWriteMultipleCoilsRequest
-func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleCoilsRequest {
-	_result := &_ModbusPDUWriteMultipleCoilsRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteMultipleCoilsRequest(structType any) ModbusPDUWriteMultipleCoilsRequest {

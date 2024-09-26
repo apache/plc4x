@@ -56,6 +56,19 @@ type _DescriptionRequest struct {
 var _ DescriptionRequest = (*_DescriptionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DescriptionRequest)(nil)
 
+// NewDescriptionRequest factory function for _DescriptionRequest
+func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
+	}
+	_result := &_DescriptionRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_DescriptionRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDescriptionRequest factory function for _DescriptionRequest
-func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
-	}
-	_result := &_DescriptionRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDescriptionRequest(structType any) DescriptionRequest {

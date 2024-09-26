@@ -56,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueResolution struct {
 var _ BACnetConstructedDataLargeAnalogValueResolution = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
 
+// NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
+func NewBACnetConstructedDataLargeAnalogValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
-func NewBACnetConstructedDataLargeAnalogValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetConstructedDataLargeAnalogValueResolution {

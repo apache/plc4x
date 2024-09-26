@@ -53,6 +53,15 @@ type _LevelInformationAbsent struct {
 var _ LevelInformationAbsent = (*_LevelInformationAbsent)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationAbsent)(nil)
 
+// NewLevelInformationAbsent factory function for _LevelInformationAbsent
+func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
+	_result := &_LevelInformationAbsent{
+		LevelInformationContract: NewLevelInformation(raw),
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ var _ LevelInformationRequirements = (*_LevelInformationAbsent)(nil)
 
 func (m *_LevelInformationAbsent) GetParent() LevelInformationContract {
 	return m.LevelInformationContract
-}
-
-// NewLevelInformationAbsent factory function for _LevelInformationAbsent
-func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
-	_result := &_LevelInformationAbsent{
-		LevelInformationContract: NewLevelInformation(raw),
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

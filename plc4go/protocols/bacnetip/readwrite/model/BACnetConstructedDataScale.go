@@ -56,6 +56,19 @@ type _BACnetConstructedDataScale struct {
 var _ BACnetConstructedDataScale = (*_BACnetConstructedDataScale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScale)(nil)
 
+// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+	if scale == nil {
+		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
+	}
+	_result := &_BACnetConstructedDataScale{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Scale:                         scale,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataScale) GetActualValue() BACnetScale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
-	if scale == nil {
-		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
-	}
-	_result := &_BACnetConstructedDataScale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Scale:                         scale,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {

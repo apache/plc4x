@@ -54,6 +54,16 @@ type _BACnetConstructedDataAuthorizationExemptions struct {
 var _ BACnetConstructedDataAuthorizationExemptions = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthorizationExemptions)(nil)
 
+// NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
+func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
+	_result := &_BACnetConstructedDataAuthorizationExemptions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthorizationExemption:        authorizationExemption,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) GetAuthorizationExemptio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthorizationExemptions factory function for _BACnetConstructedDataAuthorizationExemptions
-func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authorizationExemption []BACnetAuthorizationExemptionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthorizationExemptions {
-	_result := &_BACnetConstructedDataAuthorizationExemptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AuthorizationExemption:        authorizationExemption,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetConstructedDataAuthorizationExemptions {

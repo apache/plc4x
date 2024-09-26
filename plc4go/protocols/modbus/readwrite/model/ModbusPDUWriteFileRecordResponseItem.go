@@ -60,6 +60,11 @@ type _ModbusPDUWriteFileRecordResponseItem struct {
 
 var _ ModbusPDUWriteFileRecordResponseItem = (*_ModbusPDUWriteFileRecordResponseItem)(nil)
 
+// NewModbusPDUWriteFileRecordResponseItem factory function for _ModbusPDUWriteFileRecordResponseItem
+func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) *_ModbusPDUWriteFileRecordResponseItem {
+	return &_ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) GetRecordData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteFileRecordResponseItem factory function for _ModbusPDUWriteFileRecordResponseItem
-func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []byte) *_ModbusPDUWriteFileRecordResponseItem {
-	return &_ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteFileRecordResponseItem(structType any) ModbusPDUWriteFileRecordResponseItem {

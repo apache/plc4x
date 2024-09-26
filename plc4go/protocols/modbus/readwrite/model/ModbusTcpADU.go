@@ -65,6 +65,21 @@ type _ModbusTcpADU struct {
 var _ ModbusTcpADU = (*_ModbusTcpADU)(nil)
 var _ ModbusADURequirements = (*_ModbusTcpADU)(nil)
 
+// NewModbusTcpADU factory function for _ModbusTcpADU
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusTcpADU must not be nil")
+	}
+	_result := &_ModbusTcpADU{
+		ModbusADUContract:     NewModbusADU(response),
+		TransactionIdentifier: transactionIdentifier,
+		UnitIdentifier:        unitIdentifier,
+		Pdu:                   pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -117,21 +132,6 @@ func (m *_ModbusTcpADU) GetProtocolIdentifier() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusTcpADU factory function for _ModbusTcpADU
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU, response bool) *_ModbusTcpADU {
-	if pdu == nil {
-		panic("pdu of type ModbusPDU for ModbusTcpADU must not be nil")
-	}
-	_result := &_ModbusTcpADU{
-		ModbusADUContract:     NewModbusADU(response),
-		TransactionIdentifier: transactionIdentifier,
-		UnitIdentifier:        unitIdentifier,
-		Pdu:                   pdu,
-	}
-	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusTcpADU(structType any) ModbusTcpADU {

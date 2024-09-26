@@ -57,6 +57,17 @@ type _COTPPacketTpduError struct {
 var _ COTPPacketTpduError = (*_COTPPacketTpduError)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketTpduError)(nil)
 
+// NewCOTPPacketTpduError factory function for _COTPPacketTpduError
+func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
+	_result := &_COTPPacketTpduError{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		RejectCause:          rejectCause,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_COTPPacketTpduError) GetRejectCause() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketTpduError factory function for _COTPPacketTpduError
-func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
-	_result := &_COTPPacketTpduError{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		RejectCause:          rejectCause,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {

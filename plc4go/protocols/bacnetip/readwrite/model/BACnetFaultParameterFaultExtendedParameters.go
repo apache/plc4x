@@ -60,6 +60,17 @@ type _BACnetFaultParameterFaultExtendedParameters struct {
 
 var _ BACnetFaultParameterFaultExtendedParameters = (*_BACnetFaultParameterFaultExtendedParameters)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParameters factory function for _BACnetFaultParameterFaultExtendedParameters
+func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultExtendedParameters {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
+	}
+	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +92,6 @@ func (m *_BACnetFaultParameterFaultExtendedParameters) GetClosingTag() BACnetClo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParameters factory function for _BACnetFaultParameterFaultExtendedParameters
-func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag, parameters []BACnetFaultParameterFaultExtendedParametersEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultExtendedParameters {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultExtendedParameters must not be nil")
-	}
-	return &_BACnetFaultParameterFaultExtendedParameters{OpeningTag: openingTag, Parameters: parameters, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParameters(structType any) BACnetFaultParameterFaultExtendedParameters {

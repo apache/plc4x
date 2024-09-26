@@ -70,6 +70,11 @@ type _BACnetTagPayloadTime struct {
 
 var _ BACnetTagPayloadTime = (*_BACnetTagPayloadTime)(nil)
 
+// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
+func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
+	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -134,11 +139,6 @@ func (m *_BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
-func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
-	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadTime(structType any) BACnetTagPayloadTime {

@@ -57,6 +57,17 @@ type _ModbusPDUReadInputRegistersRequest struct {
 var _ ModbusPDUReadInputRegistersRequest = (*_ModbusPDUReadInputRegistersRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadInputRegistersRequest)(nil)
 
+// NewModbusPDUReadInputRegistersRequest factory function for _ModbusPDUReadInputRegistersRequest
+func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadInputRegistersRequest {
+	_result := &_ModbusPDUReadInputRegistersRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_ModbusPDUReadInputRegistersRequest) GetQuantity() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadInputRegistersRequest factory function for _ModbusPDUReadInputRegistersRequest
-func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadInputRegistersRequest {
-	_result := &_ModbusPDUReadInputRegistersRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadInputRegistersRequest(structType any) ModbusPDUReadInputRegistersRequest {

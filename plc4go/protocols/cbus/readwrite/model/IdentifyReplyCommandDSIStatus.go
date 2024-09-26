@@ -81,6 +81,25 @@ type _IdentifyReplyCommandDSIStatus struct {
 var _ IdentifyReplyCommandDSIStatus = (*_IdentifyReplyCommandDSIStatus)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDSIStatus)(nil)
 
+// NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
+func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
+	_result := &_IdentifyReplyCommandDSIStatus{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ChannelStatus1:               channelStatus1,
+		ChannelStatus2:               channelStatus2,
+		ChannelStatus3:               channelStatus3,
+		ChannelStatus4:               channelStatus4,
+		ChannelStatus5:               channelStatus5,
+		ChannelStatus6:               channelStatus6,
+		ChannelStatus7:               channelStatus7,
+		ChannelStatus8:               channelStatus8,
+		UnitStatus:                   unitStatus,
+		DimmingUCRevisionNumber:      dimmingUCRevisionNumber,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -148,25 +167,6 @@ func (m *_IdentifyReplyCommandDSIStatus) GetDimmingUCRevisionNumber() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
-func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
-	_result := &_IdentifyReplyCommandDSIStatus{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		ChannelStatus1:               channelStatus1,
-		ChannelStatus2:               channelStatus2,
-		ChannelStatus3:               channelStatus3,
-		ChannelStatus4:               channelStatus4,
-		ChannelStatus5:               channelStatus5,
-		ChannelStatus6:               channelStatus6,
-		ChannelStatus7:               channelStatus7,
-		ChannelStatus8:               channelStatus8,
-		UnitStatus:                   unitStatus,
-		DimmingUCRevisionNumber:      dimmingUCRevisionNumber,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandDSIStatus(structType any) IdentifyReplyCommandDSIStatus {

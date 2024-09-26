@@ -54,6 +54,19 @@ type _BACnetPropertyStatesEscalatorMode struct {
 var _ BACnetPropertyStatesEscalatorMode = (*_BACnetPropertyStatesEscalatorMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEscalatorMode)(nil)
 
+// NewBACnetPropertyStatesEscalatorMode factory function for _BACnetPropertyStatesEscalatorMode
+func NewBACnetPropertyStatesEscalatorMode(peekedTagHeader BACnetTagHeader, escalatorMode BACnetEscalatorModeTagged) *_BACnetPropertyStatesEscalatorMode {
+	if escalatorMode == nil {
+		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetPropertyStatesEscalatorMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEscalatorMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EscalatorMode:                escalatorMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetEscalatorMode() BACnetEscalatorM
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEscalatorMode factory function for _BACnetPropertyStatesEscalatorMode
-func NewBACnetPropertyStatesEscalatorMode(peekedTagHeader BACnetTagHeader, escalatorMode BACnetEscalatorModeTagged) *_BACnetPropertyStatesEscalatorMode {
-	if escalatorMode == nil {
-		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetPropertyStatesEscalatorMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEscalatorMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EscalatorMode:                escalatorMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEscalatorMode(structType any) BACnetPropertyStatesEscalatorMode {

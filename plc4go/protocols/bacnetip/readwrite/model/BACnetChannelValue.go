@@ -74,6 +74,14 @@ type _BACnetChannelValue struct {
 
 var _ BACnetChannelValueContract = (*_BACnetChannelValue)(nil)
 
+// NewBACnetChannelValue factory function for _BACnetChannelValue
+func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
+	}
+	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,14 +118,6 @@ func (pm *_BACnetChannelValue) GetPeekedIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValue factory function for _BACnetChannelValue
-func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
-	}
-	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValue(structType any) BACnetChannelValue {

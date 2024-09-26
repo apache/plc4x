@@ -54,6 +54,19 @@ type _SALDataVentilation struct {
 var _ SALDataVentilation = (*_SALDataVentilation)(nil)
 var _ SALDataRequirements = (*_SALDataVentilation)(nil)
 
+// NewSALDataVentilation factory function for _SALDataVentilation
+func NewSALDataVentilation(salData SALData, ventilationData LightingData) *_SALDataVentilation {
+	if ventilationData == nil {
+		panic("ventilationData of type LightingData for SALDataVentilation must not be nil")
+	}
+	_result := &_SALDataVentilation{
+		SALDataContract: NewSALData(salData),
+		VentilationData: ventilationData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataVentilation) GetVentilationData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataVentilation factory function for _SALDataVentilation
-func NewSALDataVentilation(salData SALData, ventilationData LightingData) *_SALDataVentilation {
-	if ventilationData == nil {
-		panic("ventilationData of type LightingData for SALDataVentilation must not be nil")
-	}
-	_result := &_SALDataVentilation{
-		SALDataContract: NewSALData(salData),
-		VentilationData: ventilationData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataVentilation(structType any) SALDataVentilation {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataProtocolVersion struct {
 var _ BACnetConstructedDataProtocolVersion = (*_BACnetConstructedDataProtocolVersion)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolVersion)(nil)
 
+// NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
+func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolVersion BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
+	if protocolVersion == nil {
+		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolVersion{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolVersion:               protocolVersion,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProtocolVersion) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolVersion factory function for _BACnetConstructedDataProtocolVersion
-func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolVersion BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolVersion {
-	if protocolVersion == nil {
-		panic("protocolVersion of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolVersion must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolVersion:               protocolVersion,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolVersion(structType any) BACnetConstructedDataProtocolVersion {

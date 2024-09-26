@@ -54,6 +54,16 @@ type _BACnetConstructedDataMultiStateValueAlarmValues struct {
 var _ BACnetConstructedDataMultiStateValueAlarmValues = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueAlarmValues)(nil)
 
+// NewBACnetConstructedDataMultiStateValueAlarmValues factory function for _BACnetConstructedDataMultiStateValueAlarmValues
+func NewBACnetConstructedDataMultiStateValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueAlarmValues {
+	_result := &_BACnetConstructedDataMultiStateValueAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataMultiStateValueAlarmValues) GetAlarmValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateValueAlarmValues factory function for _BACnetConstructedDataMultiStateValueAlarmValues
-func NewBACnetConstructedDataMultiStateValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueAlarmValues {
-	_result := &_BACnetConstructedDataMultiStateValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateValueAlarmValues(structType any) BACnetConstructedDataMultiStateValueAlarmValues {

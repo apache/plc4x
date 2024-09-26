@@ -60,6 +60,21 @@ type _RegisterNodesRequest struct {
 var _ RegisterNodesRequest = (*_RegisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesRequest)(nil)
 
+// NewRegisterNodesRequest factory function for _RegisterNodesRequest
+func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
+	}
+	_result := &_RegisterNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToRegister:               noOfNodesToRegister,
+		NodesToRegister:                   nodesToRegister,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_RegisterNodesRequest) GetNodesToRegister() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterNodesRequest factory function for _RegisterNodesRequest
-func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
-	}
-	_result := &_RegisterNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToRegister:               noOfNodesToRegister,
-		NodesToRegister:                   nodesToRegister,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterNodesRequest(structType any) RegisterNodesRequest {

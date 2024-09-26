@@ -54,6 +54,16 @@ type _IdentifyReplyCommandGAVValuesCurrent struct {
 var _ IdentifyReplyCommandGAVValuesCurrent = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 
+// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
+func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
+	_result := &_IdentifyReplyCommandGAVValuesCurrent{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetValues() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
-func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
-	_result := &_IdentifyReplyCommandGAVValuesCurrent{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Values:                       values,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandGAVValuesCurrent(structType any) IdentifyReplyCommandGAVValuesCurrent {

@@ -60,6 +60,21 @@ type _AddNodesRequest struct {
 var _ AddNodesRequest = (*_AddNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddNodesRequest)(nil)
 
+// NewAddNodesRequest factory function for _AddNodesRequest
+func NewAddNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) *_AddNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddNodesRequest must not be nil")
+	}
+	_result := &_AddNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToAdd:                    noOfNodesToAdd,
+		NodesToAdd:                        nodesToAdd,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_AddNodesRequest) GetNodesToAdd() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddNodesRequest factory function for _AddNodesRequest
-func NewAddNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) *_AddNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddNodesRequest must not be nil")
-	}
-	_result := &_AddNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToAdd:                    noOfNodesToAdd,
-		NodesToAdd:                        nodesToAdd,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddNodesRequest(structType any) AddNodesRequest {

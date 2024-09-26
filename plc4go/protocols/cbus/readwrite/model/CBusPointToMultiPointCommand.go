@@ -73,6 +73,11 @@ type _CBusPointToMultiPointCommand struct {
 
 var _ CBusPointToMultiPointCommandContract = (*_CBusPointToMultiPointCommand)(nil)
 
+// NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
+func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
+	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,11 +91,6 @@ func (m *_CBusPointToMultiPointCommand) GetPeekedApplication() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommand factory function for _CBusPointToMultiPointCommand
-func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
-	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommand(structType any) CBusPointToMultiPointCommand {

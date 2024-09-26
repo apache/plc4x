@@ -57,6 +57,17 @@ type _SubscriptionAcknowledgement struct {
 var _ SubscriptionAcknowledgement = (*_SubscriptionAcknowledgement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscriptionAcknowledgement)(nil)
 
+// NewSubscriptionAcknowledgement factory function for _SubscriptionAcknowledgement
+func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32) *_SubscriptionAcknowledgement {
+	_result := &_SubscriptionAcknowledgement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SubscriptionId:                    subscriptionId,
+		SequenceNumber:                    sequenceNumber,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_SubscriptionAcknowledgement) GetSequenceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubscriptionAcknowledgement factory function for _SubscriptionAcknowledgement
-func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32) *_SubscriptionAcknowledgement {
-	_result := &_SubscriptionAcknowledgement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SubscriptionId:                    subscriptionId,
-		SequenceNumber:                    sequenceNumber,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubscriptionAcknowledgement(structType any) SubscriptionAcknowledgement {

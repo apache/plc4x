@@ -49,6 +49,15 @@ type _ApduDataRestart struct {
 var _ ApduDataRestart = (*_ApduDataRestart)(nil)
 var _ ApduDataRequirements = (*_ApduDataRestart)(nil)
 
+// NewApduDataRestart factory function for _ApduDataRestart
+func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
+	_result := &_ApduDataRestart{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataRestart) GetApciType() uint8 {
 
 func (m *_ApduDataRestart) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataRestart factory function for _ApduDataRestart
-func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
-	_result := &_ApduDataRestart{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

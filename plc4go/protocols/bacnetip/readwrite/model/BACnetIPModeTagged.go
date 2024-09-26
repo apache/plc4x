@@ -58,6 +58,14 @@ type _BACnetIPModeTagged struct {
 
 var _ BACnetIPModeTagged = (*_BACnetIPModeTagged)(nil)
 
+// NewBACnetIPModeTagged factory function for _BACnetIPModeTagged
+func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber uint8, tagClass TagClass) *_BACnetIPModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetIPModeTagged must not be nil")
+	}
+	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetIPModeTagged) GetValue() BACnetIPMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetIPModeTagged factory function for _BACnetIPModeTagged
-func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber uint8, tagClass TagClass) *_BACnetIPModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetIPModeTagged must not be nil")
-	}
-	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetIPModeTagged(structType any) BACnetIPModeTagged {

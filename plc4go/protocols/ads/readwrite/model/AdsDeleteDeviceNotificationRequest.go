@@ -54,6 +54,16 @@ type _AdsDeleteDeviceNotificationRequest struct {
 var _ AdsDeleteDeviceNotificationRequest = (*_AdsDeleteDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationRequest)(nil)
 
+// NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
+func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
+	_result := &_AdsDeleteDeviceNotificationRequest{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		NotificationHandle: notificationHandle,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_AdsDeleteDeviceNotificationRequest) GetNotificationHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeleteDeviceNotificationRequest factory function for _AdsDeleteDeviceNotificationRequest
-func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, notificationHandle uint32) *_AdsDeleteDeviceNotificationRequest {
-	_result := &_AdsDeleteDeviceNotificationRequest{
-		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		NotificationHandle: notificationHandle,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeleteDeviceNotificationRequest(structType any) AdsDeleteDeviceNotificationRequest {

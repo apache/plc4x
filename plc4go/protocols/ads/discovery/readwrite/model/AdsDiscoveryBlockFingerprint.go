@@ -54,6 +54,16 @@ type _AdsDiscoveryBlockFingerprint struct {
 var _ AdsDiscoveryBlockFingerprint = (*_AdsDiscoveryBlockFingerprint)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockFingerprint)(nil)
 
+// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
+func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
+	_result := &_AdsDiscoveryBlockFingerprint{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Data:                      data,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_AdsDiscoveryBlockFingerprint) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
-func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
-	_result := &_AdsDiscoveryBlockFingerprint{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Data:                      data,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerprint {

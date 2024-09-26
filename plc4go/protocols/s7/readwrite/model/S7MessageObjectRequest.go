@@ -67,6 +67,18 @@ type _S7MessageObjectRequest struct {
 var _ S7MessageObjectRequest = (*_S7MessageObjectRequest)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectRequest)(nil)
 
+// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
+func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
+	_result := &_S7MessageObjectRequest{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		SyntaxId:                   syntaxId,
+		QueryType:                  queryType,
+		AlarmType:                  alarmType,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,18 +135,6 @@ func (m *_S7MessageObjectRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
-func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
-	_result := &_S7MessageObjectRequest{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		SyntaxId:                   syntaxId,
-		QueryType:                  queryType,
-		AlarmType:                  alarmType,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectRequest(structType any) S7MessageObjectRequest {

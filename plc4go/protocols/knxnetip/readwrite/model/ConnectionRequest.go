@@ -62,6 +62,27 @@ type _ConnectionRequest struct {
 var _ ConnectionRequest = (*_ConnectionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionRequest)(nil)
 
+// NewConnectionRequest factory function for _ConnectionRequest
+func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
+	if hpaiDiscoveryEndpoint == nil {
+		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
+	}
+	if hpaiDataEndpoint == nil {
+		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
+	}
+	if connectionRequestInformation == nil {
+		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
+	}
+	_result := &_ConnectionRequest{
+		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
+		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
+		HpaiDataEndpoint:             hpaiDataEndpoint,
+		ConnectionRequestInformation: connectionRequestInformation,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,27 +122,6 @@ func (m *_ConnectionRequest) GetConnectionRequestInformation() ConnectionRequest
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequest factory function for _ConnectionRequest
-func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
-	if hpaiDiscoveryEndpoint == nil {
-		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
-	}
-	if hpaiDataEndpoint == nil {
-		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
-	}
-	if connectionRequestInformation == nil {
-		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
-	}
-	_result := &_ConnectionRequest{
-		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequest(structType any) ConnectionRequest {

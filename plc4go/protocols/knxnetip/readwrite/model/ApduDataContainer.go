@@ -54,6 +54,19 @@ type _ApduDataContainer struct {
 var _ ApduDataContainer = (*_ApduDataContainer)(nil)
 var _ ApduRequirements = (*_ApduDataContainer)(nil)
 
+// NewApduDataContainer factory function for _ApduDataContainer
+func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
+	if dataApdu == nil {
+		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
+	}
+	_result := &_ApduDataContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		DataApdu:     dataApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataContainer factory function for _ApduDataContainer
-func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
-	if dataApdu == nil {
-		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
-	}
-	_result := &_ApduDataContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
-		DataApdu:     dataApdu,
-	}
-	_result.ApduContract.(*_Apdu)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataContainer(structType any) ApduDataContainer {

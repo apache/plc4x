@@ -54,6 +54,17 @@ type _BACnetAddressBinding struct {
 
 var _ BACnetAddressBinding = (*_BACnetAddressBinding)(nil)
 
+// NewBACnetAddressBinding factory function for _BACnetAddressBinding
+func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
+	}
+	if deviceAddress == nil {
+		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
+	}
+	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetAddressBinding) GetDeviceAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddressBinding factory function for _BACnetAddressBinding
-func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
-	if deviceIdentifier == nil {
-		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
-	}
-	if deviceAddress == nil {
-		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
-	}
-	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddressBinding(structType any) BACnetAddressBinding {

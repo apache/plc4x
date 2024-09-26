@@ -63,6 +63,20 @@ type _BACnetPropertyAccessResult struct {
 
 var _ BACnetPropertyAccessResult = (*_BACnetPropertyAccessResult)(nil)
 
+// NewBACnetPropertyAccessResult factory function for _BACnetPropertyAccessResult
+func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, deviceIdentifier BACnetContextTagObjectIdentifier, accessResult BACnetPropertyAccessResultAccessResult) *_BACnetPropertyAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetPropertyAccessResult must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyAccessResult must not be nil")
+	}
+	if accessResult == nil {
+		panic("accessResult of type BACnetPropertyAccessResultAccessResult for BACnetPropertyAccessResult must not be nil")
+	}
+	return &_BACnetPropertyAccessResult{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, DeviceIdentifier: deviceIdentifier, AccessResult: accessResult}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,20 +106,6 @@ func (m *_BACnetPropertyAccessResult) GetAccessResult() BACnetPropertyAccessResu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResult factory function for _BACnetPropertyAccessResult
-func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, propertyArrayIndex BACnetContextTagUnsignedInteger, deviceIdentifier BACnetContextTagObjectIdentifier, accessResult BACnetPropertyAccessResultAccessResult) *_BACnetPropertyAccessResult {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetPropertyAccessResult must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyAccessResult must not be nil")
-	}
-	if accessResult == nil {
-		panic("accessResult of type BACnetPropertyAccessResultAccessResult for BACnetPropertyAccessResult must not be nil")
-	}
-	return &_BACnetPropertyAccessResult{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, DeviceIdentifier: deviceIdentifier, AccessResult: accessResult}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResult(structType any) BACnetPropertyAccessResult {

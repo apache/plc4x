@@ -54,6 +54,16 @@ type _SecurityDataOff struct {
 var _ SecurityDataOff = (*_SecurityDataOff)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataOff)(nil)
 
+// NewSecurityDataOff factory function for _SecurityDataOff
+func NewSecurityDataOff(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataOff {
+	_result := &_SecurityDataOff{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Data:                 data,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataOff) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataOff factory function for _SecurityDataOff
-func NewSecurityDataOff(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataOff {
-	_result := &_SecurityDataOff{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Data:                 data,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataOff(structType any) SecurityDataOff {

@@ -49,6 +49,15 @@ type _SecurityDataOtherAlarmCleared struct {
 var _ SecurityDataOtherAlarmCleared = (*_SecurityDataOtherAlarmCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataOtherAlarmCleared)(nil)
 
+// NewSecurityDataOtherAlarmCleared factory function for _SecurityDataOtherAlarmCleared
+func NewSecurityDataOtherAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataOtherAlarmCleared {
+	_result := &_SecurityDataOtherAlarmCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataOtherAlarmCleared)(nil)
 
 func (m *_SecurityDataOtherAlarmCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataOtherAlarmCleared factory function for _SecurityDataOtherAlarmCleared
-func NewSecurityDataOtherAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataOtherAlarmCleared {
-	_result := &_SecurityDataOtherAlarmCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

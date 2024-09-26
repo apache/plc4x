@@ -60,6 +60,11 @@ type _NLMInitializeRoutingTablePortMapping struct {
 
 var _ NLMInitializeRoutingTablePortMapping = (*_NLMInitializeRoutingTablePortMapping)(nil)
 
+// NewNLMInitializeRoutingTablePortMapping factory function for _NLMInitializeRoutingTablePortMapping
+func NewNLMInitializeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *_NLMInitializeRoutingTablePortMapping {
+	return &_NLMInitializeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_NLMInitializeRoutingTablePortMapping) GetPortInfo() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTablePortMapping factory function for _NLMInitializeRoutingTablePortMapping
-func NewNLMInitializeRoutingTablePortMapping(destinationNetworkAddress uint16, portId uint8, portInfoLength uint8, portInfo []byte) *_NLMInitializeRoutingTablePortMapping {
-	return &_NLMInitializeRoutingTablePortMapping{DestinationNetworkAddress: destinationNetworkAddress, PortId: portId, PortInfoLength: portInfoLength, PortInfo: portInfo}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTablePortMapping(structType any) NLMInitializeRoutingTablePortMapping {

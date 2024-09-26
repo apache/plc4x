@@ -57,6 +57,17 @@ type _NLMVendorProprietaryMessage struct {
 var _ NLMVendorProprietaryMessage = (*_NLMVendorProprietaryMessage)(nil)
 var _ NLMRequirements = (*_NLMVendorProprietaryMessage)(nil)
 
+// NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
+func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
+	_result := &_NLMVendorProprietaryMessage{
+		NLMContract:        NewNLM(apduLength),
+		VendorId:           vendorId,
+		ProprietaryMessage: proprietaryMessage,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMVendorProprietaryMessage) GetProprietaryMessage() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMVendorProprietaryMessage factory function for _NLMVendorProprietaryMessage
-func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage []byte, apduLength uint16) *_NLMVendorProprietaryMessage {
-	_result := &_NLMVendorProprietaryMessage{
-		NLMContract:        NewNLM(apduLength),
-		VendorId:           vendorId,
-		ProprietaryMessage: proprietaryMessage,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMVendorProprietaryMessage(structType any) NLMVendorProprietaryMessage {

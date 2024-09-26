@@ -54,6 +54,19 @@ type _BACnetPropertyStatesDoorValue struct {
 var _ BACnetPropertyStatesDoorValue = (*_BACnetPropertyStatesDoorValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorValue)(nil)
 
+// NewBACnetPropertyStatesDoorValue factory function for _BACnetPropertyStatesDoorValue
+func NewBACnetPropertyStatesDoorValue(peekedTagHeader BACnetTagHeader, doorValue BACnetDoorValueTagged) *_BACnetPropertyStatesDoorValue {
+	if doorValue == nil {
+		panic("doorValue of type BACnetDoorValueTagged for BACnetPropertyStatesDoorValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorValue:                    doorValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesDoorValue) GetDoorValue() BACnetDoorValueTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorValue factory function for _BACnetPropertyStatesDoorValue
-func NewBACnetPropertyStatesDoorValue(peekedTagHeader BACnetTagHeader, doorValue BACnetDoorValueTagged) *_BACnetPropertyStatesDoorValue {
-	if doorValue == nil {
-		panic("doorValue of type BACnetDoorValueTagged for BACnetPropertyStatesDoorValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorValue:                    doorValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorValue(structType any) BACnetPropertyStatesDoorValue {

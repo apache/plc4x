@@ -60,6 +60,18 @@ type _CALDataStatus struct {
 var _ CALDataStatus = (*_CALDataStatus)(nil)
 var _ CALDataRequirements = (*_CALDataStatus)(nil)
 
+// NewCALDataStatus factory function for _CALDataStatus
+func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, requestContext RequestContext) *_CALDataStatus {
+	_result := &_CALDataStatus{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Application:     application,
+		BlockStart:      blockStart,
+		StatusBytes:     statusBytes,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -95,18 +107,6 @@ func (m *_CALDataStatus) GetStatusBytes() []StatusByte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatus factory function for _CALDataStatus
-func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, requestContext RequestContext) *_CALDataStatus {
-	_result := &_CALDataStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Application:     application,
-		BlockStart:      blockStart,
-		StatusBytes:     statusBytes,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatus(structType any) CALDataStatus {

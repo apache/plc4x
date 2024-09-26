@@ -56,6 +56,19 @@ type _BACnetConstructedDataStateDescription struct {
 var _ BACnetConstructedDataStateDescription = (*_BACnetConstructedDataStateDescription)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStateDescription)(nil)
 
+// NewBACnetConstructedDataStateDescription factory function for _BACnetConstructedDataStateDescription
+func NewBACnetConstructedDataStateDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stateDescription BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateDescription {
+	if stateDescription == nil {
+		panic("stateDescription of type BACnetApplicationTagCharacterString for BACnetConstructedDataStateDescription must not be nil")
+	}
+	_result := &_BACnetConstructedDataStateDescription{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StateDescription:              stateDescription,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataStateDescription) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStateDescription factory function for _BACnetConstructedDataStateDescription
-func NewBACnetConstructedDataStateDescription(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, stateDescription BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStateDescription {
-	if stateDescription == nil {
-		panic("stateDescription of type BACnetApplicationTagCharacterString for BACnetConstructedDataStateDescription must not be nil")
-	}
-	_result := &_BACnetConstructedDataStateDescription{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StateDescription:              stateDescription,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStateDescription(structType any) BACnetConstructedDataStateDescription {

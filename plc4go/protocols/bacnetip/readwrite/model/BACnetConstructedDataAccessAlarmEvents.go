@@ -54,6 +54,16 @@ type _BACnetConstructedDataAccessAlarmEvents struct {
 var _ BACnetConstructedDataAccessAlarmEvents = (*_BACnetConstructedDataAccessAlarmEvents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessAlarmEvents)(nil)
 
+// NewBACnetConstructedDataAccessAlarmEvents factory function for _BACnetConstructedDataAccessAlarmEvents
+func NewBACnetConstructedDataAccessAlarmEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessAlarmEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessAlarmEvents {
+	_result := &_BACnetConstructedDataAccessAlarmEvents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessAlarmEvents:             accessAlarmEvents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataAccessAlarmEvents) GetAccessAlarmEvents() []BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessAlarmEvents factory function for _BACnetConstructedDataAccessAlarmEvents
-func NewBACnetConstructedDataAccessAlarmEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessAlarmEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessAlarmEvents {
-	_result := &_BACnetConstructedDataAccessAlarmEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessAlarmEvents:             accessAlarmEvents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessAlarmEvents(structType any) BACnetConstructedDataAccessAlarmEvents {

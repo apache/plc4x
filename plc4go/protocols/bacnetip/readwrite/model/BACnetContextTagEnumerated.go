@@ -56,6 +56,19 @@ type _BACnetContextTagEnumerated struct {
 var _ BACnetContextTagEnumerated = (*_BACnetContextTagEnumerated)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagEnumerated)(nil)
 
+// NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
+func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
+	}
+	_result := &_BACnetContextTagEnumerated{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_BACnetContextTagEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagEnumerated factory function for _BACnetContextTagEnumerated
-func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated, tagNumberArgument uint8) *_BACnetContextTagEnumerated {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadEnumerated for BACnetContextTagEnumerated must not be nil")
-	}
-	_result := &_BACnetContextTagEnumerated{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagEnumerated(structType any) BACnetContextTagEnumerated {

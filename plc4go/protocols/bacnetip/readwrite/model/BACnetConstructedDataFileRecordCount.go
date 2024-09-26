@@ -56,6 +56,19 @@ type _BACnetConstructedDataFileRecordCount struct {
 var _ BACnetConstructedDataFileRecordCount = (*_BACnetConstructedDataFileRecordCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileRecordCount)(nil)
 
+// NewBACnetConstructedDataFileRecordCount factory function for _BACnetConstructedDataFileRecordCount
+func NewBACnetConstructedDataFileRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileRecordCount {
+	if recordCount == nil {
+		panic("recordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileRecordCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileRecordCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RecordCount:                   recordCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFileRecordCount) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileRecordCount factory function for _BACnetConstructedDataFileRecordCount
-func NewBACnetConstructedDataFileRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileRecordCount {
-	if recordCount == nil {
-		panic("recordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileRecordCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileRecordCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RecordCount:                   recordCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileRecordCount(structType any) BACnetConstructedDataFileRecordCount {

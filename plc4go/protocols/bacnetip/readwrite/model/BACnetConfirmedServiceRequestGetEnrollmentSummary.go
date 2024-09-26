@@ -69,6 +69,24 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummary struct {
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummary = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestGetEnrollmentSummary)(nil)
 
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummary
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, enrollmentFilter BACnetRecipientProcessEnclosed, eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, eventTypeFilter BACnetEventTypeTagged, priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, notificationClassFilter BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
+	if acknowledgmentFilter == nil {
+		panic("acknowledgmentFilter of type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged for BACnetConfirmedServiceRequestGetEnrollmentSummary must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		AcknowledgmentFilter:                  acknowledgmentFilter,
+		EnrollmentFilter:                      enrollmentFilter,
+		EventStateFilter:                      eventStateFilter,
+		EventTypeFilter:                       eventTypeFilter,
+		PriorityFilter:                        priorityFilter,
+		NotificationClassFilter:               notificationClassFilter,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,24 +138,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) GetNotificationClas
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestGetEnrollmentSummary factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummary
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, enrollmentFilter BACnetRecipientProcessEnclosed, eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, eventTypeFilter BACnetEventTypeTagged, priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, notificationClassFilter BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEnrollmentSummary {
-	if acknowledgmentFilter == nil {
-		panic("acknowledgmentFilter of type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged for BACnetConfirmedServiceRequestGetEnrollmentSummary must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		AcknowledgmentFilter:                  acknowledgmentFilter,
-		EnrollmentFilter:                      enrollmentFilter,
-		EventStateFilter:                      eventStateFilter,
-		EventTypeFilter:                       eventTypeFilter,
-		PriorityFilter:                        priorityFilter,
-		NotificationClassFilter:               notificationClassFilter,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummary {

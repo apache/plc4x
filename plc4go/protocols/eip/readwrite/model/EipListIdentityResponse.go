@@ -54,6 +54,16 @@ type _EipListIdentityResponse struct {
 var _ EipListIdentityResponse = (*_EipListIdentityResponse)(nil)
 var _ EipPacketRequirements = (*_EipListIdentityResponse)(nil)
 
+// NewEipListIdentityResponse factory function for _EipListIdentityResponse
+func NewEipListIdentityResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, items []CommandSpecificDataItem) *_EipListIdentityResponse {
+	_result := &_EipListIdentityResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		Items:             items,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_EipListIdentityResponse) GetItems() []CommandSpecificDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipListIdentityResponse factory function for _EipListIdentityResponse
-func NewEipListIdentityResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, items []CommandSpecificDataItem) *_EipListIdentityResponse {
-	_result := &_EipListIdentityResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		Items:             items,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipListIdentityResponse(structType any) EipListIdentityResponse {

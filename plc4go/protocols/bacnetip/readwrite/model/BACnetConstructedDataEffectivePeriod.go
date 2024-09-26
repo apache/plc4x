@@ -56,6 +56,19 @@ type _BACnetConstructedDataEffectivePeriod struct {
 var _ BACnetConstructedDataEffectivePeriod = (*_BACnetConstructedDataEffectivePeriod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEffectivePeriod)(nil)
 
+// NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
+func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
+	}
+	_result := &_BACnetConstructedDataEffectivePeriod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DateRange:                     dateRange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetActualValue() BACnetDateRange
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
-	}
-	_result := &_BACnetConstructedDataEffectivePeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DateRange:                     dateRange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedDataEffectivePeriod {

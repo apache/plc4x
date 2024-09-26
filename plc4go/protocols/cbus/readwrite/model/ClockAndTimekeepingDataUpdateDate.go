@@ -66,6 +66,20 @@ type _ClockAndTimekeepingDataUpdateDate struct {
 var _ ClockAndTimekeepingDataUpdateDate = (*_ClockAndTimekeepingDataUpdateDate)(nil)
 var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataUpdateDate)(nil)
 
+// NewClockAndTimekeepingDataUpdateDate factory function for _ClockAndTimekeepingDataUpdateDate
+func NewClockAndTimekeepingDataUpdateDate(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) *_ClockAndTimekeepingDataUpdateDate {
+	_result := &_ClockAndTimekeepingDataUpdateDate{
+		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
+		YearHigh:                        yearHigh,
+		YearLow:                         yearLow,
+		Month:                           month,
+		Day:                             day,
+		DayOfWeek:                       dayOfWeek,
+	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,20 +123,6 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetDayOfWeek() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClockAndTimekeepingDataUpdateDate factory function for _ClockAndTimekeepingDataUpdateDate
-func NewClockAndTimekeepingDataUpdateDate(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) *_ClockAndTimekeepingDataUpdateDate {
-	_result := &_ClockAndTimekeepingDataUpdateDate{
-		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
-		YearHigh:                        yearHigh,
-		YearLow:                         yearLow,
-		Month:                           month,
-		Day:                             day,
-		DayOfWeek:                       dayOfWeek,
-	}
-	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDataUpdateDate {

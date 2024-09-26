@@ -56,6 +56,19 @@ type _BACnetConstructedDataFileSize struct {
 var _ BACnetConstructedDataFileSize = (*_BACnetConstructedDataFileSize)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileSize)(nil)
 
+// NewBACnetConstructedDataFileSize factory function for _BACnetConstructedDataFileSize
+func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileSize {
+	if fileSize == nil {
+		panic("fileSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileSize must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileSize{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileSize:                      fileSize,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFileSize) GetActualValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileSize factory function for _BACnetConstructedDataFileSize
-func NewBACnetConstructedDataFileSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileSize {
-	if fileSize == nil {
-		panic("fileSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFileSize must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileSize{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FileSize:                      fileSize,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileSize(structType any) BACnetConstructedDataFileSize {

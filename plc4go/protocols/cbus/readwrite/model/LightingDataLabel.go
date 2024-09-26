@@ -63,6 +63,22 @@ type _LightingDataLabel struct {
 var _ LightingDataLabel = (*_LightingDataLabel)(nil)
 var _ LightingDataRequirements = (*_LightingDataLabel)(nil)
 
+// NewLightingDataLabel factory function for _LightingDataLabel
+func NewLightingDataLabel(commandTypeContainer LightingCommandTypeContainer, group byte, labelOptions LightingLabelOptions, language *Language, data []byte) *_LightingDataLabel {
+	if labelOptions == nil {
+		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
+	}
+	_result := &_LightingDataLabel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		LabelOptions:         labelOptions,
+		Language:             language,
+		Data:                 data,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,22 +118,6 @@ func (m *_LightingDataLabel) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataLabel factory function for _LightingDataLabel
-func NewLightingDataLabel(commandTypeContainer LightingCommandTypeContainer, group byte, labelOptions LightingLabelOptions, language *Language, data []byte) *_LightingDataLabel {
-	if labelOptions == nil {
-		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
-	}
-	_result := &_LightingDataLabel{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-		LabelOptions:         labelOptions,
-		Language:             language,
-		Data:                 data,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataLabel(structType any) LightingDataLabel {

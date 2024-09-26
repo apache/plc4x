@@ -59,6 +59,17 @@ type _TimeZoneDataType struct {
 var _ TimeZoneDataType = (*_TimeZoneDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TimeZoneDataType)(nil)
 
+// NewTimeZoneDataType factory function for _TimeZoneDataType
+func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
+	_result := &_TimeZoneDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Offset:                            offset,
+		DaylightSavingInOffset:            daylightSavingInOffset,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_TimeZoneDataType) GetDaylightSavingInOffset() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTimeZoneDataType factory function for _TimeZoneDataType
-func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
-	_result := &_TimeZoneDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Offset:                            offset,
-		DaylightSavingInOffset:            daylightSavingInOffset,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTimeZoneDataType(structType any) TimeZoneDataType {

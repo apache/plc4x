@@ -56,6 +56,19 @@ type _BACnetConstructedDataDatabaseRevision struct {
 var _ BACnetConstructedDataDatabaseRevision = (*_BACnetConstructedDataDatabaseRevision)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDatabaseRevision)(nil)
 
+// NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
+func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
+	if databaseRevision == nil {
+		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
+	}
+	_result := &_BACnetConstructedDataDatabaseRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DatabaseRevision:              databaseRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDatabaseRevision) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDatabaseRevision factory function for _BACnetConstructedDataDatabaseRevision
-func NewBACnetConstructedDataDatabaseRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, databaseRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDatabaseRevision {
-	if databaseRevision == nil {
-		panic("databaseRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDatabaseRevision must not be nil")
-	}
-	_result := &_BACnetConstructedDataDatabaseRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DatabaseRevision:              databaseRevision,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDatabaseRevision(structType any) BACnetConstructedDataDatabaseRevision {

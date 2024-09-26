@@ -49,6 +49,15 @@ type _SysexCommandSysexRealtime struct {
 var _ SysexCommandSysexRealtime = (*_SysexCommandSysexRealtime)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandSysexRealtime)(nil)
 
+// NewSysexCommandSysexRealtime factory function for _SysexCommandSysexRealtime
+func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
+	_result := &_SysexCommandSysexRealtime{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandSysexRealtime) GetResponse() bool {
 
 func (m *_SysexCommandSysexRealtime) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandSysexRealtime factory function for _SysexCommandSysexRealtime
-func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
-	_result := &_SysexCommandSysexRealtime{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

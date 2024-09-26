@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPDHCPLeaseTime struct {
 var _ BACnetConstructedDataIPDHCPLeaseTime = (*_BACnetConstructedDataIPDHCPLeaseTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTime)(nil)
 
+// NewBACnetConstructedDataIPDHCPLeaseTime factory function for _BACnetConstructedDataIPDHCPLeaseTime
+func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
+	if ipDhcpLeaseTime == nil {
+		panic("ipDhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDHCPLeaseTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDhcpLeaseTime:               ipDhcpLeaseTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTime) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDHCPLeaseTime factory function for _BACnetConstructedDataIPDHCPLeaseTime
-func NewBACnetConstructedDataIPDHCPLeaseTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTime {
-	if ipDhcpLeaseTime == nil {
-		panic("ipDhcpLeaseTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDHCPLeaseTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDhcpLeaseTime:               ipDhcpLeaseTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDHCPLeaseTime(structType any) BACnetConstructedDataIPDHCPLeaseTime {

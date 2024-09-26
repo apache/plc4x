@@ -49,6 +49,15 @@ type _EipListIdentityRequest struct {
 var _ EipListIdentityRequest = (*_EipListIdentityRequest)(nil)
 var _ EipPacketRequirements = (*_EipListIdentityRequest)(nil)
 
+// NewEipListIdentityRequest factory function for _EipListIdentityRequest
+func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityRequest {
+	_result := &_EipListIdentityRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_EipListIdentityRequest) GetPacketLength() uint16 {
 
 func (m *_EipListIdentityRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewEipListIdentityRequest factory function for _EipListIdentityRequest
-func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityRequest {
-	_result := &_EipListIdentityRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

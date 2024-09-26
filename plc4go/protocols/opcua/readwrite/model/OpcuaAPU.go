@@ -56,6 +56,14 @@ type _OpcuaAPU struct {
 
 var _ OpcuaAPU = (*_OpcuaAPU)(nil)
 
+// NewOpcuaAPU factory function for _OpcuaAPU
+func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
+	if message == nil {
+		panic("message of type MessagePDU for OpcuaAPU must not be nil")
+	}
+	return &_OpcuaAPU{Message: message, Response: response}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -69,14 +77,6 @@ func (m *_OpcuaAPU) GetMessage() MessagePDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaAPU factory function for _OpcuaAPU
-func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
-	if message == nil {
-		panic("message of type MessagePDU for OpcuaAPU must not be nil")
-	}
-	return &_OpcuaAPU{Message: message, Response: response}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaAPU(structType any) OpcuaAPU {

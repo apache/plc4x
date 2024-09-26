@@ -79,6 +79,14 @@ type _CBusCommand struct {
 
 var _ CBusCommandContract = (*_CBusCommand)(nil)
 
+// NewCBusCommand factory function for _CBusCommand
+func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
+	if header == nil {
+		panic("header of type CBusHeader for CBusCommand must not be nil")
+	}
+	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -115,14 +123,6 @@ func (pm *_CBusCommand) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommand factory function for _CBusCommand
-func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
-	if header == nil {
-		panic("header of type CBusHeader for CBusCommand must not be nil")
-	}
-	return &_CBusCommand{Header: header, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommand(structType any) CBusCommand {

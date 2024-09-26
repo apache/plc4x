@@ -57,6 +57,23 @@ type _KeyValuePair struct {
 var _ KeyValuePair = (*_KeyValuePair)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_KeyValuePair)(nil)
 
+// NewKeyValuePair factory function for _KeyValuePair
+func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
+	if key == nil {
+		panic("key of type QualifiedName for KeyValuePair must not be nil")
+	}
+	if value == nil {
+		panic("value of type Variant for KeyValuePair must not be nil")
+	}
+	_result := &_KeyValuePair{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Key:                               key,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_KeyValuePair) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKeyValuePair factory function for _KeyValuePair
-func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
-	if key == nil {
-		panic("key of type QualifiedName for KeyValuePair must not be nil")
-	}
-	if value == nil {
-		panic("value of type Variant for KeyValuePair must not be nil")
-	}
-	_result := &_KeyValuePair{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Key:                               key,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKeyValuePair(structType any) KeyValuePair {

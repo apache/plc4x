@@ -57,6 +57,17 @@ type _ModbusPDUDiagnosticResponse struct {
 var _ ModbusPDUDiagnosticResponse = (*_ModbusPDUDiagnosticResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUDiagnosticResponse)(nil)
 
+// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
+func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
+	_result := &_ModbusPDUDiagnosticResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		SubFunction:       subFunction,
+		Data:              data,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_ModbusPDUDiagnosticResponse) GetData() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
-func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
-	_result := &_ModbusPDUDiagnosticResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		SubFunction:       subFunction,
-		Data:              data,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUDiagnosticResponse(structType any) ModbusPDUDiagnosticResponse {

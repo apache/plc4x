@@ -49,6 +49,15 @@ type _HistoryUpdateDetails struct {
 var _ HistoryUpdateDetails = (*_HistoryUpdateDetails)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateDetails)(nil)
 
+// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
+func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
+	_result := &_HistoryUpdateDetails{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_HistoryUpdateDetails) GetIdentifier() string {
 
 func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
-func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
-	_result := &_HistoryUpdateDetails{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

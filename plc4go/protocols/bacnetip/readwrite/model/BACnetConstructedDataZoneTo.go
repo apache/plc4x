@@ -56,6 +56,19 @@ type _BACnetConstructedDataZoneTo struct {
 var _ BACnetConstructedDataZoneTo = (*_BACnetConstructedDataZoneTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneTo)(nil)
 
+// NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
+func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
+	if zoneTo == nil {
+		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
+	}
+	_result := &_BACnetConstructedDataZoneTo{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ZoneTo:                        zoneTo,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataZoneTo) GetActualValue() BACnetDeviceObjectRefere
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
-func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
-	if zoneTo == nil {
-		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
-	}
-	_result := &_BACnetConstructedDataZoneTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ZoneTo:                        zoneTo,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataZoneTo(structType any) BACnetConstructedDataZoneTo {

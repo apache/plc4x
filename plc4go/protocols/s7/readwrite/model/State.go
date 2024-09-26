@@ -72,6 +72,11 @@ type _State struct {
 
 var _ State = (*_State)(nil)
 
+// NewState factory function for _State
+func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *_State {
+	return &_State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +118,6 @@ func (m *_State) GetSIG_1() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewState factory function for _State
-func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *_State {
-	return &_State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
-}
 
 // Deprecated: use the interface for direct cast
 func CastState(structType any) State {

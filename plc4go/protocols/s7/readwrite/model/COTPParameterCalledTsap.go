@@ -54,6 +54,16 @@ type _COTPParameterCalledTsap struct {
 var _ COTPParameterCalledTsap = (*_COTPParameterCalledTsap)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterCalledTsap)(nil)
 
+// NewCOTPParameterCalledTsap factory function for _COTPParameterCalledTsap
+func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalledTsap {
+	_result := &_COTPParameterCalledTsap{
+		COTPParameterContract: NewCOTPParameter(rest),
+		TsapId:                tsapId,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_COTPParameterCalledTsap) GetTsapId() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterCalledTsap factory function for _COTPParameterCalledTsap
-func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalledTsap {
-	_result := &_COTPParameterCalledTsap{
-		COTPParameterContract: NewCOTPParameter(rest),
-		TsapId:                tsapId,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterCalledTsap(structType any) COTPParameterCalledTsap {

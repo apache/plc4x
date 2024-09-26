@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPDHCPServer struct {
 var _ BACnetConstructedDataIPDHCPServer = (*_BACnetConstructedDataIPDHCPServer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPServer)(nil)
 
+// NewBACnetConstructedDataIPDHCPServer factory function for _BACnetConstructedDataIPDHCPServer
+func NewBACnetConstructedDataIPDHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPServer {
+	if dhcpServer == nil {
+		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDHCPServer must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDHCPServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DhcpServer:                    dhcpServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPDHCPServer) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDHCPServer factory function for _BACnetConstructedDataIPDHCPServer
-func NewBACnetConstructedDataIPDHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPServer {
-	if dhcpServer == nil {
-		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDHCPServer must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDHCPServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DhcpServer:                    dhcpServer,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDHCPServer(structType any) BACnetConstructedDataIPDHCPServer {

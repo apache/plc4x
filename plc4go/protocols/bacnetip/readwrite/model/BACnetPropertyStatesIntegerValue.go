@@ -54,6 +54,19 @@ type _BACnetPropertyStatesIntegerValue struct {
 var _ BACnetPropertyStatesIntegerValue = (*_BACnetPropertyStatesIntegerValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesIntegerValue)(nil)
 
+// NewBACnetPropertyStatesIntegerValue factory function for _BACnetPropertyStatesIntegerValue
+func NewBACnetPropertyStatesIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetPropertyStatesIntegerValue {
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetPropertyStatesIntegerValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesIntegerValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		IntegerValue:                 integerValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesIntegerValue) GetIntegerValue() BACnetContextTagSi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesIntegerValue factory function for _BACnetPropertyStatesIntegerValue
-func NewBACnetPropertyStatesIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetPropertyStatesIntegerValue {
-	if integerValue == nil {
-		panic("integerValue of type BACnetContextTagSignedInteger for BACnetPropertyStatesIntegerValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesIntegerValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		IntegerValue:                 integerValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesIntegerValue(structType any) BACnetPropertyStatesIntegerValue {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataObjectName struct {
 var _ BACnetConstructedDataObjectName = (*_BACnetConstructedDataObjectName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectName)(nil)
 
+// NewBACnetConstructedDataObjectName factory function for _BACnetConstructedDataObjectName
+func NewBACnetConstructedDataObjectName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectName {
+	if objectName == nil {
+		panic("objectName of type BACnetApplicationTagCharacterString for BACnetConstructedDataObjectName must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ObjectName:                    objectName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataObjectName) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectName factory function for _BACnetConstructedDataObjectName
-func NewBACnetConstructedDataObjectName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectName {
-	if objectName == nil {
-		panic("objectName of type BACnetApplicationTagCharacterString for BACnetConstructedDataObjectName must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ObjectName:                    objectName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectName(structType any) BACnetConstructedDataObjectName {

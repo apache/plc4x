@@ -54,6 +54,16 @@ type _NLMRouterBusyToNetwork struct {
 var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterBusyToNetwork)(nil)
 
+// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
+func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
+	_result := &_NLMRouterBusyToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_NLMRouterBusyToNetwork) GetDestinationNetworkAddresses() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
-func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
-	_result := &_NLMRouterBusyToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {

@@ -54,6 +54,11 @@ type _ChannelInformation struct {
 
 var _ ChannelInformation = (*_ChannelInformation)(nil)
 
+// NewChannelInformation factory function for _ChannelInformation
+func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
+	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_ChannelInformation) GetChannelCode() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChannelInformation factory function for _ChannelInformation
-func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
-	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChannelInformation(structType any) ChannelInformation {

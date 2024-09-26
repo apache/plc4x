@@ -63,6 +63,19 @@ type _CipWriteRequest struct {
 var _ CipWriteRequest = (*_CipWriteRequest)(nil)
 var _ CipServiceRequirements = (*_CipWriteRequest)(nil)
 
+// NewCipWriteRequest factory function for _CipWriteRequest
+func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
+	_result := &_CipWriteRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Tag:                tag,
+		DataType:           dataType,
+		ElementNb:          elementNb,
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -114,19 +127,6 @@ func (m *_CipWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteRequest factory function for _CipWriteRequest
-func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
-	_result := &_CipWriteRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Tag:                tag,
-		DataType:           dataType,
-		ElementNb:          elementNb,
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteRequest(structType any) CipWriteRequest {

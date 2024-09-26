@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaxSegmentsAccepted struct {
 var _ BACnetConstructedDataMaxSegmentsAccepted = (*_BACnetConstructedDataMaxSegmentsAccepted)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxSegmentsAccepted)(nil)
 
+// NewBACnetConstructedDataMaxSegmentsAccepted factory function for _BACnetConstructedDataMaxSegmentsAccepted
+func NewBACnetConstructedDataMaxSegmentsAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxSegmentsAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxSegmentsAccepted {
+	if maxSegmentsAccepted == nil {
+		panic("maxSegmentsAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxSegmentsAccepted must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxSegmentsAccepted{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxSegmentsAccepted:           maxSegmentsAccepted,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxSegmentsAccepted factory function for _BACnetConstructedDataMaxSegmentsAccepted
-func NewBACnetConstructedDataMaxSegmentsAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxSegmentsAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxSegmentsAccepted {
-	if maxSegmentsAccepted == nil {
-		panic("maxSegmentsAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxSegmentsAccepted must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxSegmentsAccepted{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxSegmentsAccepted:           maxSegmentsAccepted,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxSegmentsAccepted(structType any) BACnetConstructedDataMaxSegmentsAccepted {

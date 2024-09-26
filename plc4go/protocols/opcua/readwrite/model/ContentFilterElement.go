@@ -60,6 +60,18 @@ type _ContentFilterElement struct {
 var _ ContentFilterElement = (*_ContentFilterElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElement)(nil)
 
+// NewContentFilterElement factory function for _ContentFilterElement
+func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
+	_result := &_ContentFilterElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		FilterOperator:                    filterOperator,
+		NoOfFilterOperands:                noOfFilterOperands,
+		FilterOperands:                    filterOperands,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_ContentFilterElement) GetFilterOperands() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilterElement factory function for _ContentFilterElement
-func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) *_ContentFilterElement {
-	_result := &_ContentFilterElement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		FilterOperator:                    filterOperator,
-		NoOfFilterOperands:                noOfFilterOperands,
-		FilterOperands:                    filterOperands,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilterElement(structType any) ContentFilterElement {

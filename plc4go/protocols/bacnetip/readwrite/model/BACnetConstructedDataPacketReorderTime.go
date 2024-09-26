@@ -56,6 +56,19 @@ type _BACnetConstructedDataPacketReorderTime struct {
 var _ BACnetConstructedDataPacketReorderTime = (*_BACnetConstructedDataPacketReorderTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPacketReorderTime)(nil)
 
+// NewBACnetConstructedDataPacketReorderTime factory function for _BACnetConstructedDataPacketReorderTime
+func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, packetReorderTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
+	if packetReorderTime == nil {
+		panic("packetReorderTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPacketReorderTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataPacketReorderTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PacketReorderTime:             packetReorderTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPacketReorderTime factory function for _BACnetConstructedDataPacketReorderTime
-func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, packetReorderTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
-	if packetReorderTime == nil {
-		panic("packetReorderTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPacketReorderTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataPacketReorderTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PacketReorderTime:             packetReorderTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPacketReorderTime(structType any) BACnetConstructedDataPacketReorderTime {

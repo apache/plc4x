@@ -65,6 +65,11 @@ type _InterfaceOptions3 struct {
 
 var _ InterfaceOptions3 = (*_InterfaceOptions3)(nil)
 
+// NewInterfaceOptions3 factory function for _InterfaceOptions3
+func NewInterfaceOptions3(exstat bool, pun bool, localSal bool, pcn bool) *_InterfaceOptions3 {
+	return &_InterfaceOptions3{Exstat: exstat, Pun: pun, LocalSal: localSal, Pcn: pcn}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -90,11 +95,6 @@ func (m *_InterfaceOptions3) GetPcn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions3 factory function for _InterfaceOptions3
-func NewInterfaceOptions3(exstat bool, pun bool, localSal bool, pcn bool) *_InterfaceOptions3 {
-	return &_InterfaceOptions3{Exstat: exstat, Pun: pun, LocalSal: localSal, Pcn: pcn}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions3(structType any) InterfaceOptions3 {

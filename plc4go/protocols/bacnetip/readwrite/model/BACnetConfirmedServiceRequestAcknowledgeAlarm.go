@@ -69,6 +69,39 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 var _ BACnetConfirmedServiceRequestAcknowledgeAlarm = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
 
+// NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	if acknowledgingProcessIdentifier == nil {
+		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if eventStateAcknowledged == nil {
+		panic("eventStateAcknowledged of type BACnetEventStateTagged for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if acknowledgmentSource == nil {
+		panic("acknowledgmentSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timeOfAcknowledgment == nil {
+		panic("timeOfAcknowledgment of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		AcknowledgingProcessIdentifier:        acknowledgingProcessIdentifier,
+		EventObjectIdentifier:                 eventObjectIdentifier,
+		EventStateAcknowledged:                eventStateAcknowledged,
+		Timestamp:                             timestamp,
+		AcknowledgmentSource:                  acknowledgmentSource,
+		TimeOfAcknowledgment:                  timeOfAcknowledgment,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,39 +153,6 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
-	if acknowledgingProcessIdentifier == nil {
-		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if eventObjectIdentifier == nil {
-		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if eventStateAcknowledged == nil {
-		panic("eventStateAcknowledged of type BACnetEventStateTagged for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if timestamp == nil {
-		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if acknowledgmentSource == nil {
-		panic("acknowledgmentSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if timeOfAcknowledgment == nil {
-		panic("timeOfAcknowledgment of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		AcknowledgingProcessIdentifier:        acknowledgingProcessIdentifier,
-		EventObjectIdentifier:                 eventObjectIdentifier,
-		EventStateAcknowledged:                eventStateAcknowledged,
-		Timestamp:                             timestamp,
-		AcknowledgmentSource:                  acknowledgmentSource,
-		TimeOfAcknowledgment:                  timeOfAcknowledgment,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetConfirmedServiceRequestAcknowledgeAlarm {

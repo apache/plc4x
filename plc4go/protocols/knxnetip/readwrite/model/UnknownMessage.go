@@ -59,6 +59,16 @@ type _UnknownMessage struct {
 var _ UnknownMessage = (*_UnknownMessage)(nil)
 var _ KnxNetIpMessageRequirements = (*_UnknownMessage)(nil)
 
+// NewUnknownMessage factory function for _UnknownMessage
+func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
+	_result := &_UnknownMessage{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		UnknownData:             unknownData,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,16 +100,6 @@ func (m *_UnknownMessage) GetUnknownData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnknownMessage factory function for _UnknownMessage
-func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage {
-	_result := &_UnknownMessage{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		UnknownData:             unknownData,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnknownMessage(structType any) UnknownMessage {

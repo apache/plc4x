@@ -60,6 +60,11 @@ type _AssociatedQueryValueType struct {
 
 var _ AssociatedQueryValueType = (*_AssociatedQueryValueType)(nil)
 
+// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
+func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
+	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_AssociatedQueryValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
-func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
-	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {

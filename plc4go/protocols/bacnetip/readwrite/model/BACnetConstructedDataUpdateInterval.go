@@ -56,6 +56,19 @@ type _BACnetConstructedDataUpdateInterval struct {
 var _ BACnetConstructedDataUpdateInterval = (*_BACnetConstructedDataUpdateInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateInterval)(nil)
 
+// NewBACnetConstructedDataUpdateInterval factory function for _BACnetConstructedDataUpdateInterval
+func NewBACnetConstructedDataUpdateInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateInterval {
+	if updateInterval == nil {
+		panic("updateInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataUpdateInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateInterval:                updateInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUpdateInterval) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUpdateInterval factory function for _BACnetConstructedDataUpdateInterval
-func NewBACnetConstructedDataUpdateInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateInterval {
-	if updateInterval == nil {
-		panic("updateInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataUpdateInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateInterval:                updateInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUpdateInterval(structType any) BACnetConstructedDataUpdateInterval {

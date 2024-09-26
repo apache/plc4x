@@ -62,6 +62,17 @@ type _BACnetLimitEnableTagged struct {
 
 var _ BACnetLimitEnableTagged = (*_BACnetLimitEnableTagged)(nil)
 
+// NewBACnetLimitEnableTagged factory function for _BACnetLimitEnableTagged
+func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLimitEnableTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLimitEnableTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetLimitEnableTagged must not be nil")
+	}
+	return &_BACnetLimitEnableTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -100,17 +111,6 @@ func (m *_BACnetLimitEnableTagged) GetHighLimitEnable() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLimitEnableTagged factory function for _BACnetLimitEnableTagged
-func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLimitEnableTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLimitEnableTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetLimitEnableTagged must not be nil")
-	}
-	return &_BACnetLimitEnableTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLimitEnableTagged(structType any) BACnetLimitEnableTagged {

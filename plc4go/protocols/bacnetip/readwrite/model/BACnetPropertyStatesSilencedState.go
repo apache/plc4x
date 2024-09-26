@@ -54,6 +54,19 @@ type _BACnetPropertyStatesSilencedState struct {
 var _ BACnetPropertyStatesSilencedState = (*_BACnetPropertyStatesSilencedState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSilencedState)(nil)
 
+// NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
+func NewBACnetPropertyStatesSilencedState(peekedTagHeader BACnetTagHeader, silencedState BACnetSilencedStateTagged) *_BACnetPropertyStatesSilencedState {
+	if silencedState == nil {
+		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSilencedState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SilencedState:                silencedState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesSilencedState) GetSilencedState() BACnetSilencedSt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
-func NewBACnetPropertyStatesSilencedState(peekedTagHeader BACnetTagHeader, silencedState BACnetSilencedStateTagged) *_BACnetPropertyStatesSilencedState {
-	if silencedState == nil {
-		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSilencedState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SilencedState:                silencedState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSilencedState(structType any) BACnetPropertyStatesSilencedState {

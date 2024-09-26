@@ -57,6 +57,16 @@ type _BACnetServiceAckAuthenticate struct {
 var _ BACnetServiceAckAuthenticate = (*_BACnetServiceAckAuthenticate)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAuthenticate)(nil)
 
+// NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
+func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckAuthenticate {
+	_result := &_BACnetServiceAckAuthenticate{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService:    bytesOfRemovedService,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,16 +98,6 @@ func (m *_BACnetServiceAckAuthenticate) GetBytesOfRemovedService() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAuthenticate factory function for _BACnetServiceAckAuthenticate
-func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckAuthenticate {
-	_result := &_BACnetServiceAckAuthenticate{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		BytesOfRemovedService:    bytesOfRemovedService,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAuthenticate(structType any) BACnetServiceAckAuthenticate {

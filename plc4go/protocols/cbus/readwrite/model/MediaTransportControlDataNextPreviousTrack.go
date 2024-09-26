@@ -58,6 +58,16 @@ type _MediaTransportControlDataNextPreviousTrack struct {
 var _ MediaTransportControlDataNextPreviousTrack = (*_MediaTransportControlDataNextPreviousTrack)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataNextPreviousTrack)(nil)
 
+// NewMediaTransportControlDataNextPreviousTrack factory function for _MediaTransportControlDataNextPreviousTrack
+func NewMediaTransportControlDataNextPreviousTrack(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousTrack {
+	_result := &_MediaTransportControlDataNextPreviousTrack{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetIsSetTheNextTrack() boo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataNextPreviousTrack factory function for _MediaTransportControlDataNextPreviousTrack
-func NewMediaTransportControlDataNextPreviousTrack(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousTrack {
-	_result := &_MediaTransportControlDataNextPreviousTrack{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataNextPreviousTrack(structType any) MediaTransportControlDataNextPreviousTrack {

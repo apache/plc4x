@@ -56,6 +56,19 @@ type _BACnetConstructedDataValueBeforeChange struct {
 var _ BACnetConstructedDataValueBeforeChange = (*_BACnetConstructedDataValueBeforeChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueBeforeChange)(nil)
 
+// NewBACnetConstructedDataValueBeforeChange factory function for _BACnetConstructedDataValueBeforeChange
+func NewBACnetConstructedDataValueBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valuesBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
+	if valuesBeforeChange == nil {
+		panic("valuesBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueBeforeChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataValueBeforeChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValuesBeforeChange:            valuesBeforeChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataValueBeforeChange) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueBeforeChange factory function for _BACnetConstructedDataValueBeforeChange
-func NewBACnetConstructedDataValueBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valuesBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueBeforeChange {
-	if valuesBeforeChange == nil {
-		panic("valuesBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataValueBeforeChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataValueBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValuesBeforeChange:            valuesBeforeChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueBeforeChange(structType any) BACnetConstructedDataValueBeforeChange {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesBacnetIpMode struct {
 var _ BACnetPropertyStatesBacnetIpMode = (*_BACnetPropertyStatesBacnetIpMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBacnetIpMode)(nil)
 
+// NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
+func NewBACnetPropertyStatesBacnetIpMode(peekedTagHeader BACnetTagHeader, bacnetIpMode BACnetIPModeTagged) *_BACnetPropertyStatesBacnetIpMode {
+	if bacnetIpMode == nil {
+		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBacnetIpMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BacnetIpMode:                 bacnetIpMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetBacnetIpMode() BACnetIPModeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
-func NewBACnetPropertyStatesBacnetIpMode(peekedTagHeader BACnetTagHeader, bacnetIpMode BACnetIPModeTagged) *_BACnetPropertyStatesBacnetIpMode {
-	if bacnetIpMode == nil {
-		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBacnetIpMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BacnetIpMode:                 bacnetIpMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBacnetIpMode(structType any) BACnetPropertyStatesBacnetIpMode {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataOccupancyCountEnable struct {
 var _ BACnetConstructedDataOccupancyCountEnable = (*_BACnetConstructedDataOccupancyCountEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCountEnable)(nil)
 
+// NewBACnetConstructedDataOccupancyCountEnable factory function for _BACnetConstructedDataOccupancyCountEnable
+func NewBACnetConstructedDataOccupancyCountEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountEnable {
+	if occupancyCountEnable == nil {
+		panic("occupancyCountEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyCountEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyCountEnable:          occupancyCountEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOccupancyCountEnable) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyCountEnable factory function for _BACnetConstructedDataOccupancyCountEnable
-func NewBACnetConstructedDataOccupancyCountEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountEnable {
-	if occupancyCountEnable == nil {
-		panic("occupancyCountEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyCountEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyCountEnable:          occupancyCountEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyCountEnable(structType any) BACnetConstructedDataOccupancyCountEnable {

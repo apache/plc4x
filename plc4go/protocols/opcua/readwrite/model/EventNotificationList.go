@@ -57,6 +57,17 @@ type _EventNotificationList struct {
 var _ EventNotificationList = (*_EventNotificationList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventNotificationList)(nil)
 
+// NewEventNotificationList factory function for _EventNotificationList
+func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefinition) *_EventNotificationList {
+	_result := &_EventNotificationList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEvents:                        noOfEvents,
+		Events:                            events,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_EventNotificationList) GetEvents() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEventNotificationList factory function for _EventNotificationList
-func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefinition) *_EventNotificationList {
-	_result := &_EventNotificationList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
-		Events:                            events,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEventNotificationList(structType any) EventNotificationList {

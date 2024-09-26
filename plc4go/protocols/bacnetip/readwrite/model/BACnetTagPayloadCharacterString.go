@@ -60,6 +60,11 @@ type _BACnetTagPayloadCharacterString struct {
 
 var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
 
+// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
+func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
+	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,11 +97,6 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLengthInBit() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
-func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
-	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadCharacterString(structType any) BACnetTagPayloadCharacterString {

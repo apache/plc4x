@@ -54,6 +54,16 @@ type _BACnetConstructedDataLandingCalls struct {
 var _ BACnetConstructedDataLandingCalls = (*_BACnetConstructedDataLandingCalls)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCalls)(nil)
 
+// NewBACnetConstructedDataLandingCalls factory function for _BACnetConstructedDataLandingCalls
+func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCalls {
+	_result := &_BACnetConstructedDataLandingCalls{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LandingCallStatus:             landingCallStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataLandingCalls) GetLandingCallStatus() []BACnetLand
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLandingCalls factory function for _BACnetConstructedDataLandingCalls
-func NewBACnetConstructedDataLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallStatus []BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCalls {
-	_result := &_BACnetConstructedDataLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LandingCallStatus:             landingCallStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLandingCalls(structType any) BACnetConstructedDataLandingCalls {

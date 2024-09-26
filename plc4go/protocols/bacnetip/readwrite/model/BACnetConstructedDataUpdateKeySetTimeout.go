@@ -56,6 +56,19 @@ type _BACnetConstructedDataUpdateKeySetTimeout struct {
 var _ BACnetConstructedDataUpdateKeySetTimeout = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateKeySetTimeout)(nil)
 
+// NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
+func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateKeySetTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
+	if updateKeySetTimeout == nil {
+		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateKeySetTimeout:           updateKeySetTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUpdateKeySetTimeout factory function for _BACnetConstructedDataUpdateKeySetTimeout
-func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateKeySetTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateKeySetTimeout {
-	if updateKeySetTimeout == nil {
-		panic("updateKeySetTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataUpdateKeySetTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataUpdateKeySetTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateKeySetTimeout:           updateKeySetTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUpdateKeySetTimeout(structType any) BACnetConstructedDataUpdateKeySetTimeout {

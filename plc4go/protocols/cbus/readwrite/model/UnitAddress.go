@@ -51,6 +51,11 @@ type _UnitAddress struct {
 
 var _ UnitAddress = (*_UnitAddress)(nil)
 
+// NewUnitAddress factory function for _UnitAddress
+func NewUnitAddress(address byte) *_UnitAddress {
+	return &_UnitAddress{Address: address}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_UnitAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnitAddress factory function for _UnitAddress
-func NewUnitAddress(address byte) *_UnitAddress {
-	return &_UnitAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnitAddress(structType any) UnitAddress {

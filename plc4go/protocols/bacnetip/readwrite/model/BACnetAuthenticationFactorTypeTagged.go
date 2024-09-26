@@ -58,6 +58,14 @@ type _BACnetAuthenticationFactorTypeTagged struct {
 
 var _ BACnetAuthenticationFactorTypeTagged = (*_BACnetAuthenticationFactorTypeTagged)(nil)
 
+// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
+func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
+	}
+	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetValue() BACnetAuthenticationF
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
-func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
-	}
-	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorTypeTagged(structType any) BACnetAuthenticationFactorTypeTagged {

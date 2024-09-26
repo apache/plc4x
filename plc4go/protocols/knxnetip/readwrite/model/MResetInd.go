@@ -49,6 +49,15 @@ type _MResetInd struct {
 var _ MResetInd = (*_MResetInd)(nil)
 var _ CEMIRequirements = (*_MResetInd)(nil)
 
+// NewMResetInd factory function for _MResetInd
+func NewMResetInd(size uint16) *_MResetInd {
+	_result := &_MResetInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MResetInd) GetMessageCode() uint8 {
 
 func (m *_MResetInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMResetInd factory function for _MResetInd
-func NewMResetInd(size uint16) *_MResetInd {
-	_result := &_MResetInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

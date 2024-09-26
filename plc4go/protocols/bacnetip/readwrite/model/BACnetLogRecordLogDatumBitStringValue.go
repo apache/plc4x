@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumBitStringValue struct {
 var _ BACnetLogRecordLogDatumBitStringValue = (*_BACnetLogRecordLogDatumBitStringValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBitStringValue)(nil)
 
+// NewBACnetLogRecordLogDatumBitStringValue factory function for _BACnetLogRecordLogDatumBitStringValue
+func NewBACnetLogRecordLogDatumBitStringValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitStringValue BACnetContextTagBitString, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogRecordLogDatumBitStringValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumBitStringValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BitStringValue:                  bitStringValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) GetBitStringValue() BACnetConte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumBitStringValue factory function for _BACnetLogRecordLogDatumBitStringValue
-func NewBACnetLogRecordLogDatumBitStringValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitStringValue BACnetContextTagBitString, tagNumber uint8) *_BACnetLogRecordLogDatumBitStringValue {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogRecordLogDatumBitStringValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumBitStringValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		BitStringValue:                  bitStringValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumBitStringValue(structType any) BACnetLogRecordLogDatumBitStringValue {

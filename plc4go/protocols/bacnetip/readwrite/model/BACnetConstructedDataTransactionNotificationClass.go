@@ -56,6 +56,19 @@ type _BACnetConstructedDataTransactionNotificationClass struct {
 var _ BACnetConstructedDataTransactionNotificationClass = (*_BACnetConstructedDataTransactionNotificationClass)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransactionNotificationClass)(nil)
 
+// NewBACnetConstructedDataTransactionNotificationClass factory function for _BACnetConstructedDataTransactionNotificationClass
+func NewBACnetConstructedDataTransactionNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transactionNotificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransactionNotificationClass {
+	if transactionNotificationClass == nil {
+		panic("transactionNotificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTransactionNotificationClass must not be nil")
+	}
+	_result := &_BACnetConstructedDataTransactionNotificationClass{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TransactionNotificationClass:  transactionNotificationClass,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTransactionNotificationClass) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTransactionNotificationClass factory function for _BACnetConstructedDataTransactionNotificationClass
-func NewBACnetConstructedDataTransactionNotificationClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transactionNotificationClass BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransactionNotificationClass {
-	if transactionNotificationClass == nil {
-		panic("transactionNotificationClass of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTransactionNotificationClass must not be nil")
-	}
-	_result := &_BACnetConstructedDataTransactionNotificationClass{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TransactionNotificationClass:  transactionNotificationClass,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTransactionNotificationClass(structType any) BACnetConstructedDataTransactionNotificationClass {

@@ -57,6 +57,17 @@ type _LightingDataRampToLevel struct {
 var _ LightingDataRampToLevel = (*_LightingDataRampToLevel)(nil)
 var _ LightingDataRequirements = (*_LightingDataRampToLevel)(nil)
 
+// NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
+func NewLightingDataRampToLevel(commandTypeContainer LightingCommandTypeContainer, group byte, level byte) *_LightingDataRampToLevel {
+	_result := &_LightingDataRampToLevel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		Level:                level,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_LightingDataRampToLevel) GetLevel() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
-func NewLightingDataRampToLevel(commandTypeContainer LightingCommandTypeContainer, group byte, level byte) *_LightingDataRampToLevel {
-	_result := &_LightingDataRampToLevel{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-		Level:                level,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataRampToLevel(structType any) LightingDataRampToLevel {

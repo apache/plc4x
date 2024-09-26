@@ -58,6 +58,14 @@ type _BACnetBackupStateTagged struct {
 
 var _ BACnetBackupStateTagged = (*_BACnetBackupStateTagged)(nil)
 
+// NewBACnetBackupStateTagged factory function for _BACnetBackupStateTagged
+func NewBACnetBackupStateTagged(header BACnetTagHeader, value BACnetBackupState, tagNumber uint8, tagClass TagClass) *_BACnetBackupStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetBackupStateTagged must not be nil")
+	}
+	return &_BACnetBackupStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetBackupStateTagged) GetValue() BACnetBackupState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetBackupStateTagged factory function for _BACnetBackupStateTagged
-func NewBACnetBackupStateTagged(header BACnetTagHeader, value BACnetBackupState, tagNumber uint8, tagClass TagClass) *_BACnetBackupStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetBackupStateTagged must not be nil")
-	}
-	return &_BACnetBackupStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetBackupStateTagged(structType any) BACnetBackupStateTagged {

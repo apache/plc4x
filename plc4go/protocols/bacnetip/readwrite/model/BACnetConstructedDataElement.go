@@ -73,6 +73,14 @@ type _BACnetConstructedDataElement struct {
 
 var _ BACnetConstructedDataElement = (*_BACnetConstructedDataElement)(nil)
 
+// NewBACnetConstructedDataElement factory function for _BACnetConstructedDataElement
+func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElement {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedDataElement must not be nil")
+	}
+	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -155,14 +163,6 @@ func (m *_BACnetConstructedDataElement) GetIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataElement factory function for _BACnetConstructedDataElement
-func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElement {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedDataElement must not be nil")
-	}
-	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataElement {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesNetworkPortCommand struct {
 var _ BACnetPropertyStatesNetworkPortCommand = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNetworkPortCommand)(nil)
 
+// NewBACnetPropertyStatesNetworkPortCommand factory function for _BACnetPropertyStatesNetworkPortCommand
+func NewBACnetPropertyStatesNetworkPortCommand(peekedTagHeader BACnetTagHeader, networkPortCommand BACnetNetworkPortCommandTagged) *_BACnetPropertyStatesNetworkPortCommand {
+	if networkPortCommand == nil {
+		panic("networkPortCommand of type BACnetNetworkPortCommandTagged for BACnetPropertyStatesNetworkPortCommand must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNetworkPortCommand{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NetworkPortCommand:           networkPortCommand,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetNetworkPortCommand() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNetworkPortCommand factory function for _BACnetPropertyStatesNetworkPortCommand
-func NewBACnetPropertyStatesNetworkPortCommand(peekedTagHeader BACnetTagHeader, networkPortCommand BACnetNetworkPortCommandTagged) *_BACnetPropertyStatesNetworkPortCommand {
-	if networkPortCommand == nil {
-		panic("networkPortCommand of type BACnetNetworkPortCommandTagged for BACnetPropertyStatesNetworkPortCommand must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNetworkPortCommand{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NetworkPortCommand:           networkPortCommand,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNetworkPortCommand(structType any) BACnetPropertyStatesNetworkPortCommand {

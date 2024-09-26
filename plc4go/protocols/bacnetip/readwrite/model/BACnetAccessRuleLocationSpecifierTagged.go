@@ -58,6 +58,14 @@ type _BACnetAccessRuleLocationSpecifierTagged struct {
 
 var _ BACnetAccessRuleLocationSpecifierTagged = (*_BACnetAccessRuleLocationSpecifierTagged)(nil)
 
+// NewBACnetAccessRuleLocationSpecifierTagged factory function for _BACnetAccessRuleLocationSpecifierTagged
+func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleLocationSpecifierTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessRuleLocationSpecifierTagged must not be nil")
+	}
+	return &_BACnetAccessRuleLocationSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) GetValue() BACnetAccessRuleLo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRuleLocationSpecifierTagged factory function for _BACnetAccessRuleLocationSpecifierTagged
-func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleLocationSpecifierTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessRuleLocationSpecifierTagged must not be nil")
-	}
-	return &_BACnetAccessRuleLocationSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRuleLocationSpecifierTagged {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataBinaryOutputFeedbackValue struct {
 var _ BACnetConstructedDataBinaryOutputFeedbackValue = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
 
+// NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
+func NewBACnetConstructedDataBinaryOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
-func NewBACnetConstructedDataBinaryOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FeedbackValue:                 feedbackValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryOutputFeedbackValue(structType any) BACnetConstructedDataBinaryOutputFeedbackValue {

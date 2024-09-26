@@ -54,6 +54,19 @@ type _BACnetPropertyStatesDoorStatus struct {
 var _ BACnetPropertyStatesDoorStatus = (*_BACnetPropertyStatesDoorStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorStatus)(nil)
 
+// NewBACnetPropertyStatesDoorStatus factory function for _BACnetPropertyStatesDoorStatus
+func NewBACnetPropertyStatesDoorStatus(peekedTagHeader BACnetTagHeader, doorStatus BACnetDoorStatusTagged) *_BACnetPropertyStatesDoorStatus {
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetPropertyStatesDoorStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorStatus:                   doorStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesDoorStatus) GetDoorStatus() BACnetDoorStatusTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorStatus factory function for _BACnetPropertyStatesDoorStatus
-func NewBACnetPropertyStatesDoorStatus(peekedTagHeader BACnetTagHeader, doorStatus BACnetDoorStatusTagged) *_BACnetPropertyStatesDoorStatus {
-	if doorStatus == nil {
-		panic("doorStatus of type BACnetDoorStatusTagged for BACnetPropertyStatesDoorStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorStatus:                   doorStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorStatus(structType any) BACnetPropertyStatesDoorStatus {

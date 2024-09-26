@@ -51,6 +51,11 @@ type _OpcuaConstants struct {
 
 var _ OpcuaConstants = (*_OpcuaConstants)(nil)
 
+// NewOpcuaConstants factory function for _OpcuaConstants
+func NewOpcuaConstants() *_OpcuaConstants {
+	return &_OpcuaConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_OpcuaConstants) GetProtocolVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaConstants factory function for _OpcuaConstants
-func NewOpcuaConstants() *_OpcuaConstants {
-	return &_OpcuaConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaConstants(structType any) OpcuaConstants {

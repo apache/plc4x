@@ -58,6 +58,14 @@ type _BVLCResultCodeTagged struct {
 
 var _ BVLCResultCodeTagged = (*_BVLCResultCodeTagged)(nil)
 
+// NewBVLCResultCodeTagged factory function for _BVLCResultCodeTagged
+func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNumber uint8, tagClass TagClass) *_BVLCResultCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BVLCResultCodeTagged must not be nil")
+	}
+	return &_BVLCResultCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BVLCResultCodeTagged) GetValue() BVLCResultCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCResultCodeTagged factory function for _BVLCResultCodeTagged
-func NewBVLCResultCodeTagged(header BACnetTagHeader, value BVLCResultCode, tagNumber uint8, tagClass TagClass) *_BVLCResultCodeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BVLCResultCodeTagged must not be nil")
-	}
-	return &_BVLCResultCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCResultCodeTagged(structType any) BVLCResultCodeTagged {

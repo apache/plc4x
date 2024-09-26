@@ -54,6 +54,15 @@ type _ServerErrorReply struct {
 var _ ServerErrorReply = (*_ServerErrorReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
 
+// NewServerErrorReply factory function for _ServerErrorReply
+func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
+	_result := &_ServerErrorReply{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,15 +90,6 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
-	_result := &_ServerErrorReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
-	}
-	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerErrorReply(structType any) ServerErrorReply {

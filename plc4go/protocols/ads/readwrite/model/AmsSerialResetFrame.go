@@ -66,6 +66,11 @@ type _AmsSerialResetFrame struct {
 
 var _ AmsSerialResetFrame = (*_AmsSerialResetFrame)(nil)
 
+// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
+func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
+	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (m *_AmsSerialResetFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
-func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
-	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {

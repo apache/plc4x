@@ -56,6 +56,19 @@ type _BACnetConstructedDataFailedAttempts struct {
 var _ BACnetConstructedDataFailedAttempts = (*_BACnetConstructedDataFailedAttempts)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFailedAttempts)(nil)
 
+// NewBACnetConstructedDataFailedAttempts factory function for _BACnetConstructedDataFailedAttempts
+func NewBACnetConstructedDataFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttempts {
+	if failedAttempts == nil {
+		panic("failedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttempts must not be nil")
+	}
+	_result := &_BACnetConstructedDataFailedAttempts{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FailedAttempts:                failedAttempts,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFailedAttempts) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFailedAttempts factory function for _BACnetConstructedDataFailedAttempts
-func NewBACnetConstructedDataFailedAttempts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttempts BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttempts {
-	if failedAttempts == nil {
-		panic("failedAttempts of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttempts must not be nil")
-	}
-	_result := &_BACnetConstructedDataFailedAttempts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FailedAttempts:                failedAttempts,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFailedAttempts(structType any) BACnetConstructedDataFailedAttempts {

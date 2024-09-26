@@ -66,6 +66,23 @@ type _ModifyMonitoredItemsRequest struct {
 var _ ModifyMonitoredItemsRequest = (*_ModifyMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifyMonitoredItemsRequest)(nil)
 
+// NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
+func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
+	}
+	_result := &_ModifyMonitoredItemsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		TimestampsToReturn:                timestampsToReturn,
+		NoOfItemsToModify:                 noOfItemsToModify,
+		ItemsToModify:                     itemsToModify,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_ModifyMonitoredItemsRequest) GetItemsToModify() []ExtensionObjectDefin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
-func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
-	}
-	_result := &_ModifyMonitoredItemsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		TimestampsToReturn:                timestampsToReturn,
-		NoOfItemsToModify:                 noOfItemsToModify,
-		ItemsToModify:                     itemsToModify,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifyMonitoredItemsRequest(structType any) ModifyMonitoredItemsRequest {

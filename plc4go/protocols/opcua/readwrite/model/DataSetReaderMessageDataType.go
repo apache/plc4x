@@ -49,6 +49,15 @@ type _DataSetReaderMessageDataType struct {
 var _ DataSetReaderMessageDataType = (*_DataSetReaderMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderMessageDataType)(nil)
 
+// NewDataSetReaderMessageDataType factory function for _DataSetReaderMessageDataType
+func NewDataSetReaderMessageDataType() *_DataSetReaderMessageDataType {
+	_result := &_DataSetReaderMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DataSetReaderMessageDataType) GetIdentifier() string {
 
 func (m *_DataSetReaderMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetReaderMessageDataType factory function for _DataSetReaderMessageDataType
-func NewDataSetReaderMessageDataType() *_DataSetReaderMessageDataType {
-	_result := &_DataSetReaderMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

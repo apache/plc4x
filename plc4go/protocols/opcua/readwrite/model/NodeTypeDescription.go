@@ -65,6 +65,22 @@ type _NodeTypeDescription struct {
 var _ NodeTypeDescription = (*_NodeTypeDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeTypeDescription)(nil)
 
+// NewNodeTypeDescription factory function for _NodeTypeDescription
+func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
+	}
+	_result := &_NodeTypeDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TypeDefinitionNode:                typeDefinitionNode,
+		IncludeSubTypes:                   includeSubTypes,
+		NoOfDataToReturn:                  noOfDataToReturn,
+		DataToReturn:                      dataToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,22 +124,6 @@ func (m *_NodeTypeDescription) GetDataToReturn() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeTypeDescription factory function for _NodeTypeDescription
-func NewNodeTypeDescription(typeDefinitionNode ExpandedNodeId, includeSubTypes bool, noOfDataToReturn int32, dataToReturn []ExtensionObjectDefinition) *_NodeTypeDescription {
-	if typeDefinitionNode == nil {
-		panic("typeDefinitionNode of type ExpandedNodeId for NodeTypeDescription must not be nil")
-	}
-	_result := &_NodeTypeDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TypeDefinitionNode:                typeDefinitionNode,
-		IncludeSubTypes:                   includeSubTypes,
-		NoOfDataToReturn:                  noOfDataToReturn,
-		DataToReturn:                      dataToReturn,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeTypeDescription(structType any) NodeTypeDescription {

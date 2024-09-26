@@ -60,6 +60,21 @@ type _BACnetUnconfirmedServiceRequestWhoHas struct {
 var _ BACnetUnconfirmedServiceRequestWhoHas = (*_BACnetUnconfirmedServiceRequestWhoHas)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestWhoHas)(nil)
 
+// NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
+func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
+	if object == nil {
+		panic("object of type BACnetUnconfirmedServiceRequestWhoHasObject for BACnetUnconfirmedServiceRequestWhoHas must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
+		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
+		Object:                                  object,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHas) GetObject() BACnetUnconfirmedSe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHas factory function for _BACnetUnconfirmedServiceRequestWhoHas
-func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger, deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger, object BACnetUnconfirmedServiceRequestWhoHasObject, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestWhoHas {
-	if object == nil {
-		panic("object of type BACnetUnconfirmedServiceRequestWhoHasObject for BACnetUnconfirmedServiceRequestWhoHas must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestWhoHas{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		DeviceInstanceRangeLowLimit:             deviceInstanceRangeLowLimit,
-		DeviceInstanceRangeHighLimit:            deviceInstanceRangeHighLimit,
-		Object:                                  object,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHas(structType any) BACnetUnconfirmedServiceRequestWhoHas {

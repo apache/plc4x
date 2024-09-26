@@ -59,6 +59,17 @@ type _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty struct {
 var _ BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty = (*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty)(nil)
 
+// NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty factory function for _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
+func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
+	_result := &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		GroupMembers:                  groupMembers,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty) GetZero(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty factory function for _BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
-func NewBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {
-	_result := &_BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		GroupMembers:                  groupMembers,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty(structType any) BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty {

@@ -57,6 +57,17 @@ type _ServiceCounterDataType struct {
 var _ ServiceCounterDataType = (*_ServiceCounterDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServiceCounterDataType)(nil)
 
+// NewServiceCounterDataType factory function for _ServiceCounterDataType
+func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCounterDataType {
+	_result := &_ServiceCounterDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TotalCount:                        totalCount,
+		ErrorCount:                        errorCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ServiceCounterDataType) GetErrorCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServiceCounterDataType factory function for _ServiceCounterDataType
-func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCounterDataType {
-	_result := &_ServiceCounterDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TotalCount:                        totalCount,
-		ErrorCount:                        errorCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServiceCounterDataType(structType any) ServiceCounterDataType {

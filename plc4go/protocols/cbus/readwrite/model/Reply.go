@@ -76,6 +76,11 @@ type _Reply struct {
 
 var _ ReplyContract = (*_Reply)(nil)
 
+// NewReply factory function for _Reply
+func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -89,11 +94,6 @@ func (m *_Reply) GetPeekedByte() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReply factory function for _Reply
-func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReply(structType any) Reply {

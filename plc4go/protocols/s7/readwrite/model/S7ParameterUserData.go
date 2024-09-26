@@ -54,6 +54,16 @@ type _S7ParameterUserData struct {
 var _ S7ParameterUserData = (*_S7ParameterUserData)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterUserData)(nil)
 
+// NewS7ParameterUserData factory function for _S7ParameterUserData
+func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserData {
+	_result := &_S7ParameterUserData{
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_S7ParameterUserData) GetItems() []S7ParameterUserDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterUserData factory function for _S7ParameterUserData
-func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserData {
-	_result := &_S7ParameterUserData{
-		S7ParameterContract: NewS7Parameter(),
-		Items:               items,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterUserData(structType any) S7ParameterUserData {

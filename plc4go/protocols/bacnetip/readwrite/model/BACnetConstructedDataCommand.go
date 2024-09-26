@@ -56,6 +56,19 @@ type _BACnetConstructedDataCommand struct {
 var _ BACnetConstructedDataCommand = (*_BACnetConstructedDataCommand)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommand)(nil)
 
+// NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
+func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
+	if command == nil {
+		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
+	}
+	_result := &_BACnetConstructedDataCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Command:                       command,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCommand) GetActualValue() BACnetNetworkPortComman
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
-func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
-	if command == nil {
-		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
-	}
-	_result := &_BACnetConstructedDataCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Command:                       command,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCommand(structType any) BACnetConstructedDataCommand {

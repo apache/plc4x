@@ -49,6 +49,15 @@ type _SecurityDataExitDelayStarted struct {
 var _ SecurityDataExitDelayStarted = (*_SecurityDataExitDelayStarted)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataExitDelayStarted)(nil)
 
+// NewSecurityDataExitDelayStarted factory function for _SecurityDataExitDelayStarted
+func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataExitDelayStarted {
+	_result := &_SecurityDataExitDelayStarted{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataExitDelayStarted)(nil)
 
 func (m *_SecurityDataExitDelayStarted) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataExitDelayStarted factory function for _SecurityDataExitDelayStarted
-func NewSecurityDataExitDelayStarted(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataExitDelayStarted {
-	_result := &_SecurityDataExitDelayStarted{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -57,6 +57,11 @@ type _Services struct {
 
 var _ Services = (*_Services)(nil)
 
+// NewServices factory function for _Services
+func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
+	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -74,11 +79,6 @@ func (m *_Services) GetServices() []CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServices factory function for _Services
-func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
-	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
-}
 
 // Deprecated: use the interface for direct cast
 func CastServices(structType any) Services {

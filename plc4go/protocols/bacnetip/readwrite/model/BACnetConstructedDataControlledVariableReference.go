@@ -56,6 +56,19 @@ type _BACnetConstructedDataControlledVariableReference struct {
 var _ BACnetConstructedDataControlledVariableReference = (*_BACnetConstructedDataControlledVariableReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlledVariableReference)(nil)
 
+// NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
+func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
+	if controlledVariableReference == nil {
+		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataControlledVariableReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ControlledVariableReference:   controlledVariableReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataControlledVariableReference) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataControlledVariableReference factory function for _BACnetConstructedDataControlledVariableReference
-func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, controlledVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlledVariableReference {
-	if controlledVariableReference == nil {
-		panic("controlledVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataControlledVariableReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataControlledVariableReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ControlledVariableReference:   controlledVariableReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataControlledVariableReference(structType any) BACnetConstructedDataControlledVariableReference {

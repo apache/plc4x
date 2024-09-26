@@ -59,6 +59,11 @@ type _LightingLabelOptions struct {
 
 var _ LightingLabelOptions = (*_LightingLabelOptions)(nil)
 
+// NewLightingLabelOptions factory function for _LightingLabelOptions
+func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
+	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -76,11 +81,6 @@ func (m *_LightingLabelOptions) GetLabelType() LightingLabelType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingLabelOptions factory function for _LightingLabelOptions
-func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
-	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingLabelOptions(structType any) LightingLabelOptions {

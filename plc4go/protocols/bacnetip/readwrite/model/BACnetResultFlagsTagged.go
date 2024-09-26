@@ -64,6 +64,17 @@ type _BACnetResultFlagsTagged struct {
 
 var _ BACnetResultFlagsTagged = (*_BACnetResultFlagsTagged)(nil)
 
+// NewBACnetResultFlagsTagged factory function for _BACnetResultFlagsTagged
+func NewBACnetResultFlagsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetResultFlagsTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetResultFlagsTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetResultFlagsTagged must not be nil")
+	}
+	return &_BACnetResultFlagsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,17 +119,6 @@ func (m *_BACnetResultFlagsTagged) GetMoreItems() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetResultFlagsTagged factory function for _BACnetResultFlagsTagged
-func NewBACnetResultFlagsTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetResultFlagsTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetResultFlagsTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetResultFlagsTagged must not be nil")
-	}
-	return &_BACnetResultFlagsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetResultFlagsTagged(structType any) BACnetResultFlagsTagged {

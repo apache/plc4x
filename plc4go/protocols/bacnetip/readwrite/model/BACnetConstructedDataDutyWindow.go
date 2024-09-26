@@ -56,6 +56,19 @@ type _BACnetConstructedDataDutyWindow struct {
 var _ BACnetConstructedDataDutyWindow = (*_BACnetConstructedDataDutyWindow)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDutyWindow)(nil)
 
+// NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
+func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dutyWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
+	if dutyWindow == nil {
+		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
+	}
+	_result := &_BACnetConstructedDataDutyWindow{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DutyWindow:                    dutyWindow,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDutyWindow) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDutyWindow factory function for _BACnetConstructedDataDutyWindow
-func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dutyWindow BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDutyWindow {
-	if dutyWindow == nil {
-		panic("dutyWindow of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDutyWindow must not be nil")
-	}
-	_result := &_BACnetConstructedDataDutyWindow{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DutyWindow:                    dutyWindow,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDutyWindow(structType any) BACnetConstructedDataDutyWindow {

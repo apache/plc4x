@@ -80,6 +80,11 @@ type _S7PayloadUserDataItem struct {
 
 var _ S7PayloadUserDataItemContract = (*_S7PayloadUserDataItem)(nil)
 
+// NewS7PayloadUserDataItem factory function for _S7PayloadUserDataItem
+func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItem {
+	return &_S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, DataLength: dataLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -101,11 +106,6 @@ func (m *_S7PayloadUserDataItem) GetDataLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItem factory function for _S7PayloadUserDataItem
-func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItem {
-	return &_S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, DataLength: dataLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItem(structType any) S7PayloadUserDataItem {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesBoolean struct {
 var _ BACnetPropertyStatesBoolean = (*_BACnetPropertyStatesBoolean)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBoolean)(nil)
 
+// NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
+func NewBACnetPropertyStatesBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetPropertyStatesBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBoolean{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BooleanValue:                 booleanValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesBoolean) GetBooleanValue() BACnetContextTagBoolean
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
-func NewBACnetPropertyStatesBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetPropertyStatesBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBoolean{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BooleanValue:                 booleanValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBoolean(structType any) BACnetPropertyStatesBoolean {

@@ -54,6 +54,16 @@ type _BACnetConstructedDataFaultSignals struct {
 var _ BACnetConstructedDataFaultSignals = (*_BACnetConstructedDataFaultSignals)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultSignals)(nil)
 
+// NewBACnetConstructedDataFaultSignals factory function for _BACnetConstructedDataFaultSignals
+func NewBACnetConstructedDataFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetLiftFaultTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultSignals {
+	_result := &_BACnetConstructedDataFaultSignals{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultSignals:                  faultSignals,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataFaultSignals) GetFaultSignals() []BACnetLiftFault
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultSignals factory function for _BACnetConstructedDataFaultSignals
-func NewBACnetConstructedDataFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetLiftFaultTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultSignals {
-	_result := &_BACnetConstructedDataFaultSignals{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultSignals:                  faultSignals,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultSignals(structType any) BACnetConstructedDataFaultSignals {

@@ -93,6 +93,11 @@ type _BACnetTagPayloadUnsignedInteger struct {
 
 var _ BACnetTagPayloadUnsignedInteger = (*_BACnetTagPayloadUnsignedInteger)(nil)
 
+// NewBACnetTagPayloadUnsignedInteger factory function for _BACnetTagPayloadUnsignedInteger
+func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
+	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -353,11 +358,6 @@ func (m *_BACnetTagPayloadUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadUnsignedInteger factory function for _BACnetTagPayloadUnsignedInteger
-func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
-	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadUnsignedInteger(structType any) BACnetTagPayloadUnsignedInteger {

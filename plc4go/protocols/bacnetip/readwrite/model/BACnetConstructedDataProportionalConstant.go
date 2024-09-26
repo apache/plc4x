@@ -56,6 +56,19 @@ type _BACnetConstructedDataProportionalConstant struct {
 var _ BACnetConstructedDataProportionalConstant = (*_BACnetConstructedDataProportionalConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProportionalConstant)(nil)
 
+// NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
+func NewBACnetConstructedDataProportionalConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, proportionalConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
+	if proportionalConstant == nil {
+		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataProportionalConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProportionalConstant:          proportionalConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProportionalConstant) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProportionalConstant factory function for _BACnetConstructedDataProportionalConstant
-func NewBACnetConstructedDataProportionalConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, proportionalConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProportionalConstant {
-	if proportionalConstant == nil {
-		panic("proportionalConstant of type BACnetApplicationTagReal for BACnetConstructedDataProportionalConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataProportionalConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProportionalConstant:          proportionalConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProportionalConstant(structType any) BACnetConstructedDataProportionalConstant {

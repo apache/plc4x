@@ -49,6 +49,15 @@ type _MeteringDataMeasureGas struct {
 var _ MeteringDataMeasureGas = (*_MeteringDataMeasureGas)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureGas)(nil)
 
+// NewMeteringDataMeasureGas factory function for _MeteringDataMeasureGas
+func NewMeteringDataMeasureGas(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureGas {
+	_result := &_MeteringDataMeasureGas{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureGas)(nil)
 
 func (m *_MeteringDataMeasureGas) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureGas factory function for _MeteringDataMeasureGas
-func NewMeteringDataMeasureGas(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureGas {
-	_result := &_MeteringDataMeasureGas{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

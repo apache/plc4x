@@ -70,6 +70,14 @@ type _BACnetSpecialEventPeriod struct {
 
 var _ BACnetSpecialEventPeriodContract = (*_BACnetSpecialEventPeriod)(nil)
 
+// NewBACnetSpecialEventPeriod factory function for _BACnetSpecialEventPeriod
+func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriod {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetSpecialEventPeriod must not be nil")
+	}
+	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetSpecialEventPeriod) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventPeriod factory function for _BACnetSpecialEventPeriod
-func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriod {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetSpecialEventPeriod must not be nil")
-	}
-	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventPeriod(structType any) BACnetSpecialEventPeriod {

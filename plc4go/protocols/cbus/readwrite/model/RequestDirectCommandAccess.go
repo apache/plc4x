@@ -62,6 +62,17 @@ type _RequestDirectCommandAccess struct {
 var _ RequestDirectCommandAccess = (*_RequestDirectCommandAccess)(nil)
 var _ RequestRequirements = (*_RequestDirectCommandAccess)(nil)
 
+// NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
+func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
+	_result := &_RequestDirectCommandAccess{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,17 +134,6 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
-	_result := &_RequestDirectCommandAccess{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CalData:         calData,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {

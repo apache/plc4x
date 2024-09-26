@@ -54,6 +54,16 @@ type _IdentifyReplyCommandLogicalAssignment struct {
 var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 
+// NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
+func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
+	_result := &_IdentifyReplyCommandLogicalAssignment{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		LogicAssigment:               logicAssigment,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLogicAssigment() []LogicAssi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
-	_result := &_IdentifyReplyCommandLogicalAssignment{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		LogicAssigment:               logicAssigment,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandLogicalAssignment(structType any) IdentifyReplyCommandLogicalAssignment {

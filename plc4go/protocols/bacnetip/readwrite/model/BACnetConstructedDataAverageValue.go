@@ -56,6 +56,19 @@ type _BACnetConstructedDataAverageValue struct {
 var _ BACnetConstructedDataAverageValue = (*_BACnetConstructedDataAverageValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAverageValue)(nil)
 
+// NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
+func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
+	if averageValue == nil {
+		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAverageValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AverageValue:                  averageValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAverageValue) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAverageValue factory function for _BACnetConstructedDataAverageValue
-func NewBACnetConstructedDataAverageValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, averageValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAverageValue {
-	if averageValue == nil {
-		panic("averageValue of type BACnetApplicationTagReal for BACnetConstructedDataAverageValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAverageValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AverageValue:                  averageValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAverageValue(structType any) BACnetConstructedDataAverageValue {

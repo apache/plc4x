@@ -57,6 +57,17 @@ type _VariantStatusCode struct {
 var _ VariantStatusCode = (*_VariantStatusCode)(nil)
 var _ VariantRequirements = (*_VariantStatusCode)(nil)
 
+// NewVariantStatusCode factory function for _VariantStatusCode
+func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
+	_result := &_VariantStatusCode{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantStatusCode) GetValue() []StatusCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantStatusCode factory function for _VariantStatusCode
-func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
-	_result := &_VariantStatusCode{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantStatusCode(structType any) VariantStatusCode {

@@ -57,6 +57,16 @@ type _StatusRequestBinaryState struct {
 var _ StatusRequestBinaryState = (*_StatusRequestBinaryState)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestBinaryState)(nil)
 
+// NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
+func NewStatusRequestBinaryState(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryState {
+	_result := &_StatusRequestBinaryState{
+		StatusRequestContract: NewStatusRequest(statusType),
+		Application:           application,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -84,16 +94,6 @@ func (m *_StatusRequestBinaryState) GetApplication() ApplicationIdContainer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
-func NewStatusRequestBinaryState(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryState {
-	_result := &_StatusRequestBinaryState{
-		StatusRequestContract: NewStatusRequest(statusType),
-		Application:           application,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestBinaryState(structType any) StatusRequestBinaryState {

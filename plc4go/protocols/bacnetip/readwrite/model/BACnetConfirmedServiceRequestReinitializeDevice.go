@@ -57,6 +57,20 @@ type _BACnetConfirmedServiceRequestReinitializeDevice struct {
 var _ BACnetConfirmedServiceRequestReinitializeDevice = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestReinitializeDevice)(nil)
 
+// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
+func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
+	if reinitializedStateOfDevice == nil {
+		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ReinitializedStateOfDevice:            reinitializedStateOfDevice,
+		Password:                              password,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetPassword() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReinitializeDevice factory function for _BACnetConfirmedServiceRequestReinitializeDevice
-func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestReinitializeDevice {
-	if reinitializedStateOfDevice == nil {
-		panic("reinitializedStateOfDevice of type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged for BACnetConfirmedServiceRequestReinitializeDevice must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReinitializeDevice{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ReinitializedStateOfDevice:            reinitializedStateOfDevice,
-		Password:                              password,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReinitializeDevice(structType any) BACnetConfirmedServiceRequestReinitializeDevice {

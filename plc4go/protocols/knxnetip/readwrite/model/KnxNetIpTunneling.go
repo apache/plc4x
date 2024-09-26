@@ -54,6 +54,16 @@ type _KnxNetIpTunneling struct {
 var _ KnxNetIpTunneling = (*_KnxNetIpTunneling)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpTunneling)(nil)
 
+// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
+func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
+	_result := &_KnxNetIpTunneling{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetIpTunneling) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
-func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
-	_result := &_KnxNetIpTunneling{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {

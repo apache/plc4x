@@ -54,6 +54,16 @@ type _COTPParameterTpduSize struct {
 var _ COTPParameterTpduSize = (*_COTPParameterTpduSize)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterTpduSize)(nil)
 
+// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
+	_result := &_COTPParameterTpduSize{
+		COTPParameterContract: NewCOTPParameter(rest),
+		TpduSize:              tpduSize,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
-	_result := &_COTPParameterTpduSize{
-		COTPParameterContract: NewCOTPParameter(rest),
-		TpduSize:              tpduSize,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {

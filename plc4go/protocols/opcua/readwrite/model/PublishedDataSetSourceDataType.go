@@ -49,6 +49,15 @@ type _PublishedDataSetSourceDataType struct {
 var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishedDataSetSourceDataType)(nil)
 
+// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
+func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
+	_result := &_PublishedDataSetSourceDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_PublishedDataSetSourceDataType) GetIdentifier() string {
 
 func (m *_PublishedDataSetSourceDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
-func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
-	_result := &_PublishedDataSetSourceDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

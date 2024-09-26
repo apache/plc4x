@@ -63,6 +63,22 @@ type _ModifySubscriptionResponse struct {
 var _ ModifySubscriptionResponse = (*_ModifySubscriptionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifySubscriptionResponse)(nil)
 
+// NewModifySubscriptionResponse factory function for _ModifySubscriptionResponse
+func NewModifySubscriptionResponse(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_ModifySubscriptionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ModifySubscriptionResponse must not be nil")
+	}
+	_result := &_ModifySubscriptionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		RevisedPublishingInterval:         revisedPublishingInterval,
+		RevisedLifetimeCount:              revisedLifetimeCount,
+		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,22 +122,6 @@ func (m *_ModifySubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifySubscriptionResponse factory function for _ModifySubscriptionResponse
-func NewModifySubscriptionResponse(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_ModifySubscriptionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ModifySubscriptionResponse must not be nil")
-	}
-	_result := &_ModifySubscriptionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		RevisedPublishingInterval:         revisedPublishingInterval,
-		RevisedLifetimeCount:              revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifySubscriptionResponse(structType any) ModifySubscriptionResponse {

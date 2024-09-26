@@ -92,6 +92,14 @@ type _BACnetWeekNDayTagged struct {
 
 var _ BACnetWeekNDayTagged = (*_BACnetWeekNDayTagged)(nil)
 
+// NewBACnetWeekNDayTagged factory function for _BACnetWeekNDayTagged
+func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8, tagNumber uint8, tagClass TagClass) *_BACnetWeekNDayTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetWeekNDayTagged must not be nil")
+	}
+	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -210,14 +218,6 @@ func (m *_BACnetWeekNDayTagged) GetAnyDayOfWeek() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWeekNDayTagged factory function for _BACnetWeekNDayTagged
-func NewBACnetWeekNDayTagged(header BACnetTagHeader, month uint8, weekOfMonth uint8, dayOfWeek uint8, tagNumber uint8, tagClass TagClass) *_BACnetWeekNDayTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetWeekNDayTagged must not be nil")
-	}
-	return &_BACnetWeekNDayTagged{Header: header, Month: month, WeekOfMonth: weekOfMonth, DayOfWeek: dayOfWeek, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWeekNDayTagged(structType any) BACnetWeekNDayTagged {

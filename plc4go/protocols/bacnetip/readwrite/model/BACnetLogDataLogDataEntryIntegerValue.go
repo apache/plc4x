@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryIntegerValue struct {
 var _ BACnetLogDataLogDataEntryIntegerValue = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryIntegerValue)(nil)
 
+// NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
+func NewBACnetLogDataLogDataEntryIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetLogDataLogDataEntryIntegerValue {
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryIntegerValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		IntegerValue:                      integerValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetIntegerValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
-func NewBACnetLogDataLogDataEntryIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetLogDataLogDataEntryIntegerValue {
-	if integerValue == nil {
-		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryIntegerValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		IntegerValue:                      integerValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryIntegerValue(structType any) BACnetLogDataLogDataEntryIntegerValue {

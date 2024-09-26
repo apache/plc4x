@@ -57,6 +57,17 @@ type _AdditionalParametersType struct {
 var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
 
+// NewAdditionalParametersType factory function for _AdditionalParametersType
+func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
+	_result := &_AdditionalParametersType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfParameters:                    noOfParameters,
+		Parameters:                        parameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_AdditionalParametersType) GetParameters() []ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdditionalParametersType factory function for _AdditionalParametersType
-func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
-	_result := &_AdditionalParametersType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfParameters:                    noOfParameters,
-		Parameters:                        parameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdditionalParametersType(structType any) AdditionalParametersType {

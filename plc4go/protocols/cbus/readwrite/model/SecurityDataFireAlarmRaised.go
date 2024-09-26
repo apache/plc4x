@@ -49,6 +49,15 @@ type _SecurityDataFireAlarmRaised struct {
 var _ SecurityDataFireAlarmRaised = (*_SecurityDataFireAlarmRaised)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataFireAlarmRaised)(nil)
 
+// NewSecurityDataFireAlarmRaised factory function for _SecurityDataFireAlarmRaised
+func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmRaised {
+	_result := &_SecurityDataFireAlarmRaised{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataFireAlarmRaised)(nil)
 
 func (m *_SecurityDataFireAlarmRaised) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataFireAlarmRaised factory function for _SecurityDataFireAlarmRaised
-func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmRaised {
-	_result := &_SecurityDataFireAlarmRaised{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

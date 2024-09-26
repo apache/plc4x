@@ -54,6 +54,19 @@ type _BACnetEventLogRecordLogDatumTimeChange struct {
 var _ BACnetEventLogRecordLogDatumTimeChange = (*_BACnetEventLogRecordLogDatumTimeChange)(nil)
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumTimeChange)(nil)
 
+// NewBACnetEventLogRecordLogDatumTimeChange factory function for _BACnetEventLogRecordLogDatumTimeChange
+func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetEventLogRecordLogDatumTimeChange {
+	if timeChange == nil {
+		panic("timeChange of type BACnetContextTagReal for BACnetEventLogRecordLogDatumTimeChange must not be nil")
+	}
+	_result := &_BACnetEventLogRecordLogDatumTimeChange{
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeChange:                           timeChange,
+	}
+	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) GetTimeChange() BACnetContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatumTimeChange factory function for _BACnetEventLogRecordLogDatumTimeChange
-func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetEventLogRecordLogDatumTimeChange {
-	if timeChange == nil {
-		panic("timeChange of type BACnetContextTagReal for BACnetEventLogRecordLogDatumTimeChange must not be nil")
-	}
-	_result := &_BACnetEventLogRecordLogDatumTimeChange{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		TimeChange:                           timeChange,
-	}
-	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatumTimeChange(structType any) BACnetEventLogRecordLogDatumTimeChange {

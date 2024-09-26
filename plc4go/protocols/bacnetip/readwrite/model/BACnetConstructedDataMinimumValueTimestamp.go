@@ -56,6 +56,19 @@ type _BACnetConstructedDataMinimumValueTimestamp struct {
 var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 
+// NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
+func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
+	if minimumValueTimestamp == nil {
+		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumValueTimestamp{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumValueTimestamp:         minimumValueTimestamp,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
-func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
-	if minimumValueTimestamp == nil {
-		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumValueTimestamp:         minimumValueTimestamp,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumValueTimestamp(structType any) BACnetConstructedDataMinimumValueTimestamp {

@@ -54,6 +54,16 @@ type _BACnetConstructedDataListOfObjectPropertyReferences struct {
 var _ BACnetConstructedDataListOfObjectPropertyReferences = (*_BACnetConstructedDataListOfObjectPropertyReferences)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfObjectPropertyReferences)(nil)
 
+// NewBACnetConstructedDataListOfObjectPropertyReferences factory function for _BACnetConstructedDataListOfObjectPropertyReferences
+func NewBACnetConstructedDataListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
+	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		References:                    references,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataListOfObjectPropertyReferences) GetReferences() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataListOfObjectPropertyReferences factory function for _BACnetConstructedDataListOfObjectPropertyReferences
-func NewBACnetConstructedDataListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfObjectPropertyReferences {
-	_result := &_BACnetConstructedDataListOfObjectPropertyReferences{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		References:                    references,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataListOfObjectPropertyReferences(structType any) BACnetConstructedDataListOfObjectPropertyReferences {

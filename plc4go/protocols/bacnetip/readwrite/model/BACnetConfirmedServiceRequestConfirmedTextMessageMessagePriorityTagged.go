@@ -58,6 +58,14 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged str
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)(nil)
 
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesReliability struct {
 var _ BACnetPropertyStatesReliability = (*_BACnetPropertyStatesReliability)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReliability)(nil)
 
+// NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
+func NewBACnetPropertyStatesReliability(peekedTagHeader BACnetTagHeader, reliability BACnetReliabilityTagged) *_BACnetPropertyStatesReliability {
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
+	}
+	_result := &_BACnetPropertyStatesReliability{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Reliability:                  reliability,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesReliability) GetReliability() BACnetReliabilityTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesReliability factory function for _BACnetPropertyStatesReliability
-func NewBACnetPropertyStatesReliability(peekedTagHeader BACnetTagHeader, reliability BACnetReliabilityTagged) *_BACnetPropertyStatesReliability {
-	if reliability == nil {
-		panic("reliability of type BACnetReliabilityTagged for BACnetPropertyStatesReliability must not be nil")
-	}
-	_result := &_BACnetPropertyStatesReliability{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Reliability:                  reliability,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesReliability(structType any) BACnetPropertyStatesReliability {

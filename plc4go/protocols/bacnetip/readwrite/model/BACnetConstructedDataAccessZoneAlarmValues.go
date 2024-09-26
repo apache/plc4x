@@ -54,6 +54,16 @@ type _BACnetConstructedDataAccessZoneAlarmValues struct {
 var _ BACnetConstructedDataAccessZoneAlarmValues = (*_BACnetConstructedDataAccessZoneAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessZoneAlarmValues)(nil)
 
+// NewBACnetConstructedDataAccessZoneAlarmValues factory function for _BACnetConstructedDataAccessZoneAlarmValues
+func NewBACnetConstructedDataAccessZoneAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetAccessZoneOccupancyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAlarmValues {
+	_result := &_BACnetConstructedDataAccessZoneAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) GetAlarmValues() []BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessZoneAlarmValues factory function for _BACnetConstructedDataAccessZoneAlarmValues
-func NewBACnetConstructedDataAccessZoneAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetAccessZoneOccupancyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAlarmValues {
-	_result := &_BACnetConstructedDataAccessZoneAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessZoneAlarmValues(structType any) BACnetConstructedDataAccessZoneAlarmValues {

@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryDate struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryDate = (*_BACnetFaultParameterFaultExtendedParametersEntryDate)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryDate)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryDate factory function for _BACnetFaultParameterFaultExtendedParametersEntryDate
+func NewBACnetFaultParameterFaultExtendedParametersEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetFaultParameterFaultExtendedParametersEntryDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetFaultParameterFaultExtendedParametersEntryDate must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		DateValue: dateValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) GetDateValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryDate factory function for _BACnetFaultParameterFaultExtendedParametersEntryDate
-func NewBACnetFaultParameterFaultExtendedParametersEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetFaultParameterFaultExtendedParametersEntryDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetFaultParameterFaultExtendedParametersEntryDate must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryDate{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		DateValue: dateValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryDate(structType any) BACnetFaultParameterFaultExtendedParametersEntryDate {

@@ -57,6 +57,11 @@ type _AdsStampHeader struct {
 
 var _ AdsStampHeader = (*_AdsStampHeader)(nil)
 
+// NewAdsStampHeader factory function for _AdsStampHeader
+func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) *_AdsStampHeader {
+	return &_AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_AdsStampHeader) GetAdsNotificationSamples() []AdsNotificationSample {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsStampHeader factory function for _AdsStampHeader
-func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) *_AdsStampHeader {
-	return &_AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsStampHeader(structType any) AdsStampHeader {

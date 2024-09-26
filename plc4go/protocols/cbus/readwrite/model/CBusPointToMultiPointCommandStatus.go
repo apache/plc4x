@@ -57,6 +57,19 @@ type _CBusPointToMultiPointCommandStatus struct {
 var _ CBusPointToMultiPointCommandStatus = (*_CBusPointToMultiPointCommandStatus)(nil)
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandStatus)(nil)
 
+// NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
+func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
+	if statusRequest == nil {
+		panic("statusRequest of type StatusRequest for CBusPointToMultiPointCommandStatus must not be nil")
+	}
+	_result := &_CBusPointToMultiPointCommandStatus{
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		StatusRequest:                        statusRequest,
+	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -84,19 +97,6 @@ func (m *_CBusPointToMultiPointCommandStatus) GetStatusRequest() StatusRequest {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
-	if statusRequest == nil {
-		panic("statusRequest of type StatusRequest for CBusPointToMultiPointCommandStatus must not be nil")
-	}
-	_result := &_CBusPointToMultiPointCommandStatus{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
-		StatusRequest:                        statusRequest,
-	}
-	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommandStatus(structType any) CBusPointToMultiPointCommandStatus {

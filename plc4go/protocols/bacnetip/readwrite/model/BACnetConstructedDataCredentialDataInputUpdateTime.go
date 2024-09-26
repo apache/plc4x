@@ -56,6 +56,19 @@ type _BACnetConstructedDataCredentialDataInputUpdateTime struct {
 var _ BACnetConstructedDataCredentialDataInputUpdateTime = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
 
+// NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
+func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
+	if updateTime == nil {
+		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateTime:                    updateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetActualValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
-func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
-	if updateTime == nil {
-		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateTime:                    updateTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACnetConstructedDataCredentialDataInputUpdateTime {

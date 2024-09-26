@@ -75,6 +75,23 @@ type _S7ParameterUserDataItemCPUFunctions struct {
 var _ S7ParameterUserDataItemCPUFunctions = (*_S7ParameterUserDataItemCPUFunctions)(nil)
 var _ S7ParameterUserDataItemRequirements = (*_S7ParameterUserDataItemCPUFunctions)(nil)
 
+// NewS7ParameterUserDataItemCPUFunctions factory function for _S7ParameterUserDataItemCPUFunctions
+func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *_S7ParameterUserDataItemCPUFunctions {
+	_result := &_S7ParameterUserDataItemCPUFunctions{
+		S7ParameterUserDataItemContract: NewS7ParameterUserDataItem(),
+		Method:                          method,
+		CpuFunctionType:                 cpuFunctionType,
+		CpuFunctionGroup:                cpuFunctionGroup,
+		CpuSubfunction:                  cpuSubfunction,
+		SequenceNumber:                  sequenceNumber,
+		DataUnitReferenceNumber:         dataUnitReferenceNumber,
+		LastDataUnit:                    lastDataUnit,
+		ErrorCode:                       errorCode,
+	}
+	_result.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -134,23 +151,6 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterUserDataItemCPUFunctions factory function for _S7ParameterUserDataItemCPUFunctions
-func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *_S7ParameterUserDataItemCPUFunctions {
-	_result := &_S7ParameterUserDataItemCPUFunctions{
-		S7ParameterUserDataItemContract: NewS7ParameterUserDataItem(),
-		Method:                          method,
-		CpuFunctionType:                 cpuFunctionType,
-		CpuFunctionGroup:                cpuFunctionGroup,
-		CpuSubfunction:                  cpuSubfunction,
-		SequenceNumber:                  sequenceNumber,
-		DataUnitReferenceNumber:         dataUnitReferenceNumber,
-		LastDataUnit:                    lastDataUnit,
-		ErrorCode:                       errorCode,
-	}
-	_result.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserDataItemCPUFunctions {

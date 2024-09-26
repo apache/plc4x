@@ -54,6 +54,19 @@ type _BACnetPriorityValueObjectidentifier struct {
 var _ BACnetPriorityValueObjectidentifier = (*_BACnetPriorityValueObjectidentifier)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueObjectidentifier)(nil)
 
+// NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
+func NewBACnetPriorityValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
+	}
+	_result := &_BACnetPriorityValueObjectidentifier{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		ObjectidentifierValue:       objectidentifierValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueObjectidentifier) GetObjectidentifierValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueObjectidentifier factory function for _BACnetPriorityValueObjectidentifier
-func NewBACnetPriorityValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetPriorityValueObjectidentifier must not be nil")
-	}
-	_result := &_BACnetPriorityValueObjectidentifier{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		ObjectidentifierValue:       objectidentifierValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueObjectidentifier(structType any) BACnetPriorityValueObjectidentifier {

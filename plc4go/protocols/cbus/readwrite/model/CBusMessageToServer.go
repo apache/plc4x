@@ -54,6 +54,19 @@ type _CBusMessageToServer struct {
 var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
 
+// NewCBusMessageToServer factory function for _CBusMessageToServer
+func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+	if request == nil {
+		panic("request of type Request for CBusMessageToServer must not be nil")
+	}
+	_result := &_CBusMessageToServer{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Request:             request,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_CBusMessageToServer) GetRequest() Request {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
-	if request == nil {
-		panic("request of type Request for CBusMessageToServer must not be nil")
-	}
-	_result := &_CBusMessageToServer{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
-		Request:             request,
-	}
-	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessageToServer(structType any) CBusMessageToServer {

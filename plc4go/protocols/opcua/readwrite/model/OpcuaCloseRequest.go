@@ -57,6 +57,23 @@ type _OpcuaCloseRequest struct {
 var _ OpcuaCloseRequest = (*_OpcuaCloseRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaCloseRequest)(nil)
 
+// NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
+func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaCloseRequest {
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaCloseRequest must not be nil")
+	}
+	_result := &_OpcuaCloseRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,23 +113,6 @@ func (m *_OpcuaCloseRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
-func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaCloseRequest {
-	if securityHeader == nil {
-		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaCloseRequest must not be nil")
-	}
-	_result := &_OpcuaCloseRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		SecurityHeader:     securityHeader,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaCloseRequest(structType any) OpcuaCloseRequest {

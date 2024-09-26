@@ -56,6 +56,19 @@ type _BACnetConstructedDataCredentialDisable struct {
 var _ BACnetConstructedDataCredentialDisable = (*_BACnetConstructedDataCredentialDisable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDisable)(nil)
 
+// NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
+func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
+	if credentialDisable == nil {
+		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDisable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CredentialDisable:             credentialDisable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCredentialDisable) GetActualValue() BACnetAccessC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDisable factory function for _BACnetConstructedDataCredentialDisable
-func NewBACnetConstructedDataCredentialDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialDisable BACnetAccessCredentialDisableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDisable {
-	if credentialDisable == nil {
-		panic("credentialDisable of type BACnetAccessCredentialDisableTagged for BACnetConstructedDataCredentialDisable must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CredentialDisable:             credentialDisable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDisable(structType any) BACnetConstructedDataCredentialDisable {

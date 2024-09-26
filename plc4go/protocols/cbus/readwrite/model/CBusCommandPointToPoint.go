@@ -54,6 +54,19 @@ type _CBusCommandPointToPoint struct {
 var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToPoint)(nil)
 
+// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
+func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
+	if command == nil {
+		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
-	if command == nil {
-		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToPoint(structType any) CBusCommandPointToPoint {

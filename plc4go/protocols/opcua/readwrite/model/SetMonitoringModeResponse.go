@@ -66,6 +66,23 @@ type _SetMonitoringModeResponse struct {
 var _ SetMonitoringModeResponse = (*_SetMonitoringModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeResponse)(nil)
 
+// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
+func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
+	}
+	_result := &_SetMonitoringModeResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_SetMonitoringModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
-func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
-	}
-	_result := &_SetMonitoringModeResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetMonitoringModeResponse(structType any) SetMonitoringModeResponse {

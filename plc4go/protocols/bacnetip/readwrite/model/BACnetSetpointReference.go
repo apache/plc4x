@@ -51,6 +51,11 @@ type _BACnetSetpointReference struct {
 
 var _ BACnetSetpointReference = (*_BACnetSetpointReference)(nil)
 
+// NewBACnetSetpointReference factory function for _BACnetSetpointReference
+func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
+	return &_BACnetSetpointReference{SetPointReference: setPointReference}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_BACnetSetpointReference) GetSetPointReference() BACnetObjectPropertyRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSetpointReference factory function for _BACnetSetpointReference
-func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
-	return &_BACnetSetpointReference{SetPointReference: setPointReference}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSetpointReference(structType any) BACnetSetpointReference {

@@ -63,6 +63,28 @@ type _WriteValue struct {
 var _ WriteValue = (*_WriteValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriteValue)(nil)
 
+// NewWriteValue factory function for _WriteValue
+func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for WriteValue must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for WriteValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type DataValue for WriteValue must not be nil")
+	}
+	_result := &_WriteValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_WriteValue) GetValue() DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWriteValue factory function for _WriteValue
-func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for WriteValue must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for WriteValue must not be nil")
-	}
-	if value == nil {
-		panic("value of type DataValue for WriteValue must not be nil")
-	}
-	_result := &_WriteValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWriteValue(structType any) WriteValue {

@@ -59,6 +59,20 @@ type _APDUReject struct {
 var _ APDUReject = (*_APDUReject)(nil)
 var _ APDURequirements = (*_APDUReject)(nil)
 
+// NewAPDUReject factory function for _APDUReject
+func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
+	if rejectReason == nil {
+		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
+	}
+	_result := &_APDUReject{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		RejectReason:     rejectReason,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,20 +108,6 @@ func (m *_APDUReject) GetRejectReason() BACnetRejectReasonTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUReject factory function for _APDUReject
-func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged, apduLength uint16) *_APDUReject {
-	if rejectReason == nil {
-		panic("rejectReason of type BACnetRejectReasonTagged for APDUReject must not be nil")
-	}
-	_result := &_APDUReject{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		RejectReason:     rejectReason,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUReject(structType any) APDUReject {

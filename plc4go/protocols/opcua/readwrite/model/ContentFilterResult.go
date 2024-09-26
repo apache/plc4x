@@ -63,6 +63,19 @@ type _ContentFilterResult struct {
 var _ ContentFilterResult = (*_ContentFilterResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterResult)(nil)
 
+// NewContentFilterResult factory function for _ContentFilterResult
+func NewContentFilterResult(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
+	_result := &_ContentFilterResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElementResults:                noOfElementResults,
+		ElementResults:                    elementResults,
+		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
+		ElementDiagnosticInfos:            elementDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_ContentFilterResult) GetElementDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilterResult factory function for _ContentFilterResult
-func NewContentFilterResult(noOfElementResults int32, elementResults []ExtensionObjectDefinition, noOfElementDiagnosticInfos int32, elementDiagnosticInfos []DiagnosticInfo) *_ContentFilterResult {
-	_result := &_ContentFilterResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElementResults:                noOfElementResults,
-		ElementResults:                    elementResults,
-		NoOfElementDiagnosticInfos:        noOfElementDiagnosticInfos,
-		ElementDiagnosticInfos:            elementDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilterResult(structType any) ContentFilterResult {

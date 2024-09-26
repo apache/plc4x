@@ -54,6 +54,19 @@ type _SALDataLighting struct {
 var _ SALDataLighting = (*_SALDataLighting)(nil)
 var _ SALDataRequirements = (*_SALDataLighting)(nil)
 
+// NewSALDataLighting factory function for _SALDataLighting
+func NewSALDataLighting(salData SALData, lightingData LightingData) *_SALDataLighting {
+	if lightingData == nil {
+		panic("lightingData of type LightingData for SALDataLighting must not be nil")
+	}
+	_result := &_SALDataLighting{
+		SALDataContract: NewSALData(salData),
+		LightingData:    lightingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataLighting) GetLightingData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataLighting factory function for _SALDataLighting
-func NewSALDataLighting(salData SALData, lightingData LightingData) *_SALDataLighting {
-	if lightingData == nil {
-		panic("lightingData of type LightingData for SALDataLighting must not be nil")
-	}
-	_result := &_SALDataLighting{
-		SALDataContract: NewSALData(salData),
-		LightingData:    lightingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataLighting(structType any) SALDataLighting {

@@ -66,6 +66,23 @@ type _ModifyMonitoredItemsResponse struct {
 var _ ModifyMonitoredItemsResponse = (*_ModifyMonitoredItemsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifyMonitoredItemsResponse)(nil)
 
+// NewModifyMonitoredItemsResponse factory function for _ModifyMonitoredItemsResponse
+func NewModifyMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ModifyMonitoredItemsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsResponse must not be nil")
+	}
+	_result := &_ModifyMonitoredItemsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_ModifyMonitoredItemsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModifyMonitoredItemsResponse factory function for _ModifyMonitoredItemsResponse
-func NewModifyMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ModifyMonitoredItemsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsResponse must not be nil")
-	}
-	_result := &_ModifyMonitoredItemsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModifyMonitoredItemsResponse(structType any) ModifyMonitoredItemsResponse {

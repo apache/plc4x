@@ -54,6 +54,16 @@ type _BACnetConstructedDataLifeSafetyPointFaultValues struct {
 var _ BACnetConstructedDataLifeSafetyPointFaultValues = (*_BACnetConstructedDataLifeSafetyPointFaultValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyPointFaultValues)(nil)
 
+// NewBACnetConstructedDataLifeSafetyPointFaultValues factory function for _BACnetConstructedDataLifeSafetyPointFaultValues
+func NewBACnetConstructedDataLifeSafetyPointFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointFaultValues {
+	_result := &_BACnetConstructedDataLifeSafetyPointFaultValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultValues:                   faultValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataLifeSafetyPointFaultValues) GetFaultValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLifeSafetyPointFaultValues factory function for _BACnetConstructedDataLifeSafetyPointFaultValues
-func NewBACnetConstructedDataLifeSafetyPointFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyPointFaultValues {
-	_result := &_BACnetConstructedDataLifeSafetyPointFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultValues:                   faultValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLifeSafetyPointFaultValues(structType any) BACnetConstructedDataLifeSafetyPointFaultValues {

@@ -60,6 +60,17 @@ type _BACnetEventSummariesList struct {
 
 var _ BACnetEventSummariesList = (*_BACnetEventSummariesList)(nil)
 
+// NewBACnetEventSummariesList factory function for _BACnetEventSummariesList
+func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventSummariesList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventSummariesList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventSummariesList must not be nil")
+	}
+	return &_BACnetEventSummariesList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +92,6 @@ func (m *_BACnetEventSummariesList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventSummariesList factory function for _BACnetEventSummariesList
-func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventSummariesList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventSummariesList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventSummariesList must not be nil")
-	}
-	return &_BACnetEventSummariesList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventSummariesList(structType any) BACnetEventSummariesList {

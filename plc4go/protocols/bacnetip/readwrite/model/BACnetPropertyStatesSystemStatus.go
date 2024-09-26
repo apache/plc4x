@@ -54,6 +54,19 @@ type _BACnetPropertyStatesSystemStatus struct {
 var _ BACnetPropertyStatesSystemStatus = (*_BACnetPropertyStatesSystemStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSystemStatus)(nil)
 
+// NewBACnetPropertyStatesSystemStatus factory function for _BACnetPropertyStatesSystemStatus
+func NewBACnetPropertyStatesSystemStatus(peekedTagHeader BACnetTagHeader, systemStatus BACnetDeviceStatusTagged) *_BACnetPropertyStatesSystemStatus {
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetPropertyStatesSystemStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSystemStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SystemStatus:                 systemStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesSystemStatus) GetSystemStatus() BACnetDeviceStatus
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSystemStatus factory function for _BACnetPropertyStatesSystemStatus
-func NewBACnetPropertyStatesSystemStatus(peekedTagHeader BACnetTagHeader, systemStatus BACnetDeviceStatusTagged) *_BACnetPropertyStatesSystemStatus {
-	if systemStatus == nil {
-		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetPropertyStatesSystemStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSystemStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SystemStatus:                 systemStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSystemStatus(structType any) BACnetPropertyStatesSystemStatus {

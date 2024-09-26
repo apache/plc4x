@@ -49,6 +49,15 @@ type _SetAttributeListRequest struct {
 var _ SetAttributeListRequest = (*_SetAttributeListRequest)(nil)
 var _ CipServiceRequirements = (*_SetAttributeListRequest)(nil)
 
+// NewSetAttributeListRequest factory function for _SetAttributeListRequest
+func NewSetAttributeListRequest(serviceLen uint16) *_SetAttributeListRequest {
+	_result := &_SetAttributeListRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_SetAttributeListRequest) GetConnected() bool {
 
 func (m *_SetAttributeListRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeListRequest factory function for _SetAttributeListRequest
-func NewSetAttributeListRequest(serviceLen uint16) *_SetAttributeListRequest {
-	_result := &_SetAttributeListRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

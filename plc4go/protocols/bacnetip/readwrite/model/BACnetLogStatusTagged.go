@@ -64,6 +64,17 @@ type _BACnetLogStatusTagged struct {
 
 var _ BACnetLogStatusTagged = (*_BACnetLogStatusTagged)(nil)
 
+// NewBACnetLogStatusTagged factory function for _BACnetLogStatusTagged
+func NewBACnetLogStatusTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLogStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLogStatusTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetLogStatusTagged must not be nil")
+	}
+	return &_BACnetLogStatusTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,17 +119,6 @@ func (m *_BACnetLogStatusTagged) GetLogInterrupted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogStatusTagged factory function for _BACnetLogStatusTagged
-func NewBACnetLogStatusTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetLogStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLogStatusTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetLogStatusTagged must not be nil")
-	}
-	return &_BACnetLogStatusTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogStatusTagged(structType any) BACnetLogStatusTagged {

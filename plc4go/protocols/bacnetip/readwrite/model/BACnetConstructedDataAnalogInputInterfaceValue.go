@@ -56,6 +56,19 @@ type _BACnetConstructedDataAnalogInputInterfaceValue struct {
 var _ BACnetConstructedDataAnalogInputInterfaceValue = (*_BACnetConstructedDataAnalogInputInterfaceValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogInputInterfaceValue)(nil)
 
+// NewBACnetConstructedDataAnalogInputInterfaceValue factory function for _BACnetConstructedDataAnalogInputInterfaceValue
+func NewBACnetConstructedDataAnalogInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalREAL, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputInterfaceValue {
+	if interfaceValue == nil {
+		panic("interfaceValue of type BACnetOptionalREAL for BACnetConstructedDataAnalogInputInterfaceValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAnalogInputInterfaceValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InterfaceValue:                interfaceValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAnalogInputInterfaceValue factory function for _BACnetConstructedDataAnalogInputInterfaceValue
-func NewBACnetConstructedDataAnalogInputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalREAL, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogInputInterfaceValue {
-	if interfaceValue == nil {
-		panic("interfaceValue of type BACnetOptionalREAL for BACnetConstructedDataAnalogInputInterfaceValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAnalogInputInterfaceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InterfaceValue:                interfaceValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAnalogInputInterfaceValue(structType any) BACnetConstructedDataAnalogInputInterfaceValue {

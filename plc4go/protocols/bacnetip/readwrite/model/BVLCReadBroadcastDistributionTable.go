@@ -50,6 +50,15 @@ type _BVLCReadBroadcastDistributionTable struct {
 var _ BVLCReadBroadcastDistributionTable = (*_BVLCReadBroadcastDistributionTable)(nil)
 var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTable)(nil)
 
+// NewBVLCReadBroadcastDistributionTable factory function for _BVLCReadBroadcastDistributionTable
+func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTable {
+	_result := &_BVLCReadBroadcastDistributionTable{
+		BVLCContract: NewBVLC(),
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -66,15 +75,6 @@ func (m *_BVLCReadBroadcastDistributionTable) GetBvlcFunction() uint8 {
 
 func (m *_BVLCReadBroadcastDistributionTable) GetParent() BVLCContract {
 	return m.BVLCContract
-}
-
-// NewBVLCReadBroadcastDistributionTable factory function for _BVLCReadBroadcastDistributionTable
-func NewBVLCReadBroadcastDistributionTable() *_BVLCReadBroadcastDistributionTable {
-	_result := &_BVLCReadBroadcastDistributionTable{
-		BVLCContract: NewBVLC(),
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,19 @@ type _CBusMessageToClient struct {
 var _ CBusMessageToClient = (*_CBusMessageToClient)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToClient)(nil)
 
+// NewCBusMessageToClient factory function for _CBusMessageToClient
+func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
+	if reply == nil {
+		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
+	}
+	_result := &_CBusMessageToClient{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Reply:               reply,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_CBusMessageToClient) GetReply() ReplyOrConfirmation {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusMessageToClient factory function for _CBusMessageToClient
-func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToClient {
-	if reply == nil {
-		panic("reply of type ReplyOrConfirmation for CBusMessageToClient must not be nil")
-	}
-	_result := &_CBusMessageToClient{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
-		Reply:               reply,
-	}
-	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessageToClient(structType any) CBusMessageToClient {

@@ -49,6 +49,15 @@ type _TelephonyDataInternetConnectionRequestMade struct {
 var _ TelephonyDataInternetConnectionRequestMade = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)(nil)
 
+// NewTelephonyDataInternetConnectionRequestMade factory function for _TelephonyDataInternetConnectionRequestMade
+func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataInternetConnectionRequestMade {
+	_result := &_TelephonyDataInternetConnectionRequestMade{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ TelephonyDataRequirements = (*_TelephonyDataInternetConnectionRequestMade)
 
 func (m *_TelephonyDataInternetConnectionRequestMade) GetParent() TelephonyDataContract {
 	return m.TelephonyDataContract
-}
-
-// NewTelephonyDataInternetConnectionRequestMade factory function for _TelephonyDataInternetConnectionRequestMade
-func NewTelephonyDataInternetConnectionRequestMade(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataInternetConnectionRequestMade {
-	_result := &_TelephonyDataInternetConnectionRequestMade{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

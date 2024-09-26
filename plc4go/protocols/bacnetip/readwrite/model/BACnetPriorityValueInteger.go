@@ -54,6 +54,19 @@ type _BACnetPriorityValueInteger struct {
 var _ BACnetPriorityValueInteger = (*_BACnetPriorityValueInteger)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueInteger)(nil)
 
+// NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
+func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
+	}
+	_result := &_BACnetPriorityValueInteger{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		IntegerValue:                integerValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueInteger) GetIntegerValue() BACnetApplicationTagSign
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
-func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
-	}
-	_result := &_BACnetPriorityValueInteger{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		IntegerValue:                integerValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueInteger(structType any) BACnetPriorityValueInteger {

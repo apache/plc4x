@@ -81,6 +81,11 @@ type _HVACHumidityModeAndFlags struct {
 
 var _ HVACHumidityModeAndFlags = (*_HVACHumidityModeAndFlags)(nil)
 
+// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
+func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
+	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -167,11 +172,6 @@ func (m *_HVACHumidityModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
-func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
-	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataShedDuration struct {
 var _ BACnetConstructedDataShedDuration = (*_BACnetConstructedDataShedDuration)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedDuration)(nil)
 
+// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
+func NewBACnetConstructedDataShedDuration(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, shedDuration BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
+	if shedDuration == nil {
+		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
+	}
+	_result := &_BACnetConstructedDataShedDuration{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ShedDuration:                  shedDuration,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataShedDuration) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
-func NewBACnetConstructedDataShedDuration(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, shedDuration BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
-	if shedDuration == nil {
-		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
-	}
-	_result := &_BACnetConstructedDataShedDuration{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ShedDuration:                  shedDuration,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataShedDuration(structType any) BACnetConstructedDataShedDuration {

@@ -59,6 +59,17 @@ type _APDUSimpleAck struct {
 var _ APDUSimpleAck = (*_APDUSimpleAck)(nil)
 var _ APDURequirements = (*_APDUSimpleAck)(nil)
 
+// NewAPDUSimpleAck factory function for _APDUSimpleAck
+func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
+	_result := &_APDUSimpleAck{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		ServiceChoice:    serviceChoice,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_APDUSimpleAck) GetServiceChoice() BACnetConfirmedServiceChoice {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUSimpleAck factory function for _APDUSimpleAck
-func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice BACnetConfirmedServiceChoice, apduLength uint16) *_APDUSimpleAck {
-	_result := &_APDUSimpleAck{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		ServiceChoice:    serviceChoice,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSimpleAck(structType any) APDUSimpleAck {

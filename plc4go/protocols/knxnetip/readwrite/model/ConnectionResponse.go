@@ -65,6 +65,19 @@ type _ConnectionResponse struct {
 var _ ConnectionResponse = (*_ConnectionResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionResponse)(nil)
 
+// NewConnectionResponse factory function for _ConnectionResponse
+func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint HPAIDataEndpoint, connectionResponseDataBlock ConnectionResponseDataBlock) *_ConnectionResponse {
+	_result := &_ConnectionResponse{
+		KnxNetIpMessageContract:     NewKnxNetIpMessage(),
+		CommunicationChannelId:      communicationChannelId,
+		Status:                      status,
+		HpaiDataEndpoint:            hpaiDataEndpoint,
+		ConnectionResponseDataBlock: connectionResponseDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,19 +121,6 @@ func (m *_ConnectionResponse) GetConnectionResponseDataBlock() ConnectionRespons
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionResponse factory function for _ConnectionResponse
-func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint HPAIDataEndpoint, connectionResponseDataBlock ConnectionResponseDataBlock) *_ConnectionResponse {
-	_result := &_ConnectionResponse{
-		KnxNetIpMessageContract:     NewKnxNetIpMessage(),
-		CommunicationChannelId:      communicationChannelId,
-		Status:                      status,
-		HpaiDataEndpoint:            hpaiDataEndpoint,
-		ConnectionResponseDataBlock: connectionResponseDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionResponse(structType any) ConnectionResponse {

@@ -60,6 +60,18 @@ type _EventFieldList struct {
 var _ EventFieldList = (*_EventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventFieldList)(nil)
 
+// NewEventFieldList factory function for _EventFieldList
+func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields []Variant) *_EventFieldList {
+	_result := &_EventFieldList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		NoOfEventFields:                   noOfEventFields,
+		EventFields:                       eventFields,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_EventFieldList) GetEventFields() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEventFieldList factory function for _EventFieldList
-func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields []Variant) *_EventFieldList {
-	_result := &_EventFieldList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		NoOfEventFields:                   noOfEventFields,
-		EventFields:                       eventFields,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEventFieldList(structType any) EventFieldList {

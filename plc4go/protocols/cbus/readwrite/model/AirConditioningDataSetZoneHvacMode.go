@@ -72,6 +72,28 @@ type _AirConditioningDataSetZoneHvacMode struct {
 var _ AirConditioningDataSetZoneHvacMode = (*_AirConditioningDataSetZoneHvacMode)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetZoneHvacMode)(nil)
 
+// NewAirConditioningDataSetZoneHvacMode factory function for _AirConditioningDataSetZoneHvacMode
+func NewAirConditioningDataSetZoneHvacMode(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType, level HVACTemperature, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel) *_AirConditioningDataSetZoneHvacMode {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetZoneHvacMode must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetZoneHvacMode must not be nil")
+	}
+	_result := &_AirConditioningDataSetZoneHvacMode{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HvacModeAndFlags:            hvacModeAndFlags,
+		HvacType:                    hvacType,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+		AuxLevel:                    auxLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,28 +145,6 @@ func (m *_AirConditioningDataSetZoneHvacMode) GetAuxLevel() HVACAuxiliaryLevel {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetZoneHvacMode factory function for _AirConditioningDataSetZoneHvacMode
-func NewAirConditioningDataSetZoneHvacMode(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, hvacModeAndFlags HVACModeAndFlags, hvacType HVACType, level HVACTemperature, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel) *_AirConditioningDataSetZoneHvacMode {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetZoneHvacMode must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataSetZoneHvacMode must not be nil")
-	}
-	_result := &_AirConditioningDataSetZoneHvacMode{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		HvacModeAndFlags:            hvacModeAndFlags,
-		HvacType:                    hvacType,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-		AuxLevel:                    auxLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetZoneHvacMode(structType any) AirConditioningDataSetZoneHvacMode {

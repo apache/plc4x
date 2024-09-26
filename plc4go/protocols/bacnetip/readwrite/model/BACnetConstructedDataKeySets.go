@@ -59,6 +59,17 @@ type _BACnetConstructedDataKeySets struct {
 var _ BACnetConstructedDataKeySets = (*_BACnetConstructedDataKeySets)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataKeySets)(nil)
 
+// NewBACnetConstructedDataKeySets factory function for _BACnetConstructedDataKeySets
+func NewBACnetConstructedDataKeySets(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataKeySets {
+	_result := &_BACnetConstructedDataKeySets{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		KeySets:                       keySets,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataKeySets) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataKeySets factory function for _BACnetConstructedDataKeySets
-func NewBACnetConstructedDataKeySets(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataKeySets {
-	_result := &_BACnetConstructedDataKeySets{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		KeySets:                       keySets,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataKeySets(structType any) BACnetConstructedDataKeySets {

@@ -69,6 +69,17 @@ type _AlarmMessageAckObjectPushType struct {
 
 var _ AlarmMessageAckObjectPushType = (*_AlarmMessageAckObjectPushType)(nil)
 
+// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
+func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -115,17 +126,6 @@ func (m *_AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
-func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPushType {

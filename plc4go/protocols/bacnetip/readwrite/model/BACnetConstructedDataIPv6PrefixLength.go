@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPv6PrefixLength struct {
 var _ BACnetConstructedDataIPv6PrefixLength = (*_BACnetConstructedDataIPv6PrefixLength)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6PrefixLength)(nil)
 
+// NewBACnetConstructedDataIPv6PrefixLength factory function for _BACnetConstructedDataIPv6PrefixLength
+func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
+	if ipv6PrefixLength == nil {
+		panic("ipv6PrefixLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6PrefixLength must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6PrefixLength{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6PrefixLength:              ipv6PrefixLength,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6PrefixLength factory function for _BACnetConstructedDataIPv6PrefixLength
-func NewBACnetConstructedDataIPv6PrefixLength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6PrefixLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6PrefixLength {
-	if ipv6PrefixLength == nil {
-		panic("ipv6PrefixLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPv6PrefixLength must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6PrefixLength{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6PrefixLength:              ipv6PrefixLength,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6PrefixLength(structType any) BACnetConstructedDataIPv6PrefixLength {

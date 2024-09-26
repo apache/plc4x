@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueReal struct {
 var _ BACnetTimerStateChangeValueReal = (*_BACnetTimerStateChangeValueReal)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueReal)(nil)
 
+// NewBACnetTimerStateChangeValueReal factory function for _BACnetTimerStateChangeValueReal
+func NewBACnetTimerStateChangeValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetTimerStateChangeValueReal must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueReal{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		RealValue:                           realValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueReal) GetRealValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueReal factory function for _BACnetTimerStateChangeValueReal
-func NewBACnetTimerStateChangeValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetTimerStateChangeValueReal must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueReal{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		RealValue:                           realValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueReal(structType any) BACnetTimerStateChangeValueReal {

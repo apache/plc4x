@@ -60,6 +60,16 @@ type _MediaTransportControlDataRepeatOnOff struct {
 var _ MediaTransportControlDataRepeatOnOff = (*_MediaTransportControlDataRepeatOnOff)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRepeatOnOff)(nil)
 
+// NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
+func NewMediaTransportControlDataRepeatOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, repeatType byte) *_MediaTransportControlDataRepeatOnOff {
+	_result := &_MediaTransportControlDataRepeatOnOff{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		RepeatType:                        repeatType,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -114,16 +124,6 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatTracks() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
-func NewMediaTransportControlDataRepeatOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, repeatType byte) *_MediaTransportControlDataRepeatOnOff {
-	_result := &_MediaTransportControlDataRepeatOnOff{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		RepeatType:                        repeatType,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataRepeatOnOff(structType any) MediaTransportControlDataRepeatOnOff {

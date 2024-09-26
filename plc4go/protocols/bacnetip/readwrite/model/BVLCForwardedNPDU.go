@@ -65,6 +65,21 @@ type _BVLCForwardedNPDU struct {
 var _ BVLCForwardedNPDU = (*_BVLCForwardedNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCForwardedNPDU)(nil)
 
+// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
+	}
+	_result := &_BVLCForwardedNPDU{
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -104,21 +119,6 @@ func (m *_BVLCForwardedNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
-	}
-	_result := &_BVLCForwardedNPDU{
-		BVLCContract: NewBVLC(),
-		Ip:           ip,
-		Port:         port,
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCForwardedNPDU(structType any) BVLCForwardedNPDU {

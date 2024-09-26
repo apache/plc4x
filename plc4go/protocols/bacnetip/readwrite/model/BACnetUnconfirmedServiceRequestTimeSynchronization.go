@@ -57,6 +57,23 @@ type _BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 var _ BACnetUnconfirmedServiceRequestTimeSynchronization = (*_BACnetUnconfirmedServiceRequestTimeSynchronization)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestTimeSynchronization)(nil)
 
+// NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestTimeSynchronization
+func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
+	if synchronizedDate == nil {
+		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
+	}
+	if synchronizedTime == nil {
+		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		SynchronizedDate:                        synchronizedDate,
+		SynchronizedTime:                        synchronizedTime,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) GetSynchronizedTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestTimeSynchronization factory function for _BACnetUnconfirmedServiceRequestTimeSynchronization
-func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestTimeSynchronization {
-	if synchronizedDate == nil {
-		panic("synchronizedDate of type BACnetApplicationTagDate for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
-	}
-	if synchronizedTime == nil {
-		panic("synchronizedTime of type BACnetApplicationTagTime for BACnetUnconfirmedServiceRequestTimeSynchronization must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestTimeSynchronization{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		SynchronizedDate:                        synchronizedDate,
-		SynchronizedTime:                        synchronizedTime,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType any) BACnetUnconfirmedServiceRequestTimeSynchronization {

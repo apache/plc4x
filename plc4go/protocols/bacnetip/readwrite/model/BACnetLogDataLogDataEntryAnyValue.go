@@ -54,6 +54,16 @@ type _BACnetLogDataLogDataEntryAnyValue struct {
 var _ BACnetLogDataLogDataEntryAnyValue = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryAnyValue)(nil)
 
+// NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
+func NewBACnetLogDataLogDataEntryAnyValue(peekedTagHeader BACnetTagHeader, anyValue BACnetConstructedData) *_BACnetLogDataLogDataEntryAnyValue {
+	_result := &_BACnetLogDataLogDataEntryAnyValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		AnyValue:                          anyValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetAnyValue() BACnetConstructedData
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
-func NewBACnetLogDataLogDataEntryAnyValue(peekedTagHeader BACnetTagHeader, anyValue BACnetConstructedData) *_BACnetLogDataLogDataEntryAnyValue {
-	_result := &_BACnetLogDataLogDataEntryAnyValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		AnyValue:                          anyValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryAnyValue(structType any) BACnetLogDataLogDataEntryAnyValue {

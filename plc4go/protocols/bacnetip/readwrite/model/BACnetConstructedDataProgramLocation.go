@@ -56,6 +56,19 @@ type _BACnetConstructedDataProgramLocation struct {
 var _ BACnetConstructedDataProgramLocation = (*_BACnetConstructedDataProgramLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramLocation)(nil)
 
+// NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
+func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
+	if programLocation == nil {
+		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramLocation:               programLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProgramLocation) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramLocation factory function for _BACnetConstructedDataProgramLocation
-func NewBACnetConstructedDataProgramLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramLocation {
-	if programLocation == nil {
-		panic("programLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProgramLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramLocation:               programLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramLocation(structType any) BACnetConstructedDataProgramLocation {

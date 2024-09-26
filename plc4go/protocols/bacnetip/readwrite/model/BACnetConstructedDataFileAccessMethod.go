@@ -56,6 +56,19 @@ type _BACnetConstructedDataFileAccessMethod struct {
 var _ BACnetConstructedDataFileAccessMethod = (*_BACnetConstructedDataFileAccessMethod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileAccessMethod)(nil)
 
+// NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
+func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileAccessMethod BACnetFileAccessMethodTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileAccessMethod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileAccessMethod:              fileAccessMethod,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFileAccessMethod) GetActualValue() BACnetFileAcce
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileAccessMethod factory function for _BACnetConstructedDataFileAccessMethod
-func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileAccessMethod BACnetFileAccessMethodTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileAccessMethod {
-	if fileAccessMethod == nil {
-		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetConstructedDataFileAccessMethod must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileAccessMethod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FileAccessMethod:              fileAccessMethod,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileAccessMethod(structType any) BACnetConstructedDataFileAccessMethod {

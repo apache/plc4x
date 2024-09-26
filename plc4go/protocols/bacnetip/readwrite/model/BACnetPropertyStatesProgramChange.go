@@ -54,6 +54,19 @@ type _BACnetPropertyStatesProgramChange struct {
 var _ BACnetPropertyStatesProgramChange = (*_BACnetPropertyStatesProgramChange)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProgramChange)(nil)
 
+// NewBACnetPropertyStatesProgramChange factory function for _BACnetPropertyStatesProgramChange
+func NewBACnetPropertyStatesProgramChange(peekedTagHeader BACnetTagHeader, programState BACnetProgramStateTagged) *_BACnetPropertyStatesProgramChange {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetPropertyStatesProgramChange must not be nil")
+	}
+	_result := &_BACnetPropertyStatesProgramChange{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProgramState:                 programState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesProgramChange) GetProgramState() BACnetProgramStat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesProgramChange factory function for _BACnetPropertyStatesProgramChange
-func NewBACnetPropertyStatesProgramChange(peekedTagHeader BACnetTagHeader, programState BACnetProgramStateTagged) *_BACnetPropertyStatesProgramChange {
-	if programState == nil {
-		panic("programState of type BACnetProgramStateTagged for BACnetPropertyStatesProgramChange must not be nil")
-	}
-	_result := &_BACnetPropertyStatesProgramChange{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ProgramState:                 programState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesProgramChange(structType any) BACnetPropertyStatesProgramChange {

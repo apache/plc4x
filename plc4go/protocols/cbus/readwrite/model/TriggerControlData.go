@@ -75,6 +75,11 @@ type _TriggerControlData struct {
 
 var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
 
+// NewTriggerControlData factory function for _TriggerControlData
+func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
+	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -115,11 +120,6 @@ func (pm *_TriggerControlData) GetIsUnused() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlData factory function for _TriggerControlData
-func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
-	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlData(structType any) TriggerControlData {

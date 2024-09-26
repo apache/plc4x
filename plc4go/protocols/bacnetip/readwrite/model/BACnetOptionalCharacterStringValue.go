@@ -54,6 +54,19 @@ type _BACnetOptionalCharacterStringValue struct {
 var _ BACnetOptionalCharacterStringValue = (*_BACnetOptionalCharacterStringValue)(nil)
 var _ BACnetOptionalCharacterStringRequirements = (*_BACnetOptionalCharacterStringValue)(nil)
 
+// NewBACnetOptionalCharacterStringValue factory function for _BACnetOptionalCharacterStringValue
+func NewBACnetOptionalCharacterStringValue(peekedTagHeader BACnetTagHeader, characterstring BACnetApplicationTagCharacterString) *_BACnetOptionalCharacterStringValue {
+	if characterstring == nil {
+		panic("characterstring of type BACnetApplicationTagCharacterString for BACnetOptionalCharacterStringValue must not be nil")
+	}
+	_result := &_BACnetOptionalCharacterStringValue{
+		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
+		Characterstring:                       characterstring,
+	}
+	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalCharacterStringValue) GetCharacterstring() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalCharacterStringValue factory function for _BACnetOptionalCharacterStringValue
-func NewBACnetOptionalCharacterStringValue(peekedTagHeader BACnetTagHeader, characterstring BACnetApplicationTagCharacterString) *_BACnetOptionalCharacterStringValue {
-	if characterstring == nil {
-		panic("characterstring of type BACnetApplicationTagCharacterString for BACnetOptionalCharacterStringValue must not be nil")
-	}
-	_result := &_BACnetOptionalCharacterStringValue{
-		BACnetOptionalCharacterStringContract: NewBACnetOptionalCharacterString(peekedTagHeader),
-		Characterstring:                       characterstring,
-	}
-	_result.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalCharacterStringValue(structType any) BACnetOptionalCharacterStringValue {

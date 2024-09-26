@@ -56,6 +56,19 @@ type _BACnetConstructedDataDoorAlarmState struct {
 var _ BACnetConstructedDataDoorAlarmState = (*_BACnetConstructedDataDoorAlarmState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorAlarmState)(nil)
 
+// NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
+func NewBACnetConstructedDataDoorAlarmState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorAlarmState BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
+	if doorAlarmState == nil {
+		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorAlarmState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorAlarmState:                doorAlarmState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDoorAlarmState) GetActualValue() BACnetDoorAlarmS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorAlarmState factory function for _BACnetConstructedDataDoorAlarmState
-func NewBACnetConstructedDataDoorAlarmState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorAlarmState BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorAlarmState {
-	if doorAlarmState == nil {
-		panic("doorAlarmState of type BACnetDoorAlarmStateTagged for BACnetConstructedDataDoorAlarmState must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorAlarmState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorAlarmState:                doorAlarmState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorAlarmState(structType any) BACnetConstructedDataDoorAlarmState {

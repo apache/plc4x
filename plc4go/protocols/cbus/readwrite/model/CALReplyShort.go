@@ -49,6 +49,15 @@ type _CALReplyShort struct {
 var _ CALReplyShort = (*_CALReplyShort)(nil)
 var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
+// NewCALReplyShort factory function for _CALReplyShort
+func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
+	_result := &_CALReplyShort{
+		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
+	}
+	_result.CALReplyContract.(*_CALReply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ CALReplyRequirements = (*_CALReplyShort)(nil)
 
 func (m *_CALReplyShort) GetParent() CALReplyContract {
 	return m.CALReplyContract
-}
-
-// NewCALReplyShort factory function for _CALReplyShort
-func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyShort {
-	_result := &_CALReplyShort{
-		CALReplyContract: NewCALReply(calType, calData, cBusOptions, requestContext),
-	}
-	_result.CALReplyContract.(*_CALReply)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

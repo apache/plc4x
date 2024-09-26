@@ -60,6 +60,11 @@ type _ClassSegment struct {
 
 var _ ClassSegment = (*_ClassSegment)(nil)
 
+// NewClassSegment factory function for _ClassSegment
+func NewClassSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, classSegment uint8) *_ClassSegment {
+	return &_ClassSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, ClassSegment: classSegment}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_ClassSegment) GetClassSegment() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClassSegment factory function for _ClassSegment
-func NewClassSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, classSegment uint8) *_ClassSegment {
-	return &_ClassSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, ClassSegment: classSegment}
-}
 
 // Deprecated: use the interface for direct cast
 func CastClassSegment(structType any) ClassSegment {

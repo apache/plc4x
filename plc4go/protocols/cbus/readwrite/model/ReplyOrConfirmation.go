@@ -80,6 +80,11 @@ type _ReplyOrConfirmation struct {
 
 var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
 
+// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
+func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
+	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -109,11 +114,6 @@ func (pm *_ReplyOrConfirmation) GetIsAlpha() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
-func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
-	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyOrConfirmation(structType any) ReplyOrConfirmation {

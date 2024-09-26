@@ -54,6 +54,19 @@ type _BACnetChannelValueBitString struct {
 var _ BACnetChannelValueBitString = (*_BACnetChannelValueBitString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueBitString)(nil)
 
+// NewBACnetChannelValueBitString factory function for _BACnetChannelValueBitString
+func NewBACnetChannelValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetChannelValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetChannelValueBitString must not be nil")
+	}
+	_result := &_BACnetChannelValueBitString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		BitStringValue:             bitStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueBitString) GetBitStringValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueBitString factory function for _BACnetChannelValueBitString
-func NewBACnetChannelValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString) *_BACnetChannelValueBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetChannelValueBitString must not be nil")
-	}
-	_result := &_BACnetChannelValueBitString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		BitStringValue:             bitStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueBitString(structType any) BACnetChannelValueBitString {

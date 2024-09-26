@@ -56,6 +56,19 @@ type _BACnetConstructedDataDerivativeConstant struct {
 var _ BACnetConstructedDataDerivativeConstant = (*_BACnetConstructedDataDerivativeConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstant)(nil)
 
+// NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
+func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
+	if derivativeConstant == nil {
+		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataDerivativeConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DerivativeConstant:            derivativeConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
-func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
-	if derivativeConstant == nil {
-		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataDerivativeConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DerivativeConstant:            derivativeConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDerivativeConstant(structType any) BACnetConstructedDataDerivativeConstant {

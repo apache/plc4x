@@ -54,6 +54,19 @@ type _SALDataEnableControl struct {
 var _ SALDataEnableControl = (*_SALDataEnableControl)(nil)
 var _ SALDataRequirements = (*_SALDataEnableControl)(nil)
 
+// NewSALDataEnableControl factory function for _SALDataEnableControl
+func NewSALDataEnableControl(salData SALData, enableControlData EnableControlData) *_SALDataEnableControl {
+	if enableControlData == nil {
+		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
+	}
+	_result := &_SALDataEnableControl{
+		SALDataContract:   NewSALData(salData),
+		EnableControlData: enableControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataEnableControl) GetEnableControlData() EnableControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataEnableControl factory function for _SALDataEnableControl
-func NewSALDataEnableControl(salData SALData, enableControlData EnableControlData) *_SALDataEnableControl {
-	if enableControlData == nil {
-		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
-	}
-	_result := &_SALDataEnableControl{
-		SALDataContract:   NewSALData(salData),
-		EnableControlData: enableControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataEnableControl(structType any) SALDataEnableControl {

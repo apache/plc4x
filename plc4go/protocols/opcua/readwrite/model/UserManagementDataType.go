@@ -60,6 +60,24 @@ type _UserManagementDataType struct {
 var _ UserManagementDataType = (*_UserManagementDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UserManagementDataType)(nil)
 
+// NewUserManagementDataType factory function for _UserManagementDataType
+func NewUserManagementDataType(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) *_UserManagementDataType {
+	if userName == nil {
+		panic("userName of type PascalString for UserManagementDataType must not be nil")
+	}
+	if description == nil {
+		panic("description of type PascalString for UserManagementDataType must not be nil")
+	}
+	_result := &_UserManagementDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		UserName:                          userName,
+		UserConfiguration:                 userConfiguration,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_UserManagementDataType) GetDescription() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserManagementDataType factory function for _UserManagementDataType
-func NewUserManagementDataType(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) *_UserManagementDataType {
-	if userName == nil {
-		panic("userName of type PascalString for UserManagementDataType must not be nil")
-	}
-	if description == nil {
-		panic("description of type PascalString for UserManagementDataType must not be nil")
-	}
-	_result := &_UserManagementDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		UserName:                          userName,
-		UserConfiguration:                 userConfiguration,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserManagementDataType(structType any) UserManagementDataType {

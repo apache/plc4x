@@ -69,6 +69,27 @@ type _LDataExtended struct {
 var _ LDataExtended = (*_LDataExtended)(nil)
 var _ LDataFrameRequirements = (*_LDataExtended)(nil)
 
+// NewLDataExtended factory function for _LDataExtended
+func NewLDataExtended(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool, groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) *_LDataExtended {
+	if sourceAddress == nil {
+		panic("sourceAddress of type KnxAddress for LDataExtended must not be nil")
+	}
+	if apdu == nil {
+		panic("apdu of type Apdu for LDataExtended must not be nil")
+	}
+	_result := &_LDataExtended{
+		LDataFrameContract:  NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+		GroupAddress:        groupAddress,
+		HopCount:            hopCount,
+		ExtendedFrameFormat: extendedFrameFormat,
+		SourceAddress:       sourceAddress,
+		DestinationAddress:  destinationAddress,
+		Apdu:                apdu,
+	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -124,27 +145,6 @@ func (m *_LDataExtended) GetApdu() Apdu {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataExtended factory function for _LDataExtended
-func NewLDataExtended(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool, groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) *_LDataExtended {
-	if sourceAddress == nil {
-		panic("sourceAddress of type KnxAddress for LDataExtended must not be nil")
-	}
-	if apdu == nil {
-		panic("apdu of type Apdu for LDataExtended must not be nil")
-	}
-	_result := &_LDataExtended{
-		LDataFrameContract:  NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
-		GroupAddress:        groupAddress,
-		HopCount:            hopCount,
-		ExtendedFrameFormat: extendedFrameFormat,
-		SourceAddress:       sourceAddress,
-		DestinationAddress:  destinationAddress,
-		Apdu:                apdu,
-	}
-	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataExtended(structType any) LDataExtended {

@@ -49,6 +49,15 @@ type _SecurityDataDropTamper struct {
 var _ SecurityDataDropTamper = (*_SecurityDataDropTamper)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
+// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
+func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
+	_result := &_SecurityDataDropTamper{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
 func (m *_SecurityDataDropTamper) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
-func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
-	_result := &_SecurityDataDropTamper{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

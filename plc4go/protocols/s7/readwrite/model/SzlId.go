@@ -57,6 +57,11 @@ type _SzlId struct {
 
 var _ SzlId = (*_SzlId)(nil)
 
+// NewSzlId factory function for _SzlId
+func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
+	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_SzlId) GetSublistList() SzlSublist {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSzlId factory function for _SzlId
-func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
-	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSzlId(structType any) SzlId {

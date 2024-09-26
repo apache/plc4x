@@ -56,6 +56,19 @@ type _BACnetConstructedDataElapsedActiveTime struct {
 var _ BACnetConstructedDataElapsedActiveTime = (*_BACnetConstructedDataElapsedActiveTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElapsedActiveTime)(nil)
 
+// NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
+func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
+	if elapsedActiveTime == nil {
+		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataElapsedActiveTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ElapsedActiveTime:             elapsedActiveTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
-func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
-	if elapsedActiveTime == nil {
-		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataElapsedActiveTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ElapsedActiveTime:             elapsedActiveTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElapsedActiveTime(structType any) BACnetConstructedDataElapsedActiveTime {

@@ -57,6 +57,17 @@ type _VariantLocalizedText struct {
 var _ VariantLocalizedText = (*_VariantLocalizedText)(nil)
 var _ VariantRequirements = (*_VariantLocalizedText)(nil)
 
+// NewVariantLocalizedText factory function for _VariantLocalizedText
+func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
+	_result := &_VariantLocalizedText{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantLocalizedText) GetValue() []LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantLocalizedText factory function for _VariantLocalizedText
-func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
-	_result := &_VariantLocalizedText{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantLocalizedText(structType any) VariantLocalizedText {

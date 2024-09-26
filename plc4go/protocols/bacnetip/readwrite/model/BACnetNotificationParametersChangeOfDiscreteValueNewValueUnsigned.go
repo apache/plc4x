@@ -54,6 +54,19 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned struct {
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned)(nil)
 
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetApplicationTagUnsignedInteger, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		UnsignedValue: unsignedValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned) Get
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetApplicationTagUnsignedInteger, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		UnsignedValue: unsignedValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned {

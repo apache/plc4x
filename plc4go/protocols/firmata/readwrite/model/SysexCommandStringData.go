@@ -49,6 +49,15 @@ type _SysexCommandStringData struct {
 var _ SysexCommandStringData = (*_SysexCommandStringData)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandStringData)(nil)
 
+// NewSysexCommandStringData factory function for _SysexCommandStringData
+func NewSysexCommandStringData() *_SysexCommandStringData {
+	_result := &_SysexCommandStringData{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandStringData) GetResponse() bool {
 
 func (m *_SysexCommandStringData) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandStringData factory function for _SysexCommandStringData
-func NewSysexCommandStringData() *_SysexCommandStringData {
-	_result := &_SysexCommandStringData{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

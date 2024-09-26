@@ -56,6 +56,19 @@ type _BACnetConstructedDataPulseRate struct {
 var _ BACnetConstructedDataPulseRate = (*_BACnetConstructedDataPulseRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseRate)(nil)
 
+// NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
+func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
+	if pulseRate == nil {
+		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
+	}
+	_result := &_BACnetConstructedDataPulseRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PulseRate:                     pulseRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPulseRate) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPulseRate factory function for _BACnetConstructedDataPulseRate
-func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, pulseRate BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseRate {
-	if pulseRate == nil {
-		panic("pulseRate of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPulseRate must not be nil")
-	}
-	_result := &_BACnetConstructedDataPulseRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PulseRate:                     pulseRate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPulseRate {

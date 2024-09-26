@@ -57,6 +57,17 @@ type _CipReadRequest struct {
 var _ CipReadRequest = (*_CipReadRequest)(nil)
 var _ CipServiceRequirements = (*_CipReadRequest)(nil)
 
+// NewCipReadRequest factory function for _CipReadRequest
+func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
+	_result := &_CipReadRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Tag:                tag,
+		ElementNb:          elementNb,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_CipReadRequest) GetElementNb() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipReadRequest factory function for _CipReadRequest
-func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
-	_result := &_CipReadRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Tag:                tag,
-		ElementNb:          elementNb,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipReadRequest(structType any) CipReadRequest {

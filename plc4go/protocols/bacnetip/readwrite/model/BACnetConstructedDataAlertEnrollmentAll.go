@@ -49,6 +49,15 @@ type _BACnetConstructedDataAlertEnrollmentAll struct {
 var _ BACnetConstructedDataAlertEnrollmentAll = (*_BACnetConstructedDataAlertEnrollmentAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlertEnrollmentAll)(nil)
 
+// NewBACnetConstructedDataAlertEnrollmentAll factory function for _BACnetConstructedDataAlertEnrollmentAll
+func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentAll {
+	_result := &_BACnetConstructedDataAlertEnrollmentAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataAlertEnrollmentAll) GetPropertyIdentifierArgument
 
 func (m *_BACnetConstructedDataAlertEnrollmentAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataAlertEnrollmentAll factory function for _BACnetConstructedDataAlertEnrollmentAll
-func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlertEnrollmentAll {
-	_result := &_BACnetConstructedDataAlertEnrollmentAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,16 @@ type _BACnetConstructedDataZoneMembers struct {
 var _ BACnetConstructedDataZoneMembers = (*_BACnetConstructedDataZoneMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneMembers)(nil)
 
+// NewBACnetConstructedDataZoneMembers factory function for _BACnetConstructedDataZoneMembers
+func NewBACnetConstructedDataZoneMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneMembers {
+	_result := &_BACnetConstructedDataZoneMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Members:                       members,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataZoneMembers) GetMembers() []BACnetDeviceObjectRef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataZoneMembers factory function for _BACnetConstructedDataZoneMembers
-func NewBACnetConstructedDataZoneMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneMembers {
-	_result := &_BACnetConstructedDataZoneMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Members:                       members,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataZoneMembers(structType any) BACnetConstructedDataZoneMembers {

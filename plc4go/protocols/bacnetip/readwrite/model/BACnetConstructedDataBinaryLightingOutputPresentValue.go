@@ -56,6 +56,19 @@ type _BACnetConstructedDataBinaryLightingOutputPresentValue struct {
 var _ BACnetConstructedDataBinaryLightingOutputPresentValue = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputPresentValue)(nil)
 
+// NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
+func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryLightingOutputPresentValue factory function for _BACnetConstructedDataBinaryLightingOutputPresentValue
-func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryLightingPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetBinaryLightingPVTagged for BACnetConstructedDataBinaryLightingOutputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryLightingOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryLightingOutputPresentValue(structType any) BACnetConstructedDataBinaryLightingOutputPresentValue {

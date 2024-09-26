@@ -54,6 +54,16 @@ type _KnxNetIpCore struct {
 var _ KnxNetIpCore = (*_KnxNetIpCore)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpCore)(nil)
 
+// NewKnxNetIpCore factory function for _KnxNetIpCore
+func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
+	_result := &_KnxNetIpCore{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetIpCore) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpCore factory function for _KnxNetIpCore
-func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
-	_result := &_KnxNetIpCore{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpCore(structType any) KnxNetIpCore {

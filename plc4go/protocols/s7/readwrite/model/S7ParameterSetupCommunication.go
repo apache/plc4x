@@ -62,6 +62,18 @@ type _S7ParameterSetupCommunication struct {
 var _ S7ParameterSetupCommunication = (*_S7ParameterSetupCommunication)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterSetupCommunication)(nil)
 
+// NewS7ParameterSetupCommunication factory function for _S7ParameterSetupCommunication
+func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *_S7ParameterSetupCommunication {
+	_result := &_S7ParameterSetupCommunication{
+		S7ParameterContract: NewS7Parameter(),
+		MaxAmqCaller:        maxAmqCaller,
+		MaxAmqCallee:        maxAmqCallee,
+		PduLength:           pduLength,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -105,18 +117,6 @@ func (m *_S7ParameterSetupCommunication) GetPduLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterSetupCommunication factory function for _S7ParameterSetupCommunication
-func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) *_S7ParameterSetupCommunication {
-	_result := &_S7ParameterSetupCommunication{
-		S7ParameterContract: NewS7Parameter(),
-		MaxAmqCaller:        maxAmqCaller,
-		MaxAmqCallee:        maxAmqCallee,
-		PduLength:           pduLength,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterSetupCommunication(structType any) S7ParameterSetupCommunication {

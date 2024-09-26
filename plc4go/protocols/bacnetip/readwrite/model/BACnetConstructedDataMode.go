@@ -56,6 +56,19 @@ type _BACnetConstructedDataMode struct {
 var _ BACnetConstructedDataMode = (*_BACnetConstructedDataMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMode)(nil)
 
+// NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
+func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
+	if mode == nil {
+		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Mode:                          mode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMode) GetActualValue() BACnetLifeSafetyModeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
-func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
-	if mode == nil {
-		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Mode:                          mode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMode(structType any) BACnetConstructedDataMode {

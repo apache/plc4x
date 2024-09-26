@@ -60,6 +60,18 @@ type _ModbusPDUWriteMultipleHoldingRegistersRequest struct {
 var _ ModbusPDUWriteMultipleHoldingRegistersRequest = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteMultipleHoldingRegistersRequest)(nil)
 
+// NewModbusPDUWriteMultipleHoldingRegistersRequest factory function for _ModbusPDUWriteMultipleHoldingRegistersRequest
+func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleHoldingRegistersRequest {
+	_result := &_ModbusPDUWriteMultipleHoldingRegistersRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -107,18 +119,6 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteMultipleHoldingRegistersRequest factory function for _ModbusPDUWriteMultipleHoldingRegistersRequest
-func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, quantity uint16, value []byte) *_ModbusPDUWriteMultipleHoldingRegistersRequest {
-	_result := &_ModbusPDUWriteMultipleHoldingRegistersRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteMultipleHoldingRegistersRequest(structType any) ModbusPDUWriteMultipleHoldingRegistersRequest {

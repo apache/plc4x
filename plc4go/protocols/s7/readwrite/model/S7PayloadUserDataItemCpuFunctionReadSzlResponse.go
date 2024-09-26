@@ -54,6 +54,16 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 var _ S7PayloadUserDataItemCpuFunctionReadSzlResponse = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponse)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for _S7PayloadUserDataItemCpuFunctionReadSzlResponse
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for _S7PayloadUserDataItemCpuFunctionReadSzlResponse
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType any) S7PayloadUserDataItemCpuFunctionReadSzlResponse {

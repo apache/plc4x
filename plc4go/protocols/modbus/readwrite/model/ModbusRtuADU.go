@@ -59,6 +59,20 @@ type _ModbusRtuADU struct {
 var _ ModbusRtuADU = (*_ModbusRtuADU)(nil)
 var _ ModbusADURequirements = (*_ModbusRtuADU)(nil)
 
+// NewModbusRtuADU factory function for _ModbusRtuADU
+func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusRtuADU must not be nil")
+	}
+	_result := &_ModbusRtuADU{
+		ModbusADUContract: NewModbusADU(response),
+		Address:           address,
+		Pdu:               pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,20 +108,6 @@ func (m *_ModbusRtuADU) GetPdu() ModbusPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusRtuADU factory function for _ModbusRtuADU
-func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU {
-	if pdu == nil {
-		panic("pdu of type ModbusPDU for ModbusRtuADU must not be nil")
-	}
-	_result := &_ModbusRtuADU{
-		ModbusADUContract: NewModbusADU(response),
-		Address:           address,
-		Pdu:               pdu,
-	}
-	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusRtuADU(structType any) ModbusRtuADU {

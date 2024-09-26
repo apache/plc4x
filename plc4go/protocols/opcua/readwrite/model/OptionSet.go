@@ -57,6 +57,23 @@ type _OptionSet struct {
 var _ OptionSet = (*_OptionSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OptionSet)(nil)
 
+// NewOptionSet factory function for _OptionSet
+func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSet {
+	if value == nil {
+		panic("value of type PascalByteString for OptionSet must not be nil")
+	}
+	if validBits == nil {
+		panic("validBits of type PascalByteString for OptionSet must not be nil")
+	}
+	_result := &_OptionSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Value:                             value,
+		ValidBits:                         validBits,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_OptionSet) GetValidBits() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOptionSet factory function for _OptionSet
-func NewOptionSet(value PascalByteString, validBits PascalByteString) *_OptionSet {
-	if value == nil {
-		panic("value of type PascalByteString for OptionSet must not be nil")
-	}
-	if validBits == nil {
-		panic("validBits of type PascalByteString for OptionSet must not be nil")
-	}
-	_result := &_OptionSet{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Value:                             value,
-		ValidBits:                         validBits,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOptionSet(structType any) OptionSet {

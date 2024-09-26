@@ -49,6 +49,15 @@ type _ConnectionResponseDataBlockDeviceManagement struct {
 var _ ConnectionResponseDataBlockDeviceManagement = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
 var _ ConnectionResponseDataBlockRequirements = (*_ConnectionResponseDataBlockDeviceManagement)(nil)
 
+// NewConnectionResponseDataBlockDeviceManagement factory function for _ConnectionResponseDataBlockDeviceManagement
+func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBlockDeviceManagement {
+	_result := &_ConnectionResponseDataBlockDeviceManagement{
+		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
+	}
+	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ConnectionResponseDataBlockDeviceManagement) GetConnectionType() uint8
 
 func (m *_ConnectionResponseDataBlockDeviceManagement) GetParent() ConnectionResponseDataBlockContract {
 	return m.ConnectionResponseDataBlockContract
-}
-
-// NewConnectionResponseDataBlockDeviceManagement factory function for _ConnectionResponseDataBlockDeviceManagement
-func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBlockDeviceManagement {
-	_result := &_ConnectionResponseDataBlockDeviceManagement{
-		ConnectionResponseDataBlockContract: NewConnectionResponseDataBlock(),
-	}
-	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

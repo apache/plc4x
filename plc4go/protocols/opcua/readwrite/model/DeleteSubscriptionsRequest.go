@@ -60,6 +60,21 @@ type _DeleteSubscriptionsRequest struct {
 var _ DeleteSubscriptionsRequest = (*_DeleteSubscriptionsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteSubscriptionsRequest)(nil)
 
+// NewDeleteSubscriptionsRequest factory function for _DeleteSubscriptionsRequest
+func NewDeleteSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) *_DeleteSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteSubscriptionsRequest must not be nil")
+	}
+	_result := &_DeleteSubscriptionsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_DeleteSubscriptionsRequest) GetSubscriptionIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteSubscriptionsRequest factory function for _DeleteSubscriptionsRequest
-func NewDeleteSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) *_DeleteSubscriptionsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteSubscriptionsRequest must not be nil")
-	}
-	_result := &_DeleteSubscriptionsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteSubscriptionsRequest(structType any) DeleteSubscriptionsRequest {

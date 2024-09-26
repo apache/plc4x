@@ -57,6 +57,20 @@ type _GenericAttributeValue struct {
 var _ GenericAttributeValue = (*_GenericAttributeValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GenericAttributeValue)(nil)
 
+// NewGenericAttributeValue factory function for _GenericAttributeValue
+func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
+	if value == nil {
+		panic("value of type Variant for GenericAttributeValue must not be nil")
+	}
+	_result := &_GenericAttributeValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AttributeId:                       attributeId,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_GenericAttributeValue) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGenericAttributeValue factory function for _GenericAttributeValue
-func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
-	if value == nil {
-		panic("value of type Variant for GenericAttributeValue must not be nil")
-	}
-	_result := &_GenericAttributeValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AttributeId:                       attributeId,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGenericAttributeValue(structType any) GenericAttributeValue {

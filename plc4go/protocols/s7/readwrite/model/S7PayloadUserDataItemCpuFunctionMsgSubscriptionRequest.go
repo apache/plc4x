@@ -65,6 +65,19 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest struct {
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Subscription:                  subscription,
+		MagicKey:                      magicKey,
+		Alarmtype:                     alarmtype,
+		Reserve:                       reserve,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,19 +129,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetReserve() *
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Subscription:                  subscription,
-		MagicKey:                      magicKey,
-		Alarmtype:                     alarmtype,
-		Reserve:                       reserve,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {

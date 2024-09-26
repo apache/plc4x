@@ -54,6 +54,16 @@ type _BACnetConstructedDataBBMDBroadcastDistributionTable struct {
 var _ BACnetConstructedDataBBMDBroadcastDistributionTable = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDBroadcastDistributionTable)(nil)
 
+// NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
+func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
+	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) GetBbmdBroadcastD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDBroadcastDistributionTable factory function for _BACnetConstructedDataBBMDBroadcastDistributionTable
-func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdBroadcastDistributionTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDBroadcastDistributionTable {
-	_result := &_BACnetConstructedDataBBMDBroadcastDistributionTable{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdBroadcastDistributionTable: bbmdBroadcastDistributionTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BACnetConstructedDataBBMDBroadcastDistributionTable {

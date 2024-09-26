@@ -63,6 +63,14 @@ type _BACnetLiftCarModeTagged struct {
 
 var _ BACnetLiftCarModeTagged = (*_BACnetLiftCarModeTagged)(nil)
 
+// NewBACnetLiftCarModeTagged factory function for _BACnetLiftCarModeTagged
+func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarModeTagged must not be nil")
+	}
+	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetLiftCarModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarModeTagged factory function for _BACnetLiftCarModeTagged
-func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftCarModeTagged must not be nil")
-	}
-	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarModeTagged(structType any) BACnetLiftCarModeTagged {

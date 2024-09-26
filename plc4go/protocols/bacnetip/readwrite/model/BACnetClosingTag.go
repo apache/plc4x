@@ -54,6 +54,14 @@ type _BACnetClosingTag struct {
 
 var _ BACnetClosingTag = (*_BACnetClosingTag)(nil)
 
+// NewBACnetClosingTag factory function for _BACnetClosingTag
+func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
+	}
+	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,14 +75,6 @@ func (m *_BACnetClosingTag) GetHeader() BACnetTagHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClosingTag factory function for _BACnetClosingTag
-func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
-	}
-	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClosingTag(structType any) BACnetClosingTag {

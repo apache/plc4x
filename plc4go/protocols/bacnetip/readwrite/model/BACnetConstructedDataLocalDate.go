@@ -56,6 +56,19 @@ type _BACnetConstructedDataLocalDate struct {
 var _ BACnetConstructedDataLocalDate = (*_BACnetConstructedDataLocalDate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalDate)(nil)
 
+// NewBACnetConstructedDataLocalDate factory function for _BACnetConstructedDataLocalDate
+func NewBACnetConstructedDataLocalDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localDate BACnetApplicationTagDate, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalDate {
+	if localDate == nil {
+		panic("localDate of type BACnetApplicationTagDate for BACnetConstructedDataLocalDate must not be nil")
+	}
+	_result := &_BACnetConstructedDataLocalDate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalDate:                     localDate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLocalDate) GetActualValue() BACnetApplicationTagD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLocalDate factory function for _BACnetConstructedDataLocalDate
-func NewBACnetConstructedDataLocalDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localDate BACnetApplicationTagDate, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalDate {
-	if localDate == nil {
-		panic("localDate of type BACnetApplicationTagDate for BACnetConstructedDataLocalDate must not be nil")
-	}
-	_result := &_BACnetConstructedDataLocalDate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LocalDate:                     localDate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLocalDate(structType any) BACnetConstructedDataLocalDate {

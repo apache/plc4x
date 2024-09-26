@@ -54,6 +54,19 @@ type _BACnetLogDataLogStatus struct {
 var _ BACnetLogDataLogStatus = (*_BACnetLogDataLogStatus)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogStatus)(nil)
 
+// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
+func NewBACnetLogDataLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetLogDataLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
+	}
+	_result := &_BACnetLogDataLogStatus{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:             logStatus,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogStatus) GetLogStatus() BACnetLogStatusTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
-func NewBACnetLogDataLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetLogDataLogStatus {
-	if logStatus == nil {
-		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
-	}
-	_result := &_BACnetLogDataLogStatus{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		LogStatus:             logStatus,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogStatus(structType any) BACnetLogDataLogStatus {

@@ -73,6 +73,11 @@ type _MediaTransportControlData struct {
 
 var _ MediaTransportControlDataContract = (*_MediaTransportControlData)(nil)
 
+// NewMediaTransportControlData factory function for _MediaTransportControlData
+func NewMediaTransportControlData(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlData {
+	return &_MediaTransportControlData{CommandTypeContainer: commandTypeContainer, MediaLinkGroup: mediaLinkGroup}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -106,11 +111,6 @@ func (pm *_MediaTransportControlData) GetCommandType() MediaTransportControlComm
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlData factory function for _MediaTransportControlData
-func NewMediaTransportControlData(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlData {
-	return &_MediaTransportControlData{CommandTypeContainer: commandTypeContainer, MediaLinkGroup: mediaLinkGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlData(structType any) MediaTransportControlData {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataCurrentCommandPriority struct {
 var _ BACnetConstructedDataCurrentCommandPriority = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCurrentCommandPriority)(nil)
 
+// NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
+func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
+	if currentCommandPriority == nil {
+		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
+	}
+	_result := &_BACnetConstructedDataCurrentCommandPriority{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CurrentCommandPriority:        currentCommandPriority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetActualValue() BACnetOp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
-func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
-	if currentCommandPriority == nil {
-		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
-	}
-	_result := &_BACnetConstructedDataCurrentCommandPriority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CurrentCommandPriority:        currentCommandPriority,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCurrentCommandPriority(structType any) BACnetConstructedDataCurrentCommandPriority {

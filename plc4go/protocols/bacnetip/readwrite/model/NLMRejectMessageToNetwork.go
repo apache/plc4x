@@ -57,6 +57,17 @@ type _NLMRejectMessageToNetwork struct {
 var _ NLMRejectMessageToNetwork = (*_NLMRejectMessageToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRejectMessageToNetwork)(nil)
 
+// NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
+func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
+	_result := &_NLMRejectMessageToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		RejectReason:              rejectReason,
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMRejectMessageToNetwork) GetDestinationNetworkAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRejectMessageToNetwork factory function for _NLMRejectMessageToNetwork
-func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16, apduLength uint16) *_NLMRejectMessageToNetwork {
-	_result := &_NLMRejectMessageToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		RejectReason:              rejectReason,
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRejectMessageToNetwork(structType any) NLMRejectMessageToNetwork {

@@ -54,6 +54,19 @@ type _BACnetChannelValueDouble struct {
 var _ BACnetChannelValueDouble = (*_BACnetChannelValueDouble)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueDouble)(nil)
 
+// NewBACnetChannelValueDouble factory function for _BACnetChannelValueDouble
+func NewBACnetChannelValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble) *_BACnetChannelValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetChannelValueDouble must not be nil")
+	}
+	_result := &_BACnetChannelValueDouble{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		DoubleValue:                doubleValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueDouble) GetDoubleValue() BACnetApplicationTagDouble 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueDouble factory function for _BACnetChannelValueDouble
-func NewBACnetChannelValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble) *_BACnetChannelValueDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetChannelValueDouble must not be nil")
-	}
-	_result := &_BACnetChannelValueDouble{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		DoubleValue:                doubleValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueDouble(structType any) BACnetChannelValueDouble {

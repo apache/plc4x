@@ -56,6 +56,19 @@ type _BACnetConstructedDataTimerState struct {
 var _ BACnetConstructedDataTimerState = (*_BACnetConstructedDataTimerState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerState)(nil)
 
+// NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
+func NewBACnetConstructedDataTimerState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerState BACnetTimerStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
+	if timerState == nil {
+		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimerState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimerState:                    timerState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTimerState) GetActualValue() BACnetTimerStateTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimerState factory function for _BACnetConstructedDataTimerState
-func NewBACnetConstructedDataTimerState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerState BACnetTimerStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerState {
-	if timerState == nil {
-		panic("timerState of type BACnetTimerStateTagged for BACnetConstructedDataTimerState must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimerState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimerState:                    timerState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimerState(structType any) BACnetConstructedDataTimerState {

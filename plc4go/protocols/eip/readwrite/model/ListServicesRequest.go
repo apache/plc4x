@@ -49,6 +49,15 @@ type _ListServicesRequest struct {
 var _ ListServicesRequest = (*_ListServicesRequest)(nil)
 var _ EipPacketRequirements = (*_ListServicesRequest)(nil)
 
+// NewListServicesRequest factory function for _ListServicesRequest
+func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesRequest {
+	_result := &_ListServicesRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_ListServicesRequest) GetPacketLength() uint16 {
 
 func (m *_ListServicesRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewListServicesRequest factory function for _ListServicesRequest
-func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesRequest {
-	_result := &_ListServicesRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,19 @@ type _SALDataAccessControl struct {
 var _ SALDataAccessControl = (*_SALDataAccessControl)(nil)
 var _ SALDataRequirements = (*_SALDataAccessControl)(nil)
 
+// NewSALDataAccessControl factory function for _SALDataAccessControl
+func NewSALDataAccessControl(salData SALData, accessControlData AccessControlData) *_SALDataAccessControl {
+	if accessControlData == nil {
+		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
+	}
+	_result := &_SALDataAccessControl{
+		SALDataContract:   NewSALData(salData),
+		AccessControlData: accessControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataAccessControl) GetAccessControlData() AccessControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAccessControl factory function for _SALDataAccessControl
-func NewSALDataAccessControl(salData SALData, accessControlData AccessControlData) *_SALDataAccessControl {
-	if accessControlData == nil {
-		panic("accessControlData of type AccessControlData for SALDataAccessControl must not be nil")
-	}
-	_result := &_SALDataAccessControl{
-		SALDataContract:   NewSALData(salData),
-		AccessControlData: accessControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAccessControl(structType any) SALDataAccessControl {

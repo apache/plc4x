@@ -54,6 +54,19 @@ type _ExtensiblePayload struct {
 var _ ExtensiblePayload = (*_ExtensiblePayload)(nil)
 var _ PayloadRequirements = (*_ExtensiblePayload)(nil)
 
+// NewExtensiblePayload factory function for _ExtensiblePayload
+func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject, byteCount uint32) *_ExtensiblePayload {
+	if payload == nil {
+		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
+	}
+	_result := &_ExtensiblePayload{
+		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		Payload:         payload,
+	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ExtensiblePayload) GetPayload() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensiblePayload factory function for _ExtensiblePayload
-func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject, byteCount uint32) *_ExtensiblePayload {
-	if payload == nil {
-		panic("payload of type ExtensionObject for ExtensiblePayload must not be nil")
-	}
-	_result := &_ExtensiblePayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
-		Payload:         payload,
-	}
-	_result.PayloadContract.(*_Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensiblePayload(structType any) ExtensiblePayload {

@@ -63,6 +63,31 @@ type _BACnetEventParameterAccessEvent struct {
 var _ BACnetEventParameterAccessEvent = (*_BACnetEventParameterAccessEvent)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterAccessEvent)(nil)
 
+// NewBACnetEventParameterAccessEvent factory function for _BACnetEventParameterAccessEvent
+func NewBACnetEventParameterAccessEvent(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfAccessEvents BACnetEventParameterAccessEventListOfAccessEvents, accessEventTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterAccessEvent {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if listOfAccessEvents == nil {
+		panic("listOfAccessEvents of type BACnetEventParameterAccessEventListOfAccessEvents for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if accessEventTimeReference == nil {
+		panic("accessEventTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterAccessEvent must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEvent must not be nil")
+	}
+	_result := &_BACnetEventParameterAccessEvent{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfAccessEvents:           listOfAccessEvents,
+		AccessEventTimeReference:     accessEventTimeReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetEventParameterAccessEvent) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterAccessEvent factory function for _BACnetEventParameterAccessEvent
-func NewBACnetEventParameterAccessEvent(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfAccessEvents BACnetEventParameterAccessEventListOfAccessEvents, accessEventTimeReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterAccessEvent {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEvent must not be nil")
-	}
-	if listOfAccessEvents == nil {
-		panic("listOfAccessEvents of type BACnetEventParameterAccessEventListOfAccessEvents for BACnetEventParameterAccessEvent must not be nil")
-	}
-	if accessEventTimeReference == nil {
-		panic("accessEventTimeReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterAccessEvent must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEvent must not be nil")
-	}
-	_result := &_BACnetEventParameterAccessEvent{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfAccessEvents:           listOfAccessEvents,
-		AccessEventTimeReference:     accessEventTimeReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterAccessEvent(structType any) BACnetEventParameterAccessEvent {

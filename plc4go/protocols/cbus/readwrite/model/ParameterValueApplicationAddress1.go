@@ -57,6 +57,20 @@ type _ParameterValueApplicationAddress1 struct {
 var _ ParameterValueApplicationAddress1 = (*_ParameterValueApplicationAddress1)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress1)(nil)
 
+// NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
+func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
+	if value == nil {
+		panic("value of type ApplicationAddress1 for ParameterValueApplicationAddress1 must not be nil")
+	}
+	_result := &_ParameterValueApplicationAddress1{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_ParameterValueApplicationAddress1) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueApplicationAddress1 factory function for _ParameterValueApplicationAddress1
-func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte, numBytes uint8) *_ParameterValueApplicationAddress1 {
-	if value == nil {
-		panic("value of type ApplicationAddress1 for ParameterValueApplicationAddress1 must not be nil")
-	}
-	_result := &_ParameterValueApplicationAddress1{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueApplicationAddress1(structType any) ParameterValueApplicationAddress1 {

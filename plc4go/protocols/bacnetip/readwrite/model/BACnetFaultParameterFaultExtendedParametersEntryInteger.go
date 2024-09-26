@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryInteger struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryInteger = (*_BACnetFaultParameterFaultExtendedParametersEntryInteger)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryInteger)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryInteger factory function for _BACnetFaultParameterFaultExtendedParametersEntryInteger
+func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultExtendedParametersEntryInteger must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		IntegerValue: integerValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) GetIntegerVal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryInteger factory function for _BACnetFaultParameterFaultExtendedParametersEntryInteger
-func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultExtendedParametersEntryInteger must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryInteger{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		IntegerValue: integerValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryInteger(structType any) BACnetFaultParameterFaultExtendedParametersEntryInteger {

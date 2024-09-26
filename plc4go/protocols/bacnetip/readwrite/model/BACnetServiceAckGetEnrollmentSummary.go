@@ -66,6 +66,32 @@ type _BACnetServiceAckGetEnrollmentSummary struct {
 var _ BACnetServiceAckGetEnrollmentSummary = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEnrollmentSummary)(nil)
 
+// NewBACnetServiceAckGetEnrollmentSummary factory function for _BACnetServiceAckGetEnrollmentSummary
+func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckGetEnrollmentSummary {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetEnrollmentSummary must not be nil")
+	}
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetServiceAckGetEnrollmentSummary must not be nil")
+	}
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetEnrollmentSummary must not be nil")
+	}
+	if priority == nil {
+		panic("priority of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckGetEnrollmentSummary must not be nil")
+	}
+	_result := &_BACnetServiceAckGetEnrollmentSummary{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		EventType:                eventType,
+		EventState:               eventState,
+		Priority:                 priority,
+		NotificationClass:        notificationClass,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,32 +139,6 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) GetNotificationClass() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetEnrollmentSummary factory function for _BACnetServiceAckGetEnrollmentSummary
-func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventType BACnetEventTypeTagged, eventState BACnetEventStateTagged, priority BACnetApplicationTagUnsignedInteger, notificationClass BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckGetEnrollmentSummary {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetEnrollmentSummary must not be nil")
-	}
-	if eventType == nil {
-		panic("eventType of type BACnetEventTypeTagged for BACnetServiceAckGetEnrollmentSummary must not be nil")
-	}
-	if eventState == nil {
-		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetEnrollmentSummary must not be nil")
-	}
-	if priority == nil {
-		panic("priority of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckGetEnrollmentSummary must not be nil")
-	}
-	_result := &_BACnetServiceAckGetEnrollmentSummary{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-		EventType:                eventType,
-		EventState:               eventState,
-		Priority:                 priority,
-		NotificationClass:        notificationClass,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetEnrollmentSummary(structType any) BACnetServiceAckGetEnrollmentSummary {

@@ -54,6 +54,19 @@ type _BACnetEventParameterNone struct {
 var _ BACnetEventParameterNone = (*_BACnetEventParameterNone)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterNone)(nil)
 
+// NewBACnetEventParameterNone factory function for _BACnetEventParameterNone
+func NewBACnetEventParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetEventParameterNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetEventParameterNone must not be nil")
+	}
+	_result := &_BACnetEventParameterNone{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		None:                         none,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetEventParameterNone) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterNone factory function for _BACnetEventParameterNone
-func NewBACnetEventParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetEventParameterNone {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetEventParameterNone must not be nil")
-	}
-	_result := &_BACnetEventParameterNone{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		None:                         none,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterNone(structType any) BACnetEventParameterNone {

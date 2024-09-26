@@ -54,6 +54,17 @@ type _BACnetEventLogRecord struct {
 
 var _ BACnetEventLogRecord = (*_BACnetEventLogRecord)(nil)
 
+// NewBACnetEventLogRecord factory function for _BACnetEventLogRecord
+func NewBACnetEventLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) *_BACnetEventLogRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetEventLogRecord must not be nil")
+	}
+	if logDatum == nil {
+		panic("logDatum of type BACnetEventLogRecordLogDatum for BACnetEventLogRecord must not be nil")
+	}
+	return &_BACnetEventLogRecord{Timestamp: timestamp, LogDatum: logDatum}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetEventLogRecord) GetLogDatum() BACnetEventLogRecordLogDatum {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecord factory function for _BACnetEventLogRecord
-func NewBACnetEventLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) *_BACnetEventLogRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetEventLogRecord must not be nil")
-	}
-	if logDatum == nil {
-		panic("logDatum of type BACnetEventLogRecordLogDatum for BACnetEventLogRecord must not be nil")
-	}
-	return &_BACnetEventLogRecord{Timestamp: timestamp, LogDatum: logDatum}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecord(structType any) BACnetEventLogRecord {

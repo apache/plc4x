@@ -60,6 +60,18 @@ type _ComObjectTableRealisationType1 struct {
 var _ ComObjectTableRealisationType1 = (*_ComObjectTableRealisationType1)(nil)
 var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType1)(nil)
 
+// NewComObjectTableRealisationType1 factory function for _ComObjectTableRealisationType1
+func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) *_ComObjectTableRealisationType1 {
+	_result := &_ComObjectTableRealisationType1{
+		ComObjectTableContract: NewComObjectTable(),
+		NumEntries:             numEntries,
+		RamFlagsTablePointer:   ramFlagsTablePointer,
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_ComObjectTableRealisationType1) GetComObjectDescriptors() []GroupObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComObjectTableRealisationType1 factory function for _ComObjectTableRealisationType1
-func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) *_ComObjectTableRealisationType1 {
-	_result := &_ComObjectTableRealisationType1{
-		ComObjectTableContract: NewComObjectTable(),
-		NumEntries:             numEntries,
-		RamFlagsTablePointer:   ramFlagsTablePointer,
-		ComObjectDescriptors:   comObjectDescriptors,
-	}
-	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTableRealisationType1(structType any) ComObjectTableRealisationType1 {

@@ -54,6 +54,16 @@ type _BACnetLogRecordLogDatumAnyValue struct {
 var _ BACnetLogRecordLogDatumAnyValue = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumAnyValue)(nil)
 
+// NewBACnetLogRecordLogDatumAnyValue factory function for _BACnetLogRecordLogDatumAnyValue
+func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData, tagNumber uint8) *_BACnetLogRecordLogDatumAnyValue {
+	_result := &_BACnetLogRecordLogDatumAnyValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		AnyValue:                        anyValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_BACnetLogRecordLogDatumAnyValue) GetAnyValue() BACnetConstructedData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumAnyValue factory function for _BACnetLogRecordLogDatumAnyValue
-func NewBACnetLogRecordLogDatumAnyValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, anyValue BACnetConstructedData, tagNumber uint8) *_BACnetLogRecordLogDatumAnyValue {
-	_result := &_BACnetLogRecordLogDatumAnyValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		AnyValue:                        anyValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumAnyValue(structType any) BACnetLogRecordLogDatumAnyValue {

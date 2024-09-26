@@ -57,6 +57,20 @@ type _ParameterValueApplicationAddress2 struct {
 var _ ParameterValueApplicationAddress2 = (*_ParameterValueApplicationAddress2)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress2)(nil)
 
+// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
+func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
+	if value == nil {
+		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
+	}
+	_result := &_ParameterValueApplicationAddress2{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_ParameterValueApplicationAddress2) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
-func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
-	if value == nil {
-		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
-	}
-	_result := &_ParameterValueApplicationAddress2{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueApplicationAddress2(structType any) ParameterValueApplicationAddress2 {

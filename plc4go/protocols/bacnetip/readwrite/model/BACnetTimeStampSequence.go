@@ -54,6 +54,19 @@ type _BACnetTimeStampSequence struct {
 var _ BACnetTimeStampSequence = (*_BACnetTimeStampSequence)(nil)
 var _ BACnetTimeStampRequirements = (*_BACnetTimeStampSequence)(nil)
 
+// NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
+func NewBACnetTimeStampSequence(peekedTagHeader BACnetTagHeader, sequenceNumber BACnetContextTagUnsignedInteger) *_BACnetTimeStampSequence {
+	if sequenceNumber == nil {
+		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
+	}
+	_result := &_BACnetTimeStampSequence{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		SequenceNumber:          sequenceNumber,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimeStampSequence) GetSequenceNumber() BACnetContextTagUnsignedI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
-func NewBACnetTimeStampSequence(peekedTagHeader BACnetTagHeader, sequenceNumber BACnetContextTagUnsignedInteger) *_BACnetTimeStampSequence {
-	if sequenceNumber == nil {
-		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
-	}
-	_result := &_BACnetTimeStampSequence{
-		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
-		SequenceNumber:          sequenceNumber,
-	}
-	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampSequence(structType any) BACnetTimeStampSequence {

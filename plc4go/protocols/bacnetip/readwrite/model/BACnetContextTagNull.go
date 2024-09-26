@@ -49,6 +49,15 @@ type _BACnetContextTagNull struct {
 var _ BACnetContextTagNull = (*_BACnetContextTagNull)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagNull)(nil)
 
+// NewBACnetContextTagNull factory function for _BACnetContextTagNull
+func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
+	_result := &_BACnetContextTagNull{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_BACnetContextTagNull) GetDataType() BACnetDataType {
 
 func (m *_BACnetContextTagNull) GetParent() BACnetContextTagContract {
 	return m.BACnetContextTagContract
-}
-
-// NewBACnetContextTagNull factory function for _BACnetContextTagNull
-func NewBACnetContextTagNull(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagNull {
-	_result := &_BACnetContextTagNull{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

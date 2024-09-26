@@ -82,6 +82,11 @@ type _LDataFrame struct {
 
 var _ LDataFrameContract = (*_LDataFrame)(nil)
 
+// NewLDataFrame factory function for _LDataFrame
+func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
+	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -111,11 +116,6 @@ func (m *_LDataFrame) GetErrorFlag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataFrame factory function for _LDataFrame
-func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
-	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataFrame(structType any) LDataFrame {

@@ -54,6 +54,19 @@ type _BACnetHostAddressNull struct {
 var _ BACnetHostAddressNull = (*_BACnetHostAddressNull)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressNull)(nil)
 
+// NewBACnetHostAddressNull factory function for _BACnetHostAddressNull
+func NewBACnetHostAddressNull(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetHostAddressNull {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetHostAddressNull must not be nil")
+	}
+	_result := &_BACnetHostAddressNull{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		None:                      none,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetHostAddressNull) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressNull factory function for _BACnetHostAddressNull
-func NewBACnetHostAddressNull(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetHostAddressNull {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetHostAddressNull must not be nil")
-	}
-	_result := &_BACnetHostAddressNull{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		None:                      none,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressNull(structType any) BACnetHostAddressNull {

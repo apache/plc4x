@@ -66,6 +66,23 @@ type _DeleteNodesResponse struct {
 var _ DeleteNodesResponse = (*_DeleteNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesResponse)(nil)
 
+// NewDeleteNodesResponse factory function for _DeleteNodesResponse
+func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
+	}
+	_result := &_DeleteNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_DeleteNodesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesResponse factory function for _DeleteNodesResponse
-func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
-	}
-	_result := &_DeleteNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesResponse(structType any) DeleteNodesResponse {

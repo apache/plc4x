@@ -57,6 +57,20 @@ type _OpcuaMessageError struct {
 var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
 
+// NewOpcuaMessageError factory function for _OpcuaMessageError
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
+	if reason == nil {
+		panic("reason of type PascalString for OpcuaMessageError must not be nil")
+	}
+	_result := &_OpcuaMessageError{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Error:              error,
+		Reason:             reason,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,20 +110,6 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
-	if reason == nil {
-		panic("reason of type PascalString for OpcuaMessageError must not be nil")
-	}
-	_result := &_OpcuaMessageError{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Error:              error,
-		Reason:             reason,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageError(structType any) OpcuaMessageError {

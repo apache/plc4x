@@ -51,6 +51,11 @@ type _CBusConstants struct {
 
 var _ CBusConstants = (*_CBusConstants)(nil)
 
+// NewCBusConstants factory function for _CBusConstants
+func NewCBusConstants() *_CBusConstants {
+	return &_CBusConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_CBusConstants) GetCbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusConstants factory function for _CBusConstants
-func NewCBusConstants() *_CBusConstants {
-	return &_CBusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusConstants(structType any) CBusConstants {

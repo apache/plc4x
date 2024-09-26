@@ -54,6 +54,19 @@ type _BACnetPropertyStatesAccessCredentialDisable struct {
 var _ BACnetPropertyStatesAccessCredentialDisable = (*_BACnetPropertyStatesAccessCredentialDisable)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAccessCredentialDisable)(nil)
 
+// NewBACnetPropertyStatesAccessCredentialDisable factory function for _BACnetPropertyStatesAccessCredentialDisable
+func NewBACnetPropertyStatesAccessCredentialDisable(peekedTagHeader BACnetTagHeader, accessCredentialDisable BACnetAccessCredentialDisableTagged) *_BACnetPropertyStatesAccessCredentialDisable {
+	if accessCredentialDisable == nil {
+		panic("accessCredentialDisable of type BACnetAccessCredentialDisableTagged for BACnetPropertyStatesAccessCredentialDisable must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAccessCredentialDisable{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AccessCredentialDisable:      accessCredentialDisable,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetAccessCredentialDisabl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAccessCredentialDisable factory function for _BACnetPropertyStatesAccessCredentialDisable
-func NewBACnetPropertyStatesAccessCredentialDisable(peekedTagHeader BACnetTagHeader, accessCredentialDisable BACnetAccessCredentialDisableTagged) *_BACnetPropertyStatesAccessCredentialDisable {
-	if accessCredentialDisable == nil {
-		panic("accessCredentialDisable of type BACnetAccessCredentialDisableTagged for BACnetPropertyStatesAccessCredentialDisable must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAccessCredentialDisable{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		AccessCredentialDisable:      accessCredentialDisable,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAccessCredentialDisable(structType any) BACnetPropertyStatesAccessCredentialDisable {

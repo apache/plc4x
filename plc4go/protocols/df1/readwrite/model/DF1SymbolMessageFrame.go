@@ -66,6 +66,21 @@ type _DF1SymbolMessageFrame struct {
 var _ DF1SymbolMessageFrame = (*_DF1SymbolMessageFrame)(nil)
 var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrame)(nil)
 
+// NewDF1SymbolMessageFrame factory function for _DF1SymbolMessageFrame
+func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command DF1Command) *_DF1SymbolMessageFrame {
+	if command == nil {
+		panic("command of type DF1Command for DF1SymbolMessageFrame must not be nil")
+	}
+	_result := &_DF1SymbolMessageFrame{
+		DF1SymbolContract:  NewDF1Symbol(),
+		DestinationAddress: destinationAddress,
+		SourceAddress:      sourceAddress,
+		Command:            command,
+	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -122,21 +137,6 @@ func (m *_DF1SymbolMessageFrame) GetEndTransaction() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1SymbolMessageFrame factory function for _DF1SymbolMessageFrame
-func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, command DF1Command) *_DF1SymbolMessageFrame {
-	if command == nil {
-		panic("command of type DF1Command for DF1SymbolMessageFrame must not be nil")
-	}
-	_result := &_DF1SymbolMessageFrame{
-		DF1SymbolContract:  NewDF1Symbol(),
-		DestinationAddress: destinationAddress,
-		SourceAddress:      sourceAddress,
-		Command:            command,
-	}
-	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1SymbolMessageFrame(structType any) DF1SymbolMessageFrame {

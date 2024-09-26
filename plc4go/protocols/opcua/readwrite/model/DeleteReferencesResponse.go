@@ -66,6 +66,23 @@ type _DeleteReferencesResponse struct {
 var _ DeleteReferencesResponse = (*_DeleteReferencesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteReferencesResponse)(nil)
 
+// NewDeleteReferencesResponse factory function for _DeleteReferencesResponse
+func NewDeleteReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteReferencesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteReferencesResponse must not be nil")
+	}
+	_result := &_DeleteReferencesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_DeleteReferencesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteReferencesResponse factory function for _DeleteReferencesResponse
-func NewDeleteReferencesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteReferencesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteReferencesResponse must not be nil")
-	}
-	_result := &_DeleteReferencesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteReferencesResponse(structType any) DeleteReferencesResponse {

@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryUnsigned struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryUnsigned = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryUnsigned)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned factory function for _BACnetFaultParameterFaultExtendedParametersEntryUnsigned
+func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultExtendedParametersEntryUnsigned must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		UnsignedValue: unsignedValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned) GetUnsignedV
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned factory function for _BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-func NewBACnetFaultParameterFaultExtendedParametersEntryUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetFaultParameterFaultExtendedParametersEntryUnsigned must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		UnsignedValue: unsignedValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryUnsigned(structType any) BACnetFaultParameterFaultExtendedParametersEntryUnsigned {

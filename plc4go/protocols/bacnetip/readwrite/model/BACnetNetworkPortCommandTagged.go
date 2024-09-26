@@ -63,6 +63,14 @@ type _BACnetNetworkPortCommandTagged struct {
 
 var _ BACnetNetworkPortCommandTagged = (*_BACnetNetworkPortCommandTagged)(nil)
 
+// NewBACnetNetworkPortCommandTagged factory function for _BACnetNetworkPortCommandTagged
+func NewBACnetNetworkPortCommandTagged(header BACnetTagHeader, value BACnetNetworkPortCommand, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkPortCommandTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkPortCommandTagged must not be nil")
+	}
+	return &_BACnetNetworkPortCommandTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetNetworkPortCommandTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkPortCommandTagged factory function for _BACnetNetworkPortCommandTagged
-func NewBACnetNetworkPortCommandTagged(header BACnetTagHeader, value BACnetNetworkPortCommand, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkPortCommandTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkPortCommandTagged must not be nil")
-	}
-	return &_BACnetNetworkPortCommandTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkPortCommandTagged(structType any) BACnetNetworkPortCommandTagged {

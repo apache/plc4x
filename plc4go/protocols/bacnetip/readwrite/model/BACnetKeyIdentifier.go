@@ -54,6 +54,17 @@ type _BACnetKeyIdentifier struct {
 
 var _ BACnetKeyIdentifier = (*_BACnetKeyIdentifier)(nil)
 
+// NewBACnetKeyIdentifier factory function for _BACnetKeyIdentifier
+func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) *_BACnetKeyIdentifier {
+	if algorithm == nil {
+		panic("algorithm of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
+	}
+	if keyId == nil {
+		panic("keyId of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
+	}
+	return &_BACnetKeyIdentifier{Algorithm: algorithm, KeyId: keyId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetKeyIdentifier) GetKeyId() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetKeyIdentifier factory function for _BACnetKeyIdentifier
-func NewBACnetKeyIdentifier(algorithm BACnetContextTagUnsignedInteger, keyId BACnetContextTagUnsignedInteger) *_BACnetKeyIdentifier {
-	if algorithm == nil {
-		panic("algorithm of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
-	}
-	if keyId == nil {
-		panic("keyId of type BACnetContextTagUnsignedInteger for BACnetKeyIdentifier must not be nil")
-	}
-	return &_BACnetKeyIdentifier{Algorithm: algorithm, KeyId: keyId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetKeyIdentifier(structType any) BACnetKeyIdentifier {

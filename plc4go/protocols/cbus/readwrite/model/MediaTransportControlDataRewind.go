@@ -70,6 +70,16 @@ type _MediaTransportControlDataRewind struct {
 var _ MediaTransportControlDataRewind = (*_MediaTransportControlDataRewind)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataRewind)(nil)
 
+// NewMediaTransportControlDataRewind factory function for _MediaTransportControlDataRewind
+func NewMediaTransportControlDataRewind(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataRewind {
+	_result := &_MediaTransportControlDataRewind{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -154,16 +164,6 @@ func (m *_MediaTransportControlDataRewind) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataRewind factory function for _MediaTransportControlDataRewind
-func NewMediaTransportControlDataRewind(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataRewind {
-	_result := &_MediaTransportControlDataRewind{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataRewind(structType any) MediaTransportControlDataRewind {

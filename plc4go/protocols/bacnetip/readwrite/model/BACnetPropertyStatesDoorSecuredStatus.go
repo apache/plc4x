@@ -54,6 +54,19 @@ type _BACnetPropertyStatesDoorSecuredStatus struct {
 var _ BACnetPropertyStatesDoorSecuredStatus = (*_BACnetPropertyStatesDoorSecuredStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesDoorSecuredStatus)(nil)
 
+// NewBACnetPropertyStatesDoorSecuredStatus factory function for _BACnetPropertyStatesDoorSecuredStatus
+func NewBACnetPropertyStatesDoorSecuredStatus(peekedTagHeader BACnetTagHeader, doorSecuredStatus BACnetDoorSecuredStatusTagged) *_BACnetPropertyStatesDoorSecuredStatus {
+	if doorSecuredStatus == nil {
+		panic("doorSecuredStatus of type BACnetDoorSecuredStatusTagged for BACnetPropertyStatesDoorSecuredStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesDoorSecuredStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		DoorSecuredStatus:            doorSecuredStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesDoorSecuredStatus) GetDoorSecuredStatus() BACnetDo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesDoorSecuredStatus factory function for _BACnetPropertyStatesDoorSecuredStatus
-func NewBACnetPropertyStatesDoorSecuredStatus(peekedTagHeader BACnetTagHeader, doorSecuredStatus BACnetDoorSecuredStatusTagged) *_BACnetPropertyStatesDoorSecuredStatus {
-	if doorSecuredStatus == nil {
-		panic("doorSecuredStatus of type BACnetDoorSecuredStatusTagged for BACnetPropertyStatesDoorSecuredStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesDoorSecuredStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		DoorSecuredStatus:            doorSecuredStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesDoorSecuredStatus(structType any) BACnetPropertyStatesDoorSecuredStatus {

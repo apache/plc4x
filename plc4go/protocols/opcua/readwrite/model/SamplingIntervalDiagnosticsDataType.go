@@ -63,6 +63,19 @@ type _SamplingIntervalDiagnosticsDataType struct {
 var _ SamplingIntervalDiagnosticsDataType = (*_SamplingIntervalDiagnosticsDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SamplingIntervalDiagnosticsDataType)(nil)
 
+// NewSamplingIntervalDiagnosticsDataType factory function for _SamplingIntervalDiagnosticsDataType
+func NewSamplingIntervalDiagnosticsDataType(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) *_SamplingIntervalDiagnosticsDataType {
+	_result := &_SamplingIntervalDiagnosticsDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SamplingInterval:                  samplingInterval,
+		MonitoredItemCount:                monitoredItemCount,
+		MaxMonitoredItemCount:             maxMonitoredItemCount,
+		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetDisabledMonitoredItemCount() u
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSamplingIntervalDiagnosticsDataType factory function for _SamplingIntervalDiagnosticsDataType
-func NewSamplingIntervalDiagnosticsDataType(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) *_SamplingIntervalDiagnosticsDataType {
-	_result := &_SamplingIntervalDiagnosticsDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SamplingInterval:                  samplingInterval,
-		MonitoredItemCount:                monitoredItemCount,
-		MaxMonitoredItemCount:             maxMonitoredItemCount,
-		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSamplingIntervalDiagnosticsDataType(structType any) SamplingIntervalDiagnosticsDataType {

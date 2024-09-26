@@ -56,6 +56,19 @@ type _BACnetConstructedDataMultiStateOutputInterfaceValue struct {
 var _ BACnetConstructedDataMultiStateOutputInterfaceValue = (*_BACnetConstructedDataMultiStateOutputInterfaceValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputInterfaceValue)(nil)
 
+// NewBACnetConstructedDataMultiStateOutputInterfaceValue factory function for _BACnetConstructedDataMultiStateOutputInterfaceValue
+func NewBACnetConstructedDataMultiStateOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputInterfaceValue {
+	if interfaceValue == nil {
+		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataMultiStateOutputInterfaceValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMultiStateOutputInterfaceValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InterfaceValue:                interfaceValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMultiStateOutputInterfaceValue) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateOutputInterfaceValue factory function for _BACnetConstructedDataMultiStateOutputInterfaceValue
-func NewBACnetConstructedDataMultiStateOutputInterfaceValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, interfaceValue BACnetOptionalBinaryPV, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputInterfaceValue {
-	if interfaceValue == nil {
-		panic("interfaceValue of type BACnetOptionalBinaryPV for BACnetConstructedDataMultiStateOutputInterfaceValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMultiStateOutputInterfaceValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InterfaceValue:                interfaceValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateOutputInterfaceValue(structType any) BACnetConstructedDataMultiStateOutputInterfaceValue {

@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal struct {
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal)(nil)
 
+// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetApplicationTagReal, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
+		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		RealValue: realValue,
+	}
+	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal) GetRealValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetApplicationTagReal, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal{
-		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		RealValue: realValue,
-	}
-	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueReal(structType any) BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal {

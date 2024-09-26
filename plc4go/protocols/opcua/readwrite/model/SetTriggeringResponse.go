@@ -78,6 +78,27 @@ type _SetTriggeringResponse struct {
 var _ SetTriggeringResponse = (*_SetTriggeringResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringResponse)(nil)
 
+// NewSetTriggeringResponse factory function for _SetTriggeringResponse
+func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetTriggeringResponse must not be nil")
+	}
+	_result := &_SetTriggeringResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfAddResults:                    noOfAddResults,
+		AddResults:                        addResults,
+		NoOfAddDiagnosticInfos:            noOfAddDiagnosticInfos,
+		AddDiagnosticInfos:                addDiagnosticInfos,
+		NoOfRemoveResults:                 noOfRemoveResults,
+		RemoveResults:                     removeResults,
+		NoOfRemoveDiagnosticInfos:         noOfRemoveDiagnosticInfos,
+		RemoveDiagnosticInfos:             removeDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,27 +162,6 @@ func (m *_SetTriggeringResponse) GetRemoveDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetTriggeringResponse factory function for _SetTriggeringResponse
-func NewSetTriggeringResponse(responseHeader ExtensionObjectDefinition, noOfAddResults int32, addResults []StatusCode, noOfAddDiagnosticInfos int32, addDiagnosticInfos []DiagnosticInfo, noOfRemoveResults int32, removeResults []StatusCode, noOfRemoveDiagnosticInfos int32, removeDiagnosticInfos []DiagnosticInfo) *_SetTriggeringResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetTriggeringResponse must not be nil")
-	}
-	_result := &_SetTriggeringResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfAddResults:                    noOfAddResults,
-		AddResults:                        addResults,
-		NoOfAddDiagnosticInfos:            noOfAddDiagnosticInfos,
-		AddDiagnosticInfos:                addDiagnosticInfos,
-		NoOfRemoveResults:                 noOfRemoveResults,
-		RemoveResults:                     removeResults,
-		NoOfRemoveDiagnosticInfos:         noOfRemoveDiagnosticInfos,
-		RemoveDiagnosticInfos:             removeDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetTriggeringResponse(structType any) SetTriggeringResponse {

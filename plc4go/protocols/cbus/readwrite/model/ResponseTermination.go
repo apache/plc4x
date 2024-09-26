@@ -52,6 +52,11 @@ type _ResponseTermination struct {
 
 var _ ResponseTermination = (*_ResponseTermination)(nil)
 
+// NewResponseTermination factory function for _ResponseTermination
+func NewResponseTermination() *_ResponseTermination {
+	return &_ResponseTermination{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -69,11 +74,6 @@ func (m *_ResponseTermination) GetLf() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewResponseTermination factory function for _ResponseTermination
-func NewResponseTermination() *_ResponseTermination {
-	return &_ResponseTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastResponseTermination(structType any) ResponseTermination {

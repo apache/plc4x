@@ -49,6 +49,15 @@ type _DiscoveryConfiguration struct {
 var _ DiscoveryConfiguration = (*_DiscoveryConfiguration)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DiscoveryConfiguration)(nil)
 
+// NewDiscoveryConfiguration factory function for _DiscoveryConfiguration
+func NewDiscoveryConfiguration() *_DiscoveryConfiguration {
+	_result := &_DiscoveryConfiguration{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DiscoveryConfiguration) GetIdentifier() string {
 
 func (m *_DiscoveryConfiguration) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDiscoveryConfiguration factory function for _DiscoveryConfiguration
-func NewDiscoveryConfiguration() *_DiscoveryConfiguration {
-	_result := &_DiscoveryConfiguration{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

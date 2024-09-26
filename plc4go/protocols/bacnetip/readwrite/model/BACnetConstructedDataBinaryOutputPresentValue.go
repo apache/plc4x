@@ -56,6 +56,19 @@ type _BACnetConstructedDataBinaryOutputPresentValue struct {
 var _ BACnetConstructedDataBinaryOutputPresentValue = (*_BACnetConstructedDataBinaryOutputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputPresentValue)(nil)
 
+// NewBACnetConstructedDataBinaryOutputPresentValue factory function for _BACnetConstructedDataBinaryOutputPresentValue
+func NewBACnetConstructedDataBinaryOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryOutputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBinaryOutputPresentValue) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryOutputPresentValue factory function for _BACnetConstructedDataBinaryOutputPresentValue
-func NewBACnetConstructedDataBinaryOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryOutputPresentValue(structType any) BACnetConstructedDataBinaryOutputPresentValue {

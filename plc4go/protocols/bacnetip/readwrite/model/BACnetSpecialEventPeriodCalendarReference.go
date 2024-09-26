@@ -54,6 +54,19 @@ type _BACnetSpecialEventPeriodCalendarReference struct {
 var _ BACnetSpecialEventPeriodCalendarReference = (*_BACnetSpecialEventPeriodCalendarReference)(nil)
 var _ BACnetSpecialEventPeriodRequirements = (*_BACnetSpecialEventPeriodCalendarReference)(nil)
 
+// NewBACnetSpecialEventPeriodCalendarReference factory function for _BACnetSpecialEventPeriodCalendarReference
+func NewBACnetSpecialEventPeriodCalendarReference(peekedTagHeader BACnetTagHeader, calendarReference BACnetContextTagObjectIdentifier) *_BACnetSpecialEventPeriodCalendarReference {
+	if calendarReference == nil {
+		panic("calendarReference of type BACnetContextTagObjectIdentifier for BACnetSpecialEventPeriodCalendarReference must not be nil")
+	}
+	_result := &_BACnetSpecialEventPeriodCalendarReference{
+		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
+		CalendarReference:                calendarReference,
+	}
+	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetCalendarReference() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventPeriodCalendarReference factory function for _BACnetSpecialEventPeriodCalendarReference
-func NewBACnetSpecialEventPeriodCalendarReference(peekedTagHeader BACnetTagHeader, calendarReference BACnetContextTagObjectIdentifier) *_BACnetSpecialEventPeriodCalendarReference {
-	if calendarReference == nil {
-		panic("calendarReference of type BACnetContextTagObjectIdentifier for BACnetSpecialEventPeriodCalendarReference must not be nil")
-	}
-	_result := &_BACnetSpecialEventPeriodCalendarReference{
-		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
-		CalendarReference:                calendarReference,
-	}
-	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventPeriodCalendarReference(structType any) BACnetSpecialEventPeriodCalendarReference {

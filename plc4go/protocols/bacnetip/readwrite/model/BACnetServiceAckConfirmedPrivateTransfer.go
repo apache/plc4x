@@ -60,6 +60,24 @@ type _BACnetServiceAckConfirmedPrivateTransfer struct {
 var _ BACnetServiceAckConfirmedPrivateTransfer = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckConfirmedPrivateTransfer)(nil)
 
+// NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
+func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
+	}
+	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		VendorId:                 vendorId,
+		ServiceNumber:            serviceNumber,
+		ResultBlock:              resultBlock,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) GetResultBlock() BACnetConst
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckConfirmedPrivateTransfer factory function for _BACnetServiceAckConfirmedPrivateTransfer
-func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, resultBlock BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckConfirmedPrivateTransfer {
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
-	}
-	if serviceNumber == nil {
-		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetServiceAckConfirmedPrivateTransfer must not be nil")
-	}
-	_result := &_BACnetServiceAckConfirmedPrivateTransfer{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		VendorId:                 vendorId,
-		ServiceNumber:            serviceNumber,
-		ResultBlock:              resultBlock,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckConfirmedPrivateTransfer(structType any) BACnetServiceAckConfirmedPrivateTransfer {

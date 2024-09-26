@@ -56,6 +56,19 @@ type _BACnetConstructedDataWriteStatus struct {
 var _ BACnetConstructedDataWriteStatus = (*_BACnetConstructedDataWriteStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWriteStatus)(nil)
 
+// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
+func NewBACnetConstructedDataWriteStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, writeStatus BACnetWriteStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataWriteStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WriteStatus:                   writeStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
-func NewBACnetConstructedDataWriteStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, writeStatus BACnetWriteStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
-	if writeStatus == nil {
-		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataWriteStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		WriteStatus:                   writeStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWriteStatus(structType any) BACnetConstructedDataWriteStatus {

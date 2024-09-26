@@ -68,6 +68,14 @@ type _AdsDiscovery struct {
 
 var _ AdsDiscovery = (*_AdsDiscovery)(nil)
 
+// NewAdsDiscovery factory function for _AdsDiscovery
+func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
+	}
+	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,14 +118,6 @@ func (m *_AdsDiscovery) GetHeader() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscovery factory function for _AdsDiscovery
-func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
-	if amsNetId == nil {
-		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
-	}
-	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscovery(structType any) AdsDiscovery {

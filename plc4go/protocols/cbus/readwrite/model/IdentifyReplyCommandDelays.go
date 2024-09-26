@@ -57,6 +57,17 @@ type _IdentifyReplyCommandDelays struct {
 var _ IdentifyReplyCommandDelays = (*_IdentifyReplyCommandDelays)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDelays)(nil)
 
+// NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
+func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
+	_result := &_IdentifyReplyCommandDelays{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		TerminalLevels:               terminalLevels,
+		ReStrikeDelay:                reStrikeDelay,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_IdentifyReplyCommandDelays) GetReStrikeDelay() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandDelays factory function for _IdentifyReplyCommandDelays
-func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, numBytes uint8) *_IdentifyReplyCommandDelays {
-	_result := &_IdentifyReplyCommandDelays{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		TerminalLevels:               terminalLevels,
-		ReStrikeDelay:                reStrikeDelay,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandDelays(structType any) IdentifyReplyCommandDelays {

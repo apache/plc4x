@@ -60,6 +60,21 @@ type _BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 var _ BACnetConfirmedServiceRequestDeviceCommunicationControl = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeviceCommunicationControl)(nil)
 
+// NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
+func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	if enableDisable == nil {
+		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		TimeDuration:                          timeDuration,
+		EnableDisable:                         enableDisable,
+		Password:                              password,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) GetPassword()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestDeviceCommunicationControl factory function for _BACnetConfirmedServiceRequestDeviceCommunicationControl
-func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BACnetContextTagUnsignedInteger, enableDisable BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged, password BACnetContextTagCharacterString, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeviceCommunicationControl {
-	if enableDisable == nil {
-		panic("enableDisable of type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged for BACnetConfirmedServiceRequestDeviceCommunicationControl must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		TimeDuration:                          timeDuration,
-		EnableDisable:                         enableDisable,
-		Password:                              password,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControl {

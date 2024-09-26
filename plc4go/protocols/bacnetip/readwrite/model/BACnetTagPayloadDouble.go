@@ -51,6 +51,11 @@ type _BACnetTagPayloadDouble struct {
 
 var _ BACnetTagPayloadDouble = (*_BACnetTagPayloadDouble)(nil)
 
+// NewBACnetTagPayloadDouble factory function for _BACnetTagPayloadDouble
+func NewBACnetTagPayloadDouble(value float64) *_BACnetTagPayloadDouble {
+	return &_BACnetTagPayloadDouble{Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_BACnetTagPayloadDouble) GetValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadDouble factory function for _BACnetTagPayloadDouble
-func NewBACnetTagPayloadDouble(value float64) *_BACnetTagPayloadDouble {
-	return &_BACnetTagPayloadDouble{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadDouble(structType any) BACnetTagPayloadDouble {

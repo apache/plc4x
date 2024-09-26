@@ -54,6 +54,19 @@ type _LogicalSegment struct {
 var _ LogicalSegment = (*_LogicalSegment)(nil)
 var _ PathSegmentRequirements = (*_LogicalSegment)(nil)
 
+// NewLogicalSegment factory function for _LogicalSegment
+func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
+	if segmentType == nil {
+		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
+	}
+	_result := &_LogicalSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_LogicalSegment) GetSegmentType() LogicalSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLogicalSegment factory function for _LogicalSegment
-func NewLogicalSegment(segmentType LogicalSegmentType) *_LogicalSegment {
-	if segmentType == nil {
-		panic("segmentType of type LogicalSegmentType for LogicalSegment must not be nil")
-	}
-	_result := &_LogicalSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLogicalSegment(structType any) LogicalSegment {

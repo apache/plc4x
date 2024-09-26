@@ -62,6 +62,18 @@ type _CipConnectedResponse struct {
 var _ CipConnectedResponse = (*_CipConnectedResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectedResponse)(nil)
 
+// NewCipConnectedResponse factory function for _CipConnectedResponse
+func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
+	_result := &_CipConnectedResponse{
+		CipServiceContract:    NewCipService(serviceLen),
+		Status:                status,
+		AdditionalStatusWords: additionalStatusWords,
+		Data:                  data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,18 +121,6 @@ func (m *_CipConnectedResponse) GetData() CIPDataConnected {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
-	_result := &_CipConnectedResponse{
-		CipServiceContract:    NewCipService(serviceLen),
-		Status:                status,
-		AdditionalStatusWords: additionalStatusWords,
-		Data:                  data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectedResponse(structType any) CipConnectedResponse {

@@ -54,6 +54,19 @@ type _BACnetChannelValueObjectidentifier struct {
 var _ BACnetChannelValueObjectidentifier = (*_BACnetChannelValueObjectidentifier)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueObjectidentifier)(nil)
 
+// NewBACnetChannelValueObjectidentifier factory function for _BACnetChannelValueObjectidentifier
+func NewBACnetChannelValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetChannelValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetChannelValueObjectidentifier must not be nil")
+	}
+	_result := &_BACnetChannelValueObjectidentifier{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		ObjectidentifierValue:      objectidentifierValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueObjectidentifier) GetObjectidentifierValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueObjectidentifier factory function for _BACnetChannelValueObjectidentifier
-func NewBACnetChannelValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetChannelValueObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetChannelValueObjectidentifier must not be nil")
-	}
-	_result := &_BACnetChannelValueObjectidentifier{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		ObjectidentifierValue:      objectidentifierValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueObjectidentifier(structType any) BACnetChannelValueObjectidentifier {

@@ -57,6 +57,17 @@ type _TelephonyDataLineOffHook struct {
 var _ TelephonyDataLineOffHook = (*_TelephonyDataLineOffHook)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataLineOffHook)(nil)
 
+// NewTelephonyDataLineOffHook factory function for _TelephonyDataLineOffHook
+func NewTelephonyDataLineOffHook(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason LineOffHookReason, number string) *_TelephonyDataLineOffHook {
+	_result := &_TelephonyDataLineOffHook{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_TelephonyDataLineOffHook) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataLineOffHook factory function for _TelephonyDataLineOffHook
-func NewTelephonyDataLineOffHook(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason LineOffHookReason, number string) *_TelephonyDataLineOffHook {
-	_result := &_TelephonyDataLineOffHook{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Reason:                reason,
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataLineOffHook(structType any) TelephonyDataLineOffHook {

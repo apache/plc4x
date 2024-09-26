@@ -66,6 +66,23 @@ type _ReadRequest struct {
 var _ ReadRequest = (*_ReadRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadRequest)(nil)
 
+// NewReadRequest factory function for _ReadRequest
+func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_ReadRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ReadRequest must not be nil")
+	}
+	_result := &_ReadRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		MaxAge:                            maxAge,
+		TimestampsToReturn:                timestampsToReturn,
+		NoOfNodesToRead:                   noOfNodesToRead,
+		NodesToRead:                       nodesToRead,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_ReadRequest) GetNodesToRead() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadRequest factory function for _ReadRequest
-func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) *_ReadRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ReadRequest must not be nil")
-	}
-	_result := &_ReadRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		MaxAge:                            maxAge,
-		TimestampsToReturn:                timestampsToReturn,
-		NoOfNodesToRead:                   noOfNodesToRead,
-		NodesToRead:                       nodesToRead,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadRequest(structType any) ReadRequest {

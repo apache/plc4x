@@ -63,6 +63,31 @@ type _BACnetEventParameterCommandFailure struct {
 var _ BACnetEventParameterCommandFailure = (*_BACnetEventParameterCommandFailure)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterCommandFailure)(nil)
 
+// NewBACnetEventParameterCommandFailure factory function for _BACnetEventParameterCommandFailure
+func NewBACnetEventParameterCommandFailure(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterCommandFailure {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterCommandFailure must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterCommandFailure must not be nil")
+	}
+	if feedbackPropertyReference == nil {
+		panic("feedbackPropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterCommandFailure must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterCommandFailure must not be nil")
+	}
+	_result := &_BACnetEventParameterCommandFailure{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		FeedbackPropertyReference:    feedbackPropertyReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetEventParameterCommandFailure) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterCommandFailure factory function for _BACnetEventParameterCommandFailure
-func NewBACnetEventParameterCommandFailure(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, feedbackPropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetEventParameterCommandFailure {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterCommandFailure must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterCommandFailure must not be nil")
-	}
-	if feedbackPropertyReference == nil {
-		panic("feedbackPropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterCommandFailure must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterCommandFailure must not be nil")
-	}
-	_result := &_BACnetEventParameterCommandFailure{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		FeedbackPropertyReference:    feedbackPropertyReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterCommandFailure(structType any) BACnetEventParameterCommandFailure {

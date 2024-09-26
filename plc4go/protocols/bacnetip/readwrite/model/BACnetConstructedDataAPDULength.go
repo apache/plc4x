@@ -56,6 +56,19 @@ type _BACnetConstructedDataAPDULength struct {
 var _ BACnetConstructedDataAPDULength = (*_BACnetConstructedDataAPDULength)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAPDULength)(nil)
 
+// NewBACnetConstructedDataAPDULength factory function for _BACnetConstructedDataAPDULength
+func NewBACnetConstructedDataAPDULength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDULength {
+	if apduLength == nil {
+		panic("apduLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDULength must not be nil")
+	}
+	_result := &_BACnetConstructedDataAPDULength{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApduLength:                    apduLength,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAPDULength) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAPDULength factory function for _BACnetConstructedDataAPDULength
-func NewBACnetConstructedDataAPDULength(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, apduLength BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAPDULength {
-	if apduLength == nil {
-		panic("apduLength of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAPDULength must not be nil")
-	}
-	_result := &_BACnetConstructedDataAPDULength{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ApduLength:                    apduLength,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAPDULength(structType any) BACnetConstructedDataAPDULength {

@@ -54,6 +54,16 @@ type _BACnetConstructedDataRestartNotificationRecipients struct {
 var _ BACnetConstructedDataRestartNotificationRecipients = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestartNotificationRecipients)(nil)
 
+// NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
+func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
+	_result := &_BACnetConstructedDataRestartNotificationRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RestartNotificationRecipients: restartNotificationRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) GetRestartNotifica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRestartNotificationRecipients factory function for _BACnetConstructedDataRestartNotificationRecipients
-func NewBACnetConstructedDataRestartNotificationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, restartNotificationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestartNotificationRecipients {
-	_result := &_BACnetConstructedDataRestartNotificationRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RestartNotificationRecipients: restartNotificationRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACnetConstructedDataRestartNotificationRecipients {

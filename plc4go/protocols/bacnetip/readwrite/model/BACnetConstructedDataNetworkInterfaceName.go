@@ -56,6 +56,19 @@ type _BACnetConstructedDataNetworkInterfaceName struct {
 var _ BACnetConstructedDataNetworkInterfaceName = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
 
+// NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
+func NewBACnetConstructedDataNetworkInterfaceName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkInterfaceName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
+	if networkInterfaceName == nil {
+		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkInterfaceName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkInterfaceName:          networkInterfaceName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
-func NewBACnetConstructedDataNetworkInterfaceName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkInterfaceName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
-	if networkInterfaceName == nil {
-		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkInterfaceName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkInterfaceName:          networkInterfaceName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkInterfaceName(structType any) BACnetConstructedDataNetworkInterfaceName {

@@ -57,6 +57,17 @@ type _HistoryData struct {
 var _ HistoryData = (*_HistoryData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryData)(nil)
 
+// NewHistoryData factory function for _HistoryData
+func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
+	_result := &_HistoryData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfDataValues:                    noOfDataValues,
+		DataValues:                        dataValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_HistoryData) GetDataValues() []DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryData factory function for _HistoryData
-func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
-	_result := &_HistoryData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfDataValues:                    noOfDataValues,
-		DataValues:                        dataValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryData(structType any) HistoryData {

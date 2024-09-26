@@ -56,6 +56,19 @@ type _BACnetConstructedDataNodeSubtype struct {
 var _ BACnetConstructedDataNodeSubtype = (*_BACnetConstructedDataNodeSubtype)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeSubtype)(nil)
 
+// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
+func NewBACnetConstructedDataNodeSubtype(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeSubType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
+	if nodeSubType == nil {
+		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
+	}
+	_result := &_BACnetConstructedDataNodeSubtype{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NodeSubType:                   nodeSubType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
-func NewBACnetConstructedDataNodeSubtype(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeSubType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
-	if nodeSubType == nil {
-		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
-	}
-	_result := &_BACnetConstructedDataNodeSubtype{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NodeSubType:                   nodeSubType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNodeSubtype(structType any) BACnetConstructedDataNodeSubtype {

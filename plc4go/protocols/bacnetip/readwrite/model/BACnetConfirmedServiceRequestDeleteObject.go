@@ -54,6 +54,19 @@ type _BACnetConfirmedServiceRequestDeleteObject struct {
 var _ BACnetConfirmedServiceRequestDeleteObject = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestDeleteObject)(nil)
 
+// NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
+func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestDeleteObject{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_BACnetConfirmedServiceRequestDeleteObject) GetObjectIdentifier() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestDeleteObject factory function for _BACnetConfirmedServiceRequestDeleteObject
-func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplicationTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestDeleteObject {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestDeleteObject must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestDeleteObject{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ObjectIdentifier:                      objectIdentifier,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestDeleteObject(structType any) BACnetConfirmedServiceRequestDeleteObject {

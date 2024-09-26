@@ -54,6 +54,19 @@ type _BACnetPropertyStatesShedState struct {
 var _ BACnetPropertyStatesShedState = (*_BACnetPropertyStatesShedState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesShedState)(nil)
 
+// NewBACnetPropertyStatesShedState factory function for _BACnetPropertyStatesShedState
+func NewBACnetPropertyStatesShedState(peekedTagHeader BACnetTagHeader, shedState BACnetShedStateTagged) *_BACnetPropertyStatesShedState {
+	if shedState == nil {
+		panic("shedState of type BACnetShedStateTagged for BACnetPropertyStatesShedState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesShedState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ShedState:                    shedState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesShedState) GetShedState() BACnetShedStateTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesShedState factory function for _BACnetPropertyStatesShedState
-func NewBACnetPropertyStatesShedState(peekedTagHeader BACnetTagHeader, shedState BACnetShedStateTagged) *_BACnetPropertyStatesShedState {
-	if shedState == nil {
-		panic("shedState of type BACnetShedStateTagged for BACnetPropertyStatesShedState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesShedState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ShedState:                    shedState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesShedState(structType any) BACnetPropertyStatesShedState {

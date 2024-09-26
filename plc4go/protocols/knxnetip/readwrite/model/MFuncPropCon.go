@@ -49,6 +49,15 @@ type _MFuncPropCon struct {
 var _ MFuncPropCon = (*_MFuncPropCon)(nil)
 var _ CEMIRequirements = (*_MFuncPropCon)(nil)
 
+// NewMFuncPropCon factory function for _MFuncPropCon
+func NewMFuncPropCon(size uint16) *_MFuncPropCon {
+	_result := &_MFuncPropCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MFuncPropCon) GetMessageCode() uint8 {
 
 func (m *_MFuncPropCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropCon factory function for _MFuncPropCon
-func NewMFuncPropCon(size uint16) *_MFuncPropCon {
-	_result := &_MFuncPropCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

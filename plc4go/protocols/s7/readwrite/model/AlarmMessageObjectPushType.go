@@ -78,6 +78,23 @@ type _AlarmMessageObjectPushType struct {
 
 var _ AlarmMessageObjectPushType = (*_AlarmMessageObjectPushType)(nil)
 
+// NewAlarmMessageObjectPushType factory function for _AlarmMessageObjectPushType
+func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState State, localState State, ackStateGoing State, ackStateComing State, AssociatedValues []AssociatedValueType) *_AlarmMessageObjectPushType {
+	if eventState == nil {
+		panic("eventState of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if localState == nil {
+		panic("localState of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageObjectPushType must not be nil")
+	}
+	return &_AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -136,23 +153,6 @@ func (m *_AlarmMessageObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageObjectPushType factory function for _AlarmMessageObjectPushType
-func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, eventState State, localState State, ackStateGoing State, ackStateComing State, AssociatedValues []AssociatedValueType) *_AlarmMessageObjectPushType {
-	if eventState == nil {
-		panic("eventState of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if localState == nil {
-		panic("localState of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageObjectPushType must not be nil")
-	}
-	return &_AlarmMessageObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, EventState: eventState, LocalState: localState, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing, AssociatedValues: AssociatedValues}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageObjectPushType(structType any) AlarmMessageObjectPushType {

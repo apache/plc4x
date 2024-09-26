@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumFailure struct {
 var _ BACnetLogRecordLogDatumFailure = (*_BACnetLogRecordLogDatumFailure)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumFailure)(nil)
 
+// NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
+func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
+	if failure == nil {
+		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumFailure{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		Failure:                         failure,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumFailure) GetFailure() ErrorEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumFailure factory function for _BACnetLogRecordLogDatumFailure
-func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failure ErrorEnclosed, tagNumber uint8) *_BACnetLogRecordLogDatumFailure {
-	if failure == nil {
-		panic("failure of type ErrorEnclosed for BACnetLogRecordLogDatumFailure must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumFailure{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		Failure:                         failure,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumFailure(structType any) BACnetLogRecordLogDatumFailure {

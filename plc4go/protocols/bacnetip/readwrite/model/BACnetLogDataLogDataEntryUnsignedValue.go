@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryUnsignedValue struct {
 var _ BACnetLogDataLogDataEntryUnsignedValue = (*_BACnetLogDataLogDataEntryUnsignedValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryUnsignedValue)(nil)
 
+// NewBACnetLogDataLogDataEntryUnsignedValue factory function for _BACnetLogDataLogDataEntryUnsignedValue
+func NewBACnetLogDataLogDataEntryUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetContextTagUnsignedInteger) *_BACnetLogDataLogDataEntryUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogDataLogDataEntryUnsignedValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryUnsignedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		UnsignedValue:                     unsignedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryUnsignedValue) GetUnsignedValue() BACnetConte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryUnsignedValue factory function for _BACnetLogDataLogDataEntryUnsignedValue
-func NewBACnetLogDataLogDataEntryUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetContextTagUnsignedInteger) *_BACnetLogDataLogDataEntryUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogDataLogDataEntryUnsignedValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryUnsignedValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		UnsignedValue:                     unsignedValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryUnsignedValue(structType any) BACnetLogDataLogDataEntryUnsignedValue {

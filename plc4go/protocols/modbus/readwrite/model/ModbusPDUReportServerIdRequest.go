@@ -49,6 +49,15 @@ type _ModbusPDUReportServerIdRequest struct {
 var _ ModbusPDUReportServerIdRequest = (*_ModbusPDUReportServerIdRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReportServerIdRequest)(nil)
 
+// NewModbusPDUReportServerIdRequest factory function for _ModbusPDUReportServerIdRequest
+func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
+	_result := &_ModbusPDUReportServerIdRequest{
+		ModbusPDUContract: NewModbusPDU(),
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_ModbusPDUReportServerIdRequest) GetResponse() bool {
 
 func (m *_ModbusPDUReportServerIdRequest) GetParent() ModbusPDUContract {
 	return m.ModbusPDUContract
-}
-
-// NewModbusPDUReportServerIdRequest factory function for _ModbusPDUReportServerIdRequest
-func NewModbusPDUReportServerIdRequest() *_ModbusPDUReportServerIdRequest {
-	_result := &_ModbusPDUReportServerIdRequest{
-		ModbusPDUContract: NewModbusPDU(),
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

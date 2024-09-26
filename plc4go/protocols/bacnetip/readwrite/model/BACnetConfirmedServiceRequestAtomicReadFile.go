@@ -57,6 +57,23 @@ type _BACnetConfirmedServiceRequestAtomicReadFile struct {
 var _ BACnetConfirmedServiceRequestAtomicReadFile = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAtomicReadFile)(nil)
 
+// NewBACnetConfirmedServiceRequestAtomicReadFile factory function for _BACnetConfirmedServiceRequestAtomicReadFile
+func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicReadFile {
+	if fileIdentifier == nil {
+		panic("fileIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
+	}
+	if accessMethod == nil {
+		panic("accessMethod of type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		FileIdentifier:                        fileIdentifier,
+		AccessMethod:                          accessMethod,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_BACnetConfirmedServiceRequestAtomicReadFile) GetAccessMethod() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAtomicReadFile factory function for _BACnetConfirmedServiceRequestAtomicReadFile
-func NewBACnetConfirmedServiceRequestAtomicReadFile(fileIdentifier BACnetApplicationTagObjectIdentifier, accessMethod BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAtomicReadFile {
-	if fileIdentifier == nil {
-		panic("fileIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
-	}
-	if accessMethod == nil {
-		panic("accessMethod of type BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord for BACnetConfirmedServiceRequestAtomicReadFile must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAtomicReadFile{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		FileIdentifier:                        fileIdentifier,
-		AccessMethod:                          accessMethod,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAtomicReadFile(structType any) BACnetConfirmedServiceRequestAtomicReadFile {

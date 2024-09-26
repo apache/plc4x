@@ -49,6 +49,15 @@ type _MPropInfoInd struct {
 var _ MPropInfoInd = (*_MPropInfoInd)(nil)
 var _ CEMIRequirements = (*_MPropInfoInd)(nil)
 
+// NewMPropInfoInd factory function for _MPropInfoInd
+func NewMPropInfoInd(size uint16) *_MPropInfoInd {
+	_result := &_MPropInfoInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MPropInfoInd) GetMessageCode() uint8 {
 
 func (m *_MPropInfoInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMPropInfoInd factory function for _MPropInfoInd
-func NewMPropInfoInd(size uint16) *_MPropInfoInd {
-	_result := &_MPropInfoInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

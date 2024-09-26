@@ -53,6 +53,11 @@ type _Dummy struct {
 
 var _ Dummy = (*_Dummy)(nil)
 
+// NewDummy factory function for _Dummy
+func NewDummy(dummy uint16) *_Dummy {
+	return &_Dummy{Dummy: dummy}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -66,11 +71,6 @@ func (m *_Dummy) GetDummy() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDummy factory function for _Dummy
-func NewDummy(dummy uint16) *_Dummy {
-	return &_Dummy{Dummy: dummy}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDummy(structType any) Dummy {

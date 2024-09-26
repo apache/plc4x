@@ -63,6 +63,19 @@ type _ChannelSecurityToken struct {
 var _ ChannelSecurityToken = (*_ChannelSecurityToken)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ChannelSecurityToken)(nil)
 
+// NewChannelSecurityToken factory function for _ChannelSecurityToken
+func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) *_ChannelSecurityToken {
+	_result := &_ChannelSecurityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ChannelId:                         channelId,
+		TokenId:                           tokenId,
+		CreatedAt:                         createdAt,
+		RevisedLifetime:                   revisedLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_ChannelSecurityToken) GetRevisedLifetime() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChannelSecurityToken factory function for _ChannelSecurityToken
-func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) *_ChannelSecurityToken {
-	_result := &_ChannelSecurityToken{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ChannelId:                         channelId,
-		TokenId:                           tokenId,
-		CreatedAt:                         createdAt,
-		RevisedLifetime:                   revisedLifetime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastChannelSecurityToken(structType any) ChannelSecurityToken {

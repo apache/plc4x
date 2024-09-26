@@ -49,6 +49,15 @@ type _AdsReadDeviceInfoRequest struct {
 var _ AdsReadDeviceInfoRequest = (*_AdsReadDeviceInfoRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoRequest)(nil)
 
+// NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
+func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
+	_result := &_AdsReadDeviceInfoRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_AdsReadDeviceInfoRequest) GetResponse() bool {
 
 func (m *_AdsReadDeviceInfoRequest) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsReadDeviceInfoRequest factory function for _AdsReadDeviceInfoRequest
-func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoRequest {
-	_result := &_AdsReadDeviceInfoRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

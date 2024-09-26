@@ -49,6 +49,15 @@ type _SysexCommandCapabilityQuery struct {
 var _ SysexCommandCapabilityQuery = (*_SysexCommandCapabilityQuery)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandCapabilityQuery)(nil)
 
+// NewSysexCommandCapabilityQuery factory function for _SysexCommandCapabilityQuery
+func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
+	_result := &_SysexCommandCapabilityQuery{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandCapabilityQuery) GetResponse() bool {
 
 func (m *_SysexCommandCapabilityQuery) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandCapabilityQuery factory function for _SysexCommandCapabilityQuery
-func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
-	_result := &_SysexCommandCapabilityQuery{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

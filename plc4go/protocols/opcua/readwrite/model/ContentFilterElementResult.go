@@ -66,6 +66,23 @@ type _ContentFilterElementResult struct {
 var _ ContentFilterElementResult = (*_ContentFilterElementResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilterElementResult)(nil)
 
+// NewContentFilterElementResult factory function for _ContentFilterElementResult
+func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) *_ContentFilterElementResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for ContentFilterElementResult must not be nil")
+	}
+	_result := &_ContentFilterElementResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfOperandStatusCodes:            noOfOperandStatusCodes,
+		OperandStatusCodes:                operandStatusCodes,
+		NoOfOperandDiagnosticInfos:        noOfOperandDiagnosticInfos,
+		OperandDiagnosticInfos:            operandDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_ContentFilterElementResult) GetOperandDiagnosticInfos() []DiagnosticIn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilterElementResult factory function for _ContentFilterElementResult
-func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) *_ContentFilterElementResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for ContentFilterElementResult must not be nil")
-	}
-	_result := &_ContentFilterElementResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfOperandStatusCodes:            noOfOperandStatusCodes,
-		OperandStatusCodes:                operandStatusCodes,
-		NoOfOperandDiagnosticInfos:        noOfOperandDiagnosticInfos,
-		OperandDiagnosticInfos:            operandDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilterElementResult(structType any) ContentFilterElementResult {

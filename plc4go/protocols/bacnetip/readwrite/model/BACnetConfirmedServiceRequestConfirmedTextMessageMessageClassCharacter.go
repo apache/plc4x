@@ -54,6 +54,19 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter str
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter)(nil)
 
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterValue BACnetContextTagCharacterString, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+	if characterValue == nil {
+		panic("characterValue of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+		CharacterValue: characterValue,
+	}
+	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterValue BACnetContextTagCharacterString, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
-	if characterValue == nil {
-		panic("characterValue of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
-		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
-		CharacterValue: characterValue,
-	}
-	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {

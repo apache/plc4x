@@ -54,6 +54,16 @@ type _BACnetConstructedDataSlaveAddressBinding struct {
 var _ BACnetConstructedDataSlaveAddressBinding = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveAddressBinding)(nil)
 
+// NewBACnetConstructedDataSlaveAddressBinding factory function for _BACnetConstructedDataSlaveAddressBinding
+func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
+	_result := &_BACnetConstructedDataSlaveAddressBinding{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SlaveAddressBinding:           slaveAddressBinding,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) GetSlaveAddressBinding() []B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSlaveAddressBinding factory function for _BACnetConstructedDataSlaveAddressBinding
-func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveAddressBinding []BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveAddressBinding {
-	_result := &_BACnetConstructedDataSlaveAddressBinding{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SlaveAddressBinding:           slaveAddressBinding,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSlaveAddressBinding(structType any) BACnetConstructedDataSlaveAddressBinding {

@@ -54,6 +54,16 @@ type _NLMIAmRouterToNetwork struct {
 var _ NLMIAmRouterToNetwork = (*_NLMIAmRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMIAmRouterToNetwork)(nil)
 
+// NewNLMIAmRouterToNetwork factory function for _NLMIAmRouterToNetwork
+func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMIAmRouterToNetwork {
+	_result := &_NLMIAmRouterToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddresses() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMIAmRouterToNetwork factory function for _NLMIAmRouterToNetwork
-func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMIAmRouterToNetwork {
-	_result := &_NLMIAmRouterToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMIAmRouterToNetwork(structType any) NLMIAmRouterToNetwork {

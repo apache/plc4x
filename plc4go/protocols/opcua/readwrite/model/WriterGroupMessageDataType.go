@@ -49,6 +49,15 @@ type _WriterGroupMessageDataType struct {
 var _ WriterGroupMessageDataType = (*_WriterGroupMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriterGroupMessageDataType)(nil)
 
+// NewWriterGroupMessageDataType factory function for _WriterGroupMessageDataType
+func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
+	_result := &_WriterGroupMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_WriterGroupMessageDataType) GetIdentifier() string {
 
 func (m *_WriterGroupMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewWriterGroupMessageDataType factory function for _WriterGroupMessageDataType
-func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
-	_result := &_WriterGroupMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

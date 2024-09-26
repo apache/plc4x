@@ -75,6 +75,22 @@ type _CipConnectionManagerResponse struct {
 var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerResponse)(nil)
 
+// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
+func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
+	_result := &_CipConnectionManagerResponse{
+		CipServiceContract:     NewCipService(serviceLen),
+		OtConnectionId:         otConnectionId,
+		ToConnectionId:         toConnectionId,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		OtApi:                  otApi,
+		ToApi:                  toApi,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -138,22 +154,6 @@ func (m *_CipConnectionManagerResponse) GetToApi() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
-	_result := &_CipConnectionManagerResponse{
-		CipServiceContract:     NewCipService(serviceLen),
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		OtApi:                  otApi,
-		ToApi:                  toApi,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerResponse(structType any) CipConnectionManagerResponse {

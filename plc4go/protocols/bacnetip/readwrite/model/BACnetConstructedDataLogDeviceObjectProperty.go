@@ -56,6 +56,19 @@ type _BACnetConstructedDataLogDeviceObjectProperty struct {
 var _ BACnetConstructedDataLogDeviceObjectProperty = (*_BACnetConstructedDataLogDeviceObjectProperty)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLogDeviceObjectProperty)(nil)
 
+// NewBACnetConstructedDataLogDeviceObjectProperty factory function for _BACnetConstructedDataLogDeviceObjectProperty
+func NewBACnetConstructedDataLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogDeviceObjectProperty {
+	if logDeviceObjectProperty == nil {
+		panic("logDeviceObjectProperty of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataLogDeviceObjectProperty must not be nil")
+	}
+	_result := &_BACnetConstructedDataLogDeviceObjectProperty{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LogDeviceObjectProperty:       logDeviceObjectProperty,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLogDeviceObjectProperty) GetActualValue() BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLogDeviceObjectProperty factory function for _BACnetConstructedDataLogDeviceObjectProperty
-func NewBACnetConstructedDataLogDeviceObjectProperty(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logDeviceObjectProperty BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLogDeviceObjectProperty {
-	if logDeviceObjectProperty == nil {
-		panic("logDeviceObjectProperty of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataLogDeviceObjectProperty must not be nil")
-	}
-	_result := &_BACnetConstructedDataLogDeviceObjectProperty{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LogDeviceObjectProperty:       logDeviceObjectProperty,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLogDeviceObjectProperty(structType any) BACnetConstructedDataLogDeviceObjectProperty {

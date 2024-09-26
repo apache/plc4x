@@ -57,6 +57,17 @@ type _BACnetGroupChannelValue struct {
 
 var _ BACnetGroupChannelValue = (*_BACnetGroupChannelValue)(nil)
 
+// NewBACnetGroupChannelValue factory function for _BACnetGroupChannelValue
+func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overridingPriority BACnetContextTagUnsignedInteger, value BACnetChannelValue) *_BACnetGroupChannelValue {
+	if channel == nil {
+		panic("channel of type BACnetContextTagUnsignedInteger for BACnetGroupChannelValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetChannelValue for BACnetGroupChannelValue must not be nil")
+	}
+	return &_BACnetGroupChannelValue{Channel: channel, OverridingPriority: overridingPriority, Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,17 +89,6 @@ func (m *_BACnetGroupChannelValue) GetValue() BACnetChannelValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetGroupChannelValue factory function for _BACnetGroupChannelValue
-func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overridingPriority BACnetContextTagUnsignedInteger, value BACnetChannelValue) *_BACnetGroupChannelValue {
-	if channel == nil {
-		panic("channel of type BACnetContextTagUnsignedInteger for BACnetGroupChannelValue must not be nil")
-	}
-	if value == nil {
-		panic("value of type BACnetChannelValue for BACnetGroupChannelValue must not be nil")
-	}
-	return &_BACnetGroupChannelValue{Channel: channel, OverridingPriority: overridingPriority, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetGroupChannelValue(structType any) BACnetGroupChannelValue {

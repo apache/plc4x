@@ -54,6 +54,16 @@ type _BACnetConstructedDataRecipientList struct {
 var _ BACnetConstructedDataRecipientList = (*_BACnetConstructedDataRecipientList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRecipientList)(nil)
 
+// NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
+func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
+	_result := &_BACnetConstructedDataRecipientList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RecipientList:                 recipientList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataRecipientList) GetRecipientList() []BACnetDestina
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
-func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
-	_result := &_BACnetConstructedDataRecipientList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RecipientList:                 recipientList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDataRecipientList {

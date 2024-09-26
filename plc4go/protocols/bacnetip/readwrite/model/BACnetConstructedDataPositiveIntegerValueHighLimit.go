@@ -56,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueHighLimit struct {
 var _ BACnetConstructedDataPositiveIntegerValueHighLimit = (*_BACnetConstructedDataPositiveIntegerValueHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueHighLimit)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueHighLimit factory function for _BACnetConstructedDataPositiveIntegerValueHighLimit
+func NewBACnetConstructedDataPositiveIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueHighLimit {
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HighLimit:                     highLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetActualValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueHighLimit factory function for _BACnetConstructedDataPositiveIntegerValueHighLimit
-func NewBACnetConstructedDataPositiveIntegerValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueHighLimit {
-	if highLimit == nil {
-		panic("highLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		HighLimit:                     highLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueHighLimit(structType any) BACnetConstructedDataPositiveIntegerValueHighLimit {

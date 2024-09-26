@@ -58,6 +58,14 @@ type _BACnetProgramRequestTagged struct {
 
 var _ BACnetProgramRequestTagged = (*_BACnetProgramRequestTagged)(nil)
 
+// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
+func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
+	}
+	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetProgramRequestTagged) GetValue() BACnetProgramRequest {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
-func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
-	}
-	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramRequestTagged(structType any) BACnetProgramRequestTagged {

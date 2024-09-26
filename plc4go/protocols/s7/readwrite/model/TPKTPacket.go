@@ -58,6 +58,14 @@ type _TPKTPacket struct {
 
 var _ TPKTPacket = (*_TPKTPacket)(nil)
 
+// NewTPKTPacket factory function for _TPKTPacket
+func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
+	if payload == nil {
+		panic("payload of type COTPPacket for TPKTPacket must not be nil")
+	}
+	return &_TPKTPacket{Payload: payload}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -84,14 +92,6 @@ func (m *_TPKTPacket) GetProtocolId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTPKTPacket factory function for _TPKTPacket
-func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
-	if payload == nil {
-		panic("payload of type COTPPacket for TPKTPacket must not be nil")
-	}
-	return &_TPKTPacket{Payload: payload}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTPKTPacket(structType any) TPKTPacket {

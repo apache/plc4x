@@ -56,6 +56,19 @@ type _BACnetConstructedDataDescriptionOfHalt struct {
 var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 
+// NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
+func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
+	if descriptionForHalt == nil {
+		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
+	}
+	_result := &_BACnetConstructedDataDescriptionOfHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DescriptionForHalt:            descriptionForHalt,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
-func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
-	if descriptionForHalt == nil {
-		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
-	}
-	_result := &_BACnetConstructedDataDescriptionOfHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DescriptionForHalt:            descriptionForHalt,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDescriptionOfHalt(structType any) BACnetConstructedDataDescriptionOfHalt {

@@ -73,6 +73,11 @@ type _MonitoredSAL struct {
 
 var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
+// NewMonitoredSAL factory function for _MonitoredSAL
+func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,11 +91,6 @@ func (m *_MonitoredSAL) GetSalType() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSAL(structType any) MonitoredSAL {

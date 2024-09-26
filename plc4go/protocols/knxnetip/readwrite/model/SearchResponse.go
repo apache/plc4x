@@ -62,6 +62,27 @@ type _SearchResponse struct {
 var _ SearchResponse = (*_SearchResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_SearchResponse)(nil)
 
+// NewSearchResponse factory function for _SearchResponse
+func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_SearchResponse {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for SearchResponse must not be nil")
+	}
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for SearchResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for SearchResponse must not be nil")
+	}
+	_result := &_SearchResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+		DibDeviceInfo:           dibDeviceInfo,
+		DibSuppSvcFamilies:      dibSuppSvcFamilies,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,27 +122,6 @@ func (m *_SearchResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSearchResponse factory function for _SearchResponse
-func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_SearchResponse {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for SearchResponse must not be nil")
-	}
-	if dibDeviceInfo == nil {
-		panic("dibDeviceInfo of type DIBDeviceInfo for SearchResponse must not be nil")
-	}
-	if dibSuppSvcFamilies == nil {
-		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for SearchResponse must not be nil")
-	}
-	_result := &_SearchResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-		DibDeviceInfo:           dibDeviceInfo,
-		DibSuppSvcFamilies:      dibSuppSvcFamilies,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSearchResponse(structType any) SearchResponse {

@@ -49,6 +49,15 @@ type _DataSetReaderTransportDataType struct {
 var _ DataSetReaderTransportDataType = (*_DataSetReaderTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetReaderTransportDataType)(nil)
 
+// NewDataSetReaderTransportDataType factory function for _DataSetReaderTransportDataType
+func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
+	_result := &_DataSetReaderTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DataSetReaderTransportDataType) GetIdentifier() string {
 
 func (m *_DataSetReaderTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetReaderTransportDataType factory function for _DataSetReaderTransportDataType
-func NewDataSetReaderTransportDataType() *_DataSetReaderTransportDataType {
-	_result := &_DataSetReaderTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

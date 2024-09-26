@@ -56,6 +56,19 @@ type _BACnetConstructedDataDateTimeValueRelinquishDefault struct {
 var _ BACnetConstructedDataDateTimeValueRelinquishDefault = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
 
+// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
+func NewBACnetConstructedDataDateTimeValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
-func NewBACnetConstructedDataDateTimeValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDateTimeValueRelinquishDefault(structType any) BACnetConstructedDataDateTimeValueRelinquishDefault {

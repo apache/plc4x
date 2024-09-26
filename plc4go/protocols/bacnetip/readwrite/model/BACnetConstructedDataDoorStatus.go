@@ -56,6 +56,19 @@ type _BACnetConstructedDataDoorStatus struct {
 var _ BACnetConstructedDataDoorStatus = (*_BACnetConstructedDataDoorStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoorStatus)(nil)
 
+// NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
+func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorStatus BACnetDoorStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
+	if doorStatus == nil {
+		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoorStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoorStatus:                    doorStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDoorStatus) GetActualValue() BACnetDoorStatusTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoorStatus factory function for _BACnetConstructedDataDoorStatus
-func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doorStatus BACnetDoorStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoorStatus {
-	if doorStatus == nil {
-		panic("doorStatus of type BACnetDoorStatusTagged for BACnetConstructedDataDoorStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoorStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoorStatus:                    doorStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoorStatus(structType any) BACnetConstructedDataDoorStatus {

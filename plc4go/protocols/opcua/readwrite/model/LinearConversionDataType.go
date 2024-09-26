@@ -63,6 +63,19 @@ type _LinearConversionDataType struct {
 var _ LinearConversionDataType = (*_LinearConversionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_LinearConversionDataType)(nil)
 
+// NewLinearConversionDataType factory function for _LinearConversionDataType
+func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
+	_result := &_LinearConversionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		InitialAddend:                     initialAddend,
+		Multiplicand:                      multiplicand,
+		Divisor:                           divisor,
+		FinalAddend:                       finalAddend,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_LinearConversionDataType) GetFinalAddend() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLinearConversionDataType factory function for _LinearConversionDataType
-func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
-	_result := &_LinearConversionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		InitialAddend:                     initialAddend,
-		Multiplicand:                      multiplicand,
-		Divisor:                           divisor,
-		FinalAddend:                       finalAddend,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLinearConversionDataType(structType any) LinearConversionDataType {

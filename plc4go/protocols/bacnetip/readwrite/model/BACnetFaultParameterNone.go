@@ -54,6 +54,19 @@ type _BACnetFaultParameterNone struct {
 var _ BACnetFaultParameterNone = (*_BACnetFaultParameterNone)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterNone)(nil)
 
+// NewBACnetFaultParameterNone factory function for _BACnetFaultParameterNone
+func NewBACnetFaultParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetFaultParameterNone {
+	if none == nil {
+		panic("none of type BACnetContextTagNull for BACnetFaultParameterNone must not be nil")
+	}
+	_result := &_BACnetFaultParameterNone{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		None:                         none,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterNone) GetNone() BACnetContextTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterNone factory function for _BACnetFaultParameterNone
-func NewBACnetFaultParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetFaultParameterNone {
-	if none == nil {
-		panic("none of type BACnetContextTagNull for BACnetFaultParameterNone must not be nil")
-	}
-	_result := &_BACnetFaultParameterNone{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		None:                         none,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterNone(structType any) BACnetFaultParameterNone {

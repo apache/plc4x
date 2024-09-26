@@ -57,6 +57,17 @@ type _AccessControlDataInvalidAccessRequest struct {
 var _ AccessControlDataInvalidAccessRequest = (*_AccessControlDataInvalidAccessRequest)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataInvalidAccessRequest)(nil)
 
+// NewAccessControlDataInvalidAccessRequest factory function for _AccessControlDataInvalidAccessRequest
+func NewAccessControlDataInvalidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataInvalidAccessRequest {
+	_result := &_AccessControlDataInvalidAccessRequest{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+		AccessControlDirection:    accessControlDirection,
+		Data:                      data,
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_AccessControlDataInvalidAccessRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlDataInvalidAccessRequest factory function for _AccessControlDataInvalidAccessRequest
-func NewAccessControlDataInvalidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataInvalidAccessRequest {
-	_result := &_AccessControlDataInvalidAccessRequest{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-		AccessControlDirection:    accessControlDirection,
-		Data:                      data,
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlDataInvalidAccessRequest(structType any) AccessControlDataInvalidAccessRequest {

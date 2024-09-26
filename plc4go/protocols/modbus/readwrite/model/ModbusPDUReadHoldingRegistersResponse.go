@@ -54,6 +54,16 @@ type _ModbusPDUReadHoldingRegistersResponse struct {
 var _ ModbusPDUReadHoldingRegistersResponse = (*_ModbusPDUReadHoldingRegistersResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadHoldingRegistersResponse)(nil)
 
+// NewModbusPDUReadHoldingRegistersResponse factory function for _ModbusPDUReadHoldingRegistersResponse
+func NewModbusPDUReadHoldingRegistersResponse(value []byte) *_ModbusPDUReadHoldingRegistersResponse {
+	_result := &_ModbusPDUReadHoldingRegistersResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUReadHoldingRegistersResponse) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadHoldingRegistersResponse factory function for _ModbusPDUReadHoldingRegistersResponse
-func NewModbusPDUReadHoldingRegistersResponse(value []byte) *_ModbusPDUReadHoldingRegistersResponse {
-	_result := &_ModbusPDUReadHoldingRegistersResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadHoldingRegistersResponse(structType any) ModbusPDUReadHoldingRegistersResponse {

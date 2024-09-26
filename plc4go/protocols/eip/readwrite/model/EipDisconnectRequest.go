@@ -49,6 +49,15 @@ type _EipDisconnectRequest struct {
 var _ EipDisconnectRequest = (*_EipDisconnectRequest)(nil)
 var _ EipPacketRequirements = (*_EipDisconnectRequest)(nil)
 
+// NewEipDisconnectRequest factory function for _EipDisconnectRequest
+func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipDisconnectRequest {
+	_result := &_EipDisconnectRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_EipDisconnectRequest) GetPacketLength() uint16 {
 
 func (m *_EipDisconnectRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewEipDisconnectRequest factory function for _EipDisconnectRequest
-func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipDisconnectRequest {
-	_result := &_EipDisconnectRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

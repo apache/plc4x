@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier factory function for _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		ObjectidentifierValue: objectidentifierValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) GetO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier factory function for _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		ObjectidentifierValue: objectidentifierValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(structType any) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLightningOperation struct {
 var _ BACnetPropertyStatesLightningOperation = (*_BACnetPropertyStatesLightningOperation)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningOperation)(nil)
 
+// NewBACnetPropertyStatesLightningOperation factory function for _BACnetPropertyStatesLightningOperation
+func NewBACnetPropertyStatesLightningOperation(peekedTagHeader BACnetTagHeader, lightningOperation BACnetLightingOperationTagged) *_BACnetPropertyStatesLightningOperation {
+	if lightningOperation == nil {
+		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetPropertyStatesLightningOperation must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningOperation{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningOperation:           lightningOperation,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLightningOperation) GetLightningOperation() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningOperation factory function for _BACnetPropertyStatesLightningOperation
-func NewBACnetPropertyStatesLightningOperation(peekedTagHeader BACnetTagHeader, lightningOperation BACnetLightingOperationTagged) *_BACnetPropertyStatesLightningOperation {
-	if lightningOperation == nil {
-		panic("lightningOperation of type BACnetLightingOperationTagged for BACnetPropertyStatesLightningOperation must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningOperation{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningOperation:           lightningOperation,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningOperation(structType any) BACnetPropertyStatesLightningOperation {

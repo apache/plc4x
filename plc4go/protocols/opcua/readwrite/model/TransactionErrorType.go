@@ -60,6 +60,27 @@ type _TransactionErrorType struct {
 var _ TransactionErrorType = (*_TransactionErrorType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransactionErrorType)(nil)
 
+// NewTransactionErrorType factory function for _TransactionErrorType
+func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
+	if targetId == nil {
+		panic("targetId of type NodeId for TransactionErrorType must not be nil")
+	}
+	if error == nil {
+		panic("error of type StatusCode for TransactionErrorType must not be nil")
+	}
+	if message == nil {
+		panic("message of type LocalizedText for TransactionErrorType must not be nil")
+	}
+	_result := &_TransactionErrorType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TargetId:                          targetId,
+		Error:                             error,
+		Message:                           message,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,27 +120,6 @@ func (m *_TransactionErrorType) GetMessage() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransactionErrorType factory function for _TransactionErrorType
-func NewTransactionErrorType(targetId NodeId, error StatusCode, message LocalizedText) *_TransactionErrorType {
-	if targetId == nil {
-		panic("targetId of type NodeId for TransactionErrorType must not be nil")
-	}
-	if error == nil {
-		panic("error of type StatusCode for TransactionErrorType must not be nil")
-	}
-	if message == nil {
-		panic("message of type LocalizedText for TransactionErrorType must not be nil")
-	}
-	_result := &_TransactionErrorType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TargetId:                          targetId,
-		Error:                             error,
-		Message:                           message,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransactionErrorType(structType any) TransactionErrorType {

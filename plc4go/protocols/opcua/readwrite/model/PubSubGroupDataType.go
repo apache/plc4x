@@ -80,6 +80,30 @@ type _PubSubGroupDataType struct {
 var _ PubSubGroupDataType = (*_PubSubGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubGroupDataType)(nil)
 
+// NewPubSubGroupDataType factory function for _PubSubGroupDataType
+func NewPubSubGroupDataType(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_PubSubGroupDataType {
+	if name == nil {
+		panic("name of type PascalString for PubSubGroupDataType must not be nil")
+	}
+	if securityGroupId == nil {
+		panic("securityGroupId of type PascalString for PubSubGroupDataType must not be nil")
+	}
+	_result := &_PubSubGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Enabled:                           enabled,
+		SecurityMode:                      securityMode,
+		SecurityGroupId:                   securityGroupId,
+		NoOfSecurityKeyServices:           noOfSecurityKeyServices,
+		SecurityKeyServices:               securityKeyServices,
+		MaxNetworkMessageSize:             maxNetworkMessageSize,
+		NoOfGroupProperties:               noOfGroupProperties,
+		GroupProperties:                   groupProperties,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -143,30 +167,6 @@ func (m *_PubSubGroupDataType) GetGroupProperties() []ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubGroupDataType factory function for _PubSubGroupDataType
-func NewPubSubGroupDataType(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_PubSubGroupDataType {
-	if name == nil {
-		panic("name of type PascalString for PubSubGroupDataType must not be nil")
-	}
-	if securityGroupId == nil {
-		panic("securityGroupId of type PascalString for PubSubGroupDataType must not be nil")
-	}
-	_result := &_PubSubGroupDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Enabled:                           enabled,
-		SecurityMode:                      securityMode,
-		SecurityGroupId:                   securityGroupId,
-		NoOfSecurityKeyServices:           noOfSecurityKeyServices,
-		SecurityKeyServices:               securityKeyServices,
-		MaxNetworkMessageSize:             maxNetworkMessageSize,
-		NoOfGroupProperties:               noOfGroupProperties,
-		GroupProperties:                   groupProperties,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubGroupDataType(structType any) PubSubGroupDataType {

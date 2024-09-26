@@ -54,6 +54,19 @@ type _AdsDiscoveryBlockPassword struct {
 var _ AdsDiscoveryBlockPassword = (*_AdsDiscoveryBlockPassword)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockPassword)(nil)
 
+// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
+func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
+	if password == nil {
+		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockPassword{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Password:                  password,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_AdsDiscoveryBlockPassword) GetPassword() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
-func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
-	if password == nil {
-		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockPassword{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Password:                  password,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {

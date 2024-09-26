@@ -54,6 +54,16 @@ type _BACnetConstructedDataBBMDForeignDeviceTable struct {
 var _ BACnetConstructedDataBBMDForeignDeviceTable = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDForeignDeviceTable)(nil)
 
+// NewBACnetConstructedDataBBMDForeignDeviceTable factory function for _BACnetConstructedDataBBMDForeignDeviceTable
+func NewBACnetConstructedDataBBMDForeignDeviceTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdForeignDeviceTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
+	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdForeignDeviceTable:        bbmdForeignDeviceTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataBBMDForeignDeviceTable) GetBbmdForeignDeviceTable
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDForeignDeviceTable factory function for _BACnetConstructedDataBBMDForeignDeviceTable
-func NewBACnetConstructedDataBBMDForeignDeviceTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdForeignDeviceTable []BACnetBDTEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDForeignDeviceTable {
-	_result := &_BACnetConstructedDataBBMDForeignDeviceTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdForeignDeviceTable:        bbmdForeignDeviceTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDForeignDeviceTable(structType any) BACnetConstructedDataBBMDForeignDeviceTable {

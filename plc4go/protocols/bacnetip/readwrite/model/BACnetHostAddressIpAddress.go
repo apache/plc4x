@@ -54,6 +54,19 @@ type _BACnetHostAddressIpAddress struct {
 var _ BACnetHostAddressIpAddress = (*_BACnetHostAddressIpAddress)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressIpAddress)(nil)
 
+// NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
+func NewBACnetHostAddressIpAddress(peekedTagHeader BACnetTagHeader, ipAddress BACnetContextTagOctetString) *_BACnetHostAddressIpAddress {
+	if ipAddress == nil {
+		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
+	}
+	_result := &_BACnetHostAddressIpAddress{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		IpAddress:                 ipAddress,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetHostAddressIpAddress) GetIpAddress() BACnetContextTagOctetString
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
-func NewBACnetHostAddressIpAddress(peekedTagHeader BACnetTagHeader, ipAddress BACnetContextTagOctetString) *_BACnetHostAddressIpAddress {
-	if ipAddress == nil {
-		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
-	}
-	_result := &_BACnetHostAddressIpAddress{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		IpAddress:                 ipAddress,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressIpAddress(structType any) BACnetHostAddressIpAddress {

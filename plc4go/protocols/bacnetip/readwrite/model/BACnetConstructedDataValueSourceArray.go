@@ -59,6 +59,17 @@ type _BACnetConstructedDataValueSourceArray struct {
 var _ BACnetConstructedDataValueSourceArray = (*_BACnetConstructedDataValueSourceArray)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSourceArray)(nil)
 
+// NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
+func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
+	_result := &_BACnetConstructedDataValueSourceArray{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		VtClassesSupported:            vtClassesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataValueSourceArray) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
-func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
-	_result := &_BACnetConstructedDataValueSourceArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		VtClassesSupported:            vtClassesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructedDataValueSourceArray {

@@ -71,6 +71,19 @@ type _ClockAndTimekeepingDataUpdateTime struct {
 var _ ClockAndTimekeepingDataUpdateTime = (*_ClockAndTimekeepingDataUpdateTime)(nil)
 var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataUpdateTime)(nil)
 
+// NewClockAndTimekeepingDataUpdateTime factory function for _ClockAndTimekeepingDataUpdateTime
+func NewClockAndTimekeepingDataUpdateTime(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, hours uint8, minute uint8, second uint8, daylightSaving byte) *_ClockAndTimekeepingDataUpdateTime {
+	_result := &_ClockAndTimekeepingDataUpdateTime{
+		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
+		Hours:                           hours,
+		Minute:                          minute,
+		Second:                          second,
+		DaylightSaving:                  daylightSaving,
+	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -143,19 +156,6 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetIsUnknown() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClockAndTimekeepingDataUpdateTime factory function for _ClockAndTimekeepingDataUpdateTime
-func NewClockAndTimekeepingDataUpdateTime(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, hours uint8, minute uint8, second uint8, daylightSaving byte) *_ClockAndTimekeepingDataUpdateTime {
-	_result := &_ClockAndTimekeepingDataUpdateTime{
-		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
-		Hours:                           hours,
-		Minute:                          minute,
-		Second:                          second,
-		DaylightSaving:                  daylightSaving,
-	}
-	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastClockAndTimekeepingDataUpdateTime(structType any) ClockAndTimekeepingDataUpdateTime {

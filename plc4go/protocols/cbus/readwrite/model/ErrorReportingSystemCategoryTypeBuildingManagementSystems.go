@@ -54,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeBuildingManagementSystems struct {
 var _ ErrorReportingSystemCategoryTypeBuildingManagementSystems = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
 
+// NewErrorReportingSystemCategoryTypeBuildingManagementSystems factory function for _ErrorReportingSystemCategoryTypeBuildingManagementSystems
+func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+	_result := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetCategory
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeBuildingManagementSystems factory function for _ErrorReportingSystemCategoryTypeBuildingManagementSystems
-func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
-	_result := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType any) ErrorReportingSystemCategoryTypeBuildingManagementSystems {

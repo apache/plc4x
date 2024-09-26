@@ -51,6 +51,14 @@ type _BACnetLandingDoorStatus struct {
 
 var _ BACnetLandingDoorStatus = (*_BACnetLandingDoorStatus)(nil)
 
+// NewBACnetLandingDoorStatus factory function for _BACnetLandingDoorStatus
+func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoorsList) *_BACnetLandingDoorStatus {
+	if landingDoors == nil {
+		panic("landingDoors of type BACnetLandingDoorStatusLandingDoorsList for BACnetLandingDoorStatus must not be nil")
+	}
+	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,14 +72,6 @@ func (m *_BACnetLandingDoorStatus) GetLandingDoors() BACnetLandingDoorStatusLand
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingDoorStatus factory function for _BACnetLandingDoorStatus
-func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoorsList) *_BACnetLandingDoorStatus {
-	if landingDoors == nil {
-		panic("landingDoors of type BACnetLandingDoorStatusLandingDoorsList for BACnetLandingDoorStatus must not be nil")
-	}
-	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingDoorStatus(structType any) BACnetLandingDoorStatus {

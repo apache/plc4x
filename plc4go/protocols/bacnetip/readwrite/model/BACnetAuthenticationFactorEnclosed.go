@@ -60,6 +60,20 @@ type _BACnetAuthenticationFactorEnclosed struct {
 
 var _ BACnetAuthenticationFactorEnclosed = (*_BACnetAuthenticationFactorEnclosed)(nil)
 
+// NewBACnetAuthenticationFactorEnclosed factory function for _BACnetAuthenticationFactorEnclosed
+func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationFactorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactor for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationFactorEnclosed must not be nil")
+	}
+	return &_BACnetAuthenticationFactorEnclosed{OpeningTag: openingTag, AuthenticationFactor: authenticationFactor, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetAuthenticationFactorEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorEnclosed factory function for _BACnetAuthenticationFactorEnclosed
-func NewBACnetAuthenticationFactorEnclosed(openingTag BACnetOpeningTag, authenticationFactor BACnetAuthenticationFactor, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAuthenticationFactorEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	if authenticationFactor == nil {
-		panic("authenticationFactor of type BACnetAuthenticationFactor for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetAuthenticationFactorEnclosed must not be nil")
-	}
-	return &_BACnetAuthenticationFactorEnclosed{OpeningTag: openingTag, AuthenticationFactor: authenticationFactor, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorEnclosed(structType any) BACnetAuthenticationFactorEnclosed {

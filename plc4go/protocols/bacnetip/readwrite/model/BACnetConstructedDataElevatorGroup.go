@@ -56,6 +56,19 @@ type _BACnetConstructedDataElevatorGroup struct {
 var _ BACnetConstructedDataElevatorGroup = (*_BACnetConstructedDataElevatorGroup)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElevatorGroup)(nil)
 
+// NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
+func NewBACnetConstructedDataElevatorGroup(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elevatorGroup BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
+	if elevatorGroup == nil {
+		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
+	}
+	_result := &_BACnetConstructedDataElevatorGroup{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ElevatorGroup:                 elevatorGroup,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataElevatorGroup) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataElevatorGroup factory function for _BACnetConstructedDataElevatorGroup
-func NewBACnetConstructedDataElevatorGroup(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elevatorGroup BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElevatorGroup {
-	if elevatorGroup == nil {
-		panic("elevatorGroup of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataElevatorGroup must not be nil")
-	}
-	_result := &_BACnetConstructedDataElevatorGroup{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ElevatorGroup:                 elevatorGroup,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElevatorGroup(structType any) BACnetConstructedDataElevatorGroup {

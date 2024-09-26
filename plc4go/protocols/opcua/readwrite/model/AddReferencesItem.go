@@ -71,6 +71,33 @@ type _AddReferencesItem struct {
 var _ AddReferencesItem = (*_AddReferencesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesItem)(nil)
 
+// NewAddReferencesItem factory function for _AddReferencesItem
+func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if targetServerUri == nil {
+		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
+	}
+	_result := &_AddReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetServerUri:                   targetServerUri,
+		TargetNodeId:                      targetNodeId,
+		TargetNodeClass:                   targetNodeClass,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -122,33 +149,6 @@ func (m *_AddReferencesItem) GetTargetNodeClass() NodeClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesItem factory function for _AddReferencesItem
-func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
-	if sourceNodeId == nil {
-		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if targetServerUri == nil {
-		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
-	}
-	_result := &_AddReferencesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNodeId:                      sourceNodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		TargetServerUri:                   targetServerUri,
-		TargetNodeId:                      targetNodeId,
-		TargetNodeClass:                   targetNodeClass,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesItem(structType any) AddReferencesItem {

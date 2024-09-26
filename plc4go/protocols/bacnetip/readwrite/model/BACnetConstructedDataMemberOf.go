@@ -54,6 +54,16 @@ type _BACnetConstructedDataMemberOf struct {
 var _ BACnetConstructedDataMemberOf = (*_BACnetConstructedDataMemberOf)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMemberOf)(nil)
 
+// NewBACnetConstructedDataMemberOf factory function for _BACnetConstructedDataMemberOf
+func NewBACnetConstructedDataMemberOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zones []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
+	_result := &_BACnetConstructedDataMemberOf{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Zones:                         zones,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataMemberOf) GetZones() []BACnetDeviceObjectReferenc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMemberOf factory function for _BACnetConstructedDataMemberOf
-func NewBACnetConstructedDataMemberOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zones []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
-	_result := &_BACnetConstructedDataMemberOf{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Zones:                         zones,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMemberOf(structType any) BACnetConstructedDataMemberOf {

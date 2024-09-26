@@ -54,6 +54,19 @@ type _BACnetPropertyStateActionUnknown struct {
 var _ BACnetPropertyStateActionUnknown = (*_BACnetPropertyStateActionUnknown)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStateActionUnknown)(nil)
 
+// NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
+func NewBACnetPropertyStateActionUnknown(peekedTagHeader BACnetTagHeader, unknownValue BACnetContextTagUnknown) *_BACnetPropertyStateActionUnknown {
+	if unknownValue == nil {
+		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
+	}
+	_result := &_BACnetPropertyStateActionUnknown{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		UnknownValue:                 unknownValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStateActionUnknown) GetUnknownValue() BACnetContextTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStateActionUnknown factory function for _BACnetPropertyStateActionUnknown
-func NewBACnetPropertyStateActionUnknown(peekedTagHeader BACnetTagHeader, unknownValue BACnetContextTagUnknown) *_BACnetPropertyStateActionUnknown {
-	if unknownValue == nil {
-		panic("unknownValue of type BACnetContextTagUnknown for BACnetPropertyStateActionUnknown must not be nil")
-	}
-	_result := &_BACnetPropertyStateActionUnknown{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		UnknownValue:                 unknownValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStateActionUnknown(structType any) BACnetPropertyStateActionUnknown {

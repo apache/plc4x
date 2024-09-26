@@ -63,6 +63,28 @@ type _EUInformation struct {
 var _ EUInformation = (*_EUInformation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EUInformation)(nil)
 
+// NewEUInformation factory function for _EUInformation
+func NewEUInformation(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) *_EUInformation {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for EUInformation must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EUInformation must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EUInformation must not be nil")
+	}
+	_result := &_EUInformation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NamespaceUri:                      namespaceUri,
+		UnitId:                            unitId,
+		DisplayName:                       displayName,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_EUInformation) GetDescription() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEUInformation factory function for _EUInformation
-func NewEUInformation(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) *_EUInformation {
-	if namespaceUri == nil {
-		panic("namespaceUri of type PascalString for EUInformation must not be nil")
-	}
-	if displayName == nil {
-		panic("displayName of type LocalizedText for EUInformation must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for EUInformation must not be nil")
-	}
-	_result := &_EUInformation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NamespaceUri:                      namespaceUri,
-		UnitId:                            unitId,
-		DisplayName:                       displayName,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEUInformation(structType any) EUInformation {

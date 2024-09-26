@@ -56,6 +56,11 @@ type _BACnetTagPayloadBoolean struct {
 
 var _ BACnetTagPayloadBoolean = (*_BACnetTagPayloadBoolean)(nil)
 
+// NewBACnetTagPayloadBoolean factory function for _BACnetTagPayloadBoolean
+func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
+	return &_BACnetTagPayloadBoolean{ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -83,11 +88,6 @@ func (m *_BACnetTagPayloadBoolean) GetIsFalse() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadBoolean factory function for _BACnetTagPayloadBoolean
-func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
-	return &_BACnetTagPayloadBoolean{ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {

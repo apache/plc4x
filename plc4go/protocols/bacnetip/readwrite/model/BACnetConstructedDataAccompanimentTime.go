@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccompanimentTime struct {
 var _ BACnetConstructedDataAccompanimentTime = (*_BACnetConstructedDataAccompanimentTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompanimentTime)(nil)
 
+// NewBACnetConstructedDataAccompanimentTime factory function for _BACnetConstructedDataAccompanimentTime
+func NewBACnetConstructedDataAccompanimentTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompanimentTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompanimentTime {
+	if accompanimentTime == nil {
+		panic("accompanimentTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccompanimentTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccompanimentTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccompanimentTime:             accompanimentTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccompanimentTime) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccompanimentTime factory function for _BACnetConstructedDataAccompanimentTime
-func NewBACnetConstructedDataAccompanimentTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompanimentTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompanimentTime {
-	if accompanimentTime == nil {
-		panic("accompanimentTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccompanimentTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccompanimentTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccompanimentTime:             accompanimentTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccompanimentTime(structType any) BACnetConstructedDataAccompanimentTime {

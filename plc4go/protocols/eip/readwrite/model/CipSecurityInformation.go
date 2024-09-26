@@ -54,6 +54,16 @@ type _CipSecurityInformation struct {
 var _ CipSecurityInformation = (*_CipSecurityInformation)(nil)
 var _ CommandSpecificDataItemRequirements = (*_CipSecurityInformation)(nil)
 
+// NewCipSecurityInformation factory function for _CipSecurityInformation
+func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
+	_result := &_CipSecurityInformation{
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		TodoImplement:                   todoImplement,
+	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_CipSecurityInformation) GetTodoImplement() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipSecurityInformation factory function for _CipSecurityInformation
-func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
-	_result := &_CipSecurityInformation{
-		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
-		TodoImplement:                   todoImplement,
-	}
-	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipSecurityInformation(structType any) CipSecurityInformation {

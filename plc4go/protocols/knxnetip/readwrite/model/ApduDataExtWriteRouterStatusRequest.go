@@ -49,6 +49,15 @@ type _ApduDataExtWriteRouterStatusRequest struct {
 var _ ApduDataExtWriteRouterStatusRequest = (*_ApduDataExtWriteRouterStatusRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtWriteRouterStatusRequest)(nil)
 
+// NewApduDataExtWriteRouterStatusRequest factory function for _ApduDataExtWriteRouterStatusRequest
+func NewApduDataExtWriteRouterStatusRequest(length uint8) *_ApduDataExtWriteRouterStatusRequest {
+	_result := &_ApduDataExtWriteRouterStatusRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtWriteRouterStatusRequest) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtWriteRouterStatusRequest) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtWriteRouterStatusRequest factory function for _ApduDataExtWriteRouterStatusRequest
-func NewApduDataExtWriteRouterStatusRequest(length uint8) *_ApduDataExtWriteRouterStatusRequest {
-	_result := &_ApduDataExtWriteRouterStatusRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

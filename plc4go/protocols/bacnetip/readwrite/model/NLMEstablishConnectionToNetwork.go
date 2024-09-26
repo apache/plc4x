@@ -57,6 +57,17 @@ type _NLMEstablishConnectionToNetwork struct {
 var _ NLMEstablishConnectionToNetwork = (*_NLMEstablishConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMEstablishConnectionToNetwork)(nil)
 
+// NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
+func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
+	_result := &_NLMEstablishConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+		TerminationTime:           terminationTime,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMEstablishConnectionToNetwork) GetTerminationTime() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMEstablishConnectionToNetwork factory function for _NLMEstablishConnectionToNetwork
-func NewNLMEstablishConnectionToNetwork(destinationNetworkAddress uint16, terminationTime uint8, apduLength uint16) *_NLMEstablishConnectionToNetwork {
-	_result := &_NLMEstablishConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-		TerminationTime:           terminationTime,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMEstablishConnectionToNetwork(structType any) NLMEstablishConnectionToNetwork {

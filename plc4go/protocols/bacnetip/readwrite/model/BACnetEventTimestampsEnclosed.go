@@ -60,6 +60,20 @@ type _BACnetEventTimestampsEnclosed struct {
 
 var _ BACnetEventTimestampsEnclosed = (*_BACnetEventTimestampsEnclosed)(nil)
 
+// NewBACnetEventTimestampsEnclosed factory function for _BACnetEventTimestampsEnclosed
+func NewBACnetEventTimestampsEnclosed(openingTag BACnetOpeningTag, eventTimestamps BACnetEventTimestamps, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventTimestampsEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventTimestampsEnclosed must not be nil")
+	}
+	if eventTimestamps == nil {
+		panic("eventTimestamps of type BACnetEventTimestamps for BACnetEventTimestampsEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventTimestampsEnclosed must not be nil")
+	}
+	return &_BACnetEventTimestampsEnclosed{OpeningTag: openingTag, EventTimestamps: eventTimestamps, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetEventTimestampsEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventTimestampsEnclosed factory function for _BACnetEventTimestampsEnclosed
-func NewBACnetEventTimestampsEnclosed(openingTag BACnetOpeningTag, eventTimestamps BACnetEventTimestamps, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventTimestampsEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventTimestampsEnclosed must not be nil")
-	}
-	if eventTimestamps == nil {
-		panic("eventTimestamps of type BACnetEventTimestamps for BACnetEventTimestampsEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventTimestampsEnclosed must not be nil")
-	}
-	return &_BACnetEventTimestampsEnclosed{OpeningTag: openingTag, EventTimestamps: eventTimestamps, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventTimestampsEnclosed(structType any) BACnetEventTimestampsEnclosed {

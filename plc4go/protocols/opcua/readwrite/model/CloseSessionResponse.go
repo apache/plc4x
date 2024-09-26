@@ -54,6 +54,19 @@ type _CloseSessionResponse struct {
 var _ CloseSessionResponse = (*_CloseSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionResponse)(nil)
 
+// NewCloseSessionResponse factory function for _CloseSessionResponse
+func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
+	}
+	_result := &_CloseSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_CloseSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSessionResponse factory function for _CloseSessionResponse
-func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSessionResponse must not be nil")
-	}
-	_result := &_CloseSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSessionResponse(structType any) CloseSessionResponse {

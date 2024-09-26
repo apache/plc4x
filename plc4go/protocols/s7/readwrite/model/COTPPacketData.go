@@ -57,6 +57,17 @@ type _COTPPacketData struct {
 var _ COTPPacketData = (*_COTPPacketData)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketData)(nil)
 
+// NewCOTPPacketData factory function for _COTPPacketData
+func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8, cotpLen uint16) *_COTPPacketData {
+	_result := &_COTPPacketData{
+		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
+		Eot:                eot,
+		TpduRef:            tpduRef,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_COTPPacketData) GetTpduRef() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketData factory function for _COTPPacketData
-func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8, cotpLen uint16) *_COTPPacketData {
-	_result := &_COTPPacketData{
-		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
-		Eot:                eot,
-		TpduRef:            tpduRef,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketData(structType any) COTPPacketData {

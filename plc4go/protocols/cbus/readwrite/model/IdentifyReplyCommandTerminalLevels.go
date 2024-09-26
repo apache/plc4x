@@ -54,6 +54,16 @@ type _IdentifyReplyCommandTerminalLevels struct {
 var _ IdentifyReplyCommandTerminalLevels = (*_IdentifyReplyCommandTerminalLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandTerminalLevels)(nil)
 
+// NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
+func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
+	_result := &_IdentifyReplyCommandTerminalLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		TerminalLevels:               terminalLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandTerminalLevels) GetTerminalLevels() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandTerminalLevels factory function for _IdentifyReplyCommandTerminalLevels
-func NewIdentifyReplyCommandTerminalLevels(terminalLevels []byte, numBytes uint8) *_IdentifyReplyCommandTerminalLevels {
-	_result := &_IdentifyReplyCommandTerminalLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		TerminalLevels:               terminalLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandTerminalLevels(structType any) IdentifyReplyCommandTerminalLevels {

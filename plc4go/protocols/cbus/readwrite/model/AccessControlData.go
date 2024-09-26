@@ -76,6 +76,11 @@ type _AccessControlData struct {
 
 var _ AccessControlDataContract = (*_AccessControlData)(nil)
 
+// NewAccessControlData factory function for _AccessControlData
+func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
+	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +118,6 @@ func (pm *_AccessControlData) GetCommandType() AccessControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlData factory function for _AccessControlData
-func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
-	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlData(structType any) AccessControlData {

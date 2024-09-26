@@ -68,6 +68,20 @@ type _MultipleServiceResponse struct {
 var _ MultipleServiceResponse = (*_MultipleServiceResponse)(nil)
 var _ CipServiceRequirements = (*_MultipleServiceResponse)(nil)
 
+// NewMultipleServiceResponse factory function for _MultipleServiceResponse
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *_MultipleServiceResponse {
+	_result := &_MultipleServiceResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+		ServiceNb:          serviceNb,
+		Offsets:            offsets,
+		ServicesData:       servicesData,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,20 +137,6 @@ func (m *_MultipleServiceResponse) GetServicesData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMultipleServiceResponse factory function for _MultipleServiceResponse
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *_MultipleServiceResponse {
-	_result := &_MultipleServiceResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-		ServiceNb:          serviceNb,
-		Offsets:            offsets,
-		ServicesData:       servicesData,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMultipleServiceResponse(structType any) MultipleServiceResponse {

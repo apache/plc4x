@@ -54,6 +54,16 @@ type _IdentifyReplyCommandType struct {
 var _ IdentifyReplyCommandType = (*_IdentifyReplyCommandType)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandType)(nil)
 
+// NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
+func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
+	_result := &_IdentifyReplyCommandType{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		UnitType:                     unitType,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandType) GetUnitType() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandType factory function for _IdentifyReplyCommandType
-func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyReplyCommandType {
-	_result := &_IdentifyReplyCommandType{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		UnitType:                     unitType,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandType(structType any) IdentifyReplyCommandType {

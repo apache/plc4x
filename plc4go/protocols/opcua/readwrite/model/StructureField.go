@@ -77,6 +77,32 @@ type _StructureField struct {
 var _ StructureField = (*_StructureField)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StructureField)(nil)
 
+// NewStructureField factory function for _StructureField
+func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
+	if name == nil {
+		panic("name of type PascalString for StructureField must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for StructureField must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for StructureField must not be nil")
+	}
+	_result := &_StructureField{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Description:                       description,
+		DataType:                          dataType,
+		ValueRank:                         valueRank,
+		NoOfArrayDimensions:               noOfArrayDimensions,
+		ArrayDimensions:                   arrayDimensions,
+		MaxStringLength:                   maxStringLength,
+		IsOptional:                        isOptional,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -136,32 +162,6 @@ func (m *_StructureField) GetIsOptional() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStructureField factory function for _StructureField
-func NewStructureField(name PascalString, description LocalizedText, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, maxStringLength uint32, isOptional bool) *_StructureField {
-	if name == nil {
-		panic("name of type PascalString for StructureField must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for StructureField must not be nil")
-	}
-	if dataType == nil {
-		panic("dataType of type NodeId for StructureField must not be nil")
-	}
-	_result := &_StructureField{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Description:                       description,
-		DataType:                          dataType,
-		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
-		ArrayDimensions:                   arrayDimensions,
-		MaxStringLength:                   maxStringLength,
-		IsOptional:                        isOptional,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStructureField(structType any) StructureField {

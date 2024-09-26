@@ -63,6 +63,25 @@ type _RegisterServer2Request struct {
 var _ RegisterServer2Request = (*_RegisterServer2Request)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServer2Request)(nil)
 
+// NewRegisterServer2Request factory function for _RegisterServer2Request
+func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
+	}
+	_result := &_RegisterServer2Request{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		Server:                            server,
+		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
+		DiscoveryConfiguration:            discoveryConfiguration,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_RegisterServer2Request) GetDiscoveryConfiguration() []ExtensionObject 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServer2Request factory function for _RegisterServer2Request
-func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) *_RegisterServer2Request {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
-	}
-	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServer2Request must not be nil")
-	}
-	_result := &_RegisterServer2Request{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		Server:                            server,
-		NoOfDiscoveryConfiguration:        noOfDiscoveryConfiguration,
-		DiscoveryConfiguration:            discoveryConfiguration,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServer2Request(structType any) RegisterServer2Request {

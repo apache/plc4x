@@ -58,6 +58,14 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged st
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)(nil)
 
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged {

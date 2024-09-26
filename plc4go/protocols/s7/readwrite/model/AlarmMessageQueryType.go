@@ -66,6 +66,11 @@ type _AlarmMessageQueryType struct {
 
 var _ AlarmMessageQueryType = (*_AlarmMessageQueryType)(nil)
 
+// NewAlarmMessageQueryType factory function for _AlarmMessageQueryType
+func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []AlarmMessageObjectQueryType) *_AlarmMessageQueryType {
+	return &_AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +113,6 @@ func (m *_AlarmMessageQueryType) GetDataLength() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageQueryType factory function for _AlarmMessageQueryType
-func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, messageObjects []AlarmMessageObjectQueryType) *_AlarmMessageQueryType {
-	return &_AlarmMessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageQueryType(structType any) AlarmMessageQueryType {

@@ -60,6 +60,14 @@ type _AlarmMessagePushType struct {
 
 var _ AlarmMessagePushType = (*_AlarmMessagePushType)(nil)
 
+// NewAlarmMessagePushType factory function for _AlarmMessagePushType
+func NewAlarmMessagePushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) *_AlarmMessagePushType {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for AlarmMessagePushType must not be nil")
+	}
+	return &_AlarmMessagePushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,14 +93,6 @@ func (m *_AlarmMessagePushType) GetMessageObjects() []AlarmMessageObjectPushType
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessagePushType factory function for _AlarmMessagePushType
-func NewAlarmMessagePushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectPushType) *_AlarmMessagePushType {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for AlarmMessagePushType must not be nil")
-	}
-	return &_AlarmMessagePushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessagePushType(structType any) AlarmMessagePushType {

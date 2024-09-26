@@ -63,6 +63,25 @@ type _PriorityMappingEntryType struct {
 var _ PriorityMappingEntryType = (*_PriorityMappingEntryType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PriorityMappingEntryType)(nil)
 
+// NewPriorityMappingEntryType factory function for _PriorityMappingEntryType
+func NewPriorityMappingEntryType(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) *_PriorityMappingEntryType {
+	if mappingUri == nil {
+		panic("mappingUri of type PascalString for PriorityMappingEntryType must not be nil")
+	}
+	if priorityLabel == nil {
+		panic("priorityLabel of type PascalString for PriorityMappingEntryType must not be nil")
+	}
+	_result := &_PriorityMappingEntryType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MappingUri:                        mappingUri,
+		PriorityLabel:                     priorityLabel,
+		PriorityValue_PCP:                 priorityValue_PCP,
+		PriorityValue_DSCP:                priorityValue_DSCP,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_PriorityMappingEntryType) GetPriorityValue_DSCP() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPriorityMappingEntryType factory function for _PriorityMappingEntryType
-func NewPriorityMappingEntryType(mappingUri PascalString, priorityLabel PascalString, priorityValue_PCP uint8, priorityValue_DSCP uint32) *_PriorityMappingEntryType {
-	if mappingUri == nil {
-		panic("mappingUri of type PascalString for PriorityMappingEntryType must not be nil")
-	}
-	if priorityLabel == nil {
-		panic("priorityLabel of type PascalString for PriorityMappingEntryType must not be nil")
-	}
-	_result := &_PriorityMappingEntryType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MappingUri:                        mappingUri,
-		PriorityLabel:                     priorityLabel,
-		PriorityValue_PCP:                 priorityValue_PCP,
-		PriorityValue_DSCP:                priorityValue_DSCP,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPriorityMappingEntryType(structType any) PriorityMappingEntryType {

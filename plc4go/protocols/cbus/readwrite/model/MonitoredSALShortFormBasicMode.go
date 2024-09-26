@@ -69,6 +69,21 @@ type _MonitoredSALShortFormBasicMode struct {
 var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALShortFormBasicMode)(nil)
 
+// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
+func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+	_result := &_MonitoredSALShortFormBasicMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		Counts:               counts,
+		BridgeCount:          bridgeCount,
+		NetworkNumber:        networkNumber,
+		NoCounts:             noCounts,
+		Application:          application,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,21 +131,6 @@ func (m *_MonitoredSALShortFormBasicMode) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
-	_result := &_MonitoredSALShortFormBasicMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		Counts:               counts,
-		BridgeCount:          bridgeCount,
-		NetworkNumber:        networkNumber,
-		NoCounts:             noCounts,
-		Application:          application,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALShortFormBasicMode(structType any) MonitoredSALShortFormBasicMode {

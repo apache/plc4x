@@ -54,6 +54,19 @@ type _BACnetPropertyStatesNotifyType struct {
 var _ BACnetPropertyStatesNotifyType = (*_BACnetPropertyStatesNotifyType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNotifyType)(nil)
 
+// NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
+func NewBACnetPropertyStatesNotifyType(peekedTagHeader BACnetTagHeader, notifyType BACnetNotifyTypeTagged) *_BACnetPropertyStatesNotifyType {
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNotifyType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NotifyType:                   notifyType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesNotifyType) GetNotifyType() BACnetNotifyTypeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
-func NewBACnetPropertyStatesNotifyType(peekedTagHeader BACnetTagHeader, notifyType BACnetNotifyTypeTagged) *_BACnetPropertyStatesNotifyType {
-	if notifyType == nil {
-		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNotifyType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NotifyType:                   notifyType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNotifyType(structType any) BACnetPropertyStatesNotifyType {

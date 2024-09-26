@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryEnumerated struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryEnumerated = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		EnumeratedValue: enumeratedValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) GetEnumera
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated factory function for _BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated) *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetFaultParameterFaultExtendedParametersEntryEnumerated must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		EnumeratedValue: enumeratedValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryEnumerated(structType any) BACnetFaultParameterFaultExtendedParametersEntryEnumerated {

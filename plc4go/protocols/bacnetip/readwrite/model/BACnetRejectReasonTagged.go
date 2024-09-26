@@ -58,6 +58,11 @@ type _BACnetRejectReasonTagged struct {
 
 var _ BACnetRejectReasonTagged = (*_BACnetRejectReasonTagged)(nil)
 
+// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
+func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
+	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -90,11 +95,6 @@ func (m *_BACnetRejectReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
-func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
-	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRejectReasonTagged(structType any) BACnetRejectReasonTagged {

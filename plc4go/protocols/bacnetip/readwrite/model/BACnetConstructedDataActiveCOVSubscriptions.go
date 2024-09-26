@@ -54,6 +54,16 @@ type _BACnetConstructedDataActiveCOVSubscriptions struct {
 var _ BACnetConstructedDataActiveCOVSubscriptions = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVSubscriptions)(nil)
 
+// NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
+func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
+	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveCOVSubscriptions:        activeCOVSubscriptions,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
-	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveCOVSubscriptions:        activeCOVSubscriptions,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveCOVSubscriptions(structType any) BACnetConstructedDataActiveCOVSubscriptions {

@@ -57,6 +57,17 @@ type _EndpointUrlListDataType struct {
 var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
 
+// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
+func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
+	_result := &_EndpointUrlListDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEndpointUrlList:               noOfEndpointUrlList,
+		EndpointUrlList:                   endpointUrlList,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_EndpointUrlListDataType) GetEndpointUrlList() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
-func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
-	_result := &_EndpointUrlListDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEndpointUrlList:               noOfEndpointUrlList,
-		EndpointUrlList:                   endpointUrlList,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointUrlListDataType(structType any) EndpointUrlListDataType {

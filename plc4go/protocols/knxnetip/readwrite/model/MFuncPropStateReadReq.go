@@ -49,6 +49,15 @@ type _MFuncPropStateReadReq struct {
 var _ MFuncPropStateReadReq = (*_MFuncPropStateReadReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropStateReadReq)(nil)
 
+// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
+func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
+	_result := &_MFuncPropStateReadReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MFuncPropStateReadReq) GetMessageCode() uint8 {
 
 func (m *_MFuncPropStateReadReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
-func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
-	_result := &_MFuncPropStateReadReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

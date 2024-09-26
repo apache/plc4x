@@ -54,6 +54,19 @@ type _BACnetServiceAckAtomicWriteFile struct {
 var _ BACnetServiceAckAtomicWriteFile = (*_BACnetServiceAckAtomicWriteFile)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckAtomicWriteFile)(nil)
 
+// NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
+func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicWriteFile{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		FileStartPosition:        fileStartPosition,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_BACnetServiceAckAtomicWriteFile) GetFileStartPosition() BACnetContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicWriteFile factory function for _BACnetServiceAckAtomicWriteFile
-func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSignedInteger, serviceAckLength uint32) *_BACnetServiceAckAtomicWriteFile {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetContextTagSignedInteger for BACnetServiceAckAtomicWriteFile must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicWriteFile{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		FileStartPosition:        fileStartPosition,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicWriteFile {

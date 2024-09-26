@@ -54,6 +54,19 @@ type _BACnetEventLogRecordLogDatumLogStatus struct {
 var _ BACnetEventLogRecordLogDatumLogStatus = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumLogStatus)(nil)
 
+// NewBACnetEventLogRecordLogDatumLogStatus factory function for _BACnetEventLogRecordLogDatumLogStatus
+func NewBACnetEventLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetEventLogRecordLogDatumLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetEventLogRecordLogDatumLogStatus must not be nil")
+	}
+	_result := &_BACnetEventLogRecordLogDatumLogStatus{
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:                            logStatus,
+	}
+	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetEventLogRecordLogDatumLogStatus) GetLogStatus() BACnetLogStatusT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatumLogStatus factory function for _BACnetEventLogRecordLogDatumLogStatus
-func NewBACnetEventLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetEventLogRecordLogDatumLogStatus {
-	if logStatus == nil {
-		panic("logStatus of type BACnetLogStatusTagged for BACnetEventLogRecordLogDatumLogStatus must not be nil")
-	}
-	_result := &_BACnetEventLogRecordLogDatumLogStatus{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		LogStatus:                            logStatus,
-	}
-	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatumLogStatus(structType any) BACnetEventLogRecordLogDatumLogStatus {

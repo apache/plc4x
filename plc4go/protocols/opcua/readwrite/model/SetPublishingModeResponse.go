@@ -66,6 +66,23 @@ type _SetPublishingModeResponse struct {
 var _ SetPublishingModeResponse = (*_SetPublishingModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeResponse)(nil)
 
+// NewSetPublishingModeResponse factory function for _SetPublishingModeResponse
+func NewSetPublishingModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetPublishingModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetPublishingModeResponse must not be nil")
+	}
+	_result := &_SetPublishingModeResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_SetPublishingModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetPublishingModeResponse factory function for _SetPublishingModeResponse
-func NewSetPublishingModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetPublishingModeResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetPublishingModeResponse must not be nil")
-	}
-	_result := &_SetPublishingModeResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetPublishingModeResponse(structType any) SetPublishingModeResponse {

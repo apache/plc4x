@@ -62,6 +62,23 @@ type _TunnelingRequest struct {
 var _ TunnelingRequest = (*_TunnelingRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingRequest)(nil)
 
+// NewTunnelingRequest factory function for _TunnelingRequest
+func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
+	if tunnelingRequestDataBlock == nil {
+		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for TunnelingRequest must not be nil")
+	}
+	_result := &_TunnelingRequest{
+		KnxNetIpMessageContract:   NewKnxNetIpMessage(),
+		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
+		Cemi:                      cemi,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -97,23 +114,6 @@ func (m *_TunnelingRequest) GetCemi() CEMI {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingRequest factory function for _TunnelingRequest
-func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI, totalLength uint16) *_TunnelingRequest {
-	if tunnelingRequestDataBlock == nil {
-		panic("tunnelingRequestDataBlock of type TunnelingRequestDataBlock for TunnelingRequest must not be nil")
-	}
-	if cemi == nil {
-		panic("cemi of type CEMI for TunnelingRequest must not be nil")
-	}
-	_result := &_TunnelingRequest{
-		KnxNetIpMessageContract:   NewKnxNetIpMessage(),
-		TunnelingRequestDataBlock: tunnelingRequestDataBlock,
-		Cemi:                      cemi,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingRequest(structType any) TunnelingRequest {

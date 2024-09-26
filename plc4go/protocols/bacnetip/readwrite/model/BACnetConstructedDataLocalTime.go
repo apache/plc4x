@@ -56,6 +56,19 @@ type _BACnetConstructedDataLocalTime struct {
 var _ BACnetConstructedDataLocalTime = (*_BACnetConstructedDataLocalTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLocalTime)(nil)
 
+// NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
+func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
+	if localTime == nil {
+		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLocalTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LocalTime:                     localTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLocalTime) GetActualValue() BACnetApplicationTagT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLocalTime factory function for _BACnetConstructedDataLocalTime
-func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localTime BACnetApplicationTagTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalTime {
-	if localTime == nil {
-		panic("localTime of type BACnetApplicationTagTime for BACnetConstructedDataLocalTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLocalTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LocalTime:                     localTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLocalTime(structType any) BACnetConstructedDataLocalTime {

@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLightningInProgress struct {
 var _ BACnetPropertyStatesLightningInProgress = (*_BACnetPropertyStatesLightningInProgress)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningInProgress)(nil)
 
+// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
+func NewBACnetPropertyStatesLightningInProgress(peekedTagHeader BACnetTagHeader, lightningInProgress BACnetLightingInProgressTagged) *_BACnetPropertyStatesLightningInProgress {
+	if lightningInProgress == nil {
+		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningInProgress{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningInProgress:          lightningInProgress,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLightningInProgress() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
-func NewBACnetPropertyStatesLightningInProgress(peekedTagHeader BACnetTagHeader, lightningInProgress BACnetLightingInProgressTagged) *_BACnetPropertyStatesLightningInProgress {
-	if lightningInProgress == nil {
-		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningInProgress{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningInProgress:          lightningInProgress,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningInProgress(structType any) BACnetPropertyStatesLightningInProgress {

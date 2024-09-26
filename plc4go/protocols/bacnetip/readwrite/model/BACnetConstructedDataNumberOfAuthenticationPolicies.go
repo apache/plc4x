@@ -56,6 +56,19 @@ type _BACnetConstructedDataNumberOfAuthenticationPolicies struct {
 var _ BACnetConstructedDataNumberOfAuthenticationPolicies = (*_BACnetConstructedDataNumberOfAuthenticationPolicies)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfAuthenticationPolicies)(nil)
 
+// NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for _BACnetConstructedDataNumberOfAuthenticationPolicies
+func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
+	if numberOfAuthenticationPolicies == nil {
+		panic("numberOfAuthenticationPolicies of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAuthenticationPolicies must not be nil")
+	}
+	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNumberOfAuthenticationPolicies factory function for _BACnetConstructedDataNumberOfAuthenticationPolicies
-func NewBACnetConstructedDataNumberOfAuthenticationPolicies(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfAuthenticationPolicies BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfAuthenticationPolicies {
-	if numberOfAuthenticationPolicies == nil {
-		panic("numberOfAuthenticationPolicies of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfAuthenticationPolicies must not be nil")
-	}
-	_result := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfAuthenticationPolicies: numberOfAuthenticationPolicies,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNumberOfAuthenticationPolicies(structType any) BACnetConstructedDataNumberOfAuthenticationPolicies {

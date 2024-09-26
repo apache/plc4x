@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccessZoneAdjustValue struct {
 var _ BACnetConstructedDataAccessZoneAdjustValue = (*_BACnetConstructedDataAccessZoneAdjustValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessZoneAdjustValue)(nil)
 
+// NewBACnetConstructedDataAccessZoneAdjustValue factory function for _BACnetConstructedDataAccessZoneAdjustValue
+func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAccessZoneAdjustValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccessZoneAdjustValue) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessZoneAdjustValue factory function for _BACnetConstructedDataAccessZoneAdjustValue
-func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessZoneAdjustValue {
-	if adjustValue == nil {
-		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAccessZoneAdjustValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessZoneAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AdjustValue:                   adjustValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessZoneAdjustValue(structType any) BACnetConstructedDataAccessZoneAdjustValue {

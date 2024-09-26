@@ -56,6 +56,19 @@ type _BACnetConstructedDataSegmentationSupported struct {
 var _ BACnetConstructedDataSegmentationSupported = (*_BACnetConstructedDataSegmentationSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSegmentationSupported)(nil)
 
+// NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
+func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
+	if segmentationSupported == nil {
+		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
+	}
+	_result := &_BACnetConstructedDataSegmentationSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SegmentationSupported:         segmentationSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSegmentationSupported) GetActualValue() BACnetSeg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSegmentationSupported factory function for _BACnetConstructedDataSegmentationSupported
-func NewBACnetConstructedDataSegmentationSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, segmentationSupported BACnetSegmentationTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSegmentationSupported {
-	if segmentationSupported == nil {
-		panic("segmentationSupported of type BACnetSegmentationTagged for BACnetConstructedDataSegmentationSupported must not be nil")
-	}
-	_result := &_BACnetConstructedDataSegmentationSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SegmentationSupported:         segmentationSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSegmentationSupported(structType any) BACnetConstructedDataSegmentationSupported {

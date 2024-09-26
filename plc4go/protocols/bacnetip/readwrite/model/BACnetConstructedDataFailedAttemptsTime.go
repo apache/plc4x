@@ -56,6 +56,19 @@ type _BACnetConstructedDataFailedAttemptsTime struct {
 var _ BACnetConstructedDataFailedAttemptsTime = (*_BACnetConstructedDataFailedAttemptsTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFailedAttemptsTime)(nil)
 
+// NewBACnetConstructedDataFailedAttemptsTime factory function for _BACnetConstructedDataFailedAttemptsTime
+func NewBACnetConstructedDataFailedAttemptsTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptsTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptsTime {
+	if failedAttemptsTime == nil {
+		panic("failedAttemptsTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttemptsTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataFailedAttemptsTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FailedAttemptsTime:            failedAttemptsTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFailedAttemptsTime) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFailedAttemptsTime factory function for _BACnetConstructedDataFailedAttemptsTime
-func NewBACnetConstructedDataFailedAttemptsTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptsTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptsTime {
-	if failedAttemptsTime == nil {
-		panic("failedAttemptsTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFailedAttemptsTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataFailedAttemptsTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FailedAttemptsTime:            failedAttemptsTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFailedAttemptsTime(structType any) BACnetConstructedDataFailedAttemptsTime {

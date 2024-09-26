@@ -59,6 +59,17 @@ type _BACnetConstructedDataSubordinateAnnotations struct {
 var _ BACnetConstructedDataSubordinateAnnotations = (*_BACnetConstructedDataSubordinateAnnotations)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateAnnotations)(nil)
 
+// NewBACnetConstructedDataSubordinateAnnotations factory function for _BACnetConstructedDataSubordinateAnnotations
+func NewBACnetConstructedDataSubordinateAnnotations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateAnnotations []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateAnnotations {
+	_result := &_BACnetConstructedDataSubordinateAnnotations{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		SubordinateAnnotations:        subordinateAnnotations,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSubordinateAnnotations factory function for _BACnetConstructedDataSubordinateAnnotations
-func NewBACnetConstructedDataSubordinateAnnotations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateAnnotations []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateAnnotations {
-	_result := &_BACnetConstructedDataSubordinateAnnotations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		SubordinateAnnotations:        subordinateAnnotations,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSubordinateAnnotations(structType any) BACnetConstructedDataSubordinateAnnotations {

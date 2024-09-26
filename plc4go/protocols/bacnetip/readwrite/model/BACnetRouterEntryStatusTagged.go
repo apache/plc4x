@@ -58,6 +58,14 @@ type _BACnetRouterEntryStatusTagged struct {
 
 var _ BACnetRouterEntryStatusTagged = (*_BACnetRouterEntryStatusTagged)(nil)
 
+// NewBACnetRouterEntryStatusTagged factory function for _BACnetRouterEntryStatusTagged
+func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouterEntryStatus, tagNumber uint8, tagClass TagClass) *_BACnetRouterEntryStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetRouterEntryStatusTagged must not be nil")
+	}
+	return &_BACnetRouterEntryStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetRouterEntryStatusTagged) GetValue() BACnetRouterEntryStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRouterEntryStatusTagged factory function for _BACnetRouterEntryStatusTagged
-func NewBACnetRouterEntryStatusTagged(header BACnetTagHeader, value BACnetRouterEntryStatus, tagNumber uint8, tagClass TagClass) *_BACnetRouterEntryStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetRouterEntryStatusTagged must not be nil")
-	}
-	return &_BACnetRouterEntryStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRouterEntryStatusTagged(structType any) BACnetRouterEntryStatusTagged {

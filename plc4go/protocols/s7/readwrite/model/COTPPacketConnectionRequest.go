@@ -60,6 +60,18 @@ type _COTPPacketConnectionRequest struct {
 var _ COTPPacketConnectionRequest = (*_COTPPacketConnectionRequest)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketConnectionRequest)(nil)
 
+// NewCOTPPacketConnectionRequest factory function for _COTPPacketConnectionRequest
+func NewCOTPPacketConnectionRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionRequest {
+	_result := &_COTPPacketConnectionRequest{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_COTPPacketConnectionRequest) GetProtocolClass() COTPProtocolClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketConnectionRequest factory function for _COTPPacketConnectionRequest
-func NewCOTPPacketConnectionRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionRequest {
-	_result := &_COTPPacketConnectionRequest{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketConnectionRequest(structType any) COTPPacketConnectionRequest {

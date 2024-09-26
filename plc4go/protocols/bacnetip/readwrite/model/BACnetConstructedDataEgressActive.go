@@ -56,6 +56,19 @@ type _BACnetConstructedDataEgressActive struct {
 var _ BACnetConstructedDataEgressActive = (*_BACnetConstructedDataEgressActive)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressActive)(nil)
 
+// NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
+func NewBACnetConstructedDataEgressActive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressActive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
+	if egressActive == nil {
+		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
+	}
+	_result := &_BACnetConstructedDataEgressActive{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressActive:                  egressActive,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEgressActive) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEgressActive factory function for _BACnetConstructedDataEgressActive
-func NewBACnetConstructedDataEgressActive(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressActive BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressActive {
-	if egressActive == nil {
-		panic("egressActive of type BACnetApplicationTagBoolean for BACnetConstructedDataEgressActive must not be nil")
-	}
-	_result := &_BACnetConstructedDataEgressActive{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EgressActive:                  egressActive,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedDataEgressActive {

@@ -49,6 +49,15 @@ type _ClockAndTimekeepingDataRequestRefresh struct {
 var _ ClockAndTimekeepingDataRequestRefresh = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
 var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataRequestRefresh)(nil)
 
+// NewClockAndTimekeepingDataRequestRefresh factory function for _ClockAndTimekeepingDataRequestRefresh
+func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataRequestRefresh {
+	_result := &_ClockAndTimekeepingDataRequestRefresh{
+		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
+	}
+	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ ClockAndTimekeepingDataRequirements = (*_ClockAndTimekeepingDataRequestRef
 
 func (m *_ClockAndTimekeepingDataRequestRefresh) GetParent() ClockAndTimekeepingDataContract {
 	return m.ClockAndTimekeepingDataContract
-}
-
-// NewClockAndTimekeepingDataRequestRefresh factory function for _ClockAndTimekeepingDataRequestRefresh
-func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataRequestRefresh {
-	_result := &_ClockAndTimekeepingDataRequestRefresh{
-		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
-	}
-	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

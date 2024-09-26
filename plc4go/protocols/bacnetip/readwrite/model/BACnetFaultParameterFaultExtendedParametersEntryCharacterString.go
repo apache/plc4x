@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryCharacterString struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryCharacterString = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString factory function for _BACnetFaultParameterFaultExtendedParametersEntryCharacterString
+func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString) *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetFaultParameterFaultExtendedParametersEntryCharacterString must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		CharacterStringValue: characterStringValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) GetCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString factory function for _BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString) *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
-	if characterStringValue == nil {
-		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetFaultParameterFaultExtendedParametersEntryCharacterString must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		CharacterStringValue: characterStringValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryCharacterString(structType any) BACnetFaultParameterFaultExtendedParametersEntryCharacterString {

@@ -49,6 +49,15 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse struct {
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetCpuSubfunc
 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

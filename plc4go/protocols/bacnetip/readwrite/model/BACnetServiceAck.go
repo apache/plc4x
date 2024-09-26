@@ -72,6 +72,11 @@ type _BACnetServiceAck struct {
 
 var _ BACnetServiceAckContract = (*_BACnetServiceAck)(nil)
 
+// NewBACnetServiceAck factory function for _BACnetServiceAck
+func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
+	return &_BACnetServiceAck{ServiceAckLength: serviceAckLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for virtual fields.
@@ -88,11 +93,6 @@ func (pm *_BACnetServiceAck) GetServiceAckPayloadLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAck factory function for _BACnetServiceAck
-func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
-	return &_BACnetServiceAck{ServiceAckLength: serviceAckLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAck(structType any) BACnetServiceAck {

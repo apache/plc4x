@@ -49,6 +49,15 @@ type _DataSetWriterTransportDataType struct {
 var _ DataSetWriterTransportDataType = (*_DataSetWriterTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterTransportDataType)(nil)
 
+// NewDataSetWriterTransportDataType factory function for _DataSetWriterTransportDataType
+func NewDataSetWriterTransportDataType() *_DataSetWriterTransportDataType {
+	_result := &_DataSetWriterTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DataSetWriterTransportDataType) GetIdentifier() string {
 
 func (m *_DataSetWriterTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetWriterTransportDataType factory function for _DataSetWriterTransportDataType
-func NewDataSetWriterTransportDataType() *_DataSetWriterTransportDataType {
-	_result := &_DataSetWriterTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

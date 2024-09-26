@@ -54,6 +54,19 @@ type _BACnetProcessIdSelectionValue struct {
 var _ BACnetProcessIdSelectionValue = (*_BACnetProcessIdSelectionValue)(nil)
 var _ BACnetProcessIdSelectionRequirements = (*_BACnetProcessIdSelectionValue)(nil)
 
+// NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
+func NewBACnetProcessIdSelectionValue(peekedTagHeader BACnetTagHeader, processIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetProcessIdSelectionValue {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
+	}
+	_result := &_BACnetProcessIdSelectionValue{
+		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
+		ProcessIdentifier:                processIdentifier,
+	}
+	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetProcessIdSelectionValue) GetProcessIdentifier() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
-func NewBACnetProcessIdSelectionValue(peekedTagHeader BACnetTagHeader, processIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetProcessIdSelectionValue {
-	if processIdentifier == nil {
-		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
-	}
-	_result := &_BACnetProcessIdSelectionValue{
-		BACnetProcessIdSelectionContract: NewBACnetProcessIdSelection(peekedTagHeader),
-		ProcessIdentifier:                processIdentifier,
-	}
-	_result.BACnetProcessIdSelectionContract.(*_BACnetProcessIdSelection)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelectionValue(structType any) BACnetProcessIdSelectionValue {

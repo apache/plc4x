@@ -58,6 +58,16 @@ type _TelephonyDataRecallLastNumberRequest struct {
 var _ TelephonyDataRecallLastNumberRequest = (*_TelephonyDataRecallLastNumberRequest)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataRecallLastNumberRequest)(nil)
 
+// NewTelephonyDataRecallLastNumberRequest factory function for _TelephonyDataRecallLastNumberRequest
+func NewTelephonyDataRecallLastNumberRequest(commandTypeContainer TelephonyCommandTypeContainer, argument byte, recallLastNumberType byte) *_TelephonyDataRecallLastNumberRequest {
+	_result := &_TelephonyDataRecallLastNumberRequest{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		RecallLastNumberType:  recallLastNumberType,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetIsNumberOfLastIncomingCall() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataRecallLastNumberRequest factory function for _TelephonyDataRecallLastNumberRequest
-func NewTelephonyDataRecallLastNumberRequest(commandTypeContainer TelephonyCommandTypeContainer, argument byte, recallLastNumberType byte) *_TelephonyDataRecallLastNumberRequest {
-	_result := &_TelephonyDataRecallLastNumberRequest{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		RecallLastNumberType:  recallLastNumberType,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataRecallLastNumberRequest(structType any) TelephonyDataRecallLastNumberRequest {

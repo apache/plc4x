@@ -54,6 +54,19 @@ type _BACnetPriorityValueReal struct {
 var _ BACnetPriorityValueReal = (*_BACnetPriorityValueReal)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueReal)(nil)
 
+// NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
+func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
+	}
+	_result := &_BACnetPriorityValueReal{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		RealValue:                   realValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueReal) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
-func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
-	}
-	_result := &_BACnetPriorityValueReal{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		RealValue:                   realValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueReal(structType any) BACnetPriorityValueReal {

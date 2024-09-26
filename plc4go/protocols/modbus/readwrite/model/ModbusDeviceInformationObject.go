@@ -54,6 +54,11 @@ type _ModbusDeviceInformationObject struct {
 
 var _ ModbusDeviceInformationObject = (*_ModbusDeviceInformationObject)(nil)
 
+// NewModbusDeviceInformationObject factory function for _ModbusDeviceInformationObject
+func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDeviceInformationObject {
+	return &_ModbusDeviceInformationObject{ObjectId: objectId, Data: data}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_ModbusDeviceInformationObject) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusDeviceInformationObject factory function for _ModbusDeviceInformationObject
-func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDeviceInformationObject {
-	return &_ModbusDeviceInformationObject{ObjectId: objectId, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusDeviceInformationObject(structType any) ModbusDeviceInformationObject {

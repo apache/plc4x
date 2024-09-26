@@ -54,6 +54,19 @@ type _ComObjectTableRealisationType6 struct {
 var _ ComObjectTableRealisationType6 = (*_ComObjectTableRealisationType6)(nil)
 var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType6)(nil)
 
+// NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
+func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
+	if comObjectDescriptors == nil {
+		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
+	}
+	_result := &_ComObjectTableRealisationType6{
+		ComObjectTableContract: NewComObjectTable(),
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ComObjectTableRealisationType6) GetComObjectDescriptors() GroupObjectD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComObjectTableRealisationType6 factory function for _ComObjectTableRealisationType6
-func NewComObjectTableRealisationType6(comObjectDescriptors GroupObjectDescriptorRealisationType6) *_ComObjectTableRealisationType6 {
-	if comObjectDescriptors == nil {
-		panic("comObjectDescriptors of type GroupObjectDescriptorRealisationType6 for ComObjectTableRealisationType6 must not be nil")
-	}
-	_result := &_ComObjectTableRealisationType6{
-		ComObjectTableContract: NewComObjectTable(),
-		ComObjectDescriptors:   comObjectDescriptors,
-	}
-	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTableRealisationType6(structType any) ComObjectTableRealisationType6 {

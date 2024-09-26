@@ -56,6 +56,19 @@ type _BACnetConstructedDataLightingOutputFeedbackValue struct {
 var _ BACnetConstructedDataLightingOutputFeedbackValue = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
 
+// NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
+func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
-func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FeedbackValue:                 feedbackValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingOutputFeedbackValue(structType any) BACnetConstructedDataLightingOutputFeedbackValue {

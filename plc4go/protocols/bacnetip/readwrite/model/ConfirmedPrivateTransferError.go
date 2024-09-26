@@ -63,6 +63,28 @@ type _ConfirmedPrivateTransferError struct {
 var _ ConfirmedPrivateTransferError = (*_ConfirmedPrivateTransferError)(nil)
 var _ BACnetErrorRequirements = (*_ConfirmedPrivateTransferError)(nil)
 
+// NewConfirmedPrivateTransferError factory function for _ConfirmedPrivateTransferError
+func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, errorParameters BACnetConstructedData) *_ConfirmedPrivateTransferError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ConfirmedPrivateTransferError must not be nil")
+	}
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for ConfirmedPrivateTransferError must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for ConfirmedPrivateTransferError must not be nil")
+	}
+	_result := &_ConfirmedPrivateTransferError{
+		BACnetErrorContract: NewBACnetError(),
+		ErrorType:           errorType,
+		VendorId:            vendorId,
+		ServiceNumber:       serviceNumber,
+		ErrorParameters:     errorParameters,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_ConfirmedPrivateTransferError) GetErrorParameters() BACnetConstructedD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConfirmedPrivateTransferError factory function for _ConfirmedPrivateTransferError
-func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, errorParameters BACnetConstructedData) *_ConfirmedPrivateTransferError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for ConfirmedPrivateTransferError must not be nil")
-	}
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for ConfirmedPrivateTransferError must not be nil")
-	}
-	if serviceNumber == nil {
-		panic("serviceNumber of type BACnetContextTagUnsignedInteger for ConfirmedPrivateTransferError must not be nil")
-	}
-	_result := &_ConfirmedPrivateTransferError{
-		BACnetErrorContract: NewBACnetError(),
-		ErrorType:           errorType,
-		VendorId:            vendorId,
-		ServiceNumber:       serviceNumber,
-		ErrorParameters:     errorParameters,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConfirmedPrivateTransferError(structType any) ConfirmedPrivateTransferError {

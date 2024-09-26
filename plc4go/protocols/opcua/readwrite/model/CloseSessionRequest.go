@@ -59,6 +59,20 @@ type _CloseSessionRequest struct {
 var _ CloseSessionRequest = (*_CloseSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSessionRequest)(nil)
 
+// NewCloseSessionRequest factory function for _CloseSessionRequest
+func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
+	}
+	_result := &_CloseSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		DeleteSubscriptions:               deleteSubscriptions,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,20 +108,6 @@ func (m *_CloseSessionRequest) GetDeleteSubscriptions() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSessionRequest factory function for _CloseSessionRequest
-func NewCloseSessionRequest(requestHeader ExtensionObjectDefinition, deleteSubscriptions bool) *_CloseSessionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CloseSessionRequest must not be nil")
-	}
-	_result := &_CloseSessionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		DeleteSubscriptions:               deleteSubscriptions,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSessionRequest(structType any) CloseSessionRequest {

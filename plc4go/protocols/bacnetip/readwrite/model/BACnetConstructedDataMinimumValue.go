@@ -56,6 +56,19 @@ type _BACnetConstructedDataMinimumValue struct {
 var _ BACnetConstructedDataMinimumValue = (*_BACnetConstructedDataMinimumValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValue)(nil)
 
+// NewBACnetConstructedDataMinimumValue factory function for _BACnetConstructedDataMinimumValue
+func NewBACnetConstructedDataMinimumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValue {
+	if minimumValue == nil {
+		panic("minimumValue of type BACnetApplicationTagReal for BACnetConstructedDataMinimumValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumValue:                  minimumValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMinimumValue) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumValue factory function for _BACnetConstructedDataMinimumValue
-func NewBACnetConstructedDataMinimumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValue {
-	if minimumValue == nil {
-		panic("minimumValue of type BACnetApplicationTagReal for BACnetConstructedDataMinimumValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumValue:                  minimumValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumValue(structType any) BACnetConstructedDataMinimumValue {

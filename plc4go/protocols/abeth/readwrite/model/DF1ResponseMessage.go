@@ -85,6 +85,11 @@ type _DF1ResponseMessage struct {
 
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
+// NewDF1ResponseMessage factory function for _DF1ResponseMessage
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
+	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,11 +115,6 @@ func (m *_DF1ResponseMessage) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1ResponseMessage factory function for _DF1ResponseMessage
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
-	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1ResponseMessage(structType any) DF1ResponseMessage {

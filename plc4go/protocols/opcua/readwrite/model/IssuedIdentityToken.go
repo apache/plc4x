@@ -57,6 +57,23 @@ type _IssuedIdentityToken struct {
 var _ IssuedIdentityToken = (*_IssuedIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_IssuedIdentityToken)(nil)
 
+// NewIssuedIdentityToken factory function for _IssuedIdentityToken
+func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm PascalString) *_IssuedIdentityToken {
+	if tokenData == nil {
+		panic("tokenData of type PascalByteString for IssuedIdentityToken must not be nil")
+	}
+	if encryptionAlgorithm == nil {
+		panic("encryptionAlgorithm of type PascalString for IssuedIdentityToken must not be nil")
+	}
+	_result := &_IssuedIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+		TokenData:                           tokenData,
+		EncryptionAlgorithm:                 encryptionAlgorithm,
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_IssuedIdentityToken) GetEncryptionAlgorithm() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIssuedIdentityToken factory function for _IssuedIdentityToken
-func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm PascalString) *_IssuedIdentityToken {
-	if tokenData == nil {
-		panic("tokenData of type PascalByteString for IssuedIdentityToken must not be nil")
-	}
-	if encryptionAlgorithm == nil {
-		panic("encryptionAlgorithm of type PascalString for IssuedIdentityToken must not be nil")
-	}
-	_result := &_IssuedIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		TokenData:                           tokenData,
-		EncryptionAlgorithm:                 encryptionAlgorithm,
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIssuedIdentityToken(structType any) IssuedIdentityToken {

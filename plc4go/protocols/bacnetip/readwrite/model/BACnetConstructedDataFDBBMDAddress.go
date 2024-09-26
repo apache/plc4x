@@ -56,6 +56,19 @@ type _BACnetConstructedDataFDBBMDAddress struct {
 var _ BACnetConstructedDataFDBBMDAddress = (*_BACnetConstructedDataFDBBMDAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDBBMDAddress)(nil)
 
+// NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
+func NewBACnetConstructedDataFDBBMDAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fDBBMDAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
+	if fDBBMDAddress == nil {
+		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataFDBBMDAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FDBBMDAddress:                 fDBBMDAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetActualValue() BACnetHostNPort {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
-func NewBACnetConstructedDataFDBBMDAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fDBBMDAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
-	if fDBBMDAddress == nil {
-		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataFDBBMDAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FDBBMDAddress:                 fDBBMDAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFDBBMDAddress(structType any) BACnetConstructedDataFDBBMDAddress {

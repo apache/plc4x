@@ -68,6 +68,20 @@ type _S7ParameterModeTransition struct {
 var _ S7ParameterModeTransition = (*_S7ParameterModeTransition)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterModeTransition)(nil)
 
+// NewS7ParameterModeTransition factory function for _S7ParameterModeTransition
+func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *_S7ParameterModeTransition {
+	_result := &_S7ParameterModeTransition{
+		S7ParameterContract: NewS7Parameter(),
+		Method:              method,
+		CpuFunctionType:     cpuFunctionType,
+		CpuFunctionGroup:    cpuFunctionGroup,
+		CurrentMode:         currentMode,
+		SequenceNumber:      sequenceNumber,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -119,20 +133,6 @@ func (m *_S7ParameterModeTransition) GetSequenceNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterModeTransition factory function for _S7ParameterModeTransition
-func NewS7ParameterModeTransition(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, currentMode uint8, sequenceNumber uint8) *_S7ParameterModeTransition {
-	_result := &_S7ParameterModeTransition{
-		S7ParameterContract: NewS7Parameter(),
-		Method:              method,
-		CpuFunctionType:     cpuFunctionType,
-		CpuFunctionGroup:    cpuFunctionGroup,
-		CurrentMode:         currentMode,
-		SequenceNumber:      sequenceNumber,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterModeTransition(structType any) S7ParameterModeTransition {

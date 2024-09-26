@@ -57,6 +57,17 @@ type _AdsAddDeviceNotificationResponse struct {
 var _ AdsAddDeviceNotificationResponse = (*_AdsAddDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationResponse)(nil)
 
+// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
+func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
+	_result := &_AdsAddDeviceNotificationResponse{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:             result,
+		NotificationHandle: notificationHandle,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,17 +107,6 @@ func (m *_AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
-	_result := &_AdsAddDeviceNotificationResponse{
-		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:             result,
-		NotificationHandle: notificationHandle,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsAddDeviceNotificationResponse(structType any) AdsAddDeviceNotificationResponse {

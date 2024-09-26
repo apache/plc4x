@@ -81,6 +81,11 @@ type _HVACModeAndFlags struct {
 
 var _ HVACModeAndFlags = (*_HVACModeAndFlags)(nil)
 
+// NewHVACModeAndFlags factory function for _HVACModeAndFlags
+func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
+	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -167,11 +172,6 @@ func (m *_HVACModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACModeAndFlags factory function for _HVACModeAndFlags
-func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
-	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACModeAndFlags(structType any) HVACModeAndFlags {

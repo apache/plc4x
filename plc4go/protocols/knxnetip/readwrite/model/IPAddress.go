@@ -51,6 +51,11 @@ type _IPAddress struct {
 
 var _ IPAddress = (*_IPAddress)(nil)
 
+// NewIPAddress factory function for _IPAddress
+func NewIPAddress(addr []byte) *_IPAddress {
+	return &_IPAddress{Addr: addr}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_IPAddress) GetAddr() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIPAddress factory function for _IPAddress
-func NewIPAddress(addr []byte) *_IPAddress {
-	return &_IPAddress{Addr: addr}
-}
 
 // Deprecated: use the interface for direct cast
 func CastIPAddress(structType any) IPAddress {

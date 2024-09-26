@@ -63,6 +63,31 @@ type _BACnetFaultParameterFaultOutOfRange struct {
 var _ BACnetFaultParameterFaultOutOfRange = (*_BACnetFaultParameterFaultOutOfRange)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultOutOfRange)(nil)
 
+// NewBACnetFaultParameterFaultOutOfRange factory function for _BACnetFaultParameterFaultOutOfRange
+func NewBACnetFaultParameterFaultOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultOutOfRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultOutOfRange must not be nil")
+	}
+	if minNormalValue == nil {
+		panic("minNormalValue of type BACnetFaultParameterFaultOutOfRangeMinNormalValue for BACnetFaultParameterFaultOutOfRange must not be nil")
+	}
+	if maxNormalValue == nil {
+		panic("maxNormalValue of type BACnetFaultParameterFaultOutOfRangeMaxNormalValue for BACnetFaultParameterFaultOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultOutOfRange must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultOutOfRange{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		MinNormalValue:               minNormalValue,
+		MaxNormalValue:               maxNormalValue,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultOutOfRange factory function for _BACnetFaultParameterFaultOutOfRange
-func NewBACnetFaultParameterFaultOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultOutOfRange {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultOutOfRange must not be nil")
-	}
-	if minNormalValue == nil {
-		panic("minNormalValue of type BACnetFaultParameterFaultOutOfRangeMinNormalValue for BACnetFaultParameterFaultOutOfRange must not be nil")
-	}
-	if maxNormalValue == nil {
-		panic("maxNormalValue of type BACnetFaultParameterFaultOutOfRangeMaxNormalValue for BACnetFaultParameterFaultOutOfRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultOutOfRange must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultOutOfRange{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		MinNormalValue:               minNormalValue,
-		MaxNormalValue:               maxNormalValue,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultOutOfRange(structType any) BACnetFaultParameterFaultOutOfRange {

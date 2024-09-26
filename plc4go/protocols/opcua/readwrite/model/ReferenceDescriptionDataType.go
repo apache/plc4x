@@ -65,6 +65,28 @@ type _ReferenceDescriptionDataType struct {
 var _ ReferenceDescriptionDataType = (*_ReferenceDescriptionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceDescriptionDataType)(nil)
 
+// NewReferenceDescriptionDataType factory function for _ReferenceDescriptionDataType
+func NewReferenceDescriptionDataType(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceDescriptionDataType {
+	if sourceNode == nil {
+		panic("sourceNode of type NodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	if referenceType == nil {
+		panic("referenceType of type NodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	if targetNode == nil {
+		panic("targetNode of type ExpandedNodeId for ReferenceDescriptionDataType must not be nil")
+	}
+	_result := &_ReferenceDescriptionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNode:                        sourceNode,
+		ReferenceType:                     referenceType,
+		IsForward:                         isForward,
+		TargetNode:                        targetNode,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,28 +130,6 @@ func (m *_ReferenceDescriptionDataType) GetTargetNode() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceDescriptionDataType factory function for _ReferenceDescriptionDataType
-func NewReferenceDescriptionDataType(sourceNode NodeId, referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceDescriptionDataType {
-	if sourceNode == nil {
-		panic("sourceNode of type NodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	if referenceType == nil {
-		panic("referenceType of type NodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	if targetNode == nil {
-		panic("targetNode of type ExpandedNodeId for ReferenceDescriptionDataType must not be nil")
-	}
-	_result := &_ReferenceDescriptionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNode:                        sourceNode,
-		ReferenceType:                     referenceType,
-		IsForward:                         isForward,
-		TargetNode:                        targetNode,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceDescriptionDataType(structType any) ReferenceDescriptionDataType {

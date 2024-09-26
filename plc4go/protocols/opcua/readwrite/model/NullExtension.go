@@ -49,6 +49,15 @@ type _NullExtension struct {
 var _ NullExtension = (*_NullExtension)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NullExtension)(nil)
 
+// NewNullExtension factory function for _NullExtension
+func NewNullExtension() *_NullExtension {
+	_result := &_NullExtension{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_NullExtension) GetIdentifier() string {
 
 func (m *_NullExtension) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewNullExtension factory function for _NullExtension
-func NewNullExtension() *_NullExtension {
-	_result := &_NullExtension{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

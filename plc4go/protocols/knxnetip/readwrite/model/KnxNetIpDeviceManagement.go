@@ -54,6 +54,16 @@ type _KnxNetIpDeviceManagement struct {
 var _ KnxNetIpDeviceManagement = (*_KnxNetIpDeviceManagement)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpDeviceManagement)(nil)
 
+// NewKnxNetIpDeviceManagement factory function for _KnxNetIpDeviceManagement
+func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
+	_result := &_KnxNetIpDeviceManagement{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetIpDeviceManagement) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpDeviceManagement factory function for _KnxNetIpDeviceManagement
-func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
-	_result := &_KnxNetIpDeviceManagement{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpDeviceManagement(structType any) KnxNetIpDeviceManagement {

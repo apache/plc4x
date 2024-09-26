@@ -60,6 +60,21 @@ type _RepublishRequest struct {
 var _ RepublishRequest = (*_RepublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishRequest)(nil)
 
+// NewRepublishRequest factory function for _RepublishRequest
+func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
+	}
+	_result := &_RepublishRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		RetransmitSequenceNumber:          retransmitSequenceNumber,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_RepublishRequest) GetRetransmitSequenceNumber() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRepublishRequest factory function for _RepublishRequest
-func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
-	}
-	_result := &_RepublishRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		RetransmitSequenceNumber:          retransmitSequenceNumber,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRepublishRequest(structType any) RepublishRequest {

@@ -61,6 +61,11 @@ type _InterfaceOptions2 struct {
 
 var _ InterfaceOptions2 = (*_InterfaceOptions2)(nil)
 
+// NewInterfaceOptions2 factory function for _InterfaceOptions2
+func NewInterfaceOptions2(burden bool, clockGen bool) *_InterfaceOptions2 {
+	return &_InterfaceOptions2{Burden: burden, ClockGen: clockGen}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_InterfaceOptions2) GetClockGen() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewInterfaceOptions2 factory function for _InterfaceOptions2
-func NewInterfaceOptions2(burden bool, clockGen bool) *_InterfaceOptions2 {
-	return &_InterfaceOptions2{Burden: burden, ClockGen: clockGen}
-}
 
 // Deprecated: use the interface for direct cast
 func CastInterfaceOptions2(structType any) InterfaceOptions2 {

@@ -57,6 +57,20 @@ type _ConnectedDataItem struct {
 var _ ConnectedDataItem = (*_ConnectedDataItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedDataItem)(nil)
 
+// NewConnectedDataItem factory function for _ConnectedDataItem
+func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for ConnectedDataItem must not be nil")
+	}
+	_result := &_ConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		SequenceCount:  sequenceCount,
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_ConnectedDataItem) GetService() CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedDataItem factory function for _ConnectedDataItem
-func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
-	if service == nil {
-		panic("service of type CipService for ConnectedDataItem must not be nil")
-	}
-	_result := &_ConnectedDataItem{
-		TypeIdContract: NewTypeId(),
-		SequenceCount:  sequenceCount,
-		Service:        service,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedDataItem(structType any) ConnectedDataItem {

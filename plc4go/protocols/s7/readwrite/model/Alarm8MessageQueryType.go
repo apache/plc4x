@@ -66,6 +66,11 @@ type _Alarm8MessageQueryType struct {
 
 var _ Alarm8MessageQueryType = (*_Alarm8MessageQueryType)(nil)
 
+// NewAlarm8MessageQueryType factory function for _Alarm8MessageQueryType
+func NewAlarm8MessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) *_Alarm8MessageQueryType {
+	return &_Alarm8MessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, ByteCount: byteCount, MessageObjects: messageObjects}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (m *_Alarm8MessageQueryType) GetMessageObjects() []AlarmMessageObjectQueryT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarm8MessageQueryType factory function for _Alarm8MessageQueryType
-func NewAlarm8MessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) *_Alarm8MessageQueryType {
-	return &_Alarm8MessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, ByteCount: byteCount, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarm8MessageQueryType(structType any) Alarm8MessageQueryType {

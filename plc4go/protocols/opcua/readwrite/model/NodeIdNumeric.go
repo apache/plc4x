@@ -59,6 +59,17 @@ type _NodeIdNumeric struct {
 var _ NodeIdNumeric = (*_NodeIdNumeric)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdNumeric)(nil)
 
+// NewNodeIdNumeric factory function for _NodeIdNumeric
+func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
+	_result := &_NodeIdNumeric{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,17 +120,6 @@ func (m *_NodeIdNumeric) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdNumeric factory function for _NodeIdNumeric
-func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
-	_result := &_NodeIdNumeric{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdNumeric(structType any) NodeIdNumeric {

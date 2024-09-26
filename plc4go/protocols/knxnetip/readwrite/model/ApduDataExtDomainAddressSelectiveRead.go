@@ -49,6 +49,15 @@ type _ApduDataExtDomainAddressSelectiveRead struct {
 var _ ApduDataExtDomainAddressSelectiveRead = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressSelectiveRead)(nil)
 
+// NewApduDataExtDomainAddressSelectiveRead factory function for _ApduDataExtDomainAddressSelectiveRead
+func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainAddressSelectiveRead {
+	_result := &_ApduDataExtDomainAddressSelectiveRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressSelectiveRead factory function for _ApduDataExtDomainAddressSelectiveRead
-func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainAddressSelectiveRead {
-	_result := &_ApduDataExtDomainAddressSelectiveRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

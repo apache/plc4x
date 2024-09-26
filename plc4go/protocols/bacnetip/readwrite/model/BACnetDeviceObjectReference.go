@@ -54,6 +54,14 @@ type _BACnetDeviceObjectReference struct {
 
 var _ BACnetDeviceObjectReference = (*_BACnetDeviceObjectReference)(nil)
 
+// NewBACnetDeviceObjectReference factory function for _BACnetDeviceObjectReference
+func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectReference must not be nil")
+	}
+	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_BACnetDeviceObjectReference) GetObjectIdentifier() BACnetContextTagObj
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceObjectReference factory function for _BACnetDeviceObjectReference
-func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdentifier, objectIdentifier BACnetContextTagObjectIdentifier) *_BACnetDeviceObjectReference {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetDeviceObjectReference must not be nil")
-	}
-	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceObjectReference(structType any) BACnetDeviceObjectReference {

@@ -73,6 +73,24 @@ type _CALReplyLong struct {
 var _ CALReplyLong = (*_CALReplyLong)(nil)
 var _ CALReplyRequirements = (*_CALReplyLong)(nil)
 
+// NewCALReplyLong factory function for _CALReplyLong
+func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
+	if serialInterfaceAddress == nil {
+		panic("serialInterfaceAddress of type SerialInterfaceAddress for CALReplyLong must not be nil")
+	}
+	_result := &_CALReplyLong{
+		CALReplyContract:       NewCALReply(calType, calData, cBusOptions, requestContext),
+		TerminatingByte:        terminatingByte,
+		UnitAddress:            unitAddress,
+		BridgeAddress:          bridgeAddress,
+		SerialInterfaceAddress: serialInterfaceAddress,
+		ReservedByte:           reservedByte,
+		ReplyNetwork:           replyNetwork,
+	}
+	_result.CALReplyContract.(*_CALReply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -143,24 +161,6 @@ func (m *_CALReplyLong) GetIsUnitAddress() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALReplyLong factory function for _CALReplyLong
-func NewCALReplyLong(calType byte, calData CALData, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, serialInterfaceAddress SerialInterfaceAddress, reservedByte *byte, replyNetwork ReplyNetwork, cBusOptions CBusOptions, requestContext RequestContext) *_CALReplyLong {
-	if serialInterfaceAddress == nil {
-		panic("serialInterfaceAddress of type SerialInterfaceAddress for CALReplyLong must not be nil")
-	}
-	_result := &_CALReplyLong{
-		CALReplyContract:       NewCALReply(calType, calData, cBusOptions, requestContext),
-		TerminatingByte:        terminatingByte,
-		UnitAddress:            unitAddress,
-		BridgeAddress:          bridgeAddress,
-		SerialInterfaceAddress: serialInterfaceAddress,
-		ReservedByte:           reservedByte,
-		ReplyNetwork:           replyNetwork,
-	}
-	_result.CALReplyContract.(*_CALReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALReplyLong(structType any) CALReplyLong {

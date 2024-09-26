@@ -49,6 +49,15 @@ type _LDataFrameACK struct {
 var _ LDataFrameACK = (*_LDataFrameACK)(nil)
 var _ LDataFrameRequirements = (*_LDataFrameACK)(nil)
 
+// NewLDataFrameACK factory function for _LDataFrameACK
+func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrameACK {
+	_result := &_LDataFrameACK{
+		LDataFrameContract: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
+	}
+	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_LDataFrameACK) GetPolling() bool {
 
 func (m *_LDataFrameACK) GetParent() LDataFrameContract {
 	return m.LDataFrameContract
-}
-
-// NewLDataFrameACK factory function for _LDataFrameACK
-func NewLDataFrameACK(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrameACK {
-	_result := &_LDataFrameACK{
-		LDataFrameContract: NewLDataFrame(frameType, notRepeated, priority, acknowledgeRequested, errorFlag),
-	}
-	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

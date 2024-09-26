@@ -60,6 +60,21 @@ type _ViewDescription struct {
 var _ ViewDescription = (*_ViewDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ViewDescription)(nil)
 
+// NewViewDescription factory function for _ViewDescription
+func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
+	if viewId == nil {
+		panic("viewId of type NodeId for ViewDescription must not be nil")
+	}
+	_result := &_ViewDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ViewId:                            viewId,
+		Timestamp:                         timestamp,
+		ViewVersion:                       viewVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_ViewDescription) GetViewVersion() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewViewDescription factory function for _ViewDescription
-func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
-	if viewId == nil {
-		panic("viewId of type NodeId for ViewDescription must not be nil")
-	}
-	_result := &_ViewDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ViewId:                            viewId,
-		Timestamp:                         timestamp,
-		ViewVersion:                       viewVersion,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastViewDescription(structType any) ViewDescription {

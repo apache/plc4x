@@ -75,6 +75,11 @@ type _SecurityData struct {
 
 var _ SecurityDataContract = (*_SecurityData)(nil)
 
+// NewSecurityData factory function for _SecurityData
+func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityData {
+	return &_SecurityData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +113,6 @@ func (pm *_SecurityData) GetCommandType() SecurityCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityData factory function for _SecurityData
-func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityData {
-	return &_SecurityData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityData(structType any) SecurityData {

@@ -59,6 +59,17 @@ type _CipWriteResponse struct {
 var _ CipWriteResponse = (*_CipWriteResponse)(nil)
 var _ CipServiceRequirements = (*_CipWriteResponse)(nil)
 
+// NewCipWriteResponse factory function for _CipWriteResponse
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
+	_result := &_CipWriteResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,17 +113,6 @@ func (m *_CipWriteResponse) GetExtStatus() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteResponse factory function for _CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
-	_result := &_CipWriteResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteResponse(structType any) CipWriteResponse {

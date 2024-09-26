@@ -57,6 +57,17 @@ type _ModbusPDUWriteSingleCoilRequest struct {
 var _ ModbusPDUWriteSingleCoilRequest = (*_ModbusPDUWriteSingleCoilRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleCoilRequest)(nil)
 
+// NewModbusPDUWriteSingleCoilRequest factory function for _ModbusPDUWriteSingleCoilRequest
+func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPDUWriteSingleCoilRequest {
+	_result := &_ModbusPDUWriteSingleCoilRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_ModbusPDUWriteSingleCoilRequest) GetValue() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteSingleCoilRequest factory function for _ModbusPDUWriteSingleCoilRequest
-func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPDUWriteSingleCoilRequest {
-	_result := &_ModbusPDUWriteSingleCoilRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Address:           address,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteSingleCoilRequest(structType any) ModbusPDUWriteSingleCoilRequest {

@@ -54,6 +54,11 @@ type _SequenceHeader struct {
 
 var _ SequenceHeader = (*_SequenceHeader)(nil)
 
+// NewSequenceHeader factory function for _SequenceHeader
+func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
+	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_SequenceHeader) GetRequestId() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSequenceHeader factory function for _SequenceHeader
-func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
-	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSequenceHeader(structType any) SequenceHeader {

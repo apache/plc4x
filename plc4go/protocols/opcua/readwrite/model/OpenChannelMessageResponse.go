@@ -63,6 +63,28 @@ type _OpenChannelMessageResponse struct {
 var _ OpenChannelMessageResponse = (*_OpenChannelMessageResponse)(nil)
 var _ OpenChannelMessageRequirements = (*_OpenChannelMessageResponse)(nil)
 
+// NewOpenChannelMessageResponse factory function for _OpenChannelMessageResponse
+func NewOpenChannelMessageResponse(secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) *_OpenChannelMessageResponse {
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for OpenChannelMessageResponse must not be nil")
+	}
+	if senderCertificate == nil {
+		panic("senderCertificate of type PascalByteString for OpenChannelMessageResponse must not be nil")
+	}
+	if receiverCertificateThumbprint == nil {
+		panic("receiverCertificateThumbprint of type PascalByteString for OpenChannelMessageResponse must not be nil")
+	}
+	_result := &_OpenChannelMessageResponse{
+		OpenChannelMessageContract:    NewOpenChannelMessage(),
+		SecureChannelId:               secureChannelId,
+		SecurityPolicyUri:             securityPolicyUri,
+		SenderCertificate:             senderCertificate,
+		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
+	}
+	_result.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,28 +128,6 @@ func (m *_OpenChannelMessageResponse) GetReceiverCertificateThumbprint() PascalB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpenChannelMessageResponse factory function for _OpenChannelMessageResponse
-func NewOpenChannelMessageResponse(secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString) *_OpenChannelMessageResponse {
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for OpenChannelMessageResponse must not be nil")
-	}
-	if senderCertificate == nil {
-		panic("senderCertificate of type PascalByteString for OpenChannelMessageResponse must not be nil")
-	}
-	if receiverCertificateThumbprint == nil {
-		panic("receiverCertificateThumbprint of type PascalByteString for OpenChannelMessageResponse must not be nil")
-	}
-	_result := &_OpenChannelMessageResponse{
-		OpenChannelMessageContract:    NewOpenChannelMessage(),
-		SecureChannelId:               secureChannelId,
-		SecurityPolicyUri:             securityPolicyUri,
-		SenderCertificate:             senderCertificate,
-		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
-	}
-	_result.OpenChannelMessageContract.(*_OpenChannelMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpenChannelMessageResponse(structType any) OpenChannelMessageResponse {

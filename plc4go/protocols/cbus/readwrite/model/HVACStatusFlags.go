@@ -75,6 +75,11 @@ type _HVACStatusFlags struct {
 
 var _ HVACStatusFlags = (*_HVACStatusFlags)(nil)
 
+// NewHVACStatusFlags factory function for _HVACStatusFlags
+func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) *_HVACStatusFlags {
+	return &_HVACStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, HeatingPlant: heatingPlant, CoolingPlant: coolingPlant}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -133,11 +138,6 @@ func (m *_HVACStatusFlags) GetIsDamperStateOpen() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACStatusFlags factory function for _HVACStatusFlags
-func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) *_HVACStatusFlags {
-	return &_HVACStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, HeatingPlant: heatingPlant, CoolingPlant: coolingPlant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACStatusFlags(structType any) HVACStatusFlags {

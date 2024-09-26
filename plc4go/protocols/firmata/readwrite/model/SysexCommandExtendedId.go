@@ -54,6 +54,16 @@ type _SysexCommandExtendedId struct {
 var _ SysexCommandExtendedId = (*_SysexCommandExtendedId)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandExtendedId)(nil)
 
+// NewSysexCommandExtendedId factory function for _SysexCommandExtendedId
+func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
+	_result := &_SysexCommandExtendedId{
+		SysexCommandContract: NewSysexCommand(),
+		Id:                   id,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_SysexCommandExtendedId) GetId() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandExtendedId factory function for _SysexCommandExtendedId
-func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
-	_result := &_SysexCommandExtendedId{
-		SysexCommandContract: NewSysexCommand(),
-		Id:                   id,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandExtendedId(structType any) SysexCommandExtendedId {

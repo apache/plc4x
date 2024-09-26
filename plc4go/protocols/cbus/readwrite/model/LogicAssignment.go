@@ -69,6 +69,11 @@ type _LogicAssignment struct {
 
 var _ LogicAssignment = (*_LogicAssignment)(nil)
 
+// NewLogicAssignment factory function for _LogicAssignment
+func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
+	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -102,11 +107,6 @@ func (m *_LogicAssignment) GetAssignedToGav13() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLogicAssignment factory function for _LogicAssignment
-func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
-	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLogicAssignment(structType any) LogicAssignment {

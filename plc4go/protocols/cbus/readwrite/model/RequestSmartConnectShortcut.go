@@ -60,6 +60,17 @@ type _RequestSmartConnectShortcut struct {
 var _ RequestSmartConnectShortcut = (*_RequestSmartConnectShortcut)(nil)
 var _ RequestRequirements = (*_RequestSmartConnectShortcut)(nil)
 
+// NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
+func NewRequestSmartConnectShortcut(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, pipePeek RequestType, secondPipe *byte, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
+	_result := &_RequestSmartConnectShortcut{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		PipePeek:        pipePeek,
+		SecondPipe:      secondPipe,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -104,17 +115,6 @@ func (m *_RequestSmartConnectShortcut) GetPipe() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestSmartConnectShortcut factory function for _RequestSmartConnectShortcut
-func NewRequestSmartConnectShortcut(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, pipePeek RequestType, secondPipe *byte, cBusOptions CBusOptions) *_RequestSmartConnectShortcut {
-	_result := &_RequestSmartConnectShortcut{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		PipePeek:        pipePeek,
-		SecondPipe:      secondPipe,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestSmartConnectShortcut(structType any) RequestSmartConnectShortcut {

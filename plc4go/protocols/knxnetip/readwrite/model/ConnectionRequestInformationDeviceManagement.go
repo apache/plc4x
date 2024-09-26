@@ -49,6 +49,15 @@ type _ConnectionRequestInformationDeviceManagement struct {
 var _ ConnectionRequestInformationDeviceManagement = (*_ConnectionRequestInformationDeviceManagement)(nil)
 var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationDeviceManagement)(nil)
 
+// NewConnectionRequestInformationDeviceManagement factory function for _ConnectionRequestInformationDeviceManagement
+func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInformationDeviceManagement {
+	_result := &_ConnectionRequestInformationDeviceManagement{
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
+	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetConnectionType() uint
 
 func (m *_ConnectionRequestInformationDeviceManagement) GetParent() ConnectionRequestInformationContract {
 	return m.ConnectionRequestInformationContract
-}
-
-// NewConnectionRequestInformationDeviceManagement factory function for _ConnectionRequestInformationDeviceManagement
-func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInformationDeviceManagement {
-	_result := &_ConnectionRequestInformationDeviceManagement{
-		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
-	}
-	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

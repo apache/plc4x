@@ -75,6 +75,44 @@ type _BACnetNotificationParametersAccessEvent struct {
 var _ BACnetNotificationParametersAccessEvent = (*_BACnetNotificationParametersAccessEvent)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersAccessEvent)(nil)
 
+// NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
+func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTime == nil {
+		panic("accessEventTime of type BACnetTimeStampEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessCredential == nil {
+		panic("accessCredential of type BACnetDeviceObjectReferenceEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	_result := &_BACnetNotificationParametersAccessEvent{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		AccessEvent:                          accessEvent,
+		StatusFlags:                          statusFlags,
+		AccessEventTag:                       accessEventTag,
+		AccessEventTime:                      accessEventTime,
+		AccessCredential:                     accessCredential,
+		AuthenticationFactor:                 authenticationFactor,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -130,44 +168,6 @@ func (m *_BACnetNotificationParametersAccessEvent) GetInnerClosingTag() BACnetCl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
-func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEvent == nil {
-		panic("accessEvent of type BACnetAccessEventTagged for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEventTag == nil {
-		panic("accessEventTag of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEventTime == nil {
-		panic("accessEventTime of type BACnetTimeStampEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessCredential == nil {
-		panic("accessCredential of type BACnetDeviceObjectReferenceEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	_result := &_BACnetNotificationParametersAccessEvent{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		AccessEvent:                          accessEvent,
-		StatusFlags:                          statusFlags,
-		AccessEventTag:                       accessEventTag,
-		AccessEventTime:                      accessEventTime,
-		AccessCredential:                     accessCredential,
-		AuthenticationFactor:                 authenticationFactor,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersAccessEvent(structType any) BACnetNotificationParametersAccessEvent {

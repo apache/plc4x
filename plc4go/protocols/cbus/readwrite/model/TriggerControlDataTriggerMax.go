@@ -49,6 +49,15 @@ type _TriggerControlDataTriggerMax struct {
 var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
+// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
+func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
+	_result := &_TriggerControlDataTriggerMax{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
 func (m *_TriggerControlDataTriggerMax) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
-func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
-	_result := &_TriggerControlDataTriggerMax{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

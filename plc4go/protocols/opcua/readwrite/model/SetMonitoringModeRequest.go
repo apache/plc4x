@@ -66,6 +66,23 @@ type _SetMonitoringModeRequest struct {
 var _ SetMonitoringModeRequest = (*_SetMonitoringModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeRequest)(nil)
 
+// NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
+func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
+	}
+	_result := &_SetMonitoringModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		MonitoringMode:                    monitoringMode,
+		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
+		MonitoredItemIds:                  monitoredItemIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_SetMonitoringModeRequest) GetMonitoredItemIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetMonitoringModeRequest factory function for _SetMonitoringModeRequest
-func NewSetMonitoringModeRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, monitoringMode MonitoringMode, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_SetMonitoringModeRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetMonitoringModeRequest must not be nil")
-	}
-	_result := &_SetMonitoringModeRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		MonitoringMode:                    monitoringMode,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
-		MonitoredItemIds:                  monitoredItemIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetMonitoringModeRequest(structType any) SetMonitoringModeRequest {

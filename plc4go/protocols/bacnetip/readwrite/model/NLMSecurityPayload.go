@@ -57,6 +57,17 @@ type _NLMSecurityPayload struct {
 var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
 var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
 
+// NewNLMSecurityPayload factory function for _NLMSecurityPayload
+func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
+	_result := &_NLMSecurityPayload{
+		NLMContract:   NewNLM(apduLength),
+		PayloadLength: payloadLength,
+		Payload:       payload,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMSecurityPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityPayload factory function for _NLMSecurityPayload
-func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
-	_result := &_NLMSecurityPayload{
-		NLMContract:   NewNLM(apduLength),
-		PayloadLength: payloadLength,
-		Payload:       payload,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityPayload(structType any) NLMSecurityPayload {

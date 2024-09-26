@@ -66,6 +66,23 @@ type _AddNodesResponse struct {
 var _ AddNodesResponse = (*_AddNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddNodesResponse)(nil)
 
+// NewAddNodesResponse factory function for _AddNodesResponse
+func NewAddNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_AddNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for AddNodesResponse must not be nil")
+	}
+	_result := &_AddNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_AddNodesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddNodesResponse factory function for _AddNodesResponse
-func NewAddNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_AddNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for AddNodesResponse must not be nil")
-	}
-	_result := &_AddNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddNodesResponse(structType any) AddNodesResponse {

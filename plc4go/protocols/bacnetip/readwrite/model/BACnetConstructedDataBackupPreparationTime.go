@@ -56,6 +56,19 @@ type _BACnetConstructedDataBackupPreparationTime struct {
 var _ BACnetConstructedDataBackupPreparationTime = (*_BACnetConstructedDataBackupPreparationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupPreparationTime)(nil)
 
+// NewBACnetConstructedDataBackupPreparationTime factory function for _BACnetConstructedDataBackupPreparationTime
+func NewBACnetConstructedDataBackupPreparationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupPreparationTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
+	if backupPreparationTime == nil {
+		panic("backupPreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupPreparationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataBackupPreparationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BackupPreparationTime:         backupPreparationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBackupPreparationTime) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBackupPreparationTime factory function for _BACnetConstructedDataBackupPreparationTime
-func NewBACnetConstructedDataBackupPreparationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupPreparationTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
-	if backupPreparationTime == nil {
-		panic("backupPreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupPreparationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataBackupPreparationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BackupPreparationTime:         backupPreparationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBackupPreparationTime(structType any) BACnetConstructedDataBackupPreparationTime {

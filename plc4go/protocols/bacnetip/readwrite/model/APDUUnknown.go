@@ -57,6 +57,17 @@ type _APDUUnknown struct {
 var _ APDUUnknown = (*_APDUUnknown)(nil)
 var _ APDURequirements = (*_APDUUnknown)(nil)
 
+// NewAPDUUnknown factory function for _APDUUnknown
+func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *_APDUUnknown {
+	_result := &_APDUUnknown{
+		APDUContract:    NewAPDU(apduLength),
+		UnknownTypeRest: unknownTypeRest,
+		UnknownBytes:    unknownBytes,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_APDUUnknown) GetUnknownBytes() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUUnknown factory function for _APDUUnknown
-func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint16) *_APDUUnknown {
-	_result := &_APDUUnknown{
-		APDUContract:    NewAPDU(apduLength),
-		UnknownTypeRest: unknownTypeRest,
-		UnknownBytes:    unknownBytes,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUUnknown(structType any) APDUUnknown {

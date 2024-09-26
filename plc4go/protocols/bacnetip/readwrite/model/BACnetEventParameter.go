@@ -70,6 +70,14 @@ type _BACnetEventParameter struct {
 
 var _ BACnetEventParameterContract = (*_BACnetEventParameter)(nil)
 
+// NewBACnetEventParameter factory function for _BACnetEventParameter
+func NewBACnetEventParameter(peekedTagHeader BACnetTagHeader) *_BACnetEventParameter {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameter must not be nil")
+	}
+	return &_BACnetEventParameter{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetEventParameter) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameter factory function for _BACnetEventParameter
-func NewBACnetEventParameter(peekedTagHeader BACnetTagHeader) *_BACnetEventParameter {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameter must not be nil")
-	}
-	return &_BACnetEventParameter{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameter(structType any) BACnetEventParameter {

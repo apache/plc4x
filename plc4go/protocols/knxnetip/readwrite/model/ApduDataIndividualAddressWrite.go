@@ -49,6 +49,15 @@ type _ApduDataIndividualAddressWrite struct {
 var _ ApduDataIndividualAddressWrite = (*_ApduDataIndividualAddressWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataIndividualAddressWrite)(nil)
 
+// NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
+func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
+	_result := &_ApduDataIndividualAddressWrite{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataIndividualAddressWrite) GetApciType() uint8 {
 
 func (m *_ApduDataIndividualAddressWrite) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataIndividualAddressWrite factory function for _ApduDataIndividualAddressWrite
-func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAddressWrite {
-	_result := &_ApduDataIndividualAddressWrite{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

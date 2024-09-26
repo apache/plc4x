@@ -78,6 +78,23 @@ type _ApduDataExtPropertyDescriptionResponse struct {
 var _ ApduDataExtPropertyDescriptionResponse = (*_ApduDataExtPropertyDescriptionResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionResponse)(nil)
 
+// NewApduDataExtPropertyDescriptionResponse factory function for _ApduDataExtPropertyDescriptionResponse
+func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *_ApduDataExtPropertyDescriptionResponse {
+	_result := &_ApduDataExtPropertyDescriptionResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Index:               index,
+		WriteEnabled:        writeEnabled,
+		PropertyDataType:    propertyDataType,
+		MaxNrOfElements:     maxNrOfElements,
+		ReadLevel:           readLevel,
+		WriteLevel:          writeLevel,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -137,23 +154,6 @@ func (m *_ApduDataExtPropertyDescriptionResponse) GetWriteLevel() AccessLevel {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyDescriptionResponse factory function for _ApduDataExtPropertyDescriptionResponse
-func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel, length uint8) *_ApduDataExtPropertyDescriptionResponse {
-	_result := &_ApduDataExtPropertyDescriptionResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Index:               index,
-		WriteEnabled:        writeEnabled,
-		PropertyDataType:    propertyDataType,
-		MaxNrOfElements:     maxNrOfElements,
-		ReadLevel:           readLevel,
-		WriteLevel:          writeLevel,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyDescriptionResponse(structType any) ApduDataExtPropertyDescriptionResponse {

@@ -54,6 +54,17 @@ type _Error struct {
 
 var _ Error = (*_Error)(nil)
 
+// NewError factory function for _Error
+func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
+	if errorClass == nil {
+		panic("errorClass of type ErrorClassTagged for Error must not be nil")
+	}
+	if errorCode == nil {
+		panic("errorCode of type ErrorCodeTagged for Error must not be nil")
+	}
+	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_Error) GetErrorCode() ErrorCodeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewError factory function for _Error
-func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
-	if errorClass == nil {
-		panic("errorClass of type ErrorClassTagged for Error must not be nil")
-	}
-	if errorCode == nil {
-		panic("errorCode of type ErrorCodeTagged for Error must not be nil")
-	}
-	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastError(structType any) Error {

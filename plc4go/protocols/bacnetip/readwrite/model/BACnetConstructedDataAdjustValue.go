@@ -56,6 +56,19 @@ type _BACnetConstructedDataAdjustValue struct {
 var _ BACnetConstructedDataAdjustValue = (*_BACnetConstructedDataAdjustValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAdjustValue)(nil)
 
+// NewBACnetConstructedDataAdjustValue factory function for _BACnetConstructedDataAdjustValue
+func NewBACnetConstructedDataAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAdjustValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAdjustValue) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAdjustValue factory function for _BACnetConstructedDataAdjustValue
-func NewBACnetConstructedDataAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAdjustValue {
-	if adjustValue == nil {
-		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAdjustValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AdjustValue:                   adjustValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAdjustValue(structType any) BACnetConstructedDataAdjustValue {

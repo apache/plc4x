@@ -61,6 +61,20 @@ type _DisconnectRequest struct {
 var _ DisconnectRequest = (*_DisconnectRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DisconnectRequest)(nil)
 
+// NewDisconnectRequest factory function for _DisconnectRequest
+func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
+	}
+	_result := &_DisconnectRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		CommunicationChannelId:  communicationChannelId,
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,20 +110,6 @@ func (m *_DisconnectRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDisconnectRequest factory function for _DisconnectRequest
-func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) *_DisconnectRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DisconnectRequest must not be nil")
-	}
-	_result := &_DisconnectRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		CommunicationChannelId:  communicationChannelId,
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDisconnectRequest(structType any) DisconnectRequest {

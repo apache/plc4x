@@ -56,6 +56,19 @@ type _BACnetConstructedDataCOVResubscriptionInterval struct {
 var _ BACnetConstructedDataCOVResubscriptionInterval = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVResubscriptionInterval)(nil)
 
+// NewBACnetConstructedDataCOVResubscriptionInterval factory function for _BACnetConstructedDataCOVResubscriptionInterval
+func NewBACnetConstructedDataCOVResubscriptionInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covResubscriptionInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
+	if covResubscriptionInterval == nil {
+		panic("covResubscriptionInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVResubscriptionInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovResubscriptionInterval:     covResubscriptionInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCOVResubscriptionInterval) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVResubscriptionInterval factory function for _BACnetConstructedDataCOVResubscriptionInterval
-func NewBACnetConstructedDataCOVResubscriptionInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covResubscriptionInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVResubscriptionInterval {
-	if covResubscriptionInterval == nil {
-		panic("covResubscriptionInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVResubscriptionInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataCOVResubscriptionInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovResubscriptionInterval:     covResubscriptionInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVResubscriptionInterval(structType any) BACnetConstructedDataCOVResubscriptionInterval {

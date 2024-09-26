@@ -49,6 +49,15 @@ type _S7PayloadUserDataItemClkSetResponse struct {
 var _ S7PayloadUserDataItemClkSetResponse = (*_S7PayloadUserDataItemClkSetResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkSetResponse)(nil)
 
+// NewS7PayloadUserDataItemClkSetResponse factory function for _S7PayloadUserDataItemClkSetResponse
+func NewS7PayloadUserDataItemClkSetResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetResponse {
+	_result := &_S7PayloadUserDataItemClkSetResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_S7PayloadUserDataItemClkSetResponse) GetCpuSubfunction() uint8 {
 
 func (m *_S7PayloadUserDataItemClkSetResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemClkSetResponse factory function for _S7PayloadUserDataItemClkSetResponse
-func NewS7PayloadUserDataItemClkSetResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetResponse {
-	_result := &_S7PayloadUserDataItemClkSetResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

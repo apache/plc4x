@@ -60,6 +60,18 @@ type _AdsMultiRequestItemRead struct {
 var _ AdsMultiRequestItemRead = (*_AdsMultiRequestItemRead)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemRead)(nil)
 
+// NewAdsMultiRequestItemRead factory function for _AdsMultiRequestItemRead
+func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *_AdsMultiRequestItemRead {
+	_result := &_AdsMultiRequestItemRead{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_AdsMultiRequestItemRead) GetItemReadLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemRead factory function for _AdsMultiRequestItemRead
-func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32) *_AdsMultiRequestItemRead {
-	_result := &_AdsMultiRequestItemRead{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemReadLength:              itemReadLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemRead(structType any) AdsMultiRequestItemRead {

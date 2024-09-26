@@ -68,6 +68,11 @@ type _SALData struct {
 
 var _ SALDataContract = (*_SALData)(nil)
 
+// NewSALData factory function for _SALData
+func NewSALData(salData SALData) *_SALData {
+	return &_SALData{SalData: salData}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_SALData) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALData factory function for _SALData
-func NewSALData(salData SALData) *_SALData {
-	return &_SALData{SalData: salData}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALData(structType any) SALData {

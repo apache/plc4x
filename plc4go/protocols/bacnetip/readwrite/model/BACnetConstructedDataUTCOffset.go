@@ -56,6 +56,19 @@ type _BACnetConstructedDataUTCOffset struct {
 var _ BACnetConstructedDataUTCOffset = (*_BACnetConstructedDataUTCOffset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCOffset)(nil)
 
+// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
+func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
+	if utcOffset == nil {
+		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
+	}
+	_result := &_BACnetConstructedDataUTCOffset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UtcOffset:                     utcOffset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
-	if utcOffset == nil {
-		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
-	}
-	_result := &_BACnetConstructedDataUTCOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UtcOffset:                     utcOffset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTCOffset {

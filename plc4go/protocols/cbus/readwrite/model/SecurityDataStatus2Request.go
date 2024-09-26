@@ -49,6 +49,15 @@ type _SecurityDataStatus2Request struct {
 var _ SecurityDataStatus2Request = (*_SecurityDataStatus2Request)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatus2Request)(nil)
 
+// NewSecurityDataStatus2Request factory function for _SecurityDataStatus2Request
+func NewSecurityDataStatus2Request(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatus2Request {
+	_result := &_SecurityDataStatus2Request{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataStatus2Request)(nil)
 
 func (m *_SecurityDataStatus2Request) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataStatus2Request factory function for _SecurityDataStatus2Request
-func NewSecurityDataStatus2Request(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatus2Request {
-	_result := &_SecurityDataStatus2Request{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,16 @@ type _ApduDataDeviceDescriptorRead struct {
 var _ ApduDataDeviceDescriptorRead = (*_ApduDataDeviceDescriptorRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataDeviceDescriptorRead)(nil)
 
+// NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
+func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
+	_result := &_ApduDataDeviceDescriptorRead{
+		ApduDataContract: NewApduData(dataLength),
+		DescriptorType:   descriptorType,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ApduDataDeviceDescriptorRead) GetDescriptorType() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataDeviceDescriptorRead factory function for _ApduDataDeviceDescriptorRead
-func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_ApduDataDeviceDescriptorRead {
-	_result := &_ApduDataDeviceDescriptorRead{
-		ApduDataContract: NewApduData(dataLength),
-		DescriptorType:   descriptorType,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataDeviceDescriptorRead(structType any) ApduDataDeviceDescriptorRead {

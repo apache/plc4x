@@ -54,6 +54,16 @@ type _TelephonyDataDialInFailure struct {
 var _ TelephonyDataDialInFailure = (*_TelephonyDataDialInFailure)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataDialInFailure)(nil)
 
+// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
+func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialInFailureReason) *_TelephonyDataDialInFailure {
+	_result := &_TelephonyDataDialInFailure{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_TelephonyDataDialInFailure) GetReason() DialInFailureReason {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
-func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialInFailureReason) *_TelephonyDataDialInFailure {
-	_result := &_TelephonyDataDialInFailure{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Reason:                reason,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataDialInFailure(structType any) TelephonyDataDialInFailure {

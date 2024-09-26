@@ -49,6 +49,15 @@ type _SALDataRoomControlSystem struct {
 var _ SALDataRoomControlSystem = (*_SALDataRoomControlSystem)(nil)
 var _ SALDataRequirements = (*_SALDataRoomControlSystem)(nil)
 
+// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
+func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
+	_result := &_SALDataRoomControlSystem{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_SALDataRoomControlSystem) GetApplicationId() ApplicationId {
 
 func (m *_SALDataRoomControlSystem) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
-func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
-	_result := &_SALDataRoomControlSystem{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

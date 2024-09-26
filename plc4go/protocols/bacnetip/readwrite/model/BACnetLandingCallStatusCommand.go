@@ -70,6 +70,14 @@ type _BACnetLandingCallStatusCommand struct {
 
 var _ BACnetLandingCallStatusCommandContract = (*_BACnetLandingCallStatusCommand)(nil)
 
+// NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
+func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
+	}
+	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetLandingCallStatusCommand) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatusCommand factory function for _BACnetLandingCallStatusCommand
-func NewBACnetLandingCallStatusCommand(peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommand {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetLandingCallStatusCommand must not be nil")
-	}
-	return &_BACnetLandingCallStatusCommand{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatusCommand(structType any) BACnetLandingCallStatusCommand {

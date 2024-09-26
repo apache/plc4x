@@ -56,6 +56,19 @@ type _BACnetConstructedDataHighLimit struct {
 var _ BACnetConstructedDataHighLimit = (*_BACnetConstructedDataHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataHighLimit)(nil)
 
+// NewBACnetConstructedDataHighLimit factory function for _BACnetConstructedDataHighLimit
+func NewBACnetConstructedDataHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagReal for BACnetConstructedDataHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HighLimit:                     highLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataHighLimit) GetActualValue() BACnetApplicationTagR
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataHighLimit factory function for _BACnetConstructedDataHighLimit
-func NewBACnetConstructedDataHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
-	if highLimit == nil {
-		panic("highLimit of type BACnetApplicationTagReal for BACnetConstructedDataHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		HighLimit:                     highLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataHighLimit(structType any) BACnetConstructedDataHighLimit {

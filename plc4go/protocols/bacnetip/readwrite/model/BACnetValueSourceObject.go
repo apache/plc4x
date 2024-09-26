@@ -54,6 +54,19 @@ type _BACnetValueSourceObject struct {
 var _ BACnetValueSourceObject = (*_BACnetValueSourceObject)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceObject)(nil)
 
+// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
+func NewBACnetValueSourceObject(peekedTagHeader BACnetTagHeader, object BACnetDeviceObjectReferenceEnclosed) *_BACnetValueSourceObject {
+	if object == nil {
+		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
+	}
+	_result := &_BACnetValueSourceObject{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Object:                    object,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetValueSourceObject) GetObject() BACnetDeviceObjectReferenceEnclos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
-func NewBACnetValueSourceObject(peekedTagHeader BACnetTagHeader, object BACnetDeviceObjectReferenceEnclosed) *_BACnetValueSourceObject {
-	if object == nil {
-		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
-	}
-	_result := &_BACnetValueSourceObject{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Object:                    object,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {

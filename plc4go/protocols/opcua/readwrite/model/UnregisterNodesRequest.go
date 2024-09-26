@@ -60,6 +60,21 @@ type _UnregisterNodesRequest struct {
 var _ UnregisterNodesRequest = (*_UnregisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesRequest)(nil)
 
+// NewUnregisterNodesRequest factory function for _UnregisterNodesRequest
+func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for UnregisterNodesRequest must not be nil")
+	}
+	_result := &_UnregisterNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToUnregister:             noOfNodesToUnregister,
+		NodesToUnregister:                 nodesToUnregister,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_UnregisterNodesRequest) GetNodesToUnregister() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnregisterNodesRequest factory function for _UnregisterNodesRequest
-func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for UnregisterNodesRequest must not be nil")
-	}
-	_result := &_UnregisterNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToUnregister:             noOfNodesToUnregister,
-		NodesToUnregister:                 nodesToUnregister,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnregisterNodesRequest(structType any) UnregisterNodesRequest {

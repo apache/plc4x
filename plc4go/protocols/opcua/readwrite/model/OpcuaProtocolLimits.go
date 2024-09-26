@@ -60,6 +60,11 @@ type _OpcuaProtocolLimits struct {
 
 var _ OpcuaProtocolLimits = (*_OpcuaProtocolLimits)(nil)
 
+// NewOpcuaProtocolLimits factory function for _OpcuaProtocolLimits
+func NewOpcuaProtocolLimits(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) *_OpcuaProtocolLimits {
+	return &_OpcuaProtocolLimits{ReceiveBufferSize: receiveBufferSize, SendBufferSize: sendBufferSize, MaxMessageSize: maxMessageSize, MaxChunkCount: maxChunkCount}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_OpcuaProtocolLimits) GetMaxChunkCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaProtocolLimits factory function for _OpcuaProtocolLimits
-func NewOpcuaProtocolLimits(receiveBufferSize uint32, sendBufferSize uint32, maxMessageSize uint32, maxChunkCount uint32) *_OpcuaProtocolLimits {
-	return &_OpcuaProtocolLimits{ReceiveBufferSize: receiveBufferSize, SendBufferSize: sendBufferSize, MaxMessageSize: maxMessageSize, MaxChunkCount: maxChunkCount}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaProtocolLimits(structType any) OpcuaProtocolLimits {

@@ -63,6 +63,11 @@ type _CIPAttributes struct {
 
 var _ CIPAttributes = (*_CIPAttributes)(nil)
 
+// NewCIPAttributes factory function for _CIPAttributes
+func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
+	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -88,11 +93,6 @@ func (m *_CIPAttributes) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPAttributes factory function for _CIPAttributes
-func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
-	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPAttributes(structType any) CIPAttributes {

@@ -60,6 +60,20 @@ type _ErrorEnclosed struct {
 
 var _ ErrorEnclosed = (*_ErrorEnclosed)(nil)
 
+// NewErrorEnclosed factory function for _ErrorEnclosed
+func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
+	}
+	if error == nil {
+		panic("error of type Error for ErrorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
+	}
+	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_ErrorEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorEnclosed factory function for _ErrorEnclosed
-func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
-	}
-	if error == nil {
-		panic("error of type Error for ErrorEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
-	}
-	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorEnclosed(structType any) ErrorEnclosed {

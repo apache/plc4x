@@ -56,6 +56,19 @@ type _BACnetConstructedDataChangeOfStateTime struct {
 var _ BACnetConstructedDataChangeOfStateTime = (*_BACnetConstructedDataChangeOfStateTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangeOfStateTime)(nil)
 
+// NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
+func NewBACnetConstructedDataChangeOfStateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeOfStateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
+	if changeOfStateTime == nil {
+		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataChangeOfStateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangeOfStateTime:             changeOfStateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
-func NewBACnetConstructedDataChangeOfStateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeOfStateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
-	if changeOfStateTime == nil {
-		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataChangeOfStateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ChangeOfStateTime:             changeOfStateTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChangeOfStateTime(structType any) BACnetConstructedDataChangeOfStateTime {

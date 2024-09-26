@@ -82,6 +82,11 @@ type _CALData struct {
 
 var _ CALDataContract = (*_CALData)(nil)
 
+// NewCALData factory function for _CALData
+func NewCALData(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALData {
+	return &_CALData{CommandTypeContainer: commandTypeContainer, AdditionalData: additionalData, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -126,11 +131,6 @@ func (pm *_CALData) GetSendIdentifyRequestBefore() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALData factory function for _CALData
-func NewCALData(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALData {
-	return &_CALData{CommandTypeContainer: commandTypeContainer, AdditionalData: additionalData, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALData(structType any) CALData {

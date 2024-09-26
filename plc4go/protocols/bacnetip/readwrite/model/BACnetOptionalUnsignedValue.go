@@ -54,6 +54,19 @@ type _BACnetOptionalUnsignedValue struct {
 var _ BACnetOptionalUnsignedValue = (*_BACnetOptionalUnsignedValue)(nil)
 var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedValue)(nil)
 
+// NewBACnetOptionalUnsignedValue factory function for _BACnetOptionalUnsignedValue
+func NewBACnetOptionalUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetOptionalUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetOptionalUnsignedValue must not be nil")
+	}
+	_result := &_BACnetOptionalUnsignedValue{
+		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
+		UnsignedValue:                  unsignedValue,
+	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalUnsignedValue) GetUnsignedValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsignedValue factory function for _BACnetOptionalUnsignedValue
-func NewBACnetOptionalUnsignedValue(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger) *_BACnetOptionalUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetOptionalUnsignedValue must not be nil")
-	}
-	_result := &_BACnetOptionalUnsignedValue{
-		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
-		UnsignedValue:                  unsignedValue,
-	}
-	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsignedValue(structType any) BACnetOptionalUnsignedValue {

@@ -73,6 +73,11 @@ type _DateAndTime struct {
 
 var _ DateAndTime = (*_DateAndTime)(nil)
 
+// NewDateAndTime factory function for _DateAndTime
+func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
+	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -114,11 +119,6 @@ func (m *_DateAndTime) GetDow() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDateAndTime factory function for _DateAndTime
-func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
-	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDateAndTime(structType any) DateAndTime {

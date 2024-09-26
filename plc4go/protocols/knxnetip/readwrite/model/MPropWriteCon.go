@@ -49,6 +49,15 @@ type _MPropWriteCon struct {
 var _ MPropWriteCon = (*_MPropWriteCon)(nil)
 var _ CEMIRequirements = (*_MPropWriteCon)(nil)
 
+// NewMPropWriteCon factory function for _MPropWriteCon
+func NewMPropWriteCon(size uint16) *_MPropWriteCon {
+	_result := &_MPropWriteCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_MPropWriteCon) GetMessageCode() uint8 {
 
 func (m *_MPropWriteCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMPropWriteCon factory function for _MPropWriteCon
-func NewMPropWriteCon(size uint16) *_MPropWriteCon {
-	_result := &_MPropWriteCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

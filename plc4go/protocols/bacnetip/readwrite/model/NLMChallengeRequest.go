@@ -60,6 +60,18 @@ type _NLMChallengeRequest struct {
 var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
 var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
 
+// NewNLMChallengeRequest factory function for _NLMChallengeRequest
+func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
+	_result := &_NLMChallengeRequest{
+		NLMContract:       NewNLM(apduLength),
+		MessageChallenge:  messageChallenge,
+		OriginalMessageId: originalMessageId,
+		OriginalTimestamp: originalTimestamp,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_NLMChallengeRequest) GetOriginalTimestamp() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMChallengeRequest factory function for _NLMChallengeRequest
-func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
-	_result := &_NLMChallengeRequest{
-		NLMContract:       NewNLM(apduLength),
-		MessageChallenge:  messageChallenge,
-		OriginalMessageId: originalMessageId,
-		OriginalTimestamp: originalTimestamp,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMChallengeRequest(structType any) NLMChallengeRequest {

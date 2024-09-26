@@ -57,6 +57,20 @@ type _CALDataIdentifyReply struct {
 var _ CALDataIdentifyReply = (*_CALDataIdentifyReply)(nil)
 var _ CALDataRequirements = (*_CALDataIdentifyReply)(nil)
 
+// NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
+func NewCALDataIdentifyReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, identifyReplyCommand IdentifyReplyCommand, requestContext RequestContext) *_CALDataIdentifyReply {
+	if identifyReplyCommand == nil {
+		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
+	}
+	_result := &_CALDataIdentifyReply{
+		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:            attribute,
+		IdentifyReplyCommand: identifyReplyCommand,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,20 +102,6 @@ func (m *_CALDataIdentifyReply) GetIdentifyReplyCommand() IdentifyReplyCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataIdentifyReply factory function for _CALDataIdentifyReply
-func NewCALDataIdentifyReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, identifyReplyCommand IdentifyReplyCommand, requestContext RequestContext) *_CALDataIdentifyReply {
-	if identifyReplyCommand == nil {
-		panic("identifyReplyCommand of type IdentifyReplyCommand for CALDataIdentifyReply must not be nil")
-	}
-	_result := &_CALDataIdentifyReply{
-		CALDataContract:      NewCALData(commandTypeContainer, additionalData, requestContext),
-		Attribute:            attribute,
-		IdentifyReplyCommand: identifyReplyCommand,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataIdentifyReply(structType any) CALDataIdentifyReply {

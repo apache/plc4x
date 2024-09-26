@@ -54,6 +54,19 @@ type _BACnetOptionalUnsignedNull struct {
 var _ BACnetOptionalUnsignedNull = (*_BACnetOptionalUnsignedNull)(nil)
 var _ BACnetOptionalUnsignedRequirements = (*_BACnetOptionalUnsignedNull)(nil)
 
+// NewBACnetOptionalUnsignedNull factory function for _BACnetOptionalUnsignedNull
+func NewBACnetOptionalUnsignedNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalUnsignedNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalUnsignedNull must not be nil")
+	}
+	_result := &_BACnetOptionalUnsignedNull{
+		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalUnsignedNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsignedNull factory function for _BACnetOptionalUnsignedNull
-func NewBACnetOptionalUnsignedNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalUnsignedNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalUnsignedNull must not be nil")
-	}
-	_result := &_BACnetOptionalUnsignedNull{
-		BACnetOptionalUnsignedContract: NewBACnetOptionalUnsigned(peekedTagHeader),
-		NullValue:                      nullValue,
-	}
-	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsignedNull(structType any) BACnetOptionalUnsignedNull {

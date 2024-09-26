@@ -56,6 +56,19 @@ type _DeviceConfigurationAck struct {
 var _ DeviceConfigurationAck = (*_DeviceConfigurationAck)(nil)
 var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationAck)(nil)
 
+// NewDeviceConfigurationAck factory function for _DeviceConfigurationAck
+func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) *_DeviceConfigurationAck {
+	if deviceConfigurationAckDataBlock == nil {
+		panic("deviceConfigurationAckDataBlock of type DeviceConfigurationAckDataBlock for DeviceConfigurationAck must not be nil")
+	}
+	_result := &_DeviceConfigurationAck{
+		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
+		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_DeviceConfigurationAck) GetDeviceConfigurationAckDataBlock() DeviceCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationAck factory function for _DeviceConfigurationAck
-func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) *_DeviceConfigurationAck {
-	if deviceConfigurationAckDataBlock == nil {
-		panic("deviceConfigurationAckDataBlock of type DeviceConfigurationAckDataBlock for DeviceConfigurationAck must not be nil")
-	}
-	_result := &_DeviceConfigurationAck{
-		KnxNetIpMessageContract:         NewKnxNetIpMessage(),
-		DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationAck(structType any) DeviceConfigurationAck {

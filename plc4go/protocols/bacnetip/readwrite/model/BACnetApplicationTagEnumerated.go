@@ -56,6 +56,19 @@ type _BACnetApplicationTagEnumerated struct {
 var _ BACnetApplicationTagEnumerated = (*_BACnetApplicationTagEnumerated)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagEnumerated)(nil)
 
+// NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
+func NewBACnetApplicationTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetApplicationTagEnumerated {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
+	}
+	_result := &_BACnetApplicationTagEnumerated{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -98,19 +111,6 @@ func (m *_BACnetApplicationTagEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
-func NewBACnetApplicationTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetApplicationTagEnumerated {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
-	}
-	_result := &_BACnetApplicationTagEnumerated{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagEnumerated(structType any) BACnetApplicationTagEnumerated {

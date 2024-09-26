@@ -49,6 +49,15 @@ type _SubscribedDataSetDataType struct {
 var _ SubscribedDataSetDataType = (*_SubscribedDataSetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscribedDataSetDataType)(nil)
 
+// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
+func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
+	_result := &_SubscribedDataSetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_SubscribedDataSetDataType) GetIdentifier() string {
 
 func (m *_SubscribedDataSetDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
-func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
-	_result := &_SubscribedDataSetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

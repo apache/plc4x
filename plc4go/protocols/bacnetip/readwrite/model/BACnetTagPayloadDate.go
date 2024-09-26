@@ -82,6 +82,11 @@ type _BACnetTagPayloadDate struct {
 
 var _ BACnetTagPayloadDate = (*_BACnetTagPayloadDate)(nil)
 
+// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
+func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
+	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -182,11 +187,6 @@ func (m *_BACnetTagPayloadDate) GetDayOfWeekIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
-func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
-	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadDate(structType any) BACnetTagPayloadDate {

@@ -61,6 +61,17 @@ type _LevelInformationNormal struct {
 var _ LevelInformationNormal = (*_LevelInformationNormal)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationNormal)(nil)
 
+// NewLevelInformationNormal factory function for _LevelInformationNormal
+func NewLevelInformationNormal(raw uint16, pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) *_LevelInformationNormal {
+	_result := &_LevelInformationNormal{
+		LevelInformationContract: NewLevelInformation(raw),
+		Pair1:                    pair1,
+		Pair2:                    pair2,
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,17 +124,6 @@ func (m *_LevelInformationNormal) GetActualLevelInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformationNormal factory function for _LevelInformationNormal
-func NewLevelInformationNormal(raw uint16, pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) *_LevelInformationNormal {
-	_result := &_LevelInformationNormal{
-		LevelInformationContract: NewLevelInformation(raw),
-		Pair1:                    pair1,
-		Pair2:                    pair2,
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformationNormal(structType any) LevelInformationNormal {

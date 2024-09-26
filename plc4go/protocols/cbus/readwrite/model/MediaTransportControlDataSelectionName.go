@@ -54,6 +54,16 @@ type _MediaTransportControlDataSelectionName struct {
 var _ MediaTransportControlDataSelectionName = (*_MediaTransportControlDataSelectionName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSelectionName)(nil)
 
+// NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
+func NewMediaTransportControlDataSelectionName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionName string) *_MediaTransportControlDataSelectionName {
+	_result := &_MediaTransportControlDataSelectionName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionName:                     selectionName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MediaTransportControlDataSelectionName) GetSelectionName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
-func NewMediaTransportControlDataSelectionName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionName string) *_MediaTransportControlDataSelectionName {
-	_result := &_MediaTransportControlDataSelectionName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SelectionName:                     selectionName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSelectionName(structType any) MediaTransportControlDataSelectionName {

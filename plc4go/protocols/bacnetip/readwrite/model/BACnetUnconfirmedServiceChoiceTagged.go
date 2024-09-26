@@ -58,6 +58,14 @@ type _BACnetUnconfirmedServiceChoiceTagged struct {
 
 var _ BACnetUnconfirmedServiceChoiceTagged = (*_BACnetUnconfirmedServiceChoiceTagged)(nil)
 
+// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
+func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetValue() BACnetUnconfirmedServ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
-func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceChoiceTagged(structType any) BACnetUnconfirmedServiceChoiceTagged {

@@ -54,6 +54,11 @@ type _SecurityHeader struct {
 
 var _ SecurityHeader = (*_SecurityHeader)(nil)
 
+// NewSecurityHeader factory function for _SecurityHeader
+func NewSecurityHeader(secureChannelId uint32, secureTokenId uint32) *_SecurityHeader {
+	return &_SecurityHeader{SecureChannelId: secureChannelId, SecureTokenId: secureTokenId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_SecurityHeader) GetSecureTokenId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityHeader factory function for _SecurityHeader
-func NewSecurityHeader(secureChannelId uint32, secureTokenId uint32) *_SecurityHeader {
-	return &_SecurityHeader{SecureChannelId: secureChannelId, SecureTokenId: secureTokenId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityHeader(structType any) SecurityHeader {

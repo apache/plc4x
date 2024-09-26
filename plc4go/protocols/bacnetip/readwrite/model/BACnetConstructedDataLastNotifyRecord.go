@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastNotifyRecord struct {
 var _ BACnetConstructedDataLastNotifyRecord = (*_BACnetConstructedDataLastNotifyRecord)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastNotifyRecord)(nil)
 
+// NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
+func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastNotifyRecord BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
+	if lastNotifyRecord == nil {
+		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastNotifyRecord{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastNotifyRecord:              lastNotifyRecord,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastNotifyRecord) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastNotifyRecord factory function for _BACnetConstructedDataLastNotifyRecord
-func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastNotifyRecord BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastNotifyRecord {
-	if lastNotifyRecord == nil {
-		panic("lastNotifyRecord of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLastNotifyRecord must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastNotifyRecord{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastNotifyRecord:              lastNotifyRecord,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastNotifyRecord(structType any) BACnetConstructedDataLastNotifyRecord {

@@ -64,6 +64,11 @@ type _HVACAuxiliaryLevel struct {
 
 var _ HVACAuxiliaryLevel = (*_HVACAuxiliaryLevel)(nil)
 
+// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
+func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
+	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -114,11 +119,6 @@ func (m *_HVACAuxiliaryLevel) GetSpeedSettings() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
-func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
-	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACAuxiliaryLevel(structType any) HVACAuxiliaryLevel {

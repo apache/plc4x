@@ -63,6 +63,31 @@ type _BACnetFaultParameterFaultLifeSafety struct {
 var _ BACnetFaultParameterFaultLifeSafety = (*_BACnetFaultParameterFaultLifeSafety)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultLifeSafety)(nil)
 
+// NewBACnetFaultParameterFaultLifeSafety factory function for _BACnetFaultParameterFaultLifeSafety
+func NewBACnetFaultParameterFaultLifeSafety(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultLifeSafety {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultLifeSafetyListOfFaultValues for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if modePropertyReference == nil {
+		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafety must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultLifeSafety{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ModePropertyReference:        modePropertyReference,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetFaultParameterFaultLifeSafety) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultLifeSafety factory function for _BACnetFaultParameterFaultLifeSafety
-func NewBACnetFaultParameterFaultLifeSafety(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, modePropertyReference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultLifeSafety {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if listOfFaultValues == nil {
-		panic("listOfFaultValues of type BACnetFaultParameterFaultLifeSafetyListOfFaultValues for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if modePropertyReference == nil {
-		panic("modePropertyReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafety must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultLifeSafety{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfFaultValues:            listOfFaultValues,
-		ModePropertyReference:        modePropertyReference,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultLifeSafety(structType any) BACnetFaultParameterFaultLifeSafety {

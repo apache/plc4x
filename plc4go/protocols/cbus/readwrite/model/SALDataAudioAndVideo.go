@@ -54,6 +54,19 @@ type _SALDataAudioAndVideo struct {
 var _ SALDataAudioAndVideo = (*_SALDataAudioAndVideo)(nil)
 var _ SALDataRequirements = (*_SALDataAudioAndVideo)(nil)
 
+// NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
+func NewSALDataAudioAndVideo(salData SALData, audioVideoData LightingData) *_SALDataAudioAndVideo {
+	if audioVideoData == nil {
+		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
+	}
+	_result := &_SALDataAudioAndVideo{
+		SALDataContract: NewSALData(salData),
+		AudioVideoData:  audioVideoData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataAudioAndVideo) GetAudioVideoData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAudioAndVideo factory function for _SALDataAudioAndVideo
-func NewSALDataAudioAndVideo(salData SALData, audioVideoData LightingData) *_SALDataAudioAndVideo {
-	if audioVideoData == nil {
-		panic("audioVideoData of type LightingData for SALDataAudioAndVideo must not be nil")
-	}
-	_result := &_SALDataAudioAndVideo{
-		SALDataContract: NewSALData(salData),
-		AudioVideoData:  audioVideoData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAudioAndVideo(structType any) SALDataAudioAndVideo {

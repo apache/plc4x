@@ -56,6 +56,19 @@ type _BACnetConstructedDataBlinkWarnEnable struct {
 var _ BACnetConstructedDataBlinkWarnEnable = (*_BACnetConstructedDataBlinkWarnEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBlinkWarnEnable)(nil)
 
+// NewBACnetConstructedDataBlinkWarnEnable factory function for _BACnetConstructedDataBlinkWarnEnable
+func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBlinkWarnEnable {
+	if blinkWarnEnable == nil {
+		panic("blinkWarnEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataBlinkWarnEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataBlinkWarnEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BlinkWarnEnable:               blinkWarnEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBlinkWarnEnable) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBlinkWarnEnable factory function for _BACnetConstructedDataBlinkWarnEnable
-func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, blinkWarnEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBlinkWarnEnable {
-	if blinkWarnEnable == nil {
-		panic("blinkWarnEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataBlinkWarnEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataBlinkWarnEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BlinkWarnEnable:               blinkWarnEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBlinkWarnEnable(structType any) BACnetConstructedDataBlinkWarnEnable {

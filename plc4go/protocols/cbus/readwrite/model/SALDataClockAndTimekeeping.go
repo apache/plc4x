@@ -54,6 +54,19 @@ type _SALDataClockAndTimekeeping struct {
 var _ SALDataClockAndTimekeeping = (*_SALDataClockAndTimekeeping)(nil)
 var _ SALDataRequirements = (*_SALDataClockAndTimekeeping)(nil)
 
+// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
+func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData ClockAndTimekeepingData) *_SALDataClockAndTimekeeping {
+	if clockAndTimekeepingData == nil {
+		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
+	}
+	_result := &_SALDataClockAndTimekeeping{
+		SALDataContract:         NewSALData(salData),
+		ClockAndTimekeepingData: clockAndTimekeepingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataClockAndTimekeeping) GetClockAndTimekeepingData() ClockAndTimek
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
-func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData ClockAndTimekeepingData) *_SALDataClockAndTimekeeping {
-	if clockAndTimekeepingData == nil {
-		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
-	}
-	_result := &_SALDataClockAndTimekeeping{
-		SALDataContract:         NewSALData(salData),
-		ClockAndTimekeepingData: clockAndTimekeepingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataClockAndTimekeeping(structType any) SALDataClockAndTimekeeping {

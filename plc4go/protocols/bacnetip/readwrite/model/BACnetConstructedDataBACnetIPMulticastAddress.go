@@ -56,6 +56,19 @@ type _BACnetConstructedDataBACnetIPMulticastAddress struct {
 var _ BACnetConstructedDataBACnetIPMulticastAddress = (*_BACnetConstructedDataBACnetIPMulticastAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPMulticastAddress)(nil)
 
+// NewBACnetConstructedDataBACnetIPMulticastAddress factory function for _BACnetConstructedDataBACnetIPMulticastAddress
+func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
+	if ipMulticastAddress == nil {
+		panic("ipMulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPMulticastAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpMulticastAddress:            ipMulticastAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBACnetIPMulticastAddress) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPMulticastAddress factory function for _BACnetConstructedDataBACnetIPMulticastAddress
-func NewBACnetConstructedDataBACnetIPMulticastAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipMulticastAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPMulticastAddress {
-	if ipMulticastAddress == nil {
-		panic("ipMulticastAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataBACnetIPMulticastAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPMulticastAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpMulticastAddress:            ipMulticastAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPMulticastAddress(structType any) BACnetConstructedDataBACnetIPMulticastAddress {

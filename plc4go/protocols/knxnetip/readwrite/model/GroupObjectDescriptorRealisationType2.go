@@ -75,6 +75,11 @@ type _GroupObjectDescriptorRealisationType2 struct {
 
 var _ GroupObjectDescriptorRealisationType2 = (*_GroupObjectDescriptorRealisationType2)(nil)
 
+// NewGroupObjectDescriptorRealisationType2 factory function for _GroupObjectDescriptorRealisationType2
+func NewGroupObjectDescriptorRealisationType2(dataPointer uint8, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType2 {
+	return &_GroupObjectDescriptorRealisationType2{DataPointer: dataPointer, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -120,11 +125,6 @@ func (m *_GroupObjectDescriptorRealisationType2) GetValueType() ComObjectValueTy
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGroupObjectDescriptorRealisationType2 factory function for _GroupObjectDescriptorRealisationType2
-func NewGroupObjectDescriptorRealisationType2(dataPointer uint8, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType2 {
-	return &_GroupObjectDescriptorRealisationType2{DataPointer: dataPointer, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGroupObjectDescriptorRealisationType2(structType any) GroupObjectDescriptorRealisationType2 {

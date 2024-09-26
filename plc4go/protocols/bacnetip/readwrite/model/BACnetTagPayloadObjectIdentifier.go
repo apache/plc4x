@@ -59,6 +59,11 @@ type _BACnetTagPayloadObjectIdentifier struct {
 
 var _ BACnetTagPayloadObjectIdentifier = (*_BACnetTagPayloadObjectIdentifier)(nil)
 
+// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
+func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
+	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -95,11 +100,6 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
-func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
-	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadObjectIdentifier(structType any) BACnetTagPayloadObjectIdentifier {

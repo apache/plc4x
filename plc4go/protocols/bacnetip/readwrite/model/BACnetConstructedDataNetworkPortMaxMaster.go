@@ -56,6 +56,19 @@ type _BACnetConstructedDataNetworkPortMaxMaster struct {
 var _ BACnetConstructedDataNetworkPortMaxMaster = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkPortMaxMaster)(nil)
 
+// NewBACnetConstructedDataNetworkPortMaxMaster factory function for _BACnetConstructedDataNetworkPortMaxMaster
+func NewBACnetConstructedDataNetworkPortMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxMaster must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNetworkPortMaxMaster) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkPortMaxMaster factory function for _BACnetConstructedDataNetworkPortMaxMaster
-func NewBACnetConstructedDataNetworkPortMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkPortMaxMaster {
-	if maxMaster == nil {
-		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkPortMaxMaster must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkPortMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxMaster:                     maxMaster,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkPortMaxMaster(structType any) BACnetConstructedDataNetworkPortMaxMaster {

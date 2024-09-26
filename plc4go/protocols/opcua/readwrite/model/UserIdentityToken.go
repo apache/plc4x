@@ -57,6 +57,23 @@ type _UserIdentityToken struct {
 var _ UserIdentityToken = (*_UserIdentityToken)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UserIdentityToken)(nil)
 
+// NewUserIdentityToken factory function for _UserIdentityToken
+func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserIdentityToken must not be nil")
+	}
+	if userIdentityTokenDefinition == nil {
+		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
+	}
+	_result := &_UserIdentityToken{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_UserIdentityToken) GetUserIdentityTokenDefinition() UserIdentityTokenD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserIdentityToken factory function for _UserIdentityToken
-func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) *_UserIdentityToken {
-	if policyId == nil {
-		panic("policyId of type PascalString for UserIdentityToken must not be nil")
-	}
-	if userIdentityTokenDefinition == nil {
-		panic("userIdentityTokenDefinition of type UserIdentityTokenDefinition for UserIdentityToken must not be nil")
-	}
-	_result := &_UserIdentityToken{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PolicyId:                          policyId,
-		UserIdentityTokenDefinition:       userIdentityTokenDefinition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserIdentityToken(structType any) UserIdentityToken {

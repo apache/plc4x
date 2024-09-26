@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastCredentialAddedTime struct {
 var _ BACnetConstructedDataLastCredentialAddedTime = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
 
+// NewBACnetConstructedDataLastCredentialAddedTime factory function for _BACnetConstructedDataLastCredentialAddedTime
+func NewBACnetConstructedDataLastCredentialAddedTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAddedTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAddedTime {
+	if lastCredentialAddedTime == nil {
+		panic("lastCredentialAddedTime of type BACnetDateTime for BACnetConstructedDataLastCredentialAddedTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastCredentialAddedTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialAddedTime:       lastCredentialAddedTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) GetActualValue() BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastCredentialAddedTime factory function for _BACnetConstructedDataLastCredentialAddedTime
-func NewBACnetConstructedDataLastCredentialAddedTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAddedTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAddedTime {
-	if lastCredentialAddedTime == nil {
-		panic("lastCredentialAddedTime of type BACnetDateTime for BACnetConstructedDataLastCredentialAddedTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastCredentialAddedTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastCredentialAddedTime:       lastCredentialAddedTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastCredentialAddedTime(structType any) BACnetConstructedDataLastCredentialAddedTime {

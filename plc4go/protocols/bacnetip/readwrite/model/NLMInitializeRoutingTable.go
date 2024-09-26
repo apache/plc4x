@@ -57,6 +57,17 @@ type _NLMInitializeRoutingTable struct {
 var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
 
+// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
+func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
+	_result := &_NLMInitializeRoutingTable{
+		NLMContract:   NewNLM(apduLength),
+		NumberOfPorts: numberOfPorts,
+		PortMappings:  portMappings,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMInitializeRoutingTable) GetPortMappings() []NLMInitializeRoutingTab
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
-func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
-	_result := &_NLMInitializeRoutingTable{
-		NLMContract:   NewNLM(apduLength),
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTable(structType any) NLMInitializeRoutingTable {

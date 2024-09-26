@@ -54,6 +54,16 @@ type _ModbusPDUReadFifoQueueResponse struct {
 var _ ModbusPDUReadFifoQueueResponse = (*_ModbusPDUReadFifoQueueResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFifoQueueResponse)(nil)
 
+// NewModbusPDUReadFifoQueueResponse factory function for _ModbusPDUReadFifoQueueResponse
+func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQueueResponse {
+	_result := &_ModbusPDUReadFifoQueueResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		FifoValue:         fifoValue,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUReadFifoQueueResponse) GetFifoValue() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFifoQueueResponse factory function for _ModbusPDUReadFifoQueueResponse
-func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQueueResponse {
-	_result := &_ModbusPDUReadFifoQueueResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		FifoValue:         fifoValue,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueResponse {

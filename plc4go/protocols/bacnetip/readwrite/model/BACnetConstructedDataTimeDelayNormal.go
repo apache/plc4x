@@ -56,6 +56,19 @@ type _BACnetConstructedDataTimeDelayNormal struct {
 var _ BACnetConstructedDataTimeDelayNormal = (*_BACnetConstructedDataTimeDelayNormal)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeDelayNormal)(nil)
 
+// NewBACnetConstructedDataTimeDelayNormal factory function for _BACnetConstructedDataTimeDelayNormal
+func NewBACnetConstructedDataTimeDelayNormal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelayNormal BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
+	if timeDelayNormal == nil {
+		panic("timeDelayNormal of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelayNormal must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeDelayNormal{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeDelayNormal:               timeDelayNormal,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTimeDelayNormal) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeDelayNormal factory function for _BACnetConstructedDataTimeDelayNormal
-func NewBACnetConstructedDataTimeDelayNormal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeDelayNormal BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeDelayNormal {
-	if timeDelayNormal == nil {
-		panic("timeDelayNormal of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeDelayNormal must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeDelayNormal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeDelayNormal:               timeDelayNormal,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeDelayNormal(structType any) BACnetConstructedDataTimeDelayNormal {

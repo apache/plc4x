@@ -63,6 +63,14 @@ type _BACnetSilencedStateTagged struct {
 
 var _ BACnetSilencedStateTagged = (*_BACnetSilencedStateTagged)(nil)
 
+// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
+func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
+	}
+	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetSilencedStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
-func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
-	}
-	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSilencedStateTagged(structType any) BACnetSilencedStateTagged {

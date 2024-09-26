@@ -49,6 +49,15 @@ type _SysexCommandSamplingInterval struct {
 var _ SysexCommandSamplingInterval = (*_SysexCommandSamplingInterval)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandSamplingInterval)(nil)
 
+// NewSysexCommandSamplingInterval factory function for _SysexCommandSamplingInterval
+func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
+	_result := &_SysexCommandSamplingInterval{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandSamplingInterval) GetResponse() bool {
 
 func (m *_SysexCommandSamplingInterval) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandSamplingInterval factory function for _SysexCommandSamplingInterval
-func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
-	_result := &_SysexCommandSamplingInterval{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,19 @@ type _DF1CommandRequestMessage struct {
 var _ DF1CommandRequestMessage = (*_DF1CommandRequestMessage)(nil)
 var _ DF1RequestMessageRequirements = (*_DF1CommandRequestMessage)(nil)
 
+// NewDF1CommandRequestMessage factory function for _DF1CommandRequestMessage
+func NewDF1CommandRequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, command DF1RequestCommand) *_DF1CommandRequestMessage {
+	if command == nil {
+		panic("command of type DF1RequestCommand for DF1CommandRequestMessage must not be nil")
+	}
+	_result := &_DF1CommandRequestMessage{
+		DF1RequestMessageContract: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
+		Command:                   command,
+	}
+	_result.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_DF1CommandRequestMessage) GetCommand() DF1RequestCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1CommandRequestMessage factory function for _DF1CommandRequestMessage
-func NewDF1CommandRequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, command DF1RequestCommand) *_DF1CommandRequestMessage {
-	if command == nil {
-		panic("command of type DF1RequestCommand for DF1CommandRequestMessage must not be nil")
-	}
-	_result := &_DF1CommandRequestMessage{
-		DF1RequestMessageContract: NewDF1RequestMessage(destinationAddress, sourceAddress, status, transactionCounter),
-		Command:                   command,
-	}
-	_result.DF1RequestMessageContract.(*_DF1RequestMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1CommandRequestMessage(structType any) DF1CommandRequestMessage {

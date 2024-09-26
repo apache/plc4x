@@ -51,6 +51,11 @@ type _SerialInterfaceAddress struct {
 
 var _ SerialInterfaceAddress = (*_SerialInterfaceAddress)(nil)
 
+// NewSerialInterfaceAddress factory function for _SerialInterfaceAddress
+func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
+	return &_SerialInterfaceAddress{Address: address}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_SerialInterfaceAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSerialInterfaceAddress factory function for _SerialInterfaceAddress
-func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
-	return &_SerialInterfaceAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSerialInterfaceAddress(structType any) SerialInterfaceAddress {

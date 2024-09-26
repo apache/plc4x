@@ -49,6 +49,15 @@ type _DataSetWriterMessageDataType struct {
 var _ DataSetWriterMessageDataType = (*_DataSetWriterMessageDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataSetWriterMessageDataType)(nil)
 
+// NewDataSetWriterMessageDataType factory function for _DataSetWriterMessageDataType
+func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
+	_result := &_DataSetWriterMessageDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DataSetWriterMessageDataType) GetIdentifier() string {
 
 func (m *_DataSetWriterMessageDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataSetWriterMessageDataType factory function for _DataSetWriterMessageDataType
-func NewDataSetWriterMessageDataType() *_DataSetWriterMessageDataType {
-	_result := &_DataSetWriterMessageDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

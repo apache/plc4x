@@ -54,6 +54,19 @@ type _SALDataTelephonyStatusAndControl struct {
 var _ SALDataTelephonyStatusAndControl = (*_SALDataTelephonyStatusAndControl)(nil)
 var _ SALDataRequirements = (*_SALDataTelephonyStatusAndControl)(nil)
 
+// NewSALDataTelephonyStatusAndControl factory function for _SALDataTelephonyStatusAndControl
+func NewSALDataTelephonyStatusAndControl(salData SALData, telephonyData TelephonyData) *_SALDataTelephonyStatusAndControl {
+	if telephonyData == nil {
+		panic("telephonyData of type TelephonyData for SALDataTelephonyStatusAndControl must not be nil")
+	}
+	_result := &_SALDataTelephonyStatusAndControl{
+		SALDataContract: NewSALData(salData),
+		TelephonyData:   telephonyData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataTelephonyStatusAndControl) GetTelephonyData() TelephonyData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataTelephonyStatusAndControl factory function for _SALDataTelephonyStatusAndControl
-func NewSALDataTelephonyStatusAndControl(salData SALData, telephonyData TelephonyData) *_SALDataTelephonyStatusAndControl {
-	if telephonyData == nil {
-		panic("telephonyData of type TelephonyData for SALDataTelephonyStatusAndControl must not be nil")
-	}
-	_result := &_SALDataTelephonyStatusAndControl{
-		SALDataContract: NewSALData(salData),
-		TelephonyData:   telephonyData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataTelephonyStatusAndControl(structType any) SALDataTelephonyStatusAndControl {

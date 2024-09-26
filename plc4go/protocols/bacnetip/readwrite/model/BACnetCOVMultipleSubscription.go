@@ -63,6 +63,26 @@ type _BACnetCOVMultipleSubscription struct {
 
 var _ BACnetCOVMultipleSubscription = (*_BACnetCOVMultipleSubscription)(nil)
 
+// NewBACnetCOVMultipleSubscription factory function for _BACnetCOVMultipleSubscription
+func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) *_BACnetCOVMultipleSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if maxNotificationDelay == nil {
+		panic("maxNotificationDelay of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if listOfCovSubscriptionSpecification == nil {
+		panic("listOfCovSubscriptionSpecification of type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification for BACnetCOVMultipleSubscription must not be nil")
+	}
+	return &_BACnetCOVMultipleSubscription{Recipient: recipient, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, MaxNotificationDelay: maxNotificationDelay, ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,26 +112,6 @@ func (m *_BACnetCOVMultipleSubscription) GetListOfCovSubscriptionSpecification()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVMultipleSubscription factory function for _BACnetCOVMultipleSubscription
-func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) *_BACnetCOVMultipleSubscription {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if issueConfirmedNotifications == nil {
-		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if timeRemaining == nil {
-		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if maxNotificationDelay == nil {
-		panic("maxNotificationDelay of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if listOfCovSubscriptionSpecification == nil {
-		panic("listOfCovSubscriptionSpecification of type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification for BACnetCOVMultipleSubscription must not be nil")
-	}
-	return &_BACnetCOVMultipleSubscription{Recipient: recipient, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, MaxNotificationDelay: maxNotificationDelay, ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVMultipleSubscription(structType any) BACnetCOVMultipleSubscription {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPv6Address struct {
 var _ BACnetConstructedDataIPv6Address = (*_BACnetConstructedDataIPv6Address)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6Address)(nil)
 
+// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
+func NewBACnetConstructedDataIPv6Address(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6Address BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
+	if ipv6Address == nil {
+		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6Address{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6Address:                   ipv6Address,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPv6Address) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
-func NewBACnetConstructedDataIPv6Address(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6Address BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
-	if ipv6Address == nil {
-		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6Address{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6Address:                   ipv6Address,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6Address(structType any) BACnetConstructedDataIPv6Address {

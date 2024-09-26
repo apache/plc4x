@@ -59,6 +59,17 @@ type _BACnetConstructedDataPortFilter struct {
 var _ BACnetConstructedDataPortFilter = (*_BACnetConstructedDataPortFilter)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPortFilter)(nil)
 
+// NewBACnetConstructedDataPortFilter factory function for _BACnetConstructedDataPortFilter
+func NewBACnetConstructedDataPortFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
+	_result := &_BACnetConstructedDataPortFilter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PortFilter:                    portFilter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataPortFilter) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPortFilter factory function for _BACnetConstructedDataPortFilter
-func NewBACnetConstructedDataPortFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
-	_result := &_BACnetConstructedDataPortFilter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PortFilter:                    portFilter,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPortFilter(structType any) BACnetConstructedDataPortFilter {

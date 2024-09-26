@@ -76,6 +76,16 @@ type _SecurityDataEmulatedKeypad struct {
 var _ SecurityDataEmulatedKeypad = (*_SecurityDataEmulatedKeypad)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataEmulatedKeypad)(nil)
 
+// NewSecurityDataEmulatedKeypad factory function for _SecurityDataEmulatedKeypad
+func NewSecurityDataEmulatedKeypad(commandTypeContainer SecurityCommandTypeContainer, argument byte, key byte) *_SecurityDataEmulatedKeypad {
+	_result := &_SecurityDataEmulatedKeypad{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Key:                  key,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -178,16 +188,6 @@ func (m *_SecurityDataEmulatedKeypad) GetIsVacation() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataEmulatedKeypad factory function for _SecurityDataEmulatedKeypad
-func NewSecurityDataEmulatedKeypad(commandTypeContainer SecurityCommandTypeContainer, argument byte, key byte) *_SecurityDataEmulatedKeypad {
-	_result := &_SecurityDataEmulatedKeypad{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Key:                  key,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataEmulatedKeypad(structType any) SecurityDataEmulatedKeypad {

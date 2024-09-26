@@ -72,6 +72,11 @@ type _NLMUpdateKeyUpdateControlFlags struct {
 
 var _ NLMUpdateKeyUpdateControlFlags = (*_NLMUpdateKeyUpdateControlFlags)(nil)
 
+// NewNLMUpdateKeyUpdateControlFlags factory function for _NLMUpdateKeyUpdateControlFlags
+func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) *_NLMUpdateKeyUpdateControlFlags {
+	return &_NLMUpdateKeyUpdateControlFlags{Set1KeyRevisionActivationTimeExpirationTimePresent: set1KeyRevisionActivationTimeExpirationTimePresent, Set1KeyCountKeyParametersPresent: set1KeyCountKeyParametersPresent, Set1ShouldBeCleared: set1ShouldBeCleared, Set2KeyRevisionActivationTimeExpirationTimePresent: set2KeyRevisionActivationTimeExpirationTimePresent, Set2KeyCountKeyParametersPresent: set2KeyCountKeyParametersPresent, Set2ShouldBeCleared: set2ShouldBeCleared, MoreMessagesToBeExpected: moreMessagesToBeExpected, RemoveAllKeys: removeAllKeys}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +118,6 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetRemoveAllKeys() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdateControlFlags factory function for _NLMUpdateKeyUpdateControlFlags
-func NewNLMUpdateKeyUpdateControlFlags(set1KeyRevisionActivationTimeExpirationTimePresent bool, set1KeyCountKeyParametersPresent bool, set1ShouldBeCleared bool, set2KeyRevisionActivationTimeExpirationTimePresent bool, set2KeyCountKeyParametersPresent bool, set2ShouldBeCleared bool, moreMessagesToBeExpected bool, removeAllKeys bool) *_NLMUpdateKeyUpdateControlFlags {
-	return &_NLMUpdateKeyUpdateControlFlags{Set1KeyRevisionActivationTimeExpirationTimePresent: set1KeyRevisionActivationTimeExpirationTimePresent, Set1KeyCountKeyParametersPresent: set1KeyCountKeyParametersPresent, Set1ShouldBeCleared: set1ShouldBeCleared, Set2KeyRevisionActivationTimeExpirationTimePresent: set2KeyRevisionActivationTimeExpirationTimePresent, Set2KeyCountKeyParametersPresent: set2KeyCountKeyParametersPresent, Set2ShouldBeCleared: set2ShouldBeCleared, MoreMessagesToBeExpected: moreMessagesToBeExpected, RemoveAllKeys: removeAllKeys}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdateControlFlags(structType any) NLMUpdateKeyUpdateControlFlags {

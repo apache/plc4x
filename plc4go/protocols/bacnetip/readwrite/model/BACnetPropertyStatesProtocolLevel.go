@@ -54,6 +54,19 @@ type _BACnetPropertyStatesProtocolLevel struct {
 var _ BACnetPropertyStatesProtocolLevel = (*_BACnetPropertyStatesProtocolLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProtocolLevel)(nil)
 
+// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
+func NewBACnetPropertyStatesProtocolLevel(peekedTagHeader BACnetTagHeader, protocolLevel BACnetProtocolLevelTagged) *_BACnetPropertyStatesProtocolLevel {
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesProtocolLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProtocolLevel:                protocolLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetProtocolLevel() BACnetProtocolLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
-func NewBACnetPropertyStatesProtocolLevel(peekedTagHeader BACnetTagHeader, protocolLevel BACnetProtocolLevelTagged) *_BACnetPropertyStatesProtocolLevel {
-	if protocolLevel == nil {
-		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesProtocolLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ProtocolLevel:                protocolLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesProtocolLevel(structType any) BACnetPropertyStatesProtocolLevel {

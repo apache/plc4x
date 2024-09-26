@@ -56,6 +56,19 @@ type _APDUUnconfirmedRequest struct {
 var _ APDUUnconfirmedRequest = (*_APDUUnconfirmedRequest)(nil)
 var _ APDURequirements = (*_APDUUnconfirmedRequest)(nil)
 
+// NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
+func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
+	if serviceRequest == nil {
+		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
+	}
+	_result := &_APDUUnconfirmedRequest{
+		APDUContract:   NewAPDU(apduLength),
+		ServiceRequest: serviceRequest,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_APDUUnconfirmedRequest) GetServiceRequest() BACnetUnconfirmedServiceRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUUnconfirmedRequest factory function for _APDUUnconfirmedRequest
-func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, apduLength uint16) *_APDUUnconfirmedRequest {
-	if serviceRequest == nil {
-		panic("serviceRequest of type BACnetUnconfirmedServiceRequest for APDUUnconfirmedRequest must not be nil")
-	}
-	_result := &_APDUUnconfirmedRequest{
-		APDUContract:   NewAPDU(apduLength),
-		ServiceRequest: serviceRequest,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUUnconfirmedRequest(structType any) APDUUnconfirmedRequest {

@@ -60,6 +60,24 @@ type _QueryDataDescription struct {
 var _ QueryDataDescription = (*_QueryDataDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataDescription)(nil)
 
+// NewQueryDataDescription factory function for _QueryDataDescription
+func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
+	if relativePath == nil {
+		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
+	}
+	_result := &_QueryDataDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RelativePath:                      relativePath,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_QueryDataDescription) GetIndexRange() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryDataDescription factory function for _QueryDataDescription
-func NewQueryDataDescription(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) *_QueryDataDescription {
-	if relativePath == nil {
-		panic("relativePath of type ExtensionObjectDefinition for QueryDataDescription must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for QueryDataDescription must not be nil")
-	}
-	_result := &_QueryDataDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RelativePath:                      relativePath,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryDataDescription(structType any) QueryDataDescription {

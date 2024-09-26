@@ -56,6 +56,19 @@ type _BACnetConstructedDataBufferSize struct {
 var _ BACnetConstructedDataBufferSize = (*_BACnetConstructedDataBufferSize)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBufferSize)(nil)
 
+// NewBACnetConstructedDataBufferSize factory function for _BACnetConstructedDataBufferSize
+func NewBACnetConstructedDataBufferSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bufferSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
+	if bufferSize == nil {
+		panic("bufferSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBufferSize must not be nil")
+	}
+	_result := &_BACnetConstructedDataBufferSize{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BufferSize:                    bufferSize,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBufferSize) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBufferSize factory function for _BACnetConstructedDataBufferSize
-func NewBACnetConstructedDataBufferSize(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bufferSize BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBufferSize {
-	if bufferSize == nil {
-		panic("bufferSize of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBufferSize must not be nil")
-	}
-	_result := &_BACnetConstructedDataBufferSize{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BufferSize:                    bufferSize,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBufferSize(structType any) BACnetConstructedDataBufferSize {

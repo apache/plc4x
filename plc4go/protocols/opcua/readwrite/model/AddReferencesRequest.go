@@ -60,6 +60,21 @@ type _AddReferencesRequest struct {
 var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesRequest)(nil)
 
+// NewAddReferencesRequest factory function for _AddReferencesRequest
+func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
+	}
+	_result := &_AddReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToAdd:               noOfReferencesToAdd,
+		ReferencesToAdd:                   referencesToAdd,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesRequest factory function for _AddReferencesRequest
-func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
-	}
-	_result := &_AddReferencesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfReferencesToAdd:               noOfReferencesToAdd,
-		ReferencesToAdd:                   referencesToAdd,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesRequest(structType any) AddReferencesRequest {

@@ -51,6 +51,11 @@ type _BacnetConstants struct {
 
 var _ BacnetConstants = (*_BacnetConstants)(nil)
 
+// NewBacnetConstants factory function for _BacnetConstants
+func NewBacnetConstants() *_BacnetConstants {
+	return &_BacnetConstants{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_BacnetConstants) GetBacnetUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBacnetConstants factory function for _BacnetConstants
-func NewBacnetConstants() *_BacnetConstants {
-	return &_BacnetConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBacnetConstants(structType any) BacnetConstants {

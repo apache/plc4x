@@ -54,6 +54,19 @@ type _BACnetPriorityValueUnsigned struct {
 var _ BACnetPriorityValueUnsigned = (*_BACnetPriorityValueUnsigned)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueUnsigned)(nil)
 
+// NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
+func NewBACnetPriorityValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
+	}
+	_result := &_BACnetPriorityValueUnsigned{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		UnsignedValue:               unsignedValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueUnsigned) GetUnsignedValue() BACnetApplicationTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueUnsigned factory function for _BACnetPriorityValueUnsigned
-func NewBACnetPriorityValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueUnsigned {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetPriorityValueUnsigned must not be nil")
-	}
-	_result := &_BACnetPriorityValueUnsigned{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		UnsignedValue:               unsignedValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueUnsigned(structType any) BACnetPriorityValueUnsigned {

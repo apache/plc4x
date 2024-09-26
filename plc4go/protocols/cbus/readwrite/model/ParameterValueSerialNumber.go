@@ -57,6 +57,20 @@ type _ParameterValueSerialNumber struct {
 var _ ParameterValueSerialNumber = (*_ParameterValueSerialNumber)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueSerialNumber)(nil)
 
+// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
+func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
+	if value == nil {
+		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
+	}
+	_result := &_ParameterValueSerialNumber{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_ParameterValueSerialNumber) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
-func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
-	if value == nil {
-		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
-	}
-	_result := &_ParameterValueSerialNumber{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {

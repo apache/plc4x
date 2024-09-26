@@ -53,6 +53,15 @@ type _NullAddressItem struct {
 var _ NullAddressItem = (*_NullAddressItem)(nil)
 var _ TypeIdRequirements = (*_NullAddressItem)(nil)
 
+// NewNullAddressItem factory function for _NullAddressItem
+func NewNullAddressItem() *_NullAddressItem {
+	_result := &_NullAddressItem{
+		TypeIdContract: NewTypeId(),
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_NullAddressItem) GetId() uint16 {
 
 func (m *_NullAddressItem) GetParent() TypeIdContract {
 	return m.TypeIdContract
-}
-
-// NewNullAddressItem factory function for _NullAddressItem
-func NewNullAddressItem() *_NullAddressItem {
-	_result := &_NullAddressItem{
-		TypeIdContract: NewTypeId(),
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

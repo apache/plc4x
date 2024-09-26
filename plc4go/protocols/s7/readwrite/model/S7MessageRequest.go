@@ -49,6 +49,15 @@ type _S7MessageRequest struct {
 var _ S7MessageRequest = (*_S7MessageRequest)(nil)
 var _ S7MessageRequirements = (*_S7MessageRequest)(nil)
 
+// NewS7MessageRequest factory function for _S7MessageRequest
+func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
+	_result := &_S7MessageRequest{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_S7MessageRequest) GetMessageType() uint8 {
 
 func (m *_S7MessageRequest) GetParent() S7MessageContract {
 	return m.S7MessageContract
-}
-
-// NewS7MessageRequest factory function for _S7MessageRequest
-func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
-	_result := &_S7MessageRequest{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

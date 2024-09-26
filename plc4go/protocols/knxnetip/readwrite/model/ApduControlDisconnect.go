@@ -49,6 +49,15 @@ type _ApduControlDisconnect struct {
 var _ ApduControlDisconnect = (*_ApduControlDisconnect)(nil)
 var _ ApduControlRequirements = (*_ApduControlDisconnect)(nil)
 
+// NewApduControlDisconnect factory function for _ApduControlDisconnect
+func NewApduControlDisconnect() *_ApduControlDisconnect {
+	_result := &_ApduControlDisconnect{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduControlDisconnect) GetControlType() uint8 {
 
 func (m *_ApduControlDisconnect) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlDisconnect factory function for _ApduControlDisconnect
-func NewApduControlDisconnect() *_ApduControlDisconnect {
-	_result := &_ApduControlDisconnect{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

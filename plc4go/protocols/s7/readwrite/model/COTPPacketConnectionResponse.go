@@ -60,6 +60,18 @@ type _COTPPacketConnectionResponse struct {
 var _ COTPPacketConnectionResponse = (*_COTPPacketConnectionResponse)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketConnectionResponse)(nil)
 
+// NewCOTPPacketConnectionResponse factory function for _COTPPacketConnectionResponse
+func NewCOTPPacketConnectionResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionResponse {
+	_result := &_COTPPacketConnectionResponse{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_COTPPacketConnectionResponse) GetProtocolClass() COTPProtocolClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketConnectionResponse factory function for _COTPPacketConnectionResponse
-func NewCOTPPacketConnectionResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketConnectionResponse {
-	_result := &_COTPPacketConnectionResponse{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketConnectionResponse(structType any) COTPPacketConnectionResponse {

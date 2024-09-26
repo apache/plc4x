@@ -54,6 +54,16 @@ type _BACnetConstructedDataCOVURecipients struct {
 var _ BACnetConstructedDataCOVURecipients = (*_BACnetConstructedDataCOVURecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVURecipients)(nil)
 
+// NewBACnetConstructedDataCOVURecipients factory function for _BACnetConstructedDataCOVURecipients
+func NewBACnetConstructedDataCOVURecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covuRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVURecipients {
+	_result := &_BACnetConstructedDataCOVURecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovuRecipients:                covuRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataCOVURecipients) GetCovuRecipients() []BACnetRecip
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVURecipients factory function for _BACnetConstructedDataCOVURecipients
-func NewBACnetConstructedDataCOVURecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covuRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVURecipients {
-	_result := &_BACnetConstructedDataCOVURecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovuRecipients:                covuRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVURecipients(structType any) BACnetConstructedDataCOVURecipients {

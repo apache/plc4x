@@ -60,6 +60,27 @@ type _BACnetEventParameterChangeOfDiscreteValue struct {
 var _ BACnetEventParameterChangeOfDiscreteValue = (*_BACnetEventParameterChangeOfDiscreteValue)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfDiscreteValue)(nil)
 
+// NewBACnetEventParameterChangeOfDiscreteValue factory function for _BACnetEventParameterChangeOfDiscreteValue
+func NewBACnetEventParameterChangeOfDiscreteValue(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfDiscreteValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfDiscreteValue{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -95,27 +116,6 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) GetClosingTag() BACnetClosi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfDiscreteValue factory function for _BACnetEventParameterChangeOfDiscreteValue
-func NewBACnetEventParameterChangeOfDiscreteValue(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfDiscreteValue {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfDiscreteValue must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfDiscreteValue must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfDiscreteValue{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfDiscreteValue(structType any) BACnetEventParameterChangeOfDiscreteValue {

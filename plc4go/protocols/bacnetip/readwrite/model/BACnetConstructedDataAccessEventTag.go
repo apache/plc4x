@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccessEventTag struct {
 var _ BACnetConstructedDataAccessEventTag = (*_BACnetConstructedDataAccessEventTag)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessEventTag)(nil)
 
+// NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
+func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTag BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessEventTag{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AccessEventTag:                accessEventTag,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccessEventTag) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessEventTag factory function for _BACnetConstructedDataAccessEventTag
-func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accessEventTag BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessEventTag {
-	if accessEventTag == nil {
-		panic("accessEventTag of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccessEventTag must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessEventTag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AccessEventTag:                accessEventTag,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessEventTag(structType any) BACnetConstructedDataAccessEventTag {

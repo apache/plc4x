@@ -75,6 +75,11 @@ type _TelephonyData struct {
 
 var _ TelephonyDataContract = (*_TelephonyData)(nil)
 
+// NewTelephonyData factory function for _TelephonyData
+func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyData {
+	return &_TelephonyData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +113,6 @@ func (pm *_TelephonyData) GetCommandType() TelephonyCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyData factory function for _TelephonyData
-func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyData {
-	return &_TelephonyData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyData(structType any) TelephonyData {

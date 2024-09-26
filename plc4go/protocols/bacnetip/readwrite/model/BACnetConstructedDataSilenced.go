@@ -56,6 +56,19 @@ type _BACnetConstructedDataSilenced struct {
 var _ BACnetConstructedDataSilenced = (*_BACnetConstructedDataSilenced)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSilenced)(nil)
 
+// NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
+func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
+	if silenced == nil {
+		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
+	}
+	_result := &_BACnetConstructedDataSilenced{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Silenced:                      silenced,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSilenced) GetActualValue() BACnetSilencedStateTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
-func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
-	if silenced == nil {
-		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
-	}
-	_result := &_BACnetConstructedDataSilenced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Silenced:                      silenced,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSilenced(structType any) BACnetConstructedDataSilenced {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccessDoorPresentValue struct {
 var _ BACnetConstructedDataAccessDoorPresentValue = (*_BACnetConstructedDataAccessDoorPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorPresentValue)(nil)
 
+// NewBACnetConstructedDataAccessDoorPresentValue factory function for _BACnetConstructedDataAccessDoorPresentValue
+func NewBACnetConstructedDataAccessDoorPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetDoorValueTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetDoorValueTagged for BACnetConstructedDataAccessDoorPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessDoorPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccessDoorPresentValue) GetActualValue() BACnetDo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessDoorPresentValue factory function for _BACnetConstructedDataAccessDoorPresentValue
-func NewBACnetConstructedDataAccessDoorPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetDoorValueTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetDoorValueTagged for BACnetConstructedDataAccessDoorPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessDoorPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessDoorPresentValue(structType any) BACnetConstructedDataAccessDoorPresentValue {

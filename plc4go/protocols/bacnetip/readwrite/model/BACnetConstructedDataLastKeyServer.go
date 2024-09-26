@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastKeyServer struct {
 var _ BACnetConstructedDataLastKeyServer = (*_BACnetConstructedDataLastKeyServer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastKeyServer)(nil)
 
+// NewBACnetConstructedDataLastKeyServer factory function for _BACnetConstructedDataLastKeyServer
+func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastKeyServer BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
+	if lastKeyServer == nil {
+		panic("lastKeyServer of type BACnetAddressBinding for BACnetConstructedDataLastKeyServer must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastKeyServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastKeyServer:                 lastKeyServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastKeyServer) GetActualValue() BACnetAddressBind
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastKeyServer factory function for _BACnetConstructedDataLastKeyServer
-func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastKeyServer BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
-	if lastKeyServer == nil {
-		panic("lastKeyServer of type BACnetAddressBinding for BACnetConstructedDataLastKeyServer must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastKeyServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastKeyServer:                 lastKeyServer,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastKeyServer(structType any) BACnetConstructedDataLastKeyServer {

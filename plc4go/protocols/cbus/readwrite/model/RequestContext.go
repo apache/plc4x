@@ -51,6 +51,11 @@ type _RequestContext struct {
 
 var _ RequestContext = (*_RequestContext)(nil)
 
+// NewRequestContext factory function for _RequestContext
+func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
+	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_RequestContext) GetSendIdentifyRequestBefore() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestContext factory function for _RequestContext
-func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
-	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestContext(structType any) RequestContext {

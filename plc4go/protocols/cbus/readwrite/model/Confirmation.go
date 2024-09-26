@@ -59,6 +59,14 @@ type _Confirmation struct {
 
 var _ Confirmation = (*_Confirmation)(nil)
 
+// NewConfirmation factory function for _Confirmation
+func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
+	if alpha == nil {
+		panic("alpha of type Alpha for Confirmation must not be nil")
+	}
+	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -97,14 +105,6 @@ func (m *_Confirmation) GetIsSuccess() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConfirmation factory function for _Confirmation
-func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType ConfirmationType) *_Confirmation {
-	if alpha == nil {
-		panic("alpha of type Alpha for Confirmation must not be nil")
-	}
-	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastConfirmation(structType any) Confirmation {

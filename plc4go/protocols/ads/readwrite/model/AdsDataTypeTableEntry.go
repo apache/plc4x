@@ -103,6 +103,11 @@ type _AdsDataTypeTableEntry struct {
 
 var _ AdsDataTypeTableEntry = (*_AdsDataTypeTableEntry)(nil)
 
+// NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
+func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) *_AdsDataTypeTableEntry {
+	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, DataTypeName: dataTypeName, SimpleTypeName: simpleTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -197,11 +202,6 @@ func (m *_AdsDataTypeTableEntry) GetCommentTerminator() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
-func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) *_AdsDataTypeTableEntry {
-	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, DataTypeName: dataTypeName, SimpleTypeName: simpleTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDataTypeTableEntry(structType any) AdsDataTypeTableEntry {

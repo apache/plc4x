@@ -86,6 +86,11 @@ type _DataValue struct {
 
 var _ DataValue = (*_DataValue)(nil)
 
+// NewDataValue factory function for _DataValue
+func NewDataValue(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool, value Variant, statusCode StatusCode, sourceTimestamp *int64, sourcePicoseconds *uint16, serverTimestamp *int64, serverPicoseconds *uint16) *_DataValue {
+	return &_DataValue{ServerPicosecondsSpecified: serverPicosecondsSpecified, SourcePicosecondsSpecified: sourcePicosecondsSpecified, ServerTimestampSpecified: serverTimestampSpecified, SourceTimestampSpecified: sourceTimestampSpecified, StatusCodeSpecified: statusCodeSpecified, ValueSpecified: valueSpecified, Value: value, StatusCode: statusCode, SourceTimestamp: sourceTimestamp, SourcePicoseconds: sourcePicoseconds, ServerTimestamp: serverTimestamp, ServerPicoseconds: serverPicoseconds}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -143,11 +148,6 @@ func (m *_DataValue) GetServerPicoseconds() *uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataValue factory function for _DataValue
-func NewDataValue(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool, value Variant, statusCode StatusCode, sourceTimestamp *int64, sourcePicoseconds *uint16, serverTimestamp *int64, serverPicoseconds *uint16) *_DataValue {
-	return &_DataValue{ServerPicosecondsSpecified: serverPicosecondsSpecified, SourcePicosecondsSpecified: sourcePicosecondsSpecified, ServerTimestampSpecified: serverTimestampSpecified, SourceTimestampSpecified: sourceTimestampSpecified, StatusCodeSpecified: statusCodeSpecified, ValueSpecified: valueSpecified, Value: value, StatusCode: statusCode, SourceTimestamp: sourceTimestamp, SourcePicoseconds: sourcePicoseconds, ServerTimestamp: serverTimestamp, ServerPicoseconds: serverPicoseconds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataValue(structType any) DataValue {

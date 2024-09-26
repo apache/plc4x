@@ -53,6 +53,16 @@ type _DF1UnprotectedReadResponse struct {
 var _ DF1UnprotectedReadResponse = (*_DF1UnprotectedReadResponse)(nil)
 var _ DF1CommandRequirements = (*_DF1UnprotectedReadResponse)(nil)
 
+// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
+func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data []byte) *_DF1UnprotectedReadResponse {
+	_result := &_DF1UnprotectedReadResponse{
+		DF1CommandContract: NewDF1Command(status, transactionCounter),
+		Data:               data,
+	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -84,16 +94,6 @@ func (m *_DF1UnprotectedReadResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
-func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data []byte) *_DF1UnprotectedReadResponse {
-	_result := &_DF1UnprotectedReadResponse{
-		DF1CommandContract: NewDF1Command(status, transactionCounter),
-		Data:               data,
-	}
-	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {

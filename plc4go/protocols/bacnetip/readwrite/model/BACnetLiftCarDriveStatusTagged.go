@@ -63,6 +63,14 @@ type _BACnetLiftCarDriveStatusTagged struct {
 
 var _ BACnetLiftCarDriveStatusTagged = (*_BACnetLiftCarDriveStatusTagged)(nil)
 
+// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
+func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
+	}
+	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
-func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
-	}
-	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarDriveStatusTagged(structType any) BACnetLiftCarDriveStatusTagged {

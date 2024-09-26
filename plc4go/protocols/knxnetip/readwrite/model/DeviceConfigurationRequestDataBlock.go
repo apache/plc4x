@@ -56,6 +56,11 @@ type _DeviceConfigurationRequestDataBlock struct {
 
 var _ DeviceConfigurationRequestDataBlock = (*_DeviceConfigurationRequestDataBlock)(nil)
 
+// NewDeviceConfigurationRequestDataBlock factory function for _DeviceConfigurationRequestDataBlock
+func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_DeviceConfigurationRequestDataBlock {
+	return &_DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +78,6 @@ func (m *_DeviceConfigurationRequestDataBlock) GetSequenceCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationRequestDataBlock factory function for _DeviceConfigurationRequestDataBlock
-func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_DeviceConfigurationRequestDataBlock {
-	return &_DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationRequestDataBlock(structType any) DeviceConfigurationRequestDataBlock {

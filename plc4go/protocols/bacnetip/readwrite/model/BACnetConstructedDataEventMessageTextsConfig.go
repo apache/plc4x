@@ -65,6 +65,17 @@ type _BACnetConstructedDataEventMessageTextsConfig struct {
 var _ BACnetConstructedDataEventMessageTextsConfig = (*_BACnetConstructedDataEventMessageTextsConfig)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventMessageTextsConfig)(nil)
 
+// NewBACnetConstructedDataEventMessageTextsConfig factory function for _BACnetConstructedDataEventMessageTextsConfig
+func NewBACnetConstructedDataEventMessageTextsConfig(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTextsConfig []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventMessageTextsConfig {
+	_result := &_BACnetConstructedDataEventMessageTextsConfig{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		EventMessageTextsConfig:       eventMessageTextsConfig,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -145,17 +156,6 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) GetToNormalTextConfig() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventMessageTextsConfig factory function for _BACnetConstructedDataEventMessageTextsConfig
-func NewBACnetConstructedDataEventMessageTextsConfig(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTextsConfig []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventMessageTextsConfig {
-	_result := &_BACnetConstructedDataEventMessageTextsConfig{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		EventMessageTextsConfig:       eventMessageTextsConfig,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventMessageTextsConfig(structType any) BACnetConstructedDataEventMessageTextsConfig {

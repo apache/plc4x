@@ -49,6 +49,15 @@ type _TelephonyDataLineOnHook struct {
 var _ TelephonyDataLineOnHook = (*_TelephonyDataLineOnHook)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataLineOnHook)(nil)
 
+// NewTelephonyDataLineOnHook factory function for _TelephonyDataLineOnHook
+func NewTelephonyDataLineOnHook(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataLineOnHook {
+	_result := &_TelephonyDataLineOnHook{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ TelephonyDataRequirements = (*_TelephonyDataLineOnHook)(nil)
 
 func (m *_TelephonyDataLineOnHook) GetParent() TelephonyDataContract {
 	return m.TelephonyDataContract
-}
-
-// NewTelephonyDataLineOnHook factory function for _TelephonyDataLineOnHook
-func NewTelephonyDataLineOnHook(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataLineOnHook {
-	_result := &_TelephonyDataLineOnHook{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

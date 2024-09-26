@@ -54,6 +54,17 @@ type _BACnetPrescale struct {
 
 var _ BACnetPrescale = (*_BACnetPrescale)(nil)
 
+// NewBACnetPrescale factory function for _BACnetPrescale
+func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
+	if multiplier == nil {
+		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	if moduloDivide == nil {
+		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetPrescale) GetModuloDivide() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPrescale factory function for _BACnetPrescale
-func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
-	if multiplier == nil {
-		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	if moduloDivide == nil {
-		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPrescale(structType any) BACnetPrescale {

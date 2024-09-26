@@ -57,6 +57,17 @@ type _ModbusPDUWriteSingleRegisterRequest struct {
 var _ ModbusPDUWriteSingleRegisterRequest = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
 
+// NewModbusPDUWriteSingleRegisterRequest factory function for _ModbusPDUWriteSingleRegisterRequest
+func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterRequest {
+	_result := &_ModbusPDUWriteSingleRegisterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) GetValue() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteSingleRegisterRequest factory function for _ModbusPDUWriteSingleRegisterRequest
-func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterRequest {
-	_result := &_ModbusPDUWriteSingleRegisterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Address:           address,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteSingleRegisterRequest(structType any) ModbusPDUWriteSingleRegisterRequest {

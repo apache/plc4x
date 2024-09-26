@@ -70,6 +70,14 @@ type _BACnetCalendarEntry struct {
 
 var _ BACnetCalendarEntryContract = (*_BACnetCalendarEntry)(nil)
 
+// NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
+func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
+	}
+	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetCalendarEntry) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntry factory function for _BACnetCalendarEntry
-func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetCalendarEntry must not be nil")
-	}
-	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntry(structType any) BACnetCalendarEntry {

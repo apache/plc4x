@@ -54,6 +54,16 @@ type _NLMRouterAvailableToNetwork struct {
 var _ NLMRouterAvailableToNetwork = (*_NLMRouterAvailableToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterAvailableToNetwork)(nil)
 
+// NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
+func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
+	_result := &_NLMRouterAvailableToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_NLMRouterAvailableToNetwork) GetDestinationNetworkAddresses() []uint16
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRouterAvailableToNetwork factory function for _NLMRouterAvailableToNetwork
-func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterAvailableToNetwork {
-	_result := &_NLMRouterAvailableToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRouterAvailableToNetwork(structType any) NLMRouterAvailableToNetwork {

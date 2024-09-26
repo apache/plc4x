@@ -66,6 +66,32 @@ type _UserTokenPolicy struct {
 var _ UserTokenPolicy = (*_UserTokenPolicy)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UserTokenPolicy)(nil)
 
+// NewUserTokenPolicy factory function for _UserTokenPolicy
+func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
+	if policyId == nil {
+		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuedTokenType == nil {
+		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if issuerEndpointUrl == nil {
+		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
+	}
+	_result := &_UserTokenPolicy{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		TokenType:                         tokenType,
+		IssuedTokenType:                   issuedTokenType,
+		IssuerEndpointUrl:                 issuerEndpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,32 +139,6 @@ func (m *_UserTokenPolicy) GetSecurityPolicyUri() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUserTokenPolicy factory function for _UserTokenPolicy
-func NewUserTokenPolicy(policyId PascalString, tokenType UserTokenType, issuedTokenType PascalString, issuerEndpointUrl PascalString, securityPolicyUri PascalString) *_UserTokenPolicy {
-	if policyId == nil {
-		panic("policyId of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if issuedTokenType == nil {
-		panic("issuedTokenType of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if issuerEndpointUrl == nil {
-		panic("issuerEndpointUrl of type PascalString for UserTokenPolicy must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for UserTokenPolicy must not be nil")
-	}
-	_result := &_UserTokenPolicy{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PolicyId:                          policyId,
-		TokenType:                         tokenType,
-		IssuedTokenType:                   issuedTokenType,
-		IssuerEndpointUrl:                 issuerEndpointUrl,
-		SecurityPolicyUri:                 securityPolicyUri,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUserTokenPolicy(structType any) UserTokenPolicy {

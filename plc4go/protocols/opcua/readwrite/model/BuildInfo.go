@@ -69,6 +69,36 @@ type _BuildInfo struct {
 var _ BuildInfo = (*_BuildInfo)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BuildInfo)(nil)
 
+// NewBuildInfo factory function for _BuildInfo
+func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
+	if productUri == nil {
+		panic("productUri of type PascalString for BuildInfo must not be nil")
+	}
+	if manufacturerName == nil {
+		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
+	}
+	if productName == nil {
+		panic("productName of type PascalString for BuildInfo must not be nil")
+	}
+	if softwareVersion == nil {
+		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
+	}
+	if buildNumber == nil {
+		panic("buildNumber of type PascalString for BuildInfo must not be nil")
+	}
+	_result := &_BuildInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ProductUri:                        productUri,
+		ManufacturerName:                  manufacturerName,
+		ProductName:                       productName,
+		SoftwareVersion:                   softwareVersion,
+		BuildNumber:                       buildNumber,
+		BuildDate:                         buildDate,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,36 +150,6 @@ func (m *_BuildInfo) GetBuildDate() int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBuildInfo factory function for _BuildInfo
-func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
-	if productUri == nil {
-		panic("productUri of type PascalString for BuildInfo must not be nil")
-	}
-	if manufacturerName == nil {
-		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
-	}
-	if productName == nil {
-		panic("productName of type PascalString for BuildInfo must not be nil")
-	}
-	if softwareVersion == nil {
-		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
-	}
-	if buildNumber == nil {
-		panic("buildNumber of type PascalString for BuildInfo must not be nil")
-	}
-	_result := &_BuildInfo{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ProductUri:                        productUri,
-		ManufacturerName:                  manufacturerName,
-		ProductName:                       productName,
-		SoftwareVersion:                   softwareVersion,
-		BuildNumber:                       buildNumber,
-		BuildDate:                         buildDate,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBuildInfo(structType any) BuildInfo {

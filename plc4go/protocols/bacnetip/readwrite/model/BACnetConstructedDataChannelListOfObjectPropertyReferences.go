@@ -59,6 +59,17 @@ type _BACnetConstructedDataChannelListOfObjectPropertyReferences struct {
 var _ BACnetConstructedDataChannelListOfObjectPropertyReferences = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChannelListOfObjectPropertyReferences)(nil)
 
+// NewBACnetConstructedDataChannelListOfObjectPropertyReferences factory function for _BACnetConstructedDataChannelListOfObjectPropertyReferences
+func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
+	_result := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		References:                    references,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataChannelListOfObjectPropertyReferences) GetZero() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChannelListOfObjectPropertyReferences factory function for _BACnetConstructedDataChannelListOfObjectPropertyReferences
-func NewBACnetConstructedDataChannelListOfObjectPropertyReferences(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, references []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelListOfObjectPropertyReferences {
-	_result := &_BACnetConstructedDataChannelListOfObjectPropertyReferences{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		References:                    references,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChannelListOfObjectPropertyReferences(structType any) BACnetConstructedDataChannelListOfObjectPropertyReferences {

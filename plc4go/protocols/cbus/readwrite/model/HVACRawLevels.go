@@ -53,6 +53,11 @@ type _HVACRawLevels struct {
 
 var _ HVACRawLevels = (*_HVACRawLevels)(nil)
 
+// NewHVACRawLevels factory function for _HVACRawLevels
+func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
+	return &_HVACRawLevels{RawValue: rawValue}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_HVACRawLevels) GetValueInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACRawLevels factory function for _HVACRawLevels
-func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
-	return &_HVACRawLevels{RawValue: rawValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACRawLevels(structType any) HVACRawLevels {

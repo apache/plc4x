@@ -54,6 +54,16 @@ type _TriggerControlDataTriggerEvent struct {
 var _ TriggerControlDataTriggerEvent = (*_TriggerControlDataTriggerEvent)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerEvent)(nil)
 
+// NewTriggerControlDataTriggerEvent factory function for _TriggerControlDataTriggerEvent
+func NewTriggerControlDataTriggerEvent(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, actionSelector byte) *_TriggerControlDataTriggerEvent {
+	_result := &_TriggerControlDataTriggerEvent{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+		ActionSelector:             actionSelector,
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_TriggerControlDataTriggerEvent) GetActionSelector() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlDataTriggerEvent factory function for _TriggerControlDataTriggerEvent
-func NewTriggerControlDataTriggerEvent(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, actionSelector byte) *_TriggerControlDataTriggerEvent {
-	_result := &_TriggerControlDataTriggerEvent{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-		ActionSelector:             actionSelector,
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlDataTriggerEvent(structType any) TriggerControlDataTriggerEvent {

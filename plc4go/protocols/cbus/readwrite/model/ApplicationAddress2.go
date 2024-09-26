@@ -53,6 +53,11 @@ type _ApplicationAddress2 struct {
 
 var _ ApplicationAddress2 = (*_ApplicationAddress2)(nil)
 
+// NewApplicationAddress2 factory function for _ApplicationAddress2
+func NewApplicationAddress2(address byte) *_ApplicationAddress2 {
+	return &_ApplicationAddress2{Address: address}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_ApplicationAddress2) GetIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApplicationAddress2 factory function for _ApplicationAddress2
-func NewApplicationAddress2(address byte) *_ApplicationAddress2 {
-	return &_ApplicationAddress2{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastApplicationAddress2(structType any) ApplicationAddress2 {

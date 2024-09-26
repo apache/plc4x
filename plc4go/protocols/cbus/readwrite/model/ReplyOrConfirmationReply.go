@@ -57,6 +57,23 @@ type _ReplyOrConfirmationReply struct {
 var _ ReplyOrConfirmationReply = (*_ReplyOrConfirmationReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationReply)(nil)
 
+// NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
+func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination ResponseTermination, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
+	if reply == nil {
+		panic("reply of type Reply for ReplyOrConfirmationReply must not be nil")
+	}
+	if termination == nil {
+		panic("termination of type ResponseTermination for ReplyOrConfirmationReply must not be nil")
+	}
+	_result := &_ReplyOrConfirmationReply{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		Reply:                       reply,
+		Termination:                 termination,
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,23 +105,6 @@ func (m *_ReplyOrConfirmationReply) GetTermination() ResponseTermination {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
-func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination ResponseTermination, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
-	if reply == nil {
-		panic("reply of type Reply for ReplyOrConfirmationReply must not be nil")
-	}
-	if termination == nil {
-		panic("termination of type ResponseTermination for ReplyOrConfirmationReply must not be nil")
-	}
-	_result := &_ReplyOrConfirmationReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
-		Reply:                       reply,
-		Termination:                 termination,
-	}
-	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyOrConfirmationReply(structType any) ReplyOrConfirmationReply {

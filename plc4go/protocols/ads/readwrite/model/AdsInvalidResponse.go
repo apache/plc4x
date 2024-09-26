@@ -49,6 +49,15 @@ type _AdsInvalidResponse struct {
 var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
 
+// NewAdsInvalidResponse factory function for _AdsInvalidResponse
+func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
+	_result := &_AdsInvalidResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_AdsInvalidResponse) GetResponse() bool {
 
 func (m *_AdsInvalidResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsInvalidResponse factory function for _AdsInvalidResponse
-func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
-	_result := &_AdsInvalidResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

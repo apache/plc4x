@@ -54,6 +54,19 @@ type _ParameterChangeReply struct {
 var _ ParameterChangeReply = (*_ParameterChangeReply)(nil)
 var _ ReplyRequirements = (*_ParameterChangeReply)(nil)
 
+// NewParameterChangeReply factory function for _ParameterChangeReply
+func NewParameterChangeReply(peekedByte byte, parameterChange ParameterChange, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
+	if parameterChange == nil {
+		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
+	}
+	_result := &_ParameterChangeReply{
+		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
+		ParameterChange: parameterChange,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_ParameterChangeReply) GetParameterChange() ParameterChange {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(peekedByte byte, parameterChange ParameterChange, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
-	if parameterChange == nil {
-		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
-	}
-	_result := &_ParameterChangeReply{
-		ReplyContract:   NewReply(peekedByte, cBusOptions, requestContext),
-		ParameterChange: parameterChange,
-	}
-	_result.ReplyContract.(*_Reply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterChangeReply(structType any) ParameterChangeReply {

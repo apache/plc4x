@@ -54,6 +54,19 @@ type _BACnetPropertyAccessResultAccessResultPropertyAccessError struct {
 var _ BACnetPropertyAccessResultAccessResultPropertyAccessError = (*_BACnetPropertyAccessResultAccessResultPropertyAccessError)(nil)
 var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyAccessError)(nil)
 
+// NewBACnetPropertyAccessResultAccessResultPropertyAccessError factory function for _BACnetPropertyAccessResultAccessResultPropertyAccessError
+func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(peekedTagHeader BACnetTagHeader, propertyAccessError ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyAccessError {
+	if propertyAccessError == nil {
+		panic("propertyAccessError of type ErrorEnclosed for BACnetPropertyAccessResultAccessResultPropertyAccessError must not be nil")
+	}
+	_result := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
+		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
+		PropertyAccessError:                            propertyAccessError,
+	}
+	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) GetProperty
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResultAccessResultPropertyAccessError factory function for _BACnetPropertyAccessResultAccessResultPropertyAccessError
-func NewBACnetPropertyAccessResultAccessResultPropertyAccessError(peekedTagHeader BACnetTagHeader, propertyAccessError ErrorEnclosed, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyAccessError {
-	if propertyAccessError == nil {
-		panic("propertyAccessError of type ErrorEnclosed for BACnetPropertyAccessResultAccessResultPropertyAccessError must not be nil")
-	}
-	_result := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
-		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
-		PropertyAccessError:                            propertyAccessError,
-	}
-	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResultAccessResultPropertyAccessError(structType any) BACnetPropertyAccessResultAccessResultPropertyAccessError {

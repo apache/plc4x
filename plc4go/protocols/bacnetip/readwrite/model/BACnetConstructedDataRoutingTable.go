@@ -54,6 +54,16 @@ type _BACnetConstructedDataRoutingTable struct {
 var _ BACnetConstructedDataRoutingTable = (*_BACnetConstructedDataRoutingTable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRoutingTable)(nil)
 
+// NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
+func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
+	_result := &_BACnetConstructedDataRoutingTable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RoutingTable:                  routingTable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataRoutingTable) GetRoutingTable() []BACnetRouterEnt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRoutingTable factory function for _BACnetConstructedDataRoutingTable
-func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, routingTable []BACnetRouterEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRoutingTable {
-	_result := &_BACnetConstructedDataRoutingTable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RoutingTable:                  routingTable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedDataRoutingTable {

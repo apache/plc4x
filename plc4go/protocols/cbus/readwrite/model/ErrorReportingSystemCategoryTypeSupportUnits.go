@@ -54,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeSupportUnits struct {
 var _ ErrorReportingSystemCategoryTypeSupportUnits = (*_ErrorReportingSystemCategoryTypeSupportUnits)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeSupportUnits)(nil)
 
+// NewErrorReportingSystemCategoryTypeSupportUnits factory function for _ErrorReportingSystemCategoryTypeSupportUnits
+func NewErrorReportingSystemCategoryTypeSupportUnits(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) *_ErrorReportingSystemCategoryTypeSupportUnits {
+	_result := &_ErrorReportingSystemCategoryTypeSupportUnits{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ErrorReportingSystemCategoryTypeSupportUnits) GetCategoryForType() Err
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeSupportUnits factory function for _ErrorReportingSystemCategoryTypeSupportUnits
-func NewErrorReportingSystemCategoryTypeSupportUnits(categoryForType ErrorReportingSystemCategoryTypeForSupportUnits) *_ErrorReportingSystemCategoryTypeSupportUnits {
-	_result := &_ErrorReportingSystemCategoryTypeSupportUnits{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeSupportUnits(structType any) ErrorReportingSystemCategoryTypeSupportUnits {

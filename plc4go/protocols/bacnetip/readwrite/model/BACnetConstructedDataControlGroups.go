@@ -59,6 +59,17 @@ type _BACnetConstructedDataControlGroups struct {
 var _ BACnetConstructedDataControlGroups = (*_BACnetConstructedDataControlGroups)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataControlGroups)(nil)
 
+// NewBACnetConstructedDataControlGroups factory function for _BACnetConstructedDataControlGroups
+func NewBACnetConstructedDataControlGroups(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, controlGroups []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlGroups {
+	_result := &_BACnetConstructedDataControlGroups{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ControlGroups:                 controlGroups,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataControlGroups) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataControlGroups factory function for _BACnetConstructedDataControlGroups
-func NewBACnetConstructedDataControlGroups(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, controlGroups []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataControlGroups {
-	_result := &_BACnetConstructedDataControlGroups{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ControlGroups:                 controlGroups,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataControlGroups(structType any) BACnetConstructedDataControlGroups {

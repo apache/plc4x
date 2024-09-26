@@ -54,6 +54,19 @@ type _BACnetPriorityValueConstructedValue struct {
 var _ BACnetPriorityValueConstructedValue = (*_BACnetPriorityValueConstructedValue)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueConstructedValue)(nil)
 
+// NewBACnetPriorityValueConstructedValue factory function for _BACnetPriorityValueConstructedValue
+func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
+	if constructedValue == nil {
+		panic("constructedValue of type BACnetConstructedData for BACnetPriorityValueConstructedValue must not be nil")
+	}
+	_result := &_BACnetPriorityValueConstructedValue{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		ConstructedValue:            constructedValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueConstructedValue) GetConstructedValue() BACnetConst
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueConstructedValue factory function for _BACnetPriorityValueConstructedValue
-func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
-	if constructedValue == nil {
-		panic("constructedValue of type BACnetConstructedData for BACnetPriorityValueConstructedValue must not be nil")
-	}
-	_result := &_BACnetPriorityValueConstructedValue{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		ConstructedValue:            constructedValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueConstructedValue(structType any) BACnetPriorityValueConstructedValue {

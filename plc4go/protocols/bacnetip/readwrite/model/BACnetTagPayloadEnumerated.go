@@ -56,6 +56,11 @@ type _BACnetTagPayloadEnumerated struct {
 
 var _ BACnetTagPayloadEnumerated = (*_BACnetTagPayloadEnumerated)(nil)
 
+// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
+func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
+	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -84,11 +89,6 @@ func (m *_BACnetTagPayloadEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
-func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
-	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {

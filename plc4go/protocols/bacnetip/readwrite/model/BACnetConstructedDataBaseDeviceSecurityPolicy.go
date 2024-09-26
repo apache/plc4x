@@ -56,6 +56,19 @@ type _BACnetConstructedDataBaseDeviceSecurityPolicy struct {
 var _ BACnetConstructedDataBaseDeviceSecurityPolicy = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBaseDeviceSecurityPolicy)(nil)
 
+// NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
+func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
+	if baseDeviceSecurityPolicy == nil {
+		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
+	}
+	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBaseDeviceSecurityPolicy factory function for _BACnetConstructedDataBaseDeviceSecurityPolicy
-func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, baseDeviceSecurityPolicy BACnetSecurityLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBaseDeviceSecurityPolicy {
-	if baseDeviceSecurityPolicy == nil {
-		panic("baseDeviceSecurityPolicy of type BACnetSecurityLevelTagged for BACnetConstructedDataBaseDeviceSecurityPolicy must not be nil")
-	}
-	_result := &_BACnetConstructedDataBaseDeviceSecurityPolicy{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BaseDeviceSecurityPolicy:      baseDeviceSecurityPolicy,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType any) BACnetConstructedDataBaseDeviceSecurityPolicy {

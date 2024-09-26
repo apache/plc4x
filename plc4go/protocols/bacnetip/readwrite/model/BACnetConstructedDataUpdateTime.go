@@ -56,6 +56,19 @@ type _BACnetConstructedDataUpdateTime struct {
 var _ BACnetConstructedDataUpdateTime = (*_BACnetConstructedDataUpdateTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUpdateTime)(nil)
 
+// NewBACnetConstructedDataUpdateTime factory function for _BACnetConstructedDataUpdateTime
+func NewBACnetConstructedDataUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateTime {
+	if updateTime == nil {
+		panic("updateTime of type BACnetDateTime for BACnetConstructedDataUpdateTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataUpdateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateTime:                    updateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUpdateTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUpdateTime factory function for _BACnetConstructedDataUpdateTime
-func NewBACnetConstructedDataUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateTime {
-	if updateTime == nil {
-		panic("updateTime of type BACnetDateTime for BACnetConstructedDataUpdateTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataUpdateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateTime:                    updateTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUpdateTime(structType any) BACnetConstructedDataUpdateTime {

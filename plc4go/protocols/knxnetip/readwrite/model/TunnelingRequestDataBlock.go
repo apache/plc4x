@@ -56,6 +56,11 @@ type _TunnelingRequestDataBlock struct {
 
 var _ TunnelingRequestDataBlock = (*_TunnelingRequestDataBlock)(nil)
 
+// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
+func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
+	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +78,6 @@ func (m *_TunnelingRequestDataBlock) GetSequenceCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
-func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
-	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingRequestDataBlock(structType any) TunnelingRequestDataBlock {

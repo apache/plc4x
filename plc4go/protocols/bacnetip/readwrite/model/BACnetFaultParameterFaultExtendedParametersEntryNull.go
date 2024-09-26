@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryNull struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryNull = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryNull)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryNull factory function for _BACnetFaultParameterFaultExtendedParametersEntryNull
+func NewBACnetFaultParameterFaultExtendedParametersEntryNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetFaultParameterFaultExtendedParametersEntryNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetFaultParameterFaultExtendedParametersEntryNull must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		NullValue: nullValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) GetNullValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryNull factory function for _BACnetFaultParameterFaultExtendedParametersEntryNull
-func NewBACnetFaultParameterFaultExtendedParametersEntryNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetFaultParameterFaultExtendedParametersEntryNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetFaultParameterFaultExtendedParametersEntryNull must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryNull{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		NullValue: nullValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryNull(structType any) BACnetFaultParameterFaultExtendedParametersEntryNull {

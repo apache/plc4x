@@ -54,6 +54,11 @@ type _FourByteNodeId struct {
 
 var _ FourByteNodeId = (*_FourByteNodeId)(nil)
 
+// NewFourByteNodeId factory function for _FourByteNodeId
+func NewFourByteNodeId(namespaceIndex uint8, identifier uint16) *_FourByteNodeId {
+	return &_FourByteNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_FourByteNodeId) GetIdentifier() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFourByteNodeId factory function for _FourByteNodeId
-func NewFourByteNodeId(namespaceIndex uint8, identifier uint16) *_FourByteNodeId {
-	return &_FourByteNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastFourByteNodeId(structType any) FourByteNodeId {

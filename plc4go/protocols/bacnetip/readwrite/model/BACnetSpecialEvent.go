@@ -57,6 +57,20 @@ type _BACnetSpecialEvent struct {
 
 var _ BACnetSpecialEvent = (*_BACnetSpecialEvent)(nil)
 
+// NewBACnetSpecialEvent factory function for _BACnetSpecialEvent
+func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) *_BACnetSpecialEvent {
+	if period == nil {
+		panic("period of type BACnetSpecialEventPeriod for BACnetSpecialEvent must not be nil")
+	}
+	if listOfTimeValues == nil {
+		panic("listOfTimeValues of type BACnetSpecialEventListOfTimeValues for BACnetSpecialEvent must not be nil")
+	}
+	if eventPriority == nil {
+		panic("eventPriority of type BACnetContextTagUnsignedInteger for BACnetSpecialEvent must not be nil")
+	}
+	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,20 +92,6 @@ func (m *_BACnetSpecialEvent) GetEventPriority() BACnetContextTagUnsignedInteger
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEvent factory function for _BACnetSpecialEvent
-func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) *_BACnetSpecialEvent {
-	if period == nil {
-		panic("period of type BACnetSpecialEventPeriod for BACnetSpecialEvent must not be nil")
-	}
-	if listOfTimeValues == nil {
-		panic("listOfTimeValues of type BACnetSpecialEventListOfTimeValues for BACnetSpecialEvent must not be nil")
-	}
-	if eventPriority == nil {
-		panic("eventPriority of type BACnetContextTagUnsignedInteger for BACnetSpecialEvent must not be nil")
-	}
-	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEvent(structType any) BACnetSpecialEvent {

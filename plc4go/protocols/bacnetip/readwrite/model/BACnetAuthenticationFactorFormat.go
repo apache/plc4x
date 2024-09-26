@@ -57,6 +57,14 @@ type _BACnetAuthenticationFactorFormat struct {
 
 var _ BACnetAuthenticationFactorFormat = (*_BACnetAuthenticationFactorFormat)(nil)
 
+// NewBACnetAuthenticationFactorFormat factory function for _BACnetAuthenticationFactorFormat
+func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTypeTagged, vendorId BACnetVendorIdTagged, vendorFormat BACnetContextTagUnsignedInteger) *_BACnetAuthenticationFactorFormat {
+	if formatType == nil {
+		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactorFormat must not be nil")
+	}
+	return &_BACnetAuthenticationFactorFormat{FormatType: formatType, VendorId: vendorId, VendorFormat: vendorFormat}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,14 +86,6 @@ func (m *_BACnetAuthenticationFactorFormat) GetVendorFormat() BACnetContextTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorFormat factory function for _BACnetAuthenticationFactorFormat
-func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTypeTagged, vendorId BACnetVendorIdTagged, vendorFormat BACnetContextTagUnsignedInteger) *_BACnetAuthenticationFactorFormat {
-	if formatType == nil {
-		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactorFormat must not be nil")
-	}
-	return &_BACnetAuthenticationFactorFormat{FormatType: formatType, VendorId: vendorId, VendorFormat: vendorFormat}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorFormat(structType any) BACnetAuthenticationFactorFormat {

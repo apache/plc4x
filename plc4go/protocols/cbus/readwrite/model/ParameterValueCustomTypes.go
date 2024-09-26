@@ -54,6 +54,19 @@ type _ParameterValueCustomTypes struct {
 var _ ParameterValueCustomTypes = (*_ParameterValueCustomTypes)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueCustomTypes)(nil)
 
+// NewParameterValueCustomTypes factory function for _ParameterValueCustomTypes
+func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_ParameterValueCustomTypes {
+	if value == nil {
+		panic("value of type CustomTypes for ParameterValueCustomTypes must not be nil")
+	}
+	_result := &_ParameterValueCustomTypes{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ParameterValueCustomTypes) GetValue() CustomTypes {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueCustomTypes factory function for _ParameterValueCustomTypes
-func NewParameterValueCustomTypes(value CustomTypes, numBytes uint8) *_ParameterValueCustomTypes {
-	if value == nil {
-		panic("value of type CustomTypes for ParameterValueCustomTypes must not be nil")
-	}
-	_result := &_ParameterValueCustomTypes{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueCustomTypes(structType any) ParameterValueCustomTypes {

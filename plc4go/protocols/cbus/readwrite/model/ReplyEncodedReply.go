@@ -60,6 +60,17 @@ type _ReplyEncodedReply struct {
 var _ ReplyEncodedReply = (*_ReplyEncodedReply)(nil)
 var _ ReplyRequirements = (*_ReplyEncodedReply)(nil)
 
+// NewReplyEncodedReply factory function for _ReplyEncodedReply
+func NewReplyEncodedReply(peekedByte byte, encodedReply EncodedReply, chksum Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
+	_result := &_ReplyEncodedReply{
+		ReplyContract: NewReply(peekedByte, cBusOptions, requestContext),
+		EncodedReply:  encodedReply,
+		Chksum:        chksum,
+	}
+	_result.ReplyContract.(*_Reply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -112,17 +123,6 @@ func (m *_ReplyEncodedReply) GetChksumDecoded() Checksum {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(peekedByte byte, encodedReply EncodedReply, chksum Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
-	_result := &_ReplyEncodedReply{
-		ReplyContract: NewReply(peekedByte, cBusOptions, requestContext),
-		EncodedReply:  encodedReply,
-		Chksum:        chksum,
-	}
-	_result.ReplyContract.(*_Reply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyEncodedReply(structType any) ReplyEncodedReply {

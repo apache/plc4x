@@ -61,6 +61,11 @@ type _SecurityArmCode struct {
 
 var _ SecurityArmCode = (*_SecurityArmCode)(nil)
 
+// NewSecurityArmCode factory function for _SecurityArmCode
+func NewSecurityArmCode(code uint8) *_SecurityArmCode {
+	return &_SecurityArmCode{Code: code}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,11 +118,6 @@ func (m *_SecurityArmCode) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityArmCode factory function for _SecurityArmCode
-func NewSecurityArmCode(code uint8) *_SecurityArmCode {
-	return &_SecurityArmCode{Code: code}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityArmCode(structType any) SecurityArmCode {

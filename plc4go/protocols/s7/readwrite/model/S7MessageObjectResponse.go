@@ -59,6 +59,17 @@ type _S7MessageObjectResponse struct {
 var _ S7MessageObjectResponse = (*_S7MessageObjectResponse)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectResponse)(nil)
 
+// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
+func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
+	_result := &_S7MessageObjectResponse{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		ReturnCode:                 returnCode,
+		TransportSize:              transportSize,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
-func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
-	_result := &_S7MessageObjectResponse{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		ReturnCode:                 returnCode,
-		TransportSize:              transportSize,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectResponse(structType any) S7MessageObjectResponse {

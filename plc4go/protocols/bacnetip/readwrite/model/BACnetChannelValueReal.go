@@ -54,6 +54,19 @@ type _BACnetChannelValueReal struct {
 var _ BACnetChannelValueReal = (*_BACnetChannelValueReal)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueReal)(nil)
 
+// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
+func NewBACnetChannelValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetChannelValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
+	}
+	_result := &_BACnetChannelValueReal{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueReal) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
-func NewBACnetChannelValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetChannelValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
-	}
-	_result := &_BACnetChannelValueReal{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		RealValue:                  realValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueReal(structType any) BACnetChannelValueReal {

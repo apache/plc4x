@@ -63,6 +63,22 @@ type _DeleteMonitoredItemsRequest struct {
 var _ DeleteMonitoredItemsRequest = (*_DeleteMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteMonitoredItemsRequest)(nil)
 
+// NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
+func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
+	}
+	_result := &_DeleteMonitoredItemsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
+		MonitoredItemIds:                  monitoredItemIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,22 +122,6 @@ func (m *_DeleteMonitoredItemsRequest) GetMonitoredItemIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteMonitoredItemsRequest factory function for _DeleteMonitoredItemsRequest
-func NewDeleteMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) *_DeleteMonitoredItemsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteMonitoredItemsRequest must not be nil")
-	}
-	_result := &_DeleteMonitoredItemsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		NoOfMonitoredItemIds:              noOfMonitoredItemIds,
-		MonitoredItemIds:                  monitoredItemIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteMonitoredItemsRequest(structType any) DeleteMonitoredItemsRequest {

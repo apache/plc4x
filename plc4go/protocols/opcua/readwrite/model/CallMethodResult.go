@@ -72,6 +72,25 @@ type _CallMethodResult struct {
 var _ CallMethodResult = (*_CallMethodResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallMethodResult)(nil)
 
+// NewCallMethodResult factory function for _CallMethodResult
+func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
+	}
+	_result := &_CallMethodResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfInputArgumentResults:          noOfInputArgumentResults,
+		InputArgumentResults:              inputArgumentResults,
+		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
+		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
+		NoOfOutputArguments:               noOfOutputArguments,
+		OutputArguments:                   outputArguments,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -127,25 +146,6 @@ func (m *_CallMethodResult) GetOutputArguments() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallMethodResult factory function for _CallMethodResult
-func NewCallMethodResult(statusCode StatusCode, noOfInputArgumentResults int32, inputArgumentResults []StatusCode, noOfInputArgumentDiagnosticInfos int32, inputArgumentDiagnosticInfos []DiagnosticInfo, noOfOutputArguments int32, outputArguments []Variant) *_CallMethodResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for CallMethodResult must not be nil")
-	}
-	_result := &_CallMethodResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfInputArgumentResults:          noOfInputArgumentResults,
-		InputArgumentResults:              inputArgumentResults,
-		NoOfInputArgumentDiagnosticInfos:  noOfInputArgumentDiagnosticInfos,
-		InputArgumentDiagnosticInfos:      inputArgumentDiagnosticInfos,
-		NoOfOutputArguments:               noOfOutputArguments,
-		OutputArguments:                   outputArguments,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallMethodResult(structType any) CallMethodResult {

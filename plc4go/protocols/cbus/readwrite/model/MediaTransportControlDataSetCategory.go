@@ -54,6 +54,16 @@ type _MediaTransportControlDataSetCategory struct {
 var _ MediaTransportControlDataSetCategory = (*_MediaTransportControlDataSetCategory)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetCategory)(nil)
 
+// NewMediaTransportControlDataSetCategory factory function for _MediaTransportControlDataSetCategory
+func NewMediaTransportControlDataSetCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryNumber uint8) *_MediaTransportControlDataSetCategory {
+	_result := &_MediaTransportControlDataSetCategory{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		CategoryNumber:                    categoryNumber,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MediaTransportControlDataSetCategory) GetCategoryNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSetCategory factory function for _MediaTransportControlDataSetCategory
-func NewMediaTransportControlDataSetCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryNumber uint8) *_MediaTransportControlDataSetCategory {
-	_result := &_MediaTransportControlDataSetCategory{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		CategoryNumber:                    categoryNumber,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSetCategory(structType any) MediaTransportControlDataSetCategory {

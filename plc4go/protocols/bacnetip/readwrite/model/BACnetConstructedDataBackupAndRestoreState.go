@@ -56,6 +56,19 @@ type _BACnetConstructedDataBackupAndRestoreState struct {
 var _ BACnetConstructedDataBackupAndRestoreState = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
 
+// NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
+func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
+	if backupAndRestoreState == nil {
+		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
+	}
+	_result := &_BACnetConstructedDataBackupAndRestoreState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BackupAndRestoreState:         backupAndRestoreState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetActualValue() BACnetBac
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
-func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
-	if backupAndRestoreState == nil {
-		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
-	}
-	_result := &_BACnetConstructedDataBackupAndRestoreState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BackupAndRestoreState:         backupAndRestoreState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBackupAndRestoreState(structType any) BACnetConstructedDataBackupAndRestoreState {

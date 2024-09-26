@@ -54,6 +54,19 @@ type _BACnetPriorityValueBoolean struct {
 var _ BACnetPriorityValueBoolean = (*_BACnetPriorityValueBoolean)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBoolean)(nil)
 
+// NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
+func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
+	}
+	_result := &_BACnetPriorityValueBoolean{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BooleanValue:                booleanValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueBoolean) GetBooleanValue() BACnetApplicationTagBool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueBoolean factory function for _BACnetPriorityValueBoolean
-func NewBACnetPriorityValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetPriorityValueBoolean must not be nil")
-	}
-	_result := &_BACnetPriorityValueBoolean{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		BooleanValue:                booleanValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueBoolean(structType any) BACnetPriorityValueBoolean {

@@ -57,6 +57,17 @@ type _ApduDataGroupValueWrite struct {
 var _ ApduDataGroupValueWrite = (*_ApduDataGroupValueWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueWrite)(nil)
 
+// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
+	_result := &_ApduDataGroupValueWrite{
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ApduDataGroupValueWrite) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
-	_result := &_ApduDataGroupValueWrite{
-		ApduDataContract: NewApduData(dataLength),
-		DataFirstByte:    dataFirstByte,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataGroupValueWrite(structType any) ApduDataGroupValueWrite {

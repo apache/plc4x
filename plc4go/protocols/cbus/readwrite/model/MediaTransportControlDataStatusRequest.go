@@ -49,6 +49,15 @@ type _MediaTransportControlDataStatusRequest struct {
 var _ MediaTransportControlDataStatusRequest = (*_MediaTransportControlDataStatusRequest)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStatusRequest)(nil)
 
+// NewMediaTransportControlDataStatusRequest factory function for _MediaTransportControlDataStatusRequest
+func NewMediaTransportControlDataStatusRequest(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStatusRequest {
+	_result := &_MediaTransportControlDataStatusRequest{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStatus
 
 func (m *_MediaTransportControlDataStatusRequest) GetParent() MediaTransportControlDataContract {
 	return m.MediaTransportControlDataContract
-}
-
-// NewMediaTransportControlDataStatusRequest factory function for _MediaTransportControlDataStatusRequest
-func NewMediaTransportControlDataStatusRequest(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStatusRequest {
-	_result := &_MediaTransportControlDataStatusRequest{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

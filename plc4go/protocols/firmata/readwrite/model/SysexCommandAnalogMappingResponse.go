@@ -49,6 +49,15 @@ type _SysexCommandAnalogMappingResponse struct {
 var _ SysexCommandAnalogMappingResponse = (*_SysexCommandAnalogMappingResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingResponse)(nil)
 
+// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
+func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
+	_result := &_SysexCommandAnalogMappingResponse{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandAnalogMappingResponse) GetResponse() bool {
 
 func (m *_SysexCommandAnalogMappingResponse) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
-func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
-	_result := &_SysexCommandAnalogMappingResponse{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -59,6 +59,17 @@ type _BACnetConstructedDataWeeklySchedule struct {
 var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedule)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWeeklySchedule)(nil)
 
+// NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
+func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
+	_result := &_BACnetConstructedDataWeeklySchedule{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		WeeklySchedule:                weeklySchedule,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataWeeklySchedule) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
-func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
-	_result := &_BACnetConstructedDataWeeklySchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		WeeklySchedule:                weeklySchedule,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWeeklySchedule(structType any) BACnetConstructedDataWeeklySchedule {

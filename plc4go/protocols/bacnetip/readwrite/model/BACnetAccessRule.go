@@ -63,6 +63,20 @@ type _BACnetAccessRule struct {
 
 var _ BACnetAccessRule = (*_BACnetAccessRule)(nil)
 
+// NewBACnetAccessRule factory function for _BACnetAccessRule
+func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
+	if timeRangeSpecifier == nil {
+		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if locationSpecifier == nil {
+		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if enable == nil {
+		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
+	}
+	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,20 +106,6 @@ func (m *_BACnetAccessRule) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRule factory function for _BACnetAccessRule
-func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
-	if timeRangeSpecifier == nil {
-		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if locationSpecifier == nil {
-		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if enable == nil {
-		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
-	}
-	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRule(structType any) BACnetAccessRule {

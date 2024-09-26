@@ -59,6 +59,17 @@ type _BACnetConstructedDataAuthenticationPolicyList struct {
 var _ BACnetConstructedDataAuthenticationPolicyList = (*_BACnetConstructedDataAuthenticationPolicyList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationPolicyList)(nil)
 
+// NewBACnetConstructedDataAuthenticationPolicyList factory function for _BACnetConstructedDataAuthenticationPolicyList
+func NewBACnetConstructedDataAuthenticationPolicyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationPolicyList []BACnetAuthenticationPolicy, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationPolicyList {
+	_result := &_BACnetConstructedDataAuthenticationPolicyList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AuthenticationPolicyList:      authenticationPolicyList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataAuthenticationPolicyList) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthenticationPolicyList factory function for _BACnetConstructedDataAuthenticationPolicyList
-func NewBACnetConstructedDataAuthenticationPolicyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, authenticationPolicyList []BACnetAuthenticationPolicy, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationPolicyList {
-	_result := &_BACnetConstructedDataAuthenticationPolicyList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AuthenticationPolicyList:      authenticationPolicyList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthenticationPolicyList(structType any) BACnetConstructedDataAuthenticationPolicyList {

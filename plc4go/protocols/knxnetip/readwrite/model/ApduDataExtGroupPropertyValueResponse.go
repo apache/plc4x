@@ -49,6 +49,15 @@ type _ApduDataExtGroupPropertyValueResponse struct {
 var _ ApduDataExtGroupPropertyValueResponse = (*_ApduDataExtGroupPropertyValueResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtGroupPropertyValueResponse)(nil)
 
+// NewApduDataExtGroupPropertyValueResponse factory function for _ApduDataExtGroupPropertyValueResponse
+func NewApduDataExtGroupPropertyValueResponse(length uint8) *_ApduDataExtGroupPropertyValueResponse {
+	_result := &_ApduDataExtGroupPropertyValueResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtGroupPropertyValueResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtGroupPropertyValueResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtGroupPropertyValueResponse factory function for _ApduDataExtGroupPropertyValueResponse
-func NewApduDataExtGroupPropertyValueResponse(length uint8) *_ApduDataExtGroupPropertyValueResponse {
-	_result := &_ApduDataExtGroupPropertyValueResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

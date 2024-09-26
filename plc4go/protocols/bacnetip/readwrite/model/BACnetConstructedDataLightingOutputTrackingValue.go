@@ -56,6 +56,19 @@ type _BACnetConstructedDataLightingOutputTrackingValue struct {
 var _ BACnetConstructedDataLightingOutputTrackingValue = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputTrackingValue)(nil)
 
+// NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
+func NewBACnetConstructedDataLightingOutputTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
+	if trackingValue == nil {
+		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TrackingValue:                 trackingValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLightingOutputTrackingValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingOutputTrackingValue factory function for _BACnetConstructedDataLightingOutputTrackingValue
-func NewBACnetConstructedDataLightingOutputTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputTrackingValue {
-	if trackingValue == nil {
-		panic("trackingValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputTrackingValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingOutputTrackingValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TrackingValue:                 trackingValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingOutputTrackingValue(structType any) BACnetConstructedDataLightingOutputTrackingValue {

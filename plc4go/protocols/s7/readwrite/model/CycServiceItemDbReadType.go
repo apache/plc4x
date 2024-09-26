@@ -57,6 +57,17 @@ type _CycServiceItemDbReadType struct {
 var _ CycServiceItemDbReadType = (*_CycServiceItemDbReadType)(nil)
 var _ CycServiceItemTypeRequirements = (*_CycServiceItemDbReadType)(nil)
 
+// NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
+func NewCycServiceItemDbReadType(byteLength uint8, syntaxId uint8, numberOfAreas uint8, items []SubItem) *_CycServiceItemDbReadType {
+	_result := &_CycServiceItemDbReadType{
+		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
+		NumberOfAreas:              numberOfAreas,
+		Items:                      items,
+	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_CycServiceItemDbReadType) GetItems() []SubItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
-func NewCycServiceItemDbReadType(byteLength uint8, syntaxId uint8, numberOfAreas uint8, items []SubItem) *_CycServiceItemDbReadType {
-	_result := &_CycServiceItemDbReadType{
-		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
-		NumberOfAreas:              numberOfAreas,
-		Items:                      items,
-	}
-	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemDbReadType(structType any) CycServiceItemDbReadType {

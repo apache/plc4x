@@ -49,6 +49,15 @@ type _TDataIndividualReq struct {
 var _ TDataIndividualReq = (*_TDataIndividualReq)(nil)
 var _ CEMIRequirements = (*_TDataIndividualReq)(nil)
 
+// NewTDataIndividualReq factory function for _TDataIndividualReq
+func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
+	_result := &_TDataIndividualReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_TDataIndividualReq) GetMessageCode() uint8 {
 
 func (m *_TDataIndividualReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewTDataIndividualReq factory function for _TDataIndividualReq
-func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
-	_result := &_TDataIndividualReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

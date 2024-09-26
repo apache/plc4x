@@ -57,6 +57,17 @@ type _ApduDataMemoryRead struct {
 var _ ApduDataMemoryRead = (*_ApduDataMemoryRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryRead)(nil)
 
+// NewApduDataMemoryRead factory function for _ApduDataMemoryRead
+func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
+	_result := &_ApduDataMemoryRead{
+		ApduDataContract: NewApduData(dataLength),
+		NumBytes:         numBytes,
+		Address:          address,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ApduDataMemoryRead) GetAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataMemoryRead factory function for _ApduDataMemoryRead
-func NewApduDataMemoryRead(numBytes uint8, address uint16, dataLength uint8) *_ApduDataMemoryRead {
-	_result := &_ApduDataMemoryRead{
-		ApduDataContract: NewApduData(dataLength),
-		NumBytes:         numBytes,
-		Address:          address,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataMemoryRead(structType any) ApduDataMemoryRead {

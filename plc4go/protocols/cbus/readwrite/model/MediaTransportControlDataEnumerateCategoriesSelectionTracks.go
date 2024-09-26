@@ -65,6 +65,17 @@ type _MediaTransportControlDataEnumerateCategoriesSelectionTracks struct {
 var _ MediaTransportControlDataEnumerateCategoriesSelectionTracks = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerateCategoriesSelectionTracks)(nil)
 
+// NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
+func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, enumerateType byte, start uint8) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		EnumerateType:                     enumerateType,
+		Start:                             start,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -129,17 +140,6 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsRese
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
-func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, enumerateType byte, start uint8) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
-	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		EnumerateType:                     enumerateType,
-		Start:                             start,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType any) MediaTransportControlDataEnumerateCategoriesSelectionTracks {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataDerivativeConstantUnits struct {
 var _ BACnetConstructedDataDerivativeConstantUnits = (*_BACnetConstructedDataDerivativeConstantUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDerivativeConstantUnits)(nil)
 
+// NewBACnetConstructedDataDerivativeConstantUnits factory function for _BACnetConstructedDataDerivativeConstantUnits
+func NewBACnetConstructedDataDerivativeConstantUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstantUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataDerivativeConstantUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataDerivativeConstantUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDerivativeConstantUnits) GetActualValue() BACnetE
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDerivativeConstantUnits factory function for _BACnetConstructedDataDerivativeConstantUnits
-func NewBACnetConstructedDataDerivativeConstantUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstantUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataDerivativeConstantUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataDerivativeConstantUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDerivativeConstantUnits(structType any) BACnetConstructedDataDerivativeConstantUnits {

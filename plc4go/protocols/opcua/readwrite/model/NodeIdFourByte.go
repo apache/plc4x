@@ -59,6 +59,17 @@ type _NodeIdFourByte struct {
 var _ NodeIdFourByte = (*_NodeIdFourByte)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdFourByte)(nil)
 
+// NewNodeIdFourByte factory function for _NodeIdFourByte
+func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
+	_result := &_NodeIdFourByte{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,17 +120,6 @@ func (m *_NodeIdFourByte) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdFourByte factory function for _NodeIdFourByte
-func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
-	_result := &_NodeIdFourByte{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdFourByte(structType any) NodeIdFourByte {

@@ -54,6 +54,16 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse struct {
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Items:                         items,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetItems() []byte 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Items:                         items,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {

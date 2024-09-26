@@ -56,6 +56,16 @@ type _ConnectedAddressItem struct {
 var _ ConnectedAddressItem = (*_ConnectedAddressItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedAddressItem)(nil)
 
+// NewConnectedAddressItem factory function for _ConnectedAddressItem
+func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
+	_result := &_ConnectedAddressItem{
+		TypeIdContract: NewTypeId(),
+		ConnectionId:   connectionId,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,16 +97,6 @@ func (m *_ConnectedAddressItem) GetConnectionId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedAddressItem factory function for _ConnectedAddressItem
-func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
-	_result := &_ConnectedAddressItem{
-		TypeIdContract: NewTypeId(),
-		ConnectionId:   connectionId,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedAddressItem(structType any) ConnectedAddressItem {

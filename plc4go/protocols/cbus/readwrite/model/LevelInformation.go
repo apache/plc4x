@@ -86,6 +86,11 @@ type _LevelInformation struct {
 
 var _ LevelInformationContract = (*_LevelInformation)(nil)
 
+// NewLevelInformation factory function for _LevelInformation
+func NewLevelInformation(raw uint16) *_LevelInformation {
+	return &_LevelInformation{Raw: raw}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -164,11 +169,6 @@ func (pm *_LevelInformation) GetIsCorrupted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformation factory function for _LevelInformation
-func NewLevelInformation(raw uint16) *_LevelInformation {
-	return &_LevelInformation{Raw: raw}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformation(structType any) LevelInformation {

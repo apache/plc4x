@@ -54,6 +54,19 @@ type _SALDataTriggerControl struct {
 var _ SALDataTriggerControl = (*_SALDataTriggerControl)(nil)
 var _ SALDataRequirements = (*_SALDataTriggerControl)(nil)
 
+// NewSALDataTriggerControl factory function for _SALDataTriggerControl
+func NewSALDataTriggerControl(salData SALData, triggerControlData TriggerControlData) *_SALDataTriggerControl {
+	if triggerControlData == nil {
+		panic("triggerControlData of type TriggerControlData for SALDataTriggerControl must not be nil")
+	}
+	_result := &_SALDataTriggerControl{
+		SALDataContract:    NewSALData(salData),
+		TriggerControlData: triggerControlData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataTriggerControl) GetTriggerControlData() TriggerControlData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataTriggerControl factory function for _SALDataTriggerControl
-func NewSALDataTriggerControl(salData SALData, triggerControlData TriggerControlData) *_SALDataTriggerControl {
-	if triggerControlData == nil {
-		panic("triggerControlData of type TriggerControlData for SALDataTriggerControl must not be nil")
-	}
-	_result := &_SALDataTriggerControl{
-		SALDataContract:    NewSALData(salData),
-		TriggerControlData: triggerControlData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataTriggerControl(structType any) SALDataTriggerControl {

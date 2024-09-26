@@ -62,6 +62,21 @@ type _APDUError struct {
 var _ APDUError = (*_APDUError)(nil)
 var _ APDURequirements = (*_APDUError)(nil)
 
+// NewAPDUError factory function for _APDUError
+func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
+	if error == nil {
+		panic("error of type BACnetError for APDUError must not be nil")
+	}
+	_result := &_APDUError{
+		APDUContract:     NewAPDU(apduLength),
+		OriginalInvokeId: originalInvokeId,
+		ErrorChoice:      errorChoice,
+		Error:            error,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -101,21 +116,6 @@ func (m *_APDUError) GetError() BACnetError {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUError factory function for _APDUError
-func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError, apduLength uint16) *_APDUError {
-	if error == nil {
-		panic("error of type BACnetError for APDUError must not be nil")
-	}
-	_result := &_APDUError{
-		APDUContract:     NewAPDU(apduLength),
-		OriginalInvokeId: originalInvokeId,
-		ErrorChoice:      errorChoice,
-		Error:            error,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUError(structType any) APDUError {

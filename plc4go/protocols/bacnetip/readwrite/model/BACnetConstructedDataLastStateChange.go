@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastStateChange struct {
 var _ BACnetConstructedDataLastStateChange = (*_BACnetConstructedDataLastStateChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastStateChange)(nil)
 
+// NewBACnetConstructedDataLastStateChange factory function for _BACnetConstructedDataLastStateChange
+func NewBACnetConstructedDataLastStateChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastStateChange BACnetTimerTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastStateChange {
+	if lastStateChange == nil {
+		panic("lastStateChange of type BACnetTimerTransitionTagged for BACnetConstructedDataLastStateChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastStateChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastStateChange:               lastStateChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastStateChange) GetActualValue() BACnetTimerTran
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastStateChange factory function for _BACnetConstructedDataLastStateChange
-func NewBACnetConstructedDataLastStateChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastStateChange BACnetTimerTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastStateChange {
-	if lastStateChange == nil {
-		panic("lastStateChange of type BACnetTimerTransitionTagged for BACnetConstructedDataLastStateChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastStateChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastStateChange:               lastStateChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastStateChange(structType any) BACnetConstructedDataLastStateChange {

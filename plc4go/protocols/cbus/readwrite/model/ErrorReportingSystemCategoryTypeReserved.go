@@ -54,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeReserved struct {
 var _ ErrorReportingSystemCategoryTypeReserved = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeReserved)(nil)
 
+// NewErrorReportingSystemCategoryTypeReserved factory function for _ErrorReportingSystemCategoryTypeReserved
+func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorReportingSystemCategoryTypeReserved {
+	_result := &_ErrorReportingSystemCategoryTypeReserved{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		ReservedValue:                            reservedValue,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) GetReservedValue() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeReserved factory function for _ErrorReportingSystemCategoryTypeReserved
-func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorReportingSystemCategoryTypeReserved {
-	_result := &_ErrorReportingSystemCategoryTypeReserved{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		ReservedValue:                            reservedValue,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeReserved(structType any) ErrorReportingSystemCategoryTypeReserved {

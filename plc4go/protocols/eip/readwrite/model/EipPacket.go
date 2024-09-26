@@ -81,6 +81,11 @@ type _EipPacket struct {
 
 var _ EipPacketContract = (*_EipPacket)(nil)
 
+// NewEipPacket factory function for _EipPacket
+func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipPacket {
+	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -106,11 +111,6 @@ func (m *_EipPacket) GetOptions() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipPacket factory function for _EipPacket
-func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipPacket {
-	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipPacket(structType any) EipPacket {

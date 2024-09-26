@@ -57,6 +57,20 @@ type _ReplyOrConfirmationConfirmation struct {
 var _ ReplyOrConfirmationConfirmation = (*_ReplyOrConfirmationConfirmation)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ReplyOrConfirmationConfirmation)(nil)
 
+// NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
+func NewReplyOrConfirmationConfirmation(peekedByte byte, confirmation Confirmation, embeddedReply ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
+	if confirmation == nil {
+		panic("confirmation of type Confirmation for ReplyOrConfirmationConfirmation must not be nil")
+	}
+	_result := &_ReplyOrConfirmationConfirmation{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+		Confirmation:                confirmation,
+		EmbeddedReply:               embeddedReply,
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,20 +102,6 @@ func (m *_ReplyOrConfirmationConfirmation) GetEmbeddedReply() ReplyOrConfirmatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
-func NewReplyOrConfirmationConfirmation(peekedByte byte, confirmation Confirmation, embeddedReply ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
-	if confirmation == nil {
-		panic("confirmation of type Confirmation for ReplyOrConfirmationConfirmation must not be nil")
-	}
-	_result := &_ReplyOrConfirmationConfirmation{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
-		Confirmation:                confirmation,
-		EmbeddedReply:               embeddedReply,
-	}
-	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyOrConfirmationConfirmation(structType any) ReplyOrConfirmationConfirmation {

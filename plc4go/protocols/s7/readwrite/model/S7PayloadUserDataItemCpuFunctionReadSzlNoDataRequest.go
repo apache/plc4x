@@ -49,6 +49,15 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest struct {
 var _ S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
+func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetCpuSubfunctio
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

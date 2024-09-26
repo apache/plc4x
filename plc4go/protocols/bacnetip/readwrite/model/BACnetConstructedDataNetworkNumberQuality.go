@@ -56,6 +56,19 @@ type _BACnetConstructedDataNetworkNumberQuality struct {
 var _ BACnetConstructedDataNetworkNumberQuality = (*_BACnetConstructedDataNetworkNumberQuality)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkNumberQuality)(nil)
 
+// NewBACnetConstructedDataNetworkNumberQuality factory function for _BACnetConstructedDataNetworkNumberQuality
+func NewBACnetConstructedDataNetworkNumberQuality(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkNumberQuality BACnetNetworkNumberQualityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumberQuality {
+	if networkNumberQuality == nil {
+		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetConstructedDataNetworkNumberQuality must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkNumberQuality{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkNumberQuality:          networkNumberQuality,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNetworkNumberQuality) GetActualValue() BACnetNetw
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkNumberQuality factory function for _BACnetConstructedDataNetworkNumberQuality
-func NewBACnetConstructedDataNetworkNumberQuality(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkNumberQuality BACnetNetworkNumberQualityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumberQuality {
-	if networkNumberQuality == nil {
-		panic("networkNumberQuality of type BACnetNetworkNumberQualityTagged for BACnetConstructedDataNetworkNumberQuality must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkNumberQuality{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkNumberQuality:          networkNumberQuality,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkNumberQuality(structType any) BACnetConstructedDataNetworkNumberQuality {

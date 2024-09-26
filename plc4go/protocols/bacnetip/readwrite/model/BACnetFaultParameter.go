@@ -70,6 +70,14 @@ type _BACnetFaultParameter struct {
 
 var _ BACnetFaultParameterContract = (*_BACnetFaultParameter)(nil)
 
+// NewBACnetFaultParameter factory function for _BACnetFaultParameter
+func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameter {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameter must not be nil")
+	}
+	return &_BACnetFaultParameter{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetFaultParameter) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameter factory function for _BACnetFaultParameter
-func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameter {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameter must not be nil")
-	}
-	return &_BACnetFaultParameter{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameter(structType any) BACnetFaultParameter {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataChannelPresentValue struct {
 var _ BACnetConstructedDataChannelPresentValue = (*_BACnetConstructedDataChannelPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChannelPresentValue)(nil)
 
+// NewBACnetConstructedDataChannelPresentValue factory function for _BACnetConstructedDataChannelPresentValue
+func NewBACnetConstructedDataChannelPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetChannelValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetChannelValue for BACnetConstructedDataChannelPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataChannelPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataChannelPresentValue) GetActualValue() BACnetChann
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChannelPresentValue factory function for _BACnetConstructedDataChannelPresentValue
-func NewBACnetConstructedDataChannelPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetChannelValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetChannelValue for BACnetConstructedDataChannelPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataChannelPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChannelPresentValue(structType any) BACnetConstructedDataChannelPresentValue {

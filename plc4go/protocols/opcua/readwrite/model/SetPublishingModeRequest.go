@@ -65,6 +65,22 @@ type _SetPublishingModeRequest struct {
 var _ SetPublishingModeRequest = (*_SetPublishingModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeRequest)(nil)
 
+// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
+func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
+	}
+	_result := &_SetPublishingModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		PublishingEnabled:                 publishingEnabled,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,22 +124,6 @@ func (m *_SetPublishingModeRequest) GetSubscriptionIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
-func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
-	}
-	_result := &_SetPublishingModeRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		PublishingEnabled:                 publishingEnabled,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetPublishingModeRequest(structType any) SetPublishingModeRequest {

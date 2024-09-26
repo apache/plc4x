@@ -73,6 +73,14 @@ type _Payload struct {
 
 var _ PayloadContract = (*_Payload)(nil)
 
+// NewPayload factory function for _Payload
+func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+	if sequenceHeader == nil {
+		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
+	}
+	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,14 +94,6 @@ func (m *_Payload) GetSequenceHeader() SequenceHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPayload factory function for _Payload
-func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
-	if sequenceHeader == nil {
-		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
-	}
-	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPayload(structType any) Payload {

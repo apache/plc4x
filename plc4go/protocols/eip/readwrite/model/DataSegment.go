@@ -54,6 +54,19 @@ type _DataSegment struct {
 var _ DataSegment = (*_DataSegment)(nil)
 var _ PathSegmentRequirements = (*_DataSegment)(nil)
 
+// NewDataSegment factory function for _DataSegment
+func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
+	if segmentType == nil {
+		panic("segmentType of type DataSegmentType for DataSegment must not be nil")
+	}
+	_result := &_DataSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_DataSegment) GetSegmentType() DataSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataSegment factory function for _DataSegment
-func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
-	if segmentType == nil {
-		panic("segmentType of type DataSegmentType for DataSegment must not be nil")
-	}
-	_result := &_DataSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataSegment(structType any) DataSegment {

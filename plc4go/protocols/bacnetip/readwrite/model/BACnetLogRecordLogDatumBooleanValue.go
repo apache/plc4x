@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumBooleanValue struct {
 var _ BACnetLogRecordLogDatumBooleanValue = (*_BACnetLogRecordLogDatumBooleanValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumBooleanValue)(nil)
 
+// NewBACnetLogRecordLogDatumBooleanValue factory function for _BACnetLogRecordLogDatumBooleanValue
+func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean, tagNumber uint8) *_BACnetLogRecordLogDatumBooleanValue {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogRecordLogDatumBooleanValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumBooleanValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		BooleanValue:                    booleanValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) GetBooleanValue() BACnetContextTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumBooleanValue factory function for _BACnetLogRecordLogDatumBooleanValue
-func NewBACnetLogRecordLogDatumBooleanValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, booleanValue BACnetContextTagBoolean, tagNumber uint8) *_BACnetLogRecordLogDatumBooleanValue {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogRecordLogDatumBooleanValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumBooleanValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		BooleanValue:                    booleanValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumBooleanValue(structType any) BACnetLogRecordLogDatumBooleanValue {

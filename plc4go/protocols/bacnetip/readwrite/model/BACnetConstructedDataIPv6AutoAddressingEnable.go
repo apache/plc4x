@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPv6AutoAddressingEnable struct {
 var _ BACnetConstructedDataIPv6AutoAddressingEnable = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6AutoAddressingEnable)(nil)
 
+// NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for _BACnetConstructedDataIPv6AutoAddressingEnable
+func NewBACnetConstructedDataIPv6AutoAddressingEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoAddressingEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6AutoAddressingEnable {
+	if autoAddressingEnable == nil {
+		panic("autoAddressingEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPv6AutoAddressingEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6AutoAddressingEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AutoAddressingEnable:          autoAddressingEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6AutoAddressingEnable factory function for _BACnetConstructedDataIPv6AutoAddressingEnable
-func NewBACnetConstructedDataIPv6AutoAddressingEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoAddressingEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6AutoAddressingEnable {
-	if autoAddressingEnable == nil {
-		panic("autoAddressingEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPv6AutoAddressingEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6AutoAddressingEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AutoAddressingEnable:          autoAddressingEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType any) BACnetConstructedDataIPv6AutoAddressingEnable {

@@ -54,6 +54,16 @@ type _BACnetConstructedDataActiveCOVMultipleSubscriptions struct {
 var _ BACnetConstructedDataActiveCOVMultipleSubscriptions = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveCOVMultipleSubscriptions)(nil)
 
+// NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
+func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
+	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
+		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) GetActiveCOVMulti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveCOVMultipleSubscriptions factory function for _BACnetConstructedDataActiveCOVMultipleSubscriptions
-func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVMultipleSubscriptions []BACnetCOVMultipleSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVMultipleSubscriptions {
-	_result := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
-		BACnetConstructedDataContract:  NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveCOVMultipleSubscriptions: activeCOVMultipleSubscriptions,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BACnetConstructedDataActiveCOVMultipleSubscriptions {

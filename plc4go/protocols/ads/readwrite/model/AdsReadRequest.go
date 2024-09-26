@@ -60,6 +60,18 @@ type _AdsReadRequest struct {
 var _ AdsReadRequest = (*_AdsReadRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadRequest)(nil)
 
+// NewAdsReadRequest factory function for _AdsReadRequest
+func NewAdsReadRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32) *_AdsReadRequest {
+	_result := &_AdsReadRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		Length:            length,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -103,18 +115,6 @@ func (m *_AdsReadRequest) GetLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadRequest factory function for _AdsReadRequest
-func NewAdsReadRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, length uint32) *_AdsReadRequest {
-	_result := &_AdsReadRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		IndexGroup:        indexGroup,
-		IndexOffset:       indexOffset,
-		Length:            length,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadRequest(structType any) AdsReadRequest {

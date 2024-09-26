@@ -66,6 +66,20 @@ type _CycServiceItemAnyType struct {
 var _ CycServiceItemAnyType = (*_CycServiceItemAnyType)(nil)
 var _ CycServiceItemTypeRequirements = (*_CycServiceItemAnyType)(nil)
 
+// NewCycServiceItemAnyType factory function for _CycServiceItemAnyType
+func NewCycServiceItemAnyType(byteLength uint8, syntaxId uint8, transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) *_CycServiceItemAnyType {
+	_result := &_CycServiceItemAnyType{
+		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
+		TransportSize:              transportSize,
+		Length:                     length,
+		DbNumber:                   dbNumber,
+		MemoryArea:                 memoryArea,
+		Address:                    address,
+	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,20 +123,6 @@ func (m *_CycServiceItemAnyType) GetAddress() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemAnyType factory function for _CycServiceItemAnyType
-func NewCycServiceItemAnyType(byteLength uint8, syntaxId uint8, transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) *_CycServiceItemAnyType {
-	_result := &_CycServiceItemAnyType{
-		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
-		TransportSize:              transportSize,
-		Length:                     length,
-		DbNumber:                   dbNumber,
-		MemoryArea:                 memoryArea,
-		Address:                    address,
-	}
-	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemAnyType(structType any) CycServiceItemAnyType {

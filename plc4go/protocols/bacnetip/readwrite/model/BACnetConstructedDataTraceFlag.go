@@ -56,6 +56,19 @@ type _BACnetConstructedDataTraceFlag struct {
 var _ BACnetConstructedDataTraceFlag = (*_BACnetConstructedDataTraceFlag)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTraceFlag)(nil)
 
+// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
+func NewBACnetConstructedDataTraceFlag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, traceFlag BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
+	if traceFlag == nil {
+		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
+	}
+	_result := &_BACnetConstructedDataTraceFlag{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TraceFlag:                     traceFlag,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTraceFlag) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
-func NewBACnetConstructedDataTraceFlag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, traceFlag BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
-	if traceFlag == nil {
-		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
-	}
-	_result := &_BACnetConstructedDataTraceFlag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TraceFlag:                     traceFlag,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTraceFlag(structType any) BACnetConstructedDataTraceFlag {

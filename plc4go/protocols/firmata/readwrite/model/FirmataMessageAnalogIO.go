@@ -59,6 +59,17 @@ type _FirmataMessageAnalogIO struct {
 var _ FirmataMessageAnalogIO = (*_FirmataMessageAnalogIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageAnalogIO)(nil)
 
+// NewFirmataMessageAnalogIO factory function for _FirmataMessageAnalogIO
+func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataMessageAnalogIO {
+	_result := &_FirmataMessageAnalogIO{
+		FirmataMessageContract: NewFirmataMessage(response),
+		Pin:                    pin,
+		Data:                   data,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_FirmataMessageAnalogIO) GetData() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageAnalogIO factory function for _FirmataMessageAnalogIO
-func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataMessageAnalogIO {
-	_result := &_FirmataMessageAnalogIO{
-		FirmataMessageContract: NewFirmataMessage(response),
-		Pin:                    pin,
-		Data:                   data,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageAnalogIO(structType any) FirmataMessageAnalogIO {

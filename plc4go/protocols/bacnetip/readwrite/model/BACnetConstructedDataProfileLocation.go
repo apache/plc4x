@@ -56,6 +56,19 @@ type _BACnetConstructedDataProfileLocation struct {
 var _ BACnetConstructedDataProfileLocation = (*_BACnetConstructedDataProfileLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProfileLocation)(nil)
 
+// NewBACnetConstructedDataProfileLocation factory function for _BACnetConstructedDataProfileLocation
+func NewBACnetConstructedDataProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, profileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileLocation {
+	if profileLocation == nil {
+		panic("profileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataProfileLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProfileLocation:               profileLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProfileLocation) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProfileLocation factory function for _BACnetConstructedDataProfileLocation
-func NewBACnetConstructedDataProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, profileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileLocation {
-	if profileLocation == nil {
-		panic("profileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataProfileLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProfileLocation:               profileLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProfileLocation(structType any) BACnetConstructedDataProfileLocation {

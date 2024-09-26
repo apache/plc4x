@@ -49,6 +49,15 @@ type _ApduControlNack struct {
 var _ ApduControlNack = (*_ApduControlNack)(nil)
 var _ ApduControlRequirements = (*_ApduControlNack)(nil)
 
+// NewApduControlNack factory function for _ApduControlNack
+func NewApduControlNack() *_ApduControlNack {
+	_result := &_ApduControlNack{
+		ApduControlContract: NewApduControl(),
+	}
+	_result.ApduControlContract.(*_ApduControl)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduControlNack) GetControlType() uint8 {
 
 func (m *_ApduControlNack) GetParent() ApduControlContract {
 	return m.ApduControlContract
-}
-
-// NewApduControlNack factory function for _ApduControlNack
-func NewApduControlNack() *_ApduControlNack {
-	_result := &_ApduControlNack{
-		ApduControlContract: NewApduControl(),
-	}
-	_result.ApduControlContract.(*_ApduControl)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

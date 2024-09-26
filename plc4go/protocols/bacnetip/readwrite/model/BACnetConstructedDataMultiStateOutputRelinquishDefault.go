@@ -56,6 +56,19 @@ type _BACnetConstructedDataMultiStateOutputRelinquishDefault struct {
 var _ BACnetConstructedDataMultiStateOutputRelinquishDefault = (*_BACnetConstructedDataMultiStateOutputRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateOutputRelinquishDefault)(nil)
 
+// NewBACnetConstructedDataMultiStateOutputRelinquishDefault factory function for _BACnetConstructedDataMultiStateOutputRelinquishDefault
+func NewBACnetConstructedDataMultiStateOutputRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataMultiStateOutputRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMultiStateOutputRelinquishDefault) GetActualValue
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateOutputRelinquishDefault factory function for _BACnetConstructedDataMultiStateOutputRelinquishDefault
-func NewBACnetConstructedDataMultiStateOutputRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateOutputRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMultiStateOutputRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataMultiStateOutputRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateOutputRelinquishDefault(structType any) BACnetConstructedDataMultiStateOutputRelinquishDefault {

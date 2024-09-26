@@ -65,6 +65,22 @@ type _TransferSubscriptionsRequest struct {
 var _ TransferSubscriptionsRequest = (*_TransferSubscriptionsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferSubscriptionsRequest)(nil)
 
+// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
+func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
+	}
+	_result := &_TransferSubscriptionsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+		SendInitialValues:                 sendInitialValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,22 +124,6 @@ func (m *_TransferSubscriptionsRequest) GetSendInitialValues() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
-func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
-	}
-	_result := &_TransferSubscriptionsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-		SendInitialValues:                 sendInitialValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferSubscriptionsRequest(structType any) TransferSubscriptionsRequest {

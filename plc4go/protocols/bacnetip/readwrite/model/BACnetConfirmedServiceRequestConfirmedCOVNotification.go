@@ -66,6 +66,35 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 var _ BACnetConfirmedServiceRequestConfirmedCOVNotification = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
 
+// NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotification
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if lifetimeInSeconds == nil {
+		panic("lifetimeInSeconds of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if listOfValues == nil {
+		panic("listOfValues of type BACnetPropertyValues for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotification{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
+		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
+		LifetimeInSeconds:                     lifetimeInSeconds,
+		ListOfValues:                          listOfValues,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,35 +142,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetListOfValues
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotification
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
-	if subscriberProcessIdentifier == nil {
-		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if initiatingDeviceIdentifier == nil {
-		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if lifetimeInSeconds == nil {
-		panic("lifetimeInSeconds of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if listOfValues == nil {
-		panic("listOfValues of type BACnetPropertyValues for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotification{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
-		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
-		LifetimeInSeconds:                     lifetimeInSeconds,
-		ListOfValues:                          listOfValues,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType any) BACnetConfirmedServiceRequestConfirmedCOVNotification {

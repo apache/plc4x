@@ -78,6 +78,33 @@ type _PublishedVariableDataType struct {
 var _ PublishedVariableDataType = (*_PublishedVariableDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishedVariableDataType)(nil)
 
+// NewPublishedVariableDataType factory function for _PublishedVariableDataType
+func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) *_PublishedVariableDataType {
+	if publishedVariable == nil {
+		panic("publishedVariable of type NodeId for PublishedVariableDataType must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for PublishedVariableDataType must not be nil")
+	}
+	if substituteValue == nil {
+		panic("substituteValue of type Variant for PublishedVariableDataType must not be nil")
+	}
+	_result := &_PublishedVariableDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PublishedVariable:                 publishedVariable,
+		AttributeId:                       attributeId,
+		SamplingIntervalHint:              samplingIntervalHint,
+		DeadbandType:                      deadbandType,
+		DeadbandValue:                     deadbandValue,
+		IndexRange:                        indexRange,
+		SubstituteValue:                   substituteValue,
+		NoOfMetaDataProperties:            noOfMetaDataProperties,
+		MetaDataProperties:                metaDataProperties,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,33 +168,6 @@ func (m *_PublishedVariableDataType) GetMetaDataProperties() []QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPublishedVariableDataType factory function for _PublishedVariableDataType
-func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) *_PublishedVariableDataType {
-	if publishedVariable == nil {
-		panic("publishedVariable of type NodeId for PublishedVariableDataType must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for PublishedVariableDataType must not be nil")
-	}
-	if substituteValue == nil {
-		panic("substituteValue of type Variant for PublishedVariableDataType must not be nil")
-	}
-	_result := &_PublishedVariableDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		PublishedVariable:                 publishedVariable,
-		AttributeId:                       attributeId,
-		SamplingIntervalHint:              samplingIntervalHint,
-		DeadbandType:                      deadbandType,
-		DeadbandValue:                     deadbandValue,
-		IndexRange:                        indexRange,
-		SubstituteValue:                   substituteValue,
-		NoOfMetaDataProperties:            noOfMetaDataProperties,
-		MetaDataProperties:                metaDataProperties,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPublishedVariableDataType(structType any) PublishedVariableDataType {

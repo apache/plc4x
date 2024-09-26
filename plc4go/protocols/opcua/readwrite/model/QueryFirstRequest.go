@@ -72,6 +72,31 @@ type _QueryFirstRequest struct {
 var _ QueryFirstRequest = (*_QueryFirstRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstRequest)(nil)
 
+// NewQueryFirstRequest factory function for _QueryFirstRequest
+func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if filter == nil {
+		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	_result := &_QueryFirstRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		View:                              view,
+		NoOfNodeTypes:                     noOfNodeTypes,
+		NodeTypes:                         nodeTypes,
+		Filter:                            filter,
+		MaxDataSetsToReturn:               maxDataSetsToReturn,
+		MaxReferencesToReturn:             maxReferencesToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -127,31 +152,6 @@ func (m *_QueryFirstRequest) GetMaxReferencesToReturn() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryFirstRequest factory function for _QueryFirstRequest
-func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if view == nil {
-		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if filter == nil {
-		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	_result := &_QueryFirstRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		View:                              view,
-		NoOfNodeTypes:                     noOfNodeTypes,
-		NodeTypes:                         nodeTypes,
-		Filter:                            filter,
-		MaxDataSetsToReturn:               maxDataSetsToReturn,
-		MaxReferencesToReturn:             maxReferencesToReturn,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryFirstRequest(structType any) QueryFirstRequest {

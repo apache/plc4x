@@ -49,6 +49,15 @@ type _SecurityDataMainsFailure struct {
 var _ SecurityDataMainsFailure = (*_SecurityDataMainsFailure)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataMainsFailure)(nil)
 
+// NewSecurityDataMainsFailure factory function for _SecurityDataMainsFailure
+func NewSecurityDataMainsFailure(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsFailure {
+	_result := &_SecurityDataMainsFailure{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataMainsFailure)(nil)
 
 func (m *_SecurityDataMainsFailure) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataMainsFailure factory function for _SecurityDataMainsFailure
-func NewSecurityDataMainsFailure(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsFailure {
-	_result := &_SecurityDataMainsFailure{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

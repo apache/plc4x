@@ -62,6 +62,18 @@ type _PortSegmentExtended struct {
 var _ PortSegmentExtended = (*_PortSegmentExtended)(nil)
 var _ PortSegmentTypeRequirements = (*_PortSegmentExtended)(nil)
 
+// NewPortSegmentExtended factory function for _PortSegmentExtended
+func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
+	_result := &_PortSegmentExtended{
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddressSize:         linkAddressSize,
+		Address:                 address,
+	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,18 +128,6 @@ func (m *_PortSegmentExtended) GetPaddingByte() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegmentExtended factory function for _PortSegmentExtended
-func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
-	_result := &_PortSegmentExtended{
-		PortSegmentTypeContract: NewPortSegmentType(),
-		Port:                    port,
-		LinkAddressSize:         linkAddressSize,
-		Address:                 address,
-	}
-	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentExtended(structType any) PortSegmentExtended {

@@ -53,6 +53,11 @@ type _HVACHumidity struct {
 
 var _ HVACHumidity = (*_HVACHumidity)(nil)
 
+// NewHVACHumidity factory function for _HVACHumidity
+func NewHVACHumidity(humidityValue uint16) *_HVACHumidity {
+	return &_HVACHumidity{HumidityValue: humidityValue}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_HVACHumidity) GetHumidityInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidity factory function for _HVACHumidity
-func NewHVACHumidity(humidityValue uint16) *_HVACHumidity {
-	return &_HVACHumidity{HumidityValue: humidityValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidity(structType any) HVACHumidity {

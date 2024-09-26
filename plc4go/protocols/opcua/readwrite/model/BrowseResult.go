@@ -63,6 +63,25 @@ type _BrowseResult struct {
 var _ BrowseResult = (*_BrowseResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseResult)(nil)
 
+// NewBrowseResult factory function for _BrowseResult
+func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowseResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for BrowseResult must not be nil")
+	}
+	_result := &_BrowseResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		ContinuationPoint:                 continuationPoint,
+		NoOfReferences:                    noOfReferences,
+		References:                        references,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_BrowseResult) GetReferences() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseResult factory function for _BrowseResult
-func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for BrowseResult must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for BrowseResult must not be nil")
-	}
-	_result := &_BrowseResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		ContinuationPoint:                 continuationPoint,
-		NoOfReferences:                    noOfReferences,
-		References:                        references,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseResult(structType any) BrowseResult {

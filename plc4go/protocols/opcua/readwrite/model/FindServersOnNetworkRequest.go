@@ -66,6 +66,23 @@ type _FindServersOnNetworkRequest struct {
 var _ FindServersOnNetworkRequest = (*_FindServersOnNetworkRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkRequest)(nil)
 
+// NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
+func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
+	}
+	_result := &_FindServersOnNetworkRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		StartingRecordId:                  startingRecordId,
+		MaxRecordsToReturn:                maxRecordsToReturn,
+		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
+		ServerCapabilityFilter:            serverCapabilityFilter,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_FindServersOnNetworkRequest) GetServerCapabilityFilter() []PascalStrin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
-func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
-	}
-	_result := &_FindServersOnNetworkRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		StartingRecordId:                  startingRecordId,
-		MaxRecordsToReturn:                maxRecordsToReturn,
-		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
-		ServerCapabilityFilter:            serverCapabilityFilter,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersOnNetworkRequest(structType any) FindServersOnNetworkRequest {

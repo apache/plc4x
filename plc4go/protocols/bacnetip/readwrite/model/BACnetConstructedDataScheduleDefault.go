@@ -56,6 +56,19 @@ type _BACnetConstructedDataScheduleDefault struct {
 var _ BACnetConstructedDataScheduleDefault = (*_BACnetConstructedDataScheduleDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScheduleDefault)(nil)
 
+// NewBACnetConstructedDataScheduleDefault factory function for _BACnetConstructedDataScheduleDefault
+func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scheduleDefault BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleDefault {
+	if scheduleDefault == nil {
+		panic("scheduleDefault of type BACnetConstructedDataElement for BACnetConstructedDataScheduleDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataScheduleDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ScheduleDefault:               scheduleDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataScheduleDefault) GetActualValue() BACnetConstruct
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScheduleDefault factory function for _BACnetConstructedDataScheduleDefault
-func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scheduleDefault BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScheduleDefault {
-	if scheduleDefault == nil {
-		panic("scheduleDefault of type BACnetConstructedDataElement for BACnetConstructedDataScheduleDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataScheduleDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ScheduleDefault:               scheduleDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScheduleDefault(structType any) BACnetConstructedDataScheduleDefault {

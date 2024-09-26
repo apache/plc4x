@@ -54,6 +54,16 @@ type _ApduDataExtAuthorizeResponse struct {
 var _ ApduDataExtAuthorizeResponse = (*_ApduDataExtAuthorizeResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeResponse)(nil)
 
+// NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
+func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
+	_result := &_ApduDataExtAuthorizeResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		Level:               level,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ApduDataExtAuthorizeResponse) GetLevel() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtAuthorizeResponse factory function for _ApduDataExtAuthorizeResponse
-func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAuthorizeResponse {
-	_result := &_ApduDataExtAuthorizeResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		Level:               level,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtAuthorizeResponse(structType any) ApduDataExtAuthorizeResponse {

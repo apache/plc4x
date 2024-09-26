@@ -70,6 +70,14 @@ type _BACnetLogDataLogDataEntry struct {
 
 var _ BACnetLogDataLogDataEntryContract = (*_BACnetLogDataLogDataEntry)(nil)
 
+// NewBACnetLogDataLogDataEntry factory function for _BACnetLogDataLogDataEntry
+func NewBACnetLogDataLogDataEntry(peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogDataLogDataEntry must not be nil")
+	}
+	return &_BACnetLogDataLogDataEntry{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetLogDataLogDataEntry) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntry factory function for _BACnetLogDataLogDataEntry
-func NewBACnetLogDataLogDataEntry(peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogDataLogDataEntry must not be nil")
-	}
-	return &_BACnetLogDataLogDataEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntry(structType any) BACnetLogDataLogDataEntry {

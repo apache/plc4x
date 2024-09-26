@@ -76,6 +76,11 @@ type _Apdu struct {
 
 var _ ApduContract = (*_Apdu)(nil)
 
+// NewApdu factory function for _Apdu
+func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
+	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -93,11 +98,6 @@ func (m *_Apdu) GetCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApdu factory function for _Apdu
-func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
-	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastApdu(structType any) Apdu {

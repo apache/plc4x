@@ -60,6 +60,21 @@ type _RedundantServerDataType struct {
 var _ RedundantServerDataType = (*_RedundantServerDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RedundantServerDataType)(nil)
 
+// NewRedundantServerDataType factory function for _RedundantServerDataType
+func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serverState ServerState) *_RedundantServerDataType {
+	if serverId == nil {
+		panic("serverId of type PascalString for RedundantServerDataType must not be nil")
+	}
+	_result := &_RedundantServerDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerId:                          serverId,
+		ServiceLevel:                      serviceLevel,
+		ServerState:                       serverState,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_RedundantServerDataType) GetServerState() ServerState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRedundantServerDataType factory function for _RedundantServerDataType
-func NewRedundantServerDataType(serverId PascalString, serviceLevel uint8, serverState ServerState) *_RedundantServerDataType {
-	if serverId == nil {
-		panic("serverId of type PascalString for RedundantServerDataType must not be nil")
-	}
-	_result := &_RedundantServerDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerId:                          serverId,
-		ServiceLevel:                      serviceLevel,
-		ServerState:                       serverState,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRedundantServerDataType(structType any) RedundantServerDataType {

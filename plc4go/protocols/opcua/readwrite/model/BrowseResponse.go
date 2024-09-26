@@ -66,6 +66,23 @@ type _BrowseResponse struct {
 var _ BrowseResponse = (*_BrowseResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseResponse)(nil)
 
+// NewBrowseResponse factory function for _BrowseResponse
+func NewBrowseResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_BrowseResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for BrowseResponse must not be nil")
+	}
+	_result := &_BrowseResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_BrowseResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseResponse factory function for _BrowseResponse
-func NewBrowseResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_BrowseResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for BrowseResponse must not be nil")
-	}
-	_result := &_BrowseResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseResponse(structType any) BrowseResponse {

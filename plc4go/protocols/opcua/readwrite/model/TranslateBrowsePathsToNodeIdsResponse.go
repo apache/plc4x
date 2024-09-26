@@ -66,6 +66,23 @@ type _TranslateBrowsePathsToNodeIdsResponse struct {
 var _ TranslateBrowsePathsToNodeIdsResponse = (*_TranslateBrowsePathsToNodeIdsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsResponse)(nil)
 
+// NewTranslateBrowsePathsToNodeIdsResponse factory function for _TranslateBrowsePathsToNodeIdsResponse
+func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TranslateBrowsePathsToNodeIdsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsResponse must not be nil")
+	}
+	_result := &_TranslateBrowsePathsToNodeIdsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_TranslateBrowsePathsToNodeIdsResponse) GetDiagnosticInfos() []Diagnost
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTranslateBrowsePathsToNodeIdsResponse factory function for _TranslateBrowsePathsToNodeIdsResponse
-func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_TranslateBrowsePathsToNodeIdsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsResponse must not be nil")
-	}
-	_result := &_TranslateBrowsePathsToNodeIdsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTranslateBrowsePathsToNodeIdsResponse(structType any) TranslateBrowsePathsToNodeIdsResponse {

@@ -57,6 +57,17 @@ type _PortSegmentNormal struct {
 var _ PortSegmentNormal = (*_PortSegmentNormal)(nil)
 var _ PortSegmentTypeRequirements = (*_PortSegmentNormal)(nil)
 
+// NewPortSegmentNormal factory function for _PortSegmentNormal
+func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
+	_result := &_PortSegmentNormal{
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddress:             linkAddress,
+	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_PortSegmentNormal) GetLinkAddress() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegmentNormal factory function for _PortSegmentNormal
-func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
-	_result := &_PortSegmentNormal{
-		PortSegmentTypeContract: NewPortSegmentType(),
-		Port:                    port,
-		LinkAddress:             linkAddress,
-	}
-	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentNormal(structType any) PortSegmentNormal {

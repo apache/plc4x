@@ -54,6 +54,19 @@ type _BACnetCalendarEntryWeekNDay struct {
 var _ BACnetCalendarEntryWeekNDay = (*_BACnetCalendarEntryWeekNDay)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryWeekNDay)(nil)
 
+// NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
+func NewBACnetCalendarEntryWeekNDay(peekedTagHeader BACnetTagHeader, weekNDay BACnetWeekNDayTagged) *_BACnetCalendarEntryWeekNDay {
+	if weekNDay == nil {
+		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
+	}
+	_result := &_BACnetCalendarEntryWeekNDay{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		WeekNDay:                    weekNDay,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetCalendarEntryWeekNDay) GetWeekNDay() BACnetWeekNDayTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
-func NewBACnetCalendarEntryWeekNDay(peekedTagHeader BACnetTagHeader, weekNDay BACnetWeekNDayTagged) *_BACnetCalendarEntryWeekNDay {
-	if weekNDay == nil {
-		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
-	}
-	_result := &_BACnetCalendarEntryWeekNDay{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		WeekNDay:                    weekNDay,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryWeekNDay(structType any) BACnetCalendarEntryWeekNDay {

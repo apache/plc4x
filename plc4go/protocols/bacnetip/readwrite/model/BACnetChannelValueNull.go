@@ -54,6 +54,19 @@ type _BACnetChannelValueNull struct {
 var _ BACnetChannelValueNull = (*_BACnetChannelValueNull)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueNull)(nil)
 
+// NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
+func NewBACnetChannelValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetChannelValueNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
+	}
+	_result := &_BACnetChannelValueNull{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		NullValue:                  nullValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
-func NewBACnetChannelValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetChannelValueNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
-	}
-	_result := &_BACnetChannelValueNull{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		NullValue:                  nullValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueNull(structType any) BACnetChannelValueNull {

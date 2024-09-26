@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLifeSafetyOperations struct {
 var _ BACnetPropertyStatesLifeSafetyOperations = (*_BACnetPropertyStatesLifeSafetyOperations)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLifeSafetyOperations)(nil)
 
+// NewBACnetPropertyStatesLifeSafetyOperations factory function for _BACnetPropertyStatesLifeSafetyOperations
+func NewBACnetPropertyStatesLifeSafetyOperations(peekedTagHeader BACnetTagHeader, lifeSafetyOperations BACnetLifeSafetyOperationTagged) *_BACnetPropertyStatesLifeSafetyOperations {
+	if lifeSafetyOperations == nil {
+		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetPropertyStatesLifeSafetyOperations must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLifeSafetyOperations{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LifeSafetyOperations:         lifeSafetyOperations,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLifeSafetyOperations() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLifeSafetyOperations factory function for _BACnetPropertyStatesLifeSafetyOperations
-func NewBACnetPropertyStatesLifeSafetyOperations(peekedTagHeader BACnetTagHeader, lifeSafetyOperations BACnetLifeSafetyOperationTagged) *_BACnetPropertyStatesLifeSafetyOperations {
-	if lifeSafetyOperations == nil {
-		panic("lifeSafetyOperations of type BACnetLifeSafetyOperationTagged for BACnetPropertyStatesLifeSafetyOperations must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLifeSafetyOperations{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LifeSafetyOperations:         lifeSafetyOperations,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLifeSafetyOperations(structType any) BACnetPropertyStatesLifeSafetyOperations {

@@ -57,6 +57,20 @@ type _IdentityMappingRuleType struct {
 var _ IdentityMappingRuleType = (*_IdentityMappingRuleType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_IdentityMappingRuleType)(nil)
 
+// NewIdentityMappingRuleType factory function for _IdentityMappingRuleType
+func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria PascalString) *_IdentityMappingRuleType {
+	if criteria == nil {
+		panic("criteria of type PascalString for IdentityMappingRuleType must not be nil")
+	}
+	_result := &_IdentityMappingRuleType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		CriteriaType:                      criteriaType,
+		Criteria:                          criteria,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_IdentityMappingRuleType) GetCriteria() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentityMappingRuleType factory function for _IdentityMappingRuleType
-func NewIdentityMappingRuleType(criteriaType IdentityCriteriaType, criteria PascalString) *_IdentityMappingRuleType {
-	if criteria == nil {
-		panic("criteria of type PascalString for IdentityMappingRuleType must not be nil")
-	}
-	_result := &_IdentityMappingRuleType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		CriteriaType:                      criteriaType,
-		Criteria:                          criteria,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentityMappingRuleType(structType any) IdentityMappingRuleType {

@@ -54,6 +54,14 @@ type _BACnetPortPermission struct {
 
 var _ BACnetPortPermission = (*_BACnetPortPermission)(nil)
 
+// NewBACnetPortPermission factory function for _BACnetPortPermission
+func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
+	}
+	return &_BACnetPortPermission{Port: port, Enable: enable}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_BACnetPortPermission) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPortPermission factory function for _BACnetPortPermission
-func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
-	}
-	return &_BACnetPortPermission{Port: port, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPortPermission(structType any) BACnetPortPermission {

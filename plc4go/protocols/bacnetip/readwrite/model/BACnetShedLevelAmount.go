@@ -54,6 +54,19 @@ type _BACnetShedLevelAmount struct {
 var _ BACnetShedLevelAmount = (*_BACnetShedLevelAmount)(nil)
 var _ BACnetShedLevelRequirements = (*_BACnetShedLevelAmount)(nil)
 
+// NewBACnetShedLevelAmount factory function for _BACnetShedLevelAmount
+func NewBACnetShedLevelAmount(peekedTagHeader BACnetTagHeader, amount BACnetContextTagReal) *_BACnetShedLevelAmount {
+	if amount == nil {
+		panic("amount of type BACnetContextTagReal for BACnetShedLevelAmount must not be nil")
+	}
+	_result := &_BACnetShedLevelAmount{
+		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
+		Amount:                  amount,
+	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetShedLevelAmount) GetAmount() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevelAmount factory function for _BACnetShedLevelAmount
-func NewBACnetShedLevelAmount(peekedTagHeader BACnetTagHeader, amount BACnetContextTagReal) *_BACnetShedLevelAmount {
-	if amount == nil {
-		panic("amount of type BACnetContextTagReal for BACnetShedLevelAmount must not be nil")
-	}
-	_result := &_BACnetShedLevelAmount{
-		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
-		Amount:                  amount,
-	}
-	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevelAmount(structType any) BACnetShedLevelAmount {

@@ -49,6 +49,15 @@ type _ApduDataExtLinkRead struct {
 var _ ApduDataExtLinkRead = (*_ApduDataExtLinkRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkRead)(nil)
 
+// NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
+func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
+	_result := &_ApduDataExtLinkRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtLinkRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtLinkRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
-func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
-	_result := &_ApduDataExtLinkRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,16 @@ type _IdentifyReplyCommandManufacturer struct {
 var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
 
+// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
+func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
+	_result := &_IdentifyReplyCommandManufacturer{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ManufacturerName:             manufacturerName,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandManufacturer) GetManufacturerName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
-	_result := &_IdentifyReplyCommandManufacturer{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		ManufacturerName:             manufacturerName,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandManufacturer {

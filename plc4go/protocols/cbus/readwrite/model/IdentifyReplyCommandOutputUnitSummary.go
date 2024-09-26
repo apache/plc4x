@@ -63,6 +63,22 @@ type _IdentifyReplyCommandOutputUnitSummary struct {
 var _ IdentifyReplyCommandOutputUnitSummary = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandOutputUnitSummary)(nil)
 
+// NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
+func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
+	if unitFlags == nil {
+		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
+	}
+	_result := &_IdentifyReplyCommandOutputUnitSummary{
+		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
+		UnitFlags:                           unitFlags,
+		GavStoreEnabledByte1:                gavStoreEnabledByte1,
+		GavStoreEnabledByte2:                gavStoreEnabledByte2,
+		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,22 +122,6 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetTimeFromLastRecoverOfMainsIn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandOutputUnitSummary factory function for _IdentifyReplyCommandOutputUnitSummary
-func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnitSummary, gavStoreEnabledByte1 *byte, gavStoreEnabledByte2 *byte, timeFromLastRecoverOfMainsInSeconds uint8, numBytes uint8) *_IdentifyReplyCommandOutputUnitSummary {
-	if unitFlags == nil {
-		panic("unitFlags of type IdentifyReplyCommandUnitSummary for IdentifyReplyCommandOutputUnitSummary must not be nil")
-	}
-	_result := &_IdentifyReplyCommandOutputUnitSummary{
-		IdentifyReplyCommandContract:        NewIdentifyReplyCommand(numBytes),
-		UnitFlags:                           unitFlags,
-		GavStoreEnabledByte1:                gavStoreEnabledByte1,
-		GavStoreEnabledByte2:                gavStoreEnabledByte2,
-		TimeFromLastRecoverOfMainsInSeconds: timeFromLastRecoverOfMainsInSeconds,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandOutputUnitSummary(structType any) IdentifyReplyCommandOutputUnitSummary {

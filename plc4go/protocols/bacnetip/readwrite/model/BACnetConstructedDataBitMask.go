@@ -56,6 +56,19 @@ type _BACnetConstructedDataBitMask struct {
 var _ BACnetConstructedDataBitMask = (*_BACnetConstructedDataBitMask)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitMask)(nil)
 
+// NewBACnetConstructedDataBitMask factory function for _BACnetConstructedDataBitMask
+func NewBACnetConstructedDataBitMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitString BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitMask {
+	if bitString == nil {
+		panic("bitString of type BACnetApplicationTagBitString for BACnetConstructedDataBitMask must not be nil")
+	}
+	_result := &_BACnetConstructedDataBitMask{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BitString:                     bitString,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBitMask) GetActualValue() BACnetApplicationTagBit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBitMask factory function for _BACnetConstructedDataBitMask
-func NewBACnetConstructedDataBitMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bitString BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitMask {
-	if bitString == nil {
-		panic("bitString of type BACnetApplicationTagBitString for BACnetConstructedDataBitMask must not be nil")
-	}
-	_result := &_BACnetConstructedDataBitMask{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BitString:                     bitString,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBitMask(structType any) BACnetConstructedDataBitMask {

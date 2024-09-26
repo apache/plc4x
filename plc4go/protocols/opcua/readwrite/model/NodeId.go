@@ -55,6 +55,14 @@ type _NodeId struct {
 
 var _ NodeId = (*_NodeId)(nil)
 
+// NewNodeId factory function for _NodeId
+func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
+	}
+	return &_NodeId{NodeId: nodeId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -83,14 +91,6 @@ func (m *_NodeId) GetId() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeId factory function for _NodeId
-func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
-	}
-	return &_NodeId{NodeId: nodeId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeId(structType any) NodeId {

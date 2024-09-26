@@ -49,6 +49,15 @@ type _LRawInd struct {
 var _ LRawInd = (*_LRawInd)(nil)
 var _ CEMIRequirements = (*_LRawInd)(nil)
 
+// NewLRawInd factory function for _LRawInd
+func NewLRawInd(size uint16) *_LRawInd {
+	_result := &_LRawInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_LRawInd) GetMessageCode() uint8 {
 
 func (m *_LRawInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLRawInd factory function for _LRawInd
-func NewLRawInd(size uint16) *_LRawInd {
-	_result := &_LRawInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

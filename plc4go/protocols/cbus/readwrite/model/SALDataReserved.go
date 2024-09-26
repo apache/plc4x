@@ -49,6 +49,15 @@ type _SALDataReserved struct {
 var _ SALDataReserved = (*_SALDataReserved)(nil)
 var _ SALDataRequirements = (*_SALDataReserved)(nil)
 
+// NewSALDataReserved factory function for _SALDataReserved
+func NewSALDataReserved(salData SALData) *_SALDataReserved {
+	_result := &_SALDataReserved{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_SALDataReserved) GetApplicationId() ApplicationId {
 
 func (m *_SALDataReserved) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataReserved factory function for _SALDataReserved
-func NewSALDataReserved(salData SALData) *_SALDataReserved {
-	_result := &_SALDataReserved{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

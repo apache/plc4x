@@ -70,6 +70,14 @@ type _BACnetShedLevel struct {
 
 var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
 
+// NewBACnetShedLevel factory function for _BACnetShedLevel
+func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
+	}
+	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevel factory function for _BACnetShedLevel
-func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
-	}
-	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevel(structType any) BACnetShedLevel {

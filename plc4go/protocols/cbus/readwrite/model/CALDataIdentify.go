@@ -54,6 +54,16 @@ type _CALDataIdentify struct {
 var _ CALDataIdentify = (*_CALDataIdentify)(nil)
 var _ CALDataRequirements = (*_CALDataIdentify)(nil)
 
+// NewCALDataIdentify factory function for _CALDataIdentify
+func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
+	_result := &_CALDataIdentify{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:       attribute,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
-	_result := &_CALDataIdentify{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Attribute:       attribute,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataIdentify(structType any) CALDataIdentify {

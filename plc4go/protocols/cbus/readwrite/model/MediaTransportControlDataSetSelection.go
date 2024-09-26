@@ -57,6 +57,17 @@ type _MediaTransportControlDataSetSelection struct {
 var _ MediaTransportControlDataSetSelection = (*_MediaTransportControlDataSetSelection)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSetSelection)(nil)
 
+// NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
+func NewMediaTransportControlDataSetSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionHi byte, selectionLo byte) *_MediaTransportControlDataSetSelection {
+	_result := &_MediaTransportControlDataSetSelection{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionHi:                       selectionHi,
+		SelectionLo:                       selectionLo,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_MediaTransportControlDataSetSelection) GetSelectionLo() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
-func NewMediaTransportControlDataSetSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionHi byte, selectionLo byte) *_MediaTransportControlDataSetSelection {
-	_result := &_MediaTransportControlDataSetSelection{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SelectionHi:                       selectionHi,
-		SelectionLo:                       selectionLo,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSetSelection(structType any) MediaTransportControlDataSetSelection {

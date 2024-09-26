@@ -49,6 +49,15 @@ type _BACnetConstructedDataIntegerValueAll struct {
 var _ BACnetConstructedDataIntegerValueAll = (*_BACnetConstructedDataIntegerValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueAll)(nil)
 
+// NewBACnetConstructedDataIntegerValueAll factory function for _BACnetConstructedDataIntegerValueAll
+func NewBACnetConstructedDataIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueAll {
+	_result := &_BACnetConstructedDataIntegerValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataIntegerValueAll) GetPropertyIdentifierArgument() 
 
 func (m *_BACnetConstructedDataIntegerValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataIntegerValueAll factory function for _BACnetConstructedDataIntegerValueAll
-func NewBACnetConstructedDataIntegerValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueAll {
-	_result := &_BACnetConstructedDataIntegerValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

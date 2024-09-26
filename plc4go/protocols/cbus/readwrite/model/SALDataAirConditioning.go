@@ -54,6 +54,19 @@ type _SALDataAirConditioning struct {
 var _ SALDataAirConditioning = (*_SALDataAirConditioning)(nil)
 var _ SALDataRequirements = (*_SALDataAirConditioning)(nil)
 
+// NewSALDataAirConditioning factory function for _SALDataAirConditioning
+func NewSALDataAirConditioning(salData SALData, airConditioningData AirConditioningData) *_SALDataAirConditioning {
+	if airConditioningData == nil {
+		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
+	}
+	_result := &_SALDataAirConditioning{
+		SALDataContract:     NewSALData(salData),
+		AirConditioningData: airConditioningData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataAirConditioning) GetAirConditioningData() AirConditioningData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataAirConditioning factory function for _SALDataAirConditioning
-func NewSALDataAirConditioning(salData SALData, airConditioningData AirConditioningData) *_SALDataAirConditioning {
-	if airConditioningData == nil {
-		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
-	}
-	_result := &_SALDataAirConditioning{
-		SALDataContract:     NewSALData(salData),
-		AirConditioningData: airConditioningData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataAirConditioning(structType any) SALDataAirConditioning {

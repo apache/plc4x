@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryReal struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryReal = (*_BACnetFaultParameterFaultExtendedParametersEntryReal)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryReal)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryReal factory function for _BACnetFaultParameterFaultExtendedParametersEntryReal
+func NewBACnetFaultParameterFaultExtendedParametersEntryReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetFaultParameterFaultExtendedParametersEntryReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultExtendedParametersEntryReal must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		RealValue: realValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) GetRealValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryReal factory function for _BACnetFaultParameterFaultExtendedParametersEntryReal
-func NewBACnetFaultParameterFaultExtendedParametersEntryReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetFaultParameterFaultExtendedParametersEntryReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetFaultParameterFaultExtendedParametersEntryReal must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryReal{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		RealValue: realValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryReal(structType any) BACnetFaultParameterFaultExtendedParametersEntryReal {

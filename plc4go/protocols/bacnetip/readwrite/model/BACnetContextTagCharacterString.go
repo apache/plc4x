@@ -56,6 +56,19 @@ type _BACnetContextTagCharacterString struct {
 var _ BACnetContextTagCharacterString = (*_BACnetContextTagCharacterString)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagCharacterString)(nil)
 
+// NewBACnetContextTagCharacterString factory function for _BACnetContextTagCharacterString
+func NewBACnetContextTagCharacterString(header BACnetTagHeader, payload BACnetTagPayloadCharacterString, tagNumberArgument uint8) *_BACnetContextTagCharacterString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadCharacterString for BACnetContextTagCharacterString must not be nil")
+	}
+	_result := &_BACnetContextTagCharacterString{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_BACnetContextTagCharacterString) GetValue() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagCharacterString factory function for _BACnetContextTagCharacterString
-func NewBACnetContextTagCharacterString(header BACnetTagHeader, payload BACnetTagPayloadCharacterString, tagNumberArgument uint8) *_BACnetContextTagCharacterString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadCharacterString for BACnetContextTagCharacterString must not be nil")
-	}
-	_result := &_BACnetContextTagCharacterString{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagCharacterString(structType any) BACnetContextTagCharacterString {

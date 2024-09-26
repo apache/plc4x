@@ -56,6 +56,19 @@ type _BACnetConstructedDataIPDHCPLeaseTimeRemaining struct {
 var _ BACnetConstructedDataIPDHCPLeaseTimeRemaining = (*_BACnetConstructedDataIPDHCPLeaseTimeRemaining)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTimeRemaining)(nil)
 
+// NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for _BACnetConstructedDataIPDHCPLeaseTimeRemaining
+func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+	if ipDhcpLeaseTimeRemaining == nil {
+		panic("ipDhcpLeaseTimeRemaining of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTimeRemaining must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDhcpLeaseTimeRemaining:      ipDhcpLeaseTimeRemaining,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for _BACnetConstructedDataIPDHCPLeaseTimeRemaining
-func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
-	if ipDhcpLeaseTimeRemaining == nil {
-		panic("ipDhcpLeaseTimeRemaining of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTimeRemaining must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDhcpLeaseTimeRemaining:      ipDhcpLeaseTimeRemaining,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDHCPLeaseTimeRemaining(structType any) BACnetConstructedDataIPDHCPLeaseTimeRemaining {

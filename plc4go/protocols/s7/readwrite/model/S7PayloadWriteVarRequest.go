@@ -54,6 +54,16 @@ type _S7PayloadWriteVarRequest struct {
 var _ S7PayloadWriteVarRequest = (*_S7PayloadWriteVarRequest)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadWriteVarRequest)(nil)
 
+// NewS7PayloadWriteVarRequest factory function for _S7PayloadWriteVarRequest
+func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
+	_result := &_S7PayloadWriteVarRequest{
+		S7PayloadContract: NewS7Payload(parameter),
+		Items:             items,
+	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_S7PayloadWriteVarRequest) GetItems() []S7VarPayloadDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadWriteVarRequest factory function for _S7PayloadWriteVarRequest
-func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Parameter) *_S7PayloadWriteVarRequest {
-	_result := &_S7PayloadWriteVarRequest{
-		S7PayloadContract: NewS7Payload(parameter),
-		Items:             items,
-	}
-	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadWriteVarRequest(structType any) S7PayloadWriteVarRequest {

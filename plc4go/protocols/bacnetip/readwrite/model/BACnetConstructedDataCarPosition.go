@@ -56,6 +56,19 @@ type _BACnetConstructedDataCarPosition struct {
 var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarPosition)(nil)
 
+// NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
+func NewBACnetConstructedDataCarPosition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carPosition BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
+	if carPosition == nil {
+		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarPosition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarPosition:                   carPosition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCarPosition) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
-func NewBACnetConstructedDataCarPosition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carPosition BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
-	if carPosition == nil {
-		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarPosition{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarPosition:                   carPosition,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarPosition(structType any) BACnetConstructedDataCarPosition {

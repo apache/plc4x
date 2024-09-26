@@ -56,6 +56,19 @@ type _BACnetConstructedDataEventAlgorithmInhibit struct {
 var _ BACnetConstructedDataEventAlgorithmInhibit = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
 
+// NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
+func NewBACnetConstructedDataEventAlgorithmInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
+	if eventAlgorithmInhibit == nil {
+		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventAlgorithmInhibit:         eventAlgorithmInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
-func NewBACnetConstructedDataEventAlgorithmInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
-	if eventAlgorithmInhibit == nil {
-		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventAlgorithmInhibit:         eventAlgorithmInhibit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventAlgorithmInhibit(structType any) BACnetConstructedDataEventAlgorithmInhibit {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 
+// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
+func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if bacnetIpGlobalAddress == nil {
+		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() BACnetHos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
-	if bacnetIpGlobalAddress == nil {
-		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPGlobalAddress(structType any) BACnetConstructedDataBACnetIPGlobalAddress {

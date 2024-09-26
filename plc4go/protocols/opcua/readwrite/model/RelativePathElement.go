@@ -65,6 +65,25 @@ type _RelativePathElement struct {
 var _ RelativePathElement = (*_RelativePathElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePathElement)(nil)
 
+// NewRelativePathElement factory function for _RelativePathElement
+func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
+	}
+	if targetName == nil {
+		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
+	}
+	_result := &_RelativePathElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		IsInverse:                         isInverse,
+		TargetName:                        targetName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,25 +127,6 @@ func (m *_RelativePathElement) GetTargetName() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativePathElement factory function for _RelativePathElement
-func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
-	}
-	if targetName == nil {
-		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
-	}
-	_result := &_RelativePathElement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceTypeId:                   referenceTypeId,
-		IncludeSubtypes:                   includeSubtypes,
-		IsInverse:                         isInverse,
-		TargetName:                        targetName,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativePathElement(structType any) RelativePathElement {

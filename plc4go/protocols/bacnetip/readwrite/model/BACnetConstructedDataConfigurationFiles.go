@@ -59,6 +59,17 @@ type _BACnetConstructedDataConfigurationFiles struct {
 var _ BACnetConstructedDataConfigurationFiles = (*_BACnetConstructedDataConfigurationFiles)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataConfigurationFiles)(nil)
 
+// NewBACnetConstructedDataConfigurationFiles factory function for _BACnetConstructedDataConfigurationFiles
+func NewBACnetConstructedDataConfigurationFiles(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataConfigurationFiles {
+	_result := &_BACnetConstructedDataConfigurationFiles{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ConfigurationFiles:            configurationFiles,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataConfigurationFiles) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataConfigurationFiles factory function for _BACnetConstructedDataConfigurationFiles
-func NewBACnetConstructedDataConfigurationFiles(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, configurationFiles []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataConfigurationFiles {
-	_result := &_BACnetConstructedDataConfigurationFiles{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ConfigurationFiles:            configurationFiles,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataConfigurationFiles(structType any) BACnetConstructedDataConfigurationFiles {

@@ -54,6 +54,11 @@ type _CustomTypes struct {
 
 var _ CustomTypes = (*_CustomTypes)(nil)
 
+// NewCustomTypes factory function for _CustomTypes
+func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
+	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,11 +72,6 @@ func (m *_CustomTypes) GetCustomString() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCustomTypes factory function for _CustomTypes
-func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
-	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCustomTypes(structType any) CustomTypes {

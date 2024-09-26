@@ -54,6 +54,19 @@ type _SALDataHeating struct {
 var _ SALDataHeating = (*_SALDataHeating)(nil)
 var _ SALDataRequirements = (*_SALDataHeating)(nil)
 
+// NewSALDataHeating factory function for _SALDataHeating
+func NewSALDataHeating(salData SALData, heatingData LightingData) *_SALDataHeating {
+	if heatingData == nil {
+		panic("heatingData of type LightingData for SALDataHeating must not be nil")
+	}
+	_result := &_SALDataHeating{
+		SALDataContract: NewSALData(salData),
+		HeatingData:     heatingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataHeating) GetHeatingData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataHeating factory function for _SALDataHeating
-func NewSALDataHeating(salData SALData, heatingData LightingData) *_SALDataHeating {
-	if heatingData == nil {
-		panic("heatingData of type LightingData for SALDataHeating must not be nil")
-	}
-	_result := &_SALDataHeating{
-		SALDataContract: NewSALData(salData),
-		HeatingData:     heatingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataHeating(structType any) SALDataHeating {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataSystemStatus struct {
 var _ BACnetConstructedDataSystemStatus = (*_BACnetConstructedDataSystemStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSystemStatus)(nil)
 
+// NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
+func NewBACnetConstructedDataSystemStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, systemStatus BACnetDeviceStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataSystemStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SystemStatus:                  systemStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSystemStatus) GetActualValue() BACnetDeviceStatus
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
-func NewBACnetConstructedDataSystemStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, systemStatus BACnetDeviceStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
-	if systemStatus == nil {
-		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataSystemStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SystemStatus:                  systemStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSystemStatus(structType any) BACnetConstructedDataSystemStatus {

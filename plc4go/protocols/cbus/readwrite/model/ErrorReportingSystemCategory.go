@@ -57,6 +57,14 @@ type _ErrorReportingSystemCategory struct {
 
 var _ ErrorReportingSystemCategory = (*_ErrorReportingSystemCategory)(nil)
 
+// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
+func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
+	if systemCategoryType == nil {
+		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
+	}
+	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,14 +86,6 @@ func (m *_ErrorReportingSystemCategory) GetSystemCategoryVariant() ErrorReportin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
-func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
-	if systemCategoryType == nil {
-		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
-	}
-	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCategory {

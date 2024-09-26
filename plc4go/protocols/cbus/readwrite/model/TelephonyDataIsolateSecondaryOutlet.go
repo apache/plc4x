@@ -58,6 +58,16 @@ type _TelephonyDataIsolateSecondaryOutlet struct {
 var _ TelephonyDataIsolateSecondaryOutlet = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
 
+// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
+func NewTelephonyDataIsolateSecondaryOutlet(commandTypeContainer TelephonyCommandTypeContainer, argument byte, isolateStatus byte) *_TelephonyDataIsolateSecondaryOutlet {
+	_result := &_TelephonyDataIsolateSecondaryOutlet{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		IsolateStatus:         isolateStatus,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsToBeIsolated() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
-func NewTelephonyDataIsolateSecondaryOutlet(commandTypeContainer TelephonyCommandTypeContainer, argument byte, isolateStatus byte) *_TelephonyDataIsolateSecondaryOutlet {
-	_result := &_TelephonyDataIsolateSecondaryOutlet{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		IsolateStatus:         isolateStatus,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolateSecondaryOutlet {

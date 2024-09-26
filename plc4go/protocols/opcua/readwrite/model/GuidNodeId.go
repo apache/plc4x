@@ -54,6 +54,14 @@ type _GuidNodeId struct {
 
 var _ GuidNodeId = (*_GuidNodeId)(nil)
 
+// NewGuidNodeId factory function for _GuidNodeId
+func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
+	if identifier == nil {
+		panic("identifier of type GuidValue for GuidNodeId must not be nil")
+	}
+	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_GuidNodeId) GetIdentifier() GuidValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGuidNodeId factory function for _GuidNodeId
-func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
-	if identifier == nil {
-		panic("identifier of type GuidValue for GuidNodeId must not be nil")
-	}
-	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGuidNodeId(structType any) GuidNodeId {

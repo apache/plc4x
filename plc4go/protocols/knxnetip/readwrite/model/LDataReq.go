@@ -60,6 +60,21 @@ type _LDataReq struct {
 var _ LDataReq = (*_LDataReq)(nil)
 var _ CEMIRequirements = (*_LDataReq)(nil)
 
+// NewLDataReq factory function for _LDataReq
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
+	}
+	_result := &_LDataReq{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_LDataReq) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataReq factory function for _LDataReq
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
-	}
-	_result := &_LDataReq{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataReq(structType any) LDataReq {

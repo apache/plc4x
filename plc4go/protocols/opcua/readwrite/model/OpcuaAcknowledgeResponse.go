@@ -57,6 +57,20 @@ type _OpcuaAcknowledgeResponse struct {
 var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaAcknowledgeResponse)(nil)
 
+// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
+	}
+	_result := &_OpcuaAcknowledgeResponse{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -96,20 +110,6 @@ func (m *_OpcuaAcknowledgeResponse) GetLimits() OpcuaProtocolLimits {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
-	}
-	_result := &_OpcuaAcknowledgeResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {

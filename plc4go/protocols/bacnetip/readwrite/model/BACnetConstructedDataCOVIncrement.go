@@ -56,6 +56,19 @@ type _BACnetConstructedDataCOVIncrement struct {
 var _ BACnetConstructedDataCOVIncrement = (*_BACnetConstructedDataCOVIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVIncrement)(nil)
 
+// NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
+func NewBACnetConstructedDataCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
+	if covIncrement == nil {
+		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataCOVIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovIncrement:                  covIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCOVIncrement) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVIncrement factory function for _BACnetConstructedDataCOVIncrement
-func NewBACnetConstructedDataCOVIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVIncrement {
-	if covIncrement == nil {
-		panic("covIncrement of type BACnetApplicationTagReal for BACnetConstructedDataCOVIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataCOVIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovIncrement:                  covIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVIncrement(structType any) BACnetConstructedDataCOVIncrement {

@@ -59,6 +59,17 @@ type _BVLCDeleteForeignDeviceTableEntry struct {
 var _ BVLCDeleteForeignDeviceTableEntry = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
 var _ BVLCRequirements = (*_BVLCDeleteForeignDeviceTableEntry)(nil)
 
+// NewBVLCDeleteForeignDeviceTableEntry factory function for _BVLCDeleteForeignDeviceTableEntry
+func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteForeignDeviceTableEntry {
+	_result := &_BVLCDeleteForeignDeviceTableEntry{
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCDeleteForeignDeviceTableEntry factory function for _BVLCDeleteForeignDeviceTableEntry
-func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteForeignDeviceTableEntry {
-	_result := &_BVLCDeleteForeignDeviceTableEntry{
-		BVLCContract: NewBVLC(),
-		Ip:           ip,
-		Port:         port,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCDeleteForeignDeviceTableEntry(structType any) BVLCDeleteForeignDeviceTableEntry {

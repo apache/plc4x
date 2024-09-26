@@ -63,6 +63,19 @@ type _NotificationMessage struct {
 var _ NotificationMessage = (*_NotificationMessage)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationMessage)(nil)
 
+// NewNotificationMessage factory function for _NotificationMessage
+func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
+	_result := &_NotificationMessage{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SequenceNumber:                    sequenceNumber,
+		PublishTime:                       publishTime,
+		NoOfNotificationData:              noOfNotificationData,
+		NotificationData:                  notificationData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_NotificationMessage) GetNotificationData() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNotificationMessage factory function for _NotificationMessage
-func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
-	_result := &_NotificationMessage{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SequenceNumber:                    sequenceNumber,
-		PublishTime:                       publishTime,
-		NoOfNotificationData:              noOfNotificationData,
-		NotificationData:                  notificationData,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNotificationMessage(structType any) NotificationMessage {

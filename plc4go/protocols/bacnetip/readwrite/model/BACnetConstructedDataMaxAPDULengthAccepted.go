@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaxAPDULengthAccepted struct {
 var _ BACnetConstructedDataMaxAPDULengthAccepted = (*_BACnetConstructedDataMaxAPDULengthAccepted)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxAPDULengthAccepted)(nil)
 
+// NewBACnetConstructedDataMaxAPDULengthAccepted factory function for _BACnetConstructedDataMaxAPDULengthAccepted
+func NewBACnetConstructedDataMaxAPDULengthAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
+	if maxApduLengthAccepted == nil {
+		panic("maxApduLengthAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxAPDULengthAccepted must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxAPDULengthAccepted{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxApduLengthAccepted:         maxApduLengthAccepted,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxAPDULengthAccepted factory function for _BACnetConstructedDataMaxAPDULengthAccepted
-func NewBACnetConstructedDataMaxAPDULengthAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
-	if maxApduLengthAccepted == nil {
-		panic("maxApduLengthAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxAPDULengthAccepted must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxAPDULengthAccepted{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxApduLengthAccepted:         maxApduLengthAccepted,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxAPDULengthAccepted(structType any) BACnetConstructedDataMaxAPDULengthAccepted {

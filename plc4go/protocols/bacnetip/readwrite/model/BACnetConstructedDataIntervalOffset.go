@@ -56,6 +56,19 @@ type _BACnetConstructedDataIntervalOffset struct {
 var _ BACnetConstructedDataIntervalOffset = (*_BACnetConstructedDataIntervalOffset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntervalOffset)(nil)
 
+// NewBACnetConstructedDataIntervalOffset factory function for _BACnetConstructedDataIntervalOffset
+func NewBACnetConstructedDataIntervalOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, intervalOffset BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntervalOffset {
+	if intervalOffset == nil {
+		panic("intervalOffset of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIntervalOffset must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntervalOffset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IntervalOffset:                intervalOffset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIntervalOffset) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntervalOffset factory function for _BACnetConstructedDataIntervalOffset
-func NewBACnetConstructedDataIntervalOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, intervalOffset BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntervalOffset {
-	if intervalOffset == nil {
-		panic("intervalOffset of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIntervalOffset must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntervalOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IntervalOffset:                intervalOffset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntervalOffset(structType any) BACnetConstructedDataIntervalOffset {

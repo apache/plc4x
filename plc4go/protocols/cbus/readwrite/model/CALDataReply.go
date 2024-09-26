@@ -57,6 +57,20 @@ type _CALDataReply struct {
 var _ CALDataReply = (*_CALDataReply)(nil)
 var _ CALDataRequirements = (*_CALDataReply)(nil)
 
+// NewCALDataReply factory function for _CALDataReply
+func NewCALDataReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, parameterValue ParameterValue, requestContext RequestContext) *_CALDataReply {
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
+	}
+	_result := &_CALDataReply{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		ParameterValue:  parameterValue,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,20 +102,6 @@ func (m *_CALDataReply) GetParameterValue() ParameterValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataReply factory function for _CALDataReply
-func NewCALDataReply(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, parameterValue ParameterValue, requestContext RequestContext) *_CALDataReply {
-	if parameterValue == nil {
-		panic("parameterValue of type ParameterValue for CALDataReply must not be nil")
-	}
-	_result := &_CALDataReply{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		ParameterValue:  parameterValue,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataReply(structType any) CALDataReply {

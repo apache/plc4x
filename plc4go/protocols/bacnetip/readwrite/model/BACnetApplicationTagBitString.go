@@ -54,6 +54,19 @@ type _BACnetApplicationTagBitString struct {
 var _ BACnetApplicationTagBitString = (*_BACnetApplicationTagBitString)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBitString)(nil)
 
+// NewBACnetApplicationTagBitString factory function for _BACnetApplicationTagBitString
+func NewBACnetApplicationTagBitString(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetApplicationTagBitString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetApplicationTagBitString must not be nil")
+	}
+	_result := &_BACnetApplicationTagBitString{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetApplicationTagBitString) GetPayload() BACnetTagPayloadBitString 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagBitString factory function for _BACnetApplicationTagBitString
-func NewBACnetApplicationTagBitString(header BACnetTagHeader, payload BACnetTagPayloadBitString) *_BACnetApplicationTagBitString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetApplicationTagBitString must not be nil")
-	}
-	_result := &_BACnetApplicationTagBitString{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagBitString(structType any) BACnetApplicationTagBitString {

@@ -49,6 +49,15 @@ type _ModbusPDUReadExceptionStatusRequest struct {
 var _ ModbusPDUReadExceptionStatusRequest = (*_ModbusPDUReadExceptionStatusRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadExceptionStatusRequest)(nil)
 
+// NewModbusPDUReadExceptionStatusRequest factory function for _ModbusPDUReadExceptionStatusRequest
+func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequest {
+	_result := &_ModbusPDUReadExceptionStatusRequest{
+		ModbusPDUContract: NewModbusPDU(),
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_ModbusPDUReadExceptionStatusRequest) GetResponse() bool {
 
 func (m *_ModbusPDUReadExceptionStatusRequest) GetParent() ModbusPDUContract {
 	return m.ModbusPDUContract
-}
-
-// NewModbusPDUReadExceptionStatusRequest factory function for _ModbusPDUReadExceptionStatusRequest
-func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequest {
-	_result := &_ModbusPDUReadExceptionStatusRequest{
-		ModbusPDUContract: NewModbusPDU(),
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -63,6 +63,19 @@ type _LevelInformationCorrupted struct {
 var _ LevelInformationCorrupted = (*_LevelInformationCorrupted)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationCorrupted)(nil)
 
+// NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
+func NewLevelInformationCorrupted(raw uint16, corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) *_LevelInformationCorrupted {
+	_result := &_LevelInformationCorrupted{
+		LevelInformationContract: NewLevelInformation(raw),
+		CorruptedNibble1:         corruptedNibble1,
+		CorruptedNibble2:         corruptedNibble2,
+		CorruptedNibble3:         corruptedNibble3,
+		CorruptedNibble4:         corruptedNibble4,
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_LevelInformationCorrupted) GetCorruptedNibble4() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
-func NewLevelInformationCorrupted(raw uint16, corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) *_LevelInformationCorrupted {
-	_result := &_LevelInformationCorrupted{
-		LevelInformationContract: NewLevelInformation(raw),
-		CorruptedNibble1:         corruptedNibble1,
-		CorruptedNibble2:         corruptedNibble2,
-		CorruptedNibble3:         corruptedNibble3,
-		CorruptedNibble4:         corruptedNibble4,
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLevelInformationCorrupted(structType any) LevelInformationCorrupted {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataEventDetectionEnable struct {
 var _ BACnetConstructedDataEventDetectionEnable = (*_BACnetConstructedDataEventDetectionEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventDetectionEnable)(nil)
 
+// NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
+func NewBACnetConstructedDataEventDetectionEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventDetectionEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
+	if eventDetectionEnable == nil {
+		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventDetectionEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventDetectionEnable:          eventDetectionEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEventDetectionEnable) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventDetectionEnable factory function for _BACnetConstructedDataEventDetectionEnable
-func NewBACnetConstructedDataEventDetectionEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventDetectionEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventDetectionEnable {
-	if eventDetectionEnable == nil {
-		panic("eventDetectionEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataEventDetectionEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventDetectionEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventDetectionEnable:          eventDetectionEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventDetectionEnable(structType any) BACnetConstructedDataEventDetectionEnable {

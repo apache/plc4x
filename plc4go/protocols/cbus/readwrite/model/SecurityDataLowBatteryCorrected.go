@@ -49,6 +49,15 @@ type _SecurityDataLowBatteryCorrected struct {
 var _ SecurityDataLowBatteryCorrected = (*_SecurityDataLowBatteryCorrected)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCorrected)(nil)
 
+// NewSecurityDataLowBatteryCorrected factory function for _SecurityDataLowBatteryCorrected
+func NewSecurityDataLowBatteryCorrected(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCorrected {
+	_result := &_SecurityDataLowBatteryCorrected{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCorrected)(nil)
 
 func (m *_SecurityDataLowBatteryCorrected) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataLowBatteryCorrected factory function for _SecurityDataLowBatteryCorrected
-func NewSecurityDataLowBatteryCorrected(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCorrected {
-	_result := &_SecurityDataLowBatteryCorrected{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

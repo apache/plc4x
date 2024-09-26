@@ -71,6 +71,21 @@ type _S7AddressAny struct {
 var _ S7AddressAny = (*_S7AddressAny)(nil)
 var _ S7AddressRequirements = (*_S7AddressAny)(nil)
 
+// NewS7AddressAny factory function for _S7AddressAny
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
+	_result := &_S7AddressAny{
+		S7AddressContract: NewS7Address(),
+		TransportSize:     transportSize,
+		NumberOfElements:  numberOfElements,
+		DbNumber:          dbNumber,
+		Area:              area,
+		ByteAddress:       byteAddress,
+		BitAddress:        bitAddress,
+	}
+	_result.S7AddressContract.(*_S7Address)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -122,21 +137,6 @@ func (m *_S7AddressAny) GetBitAddress() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7AddressAny factory function for _S7AddressAny
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
-	_result := &_S7AddressAny{
-		S7AddressContract: NewS7Address(),
-		TransportSize:     transportSize,
-		NumberOfElements:  numberOfElements,
-		DbNumber:          dbNumber,
-		Area:              area,
-		ByteAddress:       byteAddress,
-		BitAddress:        bitAddress,
-	}
-	_result.S7AddressContract.(*_S7Address)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7AddressAny(structType any) S7AddressAny {

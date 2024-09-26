@@ -57,6 +57,17 @@ type _VariantDiagnosticInfo struct {
 var _ VariantDiagnosticInfo = (*_VariantDiagnosticInfo)(nil)
 var _ VariantRequirements = (*_VariantDiagnosticInfo)(nil)
 
+// NewVariantDiagnosticInfo factory function for _VariantDiagnosticInfo
+func NewVariantDiagnosticInfo(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DiagnosticInfo) *_VariantDiagnosticInfo {
+	_result := &_VariantDiagnosticInfo{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantDiagnosticInfo) GetValue() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDiagnosticInfo factory function for _VariantDiagnosticInfo
-func NewVariantDiagnosticInfo(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []DiagnosticInfo) *_VariantDiagnosticInfo {
-	_result := &_VariantDiagnosticInfo{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDiagnosticInfo(structType any) VariantDiagnosticInfo {

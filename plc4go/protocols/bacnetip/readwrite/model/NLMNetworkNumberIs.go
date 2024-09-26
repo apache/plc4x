@@ -59,6 +59,17 @@ type _NLMNetworkNumberIs struct {
 var _ NLMNetworkNumberIs = (*_NLMNetworkNumberIs)(nil)
 var _ NLMRequirements = (*_NLMNetworkNumberIs)(nil)
 
+// NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
+func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
+	_result := &_NLMNetworkNumberIs{
+		NLMContract:             NewNLM(apduLength),
+		NetworkNumber:           networkNumber,
+		NetworkNumberConfigured: networkNumberConfigured,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,17 +105,6 @@ func (m *_NLMNetworkNumberIs) GetNetworkNumberConfigured() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMNetworkNumberIs factory function for _NLMNetworkNumberIs
-func NewNLMNetworkNumberIs(networkNumber uint16, networkNumberConfigured bool, apduLength uint16) *_NLMNetworkNumberIs {
-	_result := &_NLMNetworkNumberIs{
-		NLMContract:             NewNLM(apduLength),
-		NetworkNumber:           networkNumber,
-		NetworkNumberConfigured: networkNumberConfigured,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMNetworkNumberIs(structType any) NLMNetworkNumberIs {

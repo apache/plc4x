@@ -57,6 +57,17 @@ type _VariantExtensionObject struct {
 var _ VariantExtensionObject = (*_VariantExtensionObject)(nil)
 var _ VariantRequirements = (*_VariantExtensionObject)(nil)
 
+// NewVariantExtensionObject factory function for _VariantExtensionObject
+func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
+	_result := &_VariantExtensionObject{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_VariantExtensionObject) GetValue() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantExtensionObject factory function for _VariantExtensionObject
-func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
-	_result := &_VariantExtensionObject{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantExtensionObject(structType any) VariantExtensionObject {

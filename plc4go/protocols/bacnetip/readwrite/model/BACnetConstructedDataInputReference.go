@@ -56,6 +56,19 @@ type _BACnetConstructedDataInputReference struct {
 var _ BACnetConstructedDataInputReference = (*_BACnetConstructedDataInputReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInputReference)(nil)
 
+// NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
+func NewBACnetConstructedDataInputReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inputReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
+	if inputReference == nil {
+		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataInputReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InputReference:                inputReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInputReference) GetActualValue() BACnetObjectProp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
-func NewBACnetConstructedDataInputReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inputReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
-	if inputReference == nil {
-		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataInputReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InputReference:                inputReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInputReference(structType any) BACnetConstructedDataInputReference {

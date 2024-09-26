@@ -54,6 +54,19 @@ type _BACnetPropertyAccessResultAccessResultPropertyValue struct {
 var _ BACnetPropertyAccessResultAccessResultPropertyValue = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
 var _ BACnetPropertyAccessResultAccessResultRequirements = (*_BACnetPropertyAccessResultAccessResultPropertyValue)(nil)
 
+// NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
+func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
+	}
+	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
+		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
+		PropertyValue: propertyValue,
+	}
+	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) GetPropertyValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyAccessResultAccessResultPropertyValue factory function for _BACnetPropertyAccessResultAccessResultPropertyValue
-func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACnetTagHeader, propertyValue BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPropertyAccessResultAccessResultPropertyValue {
-	if propertyValue == nil {
-		panic("propertyValue of type BACnetConstructedData for BACnetPropertyAccessResultAccessResultPropertyValue must not be nil")
-	}
-	_result := &_BACnetPropertyAccessResultAccessResultPropertyValue{
-		BACnetPropertyAccessResultAccessResultContract: NewBACnetPropertyAccessResultAccessResult(peekedTagHeader, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument),
-		PropertyValue: propertyValue,
-	}
-	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyAccessResultAccessResultPropertyValue(structType any) BACnetPropertyAccessResultAccessResultPropertyValue {

@@ -49,6 +49,15 @@ type _BACnetConstructedDataRequired struct {
 var _ BACnetConstructedDataRequired = (*_BACnetConstructedDataRequired)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRequired)(nil)
 
+// NewBACnetConstructedDataRequired factory function for _BACnetConstructedDataRequired
+func NewBACnetConstructedDataRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequired {
+	_result := &_BACnetConstructedDataRequired{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataRequired) GetPropertyIdentifierArgument() BACnetP
 
 func (m *_BACnetConstructedDataRequired) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataRequired factory function for _BACnetConstructedDataRequired
-func NewBACnetConstructedDataRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRequired {
-	_result := &_BACnetConstructedDataRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -56,6 +56,19 @@ type _BACnetConstructedDataSecuredStatus struct {
 var _ BACnetConstructedDataSecuredStatus = (*_BACnetConstructedDataSecuredStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSecuredStatus)(nil)
 
+// NewBACnetConstructedDataSecuredStatus factory function for _BACnetConstructedDataSecuredStatus
+func NewBACnetConstructedDataSecuredStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securedStatus BACnetDoorSecuredStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecuredStatus {
+	if securedStatus == nil {
+		panic("securedStatus of type BACnetDoorSecuredStatusTagged for BACnetConstructedDataSecuredStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataSecuredStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SecuredStatus:                 securedStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSecuredStatus) GetActualValue() BACnetDoorSecured
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSecuredStatus factory function for _BACnetConstructedDataSecuredStatus
-func NewBACnetConstructedDataSecuredStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, securedStatus BACnetDoorSecuredStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSecuredStatus {
-	if securedStatus == nil {
-		panic("securedStatus of type BACnetDoorSecuredStatusTagged for BACnetConstructedDataSecuredStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataSecuredStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SecuredStatus:                 securedStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSecuredStatus(structType any) BACnetConstructedDataSecuredStatus {

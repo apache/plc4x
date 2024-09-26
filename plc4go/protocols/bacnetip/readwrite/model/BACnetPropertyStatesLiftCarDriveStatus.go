@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLiftCarDriveStatus struct {
 var _ BACnetPropertyStatesLiftCarDriveStatus = (*_BACnetPropertyStatesLiftCarDriveStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftCarDriveStatus)(nil)
 
+// NewBACnetPropertyStatesLiftCarDriveStatus factory function for _BACnetPropertyStatesLiftCarDriveStatus
+func NewBACnetPropertyStatesLiftCarDriveStatus(peekedTagHeader BACnetTagHeader, liftCarDriveStatus BACnetLiftCarDriveStatusTagged) *_BACnetPropertyStatesLiftCarDriveStatus {
+	if liftCarDriveStatus == nil {
+		panic("liftCarDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetPropertyStatesLiftCarDriveStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftCarDriveStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftCarDriveStatus:           liftCarDriveStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLiftCarDriveStatus) GetLiftCarDriveStatus() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftCarDriveStatus factory function for _BACnetPropertyStatesLiftCarDriveStatus
-func NewBACnetPropertyStatesLiftCarDriveStatus(peekedTagHeader BACnetTagHeader, liftCarDriveStatus BACnetLiftCarDriveStatusTagged) *_BACnetPropertyStatesLiftCarDriveStatus {
-	if liftCarDriveStatus == nil {
-		panic("liftCarDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetPropertyStatesLiftCarDriveStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftCarDriveStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftCarDriveStatus:           liftCarDriveStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftCarDriveStatus(structType any) BACnetPropertyStatesLiftCarDriveStatus {

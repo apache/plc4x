@@ -63,6 +63,19 @@ type _MediaTransportControlDataTotalTracks struct {
 var _ MediaTransportControlDataTotalTracks = (*_MediaTransportControlDataTotalTracks)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTotalTracks)(nil)
 
+// NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
+func NewMediaTransportControlDataTotalTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) *_MediaTransportControlDataTotalTracks {
+	_result := &_MediaTransportControlDataTotalTracks{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TotalTracksMSB:                    totalTracksMSB,
+		TotalTracksMMSB:                   totalTracksMMSB,
+		TotalTracksMLSB:                   totalTracksMLSB,
+		TotalTracksLSB:                    totalTracksLSB,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_MediaTransportControlDataTotalTracks) GetTotalTracksLSB() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
-func NewMediaTransportControlDataTotalTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) *_MediaTransportControlDataTotalTracks {
-	_result := &_MediaTransportControlDataTotalTracks{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TotalTracksMSB:                    totalTracksMSB,
-		TotalTracksMMSB:                   totalTracksMMSB,
-		TotalTracksMLSB:                   totalTracksMLSB,
-		TotalTracksLSB:                    totalTracksLSB,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataTotalTracks(structType any) MediaTransportControlDataTotalTracks {

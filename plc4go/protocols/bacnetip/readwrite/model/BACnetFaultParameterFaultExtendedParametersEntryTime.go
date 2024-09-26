@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryTime struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryTime = (*_BACnetFaultParameterFaultExtendedParametersEntryTime)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryTime)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryTime factory function for _BACnetFaultParameterFaultExtendedParametersEntryTime
+func NewBACnetFaultParameterFaultExtendedParametersEntryTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetFaultParameterFaultExtendedParametersEntryTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetFaultParameterFaultExtendedParametersEntryTime must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		TimeValue: timeValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) GetTimeValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryTime factory function for _BACnetFaultParameterFaultExtendedParametersEntryTime
-func NewBACnetFaultParameterFaultExtendedParametersEntryTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetFaultParameterFaultExtendedParametersEntryTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetFaultParameterFaultExtendedParametersEntryTime must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		TimeValue: timeValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryTime(structType any) BACnetFaultParameterFaultExtendedParametersEntryTime {

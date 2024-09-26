@@ -56,6 +56,19 @@ type _BACnetConstructedDataPriorityForWriting struct {
 var _ BACnetConstructedDataPriorityForWriting = (*_BACnetConstructedDataPriorityForWriting)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriorityForWriting)(nil)
 
+// NewBACnetConstructedDataPriorityForWriting factory function for _BACnetConstructedDataPriorityForWriting
+func NewBACnetConstructedDataPriorityForWriting(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityForWriting BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityForWriting {
+	if priorityForWriting == nil {
+		panic("priorityForWriting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPriorityForWriting must not be nil")
+	}
+	_result := &_BACnetConstructedDataPriorityForWriting{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PriorityForWriting:            priorityForWriting,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPriorityForWriting factory function for _BACnetConstructedDataPriorityForWriting
-func NewBACnetConstructedDataPriorityForWriting(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityForWriting BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityForWriting {
-	if priorityForWriting == nil {
-		panic("priorityForWriting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPriorityForWriting must not be nil")
-	}
-	_result := &_BACnetConstructedDataPriorityForWriting{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PriorityForWriting:            priorityForWriting,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPriorityForWriting(structType any) BACnetConstructedDataPriorityForWriting {

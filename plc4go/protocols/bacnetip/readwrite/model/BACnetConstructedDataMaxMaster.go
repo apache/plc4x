@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaxMaster struct {
 var _ BACnetConstructedDataMaxMaster = (*_BACnetConstructedDataMaxMaster)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxMaster)(nil)
 
+// NewBACnetConstructedDataMaxMaster factory function for _BACnetConstructedDataMaxMaster
+func NewBACnetConstructedDataMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxMaster {
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxMaster must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaxMaster) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxMaster factory function for _BACnetConstructedDataMaxMaster
-func NewBACnetConstructedDataMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxMaster {
-	if maxMaster == nil {
-		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxMaster must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxMaster:                     maxMaster,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxMaster(structType any) BACnetConstructedDataMaxMaster {

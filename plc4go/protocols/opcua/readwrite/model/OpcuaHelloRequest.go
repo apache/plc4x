@@ -60,6 +60,24 @@ type _OpcuaHelloRequest struct {
 var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
 
+// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
+	}
+	if endpoint == nil {
+		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
+	}
+	_result := &_OpcuaHelloRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+		Endpoint:           endpoint,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -103,24 +121,6 @@ func (m *_OpcuaHelloRequest) GetEndpoint() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
-	}
-	if endpoint == nil {
-		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
-	}
-	_result := &_OpcuaHelloRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-		Endpoint:           endpoint,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {

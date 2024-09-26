@@ -60,6 +60,18 @@ type _AdsWriteRequest struct {
 var _ AdsWriteRequest = (*_AdsWriteRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteRequest)(nil)
 
+// NewAdsWriteRequest factory function for _AdsWriteRequest
+func NewAdsWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, data []byte) *_AdsWriteRequest {
+	_result := &_AdsWriteRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		Data:              data,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -103,18 +115,6 @@ func (m *_AdsWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsWriteRequest factory function for _AdsWriteRequest
-func NewAdsWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, data []byte) *_AdsWriteRequest {
-	_result := &_AdsWriteRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		IndexGroup:        indexGroup,
-		IndexOffset:       indexOffset,
-		Data:              data,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsWriteRequest(structType any) AdsWriteRequest {

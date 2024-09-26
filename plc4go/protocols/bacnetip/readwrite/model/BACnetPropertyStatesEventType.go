@@ -54,6 +54,19 @@ type _BACnetPropertyStatesEventType struct {
 var _ BACnetPropertyStatesEventType = (*_BACnetPropertyStatesEventType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEventType)(nil)
 
+// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
+func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType BACnetEventTypeTagged) *_BACnetPropertyStatesEventType {
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEventType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EventType:                    eventType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesEventType) GetEventType() BACnetEventTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
-func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType BACnetEventTypeTagged) *_BACnetPropertyStatesEventType {
-	if eventType == nil {
-		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEventType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EventType:                    eventType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEventType(structType any) BACnetPropertyStatesEventType {

@@ -59,6 +59,17 @@ type _BACnetConstructedDataShedLevels struct {
 var _ BACnetConstructedDataShedLevels = (*_BACnetConstructedDataShedLevels)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedLevels)(nil)
 
+// NewBACnetConstructedDataShedLevels factory function for _BACnetConstructedDataShedLevels
+func NewBACnetConstructedDataShedLevels(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevels []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedLevels {
+	_result := &_BACnetConstructedDataShedLevels{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ShedLevels:                    shedLevels,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataShedLevels) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataShedLevels factory function for _BACnetConstructedDataShedLevels
-func NewBACnetConstructedDataShedLevels(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, shedLevels []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedLevels {
-	_result := &_BACnetConstructedDataShedLevels{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ShedLevels:                    shedLevels,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataShedLevels(structType any) BACnetConstructedDataShedLevels {

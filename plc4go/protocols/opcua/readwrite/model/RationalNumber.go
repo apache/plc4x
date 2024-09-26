@@ -57,6 +57,17 @@ type _RationalNumber struct {
 var _ RationalNumber = (*_RationalNumber)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RationalNumber)(nil)
 
+// NewRationalNumber factory function for _RationalNumber
+func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
+	_result := &_RationalNumber{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_RationalNumber) GetDenominator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRationalNumber factory function for _RationalNumber
-func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
-	_result := &_RationalNumber{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Numerator:                         numerator,
-		Denominator:                       denominator,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRationalNumber(structType any) RationalNumber {

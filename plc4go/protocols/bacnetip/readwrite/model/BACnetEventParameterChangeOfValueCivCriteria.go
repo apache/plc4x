@@ -81,6 +81,20 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 
 var _ BACnetEventParameterChangeOfValueCivCriteriaContract = (*_BACnetEventParameterChangeOfValueCivCriteria)(nil)
 
+// NewBACnetEventParameterChangeOfValueCivCriteria factory function for _BACnetEventParameterChangeOfValueCivCriteria
+func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteria {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfValueCivCriteria{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -118,20 +132,6 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() ui
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfValueCivCriteria factory function for _BACnetEventParameterChangeOfValueCivCriteria
-func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteria {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfValueCivCriteria{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfValueCivCriteria(structType any) BACnetEventParameterChangeOfValueCivCriteria {

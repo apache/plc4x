@@ -114,6 +114,34 @@ type _IdentifyReplyCommandExtendedDiagnosticSummary struct {
 var _ IdentifyReplyCommandExtendedDiagnosticSummary = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandExtendedDiagnosticSummary)(nil)
 
+// NewIdentifyReplyCommandExtendedDiagnosticSummary factory function for _IdentifyReplyCommandExtendedDiagnosticSummary
+func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool, numBytes uint8) *_IdentifyReplyCommandExtendedDiagnosticSummary {
+	_result := &_IdentifyReplyCommandExtendedDiagnosticSummary{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		LowApplication:               lowApplication,
+		HighApplication:              highApplication,
+		Area:                         area,
+		Crc:                          crc,
+		SerialNumber:                 serialNumber,
+		NetworkVoltage:               networkVoltage,
+		UnitInLearnMode:              unitInLearnMode,
+		NetworkVoltageLow:            networkVoltageLow,
+		NetworkVoltageMarginal:       networkVoltageMarginal,
+		EnableChecksumAlarm:          enableChecksumAlarm,
+		OutputUnit:                   outputUnit,
+		InstallationMMIError:         installationMMIError,
+		EEWriteError:                 EEWriteError,
+		EEChecksumError:              EEChecksumError,
+		EEDataError:                  EEDataError,
+		MicroReset:                   microReset,
+		CommsTxError:                 commsTxError,
+		InternalStackOverflow:        internalStackOverflow,
+		MicroPowerReset:              microPowerReset,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -232,34 +260,6 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) GetNetworkVoltageInVolt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandExtendedDiagnosticSummary factory function for _IdentifyReplyCommandExtendedDiagnosticSummary
-func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool, numBytes uint8) *_IdentifyReplyCommandExtendedDiagnosticSummary {
-	_result := &_IdentifyReplyCommandExtendedDiagnosticSummary{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		LowApplication:               lowApplication,
-		HighApplication:              highApplication,
-		Area:                         area,
-		Crc:                          crc,
-		SerialNumber:                 serialNumber,
-		NetworkVoltage:               networkVoltage,
-		UnitInLearnMode:              unitInLearnMode,
-		NetworkVoltageLow:            networkVoltageLow,
-		NetworkVoltageMarginal:       networkVoltageMarginal,
-		EnableChecksumAlarm:          enableChecksumAlarm,
-		OutputUnit:                   outputUnit,
-		InstallationMMIError:         installationMMIError,
-		EEWriteError:                 EEWriteError,
-		EEChecksumError:              EEChecksumError,
-		EEDataError:                  EEDataError,
-		MicroReset:                   microReset,
-		CommsTxError:                 commsTxError,
-		InternalStackOverflow:        internalStackOverflow,
-		MicroPowerReset:              microPowerReset,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandExtendedDiagnosticSummary(structType any) IdentifyReplyCommandExtendedDiagnosticSummary {

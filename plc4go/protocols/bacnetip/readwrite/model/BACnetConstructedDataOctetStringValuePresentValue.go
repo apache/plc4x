@@ -56,6 +56,19 @@ type _BACnetConstructedDataOctetStringValuePresentValue struct {
 var _ BACnetConstructedDataOctetStringValuePresentValue = (*_BACnetConstructedDataOctetStringValuePresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOctetStringValuePresentValue)(nil)
 
+// NewBACnetConstructedDataOctetStringValuePresentValue factory function for _BACnetConstructedDataOctetStringValuePresentValue
+func NewBACnetConstructedDataOctetStringValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValuePresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagOctetString for BACnetConstructedDataOctetStringValuePresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataOctetStringValuePresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOctetStringValuePresentValue) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOctetStringValuePresentValue factory function for _BACnetConstructedDataOctetStringValuePresentValue
-func NewBACnetConstructedDataOctetStringValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValuePresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetApplicationTagOctetString for BACnetConstructedDataOctetStringValuePresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataOctetStringValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOctetStringValuePresentValue(structType any) BACnetConstructedDataOctetStringValuePresentValue {

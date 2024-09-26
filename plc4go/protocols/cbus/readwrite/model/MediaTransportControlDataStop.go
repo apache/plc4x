@@ -49,6 +49,15 @@ type _MediaTransportControlDataStop struct {
 var _ MediaTransportControlDataStop = (*_MediaTransportControlDataStop)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStop)(nil)
 
+// NewMediaTransportControlDataStop factory function for _MediaTransportControlDataStop
+func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStop {
+	_result := &_MediaTransportControlDataStop{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataStop)(
 
 func (m *_MediaTransportControlDataStop) GetParent() MediaTransportControlDataContract {
 	return m.MediaTransportControlDataContract
-}
-
-// NewMediaTransportControlDataStop factory function for _MediaTransportControlDataStop
-func NewMediaTransportControlDataStop(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataStop {
-	_result := &_MediaTransportControlDataStop{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -58,6 +58,14 @@ type _BACnetLightingInProgressTagged struct {
 
 var _ BACnetLightingInProgressTagged = (*_BACnetLightingInProgressTagged)(nil)
 
+// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
+func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
+	}
+	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetLightingInProgressTagged) GetValue() BACnetLightingInProgress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
-func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
-	}
-	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgressTagged {

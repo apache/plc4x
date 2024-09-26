@@ -63,6 +63,28 @@ type _AirConditioningDataSetHumiditySetbackLimit struct {
 var _ AirConditioningDataSetHumiditySetbackLimit = (*_AirConditioningDataSetHumiditySetbackLimit)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHumiditySetbackLimit)(nil)
 
+// NewAirConditioningDataSetHumiditySetbackLimit factory function for _AirConditioningDataSetHumiditySetbackLimit
+func NewAirConditioningDataSetHumiditySetbackLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) *_AirConditioningDataSetHumiditySetbackLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACHumidity for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	_result := &_AirConditioningDataSetHumiditySetbackLimit{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Limit:                       limit,
+		HvacModeAndFlags:            hvacModeAndFlags,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,28 +124,6 @@ func (m *_AirConditioningDataSetHumiditySetbackLimit) GetHvacModeAndFlags() HVAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetHumiditySetbackLimit factory function for _AirConditioningDataSetHumiditySetbackLimit
-func NewAirConditioningDataSetHumiditySetbackLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) *_AirConditioningDataSetHumiditySetbackLimit {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	if limit == nil {
-		panic("limit of type HVACHumidity for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	_result := &_AirConditioningDataSetHumiditySetbackLimit{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Limit:                       limit,
-		HvacModeAndFlags:            hvacModeAndFlags,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetHumiditySetbackLimit(structType any) AirConditioningDataSetHumiditySetbackLimit {

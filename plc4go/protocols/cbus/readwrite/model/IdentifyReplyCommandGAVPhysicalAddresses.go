@@ -54,6 +54,16 @@ type _IdentifyReplyCommandGAVPhysicalAddresses struct {
 var _ IdentifyReplyCommandGAVPhysicalAddresses = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVPhysicalAddresses)(nil)
 
+// NewIdentifyReplyCommandGAVPhysicalAddresses factory function for _IdentifyReplyCommandGAVPhysicalAddresses
+func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVPhysicalAddresses {
+	_result := &_IdentifyReplyCommandGAVPhysicalAddresses{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandGAVPhysicalAddresses) GetValues() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandGAVPhysicalAddresses factory function for _IdentifyReplyCommandGAVPhysicalAddresses
-func NewIdentifyReplyCommandGAVPhysicalAddresses(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVPhysicalAddresses {
-	_result := &_IdentifyReplyCommandGAVPhysicalAddresses{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Values:                       values,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandGAVPhysicalAddresses(structType any) IdentifyReplyCommandGAVPhysicalAddresses {

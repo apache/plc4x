@@ -63,6 +63,11 @@ type _SzlDataTreeItem struct {
 
 var _ SzlDataTreeItem = (*_SzlDataTreeItem)(nil)
 
+// NewSzlDataTreeItem factory function for _SzlDataTreeItem
+func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *_SzlDataTreeItem {
+	return &_SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,11 +97,6 @@ func (m *_SzlDataTreeItem) GetAusbe() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSzlDataTreeItem factory function for _SzlDataTreeItem
-func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *_SzlDataTreeItem {
-	return &_SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSzlDataTreeItem(structType any) SzlDataTreeItem {

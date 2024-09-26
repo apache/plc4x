@@ -54,6 +54,16 @@ type _IdentifyReplyCommandMinimumLevels struct {
 var _ IdentifyReplyCommandMinimumLevels = (*_IdentifyReplyCommandMinimumLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMinimumLevels)(nil)
 
+// NewIdentifyReplyCommandMinimumLevels factory function for _IdentifyReplyCommandMinimumLevels
+func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
+	_result := &_IdentifyReplyCommandMinimumLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		MinimumLevels:                minimumLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandMinimumLevels) GetMinimumLevels() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandMinimumLevels factory function for _IdentifyReplyCommandMinimumLevels
-func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMinimumLevels {
-	_result := &_IdentifyReplyCommandMinimumLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		MinimumLevels:                minimumLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandMinimumLevels(structType any) IdentifyReplyCommandMinimumLevels {

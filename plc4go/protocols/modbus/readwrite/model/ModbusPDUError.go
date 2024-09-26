@@ -54,6 +54,16 @@ type _ModbusPDUError struct {
 var _ ModbusPDUError = (*_ModbusPDUError)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUError)(nil)
 
+// NewModbusPDUError factory function for _ModbusPDUError
+func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
+	_result := &_ModbusPDUError{
+		ModbusPDUContract: NewModbusPDU(),
+		ExceptionCode:     exceptionCode,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUError) GetExceptionCode() ModbusErrorCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUError factory function for _ModbusPDUError
-func NewModbusPDUError(exceptionCode ModbusErrorCode) *_ModbusPDUError {
-	_result := &_ModbusPDUError{
-		ModbusPDUContract: NewModbusPDU(),
-		ExceptionCode:     exceptionCode,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUError(structType any) ModbusPDUError {

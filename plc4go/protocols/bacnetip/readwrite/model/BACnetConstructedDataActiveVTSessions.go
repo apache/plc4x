@@ -54,6 +54,16 @@ type _BACnetConstructedDataActiveVTSessions struct {
 var _ BACnetConstructedDataActiveVTSessions = (*_BACnetConstructedDataActiveVTSessions)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveVTSessions)(nil)
 
+// NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
+func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
+	_result := &_BACnetConstructedDataActiveVTSessions{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveVTSession:               activeVTSession,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []BACnetVT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
-func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
-	_result := &_BACnetConstructedDataActiveVTSessions{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveVTSession:               activeVTSession,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveVTSessions(structType any) BACnetConstructedDataActiveVTSessions {

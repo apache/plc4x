@@ -59,6 +59,20 @@ type _DeleteNodesItem struct {
 var _ DeleteNodesItem = (*_DeleteNodesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesItem)(nil)
 
+// NewDeleteNodesItem factory function for _DeleteNodesItem
+func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
+	}
+	_result := &_DeleteNodesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		DeleteTargetReferences:            deleteTargetReferences,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -94,20 +108,6 @@ func (m *_DeleteNodesItem) GetDeleteTargetReferences() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesItem factory function for _DeleteNodesItem
-func NewDeleteNodesItem(nodeId NodeId, deleteTargetReferences bool) *_DeleteNodesItem {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for DeleteNodesItem must not be nil")
-	}
-	_result := &_DeleteNodesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		DeleteTargetReferences:            deleteTargetReferences,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesItem(structType any) DeleteNodesItem {

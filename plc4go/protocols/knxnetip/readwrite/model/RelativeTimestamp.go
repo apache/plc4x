@@ -51,6 +51,11 @@ type _RelativeTimestamp struct {
 
 var _ RelativeTimestamp = (*_RelativeTimestamp)(nil)
 
+// NewRelativeTimestamp factory function for _RelativeTimestamp
+func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
+	return &_RelativeTimestamp{Timestamp: timestamp}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_RelativeTimestamp) GetTimestamp() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativeTimestamp factory function for _RelativeTimestamp
-func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
-	return &_RelativeTimestamp{Timestamp: timestamp}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativeTimestamp(structType any) RelativeTimestamp {

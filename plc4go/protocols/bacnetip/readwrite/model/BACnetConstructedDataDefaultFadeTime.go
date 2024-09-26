@@ -56,6 +56,19 @@ type _BACnetConstructedDataDefaultFadeTime struct {
 var _ BACnetConstructedDataDefaultFadeTime = (*_BACnetConstructedDataDefaultFadeTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultFadeTime)(nil)
 
+// NewBACnetConstructedDataDefaultFadeTime factory function for _BACnetConstructedDataDefaultFadeTime
+func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
+	if defaultFadeTime == nil {
+		panic("defaultFadeTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultFadeTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultFadeTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultFadeTime:               defaultFadeTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDefaultFadeTime) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultFadeTime factory function for _BACnetConstructedDataDefaultFadeTime
-func NewBACnetConstructedDataDefaultFadeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultFadeTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultFadeTime {
-	if defaultFadeTime == nil {
-		panic("defaultFadeTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataDefaultFadeTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultFadeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultFadeTime:               defaultFadeTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultFadeTime(structType any) BACnetConstructedDataDefaultFadeTime {

@@ -54,6 +54,16 @@ type _BACnetConstructedDataUTCTimeSynchronizationRecipients struct {
 var _ BACnetConstructedDataUTCTimeSynchronizationRecipients = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
 
+// NewBACnetConstructedDataUTCTimeSynchronizationRecipients factory function for _BACnetConstructedDataUTCTimeSynchronizationRecipients
+func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcTimeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
+	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
+		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetUtcTimeSynch
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUTCTimeSynchronizationRecipients factory function for _BACnetConstructedDataUTCTimeSynchronizationRecipients
-func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcTimeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
-	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
-		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType any) BACnetConstructedDataUTCTimeSynchronizationRecipients {

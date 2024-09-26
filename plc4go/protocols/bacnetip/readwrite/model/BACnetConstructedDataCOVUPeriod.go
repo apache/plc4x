@@ -56,6 +56,19 @@ type _BACnetConstructedDataCOVUPeriod struct {
 var _ BACnetConstructedDataCOVUPeriod = (*_BACnetConstructedDataCOVUPeriod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCOVUPeriod)(nil)
 
+// NewBACnetConstructedDataCOVUPeriod factory function for _BACnetConstructedDataCOVUPeriod
+func NewBACnetConstructedDataCOVUPeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covuPeriod BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVUPeriod {
+	if covuPeriod == nil {
+		panic("covuPeriod of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVUPeriod must not be nil")
+	}
+	_result := &_BACnetConstructedDataCOVUPeriod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CovuPeriod:                    covuPeriod,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCOVUPeriod) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCOVUPeriod factory function for _BACnetConstructedDataCOVUPeriod
-func NewBACnetConstructedDataCOVUPeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covuPeriod BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVUPeriod {
-	if covuPeriod == nil {
-		panic("covuPeriod of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCOVUPeriod must not be nil")
-	}
-	_result := &_BACnetConstructedDataCOVUPeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CovuPeriod:                    covuPeriod,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCOVUPeriod(structType any) BACnetConstructedDataCOVUPeriod {

@@ -60,6 +60,17 @@ type _StatusRequestLevel struct {
 var _ StatusRequestLevel = (*_StatusRequestLevel)(nil)
 var _ StatusRequestRequirements = (*_StatusRequestLevel)(nil)
 
+// NewStatusRequestLevel factory function for _StatusRequestLevel
+func NewStatusRequestLevel(statusType byte, application ApplicationIdContainer, startingGroupAddressLabel byte) *_StatusRequestLevel {
+	_result := &_StatusRequestLevel{
+		StatusRequestContract:     NewStatusRequest(statusType),
+		Application:               application,
+		StartingGroupAddressLabel: startingGroupAddressLabel,
+	}
+	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -91,17 +102,6 @@ func (m *_StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequestLevel factory function for _StatusRequestLevel
-func NewStatusRequestLevel(statusType byte, application ApplicationIdContainer, startingGroupAddressLabel byte) *_StatusRequestLevel {
-	_result := &_StatusRequestLevel{
-		StatusRequestContract:     NewStatusRequest(statusType),
-		Application:               application,
-		StartingGroupAddressLabel: startingGroupAddressLabel,
-	}
-	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequestLevel(structType any) StatusRequestLevel {

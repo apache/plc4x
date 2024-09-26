@@ -65,6 +65,14 @@ type _ExpandedNodeId struct {
 
 var _ ExpandedNodeId = (*_ExpandedNodeId)(nil)
 
+// NewExpandedNodeId factory function for _ExpandedNodeId
+func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
+	}
+	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,14 +121,6 @@ func (m *_ExpandedNodeId) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExpandedNodeId factory function for _ExpandedNodeId
-func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
-	}
-	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExpandedNodeId(structType any) ExpandedNodeId {

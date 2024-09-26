@@ -54,6 +54,17 @@ type _BACnetCredentialAuthenticationFactor struct {
 
 var _ BACnetCredentialAuthenticationFactor = (*_BACnetCredentialAuthenticationFactor)(nil)
 
+// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
+func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
+	if disable == nil {
+		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetCredentialAuthenticationFactor) GetAuthenticationFactor() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
-func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
-	if disable == nil {
-		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	if authenticationFactor == nil {
-		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCredentialAuthenticationFactor(structType any) BACnetCredentialAuthenticationFactor {

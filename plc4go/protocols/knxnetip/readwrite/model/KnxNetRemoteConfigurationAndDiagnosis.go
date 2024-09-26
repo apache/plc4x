@@ -54,6 +54,16 @@ type _KnxNetRemoteConfigurationAndDiagnosis struct {
 var _ KnxNetRemoteConfigurationAndDiagnosis = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
 var _ ServiceIdRequirements = (*_KnxNetRemoteConfigurationAndDiagnosis)(nil)
 
+// NewKnxNetRemoteConfigurationAndDiagnosis factory function for _KnxNetRemoteConfigurationAndDiagnosis
+func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfigurationAndDiagnosis {
+	_result := &_KnxNetRemoteConfigurationAndDiagnosis{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetRemoteConfigurationAndDiagnosis factory function for _KnxNetRemoteConfigurationAndDiagnosis
-func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfigurationAndDiagnosis {
-	_result := &_KnxNetRemoteConfigurationAndDiagnosis{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfigurationAndDiagnosis {

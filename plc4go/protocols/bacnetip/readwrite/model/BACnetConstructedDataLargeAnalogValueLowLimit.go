@@ -56,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueLowLimit struct {
 var _ BACnetConstructedDataLargeAnalogValueLowLimit = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
 
+// NewBACnetConstructedDataLargeAnalogValueLowLimit factory function for _BACnetConstructedDataLargeAnalogValueLowLimit
+func NewBACnetConstructedDataLargeAnalogValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueLowLimit {
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowLimit:                      lowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueLowLimit factory function for _BACnetConstructedDataLargeAnalogValueLowLimit
-func NewBACnetConstructedDataLargeAnalogValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueLowLimit {
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LowLimit:                      lowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueLowLimit(structType any) BACnetConstructedDataLargeAnalogValueLowLimit {

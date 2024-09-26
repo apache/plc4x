@@ -54,6 +54,19 @@ type _BACnetRecipientAddress struct {
 var _ BACnetRecipientAddress = (*_BACnetRecipientAddress)(nil)
 var _ BACnetRecipientRequirements = (*_BACnetRecipientAddress)(nil)
 
+// NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
+func NewBACnetRecipientAddress(peekedTagHeader BACnetTagHeader, addressValue BACnetAddressEnclosed) *_BACnetRecipientAddress {
+	if addressValue == nil {
+		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
+	}
+	_result := &_BACnetRecipientAddress{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		AddressValue:            addressValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetRecipientAddress) GetAddressValue() BACnetAddressEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
-func NewBACnetRecipientAddress(peekedTagHeader BACnetTagHeader, addressValue BACnetAddressEnclosed) *_BACnetRecipientAddress {
-	if addressValue == nil {
-		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
-	}
-	_result := &_BACnetRecipientAddress{
-		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
-		AddressValue:            addressValue,
-	}
-	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientAddress(structType any) BACnetRecipientAddress {

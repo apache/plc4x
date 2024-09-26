@@ -54,6 +54,19 @@ type _BACnetPropertyStatesAuthenticationStatus struct {
 var _ BACnetPropertyStatesAuthenticationStatus = (*_BACnetPropertyStatesAuthenticationStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesAuthenticationStatus)(nil)
 
+// NewBACnetPropertyStatesAuthenticationStatus factory function for _BACnetPropertyStatesAuthenticationStatus
+func NewBACnetPropertyStatesAuthenticationStatus(peekedTagHeader BACnetTagHeader, authenticationStatus BACnetAuthenticationStatusTagged) *_BACnetPropertyStatesAuthenticationStatus {
+	if authenticationStatus == nil {
+		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetPropertyStatesAuthenticationStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesAuthenticationStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		AuthenticationStatus:         authenticationStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetAuthenticationStatus() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesAuthenticationStatus factory function for _BACnetPropertyStatesAuthenticationStatus
-func NewBACnetPropertyStatesAuthenticationStatus(peekedTagHeader BACnetTagHeader, authenticationStatus BACnetAuthenticationStatusTagged) *_BACnetPropertyStatesAuthenticationStatus {
-	if authenticationStatus == nil {
-		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetPropertyStatesAuthenticationStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesAuthenticationStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		AuthenticationStatus:         authenticationStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesAuthenticationStatus(structType any) BACnetPropertyStatesAuthenticationStatus {

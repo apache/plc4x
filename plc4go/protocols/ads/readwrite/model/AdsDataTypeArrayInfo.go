@@ -58,6 +58,11 @@ type _AdsDataTypeArrayInfo struct {
 
 var _ AdsDataTypeArrayInfo = (*_AdsDataTypeArrayInfo)(nil)
 
+// NewAdsDataTypeArrayInfo factory function for _AdsDataTypeArrayInfo
+func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTypeArrayInfo {
+	return &_AdsDataTypeArrayInfo{LowerBound: lowerBound, NumElements: numElements}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -90,11 +95,6 @@ func (m *_AdsDataTypeArrayInfo) GetUpperBound() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDataTypeArrayInfo factory function for _AdsDataTypeArrayInfo
-func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTypeArrayInfo {
-	return &_AdsDataTypeArrayInfo{LowerBound: lowerBound, NumElements: numElements}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {

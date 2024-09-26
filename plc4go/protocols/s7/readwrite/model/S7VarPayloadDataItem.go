@@ -58,6 +58,11 @@ type _S7VarPayloadDataItem struct {
 
 var _ S7VarPayloadDataItem = (*_S7VarPayloadDataItem)(nil)
 
+// NewS7VarPayloadDataItem factory function for _S7VarPayloadDataItem
+func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *_S7VarPayloadDataItem {
+	return &_S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -79,11 +84,6 @@ func (m *_S7VarPayloadDataItem) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7VarPayloadDataItem factory function for _S7VarPayloadDataItem
-func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, data []byte) *_S7VarPayloadDataItem {
-	return &_S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7VarPayloadDataItem(structType any) S7VarPayloadDataItem {

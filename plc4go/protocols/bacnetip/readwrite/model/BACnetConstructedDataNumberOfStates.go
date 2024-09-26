@@ -56,6 +56,19 @@ type _BACnetConstructedDataNumberOfStates struct {
 var _ BACnetConstructedDataNumberOfStates = (*_BACnetConstructedDataNumberOfStates)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfStates)(nil)
 
+// NewBACnetConstructedDataNumberOfStates factory function for _BACnetConstructedDataNumberOfStates
+func NewBACnetConstructedDataNumberOfStates(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfState BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfStates {
+	if numberOfState == nil {
+		panic("numberOfState of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfStates must not be nil")
+	}
+	_result := &_BACnetConstructedDataNumberOfStates{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfState:                 numberOfState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataNumberOfStates) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNumberOfStates factory function for _BACnetConstructedDataNumberOfStates
-func NewBACnetConstructedDataNumberOfStates(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfState BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfStates {
-	if numberOfState == nil {
-		panic("numberOfState of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfStates must not be nil")
-	}
-	_result := &_BACnetConstructedDataNumberOfStates{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfState:                 numberOfState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNumberOfStates(structType any) BACnetConstructedDataNumberOfStates {

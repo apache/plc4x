@@ -49,6 +49,15 @@ type _TriggerControlDataIndicatorKill struct {
 var _ TriggerControlDataIndicatorKill = (*_TriggerControlDataIndicatorKill)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
+// NewTriggerControlDataIndicatorKill factory function for _TriggerControlDataIndicatorKill
+func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataIndicatorKill {
+	_result := &_TriggerControlDataIndicatorKill{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataIndicatorKill)(nil)
 
 func (m *_TriggerControlDataIndicatorKill) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataIndicatorKill factory function for _TriggerControlDataIndicatorKill
-func NewTriggerControlDataIndicatorKill(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataIndicatorKill {
-	_result := &_TriggerControlDataIndicatorKill{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

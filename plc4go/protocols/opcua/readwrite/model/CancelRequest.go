@@ -57,6 +57,20 @@ type _CancelRequest struct {
 var _ CancelRequest = (*_CancelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelRequest)(nil)
 
+// NewCancelRequest factory function for _CancelRequest
+func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
+	}
+	_result := &_CancelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestHandle:                     requestHandle,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_CancelRequest) GetRequestHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCancelRequest factory function for _CancelRequest
-func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
-	}
-	_result := &_CancelRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		RequestHandle:                     requestHandle,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCancelRequest(structType any) CancelRequest {

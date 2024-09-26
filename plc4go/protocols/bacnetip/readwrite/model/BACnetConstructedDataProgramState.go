@@ -56,6 +56,19 @@ type _BACnetConstructedDataProgramState struct {
 var _ BACnetConstructedDataProgramState = (*_BACnetConstructedDataProgramState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramState)(nil)
 
+// NewBACnetConstructedDataProgramState factory function for _BACnetConstructedDataProgramState
+func NewBACnetConstructedDataProgramState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programState BACnetProgramStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramState {
+	if programState == nil {
+		panic("programState of type BACnetProgramStateTagged for BACnetConstructedDataProgramState must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramState:                  programState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProgramState) GetActualValue() BACnetProgramState
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramState factory function for _BACnetConstructedDataProgramState
-func NewBACnetConstructedDataProgramState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programState BACnetProgramStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramState {
-	if programState == nil {
-		panic("programState of type BACnetProgramStateTagged for BACnetConstructedDataProgramState must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramState:                  programState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramState(structType any) BACnetConstructedDataProgramState {

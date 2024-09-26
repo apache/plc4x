@@ -54,6 +54,19 @@ type _UnConnectedDataItem struct {
 var _ UnConnectedDataItem = (*_UnConnectedDataItem)(nil)
 var _ TypeIdRequirements = (*_UnConnectedDataItem)(nil)
 
+// NewUnConnectedDataItem factory function for _UnConnectedDataItem
+func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for UnConnectedDataItem must not be nil")
+	}
+	_result := &_UnConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_UnConnectedDataItem) GetService() CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnConnectedDataItem factory function for _UnConnectedDataItem
-func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
-	if service == nil {
-		panic("service of type CipService for UnConnectedDataItem must not be nil")
-	}
-	_result := &_UnConnectedDataItem{
-		TypeIdContract: NewTypeId(),
-		Service:        service,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnConnectedDataItem(structType any) UnConnectedDataItem {

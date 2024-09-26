@@ -57,6 +57,20 @@ type _BACnetConfirmedServiceRequestCreateObject struct {
 var _ BACnetConfirmedServiceRequestCreateObject = (*_BACnetConfirmedServiceRequestCreateObject)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestCreateObject)(nil)
 
+// NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
+func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
+	if objectSpecifier == nil {
+		panic("objectSpecifier of type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier for BACnetConfirmedServiceRequestCreateObject must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestCreateObject{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectSpecifier:                       objectSpecifier,
+		ListOfValues:                          listOfValues,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetListOfValues() BACnetPro
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
-	if objectSpecifier == nil {
-		panic("objectSpecifier of type BACnetConfirmedServiceRequestCreateObjectObjectSpecifier for BACnetConfirmedServiceRequestCreateObject must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestCreateObject{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ObjectSpecifier:                       objectSpecifier,
-		ListOfValues:                          listOfValues,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestCreateObject(structType any) BACnetConfirmedServiceRequestCreateObject {

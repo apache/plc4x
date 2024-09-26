@@ -60,6 +60,21 @@ type _CALDataWrite struct {
 var _ CALDataWrite = (*_CALDataWrite)(nil)
 var _ CALDataRequirements = (*_CALDataWrite)(nil)
 
+// NewCALDataWrite factory function for _CALDataWrite
+func NewCALDataWrite(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code byte, parameterValue ParameterValue, requestContext RequestContext) *_CALDataWrite {
+	if parameterValue == nil {
+		panic("parameterValue of type ParameterValue for CALDataWrite must not be nil")
+	}
+	_result := &_CALDataWrite{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Code:            code,
+		ParameterValue:  parameterValue,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -95,21 +110,6 @@ func (m *_CALDataWrite) GetParameterValue() ParameterValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataWrite factory function for _CALDataWrite
-func NewCALDataWrite(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code byte, parameterValue ParameterValue, requestContext RequestContext) *_CALDataWrite {
-	if parameterValue == nil {
-		panic("parameterValue of type ParameterValue for CALDataWrite must not be nil")
-	}
-	_result := &_CALDataWrite{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		Code:            code,
-		ParameterValue:  parameterValue,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataWrite(structType any) CALDataWrite {

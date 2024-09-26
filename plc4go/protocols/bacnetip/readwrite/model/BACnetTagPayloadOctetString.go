@@ -54,6 +54,11 @@ type _BACnetTagPayloadOctetString struct {
 
 var _ BACnetTagPayloadOctetString = (*_BACnetTagPayloadOctetString)(nil)
 
+// NewBACnetTagPayloadOctetString factory function for _BACnetTagPayloadOctetString
+func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnetTagPayloadOctetString {
+	return &_BACnetTagPayloadOctetString{Octets: octets, ActualLength: actualLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,11 +72,6 @@ func (m *_BACnetTagPayloadOctetString) GetOctets() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadOctetString factory function for _BACnetTagPayloadOctetString
-func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnetTagPayloadOctetString {
-	return &_BACnetTagPayloadOctetString{Octets: octets, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadOctetString(structType any) BACnetTagPayloadOctetString {

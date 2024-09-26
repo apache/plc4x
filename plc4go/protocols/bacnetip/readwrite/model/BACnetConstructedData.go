@@ -88,6 +88,20 @@ type _BACnetConstructedData struct {
 
 var _ BACnetConstructedDataContract = (*_BACnetConstructedData)(nil)
 
+// NewBACnetConstructedData factory function for _BACnetConstructedData
+func NewBACnetConstructedData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedData {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConstructedData must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedData must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConstructedData must not be nil")
+	}
+	return &_BACnetConstructedData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -125,20 +139,6 @@ func (pm *_BACnetConstructedData) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedData factory function for _BACnetConstructedData
-func NewBACnetConstructedData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedData {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConstructedData must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedData must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConstructedData must not be nil")
-	}
-	return &_BACnetConstructedData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedData(structType any) BACnetConstructedData {

@@ -63,6 +63,14 @@ type _BACnetAccessCredentialDisableTagged struct {
 
 var _ BACnetAccessCredentialDisableTagged = (*_BACnetAccessCredentialDisableTagged)(nil)
 
+// NewBACnetAccessCredentialDisableTagged factory function for _BACnetAccessCredentialDisableTagged
+func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableTagged must not be nil")
+	}
+	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetAccessCredentialDisableTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessCredentialDisableTagged factory function for _BACnetAccessCredentialDisableTagged
-func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessCredentialDisableTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessCredentialDisableTagged must not be nil")
-	}
-	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessCredentialDisableTagged(structType any) BACnetAccessCredentialDisableTagged {

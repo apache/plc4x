@@ -56,6 +56,19 @@ type _BACnetConstructedDataReasonForHalt struct {
 var _ BACnetConstructedDataReasonForHalt = (*_BACnetConstructedDataReasonForHalt)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForHalt)(nil)
 
+// NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
+func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
+	if programError == nil {
+		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
+	}
+	_result := &_BACnetConstructedDataReasonForHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramError:                  programError,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataReasonForHalt) GetActualValue() BACnetProgramErro
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
-func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
-	if programError == nil {
-		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
-	}
-	_result := &_BACnetConstructedDataReasonForHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramError:                  programError,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReasonForHalt(structType any) BACnetConstructedDataReasonForHalt {

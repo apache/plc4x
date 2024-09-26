@@ -60,6 +60,17 @@ type _VTCloseErrorListOfVTSessionIdentifiers struct {
 
 var _ VTCloseErrorListOfVTSessionIdentifiers = (*_VTCloseErrorListOfVTSessionIdentifiers)(nil)
 
+// NewVTCloseErrorListOfVTSessionIdentifiers factory function for _VTCloseErrorListOfVTSessionIdentifiers
+func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_VTCloseErrorListOfVTSessionIdentifiers {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
+	}
+	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +92,6 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) GetClosingTag() BACnetClosingT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVTCloseErrorListOfVTSessionIdentifiers factory function for _VTCloseErrorListOfVTSessionIdentifiers
-func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_VTCloseErrorListOfVTSessionIdentifiers {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for VTCloseErrorListOfVTSessionIdentifiers must not be nil")
-	}
-	return &_VTCloseErrorListOfVTSessionIdentifiers{OpeningTag: openingTag, ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastVTCloseErrorListOfVTSessionIdentifiers(structType any) VTCloseErrorListOfVTSessionIdentifiers {

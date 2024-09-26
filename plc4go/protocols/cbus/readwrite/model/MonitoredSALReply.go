@@ -54,6 +54,19 @@ type _MonitoredSALReply struct {
 var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
 var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
 
+// NewMonitoredSALReply factory function for _MonitoredSALReply
+func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
+	if monitoredSAL == nil {
+		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
+	}
+	_result := &_MonitoredSALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		MonitoredSAL:         monitoredSAL,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
-	if monitoredSAL == nil {
-		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
-	}
-	_result := &_MonitoredSALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
-		MonitoredSAL:         monitoredSAL,
-	}
-	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALReply(structType any) MonitoredSALReply {

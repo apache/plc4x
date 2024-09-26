@@ -63,6 +63,14 @@ type _BACnetPropertyWriteDefinition struct {
 
 var _ BACnetPropertyWriteDefinition = (*_BACnetPropertyWriteDefinition)(nil)
 
+// NewBACnetPropertyWriteDefinition factory function for _BACnetPropertyWriteDefinition
+func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyWriteDefinition {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyWriteDefinition must not be nil")
+	}
+	return &_BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -88,14 +96,6 @@ func (m *_BACnetPropertyWriteDefinition) GetPriority() BACnetContextTagUnsignedI
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyWriteDefinition factory function for _BACnetPropertyWriteDefinition
-func NewBACnetPropertyWriteDefinition(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, priority BACnetContextTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPropertyWriteDefinition {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetPropertyWriteDefinition must not be nil")
-	}
-	return &_BACnetPropertyWriteDefinition{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, Priority: priority, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyWriteDefinition(structType any) BACnetPropertyWriteDefinition {

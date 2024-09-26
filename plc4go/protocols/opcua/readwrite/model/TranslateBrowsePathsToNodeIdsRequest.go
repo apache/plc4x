@@ -60,6 +60,21 @@ type _TranslateBrowsePathsToNodeIdsRequest struct {
 var _ TranslateBrowsePathsToNodeIdsRequest = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TranslateBrowsePathsToNodeIdsRequest)(nil)
 
+// NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
+func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
+	}
+	_result := &_TranslateBrowsePathsToNodeIdsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfBrowsePaths:                   noOfBrowsePaths,
+		BrowsePaths:                       browsePaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) GetBrowsePaths() []ExtensionObje
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTranslateBrowsePathsToNodeIdsRequest factory function for _TranslateBrowsePathsToNodeIdsRequest
-func NewTranslateBrowsePathsToNodeIdsRequest(requestHeader ExtensionObjectDefinition, noOfBrowsePaths int32, browsePaths []ExtensionObjectDefinition) *_TranslateBrowsePathsToNodeIdsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for TranslateBrowsePathsToNodeIdsRequest must not be nil")
-	}
-	_result := &_TranslateBrowsePathsToNodeIdsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfBrowsePaths:                   noOfBrowsePaths,
-		BrowsePaths:                       browsePaths,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTranslateBrowsePathsToNodeIdsRequest(structType any) TranslateBrowsePathsToNodeIdsRequest {

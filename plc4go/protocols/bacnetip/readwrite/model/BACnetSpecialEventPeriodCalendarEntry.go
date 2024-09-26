@@ -54,6 +54,19 @@ type _BACnetSpecialEventPeriodCalendarEntry struct {
 var _ BACnetSpecialEventPeriodCalendarEntry = (*_BACnetSpecialEventPeriodCalendarEntry)(nil)
 var _ BACnetSpecialEventPeriodRequirements = (*_BACnetSpecialEventPeriodCalendarEntry)(nil)
 
+// NewBACnetSpecialEventPeriodCalendarEntry factory function for _BACnetSpecialEventPeriodCalendarEntry
+func NewBACnetSpecialEventPeriodCalendarEntry(peekedTagHeader BACnetTagHeader, calendarEntry BACnetCalendarEntryEnclosed) *_BACnetSpecialEventPeriodCalendarEntry {
+	if calendarEntry == nil {
+		panic("calendarEntry of type BACnetCalendarEntryEnclosed for BACnetSpecialEventPeriodCalendarEntry must not be nil")
+	}
+	_result := &_BACnetSpecialEventPeriodCalendarEntry{
+		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
+		CalendarEntry:                    calendarEntry,
+	}
+	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() BACnetCalend
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventPeriodCalendarEntry factory function for _BACnetSpecialEventPeriodCalendarEntry
-func NewBACnetSpecialEventPeriodCalendarEntry(peekedTagHeader BACnetTagHeader, calendarEntry BACnetCalendarEntryEnclosed) *_BACnetSpecialEventPeriodCalendarEntry {
-	if calendarEntry == nil {
-		panic("calendarEntry of type BACnetCalendarEntryEnclosed for BACnetSpecialEventPeriodCalendarEntry must not be nil")
-	}
-	_result := &_BACnetSpecialEventPeriodCalendarEntry{
-		BACnetSpecialEventPeriodContract: NewBACnetSpecialEventPeriod(peekedTagHeader),
-		CalendarEntry:                    calendarEntry,
-	}
-	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventPeriodCalendarEntry(structType any) BACnetSpecialEventPeriodCalendarEntry {

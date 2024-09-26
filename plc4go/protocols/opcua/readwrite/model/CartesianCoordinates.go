@@ -49,6 +49,15 @@ type _CartesianCoordinates struct {
 var _ CartesianCoordinates = (*_CartesianCoordinates)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CartesianCoordinates)(nil)
 
+// NewCartesianCoordinates factory function for _CartesianCoordinates
+func NewCartesianCoordinates() *_CartesianCoordinates {
+	_result := &_CartesianCoordinates{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_CartesianCoordinates) GetIdentifier() string {
 
 func (m *_CartesianCoordinates) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewCartesianCoordinates factory function for _CartesianCoordinates
-func NewCartesianCoordinates() *_CartesianCoordinates {
-	_result := &_CartesianCoordinates{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

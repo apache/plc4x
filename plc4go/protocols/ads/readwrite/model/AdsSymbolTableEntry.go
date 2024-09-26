@@ -124,6 +124,11 @@ type _AdsSymbolTableEntry struct {
 
 var _ AdsSymbolTableEntry = (*_AdsSymbolTableEntry)(nil)
 
+// NewAdsSymbolTableEntry factory function for _AdsSymbolTableEntry
+func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) *_AdsSymbolTableEntry {
+	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagTypeGuid: flagTypeGuid, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, FlagAttributes: flagAttributes, FlagContextMask: flagContextMask, Name: name, DataTypeName: dataTypeName, Comment: comment, Rest: rest}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -242,11 +247,6 @@ func (m *_AdsSymbolTableEntry) GetCommentTerminator() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsSymbolTableEntry factory function for _AdsSymbolTableEntry
-func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) *_AdsSymbolTableEntry {
-	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagTypeGuid: flagTypeGuid, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, FlagAttributes: flagAttributes, FlagContextMask: flagContextMask, Name: name, DataTypeName: dataTypeName, Comment: comment, Rest: rest}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsSymbolTableEntry(structType any) AdsSymbolTableEntry {

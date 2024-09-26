@@ -54,6 +54,19 @@ type _RegisterServerResponse struct {
 var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerResponse)(nil)
 
+// NewRegisterServerResponse factory function for _RegisterServerResponse
+func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+	}
+	_result := &_RegisterServerResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServerResponse factory function for _RegisterServerResponse
-func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
-	}
-	_result := &_RegisterServerResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServerResponse(structType any) RegisterServerResponse {

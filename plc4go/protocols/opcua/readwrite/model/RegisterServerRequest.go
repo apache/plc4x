@@ -57,6 +57,23 @@ type _RegisterServerRequest struct {
 var _ RegisterServerRequest = (*_RegisterServerRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerRequest)(nil)
 
+// NewRegisterServerRequest factory function for _RegisterServerRequest
+func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) *_RegisterServerRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+	}
+	if server == nil {
+		panic("server of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
+	}
+	_result := &_RegisterServerRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		Server:                            server,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_RegisterServerRequest) GetServer() ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServerRequest factory function for _RegisterServerRequest
-func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) *_RegisterServerRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
-	}
-	if server == nil {
-		panic("server of type ExtensionObjectDefinition for RegisterServerRequest must not be nil")
-	}
-	_result := &_RegisterServerRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		Server:                            server,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServerRequest(structType any) RegisterServerRequest {

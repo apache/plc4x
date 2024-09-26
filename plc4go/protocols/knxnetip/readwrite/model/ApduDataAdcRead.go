@@ -49,6 +49,15 @@ type _ApduDataAdcRead struct {
 var _ ApduDataAdcRead = (*_ApduDataAdcRead)(nil)
 var _ ApduDataRequirements = (*_ApduDataAdcRead)(nil)
 
+// NewApduDataAdcRead factory function for _ApduDataAdcRead
+func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
+	_result := &_ApduDataAdcRead{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataAdcRead) GetApciType() uint8 {
 
 func (m *_ApduDataAdcRead) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataAdcRead factory function for _ApduDataAdcRead
-func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
-	_result := &_ApduDataAdcRead{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

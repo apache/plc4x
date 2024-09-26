@@ -51,6 +51,11 @@ type _ZoneStatus struct {
 
 var _ ZoneStatus = (*_ZoneStatus)(nil)
 
+// NewZoneStatus factory function for _ZoneStatus
+func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
+	return &_ZoneStatus{Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_ZoneStatus) GetValue() ZoneStatusTemp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewZoneStatus factory function for _ZoneStatus
-func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
-	return &_ZoneStatus{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastZoneStatus(structType any) ZoneStatus {

@@ -63,6 +63,14 @@ type _BACnetAccessEventTagged struct {
 
 var _ BACnetAccessEventTagged = (*_BACnetAccessEventTagged)(nil)
 
+// NewBACnetAccessEventTagged factory function for _BACnetAccessEventTagged
+func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessEventTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessEventTagged must not be nil")
+	}
+	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetAccessEventTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessEventTagged factory function for _BACnetAccessEventTagged
-func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessEventTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessEventTagged must not be nil")
-	}
-	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessEventTagged(structType any) BACnetAccessEventTagged {

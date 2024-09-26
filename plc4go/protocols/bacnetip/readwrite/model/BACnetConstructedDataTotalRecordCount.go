@@ -56,6 +56,19 @@ type _BACnetConstructedDataTotalRecordCount struct {
 var _ BACnetConstructedDataTotalRecordCount = (*_BACnetConstructedDataTotalRecordCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTotalRecordCount)(nil)
 
+// NewBACnetConstructedDataTotalRecordCount factory function for _BACnetConstructedDataTotalRecordCount
+func NewBACnetConstructedDataTotalRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, totalRecordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTotalRecordCount {
+	if totalRecordCount == nil {
+		panic("totalRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTotalRecordCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataTotalRecordCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TotalRecordCount:              totalRecordCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTotalRecordCount) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTotalRecordCount factory function for _BACnetConstructedDataTotalRecordCount
-func NewBACnetConstructedDataTotalRecordCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, totalRecordCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTotalRecordCount {
-	if totalRecordCount == nil {
-		panic("totalRecordCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTotalRecordCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataTotalRecordCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TotalRecordCount:              totalRecordCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTotalRecordCount(structType any) BACnetConstructedDataTotalRecordCount {

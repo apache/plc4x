@@ -81,6 +81,20 @@ type _BACnetEventLogRecordLogDatum struct {
 
 var _ BACnetEventLogRecordLogDatumContract = (*_BACnetEventLogRecordLogDatum)(nil)
 
+// NewBACnetEventLogRecordLogDatum factory function for _BACnetEventLogRecordLogDatum
+func NewBACnetEventLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatum {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	return &_BACnetEventLogRecordLogDatum{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -118,20 +132,6 @@ func (pm *_BACnetEventLogRecordLogDatum) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatum factory function for _BACnetEventLogRecordLogDatum
-func NewBACnetEventLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatum {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	return &_BACnetEventLogRecordLogDatum{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatum(structType any) BACnetEventLogRecordLogDatum {

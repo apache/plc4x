@@ -66,6 +66,23 @@ type _CreateSubscriptionResponse struct {
 var _ CreateSubscriptionResponse = (*_CreateSubscriptionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionResponse)(nil)
 
+// NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
+func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
+	}
+	_result := &_CreateSubscriptionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		SubscriptionId:                    subscriptionId,
+		RevisedPublishingInterval:         revisedPublishingInterval,
+		RevisedLifetimeCount:              revisedLifetimeCount,
+		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_CreateSubscriptionResponse) GetRevisedMaxKeepAliveCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSubscriptionResponse factory function for _CreateSubscriptionResponse
-func NewCreateSubscriptionResponse(responseHeader ExtensionObjectDefinition, subscriptionId uint32, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) *_CreateSubscriptionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CreateSubscriptionResponse must not be nil")
-	}
-	_result := &_CreateSubscriptionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		SubscriptionId:                    subscriptionId,
-		RevisedPublishingInterval:         revisedPublishingInterval,
-		RevisedLifetimeCount:              revisedLifetimeCount,
-		RevisedMaxKeepAliveCount:          revisedMaxKeepAliveCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSubscriptionResponse(structType any) CreateSubscriptionResponse {

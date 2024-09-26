@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLiftFault struct {
 var _ BACnetPropertyStatesLiftFault = (*_BACnetPropertyStatesLiftFault)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftFault)(nil)
 
+// NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
+func NewBACnetPropertyStatesLiftFault(peekedTagHeader BACnetTagHeader, liftFault BACnetLiftFaultTagged) *_BACnetPropertyStatesLiftFault {
+	if liftFault == nil {
+		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftFault{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftFault:                    liftFault,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLiftFault) GetLiftFault() BACnetLiftFaultTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftFault factory function for _BACnetPropertyStatesLiftFault
-func NewBACnetPropertyStatesLiftFault(peekedTagHeader BACnetTagHeader, liftFault BACnetLiftFaultTagged) *_BACnetPropertyStatesLiftFault {
-	if liftFault == nil {
-		panic("liftFault of type BACnetLiftFaultTagged for BACnetPropertyStatesLiftFault must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftFault{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftFault:                    liftFault,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftFault(structType any) BACnetPropertyStatesLiftFault {

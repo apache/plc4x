@@ -56,6 +56,19 @@ type _BACnetConstructedDataLandingCallControl struct {
 var _ BACnetConstructedDataLandingCallControl = (*_BACnetConstructedDataLandingCallControl)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingCallControl)(nil)
 
+// NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
+func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
+	if landingCallControl == nil {
+		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
+	}
+	_result := &_BACnetConstructedDataLandingCallControl{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LandingCallControl:            landingCallControl,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLandingCallControl) GetActualValue() BACnetLandin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLandingCallControl factory function for _BACnetConstructedDataLandingCallControl
-func NewBACnetConstructedDataLandingCallControl(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, landingCallControl BACnetLandingCallStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingCallControl {
-	if landingCallControl == nil {
-		panic("landingCallControl of type BACnetLandingCallStatus for BACnetConstructedDataLandingCallControl must not be nil")
-	}
-	_result := &_BACnetConstructedDataLandingCallControl{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LandingCallControl:            landingCallControl,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLandingCallControl(structType any) BACnetConstructedDataLandingCallControl {

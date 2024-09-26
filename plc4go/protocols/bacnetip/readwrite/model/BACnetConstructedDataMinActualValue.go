@@ -56,6 +56,19 @@ type _BACnetConstructedDataMinActualValue struct {
 var _ BACnetConstructedDataMinActualValue = (*_BACnetConstructedDataMinActualValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinActualValue)(nil)
 
+// NewBACnetConstructedDataMinActualValue factory function for _BACnetConstructedDataMinActualValue
+func NewBACnetConstructedDataMinActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minActualValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
+	if minActualValue == nil {
+		panic("minActualValue of type BACnetApplicationTagReal for BACnetConstructedDataMinActualValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinActualValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinActualValue:                minActualValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMinActualValue) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinActualValue factory function for _BACnetConstructedDataMinActualValue
-func NewBACnetConstructedDataMinActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minActualValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
-	if minActualValue == nil {
-		panic("minActualValue of type BACnetApplicationTagReal for BACnetConstructedDataMinActualValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinActualValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinActualValue:                minActualValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinActualValue(structType any) BACnetConstructedDataMinActualValue {

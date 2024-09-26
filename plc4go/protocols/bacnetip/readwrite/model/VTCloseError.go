@@ -57,6 +57,20 @@ type _VTCloseError struct {
 var _ VTCloseError = (*_VTCloseError)(nil)
 var _ BACnetErrorRequirements = (*_VTCloseError)(nil)
 
+// NewVTCloseError factory function for _VTCloseError
+func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
+	}
+	_result := &_VTCloseError{
+		BACnetErrorContract:        NewBACnetError(),
+		ErrorType:                  errorType,
+		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_VTCloseError) GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSess
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVTCloseError factory function for _VTCloseError
-func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
-	}
-	_result := &_VTCloseError{
-		BACnetErrorContract:        NewBACnetError(),
-		ErrorType:                  errorType,
-		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVTCloseError(structType any) VTCloseError {

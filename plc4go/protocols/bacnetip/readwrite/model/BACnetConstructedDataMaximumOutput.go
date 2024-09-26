@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaximumOutput struct {
 var _ BACnetConstructedDataMaximumOutput = (*_BACnetConstructedDataMaximumOutput)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumOutput)(nil)
 
+// NewBACnetConstructedDataMaximumOutput factory function for _BACnetConstructedDataMaximumOutput
+func NewBACnetConstructedDataMaximumOutput(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumOutput BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumOutput {
+	if maximumOutput == nil {
+		panic("maximumOutput of type BACnetApplicationTagReal for BACnetConstructedDataMaximumOutput must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaximumOutput{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumOutput:                 maximumOutput,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaximumOutput) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaximumOutput factory function for _BACnetConstructedDataMaximumOutput
-func NewBACnetConstructedDataMaximumOutput(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumOutput BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumOutput {
-	if maximumOutput == nil {
-		panic("maximumOutput of type BACnetApplicationTagReal for BACnetConstructedDataMaximumOutput must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaximumOutput{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaximumOutput:                 maximumOutput,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaximumOutput(structType any) BACnetConstructedDataMaximumOutput {

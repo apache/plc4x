@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLockStatus struct {
 var _ BACnetPropertyStatesLockStatus = (*_BACnetPropertyStatesLockStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLockStatus)(nil)
 
+// NewBACnetPropertyStatesLockStatus factory function for _BACnetPropertyStatesLockStatus
+func NewBACnetPropertyStatesLockStatus(peekedTagHeader BACnetTagHeader, lockStatus BACnetLockStatusTagged) *_BACnetPropertyStatesLockStatus {
+	if lockStatus == nil {
+		panic("lockStatus of type BACnetLockStatusTagged for BACnetPropertyStatesLockStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLockStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LockStatus:                   lockStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLockStatus) GetLockStatus() BACnetLockStatusTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLockStatus factory function for _BACnetPropertyStatesLockStatus
-func NewBACnetPropertyStatesLockStatus(peekedTagHeader BACnetTagHeader, lockStatus BACnetLockStatusTagged) *_BACnetPropertyStatesLockStatus {
-	if lockStatus == nil {
-		panic("lockStatus of type BACnetLockStatusTagged for BACnetPropertyStatesLockStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLockStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LockStatus:                   lockStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLockStatus(structType any) BACnetPropertyStatesLockStatus {

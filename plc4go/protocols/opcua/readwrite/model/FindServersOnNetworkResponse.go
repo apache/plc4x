@@ -63,6 +63,22 @@ type _FindServersOnNetworkResponse struct {
 var _ FindServersOnNetworkResponse = (*_FindServersOnNetworkResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkResponse)(nil)
 
+// NewFindServersOnNetworkResponse factory function for _FindServersOnNetworkResponse
+func NewFindServersOnNetworkResponse(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersOnNetworkResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for FindServersOnNetworkResponse must not be nil")
+	}
+	_result := &_FindServersOnNetworkResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		LastCounterResetTime:              lastCounterResetTime,
+		NoOfServers:                       noOfServers,
+		Servers:                           servers,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,22 +122,6 @@ func (m *_FindServersOnNetworkResponse) GetServers() []ExtensionObjectDefinition
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersOnNetworkResponse factory function for _FindServersOnNetworkResponse
-func NewFindServersOnNetworkResponse(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersOnNetworkResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for FindServersOnNetworkResponse must not be nil")
-	}
-	_result := &_FindServersOnNetworkResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		LastCounterResetTime:              lastCounterResetTime,
-		NoOfServers:                       noOfServers,
-		Servers:                           servers,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersOnNetworkResponse(structType any) FindServersOnNetworkResponse {

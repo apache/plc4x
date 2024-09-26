@@ -97,6 +97,11 @@ type _BACnetPriorityArray struct {
 
 var _ BACnetPriorityArray = (*_BACnetPriorityArray)(nil)
 
+// NewBACnetPriorityArray factory function for _BACnetPriorityArray
+func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPriorityArray {
+	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -275,11 +280,6 @@ func (m *_BACnetPriorityArray) GetIndexEntry() BACnetPriorityValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityArray factory function for _BACnetPriorityArray
-func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPriorityArray {
-	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityArray(structType any) BACnetPriorityArray {

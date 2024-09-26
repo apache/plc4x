@@ -56,6 +56,19 @@ type _BACnetConstructedDataVerificationTime struct {
 var _ BACnetConstructedDataVerificationTime = (*_BACnetConstructedDataVerificationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVerificationTime)(nil)
 
+// NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
+func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
+	if verificationTime == nil {
+		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataVerificationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VerificationTime:              verificationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataVerificationTime) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVerificationTime factory function for _BACnetConstructedDataVerificationTime
-func NewBACnetConstructedDataVerificationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, verificationTime BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVerificationTime {
-	if verificationTime == nil {
-		panic("verificationTime of type BACnetApplicationTagSignedInteger for BACnetConstructedDataVerificationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataVerificationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VerificationTime:              verificationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVerificationTime(structType any) BACnetConstructedDataVerificationTime {

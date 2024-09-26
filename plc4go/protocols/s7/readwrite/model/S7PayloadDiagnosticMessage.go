@@ -72,6 +72,25 @@ type _S7PayloadDiagnosticMessage struct {
 var _ S7PayloadDiagnosticMessage = (*_S7PayloadDiagnosticMessage)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadDiagnosticMessage)(nil)
 
+// NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
+func NewS7PayloadDiagnosticMessage(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) *_S7PayloadDiagnosticMessage {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadDiagnosticMessage must not be nil")
+	}
+	_result := &_S7PayloadDiagnosticMessage{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		EventId:                       eventId,
+		PriorityClass:                 priorityClass,
+		ObNumber:                      obNumber,
+		DatId:                         datId,
+		Info1:                         info1,
+		Info2:                         info2,
+		TimeStamp:                     timeStamp,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -135,25 +154,6 @@ func (m *_S7PayloadDiagnosticMessage) GetTimeStamp() DateAndTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
-func NewS7PayloadDiagnosticMessage(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) *_S7PayloadDiagnosticMessage {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for S7PayloadDiagnosticMessage must not be nil")
-	}
-	_result := &_S7PayloadDiagnosticMessage{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		EventId:                       eventId,
-		PriorityClass:                 priorityClass,
-		ObNumber:                      obNumber,
-		DatId:                         datId,
-		Info1:                         info1,
-		Info2:                         info2,
-		TimeStamp:                     timeStamp,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {

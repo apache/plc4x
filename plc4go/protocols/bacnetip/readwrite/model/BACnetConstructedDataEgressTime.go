@@ -56,6 +56,19 @@ type _BACnetConstructedDataEgressTime struct {
 var _ BACnetConstructedDataEgressTime = (*_BACnetConstructedDataEgressTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEgressTime)(nil)
 
+// NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
+func NewBACnetConstructedDataEgressTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
+	if egressTime == nil {
+		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataEgressTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EgressTime:                    egressTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEgressTime) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEgressTime factory function for _BACnetConstructedDataEgressTime
-func NewBACnetConstructedDataEgressTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, egressTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEgressTime {
-	if egressTime == nil {
-		panic("egressTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataEgressTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataEgressTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EgressTime:                    egressTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEgressTime(structType any) BACnetConstructedDataEgressTime {

@@ -54,6 +54,16 @@ type _SecurityDataZoneIsolated struct {
 var _ SecurityDataZoneIsolated = (*_SecurityDataZoneIsolated)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneIsolated)(nil)
 
+// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
+func NewSecurityDataZoneIsolated(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneIsolated {
+	_result := &_SecurityDataZoneIsolated{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataZoneIsolated) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
-func NewSecurityDataZoneIsolated(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneIsolated {
-	_result := &_SecurityDataZoneIsolated{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneIsolated(structType any) SecurityDataZoneIsolated {

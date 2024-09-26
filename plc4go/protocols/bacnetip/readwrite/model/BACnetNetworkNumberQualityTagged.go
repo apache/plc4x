@@ -58,6 +58,14 @@ type _BACnetNetworkNumberQualityTagged struct {
 
 var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
 
+// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
+func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
+	}
+	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetNetworkNumberQualityTagged) GetValue() BACnetNetworkNumberQualit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
-func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
-	}
-	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQualityTagged {

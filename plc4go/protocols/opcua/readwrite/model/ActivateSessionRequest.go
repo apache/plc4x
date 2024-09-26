@@ -75,6 +75,35 @@ type _ActivateSessionRequest struct {
 var _ ActivateSessionRequest = (*_ActivateSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionRequest)(nil)
 
+// NewActivateSessionRequest factory function for _ActivateSessionRequest
+func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if clientSignature == nil {
+		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	if userIdentityToken == nil {
+		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
+	}
+	if userTokenSignature == nil {
+		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+	}
+	_result := &_ActivateSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ClientSignature:                   clientSignature,
+		NoOfClientSoftwareCertificates:    noOfClientSoftwareCertificates,
+		ClientSoftwareCertificates:        clientSoftwareCertificates,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		UserIdentityToken:                 userIdentityToken,
+		UserTokenSignature:                userTokenSignature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -134,35 +163,6 @@ func (m *_ActivateSessionRequest) GetUserTokenSignature() ExtensionObjectDefinit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewActivateSessionRequest factory function for _ActivateSessionRequest
-func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	if clientSignature == nil {
-		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	if userIdentityToken == nil {
-		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
-	}
-	if userTokenSignature == nil {
-		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
-	}
-	_result := &_ActivateSessionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ClientSignature:                   clientSignature,
-		NoOfClientSoftwareCertificates:    noOfClientSoftwareCertificates,
-		ClientSoftwareCertificates:        clientSoftwareCertificates,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		UserIdentityToken:                 userIdentityToken,
-		UserTokenSignature:                userTokenSignature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastActivateSessionRequest(structType any) ActivateSessionRequest {

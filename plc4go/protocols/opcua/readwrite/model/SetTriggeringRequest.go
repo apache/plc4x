@@ -72,6 +72,25 @@ type _SetTriggeringRequest struct {
 var _ SetTriggeringRequest = (*_SetTriggeringRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetTriggeringRequest)(nil)
 
+// NewSetTriggeringRequest factory function for _SetTriggeringRequest
+func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
+	}
+	_result := &_SetTriggeringRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		SubscriptionId:                    subscriptionId,
+		TriggeringItemId:                  triggeringItemId,
+		NoOfLinksToAdd:                    noOfLinksToAdd,
+		LinksToAdd:                        linksToAdd,
+		NoOfLinksToRemove:                 noOfLinksToRemove,
+		LinksToRemove:                     linksToRemove,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -127,25 +146,6 @@ func (m *_SetTriggeringRequest) GetLinksToRemove() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetTriggeringRequest factory function for _SetTriggeringRequest
-func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) *_SetTriggeringRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetTriggeringRequest must not be nil")
-	}
-	_result := &_SetTriggeringRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		SubscriptionId:                    subscriptionId,
-		TriggeringItemId:                  triggeringItemId,
-		NoOfLinksToAdd:                    noOfLinksToAdd,
-		LinksToAdd:                        linksToAdd,
-		NoOfLinksToRemove:                 noOfLinksToRemove,
-		LinksToRemove:                     linksToRemove,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetTriggeringRequest(structType any) SetTriggeringRequest {

@@ -60,6 +60,27 @@ type _BACnetServiceAckGetAlarmSummary struct {
 var _ BACnetServiceAckGetAlarmSummary = (*_BACnetServiceAckGetAlarmSummary)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetAlarmSummary)(nil)
 
+// NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
+func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if eventState == nil {
+		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	if acknowledgedTransitions == nil {
+		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetServiceAckGetAlarmSummary must not be nil")
+	}
+	_result := &_BACnetServiceAckGetAlarmSummary{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		EventState:               eventState,
+		AcknowledgedTransitions:  acknowledgedTransitions,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,27 +120,6 @@ func (m *_BACnetServiceAckGetAlarmSummary) GetAcknowledgedTransitions() BACnetEv
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetAlarmSummary factory function for _BACnetServiceAckGetAlarmSummary
-func NewBACnetServiceAckGetAlarmSummary(objectIdentifier BACnetApplicationTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, serviceAckLength uint32) *_BACnetServiceAckGetAlarmSummary {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	if eventState == nil {
-		panic("eventState of type BACnetEventStateTagged for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	if acknowledgedTransitions == nil {
-		panic("acknowledgedTransitions of type BACnetEventTransitionBitsTagged for BACnetServiceAckGetAlarmSummary must not be nil")
-	}
-	_result := &_BACnetServiceAckGetAlarmSummary{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-		EventState:               eventState,
-		AcknowledgedTransitions:  acknowledgedTransitions,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetAlarmSummary(structType any) BACnetServiceAckGetAlarmSummary {

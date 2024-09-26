@@ -72,6 +72,17 @@ type _BACnetDaysOfWeekTagged struct {
 
 var _ BACnetDaysOfWeekTagged = (*_BACnetDaysOfWeekTagged)(nil)
 
+// NewBACnetDaysOfWeekTagged factory function for _BACnetDaysOfWeekTagged
+func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetDaysOfWeekTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDaysOfWeekTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetDaysOfWeekTagged must not be nil")
+	}
+	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -140,17 +151,6 @@ func (m *_BACnetDaysOfWeekTagged) GetSunday() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDaysOfWeekTagged factory function for _BACnetDaysOfWeekTagged
-func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetDaysOfWeekTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDaysOfWeekTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetDaysOfWeekTagged must not be nil")
-	}
-	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDaysOfWeekTagged(structType any) BACnetDaysOfWeekTagged {

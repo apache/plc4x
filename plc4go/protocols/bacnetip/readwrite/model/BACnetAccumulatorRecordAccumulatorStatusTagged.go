@@ -58,6 +58,14 @@ type _BACnetAccumulatorRecordAccumulatorStatusTagged struct {
 
 var _ BACnetAccumulatorRecordAccumulatorStatusTagged = (*_BACnetAccumulatorRecordAccumulatorStatusTagged)(nil)
 
+// NewBACnetAccumulatorRecordAccumulatorStatusTagged factory function for _BACnetAccumulatorRecordAccumulatorStatusTagged
+func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus, tagNumber uint8, tagClass TagClass) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccumulatorRecordAccumulatorStatusTagged must not be nil")
+	}
+	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) GetValue() BACnetAccum
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccumulatorRecordAccumulatorStatusTagged factory function for _BACnetAccumulatorRecordAccumulatorStatusTagged
-func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus, tagNumber uint8, tagClass TagClass) *_BACnetAccumulatorRecordAccumulatorStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccumulatorRecordAccumulatorStatusTagged must not be nil")
-	}
-	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccumulatorRecordAccumulatorStatusTagged(structType any) BACnetAccumulatorRecordAccumulatorStatusTagged {

@@ -66,6 +66,23 @@ type _HistoryUpdateResult struct {
 var _ HistoryUpdateResult = (*_HistoryUpdateResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResult)(nil)
 
+// NewHistoryUpdateResult factory function for _HistoryUpdateResult
+func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
+	}
+	_result := &_HistoryUpdateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfOperationResults:              noOfOperationResults,
+		OperationResults:                  operationResults,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_HistoryUpdateResult) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryUpdateResult factory function for _HistoryUpdateResult
-func NewHistoryUpdateResult(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for HistoryUpdateResult must not be nil")
-	}
-	_result := &_HistoryUpdateResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfOperationResults:              noOfOperationResults,
-		OperationResults:                  operationResults,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryUpdateResult(structType any) HistoryUpdateResult {

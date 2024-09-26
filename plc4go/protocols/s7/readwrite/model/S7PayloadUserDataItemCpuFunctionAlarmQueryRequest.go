@@ -69,6 +69,18 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest struct {
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		SyntaxId:                      syntaxId,
+		QueryType:                     queryType,
+		AlarmType:                     alarmType,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,18 +153,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		SyntaxId:                      syntaxId,
-		QueryType:                     queryType,
-		AlarmType:                     alarmType,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {

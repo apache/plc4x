@@ -49,6 +49,15 @@ type _ReaderGroupTransportDataType struct {
 var _ ReaderGroupTransportDataType = (*_ReaderGroupTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReaderGroupTransportDataType)(nil)
 
+// NewReaderGroupTransportDataType factory function for _ReaderGroupTransportDataType
+func NewReaderGroupTransportDataType() *_ReaderGroupTransportDataType {
+	_result := &_ReaderGroupTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ReaderGroupTransportDataType) GetIdentifier() string {
 
 func (m *_ReaderGroupTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewReaderGroupTransportDataType factory function for _ReaderGroupTransportDataType
-func NewReaderGroupTransportDataType() *_ReaderGroupTransportDataType {
-	_result := &_ReaderGroupTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

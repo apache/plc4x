@@ -49,6 +49,15 @@ type _AccessControlDataRequestToExit struct {
 var _ AccessControlDataRequestToExit = (*_AccessControlDataRequestToExit)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataRequestToExit)(nil)
 
+// NewAccessControlDataRequestToExit factory function for _AccessControlDataRequestToExit
+func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataRequestToExit {
+	_result := &_AccessControlDataRequestToExit{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataRequestToExit)(nil)
 
 func (m *_AccessControlDataRequestToExit) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataRequestToExit factory function for _AccessControlDataRequestToExit
-func NewAccessControlDataRequestToExit(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataRequestToExit {
-	_result := &_AccessControlDataRequestToExit{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

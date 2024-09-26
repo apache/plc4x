@@ -56,6 +56,19 @@ type _BACnetConstructedDataBBMDAcceptFDRegistrations struct {
 var _ BACnetConstructedDataBBMDAcceptFDRegistrations = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBBMDAcceptFDRegistrations)(nil)
 
+// NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
+func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
+	if bbmdAcceptFDRegistrations == nil {
+		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
+	}
+	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBBMDAcceptFDRegistrations) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBBMDAcceptFDRegistrations factory function for _BACnetConstructedDataBBMDAcceptFDRegistrations
-func NewBACnetConstructedDataBBMDAcceptFDRegistrations(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bbmdAcceptFDRegistrations BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBBMDAcceptFDRegistrations {
-	if bbmdAcceptFDRegistrations == nil {
-		panic("bbmdAcceptFDRegistrations of type BACnetApplicationTagBoolean for BACnetConstructedDataBBMDAcceptFDRegistrations must not be nil")
-	}
-	_result := &_BACnetConstructedDataBBMDAcceptFDRegistrations{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BbmdAcceptFDRegistrations:     bbmdAcceptFDRegistrations,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType any) BACnetConstructedDataBBMDAcceptFDRegistrations {

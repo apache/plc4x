@@ -56,6 +56,19 @@ type _BACnetConstructedDataThreatAuthority struct {
 var _ BACnetConstructedDataThreatAuthority = (*_BACnetConstructedDataThreatAuthority)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatAuthority)(nil)
 
+// NewBACnetConstructedDataThreatAuthority factory function for _BACnetConstructedDataThreatAuthority
+func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatAuthority BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
+	if threatAuthority == nil {
+		panic("threatAuthority of type BACnetAccessThreatLevel for BACnetConstructedDataThreatAuthority must not be nil")
+	}
+	_result := &_BACnetConstructedDataThreatAuthority{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ThreatAuthority:               threatAuthority,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataThreatAuthority) GetActualValue() BACnetAccessThr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataThreatAuthority factory function for _BACnetConstructedDataThreatAuthority
-func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatAuthority BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatAuthority {
-	if threatAuthority == nil {
-		panic("threatAuthority of type BACnetAccessThreatLevel for BACnetConstructedDataThreatAuthority must not be nil")
-	}
-	_result := &_BACnetConstructedDataThreatAuthority{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ThreatAuthority:               threatAuthority,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataThreatAuthority(structType any) BACnetConstructedDataThreatAuthority {

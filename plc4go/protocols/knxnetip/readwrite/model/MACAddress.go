@@ -51,6 +51,11 @@ type _MACAddress struct {
 
 var _ MACAddress = (*_MACAddress)(nil)
 
+// NewMACAddress factory function for _MACAddress
+func NewMACAddress(addr []byte) *_MACAddress {
+	return &_MACAddress{Addr: addr}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_MACAddress) GetAddr() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMACAddress factory function for _MACAddress
-func NewMACAddress(addr []byte) *_MACAddress {
-	return &_MACAddress{Addr: addr}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMACAddress(structType any) MACAddress {

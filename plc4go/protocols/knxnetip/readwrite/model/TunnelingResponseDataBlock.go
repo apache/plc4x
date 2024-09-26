@@ -57,6 +57,11 @@ type _TunnelingResponseDataBlock struct {
 
 var _ TunnelingResponseDataBlock = (*_TunnelingResponseDataBlock)(nil)
 
+// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
+func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
+	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_TunnelingResponseDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
-func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
-	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {

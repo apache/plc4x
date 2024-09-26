@@ -56,6 +56,19 @@ type _BACnetApplicationTagBoolean struct {
 var _ BACnetApplicationTagBoolean = (*_BACnetApplicationTagBoolean)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBoolean)(nil)
 
+// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
+func NewBACnetApplicationTagBoolean(header BACnetTagHeader, payload BACnetTagPayloadBoolean) *_BACnetApplicationTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
+	}
+	_result := &_BACnetApplicationTagBoolean{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -98,19 +111,6 @@ func (m *_BACnetApplicationTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
-func NewBACnetApplicationTagBoolean(header BACnetTagHeader, payload BACnetTagPayloadBoolean) *_BACnetApplicationTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
-	}
-	_result := &_BACnetApplicationTagBoolean{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagBoolean(structType any) BACnetApplicationTagBoolean {

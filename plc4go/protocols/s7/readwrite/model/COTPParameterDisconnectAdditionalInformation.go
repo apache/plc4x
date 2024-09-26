@@ -54,6 +54,16 @@ type _COTPParameterDisconnectAdditionalInformation struct {
 var _ COTPParameterDisconnectAdditionalInformation = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterDisconnectAdditionalInformation)(nil)
 
+// NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
+func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
+	_result := &_COTPParameterDisconnectAdditionalInformation{
+		COTPParameterContract: NewCOTPParameter(rest),
+		Data:                  data,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_COTPParameterDisconnectAdditionalInformation) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterDisconnectAdditionalInformation factory function for _COTPParameterDisconnectAdditionalInformation
-func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_COTPParameterDisconnectAdditionalInformation {
-	_result := &_COTPParameterDisconnectAdditionalInformation{
-		COTPParameterContract: NewCOTPParameter(rest),
-		Data:                  data,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterDisconnectAdditionalInformation(structType any) COTPParameterDisconnectAdditionalInformation {

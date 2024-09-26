@@ -54,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeClimateControllers struct {
 var _ ErrorReportingSystemCategoryTypeClimateControllers = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeClimateControllers)(nil)
 
+// NewErrorReportingSystemCategoryTypeClimateControllers factory function for _ErrorReportingSystemCategoryTypeClimateControllers
+func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) *_ErrorReportingSystemCategoryTypeClimateControllers {
+	_result := &_ErrorReportingSystemCategoryTypeClimateControllers{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) GetCategoryForType
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeClimateControllers factory function for _ErrorReportingSystemCategoryTypeClimateControllers
-func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType ErrorReportingSystemCategoryTypeForClimateControllers) *_ErrorReportingSystemCategoryTypeClimateControllers {
-	_result := &_ErrorReportingSystemCategoryTypeClimateControllers{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeClimateControllers(structType any) ErrorReportingSystemCategoryTypeClimateControllers {

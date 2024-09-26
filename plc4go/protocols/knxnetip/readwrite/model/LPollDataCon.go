@@ -49,6 +49,15 @@ type _LPollDataCon struct {
 var _ LPollDataCon = (*_LPollDataCon)(nil)
 var _ CEMIRequirements = (*_LPollDataCon)(nil)
 
+// NewLPollDataCon factory function for _LPollDataCon
+func NewLPollDataCon(size uint16) *_LPollDataCon {
+	_result := &_LPollDataCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_LPollDataCon) GetMessageCode() uint8 {
 
 func (m *_LPollDataCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLPollDataCon factory function for _LPollDataCon
-func NewLPollDataCon(size uint16) *_LPollDataCon {
-	_result := &_LPollDataCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

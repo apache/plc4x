@@ -54,6 +54,16 @@ type _BACnetConstructedDataReasonForDisable struct {
 var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForDisable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForDisable)(nil)
 
+// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
+func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
+	_result := &_BACnetConstructedDataReasonForDisable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReasonForDisable:              reasonForDisable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataReasonForDisable) GetReasonForDisable() []BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
-	_result := &_BACnetConstructedDataReasonForDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReasonForDisable:              reasonForDisable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructedDataReasonForDisable {

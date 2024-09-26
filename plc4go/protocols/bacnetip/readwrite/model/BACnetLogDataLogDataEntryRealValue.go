@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryRealValue struct {
 var _ BACnetLogDataLogDataEntryRealValue = (*_BACnetLogDataLogDataEntryRealValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryRealValue)(nil)
 
+// NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
+func NewBACnetLogDataLogDataEntryRealValue(peekedTagHeader BACnetTagHeader, realValue BACnetContextTagReal) *_BACnetLogDataLogDataEntryRealValue {
+	if realValue == nil {
+		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryRealValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		RealValue:                         realValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryRealValue) GetRealValue() BACnetContextTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryRealValue factory function for _BACnetLogDataLogDataEntryRealValue
-func NewBACnetLogDataLogDataEntryRealValue(peekedTagHeader BACnetTagHeader, realValue BACnetContextTagReal) *_BACnetLogDataLogDataEntryRealValue {
-	if realValue == nil {
-		panic("realValue of type BACnetContextTagReal for BACnetLogDataLogDataEntryRealValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryRealValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		RealValue:                         realValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryRealValue(structType any) BACnetLogDataLogDataEntryRealValue {

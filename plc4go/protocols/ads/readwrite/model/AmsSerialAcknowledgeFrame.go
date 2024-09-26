@@ -66,6 +66,11 @@ type _AmsSerialAcknowledgeFrame struct {
 
 var _ AmsSerialAcknowledgeFrame = (*_AmsSerialAcknowledgeFrame)(nil)
 
+// NewAmsSerialAcknowledgeFrame factory function for _AmsSerialAcknowledgeFrame
+func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialAcknowledgeFrame {
+	return &_AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (m *_AmsSerialAcknowledgeFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialAcknowledgeFrame factory function for _AmsSerialAcknowledgeFrame
-func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialAcknowledgeFrame {
-	return &_AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialAcknowledgeFrame(structType any) AmsSerialAcknowledgeFrame {

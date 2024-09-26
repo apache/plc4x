@@ -56,6 +56,19 @@ type _BACnetConstructedDataLastCredentialAdded struct {
 var _ BACnetConstructedDataLastCredentialAdded = (*_BACnetConstructedDataLastCredentialAdded)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAdded)(nil)
 
+// NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
+func NewBACnetConstructedDataLastCredentialAdded(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAdded BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
+	if lastCredentialAdded == nil {
+		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastCredentialAdded{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialAdded:           lastCredentialAdded,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLastCredentialAdded) GetActualValue() BACnetDevic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastCredentialAdded factory function for _BACnetConstructedDataLastCredentialAdded
-func NewBACnetConstructedDataLastCredentialAdded(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAdded BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAdded {
-	if lastCredentialAdded == nil {
-		panic("lastCredentialAdded of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialAdded must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastCredentialAdded{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastCredentialAdded:           lastCredentialAdded,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastCredentialAdded(structType any) BACnetConstructedDataLastCredentialAdded {

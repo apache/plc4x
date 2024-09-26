@@ -54,6 +54,19 @@ type _BACnetPropertyStatesReasonForHalt struct {
 var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReasonForHalt)(nil)
 
+// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
+func NewBACnetPropertyStatesReasonForHalt(peekedTagHeader BACnetTagHeader, reasonForHalt BACnetProgramErrorTagged) *_BACnetPropertyStatesReasonForHalt {
+	if reasonForHalt == nil {
+		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
+	}
+	_result := &_BACnetPropertyStatesReasonForHalt{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ReasonForHalt:                reasonForHalt,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetReasonForHalt() BACnetProgramErr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
-func NewBACnetPropertyStatesReasonForHalt(peekedTagHeader BACnetTagHeader, reasonForHalt BACnetProgramErrorTagged) *_BACnetPropertyStatesReasonForHalt {
-	if reasonForHalt == nil {
-		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
-	}
-	_result := &_BACnetPropertyStatesReasonForHalt{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ReasonForHalt:                reasonForHalt,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesReasonForHalt(structType any) BACnetPropertyStatesReasonForHalt {

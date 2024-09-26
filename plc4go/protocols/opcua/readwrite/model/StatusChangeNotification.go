@@ -57,6 +57,23 @@ type _StatusChangeNotification struct {
 var _ StatusChangeNotification = (*_StatusChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_StatusChangeNotification)(nil)
 
+// NewStatusChangeNotification factory function for _StatusChangeNotification
+func NewStatusChangeNotification(status StatusCode, diagnosticInfo DiagnosticInfo) *_StatusChangeNotification {
+	if status == nil {
+		panic("status of type StatusCode for StatusChangeNotification must not be nil")
+	}
+	if diagnosticInfo == nil {
+		panic("diagnosticInfo of type DiagnosticInfo for StatusChangeNotification must not be nil")
+	}
+	_result := &_StatusChangeNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Status:                            status,
+		DiagnosticInfo:                    diagnosticInfo,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_StatusChangeNotification) GetDiagnosticInfo() DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusChangeNotification factory function for _StatusChangeNotification
-func NewStatusChangeNotification(status StatusCode, diagnosticInfo DiagnosticInfo) *_StatusChangeNotification {
-	if status == nil {
-		panic("status of type StatusCode for StatusChangeNotification must not be nil")
-	}
-	if diagnosticInfo == nil {
-		panic("diagnosticInfo of type DiagnosticInfo for StatusChangeNotification must not be nil")
-	}
-	_result := &_StatusChangeNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Status:                            status,
-		DiagnosticInfo:                    diagnosticInfo,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusChangeNotification(structType any) StatusChangeNotification {

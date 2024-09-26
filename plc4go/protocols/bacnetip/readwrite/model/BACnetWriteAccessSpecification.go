@@ -60,6 +60,20 @@ type _BACnetWriteAccessSpecification struct {
 
 var _ BACnetWriteAccessSpecification = (*_BACnetWriteAccessSpecification)(nil)
 
+// NewBACnetWriteAccessSpecification factory function for _BACnetWriteAccessSpecification
+func NewBACnetWriteAccessSpecification(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) *_BACnetWriteAccessSpecification {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetWriteAccessSpecification must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetWriteAccessSpecification must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetWriteAccessSpecification must not be nil")
+	}
+	return &_BACnetWriteAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyWriteDefinition: listOfPropertyWriteDefinition, ClosingTag: closingTag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,20 +99,6 @@ func (m *_BACnetWriteAccessSpecification) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWriteAccessSpecification factory function for _BACnetWriteAccessSpecification
-func NewBACnetWriteAccessSpecification(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) *_BACnetWriteAccessSpecification {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetWriteAccessSpecification must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetWriteAccessSpecification must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetWriteAccessSpecification must not be nil")
-	}
-	return &_BACnetWriteAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyWriteDefinition: listOfPropertyWriteDefinition, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWriteAccessSpecification(structType any) BACnetWriteAccessSpecification {

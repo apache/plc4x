@@ -58,6 +58,16 @@ type _MediaTransportControlDataShuffleOnOff struct {
 var _ MediaTransportControlDataShuffleOnOff = (*_MediaTransportControlDataShuffleOnOff)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataShuffleOnOff)(nil)
 
+// NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
+func NewMediaTransportControlDataShuffleOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataShuffleOnOff {
+	_result := &_MediaTransportControlDataShuffleOnOff{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetIsOn() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
-func NewMediaTransportControlDataShuffleOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataShuffleOnOff {
-	_result := &_MediaTransportControlDataShuffleOnOff{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		State:                             state,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataShuffleOnOff(structType any) MediaTransportControlDataShuffleOnOff {

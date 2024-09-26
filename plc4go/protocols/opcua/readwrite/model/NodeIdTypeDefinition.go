@@ -69,6 +69,11 @@ type _NodeIdTypeDefinition struct {
 
 var _ NodeIdTypeDefinitionContract = (*_NodeIdTypeDefinition)(nil)
 
+// NewNodeIdTypeDefinition factory function for _NodeIdTypeDefinition
+func NewNodeIdTypeDefinition() *_NodeIdTypeDefinition {
+	return &_NodeIdTypeDefinition{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for abstract fields.
@@ -82,11 +87,6 @@ func (m *_NodeIdTypeDefinition) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdTypeDefinition factory function for _NodeIdTypeDefinition
-func NewNodeIdTypeDefinition() *_NodeIdTypeDefinition {
-	return &_NodeIdTypeDefinition{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdTypeDefinition(structType any) NodeIdTypeDefinition {

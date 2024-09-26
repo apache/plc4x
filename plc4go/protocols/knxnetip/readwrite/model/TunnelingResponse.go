@@ -56,6 +56,19 @@ type _TunnelingResponse struct {
 var _ TunnelingResponse = (*_TunnelingResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_TunnelingResponse)(nil)
 
+// NewTunnelingResponse factory function for _TunnelingResponse
+func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) *_TunnelingResponse {
+	if tunnelingResponseDataBlock == nil {
+		panic("tunnelingResponseDataBlock of type TunnelingResponseDataBlock for TunnelingResponse must not be nil")
+	}
+	_result := &_TunnelingResponse{
+		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
+		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_TunnelingResponse) GetTunnelingResponseDataBlock() TunnelingResponseDa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingResponse factory function for _TunnelingResponse
-func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) *_TunnelingResponse {
-	if tunnelingResponseDataBlock == nil {
-		panic("tunnelingResponseDataBlock of type TunnelingResponseDataBlock for TunnelingResponse must not be nil")
-	}
-	_result := &_TunnelingResponse{
-		KnxNetIpMessageContract:    NewKnxNetIpMessage(),
-		TunnelingResponseDataBlock: tunnelingResponseDataBlock,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingResponse(structType any) TunnelingResponse {

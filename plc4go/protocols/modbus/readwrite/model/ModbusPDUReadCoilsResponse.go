@@ -54,6 +54,16 @@ type _ModbusPDUReadCoilsResponse struct {
 var _ ModbusPDUReadCoilsResponse = (*_ModbusPDUReadCoilsResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadCoilsResponse)(nil)
 
+// NewModbusPDUReadCoilsResponse factory function for _ModbusPDUReadCoilsResponse
+func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
+	_result := &_ModbusPDUReadCoilsResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUReadCoilsResponse) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadCoilsResponse factory function for _ModbusPDUReadCoilsResponse
-func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
-	_result := &_ModbusPDUReadCoilsResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadCoilsResponse(structType any) ModbusPDUReadCoilsResponse {

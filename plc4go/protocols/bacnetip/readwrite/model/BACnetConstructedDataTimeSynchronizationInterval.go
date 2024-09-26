@@ -56,6 +56,19 @@ type _BACnetConstructedDataTimeSynchronizationInterval struct {
 var _ BACnetConstructedDataTimeSynchronizationInterval = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeSynchronizationInterval)(nil)
 
+// NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
+func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
+	if timeSynchronization == nil {
+		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeSynchronization:           timeSynchronization,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTimeSynchronizationInterval) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeSynchronizationInterval factory function for _BACnetConstructedDataTimeSynchronizationInterval
-func NewBACnetConstructedDataTimeSynchronizationInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeSynchronization BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeSynchronizationInterval {
-	if timeSynchronization == nil {
-		panic("timeSynchronization of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimeSynchronizationInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeSynchronizationInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeSynchronization:           timeSynchronization,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeSynchronizationInterval(structType any) BACnetConstructedDataTimeSynchronizationInterval {

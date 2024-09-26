@@ -57,6 +57,20 @@ type _BACnetVTSession struct {
 
 var _ BACnetVTSession = (*_BACnetVTSession)(nil)
 
+// NewBACnetVTSession factory function for _BACnetVTSession
+func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
+	if localVtSessionId == nil {
+		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if removeVtSessionId == nil {
+		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if remoteVtAddress == nil {
+		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
+	}
+	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,20 +92,6 @@ func (m *_BACnetVTSession) GetRemoteVtAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetVTSession factory function for _BACnetVTSession
-func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
-	if localVtSessionId == nil {
-		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if removeVtSessionId == nil {
-		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if remoteVtAddress == nil {
-		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
-	}
-	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetVTSession(structType any) BACnetVTSession {

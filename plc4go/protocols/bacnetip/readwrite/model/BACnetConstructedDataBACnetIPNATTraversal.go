@@ -56,6 +56,19 @@ type _BACnetConstructedDataBACnetIPNATTraversal struct {
 var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 
+// NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
+func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
+	if bacnetIPNATTraversal == nil {
+		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIPNATTraversal:          bacnetIPNATTraversal,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
-	if bacnetIPNATTraversal == nil {
-		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIPNATTraversal:          bacnetIPNATTraversal,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPNATTraversal(structType any) BACnetConstructedDataBACnetIPNATTraversal {

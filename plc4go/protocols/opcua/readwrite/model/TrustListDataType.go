@@ -78,6 +78,24 @@ type _TrustListDataType struct {
 var _ TrustListDataType = (*_TrustListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TrustListDataType)(nil)
 
+// NewTrustListDataType factory function for _TrustListDataType
+func NewTrustListDataType(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) *_TrustListDataType {
+	_result := &_TrustListDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SpecifiedLists:                    specifiedLists,
+		NoOfTrustedCertificates:           noOfTrustedCertificates,
+		TrustedCertificates:               trustedCertificates,
+		NoOfTrustedCrls:                   noOfTrustedCrls,
+		TrustedCrls:                       trustedCrls,
+		NoOfIssuerCertificates:            noOfIssuerCertificates,
+		IssuerCertificates:                issuerCertificates,
+		NoOfIssuerCrls:                    noOfIssuerCrls,
+		IssuerCrls:                        issuerCrls,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,24 +159,6 @@ func (m *_TrustListDataType) GetIssuerCrls() []PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTrustListDataType factory function for _TrustListDataType
-func NewTrustListDataType(specifiedLists uint32, noOfTrustedCertificates int32, trustedCertificates []PascalByteString, noOfTrustedCrls int32, trustedCrls []PascalByteString, noOfIssuerCertificates int32, issuerCertificates []PascalByteString, noOfIssuerCrls int32, issuerCrls []PascalByteString) *_TrustListDataType {
-	_result := &_TrustListDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SpecifiedLists:                    specifiedLists,
-		NoOfTrustedCertificates:           noOfTrustedCertificates,
-		TrustedCertificates:               trustedCertificates,
-		NoOfTrustedCrls:                   noOfTrustedCrls,
-		TrustedCrls:                       trustedCrls,
-		NoOfIssuerCertificates:            noOfIssuerCertificates,
-		IssuerCertificates:                issuerCertificates,
-		NoOfIssuerCrls:                    noOfIssuerCrls,
-		IssuerCrls:                        issuerCrls,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTrustListDataType(structType any) TrustListDataType {

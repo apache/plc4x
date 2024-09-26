@@ -54,6 +54,19 @@ type _BACnetScaleFloatScale struct {
 var _ BACnetScaleFloatScale = (*_BACnetScaleFloatScale)(nil)
 var _ BACnetScaleRequirements = (*_BACnetScaleFloatScale)(nil)
 
+// NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
+func NewBACnetScaleFloatScale(peekedTagHeader BACnetTagHeader, floatScale BACnetContextTagReal) *_BACnetScaleFloatScale {
+	if floatScale == nil {
+		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
+	}
+	_result := &_BACnetScaleFloatScale{
+		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
+		FloatScale:          floatScale,
+	}
+	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetScaleFloatScale) GetFloatScale() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetScaleFloatScale factory function for _BACnetScaleFloatScale
-func NewBACnetScaleFloatScale(peekedTagHeader BACnetTagHeader, floatScale BACnetContextTagReal) *_BACnetScaleFloatScale {
-	if floatScale == nil {
-		panic("floatScale of type BACnetContextTagReal for BACnetScaleFloatScale must not be nil")
-	}
-	_result := &_BACnetScaleFloatScale{
-		BACnetScaleContract: NewBACnetScale(peekedTagHeader),
-		FloatScale:          floatScale,
-	}
-	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetScaleFloatScale(structType any) BACnetScaleFloatScale {

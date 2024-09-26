@@ -56,6 +56,19 @@ type _BACnetConstructedDataUserName struct {
 var _ BACnetConstructedDataUserName = (*_BACnetConstructedDataUserName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserName)(nil)
 
+// NewBACnetConstructedDataUserName factory function for _BACnetConstructedDataUserName
+func NewBACnetConstructedDataUserName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserName {
+	if userName == nil {
+		panic("userName of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserName must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserName:                      userName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUserName) GetActualValue() BACnetApplicationTagCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserName factory function for _BACnetConstructedDataUserName
-func NewBACnetConstructedDataUserName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserName {
-	if userName == nil {
-		panic("userName of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserName must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserName:                      userName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserName(structType any) BACnetConstructedDataUserName {

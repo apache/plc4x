@@ -51,6 +51,14 @@ type _BACnetAssignedLandingCalls struct {
 
 var _ BACnetAssignedLandingCalls = (*_BACnetAssignedLandingCalls)(nil)
 
+// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
+func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
+	if landingCalls == nil {
+		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
+	}
+	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,14 +72,6 @@ func (m *_BACnetAssignedLandingCalls) GetLandingCalls() BACnetAssignedLandingCal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
-func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
-	if landingCalls == nil {
-		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
-	}
-	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedLandingCalls(structType any) BACnetAssignedLandingCalls {

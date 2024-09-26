@@ -52,6 +52,11 @@ type _PowerUp struct {
 
 var _ PowerUp = (*_PowerUp)(nil)
 
+// NewPowerUp factory function for _PowerUp
+func NewPowerUp() *_PowerUp {
+	return &_PowerUp{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -69,11 +74,6 @@ func (m *_PowerUp) GetPowerUpIndicator2() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPowerUp factory function for _PowerUp
-func NewPowerUp() *_PowerUp {
-	return &_PowerUp{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPowerUp(structType any) PowerUp {

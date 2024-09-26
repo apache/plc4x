@@ -63,6 +63,14 @@ type _BACnetEscalatorModeTagged struct {
 
 var _ BACnetEscalatorModeTagged = (*_BACnetEscalatorModeTagged)(nil)
 
+// NewBACnetEscalatorModeTagged factory function for _BACnetEscalatorModeTagged
+func NewBACnetEscalatorModeTagged(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEscalatorModeTagged must not be nil")
+	}
+	return &_BACnetEscalatorModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetEscalatorModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEscalatorModeTagged factory function for _BACnetEscalatorModeTagged
-func NewBACnetEscalatorModeTagged(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEscalatorModeTagged must not be nil")
-	}
-	return &_BACnetEscalatorModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEscalatorModeTagged(structType any) BACnetEscalatorModeTagged {

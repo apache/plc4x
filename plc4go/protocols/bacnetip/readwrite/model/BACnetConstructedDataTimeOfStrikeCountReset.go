@@ -56,6 +56,19 @@ type _BACnetConstructedDataTimeOfStrikeCountReset struct {
 var _ BACnetConstructedDataTimeOfStrikeCountReset = (*_BACnetConstructedDataTimeOfStrikeCountReset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfStrikeCountReset)(nil)
 
+// NewBACnetConstructedDataTimeOfStrikeCountReset factory function for _BACnetConstructedDataTimeOfStrikeCountReset
+func NewBACnetConstructedDataTimeOfStrikeCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStrikeCountReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfStrikeCountReset {
+	if timeOfStrikeCountReset == nil {
+		panic("timeOfStrikeCountReset of type BACnetDateTime for BACnetConstructedDataTimeOfStrikeCountReset must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeOfStrikeCountReset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeOfStrikeCountReset:        timeOfStrikeCountReset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) GetActualValue() BACnetDa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeOfStrikeCountReset factory function for _BACnetConstructedDataTimeOfStrikeCountReset
-func NewBACnetConstructedDataTimeOfStrikeCountReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfStrikeCountReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfStrikeCountReset {
-	if timeOfStrikeCountReset == nil {
-		panic("timeOfStrikeCountReset of type BACnetDateTime for BACnetConstructedDataTimeOfStrikeCountReset must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeOfStrikeCountReset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeOfStrikeCountReset:        timeOfStrikeCountReset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeOfStrikeCountReset(structType any) BACnetConstructedDataTimeOfStrikeCountReset {

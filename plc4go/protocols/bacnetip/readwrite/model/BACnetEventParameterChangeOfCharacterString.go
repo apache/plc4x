@@ -63,6 +63,31 @@ type _BACnetEventParameterChangeOfCharacterString struct {
 var _ BACnetEventParameterChangeOfCharacterString = (*_BACnetEventParameterChangeOfCharacterString)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterChangeOfCharacterString)(nil)
 
+// NewBACnetEventParameterChangeOfCharacterString factory function for _BACnetEventParameterChangeOfCharacterString
+func NewBACnetEventParameterChangeOfCharacterString(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfCharacterString {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	if listOfAlarmValues == nil {
+		panic("listOfAlarmValues of type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfCharacterString must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfCharacterString{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		ListOfAlarmValues:            listOfAlarmValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetClosingTag() BACnetClo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfCharacterString factory function for _BACnetEventParameterChangeOfCharacterString
-func NewBACnetEventParameterChangeOfCharacterString(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfCharacterString {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfCharacterString must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterChangeOfCharacterString must not be nil")
-	}
-	if listOfAlarmValues == nil {
-		panic("listOfAlarmValues of type BACnetEventParameterChangeOfCharacterStringListOfAlarmValues for BACnetEventParameterChangeOfCharacterString must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfCharacterString must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfCharacterString{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		ListOfAlarmValues:            listOfAlarmValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfCharacterString(structType any) BACnetEventParameterChangeOfCharacterString {

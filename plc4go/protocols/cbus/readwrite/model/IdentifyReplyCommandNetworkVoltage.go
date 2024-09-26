@@ -61,6 +61,17 @@ type _IdentifyReplyCommandNetworkVoltage struct {
 var _ IdentifyReplyCommandNetworkVoltage = (*_IdentifyReplyCommandNetworkVoltage)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandNetworkVoltage)(nil)
 
+// NewIdentifyReplyCommandNetworkVoltage factory function for _IdentifyReplyCommandNetworkVoltage
+func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string, numBytes uint8) *_IdentifyReplyCommandNetworkVoltage {
+	_result := &_IdentifyReplyCommandNetworkVoltage{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Volts:                        volts,
+		VoltsDecimalPlace:            voltsDecimalPlace,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,17 +124,6 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetV() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandNetworkVoltage factory function for _IdentifyReplyCommandNetworkVoltage
-func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace string, numBytes uint8) *_IdentifyReplyCommandNetworkVoltage {
-	_result := &_IdentifyReplyCommandNetworkVoltage{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Volts:                        volts,
-		VoltsDecimalPlace:            voltsDecimalPlace,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandNetworkVoltage(structType any) IdentifyReplyCommandNetworkVoltage {

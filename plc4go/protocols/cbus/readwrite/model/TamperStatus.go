@@ -57,6 +57,11 @@ type _TamperStatus struct {
 
 var _ TamperStatus = (*_TamperStatus)(nil)
 
+// NewTamperStatus factory function for _TamperStatus
+func NewTamperStatus(status uint8) *_TamperStatus {
+	return &_TamperStatus{Status: status}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -97,11 +102,6 @@ func (m *_TamperStatus) GetIsTamperActive() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTamperStatus factory function for _TamperStatus
-func NewTamperStatus(status uint8) *_TamperStatus {
-	return &_TamperStatus{Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTamperStatus(structType any) TamperStatus {

@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryNullValue struct {
 var _ BACnetLogDataLogDataEntryNullValue = (*_BACnetLogDataLogDataEntryNullValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryNullValue)(nil)
 
+// NewBACnetLogDataLogDataEntryNullValue factory function for _BACnetLogDataLogDataEntryNullValue
+func NewBACnetLogDataLogDataEntryNullValue(peekedTagHeader BACnetTagHeader, nullValue BACnetContextTagNull) *_BACnetLogDataLogDataEntryNullValue {
+	if nullValue == nil {
+		panic("nullValue of type BACnetContextTagNull for BACnetLogDataLogDataEntryNullValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryNullValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		NullValue:                         nullValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryNullValue) GetNullValue() BACnetContextTagNul
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryNullValue factory function for _BACnetLogDataLogDataEntryNullValue
-func NewBACnetLogDataLogDataEntryNullValue(peekedTagHeader BACnetTagHeader, nullValue BACnetContextTagNull) *_BACnetLogDataLogDataEntryNullValue {
-	if nullValue == nil {
-		panic("nullValue of type BACnetContextTagNull for BACnetLogDataLogDataEntryNullValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryNullValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		NullValue:                         nullValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryNullValue(structType any) BACnetLogDataLogDataEntryNullValue {

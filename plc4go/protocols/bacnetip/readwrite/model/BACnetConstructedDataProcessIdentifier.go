@@ -56,6 +56,19 @@ type _BACnetConstructedDataProcessIdentifier struct {
 var _ BACnetConstructedDataProcessIdentifier = (*_BACnetConstructedDataProcessIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifier)(nil)
 
+// NewBACnetConstructedDataProcessIdentifier factory function for _BACnetConstructedDataProcessIdentifier
+func NewBACnetConstructedDataProcessIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
+	if processIdentifier == nil {
+		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProcessIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataProcessIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProcessIdentifier:             processIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProcessIdentifier) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProcessIdentifier factory function for _BACnetConstructedDataProcessIdentifier
-func NewBACnetConstructedDataProcessIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
-	if processIdentifier == nil {
-		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProcessIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataProcessIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProcessIdentifier:             processIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProcessIdentifier(structType any) BACnetConstructedDataProcessIdentifier {

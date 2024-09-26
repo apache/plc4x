@@ -51,6 +51,11 @@ type _BridgeAddress struct {
 
 var _ BridgeAddress = (*_BridgeAddress)(nil)
 
+// NewBridgeAddress factory function for _BridgeAddress
+func NewBridgeAddress(address byte) *_BridgeAddress {
+	return &_BridgeAddress{Address: address}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_BridgeAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBridgeAddress factory function for _BridgeAddress
-func NewBridgeAddress(address byte) *_BridgeAddress {
-	return &_BridgeAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBridgeAddress(structType any) BridgeAddress {

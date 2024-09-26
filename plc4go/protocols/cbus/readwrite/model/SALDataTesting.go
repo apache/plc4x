@@ -49,6 +49,15 @@ type _SALDataTesting struct {
 var _ SALDataTesting = (*_SALDataTesting)(nil)
 var _ SALDataRequirements = (*_SALDataTesting)(nil)
 
+// NewSALDataTesting factory function for _SALDataTesting
+func NewSALDataTesting(salData SALData) *_SALDataTesting {
+	_result := &_SALDataTesting{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_SALDataTesting) GetApplicationId() ApplicationId {
 
 func (m *_SALDataTesting) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataTesting factory function for _SALDataTesting
-func NewSALDataTesting(salData SALData) *_SALDataTesting {
-	_result := &_SALDataTesting{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

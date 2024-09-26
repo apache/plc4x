@@ -54,6 +54,19 @@ type _ApduDataOther struct {
 var _ ApduDataOther = (*_ApduDataOther)(nil)
 var _ ApduDataRequirements = (*_ApduDataOther)(nil)
 
+// NewApduDataOther factory function for _ApduDataOther
+func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+	if extendedApdu == nil {
+		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
+	}
+	_result := &_ApduDataOther{
+		ApduDataContract: NewApduData(dataLength),
+		ExtendedApdu:     extendedApdu,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataOther factory function for _ApduDataOther
-func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
-	if extendedApdu == nil {
-		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
-	}
-	_result := &_ApduDataOther{
-		ApduDataContract: NewApduData(dataLength),
-		ExtendedApdu:     extendedApdu,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataOther(structType any) ApduDataOther {

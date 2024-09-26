@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble struct {
 var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble)(nil)
 var _ BACnetFaultParameterFaultOutOfRangeMinNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble)(nil)
 
+// NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble factory function for _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
+func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doubleValue BACnetApplicationTagDouble, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
+		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		DoubleValue: doubleValue,
+	}
+	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble) GetDoubleValu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble factory function for _BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
-func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doubleValue BACnetApplicationTagDouble, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble{
-		BACnetFaultParameterFaultOutOfRangeMinNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMinNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		DoubleValue: doubleValue,
-	}
-	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(structType any) BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {

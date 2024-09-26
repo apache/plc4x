@@ -71,6 +71,11 @@ type _DF1Command struct {
 
 var _ DF1CommandContract = (*_DF1Command)(nil)
 
+// NewDF1Command factory function for _DF1Command
+func NewDF1Command(status uint8, transactionCounter uint16) *_DF1Command {
+	return &_DF1Command{Status: status, TransactionCounter: transactionCounter}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -88,11 +93,6 @@ func (m *_DF1Command) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1Command factory function for _DF1Command
-func NewDF1Command(status uint8, transactionCounter uint16) *_DF1Command {
-	return &_DF1Command{Status: status, TransactionCounter: transactionCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1Command(structType any) DF1Command {

@@ -60,6 +60,23 @@ type _OpcuaMessageRequest struct {
 var _ OpcuaMessageRequest = (*_OpcuaMessageRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageRequest)(nil)
 
+// NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
+func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageRequest {
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaMessageRequest must not be nil")
+	}
+	_result := &_OpcuaMessageRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,23 +116,6 @@ func (m *_OpcuaMessageRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
-func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageRequest {
-	if securityHeader == nil {
-		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaMessageRequest must not be nil")
-	}
-	_result := &_OpcuaMessageRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		SecurityHeader:     securityHeader,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageRequest(structType any) OpcuaMessageRequest {

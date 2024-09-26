@@ -54,6 +54,19 @@ type _BACnetPropertyStatesUnits struct {
 var _ BACnetPropertyStatesUnits = (*_BACnetPropertyStatesUnits)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesUnits)(nil)
 
+// NewBACnetPropertyStatesUnits factory function for _BACnetPropertyStatesUnits
+func NewBACnetPropertyStatesUnits(peekedTagHeader BACnetTagHeader, units BACnetEngineeringUnitsTagged) *_BACnetPropertyStatesUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetPropertyStatesUnits must not be nil")
+	}
+	_result := &_BACnetPropertyStatesUnits{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Units:                        units,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesUnits) GetUnits() BACnetEngineeringUnitsTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesUnits factory function for _BACnetPropertyStatesUnits
-func NewBACnetPropertyStatesUnits(peekedTagHeader BACnetTagHeader, units BACnetEngineeringUnitsTagged) *_BACnetPropertyStatesUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetPropertyStatesUnits must not be nil")
-	}
-	_result := &_BACnetPropertyStatesUnits{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Units:                        units,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesUnits(structType any) BACnetPropertyStatesUnits {

@@ -60,6 +60,18 @@ type _IdentifyReplyCommandSummary struct {
 var _ IdentifyReplyCommandSummary = (*_IdentifyReplyCommandSummary)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandSummary)(nil)
 
+// NewIdentifyReplyCommandSummary factory function for _IdentifyReplyCommandSummary
+func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string, numBytes uint8) *_IdentifyReplyCommandSummary {
+	_result := &_IdentifyReplyCommandSummary{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		PartName:                     partName,
+		UnitServiceType:              unitServiceType,
+		Version:                      version,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,18 +111,6 @@ func (m *_IdentifyReplyCommandSummary) GetVersion() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandSummary factory function for _IdentifyReplyCommandSummary
-func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, version string, numBytes uint8) *_IdentifyReplyCommandSummary {
-	_result := &_IdentifyReplyCommandSummary{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		PartName:                     partName,
-		UnitServiceType:              unitServiceType,
-		Version:                      version,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandSummary(structType any) IdentifyReplyCommandSummary {

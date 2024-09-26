@@ -54,6 +54,19 @@ type _BACnetChannelValueOctetString struct {
 var _ BACnetChannelValueOctetString = (*_BACnetChannelValueOctetString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueOctetString)(nil)
 
+// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
+func NewBACnetChannelValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetChannelValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
+	}
+	_result := &_BACnetChannelValueOctetString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		OctetStringValue:           octetStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
-func NewBACnetChannelValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetChannelValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
-	}
-	_result := &_BACnetChannelValueOctetString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		OctetStringValue:           octetStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueOctetString(structType any) BACnetChannelValueOctetString {

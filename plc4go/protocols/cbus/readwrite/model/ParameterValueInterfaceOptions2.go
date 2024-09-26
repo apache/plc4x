@@ -57,6 +57,20 @@ type _ParameterValueInterfaceOptions2 struct {
 var _ ParameterValueInterfaceOptions2 = (*_ParameterValueInterfaceOptions2)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions2)(nil)
 
+// NewParameterValueInterfaceOptions2 factory function for _ParameterValueInterfaceOptions2
+func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions2 {
+	if value == nil {
+		panic("value of type InterfaceOptions2 for ParameterValueInterfaceOptions2 must not be nil")
+	}
+	_result := &_ParameterValueInterfaceOptions2{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_ParameterValueInterfaceOptions2) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueInterfaceOptions2 factory function for _ParameterValueInterfaceOptions2
-func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions2 {
-	if value == nil {
-		panic("value of type InterfaceOptions2 for ParameterValueInterfaceOptions2 must not be nil")
-	}
-	_result := &_ParameterValueInterfaceOptions2{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueInterfaceOptions2(structType any) ParameterValueInterfaceOptions2 {

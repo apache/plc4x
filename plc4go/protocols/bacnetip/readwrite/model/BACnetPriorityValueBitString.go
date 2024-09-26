@@ -54,6 +54,19 @@ type _BACnetPriorityValueBitString struct {
 var _ BACnetPriorityValueBitString = (*_BACnetPriorityValueBitString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueBitString)(nil)
 
+// NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
+func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
+	}
+	_result := &_BACnetPriorityValueBitString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		BitStringValue:              bitStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPriorityValueBitString) GetBitStringValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
-func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
-	}
-	_result := &_BACnetPriorityValueBitString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		BitStringValue:              bitStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueBitString(structType any) BACnetPriorityValueBitString {

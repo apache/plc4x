@@ -56,6 +56,19 @@ type _BACnetConstructedDataProtocolRevision struct {
 var _ BACnetConstructedDataProtocolRevision = (*_BACnetConstructedDataProtocolRevision)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolRevision)(nil)
 
+// NewBACnetConstructedDataProtocolRevision factory function for _BACnetConstructedDataProtocolRevision
+func NewBACnetConstructedDataProtocolRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolRevision {
+	if protocolRevision == nil {
+		panic("protocolRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolRevision must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolRevision:              protocolRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataProtocolRevision) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolRevision factory function for _BACnetConstructedDataProtocolRevision
-func NewBACnetConstructedDataProtocolRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolRevision BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolRevision {
-	if protocolRevision == nil {
-		panic("protocolRevision of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProtocolRevision must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolRevision:              protocolRevision,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolRevision(structType any) BACnetConstructedDataProtocolRevision {

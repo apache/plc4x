@@ -59,6 +59,20 @@ type _NodeIdByteString struct {
 var _ NodeIdByteString = (*_NodeIdByteString)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdByteString)(nil)
 
+// NewNodeIdByteString factory function for _NodeIdByteString
+func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByteString {
+	if id == nil {
+		panic("id of type PascalByteString for NodeIdByteString must not be nil")
+	}
+	_result := &_NodeIdByteString{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,20 +123,6 @@ func (m *_NodeIdByteString) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdByteString factory function for _NodeIdByteString
-func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByteString {
-	if id == nil {
-		panic("id of type PascalByteString for NodeIdByteString must not be nil")
-	}
-	_result := &_NodeIdByteString{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdByteString(structType any) NodeIdByteString {

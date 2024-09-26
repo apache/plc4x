@@ -81,6 +81,11 @@ type _CIPEncapsulationPacket struct {
 
 var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
 
+// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
+func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
+	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -106,11 +111,6 @@ func (m *_CIPEncapsulationPacket) GetOptions() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
-func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
-	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationPacket(structType any) CIPEncapsulationPacket {

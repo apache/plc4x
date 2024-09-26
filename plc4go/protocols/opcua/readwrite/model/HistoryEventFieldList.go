@@ -57,6 +57,17 @@ type _HistoryEventFieldList struct {
 var _ HistoryEventFieldList = (*_HistoryEventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEventFieldList)(nil)
 
+// NewHistoryEventFieldList factory function for _HistoryEventFieldList
+func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
+	_result := &_HistoryEventFieldList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEventFields:                   noOfEventFields,
+		EventFields:                       eventFields,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_HistoryEventFieldList) GetEventFields() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryEventFieldList factory function for _HistoryEventFieldList
-func NewHistoryEventFieldList(noOfEventFields int32, eventFields []Variant) *_HistoryEventFieldList {
-	_result := &_HistoryEventFieldList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEventFields:                   noOfEventFields,
-		EventFields:                       eventFields,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryEventFieldList(structType any) HistoryEventFieldList {

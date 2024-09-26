@@ -54,6 +54,16 @@ type _KnxNetObjectServer struct {
 var _ KnxNetObjectServer = (*_KnxNetObjectServer)(nil)
 var _ ServiceIdRequirements = (*_KnxNetObjectServer)(nil)
 
+// NewKnxNetObjectServer factory function for _KnxNetObjectServer
+func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
+	_result := &_KnxNetObjectServer{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetObjectServer) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetObjectServer factory function for _KnxNetObjectServer
-func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
-	_result := &_KnxNetObjectServer{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetObjectServer(structType any) KnxNetObjectServer {

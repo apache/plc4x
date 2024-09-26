@@ -54,6 +54,16 @@ type _BACnetConstructedDataMembers struct {
 var _ BACnetConstructedDataMembers = (*_BACnetConstructedDataMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMembers)(nil)
 
+// NewBACnetConstructedDataMembers factory function for _BACnetConstructedDataMembers
+func NewBACnetConstructedDataMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMembers {
+	_result := &_BACnetConstructedDataMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Members:                       members,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataMembers) GetMembers() []BACnetDeviceObjectReferen
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMembers factory function for _BACnetConstructedDataMembers
-func NewBACnetConstructedDataMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, members []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMembers {
-	_result := &_BACnetConstructedDataMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Members:                       members,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMembers(structType any) BACnetConstructedDataMembers {

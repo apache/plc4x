@@ -70,6 +70,14 @@ type _BACnetScale struct {
 
 var _ BACnetScaleContract = (*_BACnetScale)(nil)
 
+// NewBACnetScale factory function for _BACnetScale
+func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetScale must not be nil")
+	}
+	return &_BACnetScale{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetScale) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetScale factory function for _BACnetScale
-func NewBACnetScale(peekedTagHeader BACnetTagHeader) *_BACnetScale {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetScale must not be nil")
-	}
-	return &_BACnetScale{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetScale(structType any) BACnetScale {

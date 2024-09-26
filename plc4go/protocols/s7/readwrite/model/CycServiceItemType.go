@@ -74,6 +74,11 @@ type _CycServiceItemType struct {
 
 var _ CycServiceItemTypeContract = (*_CycServiceItemType)(nil)
 
+// NewCycServiceItemType factory function for _CycServiceItemType
+func NewCycServiceItemType(byteLength uint8, syntaxId uint8) *_CycServiceItemType {
+	return &_CycServiceItemType{ByteLength: byteLength, SyntaxId: syntaxId}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -104,11 +109,6 @@ func (m *_CycServiceItemType) GetFunctionId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemType factory function for _CycServiceItemType
-func NewCycServiceItemType(byteLength uint8, syntaxId uint8) *_CycServiceItemType {
-	return &_CycServiceItemType{ByteLength: byteLength, SyntaxId: syntaxId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemType(structType any) CycServiceItemType {

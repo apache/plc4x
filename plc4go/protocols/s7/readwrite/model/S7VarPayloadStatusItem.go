@@ -51,6 +51,11 @@ type _S7VarPayloadStatusItem struct {
 
 var _ S7VarPayloadStatusItem = (*_S7VarPayloadStatusItem)(nil)
 
+// NewS7VarPayloadStatusItem factory function for _S7VarPayloadStatusItem
+func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayloadStatusItem {
+	return &_S7VarPayloadStatusItem{ReturnCode: returnCode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_S7VarPayloadStatusItem) GetReturnCode() DataTransportErrorCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7VarPayloadStatusItem factory function for _S7VarPayloadStatusItem
-func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayloadStatusItem {
-	return &_S7VarPayloadStatusItem{ReturnCode: returnCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {

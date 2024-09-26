@@ -49,6 +49,15 @@ type _NLMWhatIsNetworkNumber struct {
 var _ NLMWhatIsNetworkNumber = (*_NLMWhatIsNetworkNumber)(nil)
 var _ NLMRequirements = (*_NLMWhatIsNetworkNumber)(nil)
 
+// NewNLMWhatIsNetworkNumber factory function for _NLMWhatIsNetworkNumber
+func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
+	_result := &_NLMWhatIsNetworkNumber{
+		NLMContract: NewNLM(apduLength),
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_NLMWhatIsNetworkNumber) GetMessageType() uint8 {
 
 func (m *_NLMWhatIsNetworkNumber) GetParent() NLMContract {
 	return m.NLMContract
-}
-
-// NewNLMWhatIsNetworkNumber factory function for _NLMWhatIsNetworkNumber
-func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
-	_result := &_NLMWhatIsNetworkNumber{
-		NLMContract: NewNLM(apduLength),
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

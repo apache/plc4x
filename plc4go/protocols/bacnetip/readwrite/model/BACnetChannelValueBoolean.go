@@ -54,6 +54,19 @@ type _BACnetChannelValueBoolean struct {
 var _ BACnetChannelValueBoolean = (*_BACnetChannelValueBoolean)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueBoolean)(nil)
 
+// NewBACnetChannelValueBoolean factory function for _BACnetChannelValueBoolean
+func NewBACnetChannelValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetChannelValueBoolean {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetChannelValueBoolean must not be nil")
+	}
+	_result := &_BACnetChannelValueBoolean{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		BooleanValue:               booleanValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetChannelValueBoolean) GetBooleanValue() BACnetApplicationTagBoole
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueBoolean factory function for _BACnetChannelValueBoolean
-func NewBACnetChannelValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetChannelValueBoolean {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetChannelValueBoolean must not be nil")
-	}
-	_result := &_BACnetChannelValueBoolean{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		BooleanValue:               booleanValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueBoolean(structType any) BACnetChannelValueBoolean {

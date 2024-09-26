@@ -54,6 +54,16 @@ type _BACnetConstructedDataListOfGroupMembers struct {
 var _ BACnetConstructedDataListOfGroupMembers = (*_BACnetConstructedDataListOfGroupMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfGroupMembers)(nil)
 
+// NewBACnetConstructedDataListOfGroupMembers factory function for _BACnetConstructedDataListOfGroupMembers
+func NewBACnetConstructedDataListOfGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfGroupMembers []BACnetReadAccessSpecification, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
+	_result := &_BACnetConstructedDataListOfGroupMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ListOfGroupMembers:            listOfGroupMembers,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetListOfGroupMembers() []BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataListOfGroupMembers factory function for _BACnetConstructedDataListOfGroupMembers
-func NewBACnetConstructedDataListOfGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfGroupMembers []BACnetReadAccessSpecification, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
-	_result := &_BACnetConstructedDataListOfGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ListOfGroupMembers:            listOfGroupMembers,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataListOfGroupMembers(structType any) BACnetConstructedDataListOfGroupMembers {

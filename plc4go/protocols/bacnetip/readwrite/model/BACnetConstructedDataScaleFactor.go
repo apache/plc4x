@@ -56,6 +56,19 @@ type _BACnetConstructedDataScaleFactor struct {
 var _ BACnetConstructedDataScaleFactor = (*_BACnetConstructedDataScaleFactor)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScaleFactor)(nil)
 
+// NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
+func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
+	if scaleFactor == nil {
+		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
+	}
+	_result := &_BACnetConstructedDataScaleFactor{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ScaleFactor:                   scaleFactor,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataScaleFactor) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScaleFactor factory function for _BACnetConstructedDataScaleFactor
-func NewBACnetConstructedDataScaleFactor(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scaleFactor BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScaleFactor {
-	if scaleFactor == nil {
-		panic("scaleFactor of type BACnetApplicationTagReal for BACnetConstructedDataScaleFactor must not be nil")
-	}
-	_result := &_BACnetConstructedDataScaleFactor{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ScaleFactor:                   scaleFactor,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScaleFactor(structType any) BACnetConstructedDataScaleFactor {

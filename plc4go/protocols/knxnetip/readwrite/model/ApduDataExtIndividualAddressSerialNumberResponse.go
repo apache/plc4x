@@ -49,6 +49,15 @@ type _ApduDataExtIndividualAddressSerialNumberResponse struct {
 var _ ApduDataExtIndividualAddressSerialNumberResponse = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtIndividualAddressSerialNumberResponse)(nil)
 
+// NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
+func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
+	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetExtApciType() uin
 
 func (m *_ApduDataExtIndividualAddressSerialNumberResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtIndividualAddressSerialNumberResponse factory function for _ApduDataExtIndividualAddressSerialNumberResponse
-func NewApduDataExtIndividualAddressSerialNumberResponse(length uint8) *_ApduDataExtIndividualAddressSerialNumberResponse {
-	_result := &_ApduDataExtIndividualAddressSerialNumberResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

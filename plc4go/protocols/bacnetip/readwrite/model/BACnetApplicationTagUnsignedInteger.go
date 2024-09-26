@@ -56,6 +56,19 @@ type _BACnetApplicationTagUnsignedInteger struct {
 var _ BACnetApplicationTagUnsignedInteger = (*_BACnetApplicationTagUnsignedInteger)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagUnsignedInteger)(nil)
 
+// NewBACnetApplicationTagUnsignedInteger factory function for _BACnetApplicationTagUnsignedInteger
+func NewBACnetApplicationTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger) *_BACnetApplicationTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetApplicationTagUnsignedInteger must not be nil")
+	}
+	_result := &_BACnetApplicationTagUnsignedInteger{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -98,19 +111,6 @@ func (m *_BACnetApplicationTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagUnsignedInteger factory function for _BACnetApplicationTagUnsignedInteger
-func NewBACnetApplicationTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger) *_BACnetApplicationTagUnsignedInteger {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetApplicationTagUnsignedInteger must not be nil")
-	}
-	_result := &_BACnetApplicationTagUnsignedInteger{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagUnsignedInteger(structType any) BACnetApplicationTagUnsignedInteger {

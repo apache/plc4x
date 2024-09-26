@@ -54,6 +54,16 @@ type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 var _ DF1ResponseMessageRequirements = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 
+// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
+		Data:                       data,
+	}
+	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
-	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
-		Data:                       data,
-	}
-	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1CommandResponseMessageProtectedTypedLogicalRead {

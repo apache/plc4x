@@ -54,6 +54,16 @@ type _BACnetConstructedDataVTClassesSupported struct {
 var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClassesSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVTClassesSupported)(nil)
 
+// NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
+func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
+	_result := &_BACnetConstructedDataVTClassesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VtClassesSupported:            vtClassesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetVtClassesSupported() []BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
-	_result := &_BACnetConstructedDataVTClassesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VtClassesSupported:            vtClassesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstructedDataVTClassesSupported {

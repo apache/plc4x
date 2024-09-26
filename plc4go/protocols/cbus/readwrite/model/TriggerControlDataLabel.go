@@ -63,6 +63,22 @@ type _TriggerControlDataLabel struct {
 var _ TriggerControlDataLabel = (*_TriggerControlDataLabel)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataLabel)(nil)
 
+// NewTriggerControlDataLabel factory function for _TriggerControlDataLabel
+func NewTriggerControlDataLabel(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, triggerControlOptions TriggerControlLabelOptions, actionSelector byte, language *Language, data []byte) *_TriggerControlDataLabel {
+	if triggerControlOptions == nil {
+		panic("triggerControlOptions of type TriggerControlLabelOptions for TriggerControlDataLabel must not be nil")
+	}
+	_result := &_TriggerControlDataLabel{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+		TriggerControlOptions:      triggerControlOptions,
+		ActionSelector:             actionSelector,
+		Language:                   language,
+		Data:                       data,
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,22 +118,6 @@ func (m *_TriggerControlDataLabel) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlDataLabel factory function for _TriggerControlDataLabel
-func NewTriggerControlDataLabel(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, triggerControlOptions TriggerControlLabelOptions, actionSelector byte, language *Language, data []byte) *_TriggerControlDataLabel {
-	if triggerControlOptions == nil {
-		panic("triggerControlOptions of type TriggerControlLabelOptions for TriggerControlDataLabel must not be nil")
-	}
-	_result := &_TriggerControlDataLabel{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-		TriggerControlOptions:      triggerControlOptions,
-		ActionSelector:             actionSelector,
-		Language:                   language,
-		Data:                       data,
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlDataLabel(structType any) TriggerControlDataLabel {

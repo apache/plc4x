@@ -60,6 +60,24 @@ type _MonitoredItemCreateRequest struct {
 var _ MonitoredItemCreateRequest = (*_MonitoredItemCreateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateRequest)(nil)
 
+// NewMonitoredItemCreateRequest factory function for _MonitoredItemCreateRequest
+func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) *_MonitoredItemCreateRequest {
+	if itemToMonitor == nil {
+		panic("itemToMonitor of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+	}
+	if requestedParameters == nil {
+		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+	}
+	_result := &_MonitoredItemCreateRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ItemToMonitor:                     itemToMonitor,
+		MonitoringMode:                    monitoringMode,
+		RequestedParameters:               requestedParameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_MonitoredItemCreateRequest) GetRequestedParameters() ExtensionObjectDe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemCreateRequest factory function for _MonitoredItemCreateRequest
-func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) *_MonitoredItemCreateRequest {
-	if itemToMonitor == nil {
-		panic("itemToMonitor of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
-	}
-	if requestedParameters == nil {
-		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
-	}
-	_result := &_MonitoredItemCreateRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ItemToMonitor:                     itemToMonitor,
-		MonitoringMode:                    monitoringMode,
-		RequestedParameters:               requestedParameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemCreateRequest(structType any) MonitoredItemCreateRequest {

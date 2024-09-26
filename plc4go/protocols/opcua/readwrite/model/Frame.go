@@ -49,6 +49,15 @@ type _Frame struct {
 var _ Frame = (*_Frame)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Frame)(nil)
 
+// NewFrame factory function for _Frame
+func NewFrame() *_Frame {
+	_result := &_Frame{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_Frame) GetIdentifier() string {
 
 func (m *_Frame) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewFrame factory function for _Frame
-func NewFrame() *_Frame {
-	_result := &_Frame{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -70,6 +70,14 @@ type _BACnetClientCOV struct {
 
 var _ BACnetClientCOVContract = (*_BACnetClientCOV)(nil)
 
+// NewBACnetClientCOV factory function for _BACnetClientCOV
+func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
+	}
+	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetClientCOV) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOV factory function for _BACnetClientCOV
-func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
-	}
-	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOV(structType any) BACnetClientCOV {

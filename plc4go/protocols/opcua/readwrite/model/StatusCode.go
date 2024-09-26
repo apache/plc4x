@@ -51,6 +51,11 @@ type _StatusCode struct {
 
 var _ StatusCode = (*_StatusCode)(nil)
 
+// NewStatusCode factory function for _StatusCode
+func NewStatusCode(statusCode uint32) *_StatusCode {
+	return &_StatusCode{StatusCode: statusCode}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_StatusCode) GetStatusCode() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusCode factory function for _StatusCode
-func NewStatusCode(statusCode uint32) *_StatusCode {
-	return &_StatusCode{StatusCode: statusCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusCode(structType any) StatusCode {

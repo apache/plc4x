@@ -57,6 +57,11 @@ type _DeviceConfigurationAckDataBlock struct {
 
 var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
 
+// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
+	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_DeviceConfigurationAckDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
-	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckDataBlock {

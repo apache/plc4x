@@ -54,6 +54,19 @@ type _BACnetApplicationTagOctetString struct {
 var _ BACnetApplicationTagOctetString = (*_BACnetApplicationTagOctetString)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagOctetString)(nil)
 
+// NewBACnetApplicationTagOctetString factory function for _BACnetApplicationTagOctetString
+func NewBACnetApplicationTagOctetString(header BACnetTagHeader, payload BACnetTagPayloadOctetString) *_BACnetApplicationTagOctetString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadOctetString for BACnetApplicationTagOctetString must not be nil")
+	}
+	_result := &_BACnetApplicationTagOctetString{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetApplicationTagOctetString) GetPayload() BACnetTagPayloadOctetStr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagOctetString factory function for _BACnetApplicationTagOctetString
-func NewBACnetApplicationTagOctetString(header BACnetTagHeader, payload BACnetTagPayloadOctetString) *_BACnetApplicationTagOctetString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadOctetString for BACnetApplicationTagOctetString must not be nil")
-	}
-	_result := &_BACnetApplicationTagOctetString{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagOctetString(structType any) BACnetApplicationTagOctetString {

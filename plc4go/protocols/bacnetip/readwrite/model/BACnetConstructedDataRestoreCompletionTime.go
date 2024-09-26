@@ -56,6 +56,19 @@ type _BACnetConstructedDataRestoreCompletionTime struct {
 var _ BACnetConstructedDataRestoreCompletionTime = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRestoreCompletionTime)(nil)
 
+// NewBACnetConstructedDataRestoreCompletionTime factory function for _BACnetConstructedDataRestoreCompletionTime
+func NewBACnetConstructedDataRestoreCompletionTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, completionTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
+	if completionTime == nil {
+		panic("completionTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestoreCompletionTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataRestoreCompletionTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CompletionTime:                completionTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataRestoreCompletionTime) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRestoreCompletionTime factory function for _BACnetConstructedDataRestoreCompletionTime
-func NewBACnetConstructedDataRestoreCompletionTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, completionTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRestoreCompletionTime {
-	if completionTime == nil {
-		panic("completionTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRestoreCompletionTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataRestoreCompletionTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CompletionTime:                completionTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRestoreCompletionTime(structType any) BACnetConstructedDataRestoreCompletionTime {

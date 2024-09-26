@@ -57,6 +57,17 @@ type _NLMICouldBeRouterToNetwork struct {
 var _ NLMICouldBeRouterToNetwork = (*_NLMICouldBeRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMICouldBeRouterToNetwork)(nil)
 
+// NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
+func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
+	_result := &_NLMICouldBeRouterToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+		PerformanceIndex:          performanceIndex,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_NLMICouldBeRouterToNetwork) GetPerformanceIndex() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMICouldBeRouterToNetwork factory function for _NLMICouldBeRouterToNetwork
-func NewNLMICouldBeRouterToNetwork(destinationNetworkAddress uint16, performanceIndex uint8, apduLength uint16) *_NLMICouldBeRouterToNetwork {
-	_result := &_NLMICouldBeRouterToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-		PerformanceIndex:          performanceIndex,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMICouldBeRouterToNetwork(structType any) NLMICouldBeRouterToNetwork {

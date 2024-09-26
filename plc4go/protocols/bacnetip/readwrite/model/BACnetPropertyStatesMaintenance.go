@@ -54,6 +54,19 @@ type _BACnetPropertyStatesMaintenance struct {
 var _ BACnetPropertyStatesMaintenance = (*_BACnetPropertyStatesMaintenance)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesMaintenance)(nil)
 
+// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
+func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, maintenance BACnetMaintenanceTagged) *_BACnetPropertyStatesMaintenance {
+	if maintenance == nil {
+		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
+	}
+	_result := &_BACnetPropertyStatesMaintenance{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Maintenance:                  maintenance,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesMaintenance) GetMaintenance() BACnetMaintenanceTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
-func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, maintenance BACnetMaintenanceTagged) *_BACnetPropertyStatesMaintenance {
-	if maintenance == nil {
-		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
-	}
-	_result := &_BACnetPropertyStatesMaintenance{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Maintenance:                  maintenance,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMaintenance {

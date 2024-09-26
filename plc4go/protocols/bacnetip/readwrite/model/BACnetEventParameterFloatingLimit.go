@@ -72,6 +72,43 @@ type _BACnetEventParameterFloatingLimit struct {
 var _ BACnetEventParameterFloatingLimit = (*_BACnetEventParameterFloatingLimit)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterFloatingLimit)(nil)
 
+// NewBACnetEventParameterFloatingLimit factory function for _BACnetEventParameterFloatingLimit
+func NewBACnetEventParameterFloatingLimit(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) *_BACnetEventParameterFloatingLimit {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if setpointReference == nil {
+		panic("setpointReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if lowDiffLimit == nil {
+		panic("lowDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if highDiffLimit == nil {
+		panic("highDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterFloatingLimit must not be nil")
+	}
+	_result := &_BACnetEventParameterFloatingLimit{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		SetpointReference:            setpointReference,
+		LowDiffLimit:                 lowDiffLimit,
+		HighDiffLimit:                highDiffLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,43 +160,6 @@ func (m *_BACnetEventParameterFloatingLimit) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterFloatingLimit factory function for _BACnetEventParameterFloatingLimit
-func NewBACnetEventParameterFloatingLimit(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) *_BACnetEventParameterFloatingLimit {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if setpointReference == nil {
-		panic("setpointReference of type BACnetDeviceObjectPropertyReferenceEnclosed for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if lowDiffLimit == nil {
-		panic("lowDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if highDiffLimit == nil {
-		panic("highDiffLimit of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagReal for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterFloatingLimit must not be nil")
-	}
-	_result := &_BACnetEventParameterFloatingLimit{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		SetpointReference:            setpointReference,
-		LowDiffLimit:                 lowDiffLimit,
-		HighDiffLimit:                highDiffLimit,
-		Deadband:                     deadband,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterFloatingLimit(structType any) BACnetEventParameterFloatingLimit {

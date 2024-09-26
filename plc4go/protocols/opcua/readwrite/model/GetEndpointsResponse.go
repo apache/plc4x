@@ -60,6 +60,21 @@ type _GetEndpointsResponse struct {
 var _ GetEndpointsResponse = (*_GetEndpointsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GetEndpointsResponse)(nil)
 
+// NewGetEndpointsResponse factory function for _GetEndpointsResponse
+func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
+	}
+	_result := &_GetEndpointsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfEndpoints:                     noOfEndpoints,
+		Endpoints:                         endpoints,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_GetEndpointsResponse) GetEndpoints() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetEndpointsResponse factory function for _GetEndpointsResponse
-func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) *_GetEndpointsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for GetEndpointsResponse must not be nil")
-	}
-	_result := &_GetEndpointsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfEndpoints:                     noOfEndpoints,
-		Endpoints:                         endpoints,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetEndpointsResponse(structType any) GetEndpointsResponse {

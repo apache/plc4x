@@ -56,6 +56,19 @@ type _BACnetConstructedDataCount struct {
 var _ BACnetConstructedDataCount = (*_BACnetConstructedDataCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCount)(nil)
 
+// NewBACnetConstructedDataCount factory function for _BACnetConstructedDataCount
+func NewBACnetConstructedDataCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, count BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCount {
+	if count == nil {
+		panic("count of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Count:                         count,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCount) GetActualValue() BACnetApplicationTagUnsig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCount factory function for _BACnetConstructedDataCount
-func NewBACnetConstructedDataCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, count BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCount {
-	if count == nil {
-		panic("count of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Count:                         count,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCount(structType any) BACnetConstructedDataCount {

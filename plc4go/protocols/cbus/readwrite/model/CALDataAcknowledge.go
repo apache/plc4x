@@ -57,6 +57,17 @@ type _CALDataAcknowledge struct {
 var _ CALDataAcknowledge = (*_CALDataAcknowledge)(nil)
 var _ CALDataRequirements = (*_CALDataAcknowledge)(nil)
 
+// NewCALDataAcknowledge factory function for _CALDataAcknowledge
+func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8, requestContext RequestContext) *_CALDataAcknowledge {
+	_result := &_CALDataAcknowledge{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		ParamNo:         paramNo,
+		Code:            code,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,17 +99,6 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8, requestContext RequestContext) *_CALDataAcknowledge {
-	_result := &_CALDataAcknowledge{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		ParamNo:         paramNo,
-		Code:            code,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataAcknowledge(structType any) CALDataAcknowledge {

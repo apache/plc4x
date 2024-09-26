@@ -57,6 +57,20 @@ type _RolePermissionType struct {
 var _ RolePermissionType = (*_RolePermissionType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RolePermissionType)(nil)
 
+// NewRolePermissionType factory function for _RolePermissionType
+func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePermissionType {
+	if roleId == nil {
+		panic("roleId of type NodeId for RolePermissionType must not be nil")
+	}
+	_result := &_RolePermissionType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RoleId:                            roleId,
+		Permissions:                       permissions,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_RolePermissionType) GetPermissions() PermissionType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRolePermissionType factory function for _RolePermissionType
-func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePermissionType {
-	if roleId == nil {
-		panic("roleId of type NodeId for RolePermissionType must not be nil")
-	}
-	_result := &_RolePermissionType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RoleId:                            roleId,
-		Permissions:                       permissions,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRolePermissionType(structType any) RolePermissionType {

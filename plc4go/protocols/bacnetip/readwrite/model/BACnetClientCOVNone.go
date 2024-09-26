@@ -54,6 +54,19 @@ type _BACnetClientCOVNone struct {
 var _ BACnetClientCOVNone = (*_BACnetClientCOVNone)(nil)
 var _ BACnetClientCOVRequirements = (*_BACnetClientCOVNone)(nil)
 
+// NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
+func NewBACnetClientCOVNone(peekedTagHeader BACnetTagHeader, defaultIncrement BACnetApplicationTagNull) *_BACnetClientCOVNone {
+	if defaultIncrement == nil {
+		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
+	}
+	_result := &_BACnetClientCOVNone{
+		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
+		DefaultIncrement:        defaultIncrement,
+	}
+	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetClientCOVNone) GetDefaultIncrement() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOVNone factory function for _BACnetClientCOVNone
-func NewBACnetClientCOVNone(peekedTagHeader BACnetTagHeader, defaultIncrement BACnetApplicationTagNull) *_BACnetClientCOVNone {
-	if defaultIncrement == nil {
-		panic("defaultIncrement of type BACnetApplicationTagNull for BACnetClientCOVNone must not be nil")
-	}
-	_result := &_BACnetClientCOVNone{
-		BACnetClientCOVContract: NewBACnetClientCOV(peekedTagHeader),
-		DefaultIncrement:        defaultIncrement,
-	}
-	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOVNone(structType any) BACnetClientCOVNone {

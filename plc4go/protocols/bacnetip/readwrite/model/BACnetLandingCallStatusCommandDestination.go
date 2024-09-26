@@ -54,6 +54,19 @@ type _BACnetLandingCallStatusCommandDestination struct {
 var _ BACnetLandingCallStatusCommandDestination = (*_BACnetLandingCallStatusCommandDestination)(nil)
 var _ BACnetLandingCallStatusCommandRequirements = (*_BACnetLandingCallStatusCommandDestination)(nil)
 
+// NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
+func NewBACnetLandingCallStatusCommandDestination(peekedTagHeader BACnetTagHeader, destination BACnetContextTagUnsignedInteger) *_BACnetLandingCallStatusCommandDestination {
+	if destination == nil {
+		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
+	}
+	_result := &_BACnetLandingCallStatusCommandDestination{
+		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
+		Destination:                            destination,
+	}
+	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetDestination() BACnetCont
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
-func NewBACnetLandingCallStatusCommandDestination(peekedTagHeader BACnetTagHeader, destination BACnetContextTagUnsignedInteger) *_BACnetLandingCallStatusCommandDestination {
-	if destination == nil {
-		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
-	}
-	_result := &_BACnetLandingCallStatusCommandDestination{
-		BACnetLandingCallStatusCommandContract: NewBACnetLandingCallStatusCommand(peekedTagHeader),
-		Destination:                            destination,
-	}
-	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLandingCallStatusCommandDestination(structType any) BACnetLandingCallStatusCommandDestination {

@@ -63,6 +63,11 @@ type _GuidValue struct {
 
 var _ GuidValue = (*_GuidValue)(nil)
 
+// NewGuidValue factory function for _GuidValue
+func NewGuidValue(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) *_GuidValue {
+	return &_GuidValue{Data1: data1, Data2: data2, Data3: data3, Data4: data4, Data5: data5}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -92,11 +97,6 @@ func (m *_GuidValue) GetData5() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGuidValue factory function for _GuidValue
-func NewGuidValue(data1 uint32, data2 uint16, data3 uint16, data4 []byte, data5 []byte) *_GuidValue {
-	return &_GuidValue{Data1: data1, Data2: data2, Data3: data3, Data4: data4, Data5: data5}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGuidValue(structType any) GuidValue {

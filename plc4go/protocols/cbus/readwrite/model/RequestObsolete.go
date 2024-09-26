@@ -59,6 +59,17 @@ type _RequestObsolete struct {
 var _ RequestObsolete = (*_RequestObsolete)(nil)
 var _ RequestRequirements = (*_RequestObsolete)(nil)
 
+// NewRequestObsolete factory function for _RequestObsolete
+func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestObsolete {
+	_result := &_RequestObsolete{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -107,17 +118,6 @@ func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestObsolete {
-	_result := &_RequestObsolete{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CalData:         calData,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestObsolete(structType any) RequestObsolete {

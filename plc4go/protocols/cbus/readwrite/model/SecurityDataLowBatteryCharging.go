@@ -58,6 +58,16 @@ type _SecurityDataLowBatteryCharging struct {
 var _ SecurityDataLowBatteryCharging = (*_SecurityDataLowBatteryCharging)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCharging)(nil)
 
+// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
+func NewSecurityDataLowBatteryCharging(commandTypeContainer SecurityCommandTypeContainer, argument byte, startStop byte) *_SecurityDataLowBatteryCharging {
+	_result := &_SecurityDataLowBatteryCharging{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		StartStop:            startStop,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
-func NewSecurityDataLowBatteryCharging(commandTypeContainer SecurityCommandTypeContainer, argument byte, startStop byte) *_SecurityDataLowBatteryCharging {
-	_result := &_SecurityDataLowBatteryCharging{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		StartStop:            startStop,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataLowBatteryCharging(structType any) SecurityDataLowBatteryCharging {

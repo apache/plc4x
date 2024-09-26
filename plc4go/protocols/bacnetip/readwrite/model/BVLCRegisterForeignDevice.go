@@ -56,6 +56,16 @@ type _BVLCRegisterForeignDevice struct {
 var _ BVLCRegisterForeignDevice = (*_BVLCRegisterForeignDevice)(nil)
 var _ BVLCRequirements = (*_BVLCRegisterForeignDevice)(nil)
 
+// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
+func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
+	_result := &_BVLCRegisterForeignDevice{
+		BVLCContract: NewBVLC(),
+		Ttl:          ttl,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,16 +97,6 @@ func (m *_BVLCRegisterForeignDevice) GetTtl() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
-func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
-	_result := &_BVLCRegisterForeignDevice{
-		BVLCContract: NewBVLC(),
-		Ttl:          ttl,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCRegisterForeignDevice(structType any) BVLCRegisterForeignDevice {

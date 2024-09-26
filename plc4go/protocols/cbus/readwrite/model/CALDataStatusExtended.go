@@ -70,6 +70,20 @@ type _CALDataStatusExtended struct {
 var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
 var _ CALDataRequirements = (*_CALDataStatusExtended)(nil)
 
+// NewCALDataStatusExtended factory function for _CALDataStatusExtended
+func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
+	_result := &_CALDataStatusExtended{
+		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
+		Coding:           coding,
+		Application:      application,
+		BlockStart:       blockStart,
+		StatusBytes:      statusBytes,
+		LevelInformation: levelInformation,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -136,20 +150,6 @@ func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
-	_result := &_CALDataStatusExtended{
-		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
-		Coding:           coding,
-		Application:      application,
-		BlockStart:       blockStart,
-		StatusBytes:      statusBytes,
-		LevelInformation: levelInformation,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatusExtended(structType any) CALDataStatusExtended {

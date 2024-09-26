@@ -54,6 +54,19 @@ type _BACnetPropertyStatesTimerState struct {
 var _ BACnetPropertyStatesTimerState = (*_BACnetPropertyStatesTimerState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerState)(nil)
 
+// NewBACnetPropertyStatesTimerState factory function for _BACnetPropertyStatesTimerState
+func NewBACnetPropertyStatesTimerState(peekedTagHeader BACnetTagHeader, timerState BACnetTimerStateTagged) *_BACnetPropertyStatesTimerState {
+	if timerState == nil {
+		panic("timerState of type BACnetTimerStateTagged for BACnetPropertyStatesTimerState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesTimerState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		TimerState:                   timerState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesTimerState) GetTimerState() BACnetTimerStateTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesTimerState factory function for _BACnetPropertyStatesTimerState
-func NewBACnetPropertyStatesTimerState(peekedTagHeader BACnetTagHeader, timerState BACnetTimerStateTagged) *_BACnetPropertyStatesTimerState {
-	if timerState == nil {
-		panic("timerState of type BACnetTimerStateTagged for BACnetPropertyStatesTimerState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesTimerState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		TimerState:                   timerState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesTimerState(structType any) BACnetPropertyStatesTimerState {

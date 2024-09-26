@@ -49,6 +49,15 @@ type _DataTypeDefinition struct {
 var _ DataTypeDefinition = (*_DataTypeDefinition)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataTypeDefinition)(nil)
 
+// NewDataTypeDefinition factory function for _DataTypeDefinition
+func NewDataTypeDefinition() *_DataTypeDefinition {
+	_result := &_DataTypeDefinition{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_DataTypeDefinition) GetIdentifier() string {
 
 func (m *_DataTypeDefinition) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewDataTypeDefinition factory function for _DataTypeDefinition
-func NewDataTypeDefinition() *_DataTypeDefinition {
-	_result := &_DataTypeDefinition{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

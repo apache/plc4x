@@ -86,6 +86,32 @@ type _CipConnectionManagerCloseRequest struct {
 var _ CipConnectionManagerCloseRequest = (*_CipConnectionManagerCloseRequest)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerCloseRequest)(nil)
 
+// NewCipConnectionManagerCloseRequest factory function for _CipConnectionManagerCloseRequest
+func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerCloseRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
+	}
+	_result := &_CipConnectionManagerCloseRequest{
+		CipServiceContract:     NewCipService(serviceLen),
+		RequestPathSize:        requestPathSize,
+		ClassSegment:           classSegment,
+		InstanceSegment:        instanceSegment,
+		Priority:               priority,
+		TickTime:               tickTime,
+		TimeoutTicks:           timeoutTicks,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		ConnectionPathSize:     connectionPathSize,
+		ConnectionPaths:        connectionPaths,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -165,32 +191,6 @@ func (m *_CipConnectionManagerCloseRequest) GetConnectionPaths() []PathSegment {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerCloseRequest factory function for _CipConnectionManagerCloseRequest
-func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerCloseRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for CipConnectionManagerCloseRequest must not be nil")
-	}
-	_result := &_CipConnectionManagerCloseRequest{
-		CipServiceContract:     NewCipService(serviceLen),
-		RequestPathSize:        requestPathSize,
-		ClassSegment:           classSegment,
-		InstanceSegment:        instanceSegment,
-		Priority:               priority,
-		TickTime:               tickTime,
-		TimeoutTicks:           timeoutTicks,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		ConnectionPathSize:     connectionPathSize,
-		ConnectionPaths:        connectionPaths,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerCloseRequest(structType any) CipConnectionManagerCloseRequest {

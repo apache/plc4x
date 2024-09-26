@@ -54,6 +54,16 @@ type _BACnetConstructedDataFailedAttemptEvents struct {
 var _ BACnetConstructedDataFailedAttemptEvents = (*_BACnetConstructedDataFailedAttemptEvents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFailedAttemptEvents)(nil)
 
+// NewBACnetConstructedDataFailedAttemptEvents factory function for _BACnetConstructedDataFailedAttemptEvents
+func NewBACnetConstructedDataFailedAttemptEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptEvents {
+	_result := &_BACnetConstructedDataFailedAttemptEvents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FailedAttemptEvents:           failedAttemptEvents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) GetFailedAttemptEvents() []B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFailedAttemptEvents factory function for _BACnetConstructedDataFailedAttemptEvents
-func NewBACnetConstructedDataFailedAttemptEvents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, failedAttemptEvents []BACnetAccessEventTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFailedAttemptEvents {
-	_result := &_BACnetConstructedDataFailedAttemptEvents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FailedAttemptEvents:           failedAttemptEvents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFailedAttemptEvents(structType any) BACnetConstructedDataFailedAttemptEvents {

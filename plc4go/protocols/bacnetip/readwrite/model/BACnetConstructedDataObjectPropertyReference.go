@@ -56,6 +56,19 @@ type _BACnetConstructedDataObjectPropertyReference struct {
 var _ BACnetConstructedDataObjectPropertyReference = (*_BACnetConstructedDataObjectPropertyReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectPropertyReference)(nil)
 
+// NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
+func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
+	if propertyReference == nil {
+		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectPropertyReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PropertyReference:             propertyReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetActualValue() BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
-func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
-	if propertyReference == nil {
-		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectPropertyReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PropertyReference:             propertyReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetConstructedDataObjectPropertyReference {

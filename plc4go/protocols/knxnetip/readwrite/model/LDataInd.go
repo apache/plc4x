@@ -60,6 +60,21 @@ type _LDataInd struct {
 var _ LDataInd = (*_LDataInd)(nil)
 var _ CEMIRequirements = (*_LDataInd)(nil)
 
+// NewLDataInd factory function for _LDataInd
+func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataInd {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataInd must not be nil")
+	}
+	_result := &_LDataInd{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_LDataInd) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataInd factory function for _LDataInd
-func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataInd {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataInd must not be nil")
-	}
-	_result := &_LDataInd{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataInd(structType any) LDataInd {

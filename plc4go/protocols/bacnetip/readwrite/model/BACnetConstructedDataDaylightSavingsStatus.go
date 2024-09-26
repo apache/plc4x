@@ -56,6 +56,19 @@ type _BACnetConstructedDataDaylightSavingsStatus struct {
 var _ BACnetConstructedDataDaylightSavingsStatus = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDaylightSavingsStatus)(nil)
 
+// NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
+func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
+	if daylightSavingsStatus == nil {
+		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataDaylightSavingsStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DaylightSavingsStatus:         daylightSavingsStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDaylightSavingsStatus factory function for _BACnetConstructedDataDaylightSavingsStatus
-func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daylightSavingsStatus BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaylightSavingsStatus {
-	if daylightSavingsStatus == nil {
-		panic("daylightSavingsStatus of type BACnetApplicationTagBoolean for BACnetConstructedDataDaylightSavingsStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataDaylightSavingsStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DaylightSavingsStatus:         daylightSavingsStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDaylightSavingsStatus(structType any) BACnetConstructedDataDaylightSavingsStatus {

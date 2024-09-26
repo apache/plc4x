@@ -75,6 +75,23 @@ type _QuantityDimension struct {
 var _ QuantityDimension = (*_QuantityDimension)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QuantityDimension)(nil)
 
+// NewQuantityDimension factory function for _QuantityDimension
+func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
+	_result := &_QuantityDimension{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MassExponent:                      massExponent,
+		LengthExponent:                    lengthExponent,
+		TimeExponent:                      timeExponent,
+		ElectricCurrentExponent:           electricCurrentExponent,
+		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
+		LuminousIntensityExponent:         luminousIntensityExponent,
+		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
+		DimensionlessExponent:             dimensionlessExponent,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -134,23 +151,6 @@ func (m *_QuantityDimension) GetDimensionlessExponent() int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQuantityDimension factory function for _QuantityDimension
-func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
-	_result := &_QuantityDimension{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MassExponent:                      massExponent,
-		LengthExponent:                    lengthExponent,
-		TimeExponent:                      timeExponent,
-		ElectricCurrentExponent:           electricCurrentExponent,
-		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
-		LuminousIntensityExponent:         luminousIntensityExponent,
-		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
-		DimensionlessExponent:             dimensionlessExponent,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQuantityDimension(structType any) QuantityDimension {

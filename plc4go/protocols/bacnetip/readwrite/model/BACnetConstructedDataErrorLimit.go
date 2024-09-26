@@ -56,6 +56,19 @@ type _BACnetConstructedDataErrorLimit struct {
 var _ BACnetConstructedDataErrorLimit = (*_BACnetConstructedDataErrorLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataErrorLimit)(nil)
 
+// NewBACnetConstructedDataErrorLimit factory function for _BACnetConstructedDataErrorLimit
+func NewBACnetConstructedDataErrorLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, errorLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataErrorLimit {
+	if errorLimit == nil {
+		panic("errorLimit of type BACnetApplicationTagReal for BACnetConstructedDataErrorLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataErrorLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ErrorLimit:                    errorLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataErrorLimit) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataErrorLimit factory function for _BACnetConstructedDataErrorLimit
-func NewBACnetConstructedDataErrorLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, errorLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataErrorLimit {
-	if errorLimit == nil {
-		panic("errorLimit of type BACnetApplicationTagReal for BACnetConstructedDataErrorLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataErrorLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ErrorLimit:                    errorLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataErrorLimit(structType any) BACnetConstructedDataErrorLimit {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataEventAlgorithmInhibitRef struct {
 var _ BACnetConstructedDataEventAlgorithmInhibitRef = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibitRef)(nil)
 
+// NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
+func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
+	if eventAlgorithmInhibitRef == nil {
+		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibitRef) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventAlgorithmInhibitRef factory function for _BACnetConstructedDataEventAlgorithmInhibitRef
-func NewBACnetConstructedDataEventAlgorithmInhibitRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibitRef BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibitRef {
-	if eventAlgorithmInhibitRef == nil {
-		panic("eventAlgorithmInhibitRef of type BACnetObjectPropertyReference for BACnetConstructedDataEventAlgorithmInhibitRef must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventAlgorithmInhibitRef{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventAlgorithmInhibitRef:      eventAlgorithmInhibitRef,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType any) BACnetConstructedDataEventAlgorithmInhibitRef {

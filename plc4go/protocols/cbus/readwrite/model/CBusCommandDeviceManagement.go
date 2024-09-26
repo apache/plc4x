@@ -60,6 +60,17 @@ type _CBusCommandDeviceManagement struct {
 var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandDeviceManagement)(nil)
 
+// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
+func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+	_result := &_CBusCommandDeviceManagement{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		ParamNo:             paramNo,
+		ParameterValue:      parameterValue,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -104,17 +115,6 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
-	_result := &_CBusCommandDeviceManagement{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		ParamNo:             paramNo,
-		ParameterValue:      parameterValue,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandDeviceManagement(structType any) CBusCommandDeviceManagement {

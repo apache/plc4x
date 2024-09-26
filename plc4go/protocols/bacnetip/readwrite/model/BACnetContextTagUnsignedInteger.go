@@ -56,6 +56,19 @@ type _BACnetContextTagUnsignedInteger struct {
 var _ BACnetContextTagUnsignedInteger = (*_BACnetContextTagUnsignedInteger)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagUnsignedInteger)(nil)
 
+// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
+func NewBACnetContextTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
+	}
+	_result := &_BACnetContextTagUnsignedInteger{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,19 +115,6 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
-func NewBACnetContextTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
-	}
-	_result := &_BACnetContextTagUnsignedInteger{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagUnsignedInteger(structType any) BACnetContextTagUnsignedInteger {

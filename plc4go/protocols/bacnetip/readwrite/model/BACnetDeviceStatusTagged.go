@@ -63,6 +63,14 @@ type _BACnetDeviceStatusTagged struct {
 
 var _ BACnetDeviceStatusTagged = (*_BACnetDeviceStatusTagged)(nil)
 
+// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
+func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
+	}
+	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetDeviceStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
-func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
-	}
-	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceStatusTagged(structType any) BACnetDeviceStatusTagged {

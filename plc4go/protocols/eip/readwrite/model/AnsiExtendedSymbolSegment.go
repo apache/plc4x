@@ -57,6 +57,17 @@ type _AnsiExtendedSymbolSegment struct {
 var _ AnsiExtendedSymbolSegment = (*_AnsiExtendedSymbolSegment)(nil)
 var _ DataSegmentTypeRequirements = (*_AnsiExtendedSymbolSegment)(nil)
 
+// NewAnsiExtendedSymbolSegment factory function for _AnsiExtendedSymbolSegment
+func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbolSegment {
+	_result := &_AnsiExtendedSymbolSegment{
+		DataSegmentTypeContract: NewDataSegmentType(),
+		Symbol:                  symbol,
+		Pad:                     pad,
+	}
+	_result.DataSegmentTypeContract.(*_DataSegmentType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_AnsiExtendedSymbolSegment) GetPad() *uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAnsiExtendedSymbolSegment factory function for _AnsiExtendedSymbolSegment
-func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbolSegment {
-	_result := &_AnsiExtendedSymbolSegment{
-		DataSegmentTypeContract: NewDataSegmentType(),
-		Symbol:                  symbol,
-		Pad:                     pad,
-	}
-	_result.DataSegmentTypeContract.(*_DataSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAnsiExtendedSymbolSegment(structType any) AnsiExtendedSymbolSegment {

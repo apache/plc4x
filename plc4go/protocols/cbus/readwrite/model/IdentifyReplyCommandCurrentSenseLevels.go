@@ -54,6 +54,16 @@ type _IdentifyReplyCommandCurrentSenseLevels struct {
 var _ IdentifyReplyCommandCurrentSenseLevels = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandCurrentSenseLevels)(nil)
 
+// NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
+func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
+	_result := &_IdentifyReplyCommandCurrentSenseLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		CurrentSenseLevels:           currentSenseLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) GetCurrentSenseLevels() []byte
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandCurrentSenseLevels factory function for _IdentifyReplyCommandCurrentSenseLevels
-func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numBytes uint8) *_IdentifyReplyCommandCurrentSenseLevels {
-	_result := &_IdentifyReplyCommandCurrentSenseLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		CurrentSenseLevels:           currentSenseLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandCurrentSenseLevels(structType any) IdentifyReplyCommandCurrentSenseLevels {

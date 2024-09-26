@@ -63,6 +63,25 @@ type _MonitoredItemModifyResult struct {
 var _ MonitoredItemModifyResult = (*_MonitoredItemModifyResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemModifyResult)(nil)
 
+// NewMonitoredItemModifyResult factory function for _MonitoredItemModifyResult
+func NewMonitoredItemModifyResult(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemModifyResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for MonitoredItemModifyResult must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObject for MonitoredItemModifyResult must not be nil")
+	}
+	_result := &_MonitoredItemModifyResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		RevisedSamplingInterval:           revisedSamplingInterval,
+		RevisedQueueSize:                  revisedQueueSize,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_MonitoredItemModifyResult) GetFilterResult() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemModifyResult factory function for _MonitoredItemModifyResult
-func NewMonitoredItemModifyResult(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemModifyResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for MonitoredItemModifyResult must not be nil")
-	}
-	if filterResult == nil {
-		panic("filterResult of type ExtensionObject for MonitoredItemModifyResult must not be nil")
-	}
-	_result := &_MonitoredItemModifyResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		RevisedSamplingInterval:           revisedSamplingInterval,
-		RevisedQueueSize:                  revisedQueueSize,
-		FilterResult:                      filterResult,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemModifyResult(structType any) MonitoredItemModifyResult {

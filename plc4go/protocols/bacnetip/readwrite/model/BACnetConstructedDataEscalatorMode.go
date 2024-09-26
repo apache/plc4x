@@ -56,6 +56,19 @@ type _BACnetConstructedDataEscalatorMode struct {
 var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorMode)(nil)
 
+// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
+func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+	if escalatorMode == nil {
+		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataEscalatorMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EscalatorMode:                 escalatorMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorMo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
-func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
-	if escalatorMode == nil {
-		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataEscalatorMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EscalatorMode:                 escalatorMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEscalatorMode(structType any) BACnetConstructedDataEscalatorMode {

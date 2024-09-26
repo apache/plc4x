@@ -49,6 +49,15 @@ type _BACnetConstructedDataCalendarAll struct {
 var _ BACnetConstructedDataCalendarAll = (*_BACnetConstructedDataCalendarAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCalendarAll)(nil)
 
+// NewBACnetConstructedDataCalendarAll factory function for _BACnetConstructedDataCalendarAll
+func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarAll {
+	_result := &_BACnetConstructedDataCalendarAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataCalendarAll) GetPropertyIdentifierArgument() BACn
 
 func (m *_BACnetConstructedDataCalendarAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataCalendarAll factory function for _BACnetConstructedDataCalendarAll
-func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCalendarAll {
-	_result := &_BACnetConstructedDataCalendarAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

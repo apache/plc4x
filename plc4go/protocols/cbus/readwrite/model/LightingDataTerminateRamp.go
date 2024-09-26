@@ -54,6 +54,16 @@ type _LightingDataTerminateRamp struct {
 var _ LightingDataTerminateRamp = (*_LightingDataTerminateRamp)(nil)
 var _ LightingDataRequirements = (*_LightingDataTerminateRamp)(nil)
 
+// NewLightingDataTerminateRamp factory function for _LightingDataTerminateRamp
+func NewLightingDataTerminateRamp(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataTerminateRamp {
+	_result := &_LightingDataTerminateRamp{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_LightingDataTerminateRamp) GetGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataTerminateRamp factory function for _LightingDataTerminateRamp
-func NewLightingDataTerminateRamp(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataTerminateRamp {
-	_result := &_LightingDataTerminateRamp{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataTerminateRamp(structType any) LightingDataTerminateRamp {

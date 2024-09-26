@@ -56,6 +56,19 @@ type _BACnetConstructedDataMemberStatusFlags struct {
 var _ BACnetConstructedDataMemberStatusFlags = (*_BACnetConstructedDataMemberStatusFlags)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMemberStatusFlags)(nil)
 
+// NewBACnetConstructedDataMemberStatusFlags factory function for _BACnetConstructedDataMemberStatusFlags
+func NewBACnetConstructedDataMemberStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberStatusFlags {
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataMemberStatusFlags must not be nil")
+	}
+	_result := &_BACnetConstructedDataMemberStatusFlags{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StatusFlags:                   statusFlags,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMemberStatusFlags) GetActualValue() BACnetStatusF
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMemberStatusFlags factory function for _BACnetConstructedDataMemberStatusFlags
-func NewBACnetConstructedDataMemberStatusFlags(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, statusFlags BACnetStatusFlagsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberStatusFlags {
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetConstructedDataMemberStatusFlags must not be nil")
-	}
-	_result := &_BACnetConstructedDataMemberStatusFlags{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StatusFlags:                   statusFlags,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMemberStatusFlags(structType any) BACnetConstructedDataMemberStatusFlags {

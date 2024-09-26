@@ -56,6 +56,19 @@ type _BACnetConstructedDataLockout struct {
 var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockout)(nil)
 
+// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
+func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
+	if lockout == nil {
+		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
+	}
+	_result := &_BACnetConstructedDataLockout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Lockout:                       lockout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLockout) GetActualValue() BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
-func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
-	if lockout == nil {
-		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
-	}
-	_result := &_BACnetConstructedDataLockout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Lockout:                       lockout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLockout(structType any) BACnetConstructedDataLockout {

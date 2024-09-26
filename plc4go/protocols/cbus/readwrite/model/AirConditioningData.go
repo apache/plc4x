@@ -70,6 +70,11 @@ type _AirConditioningData struct {
 
 var _ AirConditioningDataContract = (*_AirConditioningData)(nil)
 
+// NewAirConditioningData factory function for _AirConditioningData
+func NewAirConditioningData(commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningData {
+	return &_AirConditioningData{CommandTypeContainer: commandTypeContainer}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (pm *_AirConditioningData) GetCommandType() AirConditioningCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningData factory function for _AirConditioningData
-func NewAirConditioningData(commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningData {
-	return &_AirConditioningData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningData(structType any) AirConditioningData {

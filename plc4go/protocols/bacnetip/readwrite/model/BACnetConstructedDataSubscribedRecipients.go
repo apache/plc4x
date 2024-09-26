@@ -54,6 +54,16 @@ type _BACnetConstructedDataSubscribedRecipients struct {
 var _ BACnetConstructedDataSubscribedRecipients = (*_BACnetConstructedDataSubscribedRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubscribedRecipients)(nil)
 
+// NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
+func NewBACnetConstructedDataSubscribedRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, subscribedRecipients []BACnetEventNotificationSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
+	_result := &_BACnetConstructedDataSubscribedRecipients{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SubscribedRecipients:          subscribedRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataSubscribedRecipients) GetSubscribedRecipients() [
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSubscribedRecipients factory function for _BACnetConstructedDataSubscribedRecipients
-func NewBACnetConstructedDataSubscribedRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, subscribedRecipients []BACnetEventNotificationSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubscribedRecipients {
-	_result := &_BACnetConstructedDataSubscribedRecipients{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SubscribedRecipients:          subscribedRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSubscribedRecipients(structType any) BACnetConstructedDataSubscribedRecipients {

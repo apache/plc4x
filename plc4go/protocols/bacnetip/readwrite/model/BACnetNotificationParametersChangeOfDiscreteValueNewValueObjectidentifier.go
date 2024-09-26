@@ -54,6 +54,19 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier)(nil)
 
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectidentifierValue BACnetApplicationTagObjectIdentifier, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier {
+	if objectidentifierValue == nil {
+		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		ObjectidentifierValue: objectidentifierValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentif
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectidentifierValue BACnetApplicationTagObjectIdentifier, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier {
-	if objectidentifierValue == nil {
-		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		ObjectidentifierValue: objectidentifierValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier {

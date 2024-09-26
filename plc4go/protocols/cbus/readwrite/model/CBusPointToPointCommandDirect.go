@@ -56,6 +56,19 @@ type _CBusPointToPointCommandDirect struct {
 var _ CBusPointToPointCommandDirect = (*_CBusPointToPointCommandDirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandDirect)(nil)
 
+// NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
+func NewCBusPointToPointCommandDirect(bridgeAddressCountPeek uint16, calData CALData, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandDirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -83,19 +96,6 @@ func (m *_CBusPointToPointCommandDirect) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommandDirect factory function for _CBusPointToPointCommandDirect
-func NewCBusPointToPointCommandDirect(bridgeAddressCountPeek uint16, calData CALData, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandDirect {
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for CBusPointToPointCommandDirect must not be nil")
-	}
-	_result := &_CBusPointToPointCommandDirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
-		UnitAddress:                     unitAddress,
-	}
-	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommandDirect(structType any) CBusPointToPointCommandDirect {

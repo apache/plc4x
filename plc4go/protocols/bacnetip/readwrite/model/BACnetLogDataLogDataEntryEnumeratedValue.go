@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 
+// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
+func NewBACnetLogDataLogDataEntryEnumeratedValue(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		EnumeratedValue:                   enumeratedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetEnumeratedValue() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
-func NewBACnetLogDataLogDataEntryEnumeratedValue(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogDataLogDataEntryEnumeratedValue {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		EnumeratedValue:                   enumeratedValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryEnumeratedValue(structType any) BACnetLogDataLogDataEntryEnumeratedValue {

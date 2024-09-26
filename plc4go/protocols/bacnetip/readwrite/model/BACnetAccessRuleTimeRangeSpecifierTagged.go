@@ -58,6 +58,14 @@ type _BACnetAccessRuleTimeRangeSpecifierTagged struct {
 
 var _ BACnetAccessRuleTimeRangeSpecifierTagged = (*_BACnetAccessRuleTimeRangeSpecifierTagged)(nil)
 
+// NewBACnetAccessRuleTimeRangeSpecifierTagged factory function for _BACnetAccessRuleTimeRangeSpecifierTagged
+func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleTimeRangeSpecifierTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessRuleTimeRangeSpecifierTagged must not be nil")
+	}
+	return &_BACnetAccessRuleTimeRangeSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) GetValue() BACnetAccessRuleT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRuleTimeRangeSpecifierTagged factory function for _BACnetAccessRuleTimeRangeSpecifierTagged
-func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleTimeRangeSpecifierTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessRuleTimeRangeSpecifierTagged must not be nil")
-	}
-	return &_BACnetAccessRuleTimeRangeSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRuleTimeRangeSpecifierTagged(structType any) BACnetAccessRuleTimeRangeSpecifierTagged {

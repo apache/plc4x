@@ -54,6 +54,19 @@ type _BACnetPropertyStatesSecurityLevel struct {
 var _ BACnetPropertyStatesSecurityLevel = (*_BACnetPropertyStatesSecurityLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSecurityLevel)(nil)
 
+// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
+func NewBACnetPropertyStatesSecurityLevel(peekedTagHeader BACnetTagHeader, securityLevel BACnetSecurityLevelTagged) *_BACnetPropertyStatesSecurityLevel {
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSecurityLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SecurityLevel:                securityLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesSecurityLevel) GetSecurityLevel() BACnetSecurityLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
-func NewBACnetPropertyStatesSecurityLevel(peekedTagHeader BACnetTagHeader, securityLevel BACnetSecurityLevelTagged) *_BACnetPropertyStatesSecurityLevel {
-	if securityLevel == nil {
-		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSecurityLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SecurityLevel:                securityLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSecurityLevel(structType any) BACnetPropertyStatesSecurityLevel {

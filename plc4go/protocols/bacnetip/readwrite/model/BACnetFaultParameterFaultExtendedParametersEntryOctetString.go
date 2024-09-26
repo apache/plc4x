@@ -54,6 +54,19 @@ type _BACnetFaultParameterFaultExtendedParametersEntryOctetString struct {
 var _ BACnetFaultParameterFaultExtendedParametersEntryOctetString = (*_BACnetFaultParameterFaultExtendedParametersEntryOctetString)(nil)
 var _ BACnetFaultParameterFaultExtendedParametersEntryRequirements = (*_BACnetFaultParameterFaultExtendedParametersEntryOctetString)(nil)
 
+// NewBACnetFaultParameterFaultExtendedParametersEntryOctetString factory function for _BACnetFaultParameterFaultExtendedParametersEntryOctetString
+func NewBACnetFaultParameterFaultExtendedParametersEntryOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetFaultParameterFaultExtendedParametersEntryOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetFaultParameterFaultExtendedParametersEntryOctetString must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
+		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
+		OctetStringValue: octetStringValue,
+	}
+	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) GetOctetS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntryOctetString factory function for _BACnetFaultParameterFaultExtendedParametersEntryOctetString
-func NewBACnetFaultParameterFaultExtendedParametersEntryOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetFaultParameterFaultExtendedParametersEntryOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetFaultParameterFaultExtendedParametersEntryOctetString must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
-		BACnetFaultParameterFaultExtendedParametersEntryContract: NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader),
-		OctetStringValue: octetStringValue,
-	}
-	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntryOctetString(structType any) BACnetFaultParameterFaultExtendedParametersEntryOctetString {

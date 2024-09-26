@@ -63,6 +63,19 @@ type _ApduDataExtPropertyValueRead struct {
 var _ ApduDataExtPropertyValueRead = (*_ApduDataExtPropertyValueRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueRead)(nil)
 
+// NewApduDataExtPropertyValueRead factory function for _ApduDataExtPropertyValueRead
+func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *_ApduDataExtPropertyValueRead {
+	_result := &_ApduDataExtPropertyValueRead{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_ApduDataExtPropertyValueRead) GetIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueRead factory function for _ApduDataExtPropertyValueRead
-func NewApduDataExtPropertyValueRead(objectIndex uint8, propertyId uint8, count uint8, index uint16, length uint8) *_ApduDataExtPropertyValueRead {
-	_result := &_ApduDataExtPropertyValueRead{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueRead(structType any) ApduDataExtPropertyValueRead {

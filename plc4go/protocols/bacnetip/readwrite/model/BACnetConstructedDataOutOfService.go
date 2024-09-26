@@ -56,6 +56,19 @@ type _BACnetConstructedDataOutOfService struct {
 var _ BACnetConstructedDataOutOfService = (*_BACnetConstructedDataOutOfService)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutOfService)(nil)
 
+// NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
+func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
+	if outOfService == nil {
+		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
+	}
+	_result := &_BACnetConstructedDataOutOfService{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OutOfService:                  outOfService,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataOutOfService) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
-	if outOfService == nil {
-		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
-	}
-	_result := &_BACnetConstructedDataOutOfService{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OutOfService:                  outOfService,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOutOfService(structType any) BACnetConstructedDataOutOfService {

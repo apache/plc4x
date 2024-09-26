@@ -54,6 +54,19 @@ type _BACnetPropertyStatesBinaryValue struct {
 var _ BACnetPropertyStatesBinaryValue = (*_BACnetPropertyStatesBinaryValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBinaryValue)(nil)
 
+// NewBACnetPropertyStatesBinaryValue factory function for _BACnetPropertyStatesBinaryValue
+func NewBACnetPropertyStatesBinaryValue(peekedTagHeader BACnetTagHeader, binaryValue BACnetBinaryPVTagged) *_BACnetPropertyStatesBinaryValue {
+	if binaryValue == nil {
+		panic("binaryValue of type BACnetBinaryPVTagged for BACnetPropertyStatesBinaryValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBinaryValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BinaryValue:                  binaryValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesBinaryValue) GetBinaryValue() BACnetBinaryPVTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBinaryValue factory function for _BACnetPropertyStatesBinaryValue
-func NewBACnetPropertyStatesBinaryValue(peekedTagHeader BACnetTagHeader, binaryValue BACnetBinaryPVTagged) *_BACnetPropertyStatesBinaryValue {
-	if binaryValue == nil {
-		panic("binaryValue of type BACnetBinaryPVTagged for BACnetPropertyStatesBinaryValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBinaryValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BinaryValue:                  binaryValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBinaryValue(structType any) BACnetPropertyStatesBinaryValue {

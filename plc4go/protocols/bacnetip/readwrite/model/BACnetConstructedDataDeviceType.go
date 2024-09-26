@@ -56,6 +56,19 @@ type _BACnetConstructedDataDeviceType struct {
 var _ BACnetConstructedDataDeviceType = (*_BACnetConstructedDataDeviceType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceType)(nil)
 
+// NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
+func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
+	if deviceType == nil {
+		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeviceType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeviceType:                    deviceType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDeviceType) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
-func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
-	if deviceType == nil {
-		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeviceType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeviceType:                    deviceType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeviceType(structType any) BACnetConstructedDataDeviceType {

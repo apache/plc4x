@@ -54,6 +54,19 @@ type _SALDataPoolsSpasPondsFountainsControl struct {
 var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 var _ SALDataRequirements = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 
+// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
+func NewSALDataPoolsSpasPondsFountainsControl(salData SALData, poolsSpaPondsFountainsData LightingData) *_SALDataPoolsSpasPondsFountainsControl {
+	if poolsSpaPondsFountainsData == nil {
+		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
+	}
+	_result := &_SALDataPoolsSpasPondsFountainsControl{
+		SALDataContract:            NewSALData(salData),
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
-func NewSALDataPoolsSpasPondsFountainsControl(salData SALData, poolsSpaPondsFountainsData LightingData) *_SALDataPoolsSpasPondsFountainsControl {
-	if poolsSpaPondsFountainsData == nil {
-		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
-	}
-	_result := &_SALDataPoolsSpasPondsFountainsControl{
-		SALDataContract:            NewSALData(salData),
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataPoolsSpasPondsFountainsControl(structType any) SALDataPoolsSpasPondsFountainsControl {

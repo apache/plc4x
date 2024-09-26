@@ -63,6 +63,14 @@ type _BACnetPropertyIdentifierTagged struct {
 
 var _ BACnetPropertyIdentifierTagged = (*_BACnetPropertyIdentifierTagged)(nil)
 
+// NewBACnetPropertyIdentifierTagged factory function for _BACnetPropertyIdentifierTagged
+func NewBACnetPropertyIdentifierTagged(header BACnetTagHeader, value BACnetPropertyIdentifier, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetPropertyIdentifierTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetPropertyIdentifierTagged must not be nil")
+	}
+	return &_BACnetPropertyIdentifierTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetPropertyIdentifierTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyIdentifierTagged factory function for _BACnetPropertyIdentifierTagged
-func NewBACnetPropertyIdentifierTagged(header BACnetTagHeader, value BACnetPropertyIdentifier, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetPropertyIdentifierTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetPropertyIdentifierTagged must not be nil")
-	}
-	return &_BACnetPropertyIdentifierTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyIdentifierTagged(structType any) BACnetPropertyIdentifierTagged {

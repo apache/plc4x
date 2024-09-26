@@ -56,6 +56,19 @@ type _BACnetConstructedDataApplicationSoftwareVersion struct {
 var _ BACnetConstructedDataApplicationSoftwareVersion = (*_BACnetConstructedDataApplicationSoftwareVersion)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataApplicationSoftwareVersion)(nil)
 
+// NewBACnetConstructedDataApplicationSoftwareVersion factory function for _BACnetConstructedDataApplicationSoftwareVersion
+func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
+	if applicationSoftwareVersion == nil {
+		panic("applicationSoftwareVersion of type BACnetApplicationTagCharacterString for BACnetConstructedDataApplicationSoftwareVersion must not be nil")
+	}
+	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ApplicationSoftwareVersion:    applicationSoftwareVersion,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataApplicationSoftwareVersion factory function for _BACnetConstructedDataApplicationSoftwareVersion
-func NewBACnetConstructedDataApplicationSoftwareVersion(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, applicationSoftwareVersion BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataApplicationSoftwareVersion {
-	if applicationSoftwareVersion == nil {
-		panic("applicationSoftwareVersion of type BACnetApplicationTagCharacterString for BACnetConstructedDataApplicationSoftwareVersion must not be nil")
-	}
-	_result := &_BACnetConstructedDataApplicationSoftwareVersion{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ApplicationSoftwareVersion:    applicationSoftwareVersion,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataApplicationSoftwareVersion(structType any) BACnetConstructedDataApplicationSoftwareVersion {

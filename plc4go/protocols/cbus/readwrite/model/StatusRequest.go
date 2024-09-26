@@ -68,6 +68,11 @@ type _StatusRequest struct {
 
 var _ StatusRequestContract = (*_StatusRequest)(nil)
 
+// NewStatusRequest factory function for _StatusRequest
+func NewStatusRequest(statusType byte) *_StatusRequest {
+	return &_StatusRequest{StatusType: statusType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +86,6 @@ func (m *_StatusRequest) GetStatusType() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusRequest factory function for _StatusRequest
-func NewStatusRequest(statusType byte) *_StatusRequest {
-	return &_StatusRequest{StatusType: statusType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusRequest(structType any) StatusRequest {

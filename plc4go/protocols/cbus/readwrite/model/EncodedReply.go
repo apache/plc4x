@@ -78,6 +78,11 @@ type _EncodedReply struct {
 
 var _ EncodedReplyContract = (*_EncodedReply)(nil)
 
+// NewEncodedReply factory function for _EncodedReply
+func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReply {
+	return &_EncodedReply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -107,11 +112,6 @@ func (pm *_EncodedReply) GetIsMonitoredSAL() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEncodedReply factory function for _EncodedReply
-func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReply {
-	return &_EncodedReply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEncodedReply(structType any) EncodedReply {

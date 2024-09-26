@@ -56,6 +56,16 @@ type _NodeIdTwoByte struct {
 var _ NodeIdTwoByte = (*_NodeIdTwoByte)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdTwoByte)(nil)
 
+// NewNodeIdTwoByte factory function for _NodeIdTwoByte
+func NewNodeIdTwoByte(id uint8) *_NodeIdTwoByte {
+	_result := &_NodeIdTwoByte{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,16 +112,6 @@ func (m *_NodeIdTwoByte) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdTwoByte factory function for _NodeIdTwoByte
-func NewNodeIdTwoByte(id uint8) *_NodeIdTwoByte {
-	_result := &_NodeIdTwoByte{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdTwoByte(structType any) NodeIdTwoByte {

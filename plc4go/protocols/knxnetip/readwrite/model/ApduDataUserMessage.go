@@ -49,6 +49,15 @@ type _ApduDataUserMessage struct {
 var _ ApduDataUserMessage = (*_ApduDataUserMessage)(nil)
 var _ ApduDataRequirements = (*_ApduDataUserMessage)(nil)
 
+// NewApduDataUserMessage factory function for _ApduDataUserMessage
+func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
+	_result := &_ApduDataUserMessage{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataUserMessage) GetApciType() uint8 {
 
 func (m *_ApduDataUserMessage) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataUserMessage factory function for _ApduDataUserMessage
-func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
-	_result := &_ApduDataUserMessage{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

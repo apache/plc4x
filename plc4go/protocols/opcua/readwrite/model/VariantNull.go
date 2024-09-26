@@ -49,6 +49,15 @@ type _VariantNull struct {
 var _ VariantNull = (*_VariantNull)(nil)
 var _ VariantRequirements = (*_VariantNull)(nil)
 
+// NewVariantNull factory function for _VariantNull
+func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
+	_result := &_VariantNull{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_VariantNull) GetVariantType() uint8 {
 
 func (m *_VariantNull) GetParent() VariantContract {
 	return m.VariantContract
-}
-
-// NewVariantNull factory function for _VariantNull
-func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
-	_result := &_VariantNull{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

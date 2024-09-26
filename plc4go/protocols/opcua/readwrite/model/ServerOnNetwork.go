@@ -66,6 +66,26 @@ type _ServerOnNetwork struct {
 var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
 
+// NewServerOnNetwork factory function for _ServerOnNetwork
+func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
+	if serverName == nil {
+		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
+	}
+	if discoveryUrl == nil {
+		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
+	}
+	_result := &_ServerOnNetwork{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RecordId:                          recordId,
+		ServerName:                        serverName,
+		DiscoveryUrl:                      discoveryUrl,
+		NoOfServerCapabilities:            noOfServerCapabilities,
+		ServerCapabilities:                serverCapabilities,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,26 +133,6 @@ func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerOnNetwork factory function for _ServerOnNetwork
-func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
-	if serverName == nil {
-		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
-	}
-	if discoveryUrl == nil {
-		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
-	}
-	_result := &_ServerOnNetwork{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RecordId:                          recordId,
-		ServerName:                        serverName,
-		DiscoveryUrl:                      discoveryUrl,
-		NoOfServerCapabilities:            noOfServerCapabilities,
-		ServerCapabilities:                serverCapabilities,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerOnNetwork(structType any) ServerOnNetwork {

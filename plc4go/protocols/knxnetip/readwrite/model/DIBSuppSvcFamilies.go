@@ -54,6 +54,11 @@ type _DIBSuppSvcFamilies struct {
 
 var _ DIBSuppSvcFamilies = (*_DIBSuppSvcFamilies)(nil)
 
+// NewDIBSuppSvcFamilies factory function for _DIBSuppSvcFamilies
+func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBSuppSvcFamilies {
+	return &_DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_DIBSuppSvcFamilies) GetServiceIds() []ServiceId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDIBSuppSvcFamilies factory function for _DIBSuppSvcFamilies
-func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBSuppSvcFamilies {
-	return &_DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {

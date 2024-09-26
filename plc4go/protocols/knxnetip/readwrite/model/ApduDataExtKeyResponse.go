@@ -49,6 +49,15 @@ type _ApduDataExtKeyResponse struct {
 var _ ApduDataExtKeyResponse = (*_ApduDataExtKeyResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtKeyResponse)(nil)
 
+// NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
+func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
+	_result := &_ApduDataExtKeyResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtKeyResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtKeyResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtKeyResponse factory function for _ApduDataExtKeyResponse
-func NewApduDataExtKeyResponse(length uint8) *_ApduDataExtKeyResponse {
-	_result := &_ApduDataExtKeyResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

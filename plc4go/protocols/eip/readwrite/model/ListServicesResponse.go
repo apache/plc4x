@@ -54,6 +54,16 @@ type _ListServicesResponse struct {
 var _ ListServicesResponse = (*_ListServicesResponse)(nil)
 var _ EipPacketRequirements = (*_ListServicesResponse)(nil)
 
+// NewListServicesResponse factory function for _ListServicesResponse
+func NewListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, typeIds []TypeId) *_ListServicesResponse {
+	_result := &_ListServicesResponse{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ListServicesResponse) GetTypeIds() []TypeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListServicesResponse factory function for _ListServicesResponse
-func NewListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, typeIds []TypeId) *_ListServicesResponse {
-	_result := &_ListServicesResponse{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastListServicesResponse(structType any) ListServicesResponse {

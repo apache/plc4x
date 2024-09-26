@@ -63,6 +63,14 @@ type _BACnetAccessAuthenticationFactorDisableTagged struct {
 
 var _ BACnetAccessAuthenticationFactorDisableTagged = (*_BACnetAccessAuthenticationFactorDisableTagged)(nil)
 
+// NewBACnetAccessAuthenticationFactorDisableTagged factory function for _BACnetAccessAuthenticationFactorDisableTagged
+func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessAuthenticationFactorDisableTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessAuthenticationFactorDisableTagged must not be nil")
+	}
+	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetIsProprietary() bool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessAuthenticationFactorDisableTagged factory function for _BACnetAccessAuthenticationFactorDisableTagged
-func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessAuthenticationFactorDisableTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessAuthenticationFactorDisableTagged must not be nil")
-	}
-	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessAuthenticationFactorDisableTagged(structType any) BACnetAccessAuthenticationFactorDisableTagged {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataGlobalIdentifier struct {
 var _ BACnetConstructedDataGlobalIdentifier = (*_BACnetConstructedDataGlobalIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalIdentifier)(nil)
 
+// NewBACnetConstructedDataGlobalIdentifier factory function for _BACnetConstructedDataGlobalIdentifier
+func NewBACnetConstructedDataGlobalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, globalIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
+	if globalIdentifier == nil {
+		panic("globalIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGlobalIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataGlobalIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		GlobalIdentifier:              globalIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataGlobalIdentifier) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGlobalIdentifier factory function for _BACnetConstructedDataGlobalIdentifier
-func NewBACnetConstructedDataGlobalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, globalIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalIdentifier {
-	if globalIdentifier == nil {
-		panic("globalIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataGlobalIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataGlobalIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		GlobalIdentifier:              globalIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGlobalIdentifier(structType any) BACnetConstructedDataGlobalIdentifier {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataActualShedLevel struct {
 var _ BACnetConstructedDataActualShedLevel = (*_BACnetConstructedDataActualShedLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActualShedLevel)(nil)
 
+// NewBACnetConstructedDataActualShedLevel factory function for _BACnetConstructedDataActualShedLevel
+func NewBACnetConstructedDataActualShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, actualShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActualShedLevel {
+	if actualShedLevel == nil {
+		panic("actualShedLevel of type BACnetShedLevel for BACnetConstructedDataActualShedLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataActualShedLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActualShedLevel:               actualShedLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataActualShedLevel) GetActualValue() BACnetShedLevel
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActualShedLevel factory function for _BACnetConstructedDataActualShedLevel
-func NewBACnetConstructedDataActualShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, actualShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActualShedLevel {
-	if actualShedLevel == nil {
-		panic("actualShedLevel of type BACnetShedLevel for BACnetConstructedDataActualShedLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataActualShedLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActualShedLevel:               actualShedLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActualShedLevel(structType any) BACnetConstructedDataActualShedLevel {

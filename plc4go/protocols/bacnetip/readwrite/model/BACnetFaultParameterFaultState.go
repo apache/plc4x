@@ -60,6 +60,27 @@ type _BACnetFaultParameterFaultState struct {
 var _ BACnetFaultParameterFaultState = (*_BACnetFaultParameterFaultState)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultState)(nil)
 
+// NewBACnetFaultParameterFaultState factory function for _BACnetFaultParameterFaultState
+func NewBACnetFaultParameterFaultState(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultState {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultState must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultStateListOfFaultValues for BACnetFaultParameterFaultState must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultState must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultState{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -95,27 +116,6 @@ func (m *_BACnetFaultParameterFaultState) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultState factory function for _BACnetFaultParameterFaultState
-func NewBACnetFaultParameterFaultState(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultState {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultState must not be nil")
-	}
-	if listOfFaultValues == nil {
-		panic("listOfFaultValues of type BACnetFaultParameterFaultStateListOfFaultValues for BACnetFaultParameterFaultState must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultState must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultState{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfFaultValues:            listOfFaultValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultState(structType any) BACnetFaultParameterFaultState {

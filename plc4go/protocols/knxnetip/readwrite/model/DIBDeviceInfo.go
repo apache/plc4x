@@ -75,6 +75,26 @@ type _DIBDeviceInfo struct {
 
 var _ DIBDeviceInfo = (*_DIBDeviceInfo)(nil)
 
+// NewDIBDeviceInfo factory function for _DIBDeviceInfo
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
+	if deviceStatus == nil {
+		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
+	}
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
+	}
+	if projectInstallationIdentifier == nil {
+		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMulticastAddress == nil {
+		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMacAddress == nil {
+		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
+	}
+	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -120,26 +140,6 @@ func (m *_DIBDeviceInfo) GetDeviceFriendlyName() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDIBDeviceInfo factory function for _DIBDeviceInfo
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
-	if deviceStatus == nil {
-		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
-	}
-	if knxAddress == nil {
-		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
-	}
-	if projectInstallationIdentifier == nil {
-		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMulticastAddress == nil {
-		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMacAddress == nil {
-		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
-	}
-	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDIBDeviceInfo(structType any) DIBDeviceInfo {

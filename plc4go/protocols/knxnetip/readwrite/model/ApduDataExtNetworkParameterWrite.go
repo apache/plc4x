@@ -49,6 +49,15 @@ type _ApduDataExtNetworkParameterWrite struct {
 var _ ApduDataExtNetworkParameterWrite = (*_ApduDataExtNetworkParameterWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterWrite)(nil)
 
+// NewApduDataExtNetworkParameterWrite factory function for _ApduDataExtNetworkParameterWrite
+func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParameterWrite {
+	_result := &_ApduDataExtNetworkParameterWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtNetworkParameterWrite) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtNetworkParameterWrite) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtNetworkParameterWrite factory function for _ApduDataExtNetworkParameterWrite
-func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParameterWrite {
-	_result := &_ApduDataExtNetworkParameterWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

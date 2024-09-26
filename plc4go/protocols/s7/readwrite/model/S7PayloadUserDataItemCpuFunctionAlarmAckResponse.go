@@ -57,6 +57,17 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckResponse struct {
 var _ S7PayloadUserDataItemCpuFunctionAlarmAckResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmAckResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmAckResponse)(nil)
 
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, functionId uint8, messageObjects []uint8) *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		FunctionId:                    functionId,
+		MessageObjects:                messageObjects,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,17 +111,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) GetMessageObjects() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, functionId uint8, messageObjects []uint8) *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		FunctionId:                    functionId,
-		MessageObjects:                messageObjects,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmAckResponse {

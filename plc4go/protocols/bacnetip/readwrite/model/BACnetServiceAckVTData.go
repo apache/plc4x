@@ -60,6 +60,27 @@ type _BACnetServiceAckVTData struct {
 var _ BACnetServiceAckVTData = (*_BACnetServiceAckVTData)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckVTData)(nil)
 
+// NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
+func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
+	if vtSessionIdentifier == nil {
+		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
+	}
+	if vtNewData == nil {
+		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetServiceAckVTData must not be nil")
+	}
+	if vtDataFlag == nil {
+		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
+	}
+	_result := &_BACnetServiceAckVTData{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		VtSessionIdentifier:      vtSessionIdentifier,
+		VtNewData:                vtNewData,
+		VtDataFlag:               vtDataFlag,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,27 +120,6 @@ func (m *_BACnetServiceAckVTData) GetVtDataFlag() BACnetApplicationTagUnsignedIn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckVTData factory function for _BACnetServiceAckVTData
-func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceAckLength uint32) *_BACnetServiceAckVTData {
-	if vtSessionIdentifier == nil {
-		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
-	}
-	if vtNewData == nil {
-		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetServiceAckVTData must not be nil")
-	}
-	if vtDataFlag == nil {
-		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetServiceAckVTData must not be nil")
-	}
-	_result := &_BACnetServiceAckVTData{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		VtSessionIdentifier:      vtSessionIdentifier,
-		VtNewData:                vtNewData,
-		VtDataFlag:               vtDataFlag,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckVTData(structType any) BACnetServiceAckVTData {

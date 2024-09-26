@@ -57,6 +57,17 @@ type _HistoryEvent struct {
 var _ HistoryEvent = (*_HistoryEvent)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEvent)(nil)
 
+// NewHistoryEvent factory function for _HistoryEvent
+func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
+	_result := &_HistoryEvent{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEvents:                        noOfEvents,
+		Events:                            events,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_HistoryEvent) GetEvents() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryEvent factory function for _HistoryEvent
-func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
-	_result := &_HistoryEvent{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
-		Events:                            events,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryEvent(structType any) HistoryEvent {

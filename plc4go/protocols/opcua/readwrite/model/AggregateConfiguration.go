@@ -69,6 +69,20 @@ type _AggregateConfiguration struct {
 var _ AggregateConfiguration = (*_AggregateConfiguration)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AggregateConfiguration)(nil)
 
+// NewAggregateConfiguration factory function for _AggregateConfiguration
+func NewAggregateConfiguration(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) *_AggregateConfiguration {
+	_result := &_AggregateConfiguration{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		TreatUncertainAsBad:               treatUncertainAsBad,
+		UseServerCapabilitiesDefaults:     useServerCapabilitiesDefaults,
+		PercentDataBad:                    percentDataBad,
+		PercentDataGood:                   percentDataGood,
+		UseSlopedExtrapolation:            useSlopedExtrapolation,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,20 +130,6 @@ func (m *_AggregateConfiguration) GetUseSlopedExtrapolation() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAggregateConfiguration factory function for _AggregateConfiguration
-func NewAggregateConfiguration(treatUncertainAsBad bool, useServerCapabilitiesDefaults bool, percentDataBad uint8, percentDataGood uint8, useSlopedExtrapolation bool) *_AggregateConfiguration {
-	_result := &_AggregateConfiguration{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		TreatUncertainAsBad:               treatUncertainAsBad,
-		UseServerCapabilitiesDefaults:     useServerCapabilitiesDefaults,
-		PercentDataBad:                    percentDataBad,
-		PercentDataGood:                   percentDataGood,
-		UseSlopedExtrapolation:            useSlopedExtrapolation,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAggregateConfiguration(structType any) AggregateConfiguration {

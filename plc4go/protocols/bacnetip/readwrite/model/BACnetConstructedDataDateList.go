@@ -54,6 +54,16 @@ type _BACnetConstructedDataDateList struct {
 var _ BACnetConstructedDataDateList = (*_BACnetConstructedDataDateList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateList)(nil)
 
+// NewBACnetConstructedDataDateList factory function for _BACnetConstructedDataDateList
+func NewBACnetConstructedDataDateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateList []BACnetCalendarEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateList {
+	_result := &_BACnetConstructedDataDateList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DateList:                      dateList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_BACnetConstructedDataDateList) GetDateList() []BACnetCalendarEntry {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDateList factory function for _BACnetConstructedDataDateList
-func NewBACnetConstructedDataDateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateList []BACnetCalendarEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateList {
-	_result := &_BACnetConstructedDataDateList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DateList:                      dateList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDateList(structType any) BACnetConstructedDataDateList {

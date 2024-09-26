@@ -56,6 +56,19 @@ type _BACnetConstructedDataAuthenticationStatus struct {
 var _ BACnetConstructedDataAuthenticationStatus = (*_BACnetConstructedDataAuthenticationStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAuthenticationStatus)(nil)
 
+// NewBACnetConstructedDataAuthenticationStatus factory function for _BACnetConstructedDataAuthenticationStatus
+func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authenticationStatus BACnetAuthenticationStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationStatus {
+	if authenticationStatus == nil {
+		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetConstructedDataAuthenticationStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataAuthenticationStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AuthenticationStatus:          authenticationStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAuthenticationStatus) GetActualValue() BACnetAuth
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAuthenticationStatus factory function for _BACnetConstructedDataAuthenticationStatus
-func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, authenticationStatus BACnetAuthenticationStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAuthenticationStatus {
-	if authenticationStatus == nil {
-		panic("authenticationStatus of type BACnetAuthenticationStatusTagged for BACnetConstructedDataAuthenticationStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataAuthenticationStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AuthenticationStatus:          authenticationStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAuthenticationStatus(structType any) BACnetConstructedDataAuthenticationStatus {

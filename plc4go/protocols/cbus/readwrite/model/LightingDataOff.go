@@ -54,6 +54,16 @@ type _LightingDataOff struct {
 var _ LightingDataOff = (*_LightingDataOff)(nil)
 var _ LightingDataRequirements = (*_LightingDataOff)(nil)
 
+// NewLightingDataOff factory function for _LightingDataOff
+func NewLightingDataOff(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataOff {
+	_result := &_LightingDataOff{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_LightingDataOff) GetGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataOff factory function for _LightingDataOff
-func NewLightingDataOff(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataOff {
-	_result := &_LightingDataOff{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataOff(structType any) LightingDataOff {

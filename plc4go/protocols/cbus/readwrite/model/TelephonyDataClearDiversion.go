@@ -49,6 +49,15 @@ type _TelephonyDataClearDiversion struct {
 var _ TelephonyDataClearDiversion = (*_TelephonyDataClearDiversion)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
+// NewTelephonyDataClearDiversion factory function for _TelephonyDataClearDiversion
+func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataClearDiversion {
+	_result := &_TelephonyDataClearDiversion{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ TelephonyDataRequirements = (*_TelephonyDataClearDiversion)(nil)
 
 func (m *_TelephonyDataClearDiversion) GetParent() TelephonyDataContract {
 	return m.TelephonyDataContract
-}
-
-// NewTelephonyDataClearDiversion factory function for _TelephonyDataClearDiversion
-func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataClearDiversion {
-	_result := &_TelephonyDataClearDiversion{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

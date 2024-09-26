@@ -49,6 +49,15 @@ type _AnonymousIdentityToken struct {
 var _ AnonymousIdentityToken = (*_AnonymousIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
 
+// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
+func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
+	_result := &_AnonymousIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_AnonymousIdentityToken) GetIdentifier() string {
 
 func (m *_AnonymousIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
 	return m.UserIdentityTokenDefinitionContract
-}
-
-// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
-func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
-	_result := &_AnonymousIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

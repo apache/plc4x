@@ -63,6 +63,19 @@ type _PubSubConfigurationRefDataType struct {
 var _ PubSubConfigurationRefDataType = (*_PubSubConfigurationRefDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubConfigurationRefDataType)(nil)
 
+// NewPubSubConfigurationRefDataType factory function for _PubSubConfigurationRefDataType
+func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) *_PubSubConfigurationRefDataType {
+	_result := &_PubSubConfigurationRefDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ConfigurationMask:                 configurationMask,
+		ElementIndex:                      elementIndex,
+		ConnectionIndex:                   connectionIndex,
+		GroupIndex:                        groupIndex,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_PubSubConfigurationRefDataType) GetGroupIndex() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubConfigurationRefDataType factory function for _PubSubConfigurationRefDataType
-func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) *_PubSubConfigurationRefDataType {
-	_result := &_PubSubConfigurationRefDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ConfigurationMask:                 configurationMask,
-		ElementIndex:                      elementIndex,
-		ConnectionIndex:                   connectionIndex,
-		GroupIndex:                        groupIndex,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubConfigurationRefDataType(structType any) PubSubConfigurationRefDataType {

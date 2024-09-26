@@ -54,6 +54,19 @@ type _BACnetTimeStampDateTime struct {
 var _ BACnetTimeStampDateTime = (*_BACnetTimeStampDateTime)(nil)
 var _ BACnetTimeStampRequirements = (*_BACnetTimeStampDateTime)(nil)
 
+// NewBACnetTimeStampDateTime factory function for _BACnetTimeStampDateTime
+func NewBACnetTimeStampDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed) *_BACnetTimeStampDateTime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetTimeStampDateTime must not be nil")
+	}
+	_result := &_BACnetTimeStampDateTime{
+		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
+		DateTimeValue:           dateTimeValue,
+	}
+	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimeStampDateTime) GetDateTimeValue() BACnetDateTimeEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStampDateTime factory function for _BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed) *_BACnetTimeStampDateTime {
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetTimeStampDateTime must not be nil")
-	}
-	_result := &_BACnetTimeStampDateTime{
-		BACnetTimeStampContract: NewBACnetTimeStamp(peekedTagHeader),
-		DateTimeValue:           dateTimeValue,
-	}
-	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStampDateTime(structType any) BACnetTimeStampDateTime {

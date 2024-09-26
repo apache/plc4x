@@ -66,6 +66,20 @@ type _SessionlessInvokeResponseType struct {
 var _ SessionlessInvokeResponseType = (*_SessionlessInvokeResponseType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeResponseType)(nil)
 
+// NewSessionlessInvokeResponseType factory function for _SessionlessInvokeResponseType
+func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
+	_result := &_SessionlessInvokeResponseType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfNamespaceUris:                 noOfNamespaceUris,
+		NamespaceUris:                     namespaceUris,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+		ServiceId:                         serviceId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,20 +127,6 @@ func (m *_SessionlessInvokeResponseType) GetServiceId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSessionlessInvokeResponseType factory function for _SessionlessInvokeResponseType
-func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
-	_result := &_SessionlessInvokeResponseType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaceUris:                 noOfNamespaceUris,
-		NamespaceUris:                     namespaceUris,
-		NoOfServerUris:                    noOfServerUris,
-		ServerUris:                        serverUris,
-		ServiceId:                         serviceId,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSessionlessInvokeResponseType(structType any) SessionlessInvokeResponseType {

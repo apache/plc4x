@@ -57,6 +57,16 @@ type _BACnetConfirmedServiceRequestAuthenticate struct {
 var _ BACnetConfirmedServiceRequestAuthenticate = (*_BACnetConfirmedServiceRequestAuthenticate)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAuthenticate)(nil)
 
+// NewBACnetConfirmedServiceRequestAuthenticate factory function for _BACnetConfirmedServiceRequestAuthenticate
+func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAuthenticate {
+	_result := &_BACnetConfirmedServiceRequestAuthenticate{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		BytesOfRemovedService:                 bytesOfRemovedService,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,16 +98,6 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) GetBytesOfRemovedService() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAuthenticate factory function for _BACnetConfirmedServiceRequestAuthenticate
-func NewBACnetConfirmedServiceRequestAuthenticate(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAuthenticate {
-	_result := &_BACnetConfirmedServiceRequestAuthenticate{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		BytesOfRemovedService:                 bytesOfRemovedService,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAuthenticate(structType any) BACnetConfirmedServiceRequestAuthenticate {

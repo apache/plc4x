@@ -60,6 +60,21 @@ type _PublishRequest struct {
 var _ PublishRequest = (*_PublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishRequest)(nil)
 
+// NewPublishRequest factory function for _PublishRequest
+func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
+	}
+	_result := &_PublishRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
+		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_PublishRequest) GetSubscriptionAcknowledgements() []ExtensionObjectDef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPublishRequest factory function for _PublishRequest
-func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
-	}
-	_result := &_PublishRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
-		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPublishRequest(structType any) PublishRequest {

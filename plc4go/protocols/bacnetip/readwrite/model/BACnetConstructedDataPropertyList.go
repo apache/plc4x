@@ -59,6 +59,17 @@ type _BACnetConstructedDataPropertyList struct {
 var _ BACnetConstructedDataPropertyList = (*_BACnetConstructedDataPropertyList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPropertyList)(nil)
 
+// NewBACnetConstructedDataPropertyList factory function for _BACnetConstructedDataPropertyList
+func NewBACnetConstructedDataPropertyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, propertyList []BACnetPropertyIdentifierTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPropertyList {
+	_result := &_BACnetConstructedDataPropertyList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		PropertyList:                  propertyList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataPropertyList) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPropertyList factory function for _BACnetConstructedDataPropertyList
-func NewBACnetConstructedDataPropertyList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, propertyList []BACnetPropertyIdentifierTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPropertyList {
-	_result := &_BACnetConstructedDataPropertyList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		PropertyList:                  propertyList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPropertyList(structType any) BACnetConstructedDataPropertyList {

@@ -78,6 +78,45 @@ type _CreateSessionRequest struct {
 var _ CreateSessionRequest = (*_CreateSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSessionRequest)(nil)
 
+// NewCreateSessionRequest factory function for _CreateSessionRequest
+func NewCreateSessionRequest(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) *_CreateSessionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CreateSessionRequest must not be nil")
+	}
+	if clientDescription == nil {
+		panic("clientDescription of type ExtensionObjectDefinition for CreateSessionRequest must not be nil")
+	}
+	if serverUri == nil {
+		panic("serverUri of type PascalString for CreateSessionRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for CreateSessionRequest must not be nil")
+	}
+	if sessionName == nil {
+		panic("sessionName of type PascalString for CreateSessionRequest must not be nil")
+	}
+	if clientNonce == nil {
+		panic("clientNonce of type PascalByteString for CreateSessionRequest must not be nil")
+	}
+	if clientCertificate == nil {
+		panic("clientCertificate of type PascalByteString for CreateSessionRequest must not be nil")
+	}
+	_result := &_CreateSessionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ClientDescription:                 clientDescription,
+		ServerUri:                         serverUri,
+		EndpointUrl:                       endpointUrl,
+		SessionName:                       sessionName,
+		ClientNonce:                       clientNonce,
+		ClientCertificate:                 clientCertificate,
+		RequestedSessionTimeout:           requestedSessionTimeout,
+		MaxResponseMessageSize:            maxResponseMessageSize,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -141,45 +180,6 @@ func (m *_CreateSessionRequest) GetMaxResponseMessageSize() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSessionRequest factory function for _CreateSessionRequest
-func NewCreateSessionRequest(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) *_CreateSessionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CreateSessionRequest must not be nil")
-	}
-	if clientDescription == nil {
-		panic("clientDescription of type ExtensionObjectDefinition for CreateSessionRequest must not be nil")
-	}
-	if serverUri == nil {
-		panic("serverUri of type PascalString for CreateSessionRequest must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for CreateSessionRequest must not be nil")
-	}
-	if sessionName == nil {
-		panic("sessionName of type PascalString for CreateSessionRequest must not be nil")
-	}
-	if clientNonce == nil {
-		panic("clientNonce of type PascalByteString for CreateSessionRequest must not be nil")
-	}
-	if clientCertificate == nil {
-		panic("clientCertificate of type PascalByteString for CreateSessionRequest must not be nil")
-	}
-	_result := &_CreateSessionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ClientDescription:                 clientDescription,
-		ServerUri:                         serverUri,
-		EndpointUrl:                       endpointUrl,
-		SessionName:                       sessionName,
-		ClientNonce:                       clientNonce,
-		ClientCertificate:                 clientCertificate,
-		RequestedSessionTimeout:           requestedSessionTimeout,
-		MaxResponseMessageSize:            maxResponseMessageSize,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSessionRequest(structType any) CreateSessionRequest {

@@ -66,6 +66,25 @@ type _BitFieldDefinition struct {
 var _ BitFieldDefinition = (*_BitFieldDefinition)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BitFieldDefinition)(nil)
 
+// NewBitFieldDefinition factory function for _BitFieldDefinition
+func NewBitFieldDefinition(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) *_BitFieldDefinition {
+	if name == nil {
+		panic("name of type PascalString for BitFieldDefinition must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for BitFieldDefinition must not be nil")
+	}
+	_result := &_BitFieldDefinition{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		Description:                       description,
+		StartingBitPosition:               startingBitPosition,
+		EndingBitPosition:                 endingBitPosition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,25 +128,6 @@ func (m *_BitFieldDefinition) GetEndingBitPosition() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBitFieldDefinition factory function for _BitFieldDefinition
-func NewBitFieldDefinition(name PascalString, description LocalizedText, startingBitPosition uint32, endingBitPosition uint32) *_BitFieldDefinition {
-	if name == nil {
-		panic("name of type PascalString for BitFieldDefinition must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for BitFieldDefinition must not be nil")
-	}
-	_result := &_BitFieldDefinition{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		Description:                       description,
-		StartingBitPosition:               startingBitPosition,
-		EndingBitPosition:                 endingBitPosition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBitFieldDefinition(structType any) BitFieldDefinition {

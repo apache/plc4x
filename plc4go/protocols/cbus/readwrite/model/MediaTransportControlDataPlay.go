@@ -49,6 +49,15 @@ type _MediaTransportControlDataPlay struct {
 var _ MediaTransportControlDataPlay = (*_MediaTransportControlDataPlay)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPlay)(nil)
 
+// NewMediaTransportControlDataPlay factory function for _MediaTransportControlDataPlay
+func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPlay {
+	_result := &_MediaTransportControlDataPlay{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataPlay)(
 
 func (m *_MediaTransportControlDataPlay) GetParent() MediaTransportControlDataContract {
 	return m.MediaTransportControlDataContract
-}
-
-// NewMediaTransportControlDataPlay factory function for _MediaTransportControlDataPlay
-func NewMediaTransportControlDataPlay(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPlay {
-	_result := &_MediaTransportControlDataPlay{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

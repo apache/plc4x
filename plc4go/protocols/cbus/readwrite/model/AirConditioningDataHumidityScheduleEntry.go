@@ -75,6 +75,32 @@ type _AirConditioningDataHumidityScheduleEntry struct {
 var _ AirConditioningDataHumidityScheduleEntry = (*_AirConditioningDataHumidityScheduleEntry)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataHumidityScheduleEntry)(nil)
 
+// NewAirConditioningDataHumidityScheduleEntry factory function for _AirConditioningDataHumidityScheduleEntry
+func NewAirConditioningDataHumidityScheduleEntry(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime, level HVACHumidity, rawLevel HVACRawLevels) *_AirConditioningDataHumidityScheduleEntry {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	if humidityModeAndFlags == nil {
+		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	if startTime == nil {
+		panic("startTime of type HVACStartTime for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	_result := &_AirConditioningDataHumidityScheduleEntry{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Entry:                       entry,
+		Format:                      format,
+		HumidityModeAndFlags:        humidityModeAndFlags,
+		StartTime:                   startTime,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -130,32 +156,6 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetRawLevel() HVACRawLevels 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataHumidityScheduleEntry factory function for _AirConditioningDataHumidityScheduleEntry
-func NewAirConditioningDataHumidityScheduleEntry(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime, level HVACHumidity, rawLevel HVACRawLevels) *_AirConditioningDataHumidityScheduleEntry {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	if humidityModeAndFlags == nil {
-		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	if startTime == nil {
-		panic("startTime of type HVACStartTime for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	_result := &_AirConditioningDataHumidityScheduleEntry{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Entry:                       entry,
-		Format:                      format,
-		HumidityModeAndFlags:        humidityModeAndFlags,
-		StartTime:                   startTime,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataHumidityScheduleEntry(structType any) AirConditioningDataHumidityScheduleEntry {

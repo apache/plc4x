@@ -54,6 +54,19 @@ type _BACnetPropertyStatesExtendedValue struct {
 var _ BACnetPropertyStatesExtendedValue = (*_BACnetPropertyStatesExtendedValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesExtendedValue)(nil)
 
+// NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
+func NewBACnetPropertyStatesExtendedValue(peekedTagHeader BACnetTagHeader, extendedValue BACnetContextTagUnsignedInteger) *_BACnetPropertyStatesExtendedValue {
+	if extendedValue == nil {
+		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesExtendedValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ExtendedValue:                extendedValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesExtendedValue) GetExtendedValue() BACnetContextTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesExtendedValue factory function for _BACnetPropertyStatesExtendedValue
-func NewBACnetPropertyStatesExtendedValue(peekedTagHeader BACnetTagHeader, extendedValue BACnetContextTagUnsignedInteger) *_BACnetPropertyStatesExtendedValue {
-	if extendedValue == nil {
-		panic("extendedValue of type BACnetContextTagUnsignedInteger for BACnetPropertyStatesExtendedValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesExtendedValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ExtendedValue:                extendedValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesExtendedValue(structType any) BACnetPropertyStatesExtendedValue {

@@ -70,6 +70,11 @@ type _DF1Symbol struct {
 
 var _ DF1SymbolContract = (*_DF1Symbol)(nil)
 
+// NewDF1Symbol factory function for _DF1Symbol
+func NewDF1Symbol() *_DF1Symbol {
+	return &_DF1Symbol{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -83,11 +88,6 @@ func (m *_DF1Symbol) GetMessageStart() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1Symbol factory function for _DF1Symbol
-func NewDF1Symbol() *_DF1Symbol {
-	return &_DF1Symbol{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1Symbol(structType any) DF1Symbol {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataCredentialDataInputPresentValue struct {
 var _ BACnetConstructedDataCredentialDataInputPresentValue = (*_BACnetConstructedDataCredentialDataInputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputPresentValue)(nil)
 
+// NewBACnetConstructedDataCredentialDataInputPresentValue factory function for _BACnetConstructedDataCredentialDataInputPresentValue
+func NewBACnetConstructedDataCredentialDataInputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetAuthenticationFactor for BACnetConstructedDataCredentialDataInputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) GetActualValue()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDataInputPresentValue factory function for _BACnetConstructedDataCredentialDataInputPresentValue
-func NewBACnetConstructedDataCredentialDataInputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetAuthenticationFactor for BACnetConstructedDataCredentialDataInputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDataInputPresentValue(structType any) BACnetConstructedDataCredentialDataInputPresentValue {

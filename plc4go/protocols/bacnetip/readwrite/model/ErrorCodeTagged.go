@@ -63,6 +63,14 @@ type _ErrorCodeTagged struct {
 
 var _ ErrorCodeTagged = (*_ErrorCodeTagged)(nil)
 
+// NewErrorCodeTagged factory function for _ErrorCodeTagged
+func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for ErrorCodeTagged must not be nil")
+	}
+	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (m *_ErrorCodeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorCodeTagged factory function for _ErrorCodeTagged
-func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorCodeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for ErrorCodeTagged must not be nil")
-	}
-	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorCodeTagged(structType any) ErrorCodeTagged {

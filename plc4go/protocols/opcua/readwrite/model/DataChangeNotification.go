@@ -63,6 +63,19 @@ type _DataChangeNotification struct {
 var _ DataChangeNotification = (*_DataChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataChangeNotification)(nil)
 
+// NewDataChangeNotification factory function for _DataChangeNotification
+func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
+	_result := &_DataChangeNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfMonitoredItems:                noOfMonitoredItems,
+		MonitoredItems:                    monitoredItems,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_DataChangeNotification) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataChangeNotification factory function for _DataChangeNotification
-func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
-	_result := &_DataChangeNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfMonitoredItems:                noOfMonitoredItems,
-		MonitoredItems:                    monitoredItems,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataChangeNotification(structType any) DataChangeNotification {

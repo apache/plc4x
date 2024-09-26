@@ -54,6 +54,19 @@ type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement st
 var _ BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)(nil)
 var _ BACnetEventParameterChangeOfValueCivCriteriaRequirements = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)(nil)
 
+// NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
+func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+	if referencedPropertyIncrement == nil {
+		panic("referencedPropertyIncrement of type BACnetContextTagReal for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement must not be nil")
+	}
+	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
+		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
+		ReferencedPropertyIncrement:                          referencedPropertyIncrement,
+	}
+	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement factory function for _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencedPropertyIncrement BACnetContextTagReal, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
-	if referencedPropertyIncrement == nil {
-		panic("referencedPropertyIncrement of type BACnetContextTagReal for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement must not be nil")
-	}
-	_result := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		BACnetEventParameterChangeOfValueCivCriteriaContract: NewBACnetEventParameterChangeOfValueCivCriteria(openingTag, peekedTagHeader, closingTag, tagNumber),
-		ReferencedPropertyIncrement:                          referencedPropertyIncrement,
-	}
-	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(structType any) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {

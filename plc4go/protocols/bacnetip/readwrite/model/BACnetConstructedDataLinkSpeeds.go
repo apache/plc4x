@@ -59,6 +59,17 @@ type _BACnetConstructedDataLinkSpeeds struct {
 var _ BACnetConstructedDataLinkSpeeds = (*_BACnetConstructedDataLinkSpeeds)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeeds)(nil)
 
+// NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
+func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
+	_result := &_BACnetConstructedDataLinkSpeeds{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		LinkSpeeds:                    linkSpeeds,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataLinkSpeeds) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLinkSpeeds factory function for _BACnetConstructedDataLinkSpeeds
-func NewBACnetConstructedDataLinkSpeeds(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, linkSpeeds []BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeeds {
-	_result := &_BACnetConstructedDataLinkSpeeds{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		LinkSpeeds:                    linkSpeeds,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLinkSpeeds {

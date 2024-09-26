@@ -56,6 +56,16 @@ type _ConnectionRequestInformationTunnelConnection struct {
 var _ ConnectionRequestInformationTunnelConnection = (*_ConnectionRequestInformationTunnelConnection)(nil)
 var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationTunnelConnection)(nil)
 
+// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
+	_result := &_ConnectionRequestInformationTunnelConnection{
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
+		KnxLayer:                             knxLayer,
+	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,16 +97,6 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetKnxLayer() KnxLayer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
-	_result := &_ConnectionRequestInformationTunnelConnection{
-		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
-		KnxLayer:                             knxLayer,
-	}
-	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequestInformationTunnelConnection(structType any) ConnectionRequestInformationTunnelConnection {

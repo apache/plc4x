@@ -57,6 +57,23 @@ type _PortableQualifiedName struct {
 var _ PortableQualifiedName = (*_PortableQualifiedName)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PortableQualifiedName)(nil)
 
+// NewPortableQualifiedName factory function for _PortableQualifiedName
+func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
+	if namespaceUri == nil {
+		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
+	}
+	if name == nil {
+		panic("name of type PascalString for PortableQualifiedName must not be nil")
+	}
+	_result := &_PortableQualifiedName{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NamespaceUri:                      namespaceUri,
+		Name:                              name,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_PortableQualifiedName) GetName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortableQualifiedName factory function for _PortableQualifiedName
-func NewPortableQualifiedName(namespaceUri PascalString, name PascalString) *_PortableQualifiedName {
-	if namespaceUri == nil {
-		panic("namespaceUri of type PascalString for PortableQualifiedName must not be nil")
-	}
-	if name == nil {
-		panic("name of type PascalString for PortableQualifiedName must not be nil")
-	}
-	_result := &_PortableQualifiedName{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NamespaceUri:                      namespaceUri,
-		Name:                              name,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortableQualifiedName(structType any) PortableQualifiedName {

@@ -60,6 +60,11 @@ type _SerialNumber struct {
 
 var _ SerialNumber = (*_SerialNumber)(nil)
 
+// NewSerialNumber factory function for _SerialNumber
+func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
+	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,11 +90,6 @@ func (m *_SerialNumber) GetOctet4() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSerialNumber factory function for _SerialNumber
-func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
-	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSerialNumber(structType any) SerialNumber {

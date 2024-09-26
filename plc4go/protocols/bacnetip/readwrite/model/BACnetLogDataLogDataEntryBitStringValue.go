@@ -54,6 +54,19 @@ type _BACnetLogDataLogDataEntryBitStringValue struct {
 var _ BACnetLogDataLogDataEntryBitStringValue = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
 
+// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
+func NewBACnetLogDataLogDataEntryBitStringValue(peekedTagHeader BACnetTagHeader, bitStringValue BACnetContextTagBitString) *_BACnetLogDataLogDataEntryBitStringValue {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryBitStringValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BitStringValue:                    bitStringValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) GetBitStringValue() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
-func NewBACnetLogDataLogDataEntryBitStringValue(peekedTagHeader BACnetTagHeader, bitStringValue BACnetContextTagBitString) *_BACnetLogDataLogDataEntryBitStringValue {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryBitStringValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		BitStringValue:                    bitStringValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryBitStringValue(structType any) BACnetLogDataLogDataEntryBitStringValue {

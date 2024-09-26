@@ -51,6 +51,11 @@ type _Alpha struct {
 
 var _ Alpha = (*_Alpha)(nil)
 
+// NewAlpha factory function for _Alpha
+func NewAlpha(character byte) *_Alpha {
+	return &_Alpha{Character: character}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_Alpha) GetCharacter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlpha factory function for _Alpha
-func NewAlpha(character byte) *_Alpha {
-	return &_Alpha{Character: character}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlpha(structType any) Alpha {

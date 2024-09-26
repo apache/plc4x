@@ -69,6 +69,39 @@ type _BACnetEventParameterSignedOutOfRange struct {
 var _ BACnetEventParameterSignedOutOfRange = (*_BACnetEventParameterSignedOutOfRange)(nil)
 var _ BACnetEventParameterRequirements = (*_BACnetEventParameterSignedOutOfRange)(nil)
 
+// NewBACnetEventParameterSignedOutOfRange factory function for _BACnetEventParameterSignedOutOfRange
+func NewBACnetEventParameterSignedOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagSignedInteger, highLimit BACnetContextTagSignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterSignedOutOfRange {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if timeDelay == nil {
+		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if highLimit == nil {
+		panic("highLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterSignedOutOfRange must not be nil")
+	}
+	_result := &_BACnetEventParameterSignedOutOfRange{
+		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		TimeDelay:                    timeDelay,
+		LowLimit:                     lowLimit,
+		HighLimit:                    highLimit,
+		Deadband:                     deadband,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,39 +149,6 @@ func (m *_BACnetEventParameterSignedOutOfRange) GetClosingTag() BACnetClosingTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterSignedOutOfRange factory function for _BACnetEventParameterSignedOutOfRange
-func NewBACnetEventParameterSignedOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagSignedInteger, highLimit BACnetContextTagSignedInteger, deadband BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterSignedOutOfRange {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	if timeDelay == nil {
-		panic("timeDelay of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	if highLimit == nil {
-		panic("highLimit of type BACnetContextTagSignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagUnsignedInteger for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterSignedOutOfRange must not be nil")
-	}
-	_result := &_BACnetEventParameterSignedOutOfRange{
-		BACnetEventParameterContract: NewBACnetEventParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		TimeDelay:                    timeDelay,
-		LowLimit:                     lowLimit,
-		HighLimit:                    highLimit,
-		Deadband:                     deadband,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterSignedOutOfRange(structType any) BACnetEventParameterSignedOutOfRange {

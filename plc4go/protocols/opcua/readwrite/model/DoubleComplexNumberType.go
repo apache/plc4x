@@ -57,6 +57,17 @@ type _DoubleComplexNumberType struct {
 var _ DoubleComplexNumberType = (*_DoubleComplexNumberType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DoubleComplexNumberType)(nil)
 
+// NewDoubleComplexNumberType factory function for _DoubleComplexNumberType
+func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplexNumberType {
+	_result := &_DoubleComplexNumberType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Real:                              real,
+		Imaginary:                         imaginary,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_DoubleComplexNumberType) GetImaginary() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDoubleComplexNumberType factory function for _DoubleComplexNumberType
-func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplexNumberType {
-	_result := &_DoubleComplexNumberType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Real:                              real,
-		Imaginary:                         imaginary,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDoubleComplexNumberType(structType any) DoubleComplexNumberType {

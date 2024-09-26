@@ -54,6 +54,19 @@ type _BACnetRecipientDevice struct {
 var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
 var _ BACnetRecipientRequirements = (*_BACnetRecipientDevice)(nil)
 
+// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
+func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACnetContextTagObjectIdentifier) *_BACnetRecipientDevice {
+	if deviceValue == nil {
+		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
+	}
+	_result := &_BACnetRecipientDevice{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		DeviceValue:             deviceValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetRecipientDevice) GetDeviceValue() BACnetContextTagObjectIdentifi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
-func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACnetContextTagObjectIdentifier) *_BACnetRecipientDevice {
-	if deviceValue == nil {
-		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
-	}
-	_result := &_BACnetRecipientDevice{
-		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
-		DeviceValue:             deviceValue,
-	}
-	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientDevice(structType any) BACnetRecipientDevice {

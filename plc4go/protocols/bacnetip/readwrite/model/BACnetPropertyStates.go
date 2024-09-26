@@ -70,6 +70,14 @@ type _BACnetPropertyStates struct {
 
 var _ BACnetPropertyStatesContract = (*_BACnetPropertyStates)(nil)
 
+// NewBACnetPropertyStates factory function for _BACnetPropertyStates
+func NewBACnetPropertyStates(peekedTagHeader BACnetTagHeader) *_BACnetPropertyStates {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyStates must not be nil")
+	}
+	return &_BACnetPropertyStates{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetPropertyStates) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStates factory function for _BACnetPropertyStates
-func NewBACnetPropertyStates(peekedTagHeader BACnetTagHeader) *_BACnetPropertyStates {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetPropertyStates must not be nil")
-	}
-	return &_BACnetPropertyStates{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStates(structType any) BACnetPropertyStates {

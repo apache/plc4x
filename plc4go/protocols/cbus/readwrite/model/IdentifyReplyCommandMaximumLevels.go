@@ -54,6 +54,16 @@ type _IdentifyReplyCommandMaximumLevels struct {
 var _ IdentifyReplyCommandMaximumLevels = (*_IdentifyReplyCommandMaximumLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMaximumLevels)(nil)
 
+// NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
+func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
+	_result := &_IdentifyReplyCommandMaximumLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		MaximumLevels:                maximumLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetMaximumLevels() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
-	_result := &_IdentifyReplyCommandMaximumLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		MaximumLevels:                maximumLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandMaximumLevels(structType any) IdentifyReplyCommandMaximumLevels {

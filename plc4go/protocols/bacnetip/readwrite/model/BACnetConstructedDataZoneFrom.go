@@ -56,6 +56,19 @@ type _BACnetConstructedDataZoneFrom struct {
 var _ BACnetConstructedDataZoneFrom = (*_BACnetConstructedDataZoneFrom)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneFrom)(nil)
 
+// NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
+func NewBACnetConstructedDataZoneFrom(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneFrom BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
+	if zoneFrom == nil {
+		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
+	}
+	_result := &_BACnetConstructedDataZoneFrom{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ZoneFrom:                      zoneFrom,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataZoneFrom) GetActualValue() BACnetDeviceObjectRefe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataZoneFrom factory function for _BACnetConstructedDataZoneFrom
-func NewBACnetConstructedDataZoneFrom(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneFrom BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneFrom {
-	if zoneFrom == nil {
-		panic("zoneFrom of type BACnetDeviceObjectReference for BACnetConstructedDataZoneFrom must not be nil")
-	}
-	_result := &_BACnetConstructedDataZoneFrom{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ZoneFrom:                      zoneFrom,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataZoneFrom(structType any) BACnetConstructedDataZoneFrom {

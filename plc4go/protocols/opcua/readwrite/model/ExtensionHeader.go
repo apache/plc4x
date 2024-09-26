@@ -56,6 +56,11 @@ type _ExtensionHeader struct {
 
 var _ ExtensionHeader = (*_ExtensionHeader)(nil)
 
+// NewExtensionHeader factory function for _ExtensionHeader
+func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
+	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +78,6 @@ func (m *_ExtensionHeader) GetBinaryBody() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionHeader factory function for _ExtensionHeader
-func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
-	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionHeader(structType any) ExtensionHeader {

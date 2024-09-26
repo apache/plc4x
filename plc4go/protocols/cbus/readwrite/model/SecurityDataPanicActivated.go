@@ -49,6 +49,15 @@ type _SecurityDataPanicActivated struct {
 var _ SecurityDataPanicActivated = (*_SecurityDataPanicActivated)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataPanicActivated)(nil)
 
+// NewSecurityDataPanicActivated factory function for _SecurityDataPanicActivated
+func NewSecurityDataPanicActivated(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPanicActivated {
+	_result := &_SecurityDataPanicActivated{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataPanicActivated)(nil)
 
 func (m *_SecurityDataPanicActivated) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataPanicActivated factory function for _SecurityDataPanicActivated
-func NewSecurityDataPanicActivated(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPanicActivated {
-	_result := &_SecurityDataPanicActivated{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

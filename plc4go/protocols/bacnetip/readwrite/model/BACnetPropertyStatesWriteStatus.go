@@ -54,6 +54,19 @@ type _BACnetPropertyStatesWriteStatus struct {
 var _ BACnetPropertyStatesWriteStatus = (*_BACnetPropertyStatesWriteStatus)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesWriteStatus)(nil)
 
+// NewBACnetPropertyStatesWriteStatus factory function for _BACnetPropertyStatesWriteStatus
+func NewBACnetPropertyStatesWriteStatus(peekedTagHeader BACnetTagHeader, writeStatus BACnetWriteStatusTagged) *_BACnetPropertyStatesWriteStatus {
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetPropertyStatesWriteStatus must not be nil")
+	}
+	_result := &_BACnetPropertyStatesWriteStatus{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		WriteStatus:                  writeStatus,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesWriteStatus) GetWriteStatus() BACnetWriteStatusTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesWriteStatus factory function for _BACnetPropertyStatesWriteStatus
-func NewBACnetPropertyStatesWriteStatus(peekedTagHeader BACnetTagHeader, writeStatus BACnetWriteStatusTagged) *_BACnetPropertyStatesWriteStatus {
-	if writeStatus == nil {
-		panic("writeStatus of type BACnetWriteStatusTagged for BACnetPropertyStatesWriteStatus must not be nil")
-	}
-	_result := &_BACnetPropertyStatesWriteStatus{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		WriteStatus:                  writeStatus,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesWriteStatus(structType any) BACnetPropertyStatesWriteStatus {

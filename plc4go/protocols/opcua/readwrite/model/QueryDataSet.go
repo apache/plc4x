@@ -63,6 +63,25 @@ type _QueryDataSet struct {
 var _ QueryDataSet = (*_QueryDataSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
 
+// NewQueryDataSet factory function for _QueryDataSet
+func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	_result := &_QueryDataSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		TypeDefinitionNode:                typeDefinitionNode,
+		NoOfValues:                        noOfValues,
+		Values:                            values,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_QueryDataSet) GetValues() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryDataSet factory function for _QueryDataSet
-func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
-	if nodeId == nil {
-		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	if typeDefinitionNode == nil {
-		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	_result := &_QueryDataSet{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		TypeDefinitionNode:                typeDefinitionNode,
-		NoOfValues:                        noOfValues,
-		Values:                            values,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryDataSet(structType any) QueryDataSet {

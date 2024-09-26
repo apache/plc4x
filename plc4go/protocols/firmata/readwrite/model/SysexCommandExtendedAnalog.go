@@ -49,6 +49,15 @@ type _SysexCommandExtendedAnalog struct {
 var _ SysexCommandExtendedAnalog = (*_SysexCommandExtendedAnalog)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandExtendedAnalog)(nil)
 
+// NewSysexCommandExtendedAnalog factory function for _SysexCommandExtendedAnalog
+func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
+	_result := &_SysexCommandExtendedAnalog{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_SysexCommandExtendedAnalog) GetResponse() bool {
 
 func (m *_SysexCommandExtendedAnalog) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandExtendedAnalog factory function for _SysexCommandExtendedAnalog
-func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
-	_result := &_SysexCommandExtendedAnalog{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

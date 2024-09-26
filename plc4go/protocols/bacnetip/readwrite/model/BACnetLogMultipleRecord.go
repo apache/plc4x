@@ -54,6 +54,17 @@ type _BACnetLogMultipleRecord struct {
 
 var _ BACnetLogMultipleRecord = (*_BACnetLogMultipleRecord)(nil)
 
+// NewBACnetLogMultipleRecord factory function for _BACnetLogMultipleRecord
+func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) *_BACnetLogMultipleRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogMultipleRecord must not be nil")
+	}
+	if logData == nil {
+		panic("logData of type BACnetLogData for BACnetLogMultipleRecord must not be nil")
+	}
+	return &_BACnetLogMultipleRecord{Timestamp: timestamp, LogData: logData}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetLogMultipleRecord) GetLogData() BACnetLogData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogMultipleRecord factory function for _BACnetLogMultipleRecord
-func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) *_BACnetLogMultipleRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetLogMultipleRecord must not be nil")
-	}
-	if logData == nil {
-		panic("logData of type BACnetLogData for BACnetLogMultipleRecord must not be nil")
-	}
-	return &_BACnetLogMultipleRecord{Timestamp: timestamp, LogData: logData}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogMultipleRecord(structType any) BACnetLogMultipleRecord {

@@ -60,6 +60,27 @@ type _CBusPointToPointCommandIndirect struct {
 var _ CBusPointToPointCommandIndirect = (*_CBusPointToPointCommandIndirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandIndirect)(nil)
 
+// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
+func NewCBusPointToPointCommandIndirect(bridgeAddressCountPeek uint16, calData CALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
+	if bridgeAddress == nil {
+		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandIndirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		BridgeAddress:                   bridgeAddress,
+		NetworkRoute:                    networkRoute,
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -95,27 +116,6 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddressCountPeek uint16, calData CALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
-	if bridgeAddress == nil {
-		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if networkRoute == nil {
-		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	_result := &_CBusPointToPointCommandIndirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
-		BridgeAddress:                   bridgeAddress,
-		NetworkRoute:                    networkRoute,
-		UnitAddress:                     unitAddress,
-	}
-	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommandIndirect(structType any) CBusPointToPointCommandIndirect {

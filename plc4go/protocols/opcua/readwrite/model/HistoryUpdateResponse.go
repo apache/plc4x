@@ -66,6 +66,23 @@ type _HistoryUpdateResponse struct {
 var _ HistoryUpdateResponse = (*_HistoryUpdateResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateResponse)(nil)
 
+// NewHistoryUpdateResponse factory function for _HistoryUpdateResponse
+func NewHistoryUpdateResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for HistoryUpdateResponse must not be nil")
+	}
+	_result := &_HistoryUpdateResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,23 +130,6 @@ func (m *_HistoryUpdateResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryUpdateResponse factory function for _HistoryUpdateResponse
-func NewHistoryUpdateResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryUpdateResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for HistoryUpdateResponse must not be nil")
-	}
-	_result := &_HistoryUpdateResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryUpdateResponse(structType any) HistoryUpdateResponse {

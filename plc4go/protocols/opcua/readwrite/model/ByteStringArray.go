@@ -54,6 +54,11 @@ type _ByteStringArray struct {
 
 var _ ByteStringArray = (*_ByteStringArray)(nil)
 
+// NewByteStringArray factory function for _ByteStringArray
+func NewByteStringArray(arrayLength int32, value []uint8) *_ByteStringArray {
+	return &_ByteStringArray{ArrayLength: arrayLength, Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_ByteStringArray) GetValue() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewByteStringArray factory function for _ByteStringArray
-func NewByteStringArray(arrayLength int32, value []uint8) *_ByteStringArray {
-	return &_ByteStringArray{ArrayLength: arrayLength, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastByteStringArray(structType any) ByteStringArray {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataAutoSlaveDiscovery struct {
 var _ BACnetConstructedDataAutoSlaveDiscovery = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAutoSlaveDiscovery)(nil)
 
+// NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
+func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
+	if autoSlaveDiscovery == nil {
+		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
+	}
+	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AutoSlaveDiscovery:            autoSlaveDiscovery,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAutoSlaveDiscovery) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAutoSlaveDiscovery factory function for _BACnetConstructedDataAutoSlaveDiscovery
-func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, autoSlaveDiscovery BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAutoSlaveDiscovery {
-	if autoSlaveDiscovery == nil {
-		panic("autoSlaveDiscovery of type BACnetApplicationTagBoolean for BACnetConstructedDataAutoSlaveDiscovery must not be nil")
-	}
-	_result := &_BACnetConstructedDataAutoSlaveDiscovery{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AutoSlaveDiscovery:            autoSlaveDiscovery,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAutoSlaveDiscovery(structType any) BACnetConstructedDataAutoSlaveDiscovery {

@@ -66,6 +66,11 @@ type _AmsNetId struct {
 
 var _ AmsNetId = (*_AmsNetId)(nil)
 
+// NewAmsNetId factory function for _AmsNetId
+func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
+	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,11 +104,6 @@ func (m *_AmsNetId) GetOctet6() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsNetId factory function for _AmsNetId
-func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
-	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsNetId(structType any) AmsNetId {

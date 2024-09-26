@@ -66,6 +66,20 @@ type _ApduDataExtPropertyValueWrite struct {
 var _ ApduDataExtPropertyValueWrite = (*_ApduDataExtPropertyValueWrite)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueWrite)(nil)
 
+// NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
+func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
+	_result := &_ApduDataExtPropertyValueWrite{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,20 +127,6 @@ func (m *_ApduDataExtPropertyValueWrite) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueWrite factory function for _ApduDataExtPropertyValueWrite
-func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueWrite {
-	_result := &_ApduDataExtPropertyValueWrite{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueWrite(structType any) ApduDataExtPropertyValueWrite {

@@ -60,6 +60,21 @@ type _AliasNameDataType struct {
 var _ AliasNameDataType = (*_AliasNameDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AliasNameDataType)(nil)
 
+// NewAliasNameDataType factory function for _AliasNameDataType
+func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
+	if aliasName == nil {
+		panic("aliasName of type QualifiedName for AliasNameDataType must not be nil")
+	}
+	_result := &_AliasNameDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AliasName:                         aliasName,
+		NoOfReferencedNodes:               noOfReferencedNodes,
+		ReferencedNodes:                   referencedNodes,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_AliasNameDataType) GetReferencedNodes() []ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAliasNameDataType factory function for _AliasNameDataType
-func NewAliasNameDataType(aliasName QualifiedName, noOfReferencedNodes int32, referencedNodes []ExpandedNodeId) *_AliasNameDataType {
-	if aliasName == nil {
-		panic("aliasName of type QualifiedName for AliasNameDataType must not be nil")
-	}
-	_result := &_AliasNameDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AliasName:                         aliasName,
-		NoOfReferencedNodes:               noOfReferencedNodes,
-		ReferencedNodes:                   referencedNodes,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAliasNameDataType(structType any) AliasNameDataType {

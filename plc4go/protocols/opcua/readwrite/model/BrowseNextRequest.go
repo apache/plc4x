@@ -65,6 +65,22 @@ type _BrowseNextRequest struct {
 var _ BrowseNextRequest = (*_BrowseNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseNextRequest)(nil)
 
+// NewBrowseNextRequest factory function for _BrowseNextRequest
+func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
+	}
+	_result := &_BrowseNextRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ReleaseContinuationPoints:         releaseContinuationPoints,
+		NoOfContinuationPoints:            noOfContinuationPoints,
+		ContinuationPoints:                continuationPoints,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -108,22 +124,6 @@ func (m *_BrowseNextRequest) GetContinuationPoints() []PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseNextRequest factory function for _BrowseNextRequest
-func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) *_BrowseNextRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseNextRequest must not be nil")
-	}
-	_result := &_BrowseNextRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ReleaseContinuationPoints:         releaseContinuationPoints,
-		NoOfContinuationPoints:            noOfContinuationPoints,
-		ContinuationPoints:                continuationPoints,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseNextRequest(structType any) BrowseNextRequest {

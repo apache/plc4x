@@ -59,6 +59,16 @@ type _BVLCSecureBVLL struct {
 var _ BVLCSecureBVLL = (*_BVLCSecureBVLL)(nil)
 var _ BVLCRequirements = (*_BVLCSecureBVLL)(nil)
 
+// NewBVLCSecureBVLL factory function for _BVLCSecureBVLL
+func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCSecureBVLL {
+	_result := &_BVLCSecureBVLL{
+		BVLCContract:    NewBVLC(),
+		SecurityWrapper: securityWrapper,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,16 +100,6 @@ func (m *_BVLCSecureBVLL) GetSecurityWrapper() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCSecureBVLL factory function for _BVLCSecureBVLL
-func NewBVLCSecureBVLL(securityWrapper []byte, bvlcPayloadLength uint16) *_BVLCSecureBVLL {
-	_result := &_BVLCSecureBVLL{
-		BVLCContract:    NewBVLC(),
-		SecurityWrapper: securityWrapper,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCSecureBVLL(structType any) BVLCSecureBVLL {

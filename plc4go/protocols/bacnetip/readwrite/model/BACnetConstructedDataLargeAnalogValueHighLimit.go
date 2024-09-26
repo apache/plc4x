@@ -56,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueHighLimit struct {
 var _ BACnetConstructedDataLargeAnalogValueHighLimit = (*_BACnetConstructedDataLargeAnalogValueHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueHighLimit)(nil)
 
+// NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for _BACnetConstructedDataLargeAnalogValueHighLimit
+func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueHighLimit {
+	if highLimit == nil {
+		panic("highLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		HighLimit:                     highLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueHighLimit) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueHighLimit factory function for _BACnetConstructedDataLargeAnalogValueHighLimit
-func NewBACnetConstructedDataLargeAnalogValueHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueHighLimit {
-	if highLimit == nil {
-		panic("highLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		HighLimit:                     highLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueHighLimit(structType any) BACnetConstructedDataLargeAnalogValueHighLimit {

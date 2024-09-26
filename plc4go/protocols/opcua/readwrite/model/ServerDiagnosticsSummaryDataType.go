@@ -87,6 +87,27 @@ type _ServerDiagnosticsSummaryDataType struct {
 var _ ServerDiagnosticsSummaryDataType = (*_ServerDiagnosticsSummaryDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerDiagnosticsSummaryDataType)(nil)
 
+// NewServerDiagnosticsSummaryDataType factory function for _ServerDiagnosticsSummaryDataType
+func NewServerDiagnosticsSummaryDataType(serverViewCount uint32, currentSessionCount uint32, cumulatedSessionCount uint32, securityRejectedSessionCount uint32, rejectedSessionCount uint32, sessionTimeoutCount uint32, sessionAbortCount uint32, currentSubscriptionCount uint32, cumulatedSubscriptionCount uint32, publishingIntervalCount uint32, securityRejectedRequestsCount uint32, rejectedRequestsCount uint32) *_ServerDiagnosticsSummaryDataType {
+	_result := &_ServerDiagnosticsSummaryDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerViewCount:                   serverViewCount,
+		CurrentSessionCount:               currentSessionCount,
+		CumulatedSessionCount:             cumulatedSessionCount,
+		SecurityRejectedSessionCount:      securityRejectedSessionCount,
+		RejectedSessionCount:              rejectedSessionCount,
+		SessionTimeoutCount:               sessionTimeoutCount,
+		SessionAbortCount:                 sessionAbortCount,
+		CurrentSubscriptionCount:          currentSubscriptionCount,
+		CumulatedSubscriptionCount:        cumulatedSubscriptionCount,
+		PublishingIntervalCount:           publishingIntervalCount,
+		SecurityRejectedRequestsCount:     securityRejectedRequestsCount,
+		RejectedRequestsCount:             rejectedRequestsCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -162,27 +183,6 @@ func (m *_ServerDiagnosticsSummaryDataType) GetRejectedRequestsCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerDiagnosticsSummaryDataType factory function for _ServerDiagnosticsSummaryDataType
-func NewServerDiagnosticsSummaryDataType(serverViewCount uint32, currentSessionCount uint32, cumulatedSessionCount uint32, securityRejectedSessionCount uint32, rejectedSessionCount uint32, sessionTimeoutCount uint32, sessionAbortCount uint32, currentSubscriptionCount uint32, cumulatedSubscriptionCount uint32, publishingIntervalCount uint32, securityRejectedRequestsCount uint32, rejectedRequestsCount uint32) *_ServerDiagnosticsSummaryDataType {
-	_result := &_ServerDiagnosticsSummaryDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerViewCount:                   serverViewCount,
-		CurrentSessionCount:               currentSessionCount,
-		CumulatedSessionCount:             cumulatedSessionCount,
-		SecurityRejectedSessionCount:      securityRejectedSessionCount,
-		RejectedSessionCount:              rejectedSessionCount,
-		SessionTimeoutCount:               sessionTimeoutCount,
-		SessionAbortCount:                 sessionAbortCount,
-		CurrentSubscriptionCount:          currentSubscriptionCount,
-		CumulatedSubscriptionCount:        cumulatedSubscriptionCount,
-		PublishingIntervalCount:           publishingIntervalCount,
-		SecurityRejectedRequestsCount:     securityRejectedRequestsCount,
-		RejectedRequestsCount:             rejectedRequestsCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerDiagnosticsSummaryDataType(structType any) ServerDiagnosticsSummaryDataType {

@@ -54,6 +54,19 @@ type _PortSegment struct {
 var _ PortSegment = (*_PortSegment)(nil)
 var _ PathSegmentRequirements = (*_PortSegment)(nil)
 
+// NewPortSegment factory function for _PortSegment
+func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
+	if segmentType == nil {
+		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
+	}
+	_result := &_PortSegment{
+		PathSegmentContract: NewPathSegment(),
+		SegmentType:         segmentType,
+	}
+	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_PortSegment) GetSegmentType() PortSegmentType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegment factory function for _PortSegment
-func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
-	if segmentType == nil {
-		panic("segmentType of type PortSegmentType for PortSegment must not be nil")
-	}
-	_result := &_PortSegment{
-		PathSegmentContract: NewPathSegment(),
-		SegmentType:         segmentType,
-	}
-	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegment(structType any) PortSegment {

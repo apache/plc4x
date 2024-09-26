@@ -51,6 +51,11 @@ type _BACnetTagPayloadReal struct {
 
 var _ BACnetTagPayloadReal = (*_BACnetTagPayloadReal)(nil)
 
+// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
+func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
+	return &_BACnetTagPayloadReal{Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_BACnetTagPayloadReal) GetValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
-func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
-	return &_BACnetTagPayloadReal{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadReal(structType any) BACnetTagPayloadReal {

@@ -57,6 +57,23 @@ type _GetAttributeAllRequest struct {
 var _ GetAttributeAllRequest = (*_GetAttributeAllRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllRequest)(nil)
 
+// NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
+func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
+	}
+	_result := &_GetAttributeAllRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -100,23 +117,6 @@ func (m *_GetAttributeAllRequest) GetInstanceSegment() PathSegment {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetAttributeAllRequest factory function for _GetAttributeAllRequest
-func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSegment, serviceLen uint16) *_GetAttributeAllRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for GetAttributeAllRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for GetAttributeAllRequest must not be nil")
-	}
-	_result := &_GetAttributeAllRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeAllRequest(structType any) GetAttributeAllRequest {

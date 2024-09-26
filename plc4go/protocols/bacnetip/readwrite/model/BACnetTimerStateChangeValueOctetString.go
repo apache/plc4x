@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueOctetString struct {
 var _ BACnetTimerStateChangeValueOctetString = (*_BACnetTimerStateChangeValueOctetString)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueOctetString)(nil)
 
+// NewBACnetTimerStateChangeValueOctetString factory function for _BACnetTimerStateChangeValueOctetString
+func NewBACnetTimerStateChangeValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetTimerStateChangeValueOctetString must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueOctetString{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		OctetStringValue:                    octetStringValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueOctetString) GetOctetStringValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueOctetString factory function for _BACnetTimerStateChangeValueOctetString
-func NewBACnetTimerStateChangeValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetTimerStateChangeValueOctetString must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueOctetString{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		OctetStringValue:                    octetStringValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueOctetString(structType any) BACnetTimerStateChangeValueOctetString {

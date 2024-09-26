@@ -56,6 +56,19 @@ type _BACnetConstructedDataUserInformationReference struct {
 var _ BACnetConstructedDataUserInformationReference = (*_BACnetConstructedDataUserInformationReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserInformationReference)(nil)
 
+// NewBACnetConstructedDataUserInformationReference factory function for _BACnetConstructedDataUserInformationReference
+func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
+	if userInformationReference == nil {
+		panic("userInformationReference of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserInformationReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserInformationReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserInformationReference:      userInformationReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataUserInformationReference) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserInformationReference factory function for _BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
-	if userInformationReference == nil {
-		panic("userInformationReference of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserInformationReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserInformationReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserInformationReference:      userInformationReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserInformationReference(structType any) BACnetConstructedDataUserInformationReference {

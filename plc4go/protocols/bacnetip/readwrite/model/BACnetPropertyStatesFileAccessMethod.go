@@ -54,6 +54,19 @@ type _BACnetPropertyStatesFileAccessMethod struct {
 var _ BACnetPropertyStatesFileAccessMethod = (*_BACnetPropertyStatesFileAccessMethod)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesFileAccessMethod)(nil)
 
+// NewBACnetPropertyStatesFileAccessMethod factory function for _BACnetPropertyStatesFileAccessMethod
+func NewBACnetPropertyStatesFileAccessMethod(peekedTagHeader BACnetTagHeader, fileAccessMethod BACnetFileAccessMethodTagged) *_BACnetPropertyStatesFileAccessMethod {
+	if fileAccessMethod == nil {
+		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetPropertyStatesFileAccessMethod must not be nil")
+	}
+	_result := &_BACnetPropertyStatesFileAccessMethod{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		FileAccessMethod:             fileAccessMethod,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetFileAccessMethod() BACnetFile
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesFileAccessMethod factory function for _BACnetPropertyStatesFileAccessMethod
-func NewBACnetPropertyStatesFileAccessMethod(peekedTagHeader BACnetTagHeader, fileAccessMethod BACnetFileAccessMethodTagged) *_BACnetPropertyStatesFileAccessMethod {
-	if fileAccessMethod == nil {
-		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetPropertyStatesFileAccessMethod must not be nil")
-	}
-	_result := &_BACnetPropertyStatesFileAccessMethod{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		FileAccessMethod:             fileAccessMethod,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesFileAccessMethod(structType any) BACnetPropertyStatesFileAccessMethod {

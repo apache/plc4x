@@ -56,6 +56,19 @@ type _BACnetConstructedDataPassbackMode struct {
 var _ BACnetConstructedDataPassbackMode = (*_BACnetConstructedDataPassbackMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackMode)(nil)
 
+// NewBACnetConstructedDataPassbackMode factory function for _BACnetConstructedDataPassbackMode
+func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackMode {
+	if passbackMode == nil {
+		panic("passbackMode of type BACnetAccessPassbackModeTagged for BACnetConstructedDataPassbackMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataPassbackMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PassbackMode:                  passbackMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPassbackMode) GetActualValue() BACnetAccessPassba
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPassbackMode factory function for _BACnetConstructedDataPassbackMode
-func NewBACnetConstructedDataPassbackMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackMode BACnetAccessPassbackModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackMode {
-	if passbackMode == nil {
-		panic("passbackMode of type BACnetAccessPassbackModeTagged for BACnetConstructedDataPassbackMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataPassbackMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PassbackMode:                  passbackMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPassbackMode(structType any) BACnetConstructedDataPassbackMode {

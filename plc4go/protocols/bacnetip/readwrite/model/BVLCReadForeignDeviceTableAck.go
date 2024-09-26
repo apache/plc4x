@@ -59,6 +59,16 @@ type _BVLCReadForeignDeviceTableAck struct {
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
 
+// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
+func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
+	_result := &_BVLCReadForeignDeviceTableAck{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,16 +100,6 @@ func (m *_BVLCReadForeignDeviceTableAck) GetTable() []BVLCForeignDeviceTableEntr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
-	_result := &_BVLCReadForeignDeviceTableAck{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTableAck {

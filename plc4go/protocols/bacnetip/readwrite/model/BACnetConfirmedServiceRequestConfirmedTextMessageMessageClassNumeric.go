@@ -54,6 +54,19 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric struc
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric)(nil)
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric)(nil)
 
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numericValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
+	if numericValue == nil {
+		panic("numericValue of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
+		NumericValue: numericValue,
+	}
+	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric) 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numericValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {
-	if numericValue == nil {
-		panic("numericValue of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{
-		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract: NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag, peekedTagHeader, closingTag, tagNumber),
-		NumericValue: numericValue,
-	}
-	_result.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric {

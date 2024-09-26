@@ -54,6 +54,19 @@ type _BACnetPropertyStatesBinaryLightningValue struct {
 var _ BACnetPropertyStatesBinaryLightningValue = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBinaryLightningValue)(nil)
 
+// NewBACnetPropertyStatesBinaryLightningValue factory function for _BACnetPropertyStatesBinaryLightningValue
+func NewBACnetPropertyStatesBinaryLightningValue(peekedTagHeader BACnetTagHeader, binaryLightningValue BACnetBinaryLightingPVTagged) *_BACnetPropertyStatesBinaryLightningValue {
+	if binaryLightningValue == nil {
+		panic("binaryLightningValue of type BACnetBinaryLightingPVTagged for BACnetPropertyStatesBinaryLightningValue must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBinaryLightningValue{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BinaryLightningValue:         binaryLightningValue,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesBinaryLightningValue) GetBinaryLightningValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBinaryLightningValue factory function for _BACnetPropertyStatesBinaryLightningValue
-func NewBACnetPropertyStatesBinaryLightningValue(peekedTagHeader BACnetTagHeader, binaryLightningValue BACnetBinaryLightingPVTagged) *_BACnetPropertyStatesBinaryLightningValue {
-	if binaryLightningValue == nil {
-		panic("binaryLightningValue of type BACnetBinaryLightingPVTagged for BACnetPropertyStatesBinaryLightningValue must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBinaryLightningValue{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BinaryLightningValue:         binaryLightningValue,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBinaryLightningValue(structType any) BACnetPropertyStatesBinaryLightningValue {

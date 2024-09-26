@@ -54,6 +54,19 @@ type _BACnetValueSourceAddress struct {
 var _ BACnetValueSourceAddress = (*_BACnetValueSourceAddress)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceAddress)(nil)
 
+// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
+func NewBACnetValueSourceAddress(peekedTagHeader BACnetTagHeader, address BACnetAddressEnclosed) *_BACnetValueSourceAddress {
+	if address == nil {
+		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
+	}
+	_result := &_BACnetValueSourceAddress{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Address:                   address,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetValueSourceAddress) GetAddress() BACnetAddressEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
-func NewBACnetValueSourceAddress(peekedTagHeader BACnetTagHeader, address BACnetAddressEnclosed) *_BACnetValueSourceAddress {
-	if address == nil {
-		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
-	}
-	_result := &_BACnetValueSourceAddress{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Address:                   address,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {

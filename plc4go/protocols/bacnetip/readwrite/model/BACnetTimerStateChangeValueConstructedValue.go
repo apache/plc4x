@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueConstructedValue struct {
 var _ BACnetTimerStateChangeValueConstructedValue = (*_BACnetTimerStateChangeValueConstructedValue)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueConstructedValue)(nil)
 
+// NewBACnetTimerStateChangeValueConstructedValue factory function for _BACnetTimerStateChangeValueConstructedValue
+func NewBACnetTimerStateChangeValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueConstructedValue {
+	if constructedValue == nil {
+		panic("constructedValue of type BACnetConstructedData for BACnetTimerStateChangeValueConstructedValue must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueConstructedValue{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		ConstructedValue:                    constructedValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueConstructedValue) GetConstructedValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueConstructedValue factory function for _BACnetTimerStateChangeValueConstructedValue
-func NewBACnetTimerStateChangeValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueConstructedValue {
-	if constructedValue == nil {
-		panic("constructedValue of type BACnetConstructedData for BACnetTimerStateChangeValueConstructedValue must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueConstructedValue{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		ConstructedValue:                    constructedValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueConstructedValue(structType any) BACnetTimerStateChangeValueConstructedValue {

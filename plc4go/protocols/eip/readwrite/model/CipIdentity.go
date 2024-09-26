@@ -96,6 +96,28 @@ type _CipIdentity struct {
 var _ CipIdentity = (*_CipIdentity)(nil)
 var _ CommandSpecificDataItemRequirements = (*_CipIdentity)(nil)
 
+// NewCipIdentity factory function for _CipIdentity
+func NewCipIdentity(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) *_CipIdentity {
+	_result := &_CipIdentity{
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		EncapsulationProtocolVersion:    encapsulationProtocolVersion,
+		SocketAddressFamily:             socketAddressFamily,
+		SocketAddressPort:               socketAddressPort,
+		SocketAddressAddress:            socketAddressAddress,
+		VendorId:                        vendorId,
+		DeviceType:                      deviceType,
+		ProductCode:                     productCode,
+		RevisionMajor:                   revisionMajor,
+		RevisionMinor:                   revisionMinor,
+		Status:                          status,
+		SerialNumber:                    serialNumber,
+		ProductName:                     productName,
+		State:                           state,
+	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -192,28 +214,6 @@ func (m *_CipIdentity) GetZeroes2() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipIdentity factory function for _CipIdentity
-func NewCipIdentity(encapsulationProtocolVersion uint16, socketAddressFamily uint16, socketAddressPort uint16, socketAddressAddress []uint8, vendorId uint16, deviceType uint16, productCode uint16, revisionMajor uint8, revisionMinor uint8, status uint16, serialNumber uint32, productName string, state uint8) *_CipIdentity {
-	_result := &_CipIdentity{
-		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
-		EncapsulationProtocolVersion:    encapsulationProtocolVersion,
-		SocketAddressFamily:             socketAddressFamily,
-		SocketAddressPort:               socketAddressPort,
-		SocketAddressAddress:            socketAddressAddress,
-		VendorId:                        vendorId,
-		DeviceType:                      deviceType,
-		ProductCode:                     productCode,
-		RevisionMajor:                   revisionMajor,
-		RevisionMinor:                   revisionMinor,
-		Status:                          status,
-		SerialNumber:                    serialNumber,
-		ProductName:                     productName,
-		State:                           state,
-	}
-	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipIdentity(structType any) CipIdentity {

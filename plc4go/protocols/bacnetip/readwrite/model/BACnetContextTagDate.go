@@ -54,6 +54,19 @@ type _BACnetContextTagDate struct {
 var _ BACnetContextTagDate = (*_BACnetContextTagDate)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDate)(nil)
 
+// NewBACnetContextTagDate factory function for _BACnetContextTagDate
+func NewBACnetContextTagDate(header BACnetTagHeader, payload BACnetTagPayloadDate, tagNumberArgument uint8) *_BACnetContextTagDate {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
+	}
+	_result := &_BACnetContextTagDate{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagDate factory function for _BACnetContextTagDate
-func NewBACnetContextTagDate(header BACnetTagHeader, payload BACnetTagPayloadDate, tagNumberArgument uint8) *_BACnetContextTagDate {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
-	}
-	_result := &_BACnetContextTagDate{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagDate(structType any) BACnetContextTagDate {

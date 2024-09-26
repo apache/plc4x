@@ -54,6 +54,19 @@ type _BACnetPropertyStatesRestartReason struct {
 var _ BACnetPropertyStatesRestartReason = (*_BACnetPropertyStatesRestartReason)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesRestartReason)(nil)
 
+// NewBACnetPropertyStatesRestartReason factory function for _BACnetPropertyStatesRestartReason
+func NewBACnetPropertyStatesRestartReason(peekedTagHeader BACnetTagHeader, restartReason BACnetRestartReasonTagged) *_BACnetPropertyStatesRestartReason {
+	if restartReason == nil {
+		panic("restartReason of type BACnetRestartReasonTagged for BACnetPropertyStatesRestartReason must not be nil")
+	}
+	_result := &_BACnetPropertyStatesRestartReason{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		RestartReason:                restartReason,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesRestartReason) GetRestartReason() BACnetRestartRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesRestartReason factory function for _BACnetPropertyStatesRestartReason
-func NewBACnetPropertyStatesRestartReason(peekedTagHeader BACnetTagHeader, restartReason BACnetRestartReasonTagged) *_BACnetPropertyStatesRestartReason {
-	if restartReason == nil {
-		panic("restartReason of type BACnetRestartReasonTagged for BACnetPropertyStatesRestartReason must not be nil")
-	}
-	_result := &_BACnetPropertyStatesRestartReason{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		RestartReason:                restartReason,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesRestartReason(structType any) BACnetPropertyStatesRestartReason {

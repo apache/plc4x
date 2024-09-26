@@ -54,6 +54,16 @@ type _ErrorReportingSystemCategoryTypeInputUnits struct {
 var _ ErrorReportingSystemCategoryTypeInputUnits = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
 
+// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
+func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
+	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetCategoryForType() Error
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
-func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
-	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReportingSystemCategoryTypeInputUnits {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataAnalogValuePresentValue struct {
 var _ BACnetConstructedDataAnalogValuePresentValue = (*_BACnetConstructedDataAnalogValuePresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValuePresentValue)(nil)
 
+// NewBACnetConstructedDataAnalogValuePresentValue factory function for _BACnetConstructedDataAnalogValuePresentValue
+func NewBACnetConstructedDataAnalogValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValuePresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValuePresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAnalogValuePresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAnalogValuePresentValue) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAnalogValuePresentValue factory function for _BACnetConstructedDataAnalogValuePresentValue
-func NewBACnetConstructedDataAnalogValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValuePresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataAnalogValuePresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAnalogValuePresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAnalogValuePresentValue(structType any) BACnetConstructedDataAnalogValuePresentValue {

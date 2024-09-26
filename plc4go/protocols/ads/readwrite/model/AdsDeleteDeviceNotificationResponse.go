@@ -54,6 +54,16 @@ type _AdsDeleteDeviceNotificationResponse struct {
 var _ AdsDeleteDeviceNotificationResponse = (*_AdsDeleteDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsDeleteDeviceNotificationResponse)(nil)
 
+// NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
+func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
+	_result := &_AdsDeleteDeviceNotificationResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetResult() ReturnCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeleteDeviceNotificationResponse factory function for _AdsDeleteDeviceNotificationResponse
-func NewAdsDeleteDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsDeleteDeviceNotificationResponse {
-	_result := &_AdsDeleteDeviceNotificationResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNotificationResponse {

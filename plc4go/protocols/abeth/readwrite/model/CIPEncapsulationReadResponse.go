@@ -59,6 +59,19 @@ type _CIPEncapsulationReadResponse struct {
 var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadResponse)(nil)
 
+// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
+func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
+	if response == nil {
+		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
+	}
+	_result := &_CIPEncapsulationReadResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Response:                       response,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,19 +103,6 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
-	if response == nil {
-		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
-	}
-	_result := &_CIPEncapsulationReadResponse{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-		Response:                       response,
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadResponse {

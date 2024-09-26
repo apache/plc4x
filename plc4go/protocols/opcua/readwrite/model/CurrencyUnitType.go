@@ -63,6 +63,25 @@ type _CurrencyUnitType struct {
 var _ CurrencyUnitType = (*_CurrencyUnitType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CurrencyUnitType)(nil)
 
+// NewCurrencyUnitType factory function for _CurrencyUnitType
+func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
+	if alphabeticCode == nil {
+		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
+	}
+	if currency == nil {
+		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
+	}
+	_result := &_CurrencyUnitType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NumericCode:                       numericCode,
+		Exponent:                          exponent,
+		AlphabeticCode:                    alphabeticCode,
+		Currency:                          currency,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,25 +125,6 @@ func (m *_CurrencyUnitType) GetCurrency() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCurrencyUnitType factory function for _CurrencyUnitType
-func NewCurrencyUnitType(numericCode int16, exponent int8, alphabeticCode PascalString, currency LocalizedText) *_CurrencyUnitType {
-	if alphabeticCode == nil {
-		panic("alphabeticCode of type PascalString for CurrencyUnitType must not be nil")
-	}
-	if currency == nil {
-		panic("currency of type LocalizedText for CurrencyUnitType must not be nil")
-	}
-	_result := &_CurrencyUnitType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NumericCode:                       numericCode,
-		Exponent:                          exponent,
-		AlphabeticCode:                    alphabeticCode,
-		Currency:                          currency,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCurrencyUnitType(structType any) CurrencyUnitType {

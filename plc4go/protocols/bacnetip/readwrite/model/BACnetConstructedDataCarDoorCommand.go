@@ -59,6 +59,17 @@ type _BACnetConstructedDataCarDoorCommand struct {
 var _ BACnetConstructedDataCarDoorCommand = (*_BACnetConstructedDataCarDoorCommand)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorCommand)(nil)
 
+// NewBACnetConstructedDataCarDoorCommand factory function for _BACnetConstructedDataCarDoorCommand
+func NewBACnetConstructedDataCarDoorCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorCommand []BACnetLiftCarDoorCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorCommand {
+	_result := &_BACnetConstructedDataCarDoorCommand{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		CarDoorCommand:                carDoorCommand,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataCarDoorCommand) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDoorCommand factory function for _BACnetConstructedDataCarDoorCommand
-func NewBACnetConstructedDataCarDoorCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorCommand []BACnetLiftCarDoorCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorCommand {
-	_result := &_BACnetConstructedDataCarDoorCommand{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		CarDoorCommand:                carDoorCommand,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDoorCommand(structType any) BACnetConstructedDataCarDoorCommand {

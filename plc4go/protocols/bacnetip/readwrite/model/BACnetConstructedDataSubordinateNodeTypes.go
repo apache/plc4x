@@ -59,6 +59,17 @@ type _BACnetConstructedDataSubordinateNodeTypes struct {
 var _ BACnetConstructedDataSubordinateNodeTypes = (*_BACnetConstructedDataSubordinateNodeTypes)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSubordinateNodeTypes)(nil)
 
+// NewBACnetConstructedDataSubordinateNodeTypes factory function for _BACnetConstructedDataSubordinateNodeTypes
+func NewBACnetConstructedDataSubordinateNodeTypes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateNodeTypes []BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateNodeTypes {
+	_result := &_BACnetConstructedDataSubordinateNodeTypes{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		SubordinateNodeTypes:          subordinateNodeTypes,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataSubordinateNodeTypes) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSubordinateNodeTypes factory function for _BACnetConstructedDataSubordinateNodeTypes
-func NewBACnetConstructedDataSubordinateNodeTypes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, subordinateNodeTypes []BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSubordinateNodeTypes {
-	_result := &_BACnetConstructedDataSubordinateNodeTypes{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		SubordinateNodeTypes:          subordinateNodeTypes,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSubordinateNodeTypes(structType any) BACnetConstructedDataSubordinateNodeTypes {

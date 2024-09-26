@@ -54,6 +54,16 @@ type _MeteringDataGasConsumption struct {
 var _ MeteringDataGasConsumption = (*_MeteringDataGasConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataGasConsumption)(nil)
 
+// NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
+func NewMeteringDataGasConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, mJ uint32) *_MeteringDataGasConsumption {
+	_result := &_MeteringDataGasConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		MJ:                   mJ,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MeteringDataGasConsumption) GetMJ() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
-func NewMeteringDataGasConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, mJ uint32) *_MeteringDataGasConsumption {
-	_result := &_MeteringDataGasConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		MJ:                   mJ,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataGasConsumption(structType any) MeteringDataGasConsumption {

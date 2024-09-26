@@ -68,6 +68,11 @@ type _AdsTableSizes struct {
 
 var _ AdsTableSizes = (*_AdsTableSizes)(nil)
 
+// NewAdsTableSizes factory function for _AdsTableSizes
+func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
+	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -101,11 +106,6 @@ func (m *_AdsTableSizes) GetExtraLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsTableSizes factory function for _AdsTableSizes
-func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
-	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsTableSizes(structType any) AdsTableSizes {

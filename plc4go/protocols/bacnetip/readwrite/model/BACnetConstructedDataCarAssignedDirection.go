@@ -56,6 +56,19 @@ type _BACnetConstructedDataCarAssignedDirection struct {
 var _ BACnetConstructedDataCarAssignedDirection = (*_BACnetConstructedDataCarAssignedDirection)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarAssignedDirection)(nil)
 
+// NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
+func NewBACnetConstructedDataCarAssignedDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, assignedDirection BACnetLiftCarDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
+	if assignedDirection == nil {
+		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarAssignedDirection{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AssignedDirection:             assignedDirection,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetActualValue() BACnetLift
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
-func NewBACnetConstructedDataCarAssignedDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, assignedDirection BACnetLiftCarDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
-	if assignedDirection == nil {
-		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarAssignedDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AssignedDirection:             assignedDirection,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarAssignedDirection(structType any) BACnetConstructedDataCarAssignedDirection {

@@ -54,6 +54,19 @@ type _CBusCommandPointToPointToMultiPoint struct {
 var _ CBusCommandPointToPointToMultiPoint = (*_CBusCommandPointToPointToMultiPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToPointToMultiPoint)(nil)
 
+// NewCBusCommandPointToPointToMultiPoint factory function for _CBusCommandPointToPointToMultiPoint
+func NewCBusCommandPointToPointToMultiPoint(header CBusHeader, command CBusPointToPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPointToMultiPoint {
+	if command == nil {
+		panic("command of type CBusPointToPointToMultiPointCommand for CBusCommandPointToPointToMultiPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToPointToMultiPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_CBusCommandPointToPointToMultiPoint) GetCommand() CBusPointToPointToMu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToPointToMultiPoint factory function for _CBusCommandPointToPointToMultiPoint
-func NewCBusCommandPointToPointToMultiPoint(header CBusHeader, command CBusPointToPointToMultiPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPointToMultiPoint {
-	if command == nil {
-		panic("command of type CBusPointToPointToMultiPointCommand for CBusCommandPointToPointToMultiPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToPointToMultiPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToPointToMultiPoint(structType any) CBusCommandPointToPointToMultiPoint {

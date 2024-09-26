@@ -58,6 +58,14 @@ type _BACnetLiftGroupModeTagged struct {
 
 var _ BACnetLiftGroupModeTagged = (*_BACnetLiftGroupModeTagged)(nil)
 
+// NewBACnetLiftGroupModeTagged factory function for _BACnetLiftGroupModeTagged
+func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode, tagNumber uint8, tagClass TagClass) *_BACnetLiftGroupModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftGroupModeTagged must not be nil")
+	}
+	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetLiftGroupModeTagged) GetValue() BACnetLiftGroupMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftGroupModeTagged factory function for _BACnetLiftGroupModeTagged
-func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupMode, tagNumber uint8, tagClass TagClass) *_BACnetLiftGroupModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftGroupModeTagged must not be nil")
-	}
-	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftGroupModeTagged(structType any) BACnetLiftGroupModeTagged {

@@ -54,6 +54,17 @@ type _BACnetAssignedAccessRights struct {
 
 var _ BACnetAssignedAccessRights = (*_BACnetAssignedAccessRights)(nil)
 
+// NewBACnetAssignedAccessRights factory function for _BACnetAssignedAccessRights
+func NewBACnetAssignedAccessRights(assignedAccessRights BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAssignedAccessRights {
+	if assignedAccessRights == nil {
+		panic("assignedAccessRights of type BACnetDeviceObjectReferenceEnclosed for BACnetAssignedAccessRights must not be nil")
+	}
+	if enable == nil {
+		panic("enable of type BACnetContextTagBoolean for BACnetAssignedAccessRights must not be nil")
+	}
+	return &_BACnetAssignedAccessRights{AssignedAccessRights: assignedAccessRights, Enable: enable}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetAssignedAccessRights) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedAccessRights factory function for _BACnetAssignedAccessRights
-func NewBACnetAssignedAccessRights(assignedAccessRights BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAssignedAccessRights {
-	if assignedAccessRights == nil {
-		panic("assignedAccessRights of type BACnetDeviceObjectReferenceEnclosed for BACnetAssignedAccessRights must not be nil")
-	}
-	if enable == nil {
-		panic("enable of type BACnetContextTagBoolean for BACnetAssignedAccessRights must not be nil")
-	}
-	return &_BACnetAssignedAccessRights{AssignedAccessRights: assignedAccessRights, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedAccessRights(structType any) BACnetAssignedAccessRights {

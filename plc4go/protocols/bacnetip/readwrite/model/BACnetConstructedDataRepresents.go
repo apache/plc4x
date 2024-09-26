@@ -56,6 +56,19 @@ type _BACnetConstructedDataRepresents struct {
 var _ BACnetConstructedDataRepresents = (*_BACnetConstructedDataRepresents)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRepresents)(nil)
 
+// NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
+func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
+	if represents == nil {
+		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
+	}
+	_result := &_BACnetConstructedDataRepresents{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Represents:                    represents,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataRepresents) GetActualValue() BACnetDeviceObjectRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
-func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
-	if represents == nil {
-		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
-	}
-	_result := &_BACnetConstructedDataRepresents{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Represents:                    represents,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRepresents(structType any) BACnetConstructedDataRepresents {

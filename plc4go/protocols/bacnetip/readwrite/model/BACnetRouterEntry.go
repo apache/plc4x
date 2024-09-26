@@ -60,6 +60,20 @@ type _BACnetRouterEntry struct {
 
 var _ BACnetRouterEntry = (*_BACnetRouterEntry)(nil)
 
+// NewBACnetRouterEntry factory function for _BACnetRouterEntry
+func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
+	}
+	if status == nil {
+		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
+	}
+	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -85,20 +99,6 @@ func (m *_BACnetRouterEntry) GetPerformanceIndex() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRouterEntry factory function for _BACnetRouterEntry
-func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
-	}
-	if macAddress == nil {
-		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
-	}
-	if status == nil {
-		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
-	}
-	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRouterEntry(structType any) BACnetRouterEntry {

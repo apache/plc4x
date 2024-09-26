@@ -54,6 +54,19 @@ type _SALDataMetering struct {
 var _ SALDataMetering = (*_SALDataMetering)(nil)
 var _ SALDataRequirements = (*_SALDataMetering)(nil)
 
+// NewSALDataMetering factory function for _SALDataMetering
+func NewSALDataMetering(salData SALData, meteringData MeteringData) *_SALDataMetering {
+	if meteringData == nil {
+		panic("meteringData of type MeteringData for SALDataMetering must not be nil")
+	}
+	_result := &_SALDataMetering{
+		SALDataContract: NewSALData(salData),
+		MeteringData:    meteringData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_SALDataMetering) GetMeteringData() MeteringData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMetering factory function for _SALDataMetering
-func NewSALDataMetering(salData SALData, meteringData MeteringData) *_SALDataMetering {
-	if meteringData == nil {
-		panic("meteringData of type MeteringData for SALDataMetering must not be nil")
-	}
-	_result := &_SALDataMetering{
-		SALDataContract: NewSALData(salData),
-		MeteringData:    meteringData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMetering(structType any) SALDataMetering {

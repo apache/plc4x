@@ -75,6 +75,11 @@ type _ClockAndTimekeepingData struct {
 
 var _ ClockAndTimekeepingDataContract = (*_ClockAndTimekeepingData)(nil)
 
+// NewClockAndTimekeepingData factory function for _ClockAndTimekeepingData
+func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingData {
+	return &_ClockAndTimekeepingData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -108,11 +113,6 @@ func (pm *_ClockAndTimekeepingData) GetCommandType() ClockAndTimekeepingCommandT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClockAndTimekeepingData factory function for _ClockAndTimekeepingData
-func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingData {
-	return &_ClockAndTimekeepingData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastClockAndTimekeepingData(structType any) ClockAndTimekeepingData {

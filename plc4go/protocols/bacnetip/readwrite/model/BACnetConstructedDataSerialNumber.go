@@ -56,6 +56,19 @@ type _BACnetConstructedDataSerialNumber struct {
 var _ BACnetConstructedDataSerialNumber = (*_BACnetConstructedDataSerialNumber)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSerialNumber)(nil)
 
+// NewBACnetConstructedDataSerialNumber factory function for _BACnetConstructedDataSerialNumber
+func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
+	if serialNumber == nil {
+		panic("serialNumber of type BACnetApplicationTagCharacterString for BACnetConstructedDataSerialNumber must not be nil")
+	}
+	_result := &_BACnetConstructedDataSerialNumber{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SerialNumber:                  serialNumber,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataSerialNumber) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSerialNumber factory function for _BACnetConstructedDataSerialNumber
-func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
-	if serialNumber == nil {
-		panic("serialNumber of type BACnetApplicationTagCharacterString for BACnetConstructedDataSerialNumber must not be nil")
-	}
-	_result := &_BACnetConstructedDataSerialNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SerialNumber:                  serialNumber,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSerialNumber(structType any) BACnetConstructedDataSerialNumber {

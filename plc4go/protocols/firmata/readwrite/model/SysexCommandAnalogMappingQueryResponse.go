@@ -54,6 +54,16 @@ type _SysexCommandAnalogMappingQueryResponse struct {
 var _ SysexCommandAnalogMappingQueryResponse = (*_SysexCommandAnalogMappingQueryResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingQueryResponse)(nil)
 
+// NewSysexCommandAnalogMappingQueryResponse factory function for _SysexCommandAnalogMappingQueryResponse
+func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *_SysexCommandAnalogMappingQueryResponse {
+	_result := &_SysexCommandAnalogMappingQueryResponse{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -89,16 +99,6 @@ func (m *_SysexCommandAnalogMappingQueryResponse) GetPin() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandAnalogMappingQueryResponse factory function for _SysexCommandAnalogMappingQueryResponse
-func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *_SysexCommandAnalogMappingQueryResponse {
-	_result := &_SysexCommandAnalogMappingQueryResponse{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandAnalogMappingQueryResponse(structType any) SysexCommandAnalogMappingQueryResponse {

@@ -87,6 +87,39 @@ type _PubSubKeyPushTargetDataType struct {
 var _ PubSubKeyPushTargetDataType = (*_PubSubKeyPushTargetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PubSubKeyPushTargetDataType)(nil)
 
+// NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
+func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
+	}
+	if userTokenType == nil {
+		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
+	}
+	_result := &_PubSubKeyPushTargetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ApplicationUri:                    applicationUri,
+		NoOfPushTargetFolder:              noOfPushTargetFolder,
+		PushTargetFolder:                  pushTargetFolder,
+		EndpointUrl:                       endpointUrl,
+		SecurityPolicyUri:                 securityPolicyUri,
+		UserTokenType:                     userTokenType,
+		RequestedKeyCount:                 requestedKeyCount,
+		RetryInterval:                     retryInterval,
+		NoOfPushTargetProperties:          noOfPushTargetProperties,
+		PushTargetProperties:              pushTargetProperties,
+		NoOfSecurityGroups:                noOfSecurityGroups,
+		SecurityGroups:                    securityGroups,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -162,39 +195,6 @@ func (m *_PubSubKeyPushTargetDataType) GetSecurityGroups() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPubSubKeyPushTargetDataType factory function for _PubSubKeyPushTargetDataType
-func NewPubSubKeyPushTargetDataType(applicationUri PascalString, noOfPushTargetFolder int32, pushTargetFolder []PascalString, endpointUrl PascalString, securityPolicyUri PascalString, userTokenType ExtensionObjectDefinition, requestedKeyCount uint16, retryInterval float64, noOfPushTargetProperties int32, pushTargetProperties []ExtensionObjectDefinition, noOfSecurityGroups int32, securityGroups []PascalString) *_PubSubKeyPushTargetDataType {
-	if applicationUri == nil {
-		panic("applicationUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for PubSubKeyPushTargetDataType must not be nil")
-	}
-	if userTokenType == nil {
-		panic("userTokenType of type ExtensionObjectDefinition for PubSubKeyPushTargetDataType must not be nil")
-	}
-	_result := &_PubSubKeyPushTargetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ApplicationUri:                    applicationUri,
-		NoOfPushTargetFolder:              noOfPushTargetFolder,
-		PushTargetFolder:                  pushTargetFolder,
-		EndpointUrl:                       endpointUrl,
-		SecurityPolicyUri:                 securityPolicyUri,
-		UserTokenType:                     userTokenType,
-		RequestedKeyCount:                 requestedKeyCount,
-		RetryInterval:                     retryInterval,
-		NoOfPushTargetProperties:          noOfPushTargetProperties,
-		PushTargetProperties:              pushTargetProperties,
-		NoOfSecurityGroups:                noOfSecurityGroups,
-		SecurityGroups:                    securityGroups,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPubSubKeyPushTargetDataType(structType any) PubSubKeyPushTargetDataType {

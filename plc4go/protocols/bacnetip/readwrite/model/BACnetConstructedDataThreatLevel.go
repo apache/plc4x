@@ -56,6 +56,19 @@ type _BACnetConstructedDataThreatLevel struct {
 var _ BACnetConstructedDataThreatLevel = (*_BACnetConstructedDataThreatLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatLevel)(nil)
 
+// NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
+func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
+	if threatLevel == nil {
+		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataThreatLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ThreatLevel:                   threatLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataThreatLevel) GetActualValue() BACnetAccessThreatL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
-	if threatLevel == nil {
-		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataThreatLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ThreatLevel:                   threatLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataThreatLevel {

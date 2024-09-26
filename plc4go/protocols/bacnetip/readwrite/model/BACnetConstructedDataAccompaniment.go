@@ -56,6 +56,19 @@ type _BACnetConstructedDataAccompaniment struct {
 var _ BACnetConstructedDataAccompaniment = (*_BACnetConstructedDataAccompaniment)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccompaniment)(nil)
 
+// NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
+func NewBACnetConstructedDataAccompaniment(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompaniment BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
+	if accompaniment == nil {
+		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccompaniment{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Accompaniment:                 accompaniment,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAccompaniment) GetActualValue() BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccompaniment factory function for _BACnetConstructedDataAccompaniment
-func NewBACnetConstructedDataAccompaniment(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, accompaniment BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccompaniment {
-	if accompaniment == nil {
-		panic("accompaniment of type BACnetDeviceObjectReference for BACnetConstructedDataAccompaniment must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccompaniment{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Accompaniment:                 accompaniment,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccompaniment(structType any) BACnetConstructedDataAccompaniment {

@@ -76,6 +76,20 @@ type _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord struct {
 
 var _ BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract = (*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)(nil)
 
+// NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord factory function for _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
+func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -113,20 +127,6 @@ func (pm *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord) GetPeekedT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord factory function for _BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
-func NewBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord(structType any) BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord {

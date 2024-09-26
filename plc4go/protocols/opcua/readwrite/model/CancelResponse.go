@@ -57,6 +57,20 @@ type _CancelResponse struct {
 var _ CancelResponse = (*_CancelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelResponse)(nil)
 
+// NewCancelResponse factory function for _CancelResponse
+func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
+	}
+	_result := &_CancelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		CancelCount:                       cancelCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,20 +106,6 @@ func (m *_CancelResponse) GetCancelCount() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCancelResponse factory function for _CancelResponse
-func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
-	}
-	_result := &_CancelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		CancelCount:                       cancelCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCancelResponse(structType any) CancelResponse {

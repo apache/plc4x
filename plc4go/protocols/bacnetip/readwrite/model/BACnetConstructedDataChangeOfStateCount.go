@@ -56,6 +56,19 @@ type _BACnetConstructedDataChangeOfStateCount struct {
 var _ BACnetConstructedDataChangeOfStateCount = (*_BACnetConstructedDataChangeOfStateCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangeOfStateCount)(nil)
 
+// NewBACnetConstructedDataChangeOfStateCount factory function for _BACnetConstructedDataChangeOfStateCount
+func NewBACnetConstructedDataChangeOfStateCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeIfStateCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateCount {
+	if changeIfStateCount == nil {
+		panic("changeIfStateCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataChangeOfStateCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataChangeOfStateCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangeIfStateCount:            changeIfStateCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChangeOfStateCount factory function for _BACnetConstructedDataChangeOfStateCount
-func NewBACnetConstructedDataChangeOfStateCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeIfStateCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateCount {
-	if changeIfStateCount == nil {
-		panic("changeIfStateCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataChangeOfStateCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataChangeOfStateCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ChangeIfStateCount:            changeIfStateCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChangeOfStateCount(structType any) BACnetConstructedDataChangeOfStateCount {

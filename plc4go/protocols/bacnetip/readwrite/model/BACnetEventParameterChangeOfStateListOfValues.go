@@ -60,6 +60,17 @@ type _BACnetEventParameterChangeOfStateListOfValues struct {
 
 var _ BACnetEventParameterChangeOfStateListOfValues = (*_BACnetEventParameterChangeOfStateListOfValues)(nil)
 
+// NewBACnetEventParameterChangeOfStateListOfValues factory function for _BACnetEventParameterChangeOfStateListOfValues
+func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfStateListOfValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +92,6 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) GetClosingTag() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfStateListOfValues factory function for _BACnetEventParameterChangeOfStateListOfValues
-func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfStateListOfValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfStateListOfValues(structType any) BACnetEventParameterChangeOfStateListOfValues {

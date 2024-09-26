@@ -57,6 +57,17 @@ type _Range struct {
 var _ Range = (*_Range)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Range)(nil)
 
+// NewRange factory function for _Range
+func NewRange(low float64, high float64) *_Range {
+	_result := &_Range{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Low:                               low,
+		High:                              high,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_Range) GetHigh() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRange factory function for _Range
-func NewRange(low float64, high float64) *_Range {
-	_result := &_Range{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Low:                               low,
-		High:                              high,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRange(structType any) Range {

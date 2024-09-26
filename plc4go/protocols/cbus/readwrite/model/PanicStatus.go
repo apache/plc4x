@@ -57,6 +57,11 @@ type _PanicStatus struct {
 
 var _ PanicStatus = (*_PanicStatus)(nil)
 
+// NewPanicStatus factory function for _PanicStatus
+func NewPanicStatus(status uint8) *_PanicStatus {
+	return &_PanicStatus{Status: status}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -97,11 +102,6 @@ func (m *_PanicStatus) GetIsPanicCurrentlyActive() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPanicStatus factory function for _PanicStatus
-func NewPanicStatus(status uint8) *_PanicStatus {
-	return &_PanicStatus{Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPanicStatus(structType any) PanicStatus {

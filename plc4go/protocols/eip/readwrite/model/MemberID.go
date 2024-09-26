@@ -57,6 +57,17 @@ type _MemberID struct {
 var _ MemberID = (*_MemberID)(nil)
 var _ LogicalSegmentTypeRequirements = (*_MemberID)(nil)
 
+// NewMemberID factory function for _MemberID
+func NewMemberID(format uint8, instance uint8) *_MemberID {
+	_result := &_MemberID{
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		Instance:                   instance,
+	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_MemberID) GetInstance() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMemberID factory function for _MemberID
-func NewMemberID(format uint8, instance uint8) *_MemberID {
-	_result := &_MemberID{
-		LogicalSegmentTypeContract: NewLogicalSegmentType(),
-		Format:                     format,
-		Instance:                   instance,
-	}
-	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMemberID(structType any) MemberID {

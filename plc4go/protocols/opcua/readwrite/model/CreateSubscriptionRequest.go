@@ -74,6 +74,25 @@ type _CreateSubscriptionRequest struct {
 var _ CreateSubscriptionRequest = (*_CreateSubscriptionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionRequest)(nil)
 
+// NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
+func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
+	}
+	_result := &_CreateSubscriptionRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestedPublishingInterval:       requestedPublishingInterval,
+		RequestedLifetimeCount:            requestedLifetimeCount,
+		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
+		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
+		PublishingEnabled:                 publishingEnabled,
+		Priority:                          priority,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -129,25 +148,6 @@ func (m *_CreateSubscriptionRequest) GetPriority() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
-func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
-	}
-	_result := &_CreateSubscriptionRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		RequestedPublishingInterval:       requestedPublishingInterval,
-		RequestedLifetimeCount:            requestedLifetimeCount,
-		RequestedMaxKeepAliveCount:        requestedMaxKeepAliveCount,
-		MaxNotificationsPerPublish:        maxNotificationsPerPublish,
-		PublishingEnabled:                 publishingEnabled,
-		Priority:                          priority,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSubscriptionRequest(structType any) CreateSubscriptionRequest {

@@ -59,6 +59,19 @@ type _BVLCOriginalUnicastNPDU struct {
 var _ BVLCOriginalUnicastNPDU = (*_BVLCOriginalUnicastNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCOriginalUnicastNPDU)(nil)
 
+// NewBVLCOriginalUnicastNPDU factory function for _BVLCOriginalUnicastNPDU
+func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalUnicastNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalUnicastNPDU must not be nil")
+	}
+	_result := &_BVLCOriginalUnicastNPDU{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,19 +103,6 @@ func (m *_BVLCOriginalUnicastNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCOriginalUnicastNPDU factory function for _BVLCOriginalUnicastNPDU
-func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalUnicastNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCOriginalUnicastNPDU must not be nil")
-	}
-	_result := &_BVLCOriginalUnicastNPDU{
-		BVLCContract: NewBVLC(),
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCOriginalUnicastNPDU(structType any) BVLCOriginalUnicastNPDU {

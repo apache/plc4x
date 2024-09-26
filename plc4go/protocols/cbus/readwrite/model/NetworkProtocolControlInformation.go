@@ -56,6 +56,11 @@ type _NetworkProtocolControlInformation struct {
 
 var _ NetworkProtocolControlInformation = (*_NetworkProtocolControlInformation)(nil)
 
+// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
+func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
+	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -73,11 +78,6 @@ func (m *_NetworkProtocolControlInformation) GetStackDepth() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
-func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
-	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkProtocolControlInformation(structType any) NetworkProtocolControlInformation {

@@ -49,6 +49,15 @@ type _BACnetConstructedDataAccessCredentialAll struct {
 var _ BACnetConstructedDataAccessCredentialAll = (*_BACnetConstructedDataAccessCredentialAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessCredentialAll)(nil)
 
+// NewBACnetConstructedDataAccessCredentialAll factory function for _BACnetConstructedDataAccessCredentialAll
+func NewBACnetConstructedDataAccessCredentialAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessCredentialAll {
+	_result := &_BACnetConstructedDataAccessCredentialAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataAccessCredentialAll) GetPropertyIdentifierArgumen
 
 func (m *_BACnetConstructedDataAccessCredentialAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataAccessCredentialAll factory function for _BACnetConstructedDataAccessCredentialAll
-func NewBACnetConstructedDataAccessCredentialAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessCredentialAll {
-	_result := &_BACnetConstructedDataAccessCredentialAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

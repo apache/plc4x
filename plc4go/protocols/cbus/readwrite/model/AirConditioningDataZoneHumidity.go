@@ -63,6 +63,25 @@ type _AirConditioningDataZoneHumidity struct {
 var _ AirConditioningDataZoneHumidity = (*_AirConditioningDataZoneHumidity)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneHumidity)(nil)
 
+// NewAirConditioningDataZoneHumidity factory function for _AirConditioningDataZoneHumidity
+func NewAirConditioningDataZoneHumidity(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidity HVACHumidity, sensorStatus HVACSensorStatus) *_AirConditioningDataZoneHumidity {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidity must not be nil")
+	}
+	if humidity == nil {
+		panic("humidity of type HVACHumidity for AirConditioningDataZoneHumidity must not be nil")
+	}
+	_result := &_AirConditioningDataZoneHumidity{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Humidity:                    humidity,
+		SensorStatus:                sensorStatus,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,25 +121,6 @@ func (m *_AirConditioningDataZoneHumidity) GetSensorStatus() HVACSensorStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataZoneHumidity factory function for _AirConditioningDataZoneHumidity
-func NewAirConditioningDataZoneHumidity(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidity HVACHumidity, sensorStatus HVACSensorStatus) *_AirConditioningDataZoneHumidity {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidity must not be nil")
-	}
-	if humidity == nil {
-		panic("humidity of type HVACHumidity for AirConditioningDataZoneHumidity must not be nil")
-	}
-	_result := &_AirConditioningDataZoneHumidity{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Humidity:                    humidity,
-		SensorStatus:                sensorStatus,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataZoneHumidity(structType any) AirConditioningDataZoneHumidity {

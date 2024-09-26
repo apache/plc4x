@@ -49,6 +49,15 @@ type _OpcuaVector struct {
 var _ OpcuaVector = (*_OpcuaVector)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_OpcuaVector)(nil)
 
+// NewOpcuaVector factory function for _OpcuaVector
+func NewOpcuaVector() *_OpcuaVector {
+	_result := &_OpcuaVector{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_OpcuaVector) GetIdentifier() string {
 
 func (m *_OpcuaVector) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewOpcuaVector factory function for _OpcuaVector
-func NewOpcuaVector() *_OpcuaVector {
-	_result := &_OpcuaVector{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

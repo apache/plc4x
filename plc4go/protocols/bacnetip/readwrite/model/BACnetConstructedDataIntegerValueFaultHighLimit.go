@@ -56,6 +56,19 @@ type _BACnetConstructedDataIntegerValueFaultHighLimit struct {
 var _ BACnetConstructedDataIntegerValueFaultHighLimit = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegerValueFaultHighLimit)(nil)
 
+// NewBACnetConstructedDataIntegerValueFaultHighLimit factory function for _BACnetConstructedDataIntegerValueFaultHighLimit
+func NewBACnetConstructedDataIntegerValueFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueFaultHighLimit {
+	if faultHighLimit == nil {
+		panic("faultHighLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueFaultHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegerValueFaultHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultHighLimit:                faultHighLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataIntegerValueFaultHighLimit) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegerValueFaultHighLimit factory function for _BACnetConstructedDataIntegerValueFaultHighLimit
-func NewBACnetConstructedDataIntegerValueFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegerValueFaultHighLimit {
-	if faultHighLimit == nil {
-		panic("faultHighLimit of type BACnetApplicationTagSignedInteger for BACnetConstructedDataIntegerValueFaultHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegerValueFaultHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultHighLimit:                faultHighLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegerValueFaultHighLimit(structType any) BACnetConstructedDataIntegerValueFaultHighLimit {

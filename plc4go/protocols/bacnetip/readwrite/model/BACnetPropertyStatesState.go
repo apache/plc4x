@@ -54,6 +54,19 @@ type _BACnetPropertyStatesState struct {
 var _ BACnetPropertyStatesState = (*_BACnetPropertyStatesState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesState)(nil)
 
+// NewBACnetPropertyStatesState factory function for _BACnetPropertyStatesState
+func NewBACnetPropertyStatesState(peekedTagHeader BACnetTagHeader, state BACnetEventStateTagged) *_BACnetPropertyStatesState {
+	if state == nil {
+		panic("state of type BACnetEventStateTagged for BACnetPropertyStatesState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		State:                        state,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesState) GetState() BACnetEventStateTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesState factory function for _BACnetPropertyStatesState
-func NewBACnetPropertyStatesState(peekedTagHeader BACnetTagHeader, state BACnetEventStateTagged) *_BACnetPropertyStatesState {
-	if state == nil {
-		panic("state of type BACnetEventStateTagged for BACnetPropertyStatesState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		State:                        state,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesState(structType any) BACnetPropertyStatesState {

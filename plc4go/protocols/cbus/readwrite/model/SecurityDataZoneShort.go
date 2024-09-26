@@ -54,6 +54,16 @@ type _SecurityDataZoneShort struct {
 var _ SecurityDataZoneShort = (*_SecurityDataZoneShort)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneShort)(nil)
 
+// NewSecurityDataZoneShort factory function for _SecurityDataZoneShort
+func NewSecurityDataZoneShort(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneShort {
+	_result := &_SecurityDataZoneShort{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_SecurityDataZoneShort) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneShort factory function for _SecurityDataZoneShort
-func NewSecurityDataZoneShort(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneShort {
-	_result := &_SecurityDataZoneShort{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneShort(structType any) SecurityDataZoneShort {

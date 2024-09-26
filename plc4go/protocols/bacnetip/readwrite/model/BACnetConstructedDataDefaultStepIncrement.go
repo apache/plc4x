@@ -56,6 +56,19 @@ type _BACnetConstructedDataDefaultStepIncrement struct {
 var _ BACnetConstructedDataDefaultStepIncrement = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultStepIncrement)(nil)
 
+// NewBACnetConstructedDataDefaultStepIncrement factory function for _BACnetConstructedDataDefaultStepIncrement
+func NewBACnetConstructedDataDefaultStepIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultStepIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultStepIncrement {
+	if defaultStepIncrement == nil {
+		panic("defaultStepIncrement of type BACnetApplicationTagReal for BACnetConstructedDataDefaultStepIncrement must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultStepIncrement{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultStepIncrement:          defaultStepIncrement,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultStepIncrement factory function for _BACnetConstructedDataDefaultStepIncrement
-func NewBACnetConstructedDataDefaultStepIncrement(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultStepIncrement BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultStepIncrement {
-	if defaultStepIncrement == nil {
-		panic("defaultStepIncrement of type BACnetApplicationTagReal for BACnetConstructedDataDefaultStepIncrement must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultStepIncrement{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultStepIncrement:          defaultStepIncrement,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultStepIncrement(structType any) BACnetConstructedDataDefaultStepIncrement {

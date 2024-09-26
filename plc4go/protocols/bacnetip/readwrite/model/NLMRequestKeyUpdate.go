@@ -72,6 +72,22 @@ type _NLMRequestKeyUpdate struct {
 var _ NLMRequestKeyUpdate = (*_NLMRequestKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMRequestKeyUpdate)(nil)
 
+// NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
+func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
+	_result := &_NLMRequestKeyUpdate{
+		NLMContract:             NewNLM(apduLength),
+		Set1KeyRevision:         set1KeyRevision,
+		Set1ActivationTime:      set1ActivationTime,
+		Set1ExpirationTime:      set1ExpirationTime,
+		Set2KeyRevision:         set2KeyRevision,
+		Set2ActivationTime:      set2ActivationTime,
+		Set2ExpirationTime:      set2ExpirationTime,
+		DistributionKeyRevision: distributionKeyRevision,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -127,22 +143,6 @@ func (m *_NLMRequestKeyUpdate) GetDistributionKeyRevision() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRequestKeyUpdate factory function for _NLMRequestKeyUpdate
-func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set1ExpirationTime uint32, set2KeyRevision byte, set2ActivationTime uint32, set2ExpirationTime uint32, distributionKeyRevision byte, apduLength uint16) *_NLMRequestKeyUpdate {
-	_result := &_NLMRequestKeyUpdate{
-		NLMContract:             NewNLM(apduLength),
-		Set1KeyRevision:         set1KeyRevision,
-		Set1ActivationTime:      set1ActivationTime,
-		Set1ExpirationTime:      set1ExpirationTime,
-		Set2KeyRevision:         set2KeyRevision,
-		Set2ActivationTime:      set2ActivationTime,
-		Set2ExpirationTime:      set2ExpirationTime,
-		DistributionKeyRevision: distributionKeyRevision,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {

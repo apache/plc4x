@@ -49,6 +49,15 @@ type _RequestEmpty struct {
 var _ RequestEmpty = (*_RequestEmpty)(nil)
 var _ RequestRequirements = (*_RequestEmpty)(nil)
 
+// NewRequestEmpty factory function for _RequestEmpty
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
+	_result := &_RequestEmpty{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 func (m *_RequestEmpty) GetParent() RequestContract {
 	return m.RequestContract
-}
-
-// NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
-	_result := &_RequestEmpty{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

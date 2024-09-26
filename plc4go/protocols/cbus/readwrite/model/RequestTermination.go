@@ -51,6 +51,11 @@ type _RequestTermination struct {
 
 var _ RequestTermination = (*_RequestTermination)(nil)
 
+// NewRequestTermination factory function for _RequestTermination
+func NewRequestTermination() *_RequestTermination {
+	return &_RequestTermination{}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -64,11 +69,6 @@ func (m *_RequestTermination) GetCr() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestTermination factory function for _RequestTermination
-func NewRequestTermination() *_RequestTermination {
-	return &_RequestTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestTermination(structType any) RequestTermination {

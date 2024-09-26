@@ -75,6 +75,38 @@ type _ApplicationDescription struct {
 var _ ApplicationDescription = (*_ApplicationDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ApplicationDescription)(nil)
 
+// NewApplicationDescription factory function for _ApplicationDescription
+func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) *_ApplicationDescription {
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if productUri == nil {
+		panic("productUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if applicationName == nil {
+		panic("applicationName of type LocalizedText for ApplicationDescription must not be nil")
+	}
+	if gatewayServerUri == nil {
+		panic("gatewayServerUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if discoveryProfileUri == nil {
+		panic("discoveryProfileUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	_result := &_ApplicationDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ApplicationUri:                    applicationUri,
+		ProductUri:                        productUri,
+		ApplicationName:                   applicationName,
+		ApplicationType:                   applicationType,
+		GatewayServerUri:                  gatewayServerUri,
+		DiscoveryProfileUri:               discoveryProfileUri,
+		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
+		DiscoveryUrls:                     discoveryUrls,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -134,38 +166,6 @@ func (m *_ApplicationDescription) GetDiscoveryUrls() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApplicationDescription factory function for _ApplicationDescription
-func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) *_ApplicationDescription {
-	if applicationUri == nil {
-		panic("applicationUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if productUri == nil {
-		panic("productUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if applicationName == nil {
-		panic("applicationName of type LocalizedText for ApplicationDescription must not be nil")
-	}
-	if gatewayServerUri == nil {
-		panic("gatewayServerUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if discoveryProfileUri == nil {
-		panic("discoveryProfileUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	_result := &_ApplicationDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ApplicationUri:                    applicationUri,
-		ProductUri:                        productUri,
-		ApplicationName:                   applicationName,
-		ApplicationType:                   applicationType,
-		GatewayServerUri:                  gatewayServerUri,
-		DiscoveryProfileUri:               discoveryProfileUri,
-		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
-		DiscoveryUrls:                     discoveryUrls,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApplicationDescription(structType any) ApplicationDescription {

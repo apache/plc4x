@@ -69,6 +69,39 @@ type _BACnetNotificationParametersDoubleOutOfRange struct {
 var _ BACnetNotificationParametersDoubleOutOfRange = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
 
+// NewBACnetNotificationParametersDoubleOutOfRange factory function for _BACnetNotificationParametersDoubleOutOfRange
+func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersDoubleOutOfRange {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if exceedingValue == nil {
+		panic("exceedingValue of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if exceededLimit == nil {
+		panic("exceededLimit of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	_result := &_BACnetNotificationParametersDoubleOutOfRange{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		ExceedingValue:                       exceedingValue,
+		StatusFlags:                          statusFlags,
+		Deadband:                             deadband,
+		ExceededLimit:                        exceededLimit,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -116,39 +149,6 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) GetInnerClosingTag() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersDoubleOutOfRange factory function for _BACnetNotificationParametersDoubleOutOfRange
-func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersDoubleOutOfRange {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if exceedingValue == nil {
-		panic("exceedingValue of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if exceededLimit == nil {
-		panic("exceededLimit of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	_result := &_BACnetNotificationParametersDoubleOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		ExceedingValue:                       exceedingValue,
-		StatusFlags:                          statusFlags,
-		Deadband:                             deadband,
-		ExceededLimit:                        exceededLimit,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersDoubleOutOfRange(structType any) BACnetNotificationParametersDoubleOutOfRange {

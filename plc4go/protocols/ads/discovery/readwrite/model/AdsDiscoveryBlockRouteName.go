@@ -54,6 +54,19 @@ type _AdsDiscoveryBlockRouteName struct {
 var _ AdsDiscoveryBlockRouteName = (*_AdsDiscoveryBlockRouteName)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockRouteName)(nil)
 
+// NewAdsDiscoveryBlockRouteName factory function for _AdsDiscoveryBlockRouteName
+func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRouteName {
+	if routeName == nil {
+		panic("routeName of type AmsString for AdsDiscoveryBlockRouteName must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockRouteName{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		RouteName:                 routeName,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,19 +98,6 @@ func (m *_AdsDiscoveryBlockRouteName) GetRouteName() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockRouteName factory function for _AdsDiscoveryBlockRouteName
-func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRouteName {
-	if routeName == nil {
-		panic("routeName of type AmsString for AdsDiscoveryBlockRouteName must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockRouteName{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		RouteName:                 routeName,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockRouteName(structType any) AdsDiscoveryBlockRouteName {

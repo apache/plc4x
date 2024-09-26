@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLiftGroupMode struct {
 var _ BACnetPropertyStatesLiftGroupMode = (*_BACnetPropertyStatesLiftGroupMode)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLiftGroupMode)(nil)
 
+// NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
+func NewBACnetPropertyStatesLiftGroupMode(peekedTagHeader BACnetTagHeader, liftGroupMode BACnetLiftGroupModeTagged) *_BACnetPropertyStatesLiftGroupMode {
+	if liftGroupMode == nil {
+		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLiftGroupMode{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LiftGroupMode:                liftGroupMode,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLiftGroupMode() BACnetLiftGroupM
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
-func NewBACnetPropertyStatesLiftGroupMode(peekedTagHeader BACnetTagHeader, liftGroupMode BACnetLiftGroupModeTagged) *_BACnetPropertyStatesLiftGroupMode {
-	if liftGroupMode == nil {
-		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLiftGroupMode{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LiftGroupMode:                liftGroupMode,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLiftGroupMode(structType any) BACnetPropertyStatesLiftGroupMode {

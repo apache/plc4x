@@ -54,6 +54,17 @@ type _BACnetDateRange struct {
 
 var _ BACnetDateRange = (*_BACnetDateRange)(nil)
 
+// NewBACnetDateRange factory function for _BACnetDateRange
+func NewBACnetDateRange(startDate BACnetApplicationTagDate, endDate BACnetApplicationTagDate) *_BACnetDateRange {
+	if startDate == nil {
+		panic("startDate of type BACnetApplicationTagDate for BACnetDateRange must not be nil")
+	}
+	if endDate == nil {
+		panic("endDate of type BACnetApplicationTagDate for BACnetDateRange must not be nil")
+	}
+	return &_BACnetDateRange{StartDate: startDate, EndDate: endDate}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetDateRange) GetEndDate() BACnetApplicationTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDateRange factory function for _BACnetDateRange
-func NewBACnetDateRange(startDate BACnetApplicationTagDate, endDate BACnetApplicationTagDate) *_BACnetDateRange {
-	if startDate == nil {
-		panic("startDate of type BACnetApplicationTagDate for BACnetDateRange must not be nil")
-	}
-	if endDate == nil {
-		panic("endDate of type BACnetApplicationTagDate for BACnetDateRange must not be nil")
-	}
-	return &_BACnetDateRange{StartDate: startDate, EndDate: endDate}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDateRange(structType any) BACnetDateRange {

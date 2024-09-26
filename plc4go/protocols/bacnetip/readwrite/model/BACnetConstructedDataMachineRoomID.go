@@ -56,6 +56,19 @@ type _BACnetConstructedDataMachineRoomID struct {
 var _ BACnetConstructedDataMachineRoomID = (*_BACnetConstructedDataMachineRoomID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMachineRoomID)(nil)
 
+// NewBACnetConstructedDataMachineRoomID factory function for _BACnetConstructedDataMachineRoomID
+func NewBACnetConstructedDataMachineRoomID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, machineRoomId BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
+	if machineRoomId == nil {
+		panic("machineRoomId of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataMachineRoomID must not be nil")
+	}
+	_result := &_BACnetConstructedDataMachineRoomID{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MachineRoomId:                 machineRoomId,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMachineRoomID) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMachineRoomID factory function for _BACnetConstructedDataMachineRoomID
-func NewBACnetConstructedDataMachineRoomID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, machineRoomId BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMachineRoomID {
-	if machineRoomId == nil {
-		panic("machineRoomId of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataMachineRoomID must not be nil")
-	}
-	_result := &_BACnetConstructedDataMachineRoomID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MachineRoomId:                 machineRoomId,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDataMachineRoomID {

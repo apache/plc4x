@@ -60,6 +60,20 @@ type _BACnetAddressEnclosed struct {
 
 var _ BACnetAddressEnclosed = (*_BACnetAddressEnclosed)(nil)
 
+// NewBACnetAddressEnclosed factory function for _BACnetAddressEnclosed
+func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAddressEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAddressEnclosed must not be nil")
+	}
+	if address == nil {
+		panic("address of type BACnetAddress for BACnetAddressEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAddressEnclosed must not be nil")
+	}
+	return &_BACnetAddressEnclosed{OpeningTag: openingTag, Address: address, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetAddressEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddressEnclosed factory function for _BACnetAddressEnclosed
-func NewBACnetAddressEnclosed(openingTag BACnetOpeningTag, address BACnetAddress, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAddressEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetAddressEnclosed must not be nil")
-	}
-	if address == nil {
-		panic("address of type BACnetAddress for BACnetAddressEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetAddressEnclosed must not be nil")
-	}
-	return &_BACnetAddressEnclosed{OpeningTag: openingTag, Address: address, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddressEnclosed(structType any) BACnetAddressEnclosed {

@@ -60,6 +60,21 @@ type _LDataCon struct {
 var _ LDataCon = (*_LDataCon)(nil)
 var _ CEMIRequirements = (*_LDataCon)(nil)
 
+// NewLDataCon factory function for _LDataCon
+func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
+	}
+	_result := &_LDataCon{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_LDataCon) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataCon factory function for _LDataCon
-func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataCon {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataCon must not be nil")
-	}
-	_result := &_LDataCon{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataCon(structType any) LDataCon {

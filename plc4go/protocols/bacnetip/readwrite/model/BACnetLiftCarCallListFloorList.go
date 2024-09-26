@@ -60,6 +60,17 @@ type _BACnetLiftCarCallListFloorList struct {
 
 var _ BACnetLiftCarCallListFloorList = (*_BACnetLiftCarCallListFloorList)(nil)
 
+// NewBACnetLiftCarCallListFloorList factory function for _BACnetLiftCarCallListFloorList
+func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLiftCarCallListFloorList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLiftCarCallListFloorList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLiftCarCallListFloorList must not be nil")
+	}
+	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,17 +92,6 @@ func (m *_BACnetLiftCarCallListFloorList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarCallListFloorList factory function for _BACnetLiftCarCallListFloorList
-func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLiftCarCallListFloorList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLiftCarCallListFloorList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLiftCarCallListFloorList must not be nil")
-	}
-	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarCallListFloorList(structType any) BACnetLiftCarCallListFloorList {

@@ -65,6 +65,17 @@ type _BACnetConstructedDataEventTimeStamps struct {
 var _ BACnetConstructedDataEventTimeStamps = (*_BACnetConstructedDataEventTimeStamps)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventTimeStamps)(nil)
 
+// NewBACnetConstructedDataEventTimeStamps factory function for _BACnetConstructedDataEventTimeStamps
+func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventTimeStamps {
+	_result := &_BACnetConstructedDataEventTimeStamps{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		EventTimeStamps:               eventTimeStamps,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -145,17 +156,6 @@ func (m *_BACnetConstructedDataEventTimeStamps) GetToNormal() BACnetTimeStamp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventTimeStamps factory function for _BACnetConstructedDataEventTimeStamps
-func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventTimeStamps []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventTimeStamps {
-	_result := &_BACnetConstructedDataEventTimeStamps{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		EventTimeStamps:               eventTimeStamps,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventTimeStamps(structType any) BACnetConstructedDataEventTimeStamps {

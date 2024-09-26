@@ -54,6 +54,16 @@ type _MeteringDataOilConsumption struct {
 var _ MeteringDataOilConsumption = (*_MeteringDataOilConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataOilConsumption)(nil)
 
+// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
+func NewMeteringDataOilConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, L uint32) *_MeteringDataOilConsumption {
+	_result := &_MeteringDataOilConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		L:                    L,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_MeteringDataOilConsumption) GetL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
-func NewMeteringDataOilConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, L uint32) *_MeteringDataOilConsumption {
-	_result := &_MeteringDataOilConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		L:                    L,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {

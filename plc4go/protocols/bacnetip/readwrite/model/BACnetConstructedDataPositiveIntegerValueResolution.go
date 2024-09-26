@@ -56,6 +56,19 @@ type _BACnetConstructedDataPositiveIntegerValueResolution struct {
 var _ BACnetConstructedDataPositiveIntegerValueResolution = (*_BACnetConstructedDataPositiveIntegerValueResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueResolution)(nil)
 
+// NewBACnetConstructedDataPositiveIntegerValueResolution factory function for _BACnetConstructedDataPositiveIntegerValueResolution
+func NewBACnetConstructedDataPositiveIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueResolution factory function for _BACnetConstructedDataPositiveIntegerValueResolution
-func NewBACnetConstructedDataPositiveIntegerValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueResolution(structType any) BACnetConstructedDataPositiveIntegerValueResolution {

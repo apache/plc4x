@@ -54,6 +54,19 @@ type _BACnetTimerStateChangeValueLightingCommand struct {
 var _ BACnetTimerStateChangeValueLightingCommand = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
 
+// NewBACnetTimerStateChangeValueLightingCommand factory function for _BACnetTimerStateChangeValueLightingCommand
+func NewBACnetTimerStateChangeValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
+	if ligthingCommandValue == nil {
+		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetTimerStateChangeValueLightingCommand must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueLightingCommand{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		LigthingCommandValue:                ligthingCommandValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLigthingCommandValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueLightingCommand factory function for _BACnetTimerStateChangeValueLightingCommand
-func NewBACnetTimerStateChangeValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
-	if ligthingCommandValue == nil {
-		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetTimerStateChangeValueLightingCommand must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueLightingCommand{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		LigthingCommandValue:                ligthingCommandValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueLightingCommand(structType any) BACnetTimerStateChangeValueLightingCommand {

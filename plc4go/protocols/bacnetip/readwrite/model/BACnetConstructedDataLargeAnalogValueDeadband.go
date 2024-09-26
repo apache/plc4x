@@ -56,6 +56,19 @@ type _BACnetConstructedDataLargeAnalogValueDeadband struct {
 var _ BACnetConstructedDataLargeAnalogValueDeadband = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueDeadband)(nil)
 
+// NewBACnetConstructedDataLargeAnalogValueDeadband factory function for _BACnetConstructedDataLargeAnalogValueDeadband
+func NewBACnetConstructedDataLargeAnalogValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueDeadband must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueDeadband) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueDeadband factory function for _BACnetConstructedDataLargeAnalogValueDeadband
-func NewBACnetConstructedDataLargeAnalogValueDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueDeadband {
-	if deadband == nil {
-		panic("deadband of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueDeadband must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Deadband:                      deadband,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueDeadband(structType any) BACnetConstructedDataLargeAnalogValueDeadband {

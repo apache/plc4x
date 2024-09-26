@@ -69,6 +69,27 @@ type _FindServersRequest struct {
 var _ FindServersRequest = (*_FindServersRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersRequest)(nil)
 
+// NewFindServersRequest factory function for _FindServersRequest
+func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) *_FindServersRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for FindServersRequest must not be nil")
+	}
+	if endpointUrl == nil {
+		panic("endpointUrl of type PascalString for FindServersRequest must not be nil")
+	}
+	_result := &_FindServersRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		EndpointUrl:                       endpointUrl,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -120,27 +141,6 @@ func (m *_FindServersRequest) GetServerUris() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFindServersRequest factory function for _FindServersRequest
-func NewFindServersRequest(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfServerUris int32, serverUris []PascalString) *_FindServersRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for FindServersRequest must not be nil")
-	}
-	if endpointUrl == nil {
-		panic("endpointUrl of type PascalString for FindServersRequest must not be nil")
-	}
-	_result := &_FindServersRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		EndpointUrl:                       endpointUrl,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		NoOfServerUris:                    noOfServerUris,
-		ServerUris:                        serverUris,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFindServersRequest(structType any) FindServersRequest {

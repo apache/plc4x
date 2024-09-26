@@ -54,6 +54,16 @@ type _TelephonyDataDivert struct {
 var _ TelephonyDataDivert = (*_TelephonyDataDivert)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataDivert)(nil)
 
+// NewTelephonyDataDivert factory function for _TelephonyDataDivert
+func NewTelephonyDataDivert(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataDivert {
+	_result := &_TelephonyDataDivert{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,16 +91,6 @@ func (m *_TelephonyDataDivert) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataDivert factory function for _TelephonyDataDivert
-func NewTelephonyDataDivert(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataDivert {
-	_result := &_TelephonyDataDivert{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataDivert(structType any) TelephonyDataDivert {

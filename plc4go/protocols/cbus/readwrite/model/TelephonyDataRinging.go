@@ -56,6 +56,16 @@ type _TelephonyDataRinging struct {
 var _ TelephonyDataRinging = (*_TelephonyDataRinging)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataRinging)(nil)
 
+// NewTelephonyDataRinging factory function for _TelephonyDataRinging
+func NewTelephonyDataRinging(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataRinging {
+	_result := &_TelephonyDataRinging{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Number:                number,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -83,16 +93,6 @@ func (m *_TelephonyDataRinging) GetNumber() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataRinging factory function for _TelephonyDataRinging
-func NewTelephonyDataRinging(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataRinging {
-	_result := &_TelephonyDataRinging{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Number:                number,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataRinging(structType any) TelephonyDataRinging {

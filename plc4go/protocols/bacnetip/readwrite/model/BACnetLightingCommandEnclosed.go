@@ -60,6 +60,20 @@ type _BACnetLightingCommandEnclosed struct {
 
 var _ BACnetLightingCommandEnclosed = (*_BACnetLightingCommandEnclosed)(nil)
 
+// NewBACnetLightingCommandEnclosed factory function for _BACnetLightingCommandEnclosed
+func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLightingCommandEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLightingCommandEnclosed must not be nil")
+	}
+	if lightingCommand == nil {
+		panic("lightingCommand of type BACnetLightingCommand for BACnetLightingCommandEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLightingCommandEnclosed must not be nil")
+	}
+	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,20 +95,6 @@ func (m *_BACnetLightingCommandEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingCommandEnclosed factory function for _BACnetLightingCommandEnclosed
-func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLightingCommandEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLightingCommandEnclosed must not be nil")
-	}
-	if lightingCommand == nil {
-		panic("lightingCommand of type BACnetLightingCommand for BACnetLightingCommandEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLightingCommandEnclosed must not be nil")
-	}
-	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingCommandEnclosed(structType any) BACnetLightingCommandEnclosed {

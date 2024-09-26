@@ -60,6 +60,21 @@ type _CallRequest struct {
 var _ CallRequest = (*_CallRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallRequest)(nil)
 
+// NewCallRequest factory function for _CallRequest
+func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
+	}
+	_result := &_CallRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfMethodsToCall:                 noOfMethodsToCall,
+		MethodsToCall:                     methodsToCall,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_CallRequest) GetMethodsToCall() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallRequest factory function for _CallRequest
-func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) *_CallRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CallRequest must not be nil")
-	}
-	_result := &_CallRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfMethodsToCall:                 noOfMethodsToCall,
-		MethodsToCall:                     methodsToCall,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallRequest(structType any) CallRequest {

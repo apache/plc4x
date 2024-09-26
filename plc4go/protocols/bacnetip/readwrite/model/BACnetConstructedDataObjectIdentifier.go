@@ -56,6 +56,19 @@ type _BACnetConstructedDataObjectIdentifier struct {
 var _ BACnetConstructedDataObjectIdentifier = (*_BACnetConstructedDataObjectIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectIdentifier)(nil)
 
+// NewBACnetConstructedDataObjectIdentifier factory function for _BACnetConstructedDataObjectIdentifier
+func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectIdentifier {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataObjectIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ObjectIdentifier:              objectIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataObjectIdentifier) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectIdentifier factory function for _BACnetConstructedDataObjectIdentifier
-func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectIdentifier BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectIdentifier {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataObjectIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ObjectIdentifier:              objectIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectIdentifier(structType any) BACnetConstructedDataObjectIdentifier {

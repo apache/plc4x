@@ -54,6 +54,17 @@ type _BACnetAuthenticationPolicyListEntry struct {
 
 var _ BACnetAuthenticationPolicyListEntry = (*_BACnetAuthenticationPolicyListEntry)(nil)
 
+// NewBACnetAuthenticationPolicyListEntry factory function for _BACnetAuthenticationPolicyListEntry
+func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicyListEntry {
+	if credentialDataInput == nil {
+		panic("credentialDataInput of type BACnetDeviceObjectReferenceEnclosed for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
+	if index == nil {
+		panic("index of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
+	return &_BACnetAuthenticationPolicyListEntry{CredentialDataInput: credentialDataInput, Index: index}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,17 +82,6 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetIndex() BACnetContextTagUnsign
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationPolicyListEntry factory function for _BACnetAuthenticationPolicyListEntry
-func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicyListEntry {
-	if credentialDataInput == nil {
-		panic("credentialDataInput of type BACnetDeviceObjectReferenceEnclosed for BACnetAuthenticationPolicyListEntry must not be nil")
-	}
-	if index == nil {
-		panic("index of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicyListEntry must not be nil")
-	}
-	return &_BACnetAuthenticationPolicyListEntry{CredentialDataInput: credentialDataInput, Index: index}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticationPolicyListEntry {

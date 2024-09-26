@@ -54,6 +54,11 @@ type _CustomManufacturer struct {
 
 var _ CustomManufacturer = (*_CustomManufacturer)(nil)
 
+// NewCustomManufacturer factory function for _CustomManufacturer
+func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
+	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -67,11 +72,6 @@ func (m *_CustomManufacturer) GetCustomString() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCustomManufacturer factory function for _CustomManufacturer
-func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
-	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCustomManufacturer(structType any) CustomManufacturer {

@@ -51,6 +51,11 @@ type _Checksum struct {
 
 var _ Checksum = (*_Checksum)(nil)
 
+// NewChecksum factory function for _Checksum
+func NewChecksum(value byte) *_Checksum {
+	return &_Checksum{Value: value}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -64,11 +69,6 @@ func (m *_Checksum) GetValue() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChecksum factory function for _Checksum
-func NewChecksum(value byte) *_Checksum {
-	return &_Checksum{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChecksum(structType any) Checksum {

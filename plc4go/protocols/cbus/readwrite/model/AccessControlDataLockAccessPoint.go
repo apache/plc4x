@@ -49,6 +49,15 @@ type _AccessControlDataLockAccessPoint struct {
 var _ AccessControlDataLockAccessPoint = (*_AccessControlDataLockAccessPoint)(nil)
 var _ AccessControlDataRequirements = (*_AccessControlDataLockAccessPoint)(nil)
 
+// NewAccessControlDataLockAccessPoint factory function for _AccessControlDataLockAccessPoint
+func NewAccessControlDataLockAccessPoint(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataLockAccessPoint {
+	_result := &_AccessControlDataLockAccessPoint{
+		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
+	}
+	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ AccessControlDataRequirements = (*_AccessControlDataLockAccessPoint)(nil)
 
 func (m *_AccessControlDataLockAccessPoint) GetParent() AccessControlDataContract {
 	return m.AccessControlDataContract
-}
-
-// NewAccessControlDataLockAccessPoint factory function for _AccessControlDataLockAccessPoint
-func NewAccessControlDataLockAccessPoint(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataLockAccessPoint {
-	_result := &_AccessControlDataLockAccessPoint{
-		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
-	}
-	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

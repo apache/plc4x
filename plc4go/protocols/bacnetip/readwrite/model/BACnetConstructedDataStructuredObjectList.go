@@ -59,6 +59,17 @@ type _BACnetConstructedDataStructuredObjectList struct {
 var _ BACnetConstructedDataStructuredObjectList = (*_BACnetConstructedDataStructuredObjectList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStructuredObjectList)(nil)
 
+// NewBACnetConstructedDataStructuredObjectList factory function for _BACnetConstructedDataStructuredObjectList
+func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredObjectList {
+	_result := &_BACnetConstructedDataStructuredObjectList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		StructuredObjectList:          structuredObjectList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataStructuredObjectList) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStructuredObjectList factory function for _BACnetConstructedDataStructuredObjectList
-func NewBACnetConstructedDataStructuredObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, structuredObjectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStructuredObjectList {
-	_result := &_BACnetConstructedDataStructuredObjectList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		StructuredObjectList:          structuredObjectList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStructuredObjectList(structType any) BACnetConstructedDataStructuredObjectList {

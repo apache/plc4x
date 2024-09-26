@@ -57,6 +57,23 @@ type _CreateObjectError struct {
 var _ CreateObjectError = (*_CreateObjectError)(nil)
 var _ BACnetErrorRequirements = (*_CreateObjectError)(nil)
 
+// NewCreateObjectError factory function for _CreateObjectError
+func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_CreateObjectError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for CreateObjectError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for CreateObjectError must not be nil")
+	}
+	_result := &_CreateObjectError{
+		BACnetErrorContract:      NewBACnetError(),
+		ErrorType:                errorType,
+		FirstFailedElementNumber: firstFailedElementNumber,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,23 +109,6 @@ func (m *_CreateObjectError) GetFirstFailedElementNumber() BACnetContextTagUnsig
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateObjectError factory function for _CreateObjectError
-func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_CreateObjectError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for CreateObjectError must not be nil")
-	}
-	if firstFailedElementNumber == nil {
-		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for CreateObjectError must not be nil")
-	}
-	_result := &_CreateObjectError{
-		BACnetErrorContract:      NewBACnetError(),
-		ErrorType:                errorType,
-		FirstFailedElementNumber: firstFailedElementNumber,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateObjectError(structType any) CreateObjectError {

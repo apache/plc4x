@@ -58,6 +58,14 @@ type _BACnetLockStatusTagged struct {
 
 var _ BACnetLockStatusTagged = (*_BACnetLockStatusTagged)(nil)
 
+// NewBACnetLockStatusTagged factory function for _BACnetLockStatusTagged
+func NewBACnetLockStatusTagged(header BACnetTagHeader, value BACnetLockStatus, tagNumber uint8, tagClass TagClass) *_BACnetLockStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLockStatusTagged must not be nil")
+	}
+	return &_BACnetLockStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -75,14 +83,6 @@ func (m *_BACnetLockStatusTagged) GetValue() BACnetLockStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLockStatusTagged factory function for _BACnetLockStatusTagged
-func NewBACnetLockStatusTagged(header BACnetTagHeader, value BACnetLockStatus, tagNumber uint8, tagClass TagClass) *_BACnetLockStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLockStatusTagged must not be nil")
-	}
-	return &_BACnetLockStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLockStatusTagged(structType any) BACnetLockStatusTagged {

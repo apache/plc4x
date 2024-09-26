@@ -56,6 +56,19 @@ type _FirmataCommandSysex struct {
 var _ FirmataCommandSysex = (*_FirmataCommandSysex)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSysex)(nil)
 
+// NewFirmataCommandSysex factory function for _FirmataCommandSysex
+func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
+	if command == nil {
+		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
+	}
+	_result := &_FirmataCommandSysex{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Command:                command,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -87,19 +100,6 @@ func (m *_FirmataCommandSysex) GetCommand() SysexCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSysex factory function for _FirmataCommandSysex
-func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataCommandSysex {
-	if command == nil {
-		panic("command of type SysexCommand for FirmataCommandSysex must not be nil")
-	}
-	_result := &_FirmataCommandSysex{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Command:                command,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSysex(structType any) FirmataCommandSysex {

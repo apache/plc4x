@@ -54,6 +54,16 @@ type _ModbusPDUWriteFileRecordRequest struct {
 var _ ModbusPDUWriteFileRecordRequest = (*_ModbusPDUWriteFileRecordRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteFileRecordRequest)(nil)
 
+// NewModbusPDUWriteFileRecordRequest factory function for _ModbusPDUWriteFileRecordRequest
+func NewModbusPDUWriteFileRecordRequest(items []ModbusPDUWriteFileRecordRequestItem) *_ModbusPDUWriteFileRecordRequest {
+	_result := &_ModbusPDUWriteFileRecordRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Items:             items,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -93,16 +103,6 @@ func (m *_ModbusPDUWriteFileRecordRequest) GetItems() []ModbusPDUWriteFileRecord
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteFileRecordRequest factory function for _ModbusPDUWriteFileRecordRequest
-func NewModbusPDUWriteFileRecordRequest(items []ModbusPDUWriteFileRecordRequestItem) *_ModbusPDUWriteFileRecordRequest {
-	_result := &_ModbusPDUWriteFileRecordRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Items:             items,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteFileRecordRequest(structType any) ModbusPDUWriteFileRecordRequest {

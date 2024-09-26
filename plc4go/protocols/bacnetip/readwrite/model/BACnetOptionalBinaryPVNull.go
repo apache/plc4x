@@ -54,6 +54,19 @@ type _BACnetOptionalBinaryPVNull struct {
 var _ BACnetOptionalBinaryPVNull = (*_BACnetOptionalBinaryPVNull)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVNull)(nil)
 
+// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
+func NewBACnetOptionalBinaryPVNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalBinaryPVNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVNull{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetOptionalBinaryPVNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
-func NewBACnetOptionalBinaryPVNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalBinaryPVNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVNull{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		NullValue:                      nullValue,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {

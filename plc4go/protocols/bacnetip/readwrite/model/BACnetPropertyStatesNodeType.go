@@ -54,6 +54,19 @@ type _BACnetPropertyStatesNodeType struct {
 var _ BACnetPropertyStatesNodeType = (*_BACnetPropertyStatesNodeType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNodeType)(nil)
 
+// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
+func NewBACnetPropertyStatesNodeType(peekedTagHeader BACnetTagHeader, nodeType BACnetNodeTypeTagged) *_BACnetPropertyStatesNodeType {
+	if nodeType == nil {
+		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNodeType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NodeType:                     nodeType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesNodeType) GetNodeType() BACnetNodeTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
-func NewBACnetPropertyStatesNodeType(peekedTagHeader BACnetTagHeader, nodeType BACnetNodeTypeTagged) *_BACnetPropertyStatesNodeType {
-	if nodeType == nil {
-		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNodeType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NodeType:                     nodeType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNodeType(structType any) BACnetPropertyStatesNodeType {

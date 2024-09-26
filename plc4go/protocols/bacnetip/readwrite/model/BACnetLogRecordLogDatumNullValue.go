@@ -54,6 +54,19 @@ type _BACnetLogRecordLogDatumNullValue struct {
 var _ BACnetLogRecordLogDatumNullValue = (*_BACnetLogRecordLogDatumNullValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumNullValue)(nil)
 
+// NewBACnetLogRecordLogDatumNullValue factory function for _BACnetLogRecordLogDatumNullValue
+func NewBACnetLogRecordLogDatumNullValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nullValue BACnetContextTagNull, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
+	if nullValue == nil {
+		panic("nullValue of type BACnetContextTagNull for BACnetLogRecordLogDatumNullValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumNullValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		NullValue:                       nullValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetLogRecordLogDatumNullValue) GetNullValue() BACnetContextTagNull 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumNullValue factory function for _BACnetLogRecordLogDatumNullValue
-func NewBACnetLogRecordLogDatumNullValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nullValue BACnetContextTagNull, tagNumber uint8) *_BACnetLogRecordLogDatumNullValue {
-	if nullValue == nil {
-		panic("nullValue of type BACnetContextTagNull for BACnetLogRecordLogDatumNullValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumNullValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		NullValue:                       nullValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumNullValue(structType any) BACnetLogRecordLogDatumNullValue {

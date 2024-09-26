@@ -54,6 +54,19 @@ type _BACnetPropertyStatesLightningTransition struct {
 var _ BACnetPropertyStatesLightningTransition = (*_BACnetPropertyStatesLightningTransition)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningTransition)(nil)
 
+// NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
+func NewBACnetPropertyStatesLightningTransition(peekedTagHeader BACnetTagHeader, lightningTransition BACnetLightingTransitionTagged) *_BACnetPropertyStatesLightningTransition {
+	if lightningTransition == nil {
+		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningTransition{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningTransition:          lightningTransition,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetPropertyStatesLightningTransition) GetLightningTransition() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningTransition factory function for _BACnetPropertyStatesLightningTransition
-func NewBACnetPropertyStatesLightningTransition(peekedTagHeader BACnetTagHeader, lightningTransition BACnetLightingTransitionTagged) *_BACnetPropertyStatesLightningTransition {
-	if lightningTransition == nil {
-		panic("lightningTransition of type BACnetLightingTransitionTagged for BACnetPropertyStatesLightningTransition must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningTransition{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningTransition:          lightningTransition,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningTransition(structType any) BACnetPropertyStatesLightningTransition {

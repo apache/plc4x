@@ -62,6 +62,18 @@ type _GetAttributeAllResponse struct {
 var _ GetAttributeAllResponse = (*_GetAttributeAllResponse)(nil)
 var _ CipServiceRequirements = (*_GetAttributeAllResponse)(nil)
 
+// NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
+func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
+	_result := &_GetAttributeAllResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+		Attributes:         attributes,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -109,18 +121,6 @@ func (m *_GetAttributeAllResponse) GetAttributes() CIPAttributes {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
-func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
-	_result := &_GetAttributeAllResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-		Attributes:         attributes,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGetAttributeAllResponse(structType any) GetAttributeAllResponse {

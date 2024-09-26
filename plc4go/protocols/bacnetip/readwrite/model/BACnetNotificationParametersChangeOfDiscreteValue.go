@@ -63,6 +63,31 @@ type _BACnetNotificationParametersChangeOfDiscreteValue struct {
 var _ BACnetNotificationParametersChangeOfDiscreteValue = (*_BACnetNotificationParametersChangeOfDiscreteValue)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValue)(nil)
 
+// NewBACnetNotificationParametersChangeOfDiscreteValue factory function for _BACnetNotificationParametersChangeOfDiscreteValue
+func NewBACnetNotificationParametersChangeOfDiscreteValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfDiscreteValue {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if newValue == nil {
+		panic("newValue of type BACnetNotificationParametersChangeOfDiscreteValueNewValue for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValue{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		NewValue:                             newValue,
+		StatusFlags:                          statusFlags,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -102,31 +127,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValue) GetInnerClosingTag(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValue factory function for _BACnetNotificationParametersChangeOfDiscreteValue
-func NewBACnetNotificationParametersChangeOfDiscreteValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, newValue BACnetNotificationParametersChangeOfDiscreteValueNewValue, statusFlags BACnetStatusFlagsTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfDiscreteValue {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
-	}
-	if newValue == nil {
-		panic("newValue of type BACnetNotificationParametersChangeOfDiscreteValueNewValue for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfDiscreteValue must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValue{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		NewValue:                             newValue,
-		StatusFlags:                          statusFlags,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValue(structType any) BACnetNotificationParametersChangeOfDiscreteValue {

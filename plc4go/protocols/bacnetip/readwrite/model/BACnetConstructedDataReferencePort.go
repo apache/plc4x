@@ -56,6 +56,19 @@ type _BACnetConstructedDataReferencePort struct {
 var _ BACnetConstructedDataReferencePort = (*_BACnetConstructedDataReferencePort)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReferencePort)(nil)
 
+// NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
+func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
+	if referencePort == nil {
+		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
+	}
+	_result := &_BACnetConstructedDataReferencePort{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReferencePort:                 referencePort,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataReferencePort) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReferencePort factory function for _BACnetConstructedDataReferencePort
-func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, referencePort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReferencePort {
-	if referencePort == nil {
-		panic("referencePort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataReferencePort must not be nil")
-	}
-	_result := &_BACnetConstructedDataReferencePort{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReferencePort:                 referencePort,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReferencePort(structType any) BACnetConstructedDataReferencePort {

@@ -56,6 +56,19 @@ type _BACnetConstructedDataMinimumOnTime struct {
 var _ BACnetConstructedDataMinimumOnTime = (*_BACnetConstructedDataMinimumOnTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOnTime)(nil)
 
+// NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
+func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
+	if minimumOnTime == nil {
+		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumOnTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumOnTime:                 minimumOnTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
-func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
-	if minimumOnTime == nil {
-		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumOnTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumOnTime:                 minimumOnTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumOnTime(structType any) BACnetConstructedDataMinimumOnTime {

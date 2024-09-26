@@ -57,6 +57,11 @@ type _AlarmMessageAckResponseType struct {
 
 var _ AlarmMessageAckResponseType = (*_AlarmMessageAckResponseType)(nil)
 
+// NewAlarmMessageAckResponseType factory function for _AlarmMessageAckResponseType
+func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *_AlarmMessageAckResponseType {
+	return &_AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -78,11 +83,6 @@ func (m *_AlarmMessageAckResponseType) GetMessageObjects() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckResponseType factory function for _AlarmMessageAckResponseType
-func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *_AlarmMessageAckResponseType {
-	return &_AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckResponseType(structType any) AlarmMessageAckResponseType {

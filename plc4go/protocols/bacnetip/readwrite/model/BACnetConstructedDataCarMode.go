@@ -56,6 +56,19 @@ type _BACnetConstructedDataCarMode struct {
 var _ BACnetConstructedDataCarMode = (*_BACnetConstructedDataCarMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarMode)(nil)
 
+// NewBACnetConstructedDataCarMode factory function for _BACnetConstructedDataCarMode
+func NewBACnetConstructedDataCarMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMode BACnetLiftCarModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMode {
+	if carMode == nil {
+		panic("carMode of type BACnetLiftCarModeTagged for BACnetConstructedDataCarMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarMode:                       carMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCarMode) GetActualValue() BACnetLiftCarModeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarMode factory function for _BACnetConstructedDataCarMode
-func NewBACnetConstructedDataCarMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMode BACnetLiftCarModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMode {
-	if carMode == nil {
-		panic("carMode of type BACnetLiftCarModeTagged for BACnetConstructedDataCarMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarMode:                       carMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarMode(structType any) BACnetConstructedDataCarMode {

@@ -60,6 +60,24 @@ type _Annotation struct {
 var _ Annotation = (*_Annotation)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Annotation)(nil)
 
+// NewAnnotation factory function for _Annotation
+func NewAnnotation(message PascalString, userName PascalString, annotationTime int64) *_Annotation {
+	if message == nil {
+		panic("message of type PascalString for Annotation must not be nil")
+	}
+	if userName == nil {
+		panic("userName of type PascalString for Annotation must not be nil")
+	}
+	_result := &_Annotation{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Message:                           message,
+		UserName:                          userName,
+		AnnotationTime:                    annotationTime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,24 +117,6 @@ func (m *_Annotation) GetAnnotationTime() int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAnnotation factory function for _Annotation
-func NewAnnotation(message PascalString, userName PascalString, annotationTime int64) *_Annotation {
-	if message == nil {
-		panic("message of type PascalString for Annotation must not be nil")
-	}
-	if userName == nil {
-		panic("userName of type PascalString for Annotation must not be nil")
-	}
-	_result := &_Annotation{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Message:                           message,
-		UserName:                          userName,
-		AnnotationTime:                    annotationTime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAnnotation(structType any) Annotation {

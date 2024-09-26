@@ -54,6 +54,19 @@ type _BACnetHostAddressName struct {
 var _ BACnetHostAddressName = (*_BACnetHostAddressName)(nil)
 var _ BACnetHostAddressRequirements = (*_BACnetHostAddressName)(nil)
 
+// NewBACnetHostAddressName factory function for _BACnetHostAddressName
+func NewBACnetHostAddressName(peekedTagHeader BACnetTagHeader, name BACnetContextTagCharacterString) *_BACnetHostAddressName {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetHostAddressName must not be nil")
+	}
+	_result := &_BACnetHostAddressName{
+		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
+		Name:                      name,
+	}
+	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetHostAddressName) GetName() BACnetContextTagCharacterString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddressName factory function for _BACnetHostAddressName
-func NewBACnetHostAddressName(peekedTagHeader BACnetTagHeader, name BACnetContextTagCharacterString) *_BACnetHostAddressName {
-	if name == nil {
-		panic("name of type BACnetContextTagCharacterString for BACnetHostAddressName must not be nil")
-	}
-	_result := &_BACnetHostAddressName{
-		BACnetHostAddressContract: NewBACnetHostAddress(peekedTagHeader),
-		Name:                      name,
-	}
-	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddressName(structType any) BACnetHostAddressName {

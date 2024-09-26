@@ -49,6 +49,15 @@ type _ModbusPDUGetComEventCounterRequest struct {
 var _ ModbusPDUGetComEventCounterRequest = (*_ModbusPDUGetComEventCounterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUGetComEventCounterRequest)(nil)
 
+// NewModbusPDUGetComEventCounterRequest factory function for _ModbusPDUGetComEventCounterRequest
+func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterRequest {
+	_result := &_ModbusPDUGetComEventCounterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -73,15 +82,6 @@ func (m *_ModbusPDUGetComEventCounterRequest) GetResponse() bool {
 
 func (m *_ModbusPDUGetComEventCounterRequest) GetParent() ModbusPDUContract {
 	return m.ModbusPDUContract
-}
-
-// NewModbusPDUGetComEventCounterRequest factory function for _ModbusPDUGetComEventCounterRequest
-func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterRequest {
-	_result := &_ModbusPDUGetComEventCounterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

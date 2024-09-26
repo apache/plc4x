@@ -54,6 +54,16 @@ type _ParameterValueRaw struct {
 var _ ParameterValueRaw = (*_ParameterValueRaw)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueRaw)(nil)
 
+// NewParameterValueRaw factory function for _ParameterValueRaw
+func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
+	_result := &_ParameterValueRaw{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_ParameterValueRaw) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueRaw factory function for _ParameterValueRaw
-func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
-	_result := &_ParameterValueRaw{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueRaw(structType any) ParameterValueRaw {

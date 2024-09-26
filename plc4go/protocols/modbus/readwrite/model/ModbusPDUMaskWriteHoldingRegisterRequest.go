@@ -60,6 +60,18 @@ type _ModbusPDUMaskWriteHoldingRegisterRequest struct {
 var _ ModbusPDUMaskWriteHoldingRegisterRequest = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUMaskWriteHoldingRegisterRequest)(nil)
 
+// NewModbusPDUMaskWriteHoldingRegisterRequest factory function for _ModbusPDUMaskWriteHoldingRegisterRequest
+func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *_ModbusPDUMaskWriteHoldingRegisterRequest {
+	_result := &_ModbusPDUMaskWriteHoldingRegisterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		ReferenceAddress:  referenceAddress,
+		AndMask:           andMask,
+		OrMask:            orMask,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -107,18 +119,6 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) GetOrMask() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUMaskWriteHoldingRegisterRequest factory function for _ModbusPDUMaskWriteHoldingRegisterRequest
-func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) *_ModbusPDUMaskWriteHoldingRegisterRequest {
-	_result := &_ModbusPDUMaskWriteHoldingRegisterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		ReferenceAddress:  referenceAddress,
-		AndMask:           andMask,
-		OrMask:            orMask,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUMaskWriteHoldingRegisterRequest(structType any) ModbusPDUMaskWriteHoldingRegisterRequest {

@@ -54,6 +54,16 @@ type _KnxNetRemoteLogging struct {
 var _ KnxNetRemoteLogging = (*_KnxNetRemoteLogging)(nil)
 var _ ServiceIdRequirements = (*_KnxNetRemoteLogging)(nil)
 
+// NewKnxNetRemoteLogging factory function for _KnxNetRemoteLogging
+func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
+	_result := &_KnxNetRemoteLogging{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_KnxNetRemoteLogging) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetRemoteLogging factory function for _KnxNetRemoteLogging
-func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
-	_result := &_KnxNetRemoteLogging{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetRemoteLogging(structType any) KnxNetRemoteLogging {

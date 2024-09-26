@@ -56,6 +56,19 @@ type _BACnetConstructedDataMaxInfoFrames struct {
 var _ BACnetConstructedDataMaxInfoFrames = (*_BACnetConstructedDataMaxInfoFrames)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxInfoFrames)(nil)
 
+// NewBACnetConstructedDataMaxInfoFrames factory function for _BACnetConstructedDataMaxInfoFrames
+func NewBACnetConstructedDataMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxInfoFrames {
+	if maxInfoFrames == nil {
+		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxInfoFrames must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxInfoFrames{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxInfoFrames:                 maxInfoFrames,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataMaxInfoFrames) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxInfoFrames factory function for _BACnetConstructedDataMaxInfoFrames
-func NewBACnetConstructedDataMaxInfoFrames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxInfoFrames BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxInfoFrames {
-	if maxInfoFrames == nil {
-		panic("maxInfoFrames of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxInfoFrames must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxInfoFrames{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxInfoFrames:                 maxInfoFrames,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxInfoFrames(structType any) BACnetConstructedDataMaxInfoFrames {

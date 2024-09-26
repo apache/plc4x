@@ -54,6 +54,11 @@ type _ProjectInstallationIdentifier struct {
 
 var _ ProjectInstallationIdentifier = (*_ProjectInstallationIdentifier)(nil)
 
+// NewProjectInstallationIdentifier factory function for _ProjectInstallationIdentifier
+func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *_ProjectInstallationIdentifier {
+	return &_ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewProjectInstallationIdentifier factory function for _ProjectInstallationIdentifier
-func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *_ProjectInstallationIdentifier {
-	return &_ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastProjectInstallationIdentifier(structType any) ProjectInstallationIdentifier {

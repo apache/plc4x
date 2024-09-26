@@ -49,6 +49,15 @@ type _BACnetConstructedDataTrendLogAll struct {
 var _ BACnetConstructedDataTrendLogAll = (*_BACnetConstructedDataTrendLogAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogAll)(nil)
 
+// NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
+func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
+	_result := &_BACnetConstructedDataTrendLogAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -69,15 +78,6 @@ func (m *_BACnetConstructedDataTrendLogAll) GetPropertyIdentifierArgument() BACn
 
 func (m *_BACnetConstructedDataTrendLogAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataTrendLogAll factory function for _BACnetConstructedDataTrendLogAll
-func NewBACnetConstructedDataTrendLogAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogAll {
-	_result := &_BACnetConstructedDataTrendLogAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

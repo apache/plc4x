@@ -57,6 +57,16 @@ type _BACnetContextTagUnknown struct {
 var _ BACnetContextTagUnknown = (*_BACnetContextTagUnknown)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagUnknown)(nil)
 
+// NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
+func NewBACnetContextTagUnknown(header BACnetTagHeader, unknownData []byte, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
+	_result := &_BACnetContextTagUnknown{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		UnknownData:              unknownData,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -88,16 +98,6 @@ func (m *_BACnetContextTagUnknown) GetUnknownData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
-func NewBACnetContextTagUnknown(header BACnetTagHeader, unknownData []byte, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
-	_result := &_BACnetContextTagUnknown{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		UnknownData:              unknownData,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagUnknown(structType any) BACnetContextTagUnknown {

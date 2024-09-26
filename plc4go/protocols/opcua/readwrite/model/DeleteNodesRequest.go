@@ -60,6 +60,21 @@ type _DeleteNodesRequest struct {
 var _ DeleteNodesRequest = (*_DeleteNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesRequest)(nil)
 
+// NewDeleteNodesRequest factory function for _DeleteNodesRequest
+func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
+	}
+	_result := &_DeleteNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToDelete:                 noOfNodesToDelete,
+		NodesToDelete:                     nodesToDelete,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -99,21 +114,6 @@ func (m *_DeleteNodesRequest) GetNodesToDelete() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesRequest factory function for _DeleteNodesRequest
-func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
-	}
-	_result := &_DeleteNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToDelete:                 noOfNodesToDelete,
-		NodesToDelete:                     nodesToDelete,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesRequest(structType any) DeleteNodesRequest {

@@ -57,6 +57,17 @@ type _ParameterValueBaudRateSelector struct {
 var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueBaudRateSelector)(nil)
 
+// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
+func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
+	_result := &_ParameterValueBaudRateSelector{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -92,17 +103,6 @@ func (m *_ParameterValueBaudRateSelector) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
-func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
-	_result := &_ParameterValueBaudRateSelector{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSelector {

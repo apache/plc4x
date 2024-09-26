@@ -70,6 +70,14 @@ type _BACnetHostAddress struct {
 
 var _ BACnetHostAddressContract = (*_BACnetHostAddress)(nil)
 
+// NewBACnetHostAddress factory function for _BACnetHostAddress
+func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
+	}
+	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetHostAddress) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddress factory function for _BACnetHostAddress
-func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
-	}
-	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddress(structType any) BACnetHostAddress {

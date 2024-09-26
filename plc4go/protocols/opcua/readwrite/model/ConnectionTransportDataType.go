@@ -49,6 +49,15 @@ type _ConnectionTransportDataType struct {
 var _ ConnectionTransportDataType = (*_ConnectionTransportDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ConnectionTransportDataType)(nil)
 
+// NewConnectionTransportDataType factory function for _ConnectionTransportDataType
+func NewConnectionTransportDataType() *_ConnectionTransportDataType {
+	_result := &_ConnectionTransportDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ConnectionTransportDataType) GetIdentifier() string {
 
 func (m *_ConnectionTransportDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewConnectionTransportDataType factory function for _ConnectionTransportDataType
-func NewConnectionTransportDataType() *_ConnectionTransportDataType {
-	_result := &_ConnectionTransportDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

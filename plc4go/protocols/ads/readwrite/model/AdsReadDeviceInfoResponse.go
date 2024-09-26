@@ -66,6 +66,20 @@ type _AdsReadDeviceInfoResponse struct {
 var _ AdsReadDeviceInfoResponse = (*_AdsReadDeviceInfoResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoResponse)(nil)
 
+// NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
+func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
+	_result := &_AdsReadDeviceInfoResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+		MajorVersion:      majorVersion,
+		MinorVersion:      minorVersion,
+		Version:           version,
+		Device:            device,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -117,20 +131,6 @@ func (m *_AdsReadDeviceInfoResponse) GetDevice() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
-func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
-	_result := &_AdsReadDeviceInfoResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-		MajorVersion:      majorVersion,
-		MinorVersion:      minorVersion,
-		Version:           version,
-		Device:            device,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadDeviceInfoResponse(structType any) AdsReadDeviceInfoResponse {

@@ -60,6 +60,18 @@ type _CipRRData struct {
 var _ CipRRData = (*_CipRRData)(nil)
 var _ EipPacketRequirements = (*_CipRRData)(nil)
 
+// NewCipRRData factory function for _CipRRData
+func NewCipRRData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, interfaceHandle uint32, timeout uint16, typeIds []TypeId) *_CipRRData {
+	_result := &_CipRRData{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		InterfaceHandle:   interfaceHandle,
+		Timeout:           timeout,
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -107,18 +119,6 @@ func (m *_CipRRData) GetTypeIds() []TypeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipRRData factory function for _CipRRData
-func NewCipRRData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, interfaceHandle uint32, timeout uint16, typeIds []TypeId) *_CipRRData {
-	_result := &_CipRRData{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		InterfaceHandle:   interfaceHandle,
-		Timeout:           timeout,
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipRRData(structType any) CipRRData {

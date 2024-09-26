@@ -59,6 +59,11 @@ type _TriggerControlLabelOptions struct {
 
 var _ TriggerControlLabelOptions = (*_TriggerControlLabelOptions)(nil)
 
+// NewTriggerControlLabelOptions factory function for _TriggerControlLabelOptions
+func NewTriggerControlLabelOptions(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) *_TriggerControlLabelOptions {
+	return &_TriggerControlLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -76,11 +81,6 @@ func (m *_TriggerControlLabelOptions) GetLabelType() TriggerControlLabelType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlLabelOptions factory function for _TriggerControlLabelOptions
-func NewTriggerControlLabelOptions(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) *_TriggerControlLabelOptions {
-	return &_TriggerControlLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlLabelOptions(structType any) TriggerControlLabelOptions {

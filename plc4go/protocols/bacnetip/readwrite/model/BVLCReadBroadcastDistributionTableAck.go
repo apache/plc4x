@@ -59,6 +59,16 @@ type _BVLCReadBroadcastDistributionTableAck struct {
 var _ BVLCReadBroadcastDistributionTableAck = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadBroadcastDistributionTableAck)(nil)
 
+// NewBVLCReadBroadcastDistributionTableAck factory function for _BVLCReadBroadcastDistributionTableAck
+func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCReadBroadcastDistributionTableAck {
+	_result := &_BVLCReadBroadcastDistributionTableAck{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -90,16 +100,6 @@ func (m *_BVLCReadBroadcastDistributionTableAck) GetTable() []BVLCBroadcastDistr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCReadBroadcastDistributionTableAck factory function for _BVLCReadBroadcastDistributionTableAck
-func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionTableEntry, bvlcPayloadLength uint16) *_BVLCReadBroadcastDistributionTableAck {
-	_result := &_BVLCReadBroadcastDistributionTableAck{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCReadBroadcastDistributionTableAck(structType any) BVLCReadBroadcastDistributionTableAck {

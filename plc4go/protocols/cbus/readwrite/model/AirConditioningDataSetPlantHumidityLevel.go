@@ -72,6 +72,28 @@ type _AirConditioningDataSetPlantHumidityLevel struct {
 var _ AirConditioningDataSetPlantHumidityLevel = (*_AirConditioningDataSetPlantHumidityLevel)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetPlantHumidityLevel)(nil)
 
+// NewAirConditioningDataSetPlantHumidityLevel factory function for _AirConditioningDataSetPlantHumidityLevel
+func NewAirConditioningDataSetPlantHumidityLevel(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType, level HVACHumidity, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel) *_AirConditioningDataSetPlantHumidityLevel {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetPlantHumidityLevel must not be nil")
+	}
+	if humidityModeAndFlags == nil {
+		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetPlantHumidityLevel must not be nil")
+	}
+	_result := &_AirConditioningDataSetPlantHumidityLevel{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		HumidityModeAndFlags:        humidityModeAndFlags,
+		HumidityType:                humidityType,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+		AuxLevel:                    auxLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -123,28 +145,6 @@ func (m *_AirConditioningDataSetPlantHumidityLevel) GetAuxLevel() HVACAuxiliaryL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetPlantHumidityLevel factory function for _AirConditioningDataSetPlantHumidityLevel
-func NewAirConditioningDataSetPlantHumidityLevel(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidityModeAndFlags HVACHumidityModeAndFlags, humidityType HVACHumidityType, level HVACHumidity, rawLevel HVACRawLevels, auxLevel HVACAuxiliaryLevel) *_AirConditioningDataSetPlantHumidityLevel {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetPlantHumidityLevel must not be nil")
-	}
-	if humidityModeAndFlags == nil {
-		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetPlantHumidityLevel must not be nil")
-	}
-	_result := &_AirConditioningDataSetPlantHumidityLevel{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		HumidityModeAndFlags:        humidityModeAndFlags,
-		HumidityType:                humidityType,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-		AuxLevel:                    auxLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetPlantHumidityLevel(structType any) AirConditioningDataSetPlantHumidityLevel {

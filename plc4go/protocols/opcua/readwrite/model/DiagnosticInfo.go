@@ -92,6 +92,11 @@ type _DiagnosticInfo struct {
 
 var _ DiagnosticInfo = (*_DiagnosticInfo)(nil)
 
+// NewDiagnosticInfo factory function for _DiagnosticInfo
+func NewDiagnosticInfo(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool, symbolicId *int32, namespaceURI *int32, locale *int32, localizedText *int32, additionalInfo PascalString, innerStatusCode StatusCode, innerDiagnosticInfo DiagnosticInfo) *_DiagnosticInfo {
+	return &_DiagnosticInfo{InnerDiagnosticInfoSpecified: innerDiagnosticInfoSpecified, InnerStatusCodeSpecified: innerStatusCodeSpecified, AdditionalInfoSpecified: additionalInfoSpecified, LocaleSpecified: localeSpecified, LocalizedTextSpecified: localizedTextSpecified, NamespaceURISpecified: namespaceURISpecified, SymbolicIdSpecified: symbolicIdSpecified, SymbolicId: symbolicId, NamespaceURI: namespaceURI, Locale: locale, LocalizedText: localizedText, AdditionalInfo: additionalInfo, InnerStatusCode: innerStatusCode, InnerDiagnosticInfo: innerDiagnosticInfo}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -157,11 +162,6 @@ func (m *_DiagnosticInfo) GetInnerDiagnosticInfo() DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDiagnosticInfo factory function for _DiagnosticInfo
-func NewDiagnosticInfo(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool, symbolicId *int32, namespaceURI *int32, locale *int32, localizedText *int32, additionalInfo PascalString, innerStatusCode StatusCode, innerDiagnosticInfo DiagnosticInfo) *_DiagnosticInfo {
-	return &_DiagnosticInfo{InnerDiagnosticInfoSpecified: innerDiagnosticInfoSpecified, InnerStatusCodeSpecified: innerStatusCodeSpecified, AdditionalInfoSpecified: additionalInfoSpecified, LocaleSpecified: localeSpecified, LocalizedTextSpecified: localizedTextSpecified, NamespaceURISpecified: namespaceURISpecified, SymbolicIdSpecified: symbolicIdSpecified, SymbolicId: symbolicId, NamespaceURI: namespaceURI, Locale: locale, LocalizedText: localizedText, AdditionalInfo: additionalInfo, InnerStatusCode: innerStatusCode, InnerDiagnosticInfo: innerDiagnosticInfo}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDiagnosticInfo(structType any) DiagnosticInfo {

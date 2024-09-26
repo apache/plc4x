@@ -56,6 +56,19 @@ type _BACnetConstructedDataCountChangeTime struct {
 var _ BACnetConstructedDataCountChangeTime = (*_BACnetConstructedDataCountChangeTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountChangeTime)(nil)
 
+// NewBACnetConstructedDataCountChangeTime factory function for _BACnetConstructedDataCountChangeTime
+func NewBACnetConstructedDataCountChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countChangeTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountChangeTime {
+	if countChangeTime == nil {
+		panic("countChangeTime of type BACnetDateTime for BACnetConstructedDataCountChangeTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataCountChangeTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CountChangeTime:               countChangeTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCountChangeTime) GetActualValue() BACnetDateTime 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCountChangeTime factory function for _BACnetConstructedDataCountChangeTime
-func NewBACnetConstructedDataCountChangeTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countChangeTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountChangeTime {
-	if countChangeTime == nil {
-		panic("countChangeTime of type BACnetDateTime for BACnetConstructedDataCountChangeTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataCountChangeTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CountChangeTime:               countChangeTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCountChangeTime(structType any) BACnetConstructedDataCountChangeTime {

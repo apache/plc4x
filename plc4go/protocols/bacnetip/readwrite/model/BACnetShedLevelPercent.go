@@ -54,6 +54,19 @@ type _BACnetShedLevelPercent struct {
 var _ BACnetShedLevelPercent = (*_BACnetShedLevelPercent)(nil)
 var _ BACnetShedLevelRequirements = (*_BACnetShedLevelPercent)(nil)
 
+// NewBACnetShedLevelPercent factory function for _BACnetShedLevelPercent
+func NewBACnetShedLevelPercent(peekedTagHeader BACnetTagHeader, percent BACnetContextTagUnsignedInteger) *_BACnetShedLevelPercent {
+	if percent == nil {
+		panic("percent of type BACnetContextTagUnsignedInteger for BACnetShedLevelPercent must not be nil")
+	}
+	_result := &_BACnetShedLevelPercent{
+		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
+		Percent:                 percent,
+	}
+	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -81,19 +94,6 @@ func (m *_BACnetShedLevelPercent) GetPercent() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevelPercent factory function for _BACnetShedLevelPercent
-func NewBACnetShedLevelPercent(peekedTagHeader BACnetTagHeader, percent BACnetContextTagUnsignedInteger) *_BACnetShedLevelPercent {
-	if percent == nil {
-		panic("percent of type BACnetContextTagUnsignedInteger for BACnetShedLevelPercent must not be nil")
-	}
-	_result := &_BACnetShedLevelPercent{
-		BACnetShedLevelContract: NewBACnetShedLevel(peekedTagHeader),
-		Percent:                 percent,
-	}
-	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevelPercent(structType any) BACnetShedLevelPercent {

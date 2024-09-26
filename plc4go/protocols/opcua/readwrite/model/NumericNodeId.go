@@ -54,6 +54,11 @@ type _NumericNodeId struct {
 
 var _ NumericNodeId = (*_NumericNodeId)(nil)
 
+// NewNumericNodeId factory function for _NumericNodeId
+func NewNumericNodeId(namespaceIndex uint16, identifier uint32) *_NumericNodeId {
+	return &_NumericNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,11 +76,6 @@ func (m *_NumericNodeId) GetIdentifier() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNumericNodeId factory function for _NumericNodeId
-func NewNumericNodeId(namespaceIndex uint16, identifier uint32) *_NumericNodeId {
-	return &_NumericNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNumericNodeId(structType any) NumericNodeId {

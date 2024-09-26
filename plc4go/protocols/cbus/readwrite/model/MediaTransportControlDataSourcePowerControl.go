@@ -58,6 +58,16 @@ type _MediaTransportControlDataSourcePowerControl struct {
 var _ MediaTransportControlDataSourcePowerControl = (*_MediaTransportControlDataSourcePowerControl)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSourcePowerControl)(nil)
 
+// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
+func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataSourcePowerControl {
+	_result := &_MediaTransportControlDataSourcePowerControl{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOff() boo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
-func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataSourcePowerControl {
-	_result := &_MediaTransportControlDataSourcePowerControl{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		State:                             state,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransportControlDataSourcePowerControl {

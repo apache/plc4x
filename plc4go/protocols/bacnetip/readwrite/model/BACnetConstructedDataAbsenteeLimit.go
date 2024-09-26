@@ -56,6 +56,19 @@ type _BACnetConstructedDataAbsenteeLimit struct {
 var _ BACnetConstructedDataAbsenteeLimit = (*_BACnetConstructedDataAbsenteeLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAbsenteeLimit)(nil)
 
+// NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
+func NewBACnetConstructedDataAbsenteeLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, absenteeLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
+	if absenteeLimit == nil {
+		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataAbsenteeLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AbsenteeLimit:                 absenteeLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
-func NewBACnetConstructedDataAbsenteeLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, absenteeLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
-	if absenteeLimit == nil {
-		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataAbsenteeLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AbsenteeLimit:                 absenteeLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAbsenteeLimit(structType any) BACnetConstructedDataAbsenteeLimit {

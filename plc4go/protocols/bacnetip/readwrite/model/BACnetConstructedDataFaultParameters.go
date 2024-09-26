@@ -56,6 +56,19 @@ type _BACnetConstructedDataFaultParameters struct {
 var _ BACnetConstructedDataFaultParameters = (*_BACnetConstructedDataFaultParameters)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultParameters)(nil)
 
+// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
+func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
+	if faultParameters == nil {
+		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultParameters{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultParameters:               faultParameters,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFaultParameters) GetActualValue() BACnetFaultPara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
-func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
-	if faultParameters == nil {
-		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultParameters{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultParameters:               faultParameters,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultParameters(structType any) BACnetConstructedDataFaultParameters {

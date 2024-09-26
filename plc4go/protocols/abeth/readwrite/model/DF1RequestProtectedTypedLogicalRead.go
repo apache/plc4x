@@ -66,6 +66,20 @@ type _DF1RequestProtectedTypedLogicalRead struct {
 var _ DF1RequestProtectedTypedLogicalRead = (*_DF1RequestProtectedTypedLogicalRead)(nil)
 var _ DF1RequestCommandRequirements = (*_DF1RequestProtectedTypedLogicalRead)(nil)
 
+// NewDF1RequestProtectedTypedLogicalRead factory function for _DF1RequestProtectedTypedLogicalRead
+func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *_DF1RequestProtectedTypedLogicalRead {
+	_result := &_DF1RequestProtectedTypedLogicalRead{
+		DF1RequestCommandContract: NewDF1RequestCommand(),
+		ByteSize:                  byteSize,
+		FileNumber:                fileNumber,
+		FileType:                  fileType,
+		ElementNumber:             elementNumber,
+		SubElementNumber:          subElementNumber,
+	}
+	_result.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -113,20 +127,6 @@ func (m *_DF1RequestProtectedTypedLogicalRead) GetSubElementNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1RequestProtectedTypedLogicalRead factory function for _DF1RequestProtectedTypedLogicalRead
-func NewDF1RequestProtectedTypedLogicalRead(byteSize uint8, fileNumber uint8, fileType uint8, elementNumber uint8, subElementNumber uint8) *_DF1RequestProtectedTypedLogicalRead {
-	_result := &_DF1RequestProtectedTypedLogicalRead{
-		DF1RequestCommandContract: NewDF1RequestCommand(),
-		ByteSize:                  byteSize,
-		FileNumber:                fileNumber,
-		FileType:                  fileType,
-		ElementNumber:             elementNumber,
-		SubElementNumber:          subElementNumber,
-	}
-	_result.DF1RequestCommandContract.(*_DF1RequestCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1RequestProtectedTypedLogicalRead(structType any) DF1RequestProtectedTypedLogicalRead {

@@ -49,6 +49,15 @@ type _SecurityDataTamperOff struct {
 var _ SecurityDataTamperOff = (*_SecurityDataTamperOff)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataTamperOff)(nil)
 
+// NewSecurityDataTamperOff factory function for _SecurityDataTamperOff
+func NewSecurityDataTamperOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataTamperOff {
+	_result := &_SecurityDataTamperOff{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -61,15 +70,6 @@ var _ SecurityDataRequirements = (*_SecurityDataTamperOff)(nil)
 
 func (m *_SecurityDataTamperOff) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataTamperOff factory function for _SecurityDataTamperOff
-func NewSecurityDataTamperOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataTamperOff {
-	_result := &_SecurityDataTamperOff{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

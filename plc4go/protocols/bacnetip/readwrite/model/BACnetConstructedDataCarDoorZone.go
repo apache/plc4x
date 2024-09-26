@@ -56,6 +56,19 @@ type _BACnetConstructedDataCarDoorZone struct {
 var _ BACnetConstructedDataCarDoorZone = (*_BACnetConstructedDataCarDoorZone)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorZone)(nil)
 
+// NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
+func NewBACnetConstructedDataCarDoorZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDoorZone BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
+	if carDoorZone == nil {
+		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarDoorZone{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarDoorZone:                   carDoorZone,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataCarDoorZone) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDoorZone factory function for _BACnetConstructedDataCarDoorZone
-func NewBACnetConstructedDataCarDoorZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDoorZone BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorZone {
-	if carDoorZone == nil {
-		panic("carDoorZone of type BACnetApplicationTagBoolean for BACnetConstructedDataCarDoorZone must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarDoorZone{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarDoorZone:                   carDoorZone,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDoorZone(structType any) BACnetConstructedDataCarDoorZone {

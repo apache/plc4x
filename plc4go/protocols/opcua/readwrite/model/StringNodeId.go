@@ -54,6 +54,14 @@ type _StringNodeId struct {
 
 var _ StringNodeId = (*_StringNodeId)(nil)
 
+// NewStringNodeId factory function for _StringNodeId
+func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalString for StringNodeId must not be nil")
+	}
+	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -71,14 +79,6 @@ func (m *_StringNodeId) GetIdentifier() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStringNodeId factory function for _StringNodeId
-func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalString for StringNodeId must not be nil")
-	}
-	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStringNodeId(structType any) StringNodeId {

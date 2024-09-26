@@ -56,6 +56,19 @@ type _BACnetConstructedDataFirmwareRevision struct {
 var _ BACnetConstructedDataFirmwareRevision = (*_BACnetConstructedDataFirmwareRevision)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFirmwareRevision)(nil)
 
+// NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
+func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
+	if firmwareRevision == nil {
+		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
+	}
+	_result := &_BACnetConstructedDataFirmwareRevision{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FirmwareRevision:              firmwareRevision,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataFirmwareRevision) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFirmwareRevision factory function for _BACnetConstructedDataFirmwareRevision
-func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, firmwareRevision BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFirmwareRevision {
-	if firmwareRevision == nil {
-		panic("firmwareRevision of type BACnetApplicationTagCharacterString for BACnetConstructedDataFirmwareRevision must not be nil")
-	}
-	_result := &_BACnetConstructedDataFirmwareRevision{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FirmwareRevision:              firmwareRevision,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFirmwareRevision(structType any) BACnetConstructedDataFirmwareRevision {

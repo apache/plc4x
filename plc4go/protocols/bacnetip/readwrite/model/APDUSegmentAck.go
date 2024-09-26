@@ -68,6 +68,20 @@ type _APDUSegmentAck struct {
 var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
 var _ APDURequirements = (*_APDUSegmentAck)(nil)
 
+// NewAPDUSegmentAck factory function for _APDUSegmentAck
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+	_result := &_APDUSegmentAck{
+		APDUContract:     NewAPDU(apduLength),
+		NegativeAck:      negativeAck,
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		SequenceNumber:   sequenceNumber,
+		ActualWindowSize: actualWindowSize,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,20 +129,6 @@ func (m *_APDUSegmentAck) GetActualWindowSize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
-	_result := &_APDUSegmentAck{
-		APDUContract:     NewAPDU(apduLength),
-		NegativeAck:      negativeAck,
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		SequenceNumber:   sequenceNumber,
-		ActualWindowSize: actualWindowSize,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSegmentAck(structType any) APDUSegmentAck {

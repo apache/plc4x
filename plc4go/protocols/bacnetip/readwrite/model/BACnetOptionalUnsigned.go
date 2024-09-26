@@ -70,6 +70,14 @@ type _BACnetOptionalUnsigned struct {
 
 var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
 
+// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
+func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
+	}
+	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -99,14 +107,6 @@ func (pm *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
-func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
-	}
-	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsigned(structType any) BACnetOptionalUnsigned {

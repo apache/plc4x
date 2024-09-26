@@ -58,6 +58,16 @@ type _MediaTransportControlDataNextPreviousCategory struct {
 var _ MediaTransportControlDataNextPreviousCategory = (*_MediaTransportControlDataNextPreviousCategory)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataNextPreviousCategory)(nil)
 
+// NewMediaTransportControlDataNextPreviousCategory factory function for _MediaTransportControlDataNextPreviousCategory
+func NewMediaTransportControlDataNextPreviousCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousCategory {
+	_result := &_MediaTransportControlDataNextPreviousCategory{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,16 +116,6 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetIsSetTheNextCategory
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataNextPreviousCategory factory function for _MediaTransportControlDataNextPreviousCategory
-func NewMediaTransportControlDataNextPreviousCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousCategory {
-	_result := &_MediaTransportControlDataNextPreviousCategory{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataNextPreviousCategory(structType any) MediaTransportControlDataNextPreviousCategory {

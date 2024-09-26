@@ -59,6 +59,17 @@ type _BACnetConstructedDataCommandTimeArray struct {
 var _ BACnetConstructedDataCommandTimeArray = (*_BACnetConstructedDataCommandTimeArray)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommandTimeArray)(nil)
 
+// NewBACnetConstructedDataCommandTimeArray factory function for _BACnetConstructedDataCommandTimeArray
+func NewBACnetConstructedDataCommandTimeArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, commandTimeArray []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandTimeArray {
+	_result := &_BACnetConstructedDataCommandTimeArray{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		CommandTimeArray:              commandTimeArray,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -115,17 +126,6 @@ func (m *_BACnetConstructedDataCommandTimeArray) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCommandTimeArray factory function for _BACnetConstructedDataCommandTimeArray
-func NewBACnetConstructedDataCommandTimeArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, commandTimeArray []BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandTimeArray {
-	_result := &_BACnetConstructedDataCommandTimeArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		CommandTimeArray:              commandTimeArray,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCommandTimeArray(structType any) BACnetConstructedDataCommandTimeArray {

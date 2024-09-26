@@ -56,6 +56,19 @@ type _BACnetConstructedDataInstallationID struct {
 var _ BACnetConstructedDataInstallationID = (*_BACnetConstructedDataInstallationID)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInstallationID)(nil)
 
+// NewBACnetConstructedDataInstallationID factory function for _BACnetConstructedDataInstallationID
+func NewBACnetConstructedDataInstallationID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, installationId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
+	if installationId == nil {
+		panic("installationId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInstallationID must not be nil")
+	}
+	_result := &_BACnetConstructedDataInstallationID{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InstallationId:                installationId,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -106,19 +119,6 @@ func (m *_BACnetConstructedDataInstallationID) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInstallationID factory function for _BACnetConstructedDataInstallationID
-func NewBACnetConstructedDataInstallationID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, installationId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
-	if installationId == nil {
-		panic("installationId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInstallationID must not be nil")
-	}
-	_result := &_BACnetConstructedDataInstallationID{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InstallationId:                installationId,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInstallationID(structType any) BACnetConstructedDataInstallationID {

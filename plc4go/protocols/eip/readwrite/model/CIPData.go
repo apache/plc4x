@@ -57,6 +57,11 @@ type _CIPData struct {
 
 var _ CIPData = (*_CIPData)(nil)
 
+// NewCIPData factory function for _CIPData
+func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
+	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -74,11 +79,6 @@ func (m *_CIPData) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPData factory function for _CIPData
-func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
-	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPData(structType any) CIPData {

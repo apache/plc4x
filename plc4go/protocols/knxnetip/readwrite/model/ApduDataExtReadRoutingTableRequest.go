@@ -49,6 +49,15 @@ type _ApduDataExtReadRoutingTableRequest struct {
 var _ ApduDataExtReadRoutingTableRequest = (*_ApduDataExtReadRoutingTableRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtReadRoutingTableRequest)(nil)
 
+// NewApduDataExtReadRoutingTableRequest factory function for _ApduDataExtReadRoutingTableRequest
+func NewApduDataExtReadRoutingTableRequest(length uint8) *_ApduDataExtReadRoutingTableRequest {
+	_result := &_ApduDataExtReadRoutingTableRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -65,15 +74,6 @@ func (m *_ApduDataExtReadRoutingTableRequest) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtReadRoutingTableRequest) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtReadRoutingTableRequest factory function for _ApduDataExtReadRoutingTableRequest
-func NewApduDataExtReadRoutingTableRequest(length uint8) *_ApduDataExtReadRoutingTableRequest {
-	_result := &_ApduDataExtReadRoutingTableRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast

@@ -54,6 +54,16 @@ type _NLMDisconnectConnectionToNetwork struct {
 var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
 
+// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
+	_result := &_NLMDisconnectConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
@@ -85,16 +95,6 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
-	_result := &_NLMDisconnectConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectionToNetwork {
