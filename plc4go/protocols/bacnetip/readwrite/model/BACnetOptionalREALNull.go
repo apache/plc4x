@@ -83,7 +83,7 @@ func (m *_BACnetOptionalREALNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetOptionalREALNull factory function for _BACnetOptionalREALNull
-func NewBACnetOptionalREALNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalREALNull {
+func NewBACnetOptionalREALNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalREALNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalREALNull must not be nil")
 	}

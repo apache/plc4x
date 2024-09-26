@@ -156,7 +156,7 @@ func (m *_MediaTransportControlDataFastForward) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataFastForward factory function for _MediaTransportControlDataFastForward
-func NewMediaTransportControlDataFastForward(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataFastForward {
+func NewMediaTransportControlDataFastForward(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataFastForward {
 	_result := &_MediaTransportControlDataFastForward{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataSetpoint) GetActualValue() BACnetApplicationTagRe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetpoint factory function for _BACnetConstructedDataSetpoint
-func NewBACnetConstructedDataSetpoint(setpoint BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
+func NewBACnetConstructedDataSetpoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpoint BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
 	if setpoint == nil {
 		panic("setpoint of type BACnetApplicationTagReal for BACnetConstructedDataSetpoint must not be nil")
 	}

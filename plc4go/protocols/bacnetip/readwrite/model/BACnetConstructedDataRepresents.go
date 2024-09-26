@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataRepresents) GetActualValue() BACnetDeviceObjectRe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRepresents factory function for _BACnetConstructedDataRepresents
-func NewBACnetConstructedDataRepresents(represents BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
+func NewBACnetConstructedDataRepresents(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, represents BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRepresents {
 	if represents == nil {
 		panic("represents of type BACnetDeviceObjectReference for BACnetConstructedDataRepresents must not be nil")
 	}

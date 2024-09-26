@@ -83,7 +83,7 @@ func (m *_MeteringDataOilConsumption) GetL() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
-func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataOilConsumption {
+func NewMeteringDataOilConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, L uint32) *_MeteringDataOilConsumption {
 	_result := &_MeteringDataOilConsumption{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		L:                    L,

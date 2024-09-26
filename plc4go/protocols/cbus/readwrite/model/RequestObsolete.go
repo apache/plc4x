@@ -109,7 +109,7 @@ func (m *_RequestObsolete) GetCalDataDecoded() CALData {
 ///////////////////////////////////////////////////////////
 
 // NewRequestObsolete factory function for _RequestObsolete
-func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestObsolete {
+func NewRequestObsolete(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestObsolete {
 	_result := &_RequestObsolete{
 		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 		CalData:         calData,

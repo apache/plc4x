@@ -83,7 +83,7 @@ func (m *_AirConditioningDataSetZoneGroupOn) GetZoneGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewAirConditioningDataSetZoneGroupOn factory function for _AirConditioningDataSetZoneGroupOn
-func NewAirConditioningDataSetZoneGroupOn(zoneGroup byte, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetZoneGroupOn {
+func NewAirConditioningDataSetZoneGroupOn(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte) *_AirConditioningDataSetZoneGroupOn {
 	_result := &_AirConditioningDataSetZoneGroupOn{
 		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
 		ZoneGroup:                   zoneGroup,

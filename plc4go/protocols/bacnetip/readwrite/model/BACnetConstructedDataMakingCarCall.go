@@ -117,7 +117,7 @@ func (m *_BACnetConstructedDataMakingCarCall) GetZero() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMakingCarCall factory function for _BACnetConstructedDataMakingCarCall
-func NewBACnetConstructedDataMakingCarCall(numberOfDataElements BACnetApplicationTagUnsignedInteger, makingCarCall []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMakingCarCall {
+func NewBACnetConstructedDataMakingCarCall(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, makingCarCall []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMakingCarCall {
 	_result := &_BACnetConstructedDataMakingCarCall{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfDataElements:          numberOfDataElements,

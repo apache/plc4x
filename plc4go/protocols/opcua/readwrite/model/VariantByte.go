@@ -94,7 +94,7 @@ func (m *_VariantByte) GetValue() []uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewVariantByte factory function for _VariantByte
-func NewVariantByte(arrayLength *int32, value []uint8, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantByte {
+func NewVariantByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint8) *_VariantByte {
 	_result := &_VariantByte{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

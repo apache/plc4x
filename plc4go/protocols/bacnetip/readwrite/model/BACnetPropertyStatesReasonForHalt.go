@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetReasonForHalt() BACnetProgramErr
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
-func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReasonForHalt {
+func NewBACnetPropertyStatesReasonForHalt(peekedTagHeader BACnetTagHeader, reasonForHalt BACnetProgramErrorTagged) *_BACnetPropertyStatesReasonForHalt {
 	if reasonForHalt == nil {
 		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
 	}

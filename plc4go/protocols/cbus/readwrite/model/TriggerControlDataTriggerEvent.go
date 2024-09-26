@@ -83,7 +83,7 @@ func (m *_TriggerControlDataTriggerEvent) GetActionSelector() byte {
 ///////////////////////////////////////////////////////////
 
 // NewTriggerControlDataTriggerEvent factory function for _TriggerControlDataTriggerEvent
-func NewTriggerControlDataTriggerEvent(actionSelector byte, commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerEvent {
+func NewTriggerControlDataTriggerEvent(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte, actionSelector byte) *_TriggerControlDataTriggerEvent {
 	_result := &_TriggerControlDataTriggerEvent{
 		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
 		ActionSelector:             actionSelector,

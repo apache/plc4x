@@ -132,7 +132,7 @@ func (m *_SecurityDataPasswordEntryStatus) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataPasswordEntryStatus factory function for _SecurityDataPasswordEntryStatus
-func NewSecurityDataPasswordEntryStatus(code byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataPasswordEntryStatus {
+func NewSecurityDataPasswordEntryStatus(commandTypeContainer SecurityCommandTypeContainer, argument byte, code byte) *_SecurityDataPasswordEntryStatus {
 	_result := &_SecurityDataPasswordEntryStatus{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Code:                 code,

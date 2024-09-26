@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPacketReorderTime) GetActualValue() BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPacketReorderTime factory function for _BACnetConstructedDataPacketReorderTime
-func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
+func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, packetReorderTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPacketReorderTime {
 	if packetReorderTime == nil {
 		panic("packetReorderTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPacketReorderTime must not be nil")
 	}

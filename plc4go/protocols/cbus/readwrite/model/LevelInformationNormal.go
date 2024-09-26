@@ -115,7 +115,7 @@ func (m *_LevelInformationNormal) GetActualLevelInPercent() float32 {
 ///////////////////////////////////////////////////////////
 
 // NewLevelInformationNormal factory function for _LevelInformationNormal
-func NewLevelInformationNormal(pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair, raw uint16) *_LevelInformationNormal {
+func NewLevelInformationNormal(raw uint16, pair1 LevelInformationNibblePair, pair2 LevelInformationNibblePair) *_LevelInformationNormal {
 	_result := &_LevelInformationNormal{
 		LevelInformationContract: NewLevelInformation(raw),
 		Pair1:                    pair1,

@@ -94,7 +94,7 @@ func (m *_VariantNodeId) GetValue() []NodeId {
 ///////////////////////////////////////////////////////////
 
 // NewVariantNodeId factory function for _VariantNodeId
-func NewVariantNodeId(arrayLength *int32, value []NodeId, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNodeId {
+func NewVariantNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []NodeId) *_VariantNodeId {
 	_result := &_VariantNodeId{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

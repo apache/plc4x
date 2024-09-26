@@ -83,7 +83,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryInteger) GetIntegerVal
 ///////////////////////////////////////////////////////////
 
 // NewBACnetFaultParameterFaultExtendedParametersEntryInteger factory function for _BACnetFaultParameterFaultExtendedParametersEntryInteger
-func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
+func NewBACnetFaultParameterFaultExtendedParametersEntryInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger) *_BACnetFaultParameterFaultExtendedParametersEntryInteger {
 	if integerValue == nil {
 		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultExtendedParametersEntryInteger must not be nil")
 	}

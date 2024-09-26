@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMaxAPDULengthAccepted) GetActualValue() BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaxAPDULengthAccepted factory function for _BACnetConstructedDataMaxAPDULengthAccepted
-func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
+func NewBACnetConstructedDataMaxAPDULengthAccepted(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxApduLengthAccepted BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxAPDULengthAccepted {
 	if maxApduLengthAccepted == nil {
 		panic("maxApduLengthAccepted of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxAPDULengthAccepted must not be nil")
 	}

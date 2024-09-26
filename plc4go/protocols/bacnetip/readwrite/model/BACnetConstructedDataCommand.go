@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataCommand) GetActualValue() BACnetNetworkPortComman
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCommand factory function for _BACnetConstructedDataCommand
-func NewBACnetConstructedDataCommand(command BACnetNetworkPortCommandTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
+func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, command BACnetNetworkPortCommandTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommand {
 	if command == nil {
 		panic("command of type BACnetNetworkPortCommandTagged for BACnetConstructedDataCommand must not be nil")
 	}

@@ -97,7 +97,7 @@ func (m *_CALDataWrite) GetParameterValue() ParameterValue {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataWrite factory function for _CALDataWrite
-func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataWrite {
+func NewCALDataWrite(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code byte, parameterValue ParameterValue, requestContext RequestContext) *_CALDataWrite {
 	if parameterValue == nil {
 		panic("parameterValue of type ParameterValue for CALDataWrite must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLastCommandTime) GetActualValue() BACnetTimeStamp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCommandTime factory function for _BACnetConstructedDataLastCommandTime
-func NewBACnetConstructedDataLastCommandTime(lastCommandTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCommandTime {
+func NewBACnetConstructedDataLastCommandTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCommandTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCommandTime {
 	if lastCommandTime == nil {
 		panic("lastCommandTime of type BACnetTimeStamp for BACnetConstructedDataLastCommandTime must not be nil")
 	}

@@ -97,7 +97,7 @@ func (m *_BACnetFaultParameterFaultCharacterString) GetClosingTag() BACnetClosin
 ///////////////////////////////////////////////////////////
 
 // NewBACnetFaultParameterFaultCharacterString factory function for _BACnetFaultParameterFaultCharacterString
-func NewBACnetFaultParameterFaultCharacterString(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultCharacterString {
+func NewBACnetFaultParameterFaultCharacterString(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultCharacterString {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultCharacterString must not be nil")
 	}

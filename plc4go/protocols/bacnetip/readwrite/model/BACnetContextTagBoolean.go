@@ -111,7 +111,7 @@ func (m *_BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
 	}

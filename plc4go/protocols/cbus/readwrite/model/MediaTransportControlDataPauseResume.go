@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataPauseResume) GetIsResume() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataPauseResume factory function for _MediaTransportControlDataPauseResume
-func NewMediaTransportControlDataPauseResume(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataPauseResume {
+func NewMediaTransportControlDataPauseResume(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataPauseResume {
 	_result := &_MediaTransportControlDataPauseResume{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

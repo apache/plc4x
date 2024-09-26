@@ -114,7 +114,7 @@ func (m *_ReplyEncodedReply) GetChksumDecoded() Checksum {
 ///////////////////////////////////////////////////////////
 
 // NewReplyEncodedReply factory function for _ReplyEncodedReply
-func NewReplyEncodedReply(encodedReply EncodedReply, chksum Checksum, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
+func NewReplyEncodedReply(peekedByte byte, encodedReply EncodedReply, chksum Checksum, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyEncodedReply {
 	_result := &_ReplyEncodedReply{
 		ReplyContract: NewReply(peekedByte, cBusOptions, requestContext),
 		EncodedReply:  encodedReply,

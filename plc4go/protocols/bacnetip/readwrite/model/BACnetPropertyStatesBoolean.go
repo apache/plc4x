@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesBoolean) GetBooleanValue() BACnetContextTagBoolean
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBoolean factory function for _BACnetPropertyStatesBoolean
-func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBoolean {
+func NewBACnetPropertyStatesBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetPropertyStatesBoolean {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetContextTagBoolean for BACnetPropertyStatesBoolean must not be nil")
 	}

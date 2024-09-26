@@ -94,7 +94,7 @@ func (m *_VariantUInt16) GetValue() []uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewVariantUInt16 factory function for _VariantUInt16
-func NewVariantUInt16(arrayLength *int32, value []uint16, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantUInt16 {
+func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint16) *_VariantUInt16 {
 	_result := &_VariantUInt16{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

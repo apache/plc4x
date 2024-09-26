@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataFaultType) GetActualValue() BACnetFaultTypeTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultType factory function for _BACnetConstructedDataFaultType
-func NewBACnetConstructedDataFaultType(faultType BACnetFaultTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultType {
+func NewBACnetConstructedDataFaultType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultType BACnetFaultTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultType {
 	if faultType == nil {
 		panic("faultType of type BACnetFaultTypeTagged for BACnetConstructedDataFaultType must not be nil")
 	}

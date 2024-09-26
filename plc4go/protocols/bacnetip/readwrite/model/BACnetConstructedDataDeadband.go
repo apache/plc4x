@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataDeadband) GetActualValue() BACnetApplicationTagRe
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
-func NewBACnetConstructedDataDeadband(deadband BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
+func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
 	if deadband == nil {
 		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
 	}

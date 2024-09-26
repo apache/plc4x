@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetAccessCredentialDisabl
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesAccessCredentialDisable factory function for _BACnetPropertyStatesAccessCredentialDisable
-func NewBACnetPropertyStatesAccessCredentialDisable(accessCredentialDisable BACnetAccessCredentialDisableTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesAccessCredentialDisable {
+func NewBACnetPropertyStatesAccessCredentialDisable(peekedTagHeader BACnetTagHeader, accessCredentialDisable BACnetAccessCredentialDisableTagged) *_BACnetPropertyStatesAccessCredentialDisable {
 	if accessCredentialDisable == nil {
 		panic("accessCredentialDisable of type BACnetAccessCredentialDisableTagged for BACnetPropertyStatesAccessCredentialDisable must not be nil")
 	}

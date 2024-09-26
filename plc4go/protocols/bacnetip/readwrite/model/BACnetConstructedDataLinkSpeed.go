@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLinkSpeed) GetActualValue() BACnetApplicationTagR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLinkSpeed factory function for _BACnetConstructedDataLinkSpeed
-func NewBACnetConstructedDataLinkSpeed(linkSpeed BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeed {
+func NewBACnetConstructedDataLinkSpeed(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeed BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeed {
 	if linkSpeed == nil {
 		panic("linkSpeed of type BACnetApplicationTagReal for BACnetConstructedDataLinkSpeed must not be nil")
 	}

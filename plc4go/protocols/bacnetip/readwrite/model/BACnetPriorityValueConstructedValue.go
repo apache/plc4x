@@ -83,7 +83,7 @@ func (m *_BACnetPriorityValueConstructedValue) GetConstructedValue() BACnetConst
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueConstructedValue factory function for _BACnetPriorityValueConstructedValue
-func NewBACnetPriorityValueConstructedValue(constructedValue BACnetConstructedData, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
+func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, constructedValue BACnetConstructedData, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueConstructedValue {
 	if constructedValue == nil {
 		panic("constructedValue of type BACnetConstructedData for BACnetPriorityValueConstructedValue must not be nil")
 	}

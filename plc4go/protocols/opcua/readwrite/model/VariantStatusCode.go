@@ -94,7 +94,7 @@ func (m *_VariantStatusCode) GetValue() []StatusCode {
 ///////////////////////////////////////////////////////////
 
 // NewVariantStatusCode factory function for _VariantStatusCode
-func NewVariantStatusCode(arrayLength *int32, value []StatusCode, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantStatusCode {
+func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []StatusCode) *_VariantStatusCode {
 	_result := &_VariantStatusCode{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

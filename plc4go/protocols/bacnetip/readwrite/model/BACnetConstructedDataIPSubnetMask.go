@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetActualValue() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
-func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
+func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
 	if ipSubnetMask == nil {
 		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
 	}

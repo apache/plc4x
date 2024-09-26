@@ -94,7 +94,7 @@ func (m *_VariantDouble) GetValue() []float64 {
 ///////////////////////////////////////////////////////////
 
 // NewVariantDouble factory function for _VariantDouble
-func NewVariantDouble(arrayLength *int32, value []float64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDouble {
+func NewVariantDouble(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float64) *_VariantDouble {
 	_result := &_VariantDouble{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

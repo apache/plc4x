@@ -100,7 +100,7 @@ func (m *_BACnetApplicationTagEnumerated) GetActualValue() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagEnumerated factory function for _BACnetApplicationTagEnumerated
-func NewBACnetApplicationTagEnumerated(payload BACnetTagPayloadEnumerated, header BACnetTagHeader) *_BACnetApplicationTagEnumerated {
+func NewBACnetApplicationTagEnumerated(header BACnetTagHeader, payload BACnetTagPayloadEnumerated) *_BACnetApplicationTagEnumerated {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadEnumerated for BACnetApplicationTagEnumerated must not be nil")
 	}

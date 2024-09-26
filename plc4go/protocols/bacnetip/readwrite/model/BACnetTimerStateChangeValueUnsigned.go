@@ -83,7 +83,7 @@ func (m *_BACnetTimerStateChangeValueUnsigned) GetUnsignedValue() BACnetApplicat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimerStateChangeValueUnsigned factory function for _BACnetTimerStateChangeValueUnsigned
-func NewBACnetTimerStateChangeValueUnsigned(unsignedValue BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
+func NewBACnetTimerStateChangeValueUnsigned(peekedTagHeader BACnetTagHeader, unsignedValue BACnetApplicationTagUnsignedInteger, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueUnsigned {
 	if unsignedValue == nil {
 		panic("unsignedValue of type BACnetApplicationTagUnsignedInteger for BACnetTimerStateChangeValueUnsigned must not be nil")
 	}

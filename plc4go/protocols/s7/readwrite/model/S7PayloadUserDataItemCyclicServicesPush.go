@@ -102,7 +102,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesPush) GetItems() []AssociatedValueT
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCyclicServicesPush factory function for _S7PayloadUserDataItemCyclicServicesPush
-func NewS7PayloadUserDataItemCyclicServicesPush(itemsCount uint16, items []AssociatedValueType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesPush {
+func NewS7PayloadUserDataItemCyclicServicesPush(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedValueType) *_S7PayloadUserDataItemCyclicServicesPush {
 	_result := &_S7PayloadUserDataItemCyclicServicesPush{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		ItemsCount:                    itemsCount,

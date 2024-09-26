@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetActualValue() BACnetIPModeTagg
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6Mode factory function for _BACnetConstructedDataBACnetIPv6Mode
-func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode BACnetIPModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
+func NewBACnetConstructedDataBACnetIPv6Mode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpv6Mode BACnetIPModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
 	if bacnetIpv6Mode == nil {
 		panic("bacnetIpv6Mode of type BACnetIPModeTagged for BACnetConstructedDataBACnetIPv6Mode must not be nil")
 	}

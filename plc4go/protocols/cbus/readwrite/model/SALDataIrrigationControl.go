@@ -87,7 +87,7 @@ func (m *_SALDataIrrigationControl) GetIrrigationControlData() LightingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataIrrigationControl factory function for _SALDataIrrigationControl
-func NewSALDataIrrigationControl(irrigationControlData LightingData, salData SALData) *_SALDataIrrigationControl {
+func NewSALDataIrrigationControl(salData SALData, irrigationControlData LightingData) *_SALDataIrrigationControl {
 	if irrigationControlData == nil {
 		panic("irrigationControlData of type LightingData for SALDataIrrigationControl must not be nil")
 	}

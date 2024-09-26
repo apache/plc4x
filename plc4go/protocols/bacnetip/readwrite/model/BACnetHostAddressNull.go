@@ -83,7 +83,7 @@ func (m *_BACnetHostAddressNull) GetNone() BACnetContextTagNull {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetHostAddressNull factory function for _BACnetHostAddressNull
-func NewBACnetHostAddressNull(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressNull {
+func NewBACnetHostAddressNull(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetHostAddressNull {
 	if none == nil {
 		panic("none of type BACnetContextTagNull for BACnetHostAddressNull must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataReasonForHalt) GetActualValue() BACnetProgramErro
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReasonForHalt factory function for _BACnetConstructedDataReasonForHalt
-func NewBACnetConstructedDataReasonForHalt(programError BACnetProgramErrorTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
+func NewBACnetConstructedDataReasonForHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programError BACnetProgramErrorTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForHalt {
 	if programError == nil {
 		panic("programError of type BACnetProgramErrorTagged for BACnetConstructedDataReasonForHalt must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataUpdateTime) GetActualValue() BACnetDateTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUpdateTime factory function for _BACnetConstructedDataUpdateTime
-func NewBACnetConstructedDataUpdateTime(updateTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateTime {
+func NewBACnetConstructedDataUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUpdateTime {
 	if updateTime == nil {
 		panic("updateTime of type BACnetDateTime for BACnetConstructedDataUpdateTime must not be nil")
 	}

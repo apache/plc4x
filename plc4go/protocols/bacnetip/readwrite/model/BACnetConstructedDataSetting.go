@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataSetting) GetActualValue() BACnetApplicationTagUns
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSetting factory function for _BACnetConstructedDataSetting
-func NewBACnetConstructedDataSetting(setting BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetting {
+func NewBACnetConstructedDataSetting(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setting BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetting {
 	if setting == nil {
 		panic("setting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataSetting must not be nil")
 	}

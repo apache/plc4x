@@ -87,7 +87,7 @@ func (m *_SALDataHeating) GetHeatingData() LightingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataHeating factory function for _SALDataHeating
-func NewSALDataHeating(heatingData LightingData, salData SALData) *_SALDataHeating {
+func NewSALDataHeating(salData SALData, heatingData LightingData) *_SALDataHeating {
 	if heatingData == nil {
 		panic("heatingData of type LightingData for SALDataHeating must not be nil")
 	}

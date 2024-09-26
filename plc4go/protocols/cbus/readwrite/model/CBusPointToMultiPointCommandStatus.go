@@ -86,7 +86,7 @@ func (m *_CBusPointToMultiPointCommandStatus) GetStatusRequest() StatusRequest {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandStatus factory function for _CBusPointToMultiPointCommandStatus
-func NewCBusPointToMultiPointCommandStatus(statusRequest StatusRequest, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
+func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest StatusRequest, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandStatus {
 	if statusRequest == nil {
 		panic("statusRequest of type StatusRequest for CBusPointToMultiPointCommandStatus must not be nil")
 	}

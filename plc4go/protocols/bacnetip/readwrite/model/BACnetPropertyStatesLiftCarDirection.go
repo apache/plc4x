@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesLiftCarDirection) GetLiftCarDirection() BACnetLift
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesLiftCarDirection factory function for _BACnetPropertyStatesLiftCarDirection
-func NewBACnetPropertyStatesLiftCarDirection(liftCarDirection BACnetLiftCarDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarDirection {
+func NewBACnetPropertyStatesLiftCarDirection(peekedTagHeader BACnetTagHeader, liftCarDirection BACnetLiftCarDirectionTagged) *_BACnetPropertyStatesLiftCarDirection {
 	if liftCarDirection == nil {
 		panic("liftCarDirection of type BACnetLiftCarDirectionTagged for BACnetPropertyStatesLiftCarDirection must not be nil")
 	}

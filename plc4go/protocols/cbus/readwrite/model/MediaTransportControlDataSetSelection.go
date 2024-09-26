@@ -90,7 +90,7 @@ func (m *_MediaTransportControlDataSetSelection) GetSelectionLo() byte {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataSetSelection factory function for _MediaTransportControlDataSetSelection
-func NewMediaTransportControlDataSetSelection(selectionHi byte, selectionLo byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetSelection {
+func NewMediaTransportControlDataSetSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionHi byte, selectionLo byte) *_MediaTransportControlDataSetSelection {
 	_result := &_MediaTransportControlDataSetSelection{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		SelectionHi:                       selectionHi,

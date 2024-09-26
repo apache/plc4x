@@ -108,7 +108,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsToBeIsolated() bool {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
-func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataIsolateSecondaryOutlet {
+func NewTelephonyDataIsolateSecondaryOutlet(commandTypeContainer TelephonyCommandTypeContainer, argument byte, isolateStatus byte) *_TelephonyDataIsolateSecondaryOutlet {
 	_result := &_TelephonyDataIsolateSecondaryOutlet{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		IsolateStatus:         isolateStatus,

@@ -87,7 +87,7 @@ func (m *_SALDataVentilation) GetVentilationData() LightingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataVentilation factory function for _SALDataVentilation
-func NewSALDataVentilation(ventilationData LightingData, salData SALData) *_SALDataVentilation {
+func NewSALDataVentilation(salData SALData, ventilationData LightingData) *_SALDataVentilation {
 	if ventilationData == nil {
 		panic("ventilationData of type LightingData for SALDataVentilation must not be nil")
 	}

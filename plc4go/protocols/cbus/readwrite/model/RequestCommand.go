@@ -142,7 +142,7 @@ func (m *_RequestCommand) GetInitiator() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestCommand factory function for _RequestCommand
-func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestCommand {
+func NewRequestCommand(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cbusCommand CBusCommand, chksum Checksum, alpha Alpha, cBusOptions CBusOptions) *_RequestCommand {
 	_result := &_RequestCommand{
 		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 		CbusCommand:     cbusCommand,

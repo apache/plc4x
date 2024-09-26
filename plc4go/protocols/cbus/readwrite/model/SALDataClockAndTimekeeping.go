@@ -87,7 +87,7 @@ func (m *_SALDataClockAndTimekeeping) GetClockAndTimekeepingData() ClockAndTimek
 ///////////////////////////////////////////////////////////
 
 // NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
-func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingData, salData SALData) *_SALDataClockAndTimekeeping {
+func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData ClockAndTimekeepingData) *_SALDataClockAndTimekeeping {
 	if clockAndTimekeepingData == nil {
 		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
 	}

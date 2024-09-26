@@ -83,7 +83,7 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
-func NewBACnetChannelValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueOctetString {
+func NewBACnetChannelValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetChannelValueOctetString {
 	if octetStringValue == nil {
 		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
 	}

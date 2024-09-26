@@ -90,7 +90,7 @@ func (m *_BACnetContextTagUnknown) GetUnknownData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagUnknown factory function for _BACnetContextTagUnknown
-func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
+func NewBACnetContextTagUnknown(header BACnetTagHeader, unknownData []byte, actualLength uint32, tagNumberArgument uint8) *_BACnetContextTagUnknown {
 	_result := &_BACnetContextTagUnknown{
 		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
 		UnknownData:              unknownData,

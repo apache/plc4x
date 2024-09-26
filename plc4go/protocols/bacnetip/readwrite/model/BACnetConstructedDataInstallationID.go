@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataInstallationID) GetActualValue() BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInstallationID factory function for _BACnetConstructedDataInstallationID
-func NewBACnetConstructedDataInstallationID(installationId BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
+func NewBACnetConstructedDataInstallationID(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, installationId BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInstallationID {
 	if installationId == nil {
 		panic("installationId of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataInstallationID must not be nil")
 	}

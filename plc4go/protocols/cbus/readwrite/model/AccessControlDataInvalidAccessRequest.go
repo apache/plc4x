@@ -90,7 +90,7 @@ func (m *_AccessControlDataInvalidAccessRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAccessControlDataInvalidAccessRequest factory function for _AccessControlDataInvalidAccessRequest
-func NewAccessControlDataInvalidAccessRequest(accessControlDirection AccessControlDirection, data []byte, commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlDataInvalidAccessRequest {
+func NewAccessControlDataInvalidAccessRequest(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte, accessControlDirection AccessControlDirection, data []byte) *_AccessControlDataInvalidAccessRequest {
 	_result := &_AccessControlDataInvalidAccessRequest{
 		AccessControlDataContract: NewAccessControlData(commandTypeContainer, networkId, accessPointId),
 		AccessControlDirection:    accessControlDirection,

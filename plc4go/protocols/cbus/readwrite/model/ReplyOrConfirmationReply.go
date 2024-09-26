@@ -90,7 +90,7 @@ func (m *_ReplyOrConfirmationReply) GetTermination() ResponseTermination {
 ///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmationReply factory function for _ReplyOrConfirmationReply
-func NewReplyOrConfirmationReply(reply Reply, termination ResponseTermination, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
+func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination ResponseTermination, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationReply {
 	if reply == nil {
 		panic("reply of type Reply for ReplyOrConfirmationReply must not be nil")
 	}

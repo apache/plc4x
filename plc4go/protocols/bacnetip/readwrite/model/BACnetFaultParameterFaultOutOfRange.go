@@ -104,7 +104,7 @@ func (m *_BACnetFaultParameterFaultOutOfRange) GetClosingTag() BACnetClosingTag 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetFaultParameterFaultOutOfRange factory function for _BACnetFaultParameterFaultOutOfRange
-func NewBACnetFaultParameterFaultOutOfRange(openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultOutOfRange {
+func NewBACnetFaultParameterFaultOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, minNormalValue BACnetFaultParameterFaultOutOfRangeMinNormalValue, maxNormalValue BACnetFaultParameterFaultOutOfRangeMaxNormalValue, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultOutOfRange {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultOutOfRange must not be nil")
 	}

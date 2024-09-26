@@ -83,7 +83,7 @@ func (m *_BACnetCalendarEntryDate) GetDateValue() BACnetContextTagDate {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntryDate factory function for _BACnetCalendarEntryDate
-func NewBACnetCalendarEntryDate(dateValue BACnetContextTagDate, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryDate {
+func NewBACnetCalendarEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACnetContextTagDate) *_BACnetCalendarEntryDate {
 	if dateValue == nil {
 		panic("dateValue of type BACnetContextTagDate for BACnetCalendarEntryDate must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBACnetIPv6UDPPort) GetActualValue() BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPv6UDPPort factory function for _BACnetConstructedDataBACnetIPv6UDPPort
-func NewBACnetConstructedDataBACnetIPv6UDPPort(ipv6UdpPort BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
+func NewBACnetConstructedDataBACnetIPv6UDPPort(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6UdpPort BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6UDPPort {
 	if ipv6UdpPort == nil {
 		panic("ipv6UdpPort of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBACnetIPv6UDPPort must not be nil")
 	}

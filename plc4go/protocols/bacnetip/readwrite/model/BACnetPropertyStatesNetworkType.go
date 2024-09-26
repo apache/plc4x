@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesNetworkType) GetNetworkType() BACnetNetworkTypeTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesNetworkType factory function for _BACnetPropertyStatesNetworkType
-func NewBACnetPropertyStatesNetworkType(networkType BACnetNetworkTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNetworkType {
+func NewBACnetPropertyStatesNetworkType(peekedTagHeader BACnetTagHeader, networkType BACnetNetworkTypeTagged) *_BACnetPropertyStatesNetworkType {
 	if networkType == nil {
 		panic("networkType of type BACnetNetworkTypeTagged for BACnetPropertyStatesNetworkType must not be nil")
 	}

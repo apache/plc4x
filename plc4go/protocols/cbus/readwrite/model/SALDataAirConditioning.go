@@ -87,7 +87,7 @@ func (m *_SALDataAirConditioning) GetAirConditioningData() AirConditioningData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataAirConditioning factory function for _SALDataAirConditioning
-func NewSALDataAirConditioning(airConditioningData AirConditioningData, salData SALData) *_SALDataAirConditioning {
+func NewSALDataAirConditioning(salData SALData, airConditioningData AirConditioningData) *_SALDataAirConditioning {
 	if airConditioningData == nil {
 		panic("airConditioningData of type AirConditioningData for SALDataAirConditioning must not be nil")
 	}

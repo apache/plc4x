@@ -89,7 +89,7 @@ func (m *_CIPEncapsulationReadRequest) GetRequest() DF1RequestMessage {
 ///////////////////////////////////////////////////////////
 
 // NewCIPEncapsulationReadRequest factory function for _CIPEncapsulationReadRequest
-func NewCIPEncapsulationReadRequest(request DF1RequestMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationReadRequest {
+func NewCIPEncapsulationReadRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, request DF1RequestMessage) *_CIPEncapsulationReadRequest {
 	if request == nil {
 		panic("request of type DF1RequestMessage for CIPEncapsulationReadRequest must not be nil")
 	}

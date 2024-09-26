@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesFileAccessMethod) GetFileAccessMethod() BACnetFile
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesFileAccessMethod factory function for _BACnetPropertyStatesFileAccessMethod
-func NewBACnetPropertyStatesFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesFileAccessMethod {
+func NewBACnetPropertyStatesFileAccessMethod(peekedTagHeader BACnetTagHeader, fileAccessMethod BACnetFileAccessMethodTagged) *_BACnetPropertyStatesFileAccessMethod {
 	if fileAccessMethod == nil {
 		panic("fileAccessMethod of type BACnetFileAccessMethodTagged for BACnetPropertyStatesFileAccessMethod must not be nil")
 	}

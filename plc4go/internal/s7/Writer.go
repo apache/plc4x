@@ -95,10 +95,10 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		// TODO: why do we use a uint16 above and the cotp a uint8?
 		tpktPacket := readWriteModel.NewTPKTPacket(
 			readWriteModel.NewCOTPPacketData(
-				true,
-				uint8(tpduId),
 				nil,
 				s7MessageRequest,
+				true,
+				uint8(tpduId),
 				0,
 			),
 		)

@@ -92,7 +92,7 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 ///////////////////////////////////////////////////////////
 
 // NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
+func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
 	if response == nil {
 		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
 	}

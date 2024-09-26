@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesWriteStatus) GetWriteStatus() BACnetWriteStatusTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesWriteStatus factory function for _BACnetPropertyStatesWriteStatus
-func NewBACnetPropertyStatesWriteStatus(writeStatus BACnetWriteStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesWriteStatus {
+func NewBACnetPropertyStatesWriteStatus(peekedTagHeader BACnetTagHeader, writeStatus BACnetWriteStatusTagged) *_BACnetPropertyStatesWriteStatus {
 	if writeStatus == nil {
 		panic("writeStatus of type BACnetWriteStatusTagged for BACnetPropertyStatesWriteStatus must not be nil")
 	}

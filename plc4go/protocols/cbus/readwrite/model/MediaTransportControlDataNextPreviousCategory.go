@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataNextPreviousCategory) GetIsSetTheNextCategory
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataNextPreviousCategory factory function for _MediaTransportControlDataNextPreviousCategory
-func NewMediaTransportControlDataNextPreviousCategory(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataNextPreviousCategory {
+func NewMediaTransportControlDataNextPreviousCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousCategory {
 	_result := &_MediaTransportControlDataNextPreviousCategory{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

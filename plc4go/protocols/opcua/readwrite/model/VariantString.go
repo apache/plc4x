@@ -94,7 +94,7 @@ func (m *_VariantString) GetValue() []PascalString {
 ///////////////////////////////////////////////////////////
 
 // NewVariantString factory function for _VariantString
-func NewVariantString(arrayLength *int32, value []PascalString, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantString {
+func NewVariantString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantString {
 	_result := &_VariantString{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

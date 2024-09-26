@@ -83,7 +83,7 @@ func (m *_BACnetRecipientAddress) GetAddressValue() BACnetAddressEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetRecipientAddress factory function for _BACnetRecipientAddress
-func NewBACnetRecipientAddress(addressValue BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetRecipientAddress {
+func NewBACnetRecipientAddress(peekedTagHeader BACnetTagHeader, addressValue BACnetAddressEnclosed) *_BACnetRecipientAddress {
 	if addressValue == nil {
 		panic("addressValue of type BACnetAddressEnclosed for BACnetRecipientAddress must not be nil")
 	}

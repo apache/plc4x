@@ -91,7 +91,7 @@ func (m *_AdsWriteControlResponse) GetResult() ReturnCode {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteControlResponse factory function for _AdsWriteControlResponse
-func NewAdsWriteControlResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlResponse {
+func NewAdsWriteControlResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsWriteControlResponse {
 	_result := &_AdsWriteControlResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,

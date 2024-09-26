@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataAcceptedModes) GetAcceptedModes() []BACnetLifeSaf
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
+func NewBACnetConstructedDataAcceptedModes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, acceptedModes []BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
 	_result := &_BACnetConstructedDataAcceptedModes{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		AcceptedModes:                 acceptedModes,

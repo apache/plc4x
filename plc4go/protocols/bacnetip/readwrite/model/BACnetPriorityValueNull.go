@@ -83,7 +83,7 @@ func (m *_BACnetPriorityValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueNull factory function for _BACnetPriorityValueNull
-func NewBACnetPriorityValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
+func NewBACnetPriorityValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetPriorityValueNull must not be nil")
 	}

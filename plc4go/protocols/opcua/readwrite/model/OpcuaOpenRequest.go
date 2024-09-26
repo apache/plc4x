@@ -101,7 +101,7 @@ func (m *_OpcuaOpenRequest) GetMessage() Payload {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
-func NewOpcuaOpenRequest(openRequest OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenRequest {
+func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenRequest {
 	if openRequest == nil {
 		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
 	}

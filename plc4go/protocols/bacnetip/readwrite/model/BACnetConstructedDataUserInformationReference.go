@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataUserInformationReference) GetActualValue() BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUserInformationReference factory function for _BACnetConstructedDataUserInformationReference
-func NewBACnetConstructedDataUserInformationReference(userInformationReference BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
+func NewBACnetConstructedDataUserInformationReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userInformationReference BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserInformationReference {
 	if userInformationReference == nil {
 		panic("userInformationReference of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserInformationReference must not be nil")
 	}

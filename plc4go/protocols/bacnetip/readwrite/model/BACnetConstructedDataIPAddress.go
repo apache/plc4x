@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataIPAddress) GetActualValue() BACnetApplicationTagO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPAddress factory function for _BACnetConstructedDataIPAddress
-func NewBACnetConstructedDataIPAddress(ipAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
+func NewBACnetConstructedDataIPAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPAddress {
 	if ipAddress == nil {
 		panic("ipAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataIPAddress must not be nil")
 	}

@@ -87,7 +87,7 @@ func (m *_DF1CommandRequestMessage) GetCommand() DF1RequestCommand {
 ///////////////////////////////////////////////////////////
 
 // NewDF1CommandRequestMessage factory function for _DF1CommandRequestMessage
-func NewDF1CommandRequestMessage(command DF1RequestCommand, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1CommandRequestMessage {
+func NewDF1CommandRequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, command DF1RequestCommand) *_DF1CommandRequestMessage {
 	if command == nil {
 		panic("command of type DF1RequestCommand for DF1CommandRequestMessage must not be nil")
 	}

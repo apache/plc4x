@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataGroupPresentValue) GetPresentValue() []BACnetRead
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataGroupPresentValue factory function for _BACnetConstructedDataGroupPresentValue
-func NewBACnetConstructedDataGroupPresentValue(presentValue []BACnetReadAccessResult, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupPresentValue {
+func NewBACnetConstructedDataGroupPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue []BACnetReadAccessResult, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupPresentValue {
 	_result := &_BACnetConstructedDataGroupPresentValue{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		PresentValue:                  presentValue,

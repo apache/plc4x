@@ -94,7 +94,7 @@ func (m *_S7MessageResponseData) GetErrorCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewS7MessageResponseData factory function for _S7MessageResponseData
-func NewS7MessageResponseData(errorClass uint8, errorCode uint8, tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageResponseData {
+func NewS7MessageResponseData(tpduReference uint16, parameter S7Parameter, payload S7Payload, errorClass uint8, errorCode uint8) *_S7MessageResponseData {
 	_result := &_S7MessageResponseData{
 		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
 		ErrorClass:        errorClass,

@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOff() boo
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
-func NewMediaTransportControlDataSourcePowerControl(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSourcePowerControl {
+func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataSourcePowerControl {
 	_result := &_MediaTransportControlDataSourcePowerControl{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		State:                             state,

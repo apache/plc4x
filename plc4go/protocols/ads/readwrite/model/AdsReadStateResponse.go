@@ -105,7 +105,7 @@ func (m *_AdsReadStateResponse) GetDeviceState() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadStateResponse factory function for _AdsReadStateResponse
-func NewAdsReadStateResponse(result ReturnCode, adsState uint16, deviceState uint16, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadStateResponse {
+func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, adsState uint16, deviceState uint16) *_AdsReadStateResponse {
 	_result := &_AdsReadStateResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,

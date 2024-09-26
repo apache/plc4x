@@ -117,7 +117,7 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) GetZero() uint64
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCharacterStringValueFaultValues factory function for _BACnetConstructedDataCharacterStringValueFaultValues
-func NewBACnetConstructedDataCharacterStringValueFaultValues(numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueFaultValues {
+func NewBACnetConstructedDataCharacterStringValueFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCharacterStringValueFaultValues {
 	_result := &_BACnetConstructedDataCharacterStringValueFaultValues{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfDataElements:          numberOfDataElements,

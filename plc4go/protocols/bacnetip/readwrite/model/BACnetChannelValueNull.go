@@ -83,7 +83,7 @@ func (m *_BACnetChannelValueNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetChannelValueNull factory function for _BACnetChannelValueNull
-func NewBACnetChannelValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueNull {
+func NewBACnetChannelValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetChannelValueNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetChannelValueNull must not be nil")
 	}

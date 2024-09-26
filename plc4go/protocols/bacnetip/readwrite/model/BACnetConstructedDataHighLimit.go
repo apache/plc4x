@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataHighLimit) GetActualValue() BACnetApplicationTagR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataHighLimit factory function for _BACnetConstructedDataHighLimit
-func NewBACnetConstructedDataHighLimit(highLimit BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
+func NewBACnetConstructedDataHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, highLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataHighLimit {
 	if highLimit == nil {
 		panic("highLimit of type BACnetApplicationTagReal for BACnetConstructedDataHighLimit must not be nil")
 	}

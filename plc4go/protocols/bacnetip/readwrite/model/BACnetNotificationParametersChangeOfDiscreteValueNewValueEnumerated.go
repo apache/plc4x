@@ -83,7 +83,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) G
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetApplicationTagEnumerated, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated must not be nil")
 	}

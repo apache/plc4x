@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataAlignIntervals) GetActualValue() BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlignIntervals factory function for _BACnetConstructedDataAlignIntervals
-func NewBACnetConstructedDataAlignIntervals(alignIntervals BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
+func NewBACnetConstructedDataAlignIntervals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alignIntervals BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlignIntervals {
 	if alignIntervals == nil {
 		panic("alignIntervals of type BACnetApplicationTagBoolean for BACnetConstructedDataAlignIntervals must not be nil")
 	}

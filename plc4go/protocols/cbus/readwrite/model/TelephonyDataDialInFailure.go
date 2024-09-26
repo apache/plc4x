@@ -83,7 +83,7 @@ func (m *_TelephonyDataDialInFailure) GetReason() DialInFailureReason {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
-func NewTelephonyDataDialInFailure(reason DialInFailureReason, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDialInFailure {
+func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialInFailureReason) *_TelephonyDataDialInFailure {
 	_result := &_TelephonyDataDialInFailure{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Reason:                reason,

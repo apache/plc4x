@@ -83,7 +83,7 @@ func (m *_LightingDataTerminateRamp) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewLightingDataTerminateRamp factory function for _LightingDataTerminateRamp
-func NewLightingDataTerminateRamp(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataTerminateRamp {
+func NewLightingDataTerminateRamp(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataTerminateRamp {
 	_result := &_LightingDataTerminateRamp{
 		LightingDataContract: NewLightingData(commandTypeContainer),
 		Group:                group,

@@ -94,7 +94,7 @@ func (m *_VariantQualifiedName) GetValue() []QualifiedName {
 ///////////////////////////////////////////////////////////
 
 // NewVariantQualifiedName factory function for _VariantQualifiedName
-func NewVariantQualifiedName(arrayLength *int32, value []QualifiedName, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantQualifiedName {
+func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
 	_result := &_VariantQualifiedName{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

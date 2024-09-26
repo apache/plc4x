@@ -94,7 +94,7 @@ func (m *_VariantXmlElement) GetValue() []PascalString {
 ///////////////////////////////////////////////////////////
 
 // NewVariantXmlElement factory function for _VariantXmlElement
-func NewVariantXmlElement(arrayLength *int32, value []PascalString, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantXmlElement {
+func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []PascalString) *_VariantXmlElement {
 	_result := &_VariantXmlElement{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPowerMode) GetActualValue() BACnetApplicationTagB
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPowerMode factory function for _BACnetConstructedDataPowerMode
-func NewBACnetConstructedDataPowerMode(powerMode BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
+func NewBACnetConstructedDataPowerMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, powerMode BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPowerMode {
 	if powerMode == nil {
 		panic("powerMode of type BACnetApplicationTagBoolean for BACnetConstructedDataPowerMode must not be nil")
 	}

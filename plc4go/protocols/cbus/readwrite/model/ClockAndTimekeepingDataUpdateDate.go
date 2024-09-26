@@ -111,7 +111,7 @@ func (m *_ClockAndTimekeepingDataUpdateDate) GetDayOfWeek() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewClockAndTimekeepingDataUpdateDate factory function for _ClockAndTimekeepingDataUpdateDate
-func NewClockAndTimekeepingDataUpdateDate(yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8, commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataUpdateDate {
+func NewClockAndTimekeepingDataUpdateDate(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, yearHigh byte, yearLow byte, month uint8, day uint8, dayOfWeek uint8) *_ClockAndTimekeepingDataUpdateDate {
 	_result := &_ClockAndTimekeepingDataUpdateDate{
 		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
 		YearHigh:                        yearHigh,

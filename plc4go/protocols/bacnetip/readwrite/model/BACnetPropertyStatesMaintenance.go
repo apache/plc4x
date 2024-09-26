@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesMaintenance) GetMaintenance() BACnetMaintenanceTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
-func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesMaintenance {
+func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, maintenance BACnetMaintenanceTagged) *_BACnetPropertyStatesMaintenance {
 	if maintenance == nil {
 		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
 	}

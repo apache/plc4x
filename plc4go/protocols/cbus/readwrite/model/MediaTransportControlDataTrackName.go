@@ -83,7 +83,7 @@ func (m *_MediaTransportControlDataTrackName) GetTrackName() string {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
-func NewMediaTransportControlDataTrackName(trackName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTrackName {
+func NewMediaTransportControlDataTrackName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackName string) *_MediaTransportControlDataTrackName {
 	_result := &_MediaTransportControlDataTrackName{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		TrackName:                         trackName,

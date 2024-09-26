@@ -104,7 +104,7 @@ func (m *_BACnetEventParameterBufferReady) GetClosingTag() BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventParameterBufferReady factory function for _BACnetEventParameterBufferReady
-func NewBACnetEventParameterBufferReady(openingTag BACnetOpeningTag, notificationThreshold BACnetContextTagUnsignedInteger, previousNotificationCount BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterBufferReady {
+func NewBACnetEventParameterBufferReady(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, notificationThreshold BACnetContextTagUnsignedInteger, previousNotificationCount BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) *_BACnetEventParameterBufferReady {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterBufferReady must not be nil")
 	}

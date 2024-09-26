@@ -95,7 +95,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) GetItems() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionReadSzlResponse factory function for _S7PayloadUserDataItemCpuFunctionReadSzlResponse
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []byte, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionReadSzlResponse {
 	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Items:                         items,

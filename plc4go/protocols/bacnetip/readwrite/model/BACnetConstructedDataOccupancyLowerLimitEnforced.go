@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) GetActualValue() BAC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOccupancyLowerLimitEnforced factory function for _BACnetConstructedDataOccupancyLowerLimitEnforced
-func NewBACnetConstructedDataOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimitEnforced {
+func NewBACnetConstructedDataOccupancyLowerLimitEnforced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyLowerLimitEnforced BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyLowerLimitEnforced {
 	if occupancyLowerLimitEnforced == nil {
 		panic("occupancyLowerLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyLowerLimitEnforced must not be nil")
 	}

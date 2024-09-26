@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesIntegerValue) GetIntegerValue() BACnetContextTagSi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesIntegerValue factory function for _BACnetPropertyStatesIntegerValue
-func NewBACnetPropertyStatesIntegerValue(integerValue BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesIntegerValue {
+func NewBACnetPropertyStatesIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetPropertyStatesIntegerValue {
 	if integerValue == nil {
 		panic("integerValue of type BACnetContextTagSignedInteger for BACnetPropertyStatesIntegerValue must not be nil")
 	}

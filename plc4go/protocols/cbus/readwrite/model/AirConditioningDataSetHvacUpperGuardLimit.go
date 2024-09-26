@@ -104,7 +104,7 @@ func (m *_AirConditioningDataSetHvacUpperGuardLimit) GetHvacModeAndFlags() HVACM
 ///////////////////////////////////////////////////////////
 
 // NewAirConditioningDataSetHvacUpperGuardLimit factory function for _AirConditioningDataSetHvacUpperGuardLimit
-func NewAirConditioningDataSetHvacUpperGuardLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHvacUpperGuardLimit {
+func NewAirConditioningDataSetHvacUpperGuardLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACTemperature, hvacModeAndFlags HVACModeAndFlags) *_AirConditioningDataSetHvacUpperGuardLimit {
 	if zoneList == nil {
 		panic("zoneList of type HVACZoneList for AirConditioningDataSetHvacUpperGuardLimit must not be nil")
 	}

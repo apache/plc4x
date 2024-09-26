@@ -104,7 +104,7 @@ func (m *_AirConditioningDataZoneTemperature) GetSensorStatus() HVACSensorStatus
 ///////////////////////////////////////////////////////////
 
 // NewAirConditioningDataZoneTemperature factory function for _AirConditioningDataZoneTemperature
-func NewAirConditioningDataZoneTemperature(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneTemperature {
+func NewAirConditioningDataZoneTemperature(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) *_AirConditioningDataZoneTemperature {
 	if zoneList == nil {
 		panic("zoneList of type HVACZoneList for AirConditioningDataZoneTemperature must not be nil")
 	}

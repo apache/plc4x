@@ -106,7 +106,7 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////////////////////////////////////////
 
 // NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
 	_result := &_CBusCommandDeviceManagement{
 		CBusCommandContract: NewCBusCommand(header, cBusOptions),
 		ParamNo:             paramNo,

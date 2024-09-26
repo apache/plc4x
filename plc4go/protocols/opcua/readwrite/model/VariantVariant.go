@@ -94,7 +94,7 @@ func (m *_VariantVariant) GetValue() []Variant {
 ///////////////////////////////////////////////////////////
 
 // NewVariantVariant factory function for _VariantVariant
-func NewVariantVariant(arrayLength *int32, value []Variant, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantVariant {
+func NewVariantVariant(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []Variant) *_VariantVariant {
 	_result := &_VariantVariant{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

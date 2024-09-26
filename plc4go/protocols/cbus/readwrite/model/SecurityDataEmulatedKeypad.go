@@ -180,7 +180,7 @@ func (m *_SecurityDataEmulatedKeypad) GetIsVacation() bool {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataEmulatedKeypad factory function for _SecurityDataEmulatedKeypad
-func NewSecurityDataEmulatedKeypad(key byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEmulatedKeypad {
+func NewSecurityDataEmulatedKeypad(commandTypeContainer SecurityCommandTypeContainer, argument byte, key byte) *_SecurityDataEmulatedKeypad {
 	_result := &_SecurityDataEmulatedKeypad{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Key:                  key,

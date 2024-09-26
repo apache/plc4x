@@ -97,7 +97,7 @@ func (m *_BACnetLogDataLogData) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
-func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
+func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
 	if innerOpeningTag == nil {
 		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
 	}

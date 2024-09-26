@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetActualValue() BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(defaultRampRate BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
+func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
 	if defaultRampRate == nil {
 		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
 	}

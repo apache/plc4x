@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataCOVURecipients) GetCovuRecipients() []BACnetRecip
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCOVURecipients factory function for _BACnetConstructedDataCOVURecipients
-func NewBACnetConstructedDataCOVURecipients(covuRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVURecipients {
+func NewBACnetConstructedDataCOVURecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, covuRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCOVURecipients {
 	_result := &_BACnetConstructedDataCOVURecipients{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		CovuRecipients:                covuRecipients,

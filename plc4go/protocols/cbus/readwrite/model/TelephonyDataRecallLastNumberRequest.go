@@ -108,7 +108,7 @@ func (m *_TelephonyDataRecallLastNumberRequest) GetIsNumberOfLastIncomingCall() 
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataRecallLastNumberRequest factory function for _TelephonyDataRecallLastNumberRequest
-func NewTelephonyDataRecallLastNumberRequest(recallLastNumberType byte, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRecallLastNumberRequest {
+func NewTelephonyDataRecallLastNumberRequest(commandTypeContainer TelephonyCommandTypeContainer, argument byte, recallLastNumberType byte) *_TelephonyDataRecallLastNumberRequest {
 	_result := &_TelephonyDataRecallLastNumberRequest{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		RecallLastNumberType:  recallLastNumberType,

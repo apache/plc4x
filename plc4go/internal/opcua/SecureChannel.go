@@ -185,11 +185,19 @@ func (s *SecureChannel) submit(ctx context.Context, codec *MessageCodec, errorDi
 	//TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
 	//      This value is negotiated when opening a channel
 
-	messageRequest := readWriteModel.NewOpcuaMessageRequest(readWriteModel.NewSecurityHeader(
-		s.channelId.Load(),
-		s.tokenId.Load()),
-		readWriteModel.NewBinaryPayload(buffer.GetBytes(), readWriteModel.NewSequenceHeader(transactionId, transactionId), uint32(len(buffer.GetBytes()))),
-		readWriteModel.ChunkType_FINAL, uint32(len(buffer.GetBytes())))
+	messageRequest := readWriteModel.NewOpcuaMessageRequest(
+		readWriteModel.ChunkType_FINAL,
+		readWriteModel.NewSecurityHeader(
+			s.channelId.Load(),
+			s.tokenId.Load(),
+		),
+		readWriteModel.NewBinaryPayload(
+			readWriteModel.NewSequenceHeader(transactionId, transactionId),
+			buffer.GetBytes(),
+			uint32(len(buffer.GetBytes())),
+		),
+		uint32(len(buffer.GetBytes())),
+	)
 
 	var apu readWriteModel.OpcuaAPU
 	if s.isEncrypted {
@@ -282,6 +290,7 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 	s.codec = connection.messageCodec // TODO: why would we need to set that?
 
 	hello := readWriteModel.NewOpcuaHelloRequest(
+		readWriteModel.ChunkType_FINAL,
 		VERSION,
 		readWriteModel.NewOpcuaProtocolLimits(
 			DEFAULT_RECEIVE_BUFFER_SIZE,
@@ -290,7 +299,6 @@ func (s *SecureChannel) onConnect(ctx context.Context, connection *Connection, c
 			DEFAULT_MAX_CHUNK_COUNT,
 		),
 		s.endpoint,
-		readWriteModel.ChunkType_FINAL,
 	)
 
 	requestConsumer := func(transactionId int32) {
@@ -392,16 +400,19 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 		return
 	}
 
-	openRequest := readWriteModel.NewOpcuaOpenRequest(readWriteModel.NewOpenChannelMessageRequest(
-		0,
-		readWriteModel.NewPascalString(s.securityPolicy),
-		s.publicCertificate,
-		s.thumbprint),
+	openRequest := readWriteModel.NewOpcuaOpenRequest(
+		readWriteModel.ChunkType_FINAL,
+		readWriteModel.NewOpenChannelMessageRequest(
+			0,
+			readWriteModel.NewPascalString(s.securityPolicy),
+			s.publicCertificate,
+			s.thumbprint),
 		readWriteModel.NewBinaryPayload(
-			buffer.GetBytes(),
 			readWriteModel.NewSequenceHeader(transactionId, transactionId),
+			buffer.GetBytes(),
 			uint32(len(buffer.GetBytes())),
-		), readWriteModel.ChunkType_FINAL, uint32(len(buffer.GetBytes())),
+		),
+		uint32(len(buffer.GetBytes())),
 	)
 
 	var apu readWriteModel.OpcuaAPU
@@ -845,18 +856,18 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 	)
 
 	closeRequest := readWriteModel.NewOpcuaCloseRequest(
+		readWriteModel.ChunkType_FINAL,
 		readWriteModel.NewSecurityHeader(s.channelId.Load(), s.tokenId.Load()),
 		readWriteModel.NewExtensiblePayload(
+			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			readWriteModel.NewExtensionObject(
 				expandedNodeId,
 				nil,
 				closeSecureChannelRequest,
 				false,
 			),
-			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			0,
 		),
-		readWriteModel.ChunkType_FINAL,
 	)
 
 	apu := readWriteModel.NewOpcuaAPU(closeRequest, false)
@@ -907,6 +918,7 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 	s.log.Debug().Msg("Opcua Driver running in ACTIVE mode, discovering endpoints")
 
 	hello := readWriteModel.NewOpcuaHelloRequest(
+		readWriteModel.ChunkType_FINAL,
 		VERSION,
 		readWriteModel.NewOpcuaProtocolLimits(
 			DEFAULT_RECEIVE_BUFFER_SIZE,
@@ -915,7 +927,6 @@ func (s *SecureChannel) onDiscover(ctx context.Context, codec *MessageCodec) {
 			DEFAULT_MAX_CHUNK_COUNT,
 		),
 		s.endpoint,
-		readWriteModel.ChunkType_FINAL,
 	)
 
 	apu := readWriteModel.NewOpcuaAPU(hello, false)
@@ -1009,6 +1020,7 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 	}
 
 	openRequest := readWriteModel.NewOpcuaOpenRequest(
+		readWriteModel.ChunkType_FINAL,
 		readWriteModel.NewOpenChannelMessageRequest(
 			0,
 			SECURITY_POLICY_NONE,
@@ -1016,9 +1028,10 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 			NULL_BYTE_STRING,
 		),
 		readWriteModel.NewBinaryPayload(
-			buffer.GetBytes(), readWriteModel.NewSequenceHeader(transactionId, transactionId), uint32(len(buffer.GetBytes())),
+			readWriteModel.NewSequenceHeader(transactionId, transactionId),
+			buffer.GetBytes(),
+			uint32(len(buffer.GetBytes())),
 		),
-		readWriteModel.ChunkType_FINAL,
 		uint32(len(buffer.GetBytes())),
 	)
 
@@ -1142,14 +1155,16 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	}
 
 	messageRequest := readWriteModel.NewOpcuaMessageRequest(
+		readWriteModel.ChunkType_FINAL,
 		readWriteModel.NewSecurityHeader(
 			s.channelId.Load(),
 			s.tokenId.Load(),
 		),
 		readWriteModel.NewBinaryPayload(
-			buffer.GetBytes(), readWriteModel.NewSequenceHeader(nextSequenceNumber, nextRequestId), uint32(len(buffer.GetBytes())),
+			readWriteModel.NewSequenceHeader(nextSequenceNumber, nextRequestId),
+			buffer.GetBytes(),
+			uint32(len(buffer.GetBytes())),
 		),
-		readWriteModel.ChunkType_FINAL,
 		uint32(len(buffer.GetBytes())),
 	)
 
@@ -1253,21 +1268,21 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 	)
 
 	closeRequest := readWriteModel.NewOpcuaCloseRequest(
+		readWriteModel.ChunkType_FINAL,
 		readWriteModel.NewSecurityHeader(
 			s.channelId.Load(),
 			s.tokenId.Load(),
 		),
 		readWriteModel.NewExtensiblePayload(
+			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			readWriteModel.NewExtensionObject(
 				expandedNodeId,
 				nil,
 				closeSecureChannelRequest,
 				false,
 			),
-			readWriteModel.NewSequenceHeader(transactionId, transactionId),
 			uint32(0),
 		),
-		readWriteModel.ChunkType_FINAL,
 	)
 
 	apu := readWriteModel.NewOpcuaAPU(closeRequest, false)
@@ -1387,17 +1402,17 @@ func (s *SecureChannel) keepAlive() {
 			}
 
 			openRequest := readWriteModel.NewOpcuaOpenRequest(
+				readWriteModel.ChunkType_FINAL,
 				readWriteModel.NewOpenChannelMessageRequest(0,
 					readWriteModel.NewPascalString(s.securityPolicy),
 					s.publicCertificate,
 					s.thumbprint,
 				),
 				readWriteModel.NewBinaryPayload(
-					buffer.GetBytes(),
 					readWriteModel.NewSequenceHeader(transactionId, transactionId),
+					buffer.GetBytes(),
 					uint32(len(buffer.GetBytes())),
 				),
-				readWriteModel.ChunkType_FINAL,
 				uint32(len(buffer.GetBytes())),
 			)
 

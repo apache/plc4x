@@ -83,7 +83,7 @@ func (m *_MeteringDataDrinkingWaterConsumption) GetKL() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewMeteringDataDrinkingWaterConsumption factory function for _MeteringDataDrinkingWaterConsumption
-func NewMeteringDataDrinkingWaterConsumption(kL uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataDrinkingWaterConsumption {
+func NewMeteringDataDrinkingWaterConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kL uint32) *_MeteringDataDrinkingWaterConsumption {
 	_result := &_MeteringDataDrinkingWaterConsumption{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		KL:                   kL,

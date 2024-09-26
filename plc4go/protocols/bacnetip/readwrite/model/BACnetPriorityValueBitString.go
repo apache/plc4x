@@ -83,7 +83,7 @@ func (m *_BACnetPriorityValueBitString) GetBitStringValue() BACnetApplicationTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueBitString factory function for _BACnetPriorityValueBitString
-func NewBACnetPriorityValueBitString(bitStringValue BACnetApplicationTagBitString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
+func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringValue BACnetApplicationTagBitString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueBitString {
 	if bitStringValue == nil {
 		panic("bitStringValue of type BACnetApplicationTagBitString for BACnetPriorityValueBitString must not be nil")
 	}

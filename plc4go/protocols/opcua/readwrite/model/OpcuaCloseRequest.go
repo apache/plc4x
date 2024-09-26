@@ -98,7 +98,7 @@ func (m *_OpcuaCloseRequest) GetMessage() Payload {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
-func NewOpcuaCloseRequest(securityHeader SecurityHeader, message Payload, chunk ChunkType) *_OpcuaCloseRequest {
+func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaCloseRequest {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
 	}

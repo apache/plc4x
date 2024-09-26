@@ -83,7 +83,7 @@ func (m *_BACnetValueSourceAddress) GetAddress() BACnetAddressEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
-func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceAddress {
+func NewBACnetValueSourceAddress(peekedTagHeader BACnetTagHeader, address BACnetAddressEnclosed) *_BACnetValueSourceAddress {
 	if address == nil {
 		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
 	}

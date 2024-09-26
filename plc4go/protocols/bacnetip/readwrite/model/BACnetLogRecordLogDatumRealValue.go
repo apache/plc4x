@@ -83,7 +83,7 @@ func (m *_BACnetLogRecordLogDatumRealValue) GetRealValue() BACnetContextTagReal 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogRecordLogDatumRealValue factory function for _BACnetLogRecordLogDatumRealValue
-func NewBACnetLogRecordLogDatumRealValue(realValue BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
+func NewBACnetLogRecordLogDatumRealValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, realValue BACnetContextTagReal, tagNumber uint8) *_BACnetLogRecordLogDatumRealValue {
 	if realValue == nil {
 		panic("realValue of type BACnetContextTagReal for BACnetLogRecordLogDatumRealValue must not be nil")
 	}

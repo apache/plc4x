@@ -316,8 +316,15 @@ func (c *Connection) connectRegisterSession(ctx context.Context, ch chan plc4go.
 						readWriteModel.NewTransportType(true, 2, 3),
 						c.connectionPathSize, c.routingAddress, 1))
 				typeIds := []readWriteModel.TypeId{readWriteModel.NewNullAddressItem(), exchange}
-				eipWrapper := readWriteModel.NewCipRRData(c.sessionHandle, 0, typeIds,
-					c.sessionHandle, uint32(readWriteModel.CIPStatus_Success), c.senderContext, 0)
+				eipWrapper := readWriteModel.NewCipRRData(
+					c.sessionHandle,
+					uint32(readWriteModel.CIPStatus_Success),
+					c.senderContext,
+					0,
+					c.sessionHandle,
+					0,
+					typeIds,
+				)
 				if err := c.messageCodec.SendRequest(
 					ctx,
 					eipWrapper,
@@ -394,6 +401,10 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 	if err := c.messageCodec.SendRequest(
 		ctx,
 		readWriteModel.NewCipRRData(
+			c.sessionHandle,
+			uint32(readWriteModel.CIPStatus_Success),
+			c.senderContext,
+			0,
 			EmptyInterfaceHandle,
 			0,
 			[]readWriteModel.TypeId{
@@ -402,10 +413,6 @@ func (c *Connection) listAllAttributes(ctx context.Context, ch chan plc4go.PlcCo
 					readWriteModel.NewGetAttributeAllRequest(
 						classSegment, instanceSegment, uint16(0))),
 			},
-			c.sessionHandle,
-			uint32(readWriteModel.CIPStatus_Success),
-			c.senderContext,
-			0,
 		),
 		func(message spi.Message) bool {
 			eipPacket := message.(readWriteModel.CipRRData)

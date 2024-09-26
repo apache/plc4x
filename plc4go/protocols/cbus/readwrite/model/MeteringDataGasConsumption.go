@@ -83,7 +83,7 @@ func (m *_MeteringDataGasConsumption) GetMJ() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewMeteringDataGasConsumption factory function for _MeteringDataGasConsumption
-func NewMeteringDataGasConsumption(mJ uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataGasConsumption {
+func NewMeteringDataGasConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, mJ uint32) *_MeteringDataGasConsumption {
 	_result := &_MeteringDataGasConsumption{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		MJ:                   mJ,

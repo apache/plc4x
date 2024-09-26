@@ -104,7 +104,7 @@ func (m *_LevelInformationCorrupted) GetCorruptedNibble4() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewLevelInformationCorrupted factory function for _LevelInformationCorrupted
-func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8, raw uint16) *_LevelInformationCorrupted {
+func NewLevelInformationCorrupted(raw uint16, corruptedNibble1 uint8, corruptedNibble2 uint8, corruptedNibble3 uint8, corruptedNibble4 uint8) *_LevelInformationCorrupted {
 	_result := &_LevelInformationCorrupted{
 		LevelInformationContract: NewLevelInformation(raw),
 		CorruptedNibble1:         corruptedNibble1,

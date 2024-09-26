@@ -83,7 +83,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetEnumeratedValue() BACnetC
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
-func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryEnumeratedValue {
+func NewBACnetLogDataLogDataEntryEnumeratedValue(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogDataLogDataEntryEnumeratedValue {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
 	}

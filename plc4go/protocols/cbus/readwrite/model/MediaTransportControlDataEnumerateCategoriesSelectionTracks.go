@@ -131,7 +131,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) GetIsRese
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataEnumerateCategoriesSelectionTracks factory function for _MediaTransportControlDataEnumerateCategoriesSelectionTracks
-func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateType byte, start uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, enumerateType byte, start uint8) *_MediaTransportControlDataEnumerateCategoriesSelectionTracks {
 	_result := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		EnumerateType:                     enumerateType,

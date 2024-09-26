@@ -94,7 +94,7 @@ func (m *_VariantGuid) GetValue() []GuidValue {
 ///////////////////////////////////////////////////////////
 
 // NewVariantGuid factory function for _VariantGuid
-func NewVariantGuid(arrayLength *int32, value []GuidValue, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantGuid {
+func NewVariantGuid(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []GuidValue) *_VariantGuid {
 	_result := &_VariantGuid{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLastCredentialRemoved) GetActualValue() BACnetDev
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastCredentialRemoved factory function for _BACnetConstructedDataLastCredentialRemoved
-func NewBACnetConstructedDataLastCredentialRemoved(lastCredentialRemoved BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialRemoved {
+func NewBACnetConstructedDataLastCredentialRemoved(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialRemoved BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialRemoved {
 	if lastCredentialRemoved == nil {
 		panic("lastCredentialRemoved of type BACnetDeviceObjectReference for BACnetConstructedDataLastCredentialRemoved must not be nil")
 	}

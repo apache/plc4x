@@ -83,7 +83,7 @@ func (m *_BACnetSpecialEventPeriodCalendarEntry) GetCalendarEntry() BACnetCalend
 ///////////////////////////////////////////////////////////
 
 // NewBACnetSpecialEventPeriodCalendarEntry factory function for _BACnetSpecialEventPeriodCalendarEntry
-func NewBACnetSpecialEventPeriodCalendarEntry(calendarEntry BACnetCalendarEntryEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriodCalendarEntry {
+func NewBACnetSpecialEventPeriodCalendarEntry(peekedTagHeader BACnetTagHeader, calendarEntry BACnetCalendarEntryEnclosed) *_BACnetSpecialEventPeriodCalendarEntry {
 	if calendarEntry == nil {
 		panic("calendarEntry of type BACnetCalendarEntryEnclosed for BACnetSpecialEventPeriodCalendarEntry must not be nil")
 	}

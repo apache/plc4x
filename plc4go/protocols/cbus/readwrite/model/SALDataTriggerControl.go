@@ -87,7 +87,7 @@ func (m *_SALDataTriggerControl) GetTriggerControlData() TriggerControlData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataTriggerControl factory function for _SALDataTriggerControl
-func NewSALDataTriggerControl(triggerControlData TriggerControlData, salData SALData) *_SALDataTriggerControl {
+func NewSALDataTriggerControl(salData SALData, triggerControlData TriggerControlData) *_SALDataTriggerControl {
 	if triggerControlData == nil {
 		panic("triggerControlData of type TriggerControlData for SALDataTriggerControl must not be nil")
 	}

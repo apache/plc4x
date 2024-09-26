@@ -94,7 +94,7 @@ func (m *_VariantBoolean) GetValue() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewVariantBoolean factory function for _VariantBoolean
-func NewVariantBoolean(arrayLength *int32, value []byte, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantBoolean {
+func NewVariantBoolean(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantBoolean {
 	_result := &_VariantBoolean{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

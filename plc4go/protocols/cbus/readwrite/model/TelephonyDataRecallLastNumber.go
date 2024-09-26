@@ -115,7 +115,7 @@ func (m *_TelephonyDataRecallLastNumber) GetIsNumberOfLastIncomingCall() bool {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataRecallLastNumber factory function for _TelephonyDataRecallLastNumber
-func NewTelephonyDataRecallLastNumber(recallLastNumberType byte, number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRecallLastNumber {
+func NewTelephonyDataRecallLastNumber(commandTypeContainer TelephonyCommandTypeContainer, argument byte, recallLastNumberType byte, number string) *_TelephonyDataRecallLastNumber {
 	_result := &_TelephonyDataRecallLastNumber{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		RecallLastNumberType:  recallLastNumberType,

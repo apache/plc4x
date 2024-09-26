@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataTrackingValue) GetActualValue() BACnetLifeSafetyS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTrackingValue factory function for _BACnetConstructedDataTrackingValue
-func NewBACnetConstructedDataTrackingValue(trackingValue BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrackingValue {
+func NewBACnetConstructedDataTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrackingValue {
 	if trackingValue == nil {
 		panic("trackingValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataTrackingValue must not be nil")
 	}

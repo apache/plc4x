@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataTimerRunning) GetActualValue() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTimerRunning factory function for _BACnetConstructedDataTimerRunning
-func NewBACnetConstructedDataTimerRunning(timerRunning BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerRunning {
+func NewBACnetConstructedDataTimerRunning(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timerRunning BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerRunning {
 	if timerRunning == nil {
 		panic("timerRunning of type BACnetApplicationTagBoolean for BACnetConstructedDataTimerRunning must not be nil")
 	}

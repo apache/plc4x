@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataOutOfService) GetActualValue() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOutOfService factory function for _BACnetConstructedDataOutOfService
-func NewBACnetConstructedDataOutOfService(outOfService BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
+func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, outOfService BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutOfService {
 	if outOfService == nil {
 		panic("outOfService of type BACnetApplicationTagBoolean for BACnetConstructedDataOutOfService must not be nil")
 	}

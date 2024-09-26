@@ -83,7 +83,7 @@ func (m *_BACnetTimeStampDateTime) GetDateTimeValue() BACnetDateTimeEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampDateTime factory function for _BACnetTimeStampDateTime
-func NewBACnetTimeStampDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampDateTime {
+func NewBACnetTimeStampDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed) *_BACnetTimeStampDateTime {
 	if dateTimeValue == nil {
 		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetTimeStampDateTime must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLowerDeck) GetActualValue() BACnetApplicationTagO
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLowerDeck factory function for _BACnetConstructedDataLowerDeck
-func NewBACnetConstructedDataLowerDeck(lowerDeck BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowerDeck {
+func NewBACnetConstructedDataLowerDeck(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowerDeck BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLowerDeck {
 	if lowerDeck == nil {
 		panic("lowerDeck of type BACnetApplicationTagObjectIdentifier for BACnetConstructedDataLowerDeck must not be nil")
 	}

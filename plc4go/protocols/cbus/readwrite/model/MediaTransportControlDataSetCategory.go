@@ -83,7 +83,7 @@ func (m *_MediaTransportControlDataSetCategory) GetCategoryNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataSetCategory factory function for _MediaTransportControlDataSetCategory
-func NewMediaTransportControlDataSetCategory(categoryNumber uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetCategory {
+func NewMediaTransportControlDataSetCategory(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryNumber uint8) *_MediaTransportControlDataSetCategory {
 	_result := &_MediaTransportControlDataSetCategory{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		CategoryNumber:                    categoryNumber,

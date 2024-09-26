@@ -107,7 +107,7 @@ func (m *_LPollData) GetNumberExpectedPollData() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewLPollData factory function for _LPollData
-func NewLPollData(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8, frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LPollData {
+func NewLPollData(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool, sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) *_LPollData {
 	if sourceAddress == nil {
 		panic("sourceAddress of type KnxAddress for LPollData must not be nil")
 	}

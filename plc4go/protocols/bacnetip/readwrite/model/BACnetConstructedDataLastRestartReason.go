@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLastRestartReason) GetActualValue() BACnetRestart
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLastRestartReason factory function for _BACnetConstructedDataLastRestartReason
-func NewBACnetConstructedDataLastRestartReason(lastRestartReason BACnetRestartReasonTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
+func NewBACnetConstructedDataLastRestartReason(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastRestartReason BACnetRestartReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastRestartReason {
 	if lastRestartReason == nil {
 		panic("lastRestartReason of type BACnetRestartReasonTagged for BACnetConstructedDataLastRestartReason must not be nil")
 	}

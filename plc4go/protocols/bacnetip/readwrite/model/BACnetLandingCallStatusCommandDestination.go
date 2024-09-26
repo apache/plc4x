@@ -83,7 +83,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetDestination() BACnetCont
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLandingCallStatusCommandDestination factory function for _BACnetLandingCallStatusCommandDestination
-func NewBACnetLandingCallStatusCommandDestination(destination BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDestination {
+func NewBACnetLandingCallStatusCommandDestination(peekedTagHeader BACnetTagHeader, destination BACnetContextTagUnsignedInteger) *_BACnetLandingCallStatusCommandDestination {
 	if destination == nil {
 		panic("destination of type BACnetContextTagUnsignedInteger for BACnetLandingCallStatusCommandDestination must not be nil")
 	}

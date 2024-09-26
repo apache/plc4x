@@ -94,7 +94,7 @@ func (m *_COTPPacketDisconnectResponse) GetSourceReference() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketDisconnectResponse factory function for _COTPPacketDisconnectResponse
-func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketDisconnectResponse {
+func NewCOTPPacketDisconnectResponse(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, cotpLen uint16) *_COTPPacketDisconnectResponse {
 	_result := &_COTPPacketDisconnectResponse{
 		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
 		DestinationReference: destinationReference,

@@ -83,7 +83,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStri
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, characterStringValue BACnetApplicationTagCharacterString, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
 	if characterStringValue == nil {
 		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString must not be nil")
 	}

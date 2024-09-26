@@ -83,7 +83,7 @@ func (m *_TelephonyDataDialOutFailure) GetReason() DialOutFailureReason {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataDialOutFailure factory function for _TelephonyDataDialOutFailure
-func NewTelephonyDataDialOutFailure(reason DialOutFailureReason, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDialOutFailure {
+func NewTelephonyDataDialOutFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialOutFailureReason) *_TelephonyDataDialOutFailure {
 	_result := &_TelephonyDataDialOutFailure{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Reason:                reason,

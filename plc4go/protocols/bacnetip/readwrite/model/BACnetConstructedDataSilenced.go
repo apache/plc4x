@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataSilenced) GetActualValue() BACnetSilencedStateTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSilenced factory function for _BACnetConstructedDataSilenced
-func NewBACnetConstructedDataSilenced(silenced BACnetSilencedStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
+func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, silenced BACnetSilencedStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSilenced {
 	if silenced == nil {
 		panic("silenced of type BACnetSilencedStateTagged for BACnetConstructedDataSilenced must not be nil")
 	}

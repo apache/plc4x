@@ -83,7 +83,7 @@ func (m *_BACnetCalendarEntryDateRange) GetDateRange() BACnetDateRangeEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntryDateRange factory function for _BACnetCalendarEntryDateRange
-func NewBACnetCalendarEntryDateRange(dateRange BACnetDateRangeEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryDateRange {
+func NewBACnetCalendarEntryDateRange(peekedTagHeader BACnetTagHeader, dateRange BACnetDateRangeEnclosed) *_BACnetCalendarEntryDateRange {
 	if dateRange == nil {
 		panic("dateRange of type BACnetDateRangeEnclosed for BACnetCalendarEntryDateRange must not be nil")
 	}

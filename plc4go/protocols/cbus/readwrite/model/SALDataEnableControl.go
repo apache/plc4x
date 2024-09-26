@@ -87,7 +87,7 @@ func (m *_SALDataEnableControl) GetEnableControlData() EnableControlData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataEnableControl factory function for _SALDataEnableControl
-func NewSALDataEnableControl(enableControlData EnableControlData, salData SALData) *_SALDataEnableControl {
+func NewSALDataEnableControl(salData SALData, enableControlData EnableControlData) *_SALDataEnableControl {
 	if enableControlData == nil {
 		panic("enableControlData of type EnableControlData for SALDataEnableControl must not be nil")
 	}

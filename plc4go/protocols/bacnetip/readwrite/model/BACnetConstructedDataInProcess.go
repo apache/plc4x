@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataInProcess) GetActualValue() BACnetApplicationTagB
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
-func NewBACnetConstructedDataInProcess(inProcess BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
+func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
 	if inProcess == nil {
 		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
 	}

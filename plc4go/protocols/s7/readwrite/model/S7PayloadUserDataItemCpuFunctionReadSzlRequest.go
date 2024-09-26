@@ -102,7 +102,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) GetSzlIndex() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionReadSzlRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(szlId SzlId, szlIndex uint16, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, szlId SzlId, szlIndex uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlRequest {
 	if szlId == nil {
 		panic("szlId of type SzlId for S7PayloadUserDataItemCpuFunctionReadSzlRequest must not be nil")
 	}

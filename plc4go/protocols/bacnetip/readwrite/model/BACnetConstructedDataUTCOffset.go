@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagS
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
+func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
 	if utcOffset == nil {
 		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
 	}

@@ -83,7 +83,7 @@ func (m *_BACnetEventParameterNone) GetNone() BACnetContextTagNull {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventParameterNone factory function for _BACnetEventParameterNone
-func NewBACnetEventParameterNone(none BACnetContextTagNull, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterNone {
+func NewBACnetEventParameterNone(peekedTagHeader BACnetTagHeader, none BACnetContextTagNull) *_BACnetEventParameterNone {
 	if none == nil {
 		panic("none of type BACnetContextTagNull for BACnetEventParameterNone must not be nil")
 	}

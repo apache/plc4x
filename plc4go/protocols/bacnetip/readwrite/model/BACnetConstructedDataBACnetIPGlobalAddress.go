@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() BACnetHos
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
+func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
 	if bacnetIpGlobalAddress == nil {
 		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
 	}

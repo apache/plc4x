@@ -86,7 +86,7 @@ func (m *_DF1UnprotectedReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
-func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *_DF1UnprotectedReadResponse {
+func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data []byte) *_DF1UnprotectedReadResponse {
 	_result := &_DF1UnprotectedReadResponse{
 		DF1CommandContract: NewDF1Command(status, transactionCounter),
 		Data:               data,

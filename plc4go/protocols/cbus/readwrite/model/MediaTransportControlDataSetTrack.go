@@ -104,7 +104,7 @@ func (m *_MediaTransportControlDataSetTrack) GetTrackLSB() byte {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataSetTrack factory function for _MediaTransportControlDataSetTrack
-func NewMediaTransportControlDataSetTrack(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSetTrack {
+func NewMediaTransportControlDataSetTrack(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) *_MediaTransportControlDataSetTrack {
 	_result := &_MediaTransportControlDataSetTrack{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		TrackMSB:                          trackMSB,

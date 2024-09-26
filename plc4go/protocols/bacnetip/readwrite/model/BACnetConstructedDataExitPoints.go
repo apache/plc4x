@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataExitPoints) GetExitPoints() []BACnetDeviceObjectR
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExitPoints factory function for _BACnetConstructedDataExitPoints
-func NewBACnetConstructedDataExitPoints(exitPoints []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExitPoints {
+func NewBACnetConstructedDataExitPoints(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, exitPoints []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExitPoints {
 	_result := &_BACnetConstructedDataExitPoints{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ExitPoints:                    exitPoints,

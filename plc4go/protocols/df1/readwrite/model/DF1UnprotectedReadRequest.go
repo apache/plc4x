@@ -94,7 +94,7 @@ func (m *_DF1UnprotectedReadRequest) GetSize() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewDF1UnprotectedReadRequest factory function for _DF1UnprotectedReadRequest
-func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *_DF1UnprotectedReadRequest {
+func NewDF1UnprotectedReadRequest(status uint8, transactionCounter uint16, address uint16, size uint8) *_DF1UnprotectedReadRequest {
 	_result := &_DF1UnprotectedReadRequest{
 		DF1CommandContract: NewDF1Command(status, transactionCounter),
 		Address:            address,

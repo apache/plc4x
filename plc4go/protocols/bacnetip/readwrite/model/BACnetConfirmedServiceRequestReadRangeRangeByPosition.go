@@ -90,7 +90,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetCount() BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestReadRangeRangeByPosition factory function for _BACnetConfirmedServiceRequestReadRangeRangeByPosition
-func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeByPosition {
 	if referenceIndex == nil {
 		panic("referenceIndex of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeByPosition must not be nil")
 	}

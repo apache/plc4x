@@ -83,7 +83,7 @@ func (m *_BACnetChannelValueLightingCommand) GetLigthingCommandValue() BACnetLig
 ///////////////////////////////////////////////////////////
 
 // NewBACnetChannelValueLightingCommand factory function for _BACnetChannelValueLightingCommand
-func NewBACnetChannelValueLightingCommand(ligthingCommandValue BACnetLightingCommandEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueLightingCommand {
+func NewBACnetChannelValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed) *_BACnetChannelValueLightingCommand {
 	if ligthingCommandValue == nil {
 		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetChannelValueLightingCommand must not be nil")
 	}

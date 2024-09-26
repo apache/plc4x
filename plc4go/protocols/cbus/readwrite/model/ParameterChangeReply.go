@@ -83,7 +83,7 @@ func (m *_ParameterChangeReply) GetParameterChange() ParameterChange {
 ///////////////////////////////////////////////////////////
 
 // NewParameterChangeReply factory function for _ParameterChangeReply
-func NewParameterChangeReply(parameterChange ParameterChange, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
+func NewParameterChangeReply(peekedByte byte, parameterChange ParameterChange, cBusOptions CBusOptions, requestContext RequestContext) *_ParameterChangeReply {
 	if parameterChange == nil {
 		panic("parameterChange of type ParameterChange for ParameterChangeReply must not be nil")
 	}

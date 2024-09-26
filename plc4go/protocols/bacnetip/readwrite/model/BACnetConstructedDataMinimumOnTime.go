@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetActualValue() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
-func NewBACnetConstructedDataMinimumOnTime(minimumOnTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
+func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
 	if minimumOnTime == nil {
 		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
 	}

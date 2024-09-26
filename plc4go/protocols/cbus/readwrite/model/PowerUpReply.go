@@ -83,7 +83,7 @@ func (m *_PowerUpReply) GetPowerUpIndicator() PowerUp {
 ///////////////////////////////////////////////////////////
 
 // NewPowerUpReply factory function for _PowerUpReply
-func NewPowerUpReply(powerUpIndicator PowerUp, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
+func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp, cBusOptions CBusOptions, requestContext RequestContext) *_PowerUpReply {
 	if powerUpIndicator == nil {
 		panic("powerUpIndicator of type PowerUp for PowerUpReply must not be nil")
 	}

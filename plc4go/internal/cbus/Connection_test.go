@@ -1759,7 +1759,16 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(0, nil, nil, nil, readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5, nil, 0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
+						0,
+						0,
+						nil,
+						nil,
+						nil,
+						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
+						nil,
+						nil,
+					)
 				}()
 				t.Cleanup(func() {
 					assert.NoError(t, codec.Disconnect())
@@ -1784,7 +1793,16 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				go func() {
 					defer dispatchWg.Done()
 					codec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
-					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(0, nil, nil, nil, readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5, nil, 0, nil)
+					codec.monitoredSALs <- readWriteModel.NewMonitoredSALShortFormBasicMode(
+						0,
+						0,
+						nil,
+						nil,
+						nil,
+						readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
+						nil,
+						nil,
+					)
 					close(written)
 				}()
 				t.Cleanup(func() {

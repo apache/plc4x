@@ -94,7 +94,7 @@ func (m *_VariantExtensionObject) GetValue() []ExtensionObject {
 ///////////////////////////////////////////////////////////
 
 // NewVariantExtensionObject factory function for _VariantExtensionObject
-func NewVariantExtensionObject(arrayLength *int32, value []ExtensionObject, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantExtensionObject {
+func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExtensionObject) *_VariantExtensionObject {
 	_result := &_VariantExtensionObject{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

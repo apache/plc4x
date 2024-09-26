@@ -94,7 +94,7 @@ func (m *_VariantLocalizedText) GetValue() []LocalizedText {
 ///////////////////////////////////////////////////////////
 
 // NewVariantLocalizedText factory function for _VariantLocalizedText
-func NewVariantLocalizedText(arrayLength *int32, value []LocalizedText, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantLocalizedText {
+func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
 	_result := &_VariantLocalizedText{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

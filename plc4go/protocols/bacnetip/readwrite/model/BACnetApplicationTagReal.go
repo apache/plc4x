@@ -100,7 +100,7 @@ func (m *_BACnetApplicationTagReal) GetActualValue() float32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagReal factory function for _BACnetApplicationTagReal
-func NewBACnetApplicationTagReal(payload BACnetTagPayloadReal, header BACnetTagHeader) *_BACnetApplicationTagReal {
+func NewBACnetApplicationTagReal(header BACnetTagHeader, payload BACnetTagPayloadReal) *_BACnetApplicationTagReal {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadReal for BACnetApplicationTagReal must not be nil")
 	}

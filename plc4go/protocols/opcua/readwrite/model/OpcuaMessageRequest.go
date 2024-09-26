@@ -101,7 +101,7 @@ func (m *_OpcuaMessageRequest) GetMessage() Payload {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
-func NewOpcuaMessageRequest(securityHeader SecurityHeader, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaMessageRequest {
+func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageRequest {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
 	}

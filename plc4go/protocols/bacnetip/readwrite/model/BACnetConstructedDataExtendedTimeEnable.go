@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataExtendedTimeEnable) GetActualValue() BACnetApplic
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataExtendedTimeEnable factory function for _BACnetConstructedDataExtendedTimeEnable
-func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
+func NewBACnetConstructedDataExtendedTimeEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, extendedTimeEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExtendedTimeEnable {
 	if extendedTimeEnable == nil {
 		panic("extendedTimeEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataExtendedTimeEnable must not be nil")
 	}

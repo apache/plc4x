@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetActualValue() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataIPv6ZoneIndex factory function for _BACnetConstructedDataIPv6ZoneIndex
-func NewBACnetConstructedDataIPv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
+func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6ZoneIndex BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6ZoneIndex {
 	if ipv6ZoneIndex == nil {
 		panic("ipv6ZoneIndex of type BACnetApplicationTagCharacterString for BACnetConstructedDataIPv6ZoneIndex must not be nil")
 	}

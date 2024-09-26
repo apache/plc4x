@@ -117,7 +117,7 @@ func (m *_BACnetConstructedDataPortFilter) GetZero() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPortFilter factory function for _BACnetConstructedDataPortFilter
-func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
+func NewBACnetConstructedDataPortFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, portFilter []BACnetPortPermission, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPortFilter {
 	_result := &_BACnetConstructedDataPortFilter{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfDataElements:          numberOfDataElements,

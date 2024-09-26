@@ -83,7 +83,7 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 ///////////////////////////////////////////////////////////
 
 // NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
+func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
 	if monitoredSAL == nil {
 		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
 	}

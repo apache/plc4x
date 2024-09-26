@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataDateList) GetDateList() []BACnetCalendarEntry {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDateList factory function for _BACnetConstructedDataDateList
-func NewBACnetConstructedDataDateList(dateList []BACnetCalendarEntry, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateList {
+func NewBACnetConstructedDataDateList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateList []BACnetCalendarEntry, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateList {
 	_result := &_BACnetConstructedDataDateList{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		DateList:                      dateList,

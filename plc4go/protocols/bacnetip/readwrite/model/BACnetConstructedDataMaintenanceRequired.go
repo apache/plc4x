@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMaintenanceRequired) GetActualValue() BACnetMaint
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMaintenanceRequired factory function for _BACnetConstructedDataMaintenanceRequired
-func NewBACnetConstructedDataMaintenanceRequired(maintenanceRequired BACnetMaintenanceTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaintenanceRequired {
+func NewBACnetConstructedDataMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetMaintenanceTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaintenanceRequired {
 	if maintenanceRequired == nil {
 		panic("maintenanceRequired of type BACnetMaintenanceTagged for BACnetConstructedDataMaintenanceRequired must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataActiveAuthenticationPolicy) GetActualValue() BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveAuthenticationPolicy factory function for _BACnetConstructedDataActiveAuthenticationPolicy
-func NewBACnetConstructedDataActiveAuthenticationPolicy(activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveAuthenticationPolicy {
+func NewBACnetConstructedDataActiveAuthenticationPolicy(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeAuthenticationPolicy BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveAuthenticationPolicy {
 	if activeAuthenticationPolicy == nil {
 		panic("activeAuthenticationPolicy of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataActiveAuthenticationPolicy must not be nil")
 	}

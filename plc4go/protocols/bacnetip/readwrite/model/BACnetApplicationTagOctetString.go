@@ -83,7 +83,7 @@ func (m *_BACnetApplicationTagOctetString) GetPayload() BACnetTagPayloadOctetStr
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagOctetString factory function for _BACnetApplicationTagOctetString
-func NewBACnetApplicationTagOctetString(payload BACnetTagPayloadOctetString, header BACnetTagHeader) *_BACnetApplicationTagOctetString {
+func NewBACnetApplicationTagOctetString(header BACnetTagHeader, payload BACnetTagPayloadOctetString) *_BACnetApplicationTagOctetString {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadOctetString for BACnetApplicationTagOctetString must not be nil")
 	}

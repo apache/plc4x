@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesBackupState) GetBackupState() BACnetBackupStateTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
-func NewBACnetPropertyStatesBackupState(backupState BACnetBackupStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBackupState {
+func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupState BACnetBackupStateTagged) *_BACnetPropertyStatesBackupState {
 	if backupState == nil {
 		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
 	}

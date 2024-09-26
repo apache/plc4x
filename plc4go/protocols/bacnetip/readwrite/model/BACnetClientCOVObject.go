@@ -83,7 +83,7 @@ func (m *_BACnetClientCOVObject) GetRealIncrement() BACnetApplicationTagReal {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetClientCOVObject factory function for _BACnetClientCOVObject
-func NewBACnetClientCOVObject(realIncrement BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetClientCOVObject {
+func NewBACnetClientCOVObject(peekedTagHeader BACnetTagHeader, realIncrement BACnetApplicationTagReal) *_BACnetClientCOVObject {
 	if realIncrement == nil {
 		panic("realIncrement of type BACnetApplicationTagReal for BACnetClientCOVObject must not be nil")
 	}

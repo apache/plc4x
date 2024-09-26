@@ -83,7 +83,7 @@ func (m *_SecurityDataStatusReport2) GetZoneStatus() []ZoneStatus {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
-func NewSecurityDataStatusReport2(zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport2 {
+func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneStatus []ZoneStatus) *_SecurityDataStatusReport2 {
 	_result := &_SecurityDataStatusReport2{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ZoneStatus:           zoneStatus,

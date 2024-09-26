@@ -83,7 +83,7 @@ func (m *_BACnetApplicationTagTime) GetPayload() BACnetTagPayloadTime {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetApplicationTagTime factory function for _BACnetApplicationTagTime
-func NewBACnetApplicationTagTime(payload BACnetTagPayloadTime, header BACnetTagHeader) *_BACnetApplicationTagTime {
+func NewBACnetApplicationTagTime(header BACnetTagHeader, payload BACnetTagPayloadTime) *_BACnetApplicationTagTime {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadTime for BACnetApplicationTagTime must not be nil")
 	}

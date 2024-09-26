@@ -118,7 +118,7 @@ func (m *_BACnetEventParameterDoubleOutOfRange) GetClosingTag() BACnetClosingTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventParameterDoubleOutOfRange factory function for _BACnetEventParameterDoubleOutOfRange
-func NewBACnetEventParameterDoubleOutOfRange(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterDoubleOutOfRange {
+func NewBACnetEventParameterDoubleOutOfRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, lowLimit BACnetContextTagDouble, highLimit BACnetContextTagDouble, deadband BACnetContextTagDouble, closingTag BACnetClosingTag) *_BACnetEventParameterDoubleOutOfRange {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterDoubleOutOfRange must not be nil")
 	}

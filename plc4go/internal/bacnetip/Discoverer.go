@@ -137,10 +137,10 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					objectType = uint16(objectTypeByName)
 				}
 				objectIdentifier := driverModel.CreateBACnetContextTagObjectIdentifier(2, objectType, uint32(identifier.instance))
-				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier, objectIdentifier.GetHeader())
+				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(objectIdentifier.GetHeader(), objectIdentifier)
 			} else if name := whoHasOptions.object.name; name != nil {
 				characterString := driverModel.CreateBACnetContextTagCharacterString(3, driverModel.BACnetCharacterEncoding_ISO_10646, *name)
-				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectName(characterString, characterString.GetHeader())
+				object = driverModel.NewBACnetUnconfirmedServiceRequestWhoHasObjectName(characterString.GetHeader(), characterString)
 			} else {
 				panic("Invalid state")
 			}

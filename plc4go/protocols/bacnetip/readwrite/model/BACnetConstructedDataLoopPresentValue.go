@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLoopPresentValue) GetActualValue() BACnetApplicat
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopPresentValue factory function for _BACnetConstructedDataLoopPresentValue
-func NewBACnetConstructedDataLoopPresentValue(presentValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopPresentValue {
+func NewBACnetConstructedDataLoopPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataLoopPresentValue must not be nil")
 	}

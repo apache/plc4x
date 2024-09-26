@@ -83,7 +83,7 @@ func (m *_BACnetLogDataLogDataEntryIntegerValue) GetIntegerValue() BACnetContext
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogDataEntryIntegerValue factory function for _BACnetLogDataLogDataEntryIntegerValue
-func NewBACnetLogDataLogDataEntryIntegerValue(integerValue BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryIntegerValue {
+func NewBACnetLogDataLogDataEntryIntegerValue(peekedTagHeader BACnetTagHeader, integerValue BACnetContextTagSignedInteger) *_BACnetLogDataLogDataEntryIntegerValue {
 	if integerValue == nil {
 		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogDataLogDataEntryIntegerValue must not be nil")
 	}

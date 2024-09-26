@@ -117,7 +117,7 @@ func (m *_BACnetConstructedDataSupportedFormats) GetZero() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSupportedFormats factory function for _BACnetConstructedDataSupportedFormats
-func NewBACnetConstructedDataSupportedFormats(numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormats {
+func NewBACnetConstructedDataSupportedFormats(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, supportedFormats []BACnetAuthenticationFactorFormat, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSupportedFormats {
 	_result := &_BACnetConstructedDataSupportedFormats{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfDataElements:          numberOfDataElements,

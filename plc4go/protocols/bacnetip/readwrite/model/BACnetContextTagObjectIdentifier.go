@@ -112,7 +112,7 @@ func (m *_BACnetContextTagObjectIdentifier) GetInstanceNumber() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetContextTagObjectIdentifier factory function for _BACnetContextTagObjectIdentifier
-func NewBACnetContextTagObjectIdentifier(payload BACnetTagPayloadObjectIdentifier, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
+func NewBACnetContextTagObjectIdentifier(header BACnetTagHeader, payload BACnetTagPayloadObjectIdentifier, tagNumberArgument uint8) *_BACnetContextTagObjectIdentifier {
 	if payload == nil {
 		panic("payload of type BACnetTagPayloadObjectIdentifier for BACnetContextTagObjectIdentifier must not be nil")
 	}

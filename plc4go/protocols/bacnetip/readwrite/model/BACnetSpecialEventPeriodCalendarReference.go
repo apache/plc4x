@@ -83,7 +83,7 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) GetCalendarReference() BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetSpecialEventPeriodCalendarReference factory function for _BACnetSpecialEventPeriodCalendarReference
-func NewBACnetSpecialEventPeriodCalendarReference(calendarReference BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetSpecialEventPeriodCalendarReference {
+func NewBACnetSpecialEventPeriodCalendarReference(peekedTagHeader BACnetTagHeader, calendarReference BACnetContextTagObjectIdentifier) *_BACnetSpecialEventPeriodCalendarReference {
 	if calendarReference == nil {
 		panic("calendarReference of type BACnetContextTagObjectIdentifier for BACnetSpecialEventPeriodCalendarReference must not be nil")
 	}

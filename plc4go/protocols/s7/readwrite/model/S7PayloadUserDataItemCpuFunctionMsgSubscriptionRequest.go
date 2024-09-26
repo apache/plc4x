@@ -118,7 +118,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetReserve() *
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Subscription:                  subscription,

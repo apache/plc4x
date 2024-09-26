@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataSerialNumber) GetActualValue() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataSerialNumber factory function for _BACnetConstructedDataSerialNumber
-func NewBACnetConstructedDataSerialNumber(serialNumber BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
+func NewBACnetConstructedDataSerialNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, serialNumber BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSerialNumber {
 	if serialNumber == nil {
 		panic("serialNumber of type BACnetApplicationTagCharacterString for BACnetConstructedDataSerialNumber must not be nil")
 	}

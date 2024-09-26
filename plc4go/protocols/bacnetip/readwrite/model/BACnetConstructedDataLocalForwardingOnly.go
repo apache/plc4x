@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLocalForwardingOnly) GetActualValue() BACnetAppli
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocalForwardingOnly factory function for _BACnetConstructedDataLocalForwardingOnly
-func NewBACnetConstructedDataLocalForwardingOnly(localForwardingOnly BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
+func NewBACnetConstructedDataLocalForwardingOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, localForwardingOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocalForwardingOnly {
 	if localForwardingOnly == nil {
 		panic("localForwardingOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataLocalForwardingOnly must not be nil")
 	}

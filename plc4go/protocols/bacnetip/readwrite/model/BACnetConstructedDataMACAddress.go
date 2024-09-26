@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMACAddress) GetActualValue() BACnetApplicationTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMACAddress factory function for _BACnetConstructedDataMACAddress
-func NewBACnetConstructedDataMACAddress(macAddress BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
+func NewBACnetConstructedDataMACAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, macAddress BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMACAddress {
 	if macAddress == nil {
 		panic("macAddress of type BACnetApplicationTagOctetString for BACnetConstructedDataMACAddress must not be nil")
 	}

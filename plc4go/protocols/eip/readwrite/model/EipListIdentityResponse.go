@@ -95,7 +95,7 @@ func (m *_EipListIdentityResponse) GetItems() []CommandSpecificDataItem {
 ///////////////////////////////////////////////////////////
 
 // NewEipListIdentityResponse factory function for _EipListIdentityResponse
-func NewEipListIdentityResponse(items []CommandSpecificDataItem, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityResponse {
+func NewEipListIdentityResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, items []CommandSpecificDataItem) *_EipListIdentityResponse {
 	_result := &_EipListIdentityResponse{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 		Items:             items,

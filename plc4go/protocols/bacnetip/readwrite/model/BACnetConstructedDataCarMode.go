@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataCarMode) GetActualValue() BACnetLiftCarModeTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarMode factory function for _BACnetConstructedDataCarMode
-func NewBACnetConstructedDataCarMode(carMode BACnetLiftCarModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMode {
+func NewBACnetConstructedDataCarMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carMode BACnetLiftCarModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarMode {
 	if carMode == nil {
 		panic("carMode of type BACnetLiftCarModeTagged for BACnetConstructedDataCarMode must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetActualValue() BACnetDateRange
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(dateRange BACnetDateRange, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
+func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
 	if dateRange == nil {
 		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
 	}

@@ -104,7 +104,7 @@ func (m *_LightingDataLabel) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewLightingDataLabel factory function for _LightingDataLabel
-func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *Language, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
+func NewLightingDataLabel(commandTypeContainer LightingCommandTypeContainer, group byte, labelOptions LightingLabelOptions, language *Language, data []byte) *_LightingDataLabel {
 	if labelOptions == nil {
 		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
 	}

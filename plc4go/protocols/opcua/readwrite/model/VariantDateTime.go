@@ -94,7 +94,7 @@ func (m *_VariantDateTime) GetValue() []int64 {
 ///////////////////////////////////////////////////////////
 
 // NewVariantDateTime factory function for _VariantDateTime
-func NewVariantDateTime(arrayLength *int32, value []int64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDateTime {
+func NewVariantDateTime(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []int64) *_VariantDateTime {
 	_result := &_VariantDateTime{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

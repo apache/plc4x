@@ -90,7 +90,7 @@ func (m *_CALDataAcknowledge) GetCode() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataAcknowledge factory function for _CALDataAcknowledge
-func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataAcknowledge {
+func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, code uint8, requestContext RequestContext) *_CALDataAcknowledge {
 	_result := &_CALDataAcknowledge{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		ParamNo:         paramNo,

@@ -95,7 +95,7 @@ func (m *_ListServicesResponse) GetTypeIds() []TypeId {
 ///////////////////////////////////////////////////////////
 
 // NewListServicesResponse factory function for _ListServicesResponse
-func NewListServicesResponse(typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_ListServicesResponse {
+func NewListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, typeIds []TypeId) *_ListServicesResponse {
 	_result := &_ListServicesResponse{
 		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
 		TypeIds:           typeIds,

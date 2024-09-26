@@ -83,7 +83,7 @@ func (m *_BACnetNotificationParametersComplexEventType) GetListOfValues() BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetNotificationParametersComplexEventType factory function for _BACnetNotificationParametersComplexEventType
-func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetPropertyValues, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
+func NewBACnetNotificationParametersComplexEventType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfValues BACnetPropertyValues, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersComplexEventType {
 	if listOfValues == nil {
 		panic("listOfValues of type BACnetPropertyValues for BACnetNotificationParametersComplexEventType must not be nil")
 	}

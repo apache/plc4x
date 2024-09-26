@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataResolution) GetActualValue() BACnetApplicationTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataResolution factory function for _BACnetConstructedDataResolution
-func NewBACnetConstructedDataResolution(resolution BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataResolution {
+func NewBACnetConstructedDataResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataResolution {
 	if resolution == nil {
 		panic("resolution of type BACnetApplicationTagReal for BACnetConstructedDataResolution must not be nil")
 	}

@@ -86,7 +86,7 @@ func (m *_StatusRequestBinaryStateDeprecated) GetApplication() ApplicationIdCont
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestBinaryStateDeprecated factory function for _StatusRequestBinaryStateDeprecated
-func NewStatusRequestBinaryStateDeprecated(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryStateDeprecated {
+func NewStatusRequestBinaryStateDeprecated(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryStateDeprecated {
 	_result := &_StatusRequestBinaryStateDeprecated{
 		StatusRequestContract: NewStatusRequest(statusType),
 		Application:           application,

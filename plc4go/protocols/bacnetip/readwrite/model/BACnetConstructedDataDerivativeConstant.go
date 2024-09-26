@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataDerivativeConstant) GetActualValue() BACnetApplic
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDerivativeConstant factory function for _BACnetConstructedDataDerivativeConstant
-func NewBACnetConstructedDataDerivativeConstant(derivativeConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
+func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, derivativeConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDerivativeConstant {
 	if derivativeConstant == nil {
 		panic("derivativeConstant of type BACnetApplicationTagReal for BACnetConstructedDataDerivativeConstant must not be nil")
 	}

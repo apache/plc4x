@@ -83,7 +83,7 @@ func (m *_MediaTransportControlDataSelectionName) GetSelectionName() string {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
-func NewMediaTransportControlDataSelectionName(selectionName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSelectionName {
+func NewMediaTransportControlDataSelectionName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionName string) *_MediaTransportControlDataSelectionName {
 	_result := &_MediaTransportControlDataSelectionName{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		SelectionName:                     selectionName,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLocation) GetActualValue() BACnetApplicationTagCh
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLocation factory function for _BACnetConstructedDataLocation
-func NewBACnetConstructedDataLocation(location BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocation {
+func NewBACnetConstructedDataLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, location BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLocation {
 	if location == nil {
 		panic("location of type BACnetApplicationTagCharacterString for BACnetConstructedDataLocation must not be nil")
 	}

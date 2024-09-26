@@ -87,7 +87,7 @@ func (m *_SALDataTemperatureBroadcast) GetTemperatureBroadcastData() Temperature
 ///////////////////////////////////////////////////////////
 
 // NewSALDataTemperatureBroadcast factory function for _SALDataTemperatureBroadcast
-func NewSALDataTemperatureBroadcast(temperatureBroadcastData TemperatureBroadcastData, salData SALData) *_SALDataTemperatureBroadcast {
+func NewSALDataTemperatureBroadcast(salData SALData, temperatureBroadcastData TemperatureBroadcastData) *_SALDataTemperatureBroadcast {
 	if temperatureBroadcastData == nil {
 		panic("temperatureBroadcastData of type TemperatureBroadcastData for SALDataTemperatureBroadcast must not be nil")
 	}

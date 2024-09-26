@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPulseConverterPresentValue) GetActualValue() BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPulseConverterPresentValue factory function for _BACnetConstructedDataPulseConverterPresentValue
-func NewBACnetConstructedDataPulseConverterPresentValue(presentValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterPresentValue {
+func NewBACnetConstructedDataPulseConverterPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterPresentValue must not be nil")
 	}

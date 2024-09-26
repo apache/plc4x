@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataEventState) GetActualValue() BACnetEventStateTagg
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventState factory function for _BACnetConstructedDataEventState
-func NewBACnetConstructedDataEventState(eventState BACnetEventStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventState {
+func NewBACnetConstructedDataEventState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventState BACnetEventStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventState {
 	if eventState == nil {
 		panic("eventState of type BACnetEventStateTagged for BACnetConstructedDataEventState must not be nil")
 	}

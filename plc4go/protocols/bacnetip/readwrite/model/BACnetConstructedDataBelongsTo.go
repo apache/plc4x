@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBelongsTo) GetActualValue() BACnetDeviceObjectRef
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBelongsTo factory function for _BACnetConstructedDataBelongsTo
-func NewBACnetConstructedDataBelongsTo(belongsTo BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
+func NewBACnetConstructedDataBelongsTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, belongsTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBelongsTo {
 	if belongsTo == nil {
 		panic("belongsTo of type BACnetDeviceObjectReference for BACnetConstructedDataBelongsTo must not be nil")
 	}

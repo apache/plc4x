@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataNetworkType) GetActualValue() BACnetNetworkTypeTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNetworkType factory function for _BACnetConstructedDataNetworkType
-func NewBACnetConstructedDataNetworkType(networkType BACnetNetworkTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkType {
+func NewBACnetConstructedDataNetworkType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkType BACnetNetworkTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkType {
 	if networkType == nil {
 		panic("networkType of type BACnetNetworkTypeTagged for BACnetConstructedDataNetworkType must not be nil")
 	}

@@ -102,7 +102,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) GetItems() []Ass
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCyclicServicesSubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesSubscribeResponse
-func NewS7PayloadUserDataItemCyclicServicesSubscribeResponse(itemsCount uint16, items []AssociatedValueType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesSubscribeResponse {
+func NewS7PayloadUserDataItemCyclicServicesSubscribeResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedValueType) *_S7PayloadUserDataItemCyclicServicesSubscribeResponse {
 	_result := &_S7PayloadUserDataItemCyclicServicesSubscribeResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		ItemsCount:                    itemsCount,

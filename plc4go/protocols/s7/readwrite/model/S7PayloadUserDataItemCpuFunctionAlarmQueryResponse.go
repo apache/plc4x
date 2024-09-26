@@ -95,7 +95,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) GetItems() []byte 
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(items []byte, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, items []byte) *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
 	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		Items:                         items,

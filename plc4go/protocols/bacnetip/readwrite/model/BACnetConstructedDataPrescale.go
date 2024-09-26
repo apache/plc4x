@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPrescale) GetActualValue() BACnetPrescale {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPrescale factory function for _BACnetConstructedDataPrescale
-func NewBACnetConstructedDataPrescale(prescale BACnetPrescale, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
+func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, prescale BACnetPrescale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPrescale {
 	if prescale == nil {
 		panic("prescale of type BACnetPrescale for BACnetConstructedDataPrescale must not be nil")
 	}

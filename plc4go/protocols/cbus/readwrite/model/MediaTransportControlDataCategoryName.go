@@ -83,7 +83,7 @@ func (m *_MediaTransportControlDataCategoryName) GetCategoryName() string {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataCategoryName factory function for _MediaTransportControlDataCategoryName
-func NewMediaTransportControlDataCategoryName(categoryName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataCategoryName {
+func NewMediaTransportControlDataCategoryName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, categoryName string) *_MediaTransportControlDataCategoryName {
 	_result := &_MediaTransportControlDataCategoryName{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		CategoryName:                      categoryName,

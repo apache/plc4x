@@ -104,7 +104,7 @@ func (m *_MediaTransportControlDataTotalTracks) GetTotalTracksLSB() byte {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataTotalTracks factory function for _MediaTransportControlDataTotalTracks
-func NewMediaTransportControlDataTotalTracks(totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTotalTracks {
+func NewMediaTransportControlDataTotalTracks(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, totalTracksMSB byte, totalTracksMMSB byte, totalTracksMLSB byte, totalTracksLSB byte) *_MediaTransportControlDataTotalTracks {
 	_result := &_MediaTransportControlDataTotalTracks{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		TotalTracksMSB:                    totalTracksMSB,

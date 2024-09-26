@@ -108,7 +108,7 @@ func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
-func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCharging {
+func NewSecurityDataLowBatteryCharging(commandTypeContainer SecurityCommandTypeContainer, argument byte, startStop byte) *_SecurityDataLowBatteryCharging {
 	_result := &_SecurityDataLowBatteryCharging{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		StartStop:            startStop,

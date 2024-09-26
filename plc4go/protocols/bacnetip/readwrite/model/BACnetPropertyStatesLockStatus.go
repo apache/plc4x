@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesLockStatus) GetLockStatus() BACnetLockStatusTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesLockStatus factory function for _BACnetPropertyStatesLockStatus
-func NewBACnetPropertyStatesLockStatus(lockStatus BACnetLockStatusTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLockStatus {
+func NewBACnetPropertyStatesLockStatus(peekedTagHeader BACnetTagHeader, lockStatus BACnetLockStatusTagged) *_BACnetPropertyStatesLockStatus {
 	if lockStatus == nil {
 		panic("lockStatus of type BACnetLockStatusTagged for BACnetPropertyStatesLockStatus must not be nil")
 	}

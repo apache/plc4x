@@ -87,7 +87,7 @@ func (m *_SALDataTelephonyStatusAndControl) GetTelephonyData() TelephonyData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataTelephonyStatusAndControl factory function for _SALDataTelephonyStatusAndControl
-func NewSALDataTelephonyStatusAndControl(telephonyData TelephonyData, salData SALData) *_SALDataTelephonyStatusAndControl {
+func NewSALDataTelephonyStatusAndControl(salData SALData, telephonyData TelephonyData) *_SALDataTelephonyStatusAndControl {
 	if telephonyData == nil {
 		panic("telephonyData of type TelephonyData for SALDataTelephonyStatusAndControl must not be nil")
 	}

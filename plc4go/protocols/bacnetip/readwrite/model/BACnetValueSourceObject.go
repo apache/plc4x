@@ -83,7 +83,7 @@ func (m *_BACnetValueSourceObject) GetObject() BACnetDeviceObjectReferenceEnclos
 ///////////////////////////////////////////////////////////
 
 // NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
-func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceObject {
+func NewBACnetValueSourceObject(peekedTagHeader BACnetTagHeader, object BACnetDeviceObjectReferenceEnclosed) *_BACnetValueSourceObject {
 	if object == nil {
 		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
 	}

@@ -87,7 +87,7 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 ///////////////////////////////////////////////////////////
 
 // NewApduDataContainer factory function for _ApduDataContainer
-func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataLength uint8) *_ApduDataContainer {
+func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
 	if dataApdu == nil {
 		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
 	}

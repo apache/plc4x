@@ -98,7 +98,7 @@ func (m *_OpcuaAcknowledgeResponse) GetLimits() OpcuaProtocolLimits {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(version uint32, limits OpcuaProtocolLimits, chunk ChunkType) *_OpcuaAcknowledgeResponse {
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
 	}

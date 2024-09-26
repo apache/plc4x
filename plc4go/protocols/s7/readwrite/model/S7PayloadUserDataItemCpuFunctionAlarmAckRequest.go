@@ -111,7 +111,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) GetFunctionId() uint8
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckRequest
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest(messageObjects []AlarmMessageObjectAckType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest {
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, messageObjects []AlarmMessageObjectAckType) *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		MessageObjects:                messageObjects,

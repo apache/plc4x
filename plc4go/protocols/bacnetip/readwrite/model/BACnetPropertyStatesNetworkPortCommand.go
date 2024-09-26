@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesNetworkPortCommand) GetNetworkPortCommand() BACnet
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesNetworkPortCommand factory function for _BACnetPropertyStatesNetworkPortCommand
-func NewBACnetPropertyStatesNetworkPortCommand(networkPortCommand BACnetNetworkPortCommandTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNetworkPortCommand {
+func NewBACnetPropertyStatesNetworkPortCommand(peekedTagHeader BACnetTagHeader, networkPortCommand BACnetNetworkPortCommandTagged) *_BACnetPropertyStatesNetworkPortCommand {
 	if networkPortCommand == nil {
 		panic("networkPortCommand of type BACnetNetworkPortCommandTagged for BACnetPropertyStatesNetworkPortCommand must not be nil")
 	}

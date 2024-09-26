@@ -104,7 +104,7 @@ func (m *_SecurityDataStatusReport1) GetZoneStatus() []ZoneStatus {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataStatusReport1 factory function for _SecurityDataStatusReport1
-func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport1 {
+func NewSecurityDataStatusReport1(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) *_SecurityDataStatusReport1 {
 	if armCodeType == nil {
 		panic("armCodeType of type SecurityArmCode for SecurityDataStatusReport1 must not be nil")
 	}

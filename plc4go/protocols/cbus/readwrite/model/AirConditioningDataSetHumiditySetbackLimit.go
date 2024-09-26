@@ -104,7 +104,7 @@ func (m *_AirConditioningDataSetHumiditySetbackLimit) GetHvacModeAndFlags() HVAC
 ///////////////////////////////////////////////////////////
 
 // NewAirConditioningDataSetHumiditySetbackLimit factory function for _AirConditioningDataSetHumiditySetbackLimit
-func NewAirConditioningDataSetHumiditySetbackLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHumiditySetbackLimit {
+func NewAirConditioningDataSetHumiditySetbackLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) *_AirConditioningDataSetHumiditySetbackLimit {
 	if zoneList == nil {
 		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumiditySetbackLimit must not be nil")
 	}

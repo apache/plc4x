@@ -371,19 +371,14 @@ func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNam
 // New${type.name} factory function for _${type.name}
 <@compress single_line=true>
 func New${type.name}(
-	<#list type.propertyFields as field>
+    <#assign needsSeparator = false>
+	<#list type.getAllPropertyFields() as field>
+	    <#assign needsSeparator = true>
 		${field.name} <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}
 		<#sep>, </#sep>
 	</#list>
-	<#if type.parentType.isPresent()>
-		<#if type.propertyFields?has_content && type.parentPropertyFields?has_content>, </#if>
-		<#list type.parentPropertyFields as parentField>
-			${parentField.name} <#if helper.needsPointerAccess(parentField)>*</#if>${helper.getLanguageTypeNameForField(parentField)}
-			<#sep>, </#sep>
-		</#list>
-	</#if>
     <#if filteredParserArguments?has_content>
-        <#if type.allPropertyFields?has_content>, </#if>
+        <#if needsSeparator>, </#if>
         <#list filteredParserArguments as parserArgument>
 			${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}
             <#sep>, </#sep>
@@ -411,7 +406,28 @@ if ${fieldName} == nil {
 </#list>
 <#if type.parentType.isPresent()>
 	_result := &_${type.name}{
-	${type.parentType.orElseThrow().name}Contract: New${type.parentType.orElseThrow().name}(<#list type.parentPropertyFields as parentField>${parentField.name}<#sep>, </#list><#if filteredParentParserArguments?has_content><#if type.parentPropertyFields?has_content>, </#if><#list filteredParentParserArguments as arg>${arg.name}<#sep>, </#sep></#list></#if>),
+	<@compress single_line=true>
+	${type.parentType.orElseThrow().name}Contract:
+	<#assign needsSeparator = false>
+	New${type.parentType.orElseThrow().name}(
+	<#if type.parentPropertyFields?has_content>
+		<#list type.parentPropertyFields as parentField>
+		    <#assign needsSeparator = true>
+			${parentField.name}<#sep>, </#sep>
+		</#list>
+    </#if>
+    <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
+        <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
+        <#if filteredParentParserArguments?has_content>
+			<#if needsSeparator>, </#if>
+			<#list filteredParentParserArguments as parserArgument>
+				${parserArgument.name}<#sep>, </#sep>
+			</#list>
+		    </#if>
+        </#if>
+		),
+	</@compress>
+
 	<#list type.propertyFields as field>
 		${field.name?cap_first}: ${field.name},
 	</#list>

@@ -83,7 +83,7 @@ func (m *_BACnetHostAddressIpAddress) GetIpAddress() BACnetContextTagOctetString
 ///////////////////////////////////////////////////////////
 
 // NewBACnetHostAddressIpAddress factory function for _BACnetHostAddressIpAddress
-func NewBACnetHostAddressIpAddress(ipAddress BACnetContextTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetHostAddressIpAddress {
+func NewBACnetHostAddressIpAddress(peekedTagHeader BACnetTagHeader, ipAddress BACnetContextTagOctetString) *_BACnetHostAddressIpAddress {
 	if ipAddress == nil {
 		panic("ipAddress of type BACnetContextTagOctetString for BACnetHostAddressIpAddress must not be nil")
 	}

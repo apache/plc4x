@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesLiftCarMode) GetLiftCarMode() BACnetLiftCarModeTag
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesLiftCarMode factory function for _BACnetPropertyStatesLiftCarMode
-func NewBACnetPropertyStatesLiftCarMode(liftCarMode BACnetLiftCarModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftCarMode {
+func NewBACnetPropertyStatesLiftCarMode(peekedTagHeader BACnetTagHeader, liftCarMode BACnetLiftCarModeTagged) *_BACnetPropertyStatesLiftCarMode {
 	if liftCarMode == nil {
 		panic("liftCarMode of type BACnetLiftCarModeTagged for BACnetPropertyStatesLiftCarMode must not be nil")
 	}

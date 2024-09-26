@@ -83,7 +83,7 @@ func (m *_LightingDataOn) GetGroup() byte {
 ///////////////////////////////////////////////////////////
 
 // NewLightingDataOn factory function for _LightingDataOn
-func NewLightingDataOn(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataOn {
+func NewLightingDataOn(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataOn {
 	_result := &_LightingDataOn{
 		LightingDataContract: NewLightingData(commandTypeContainer),
 		Group:                group,

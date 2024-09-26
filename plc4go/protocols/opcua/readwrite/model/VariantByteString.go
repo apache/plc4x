@@ -94,7 +94,7 @@ func (m *_VariantByteString) GetValue() []ByteStringArray {
 ///////////////////////////////////////////////////////////
 
 // NewVariantByteString factory function for _VariantByteString
-func NewVariantByteString(arrayLength *int32, value []ByteStringArray, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantByteString {
+func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ByteStringArray) *_VariantByteString {
 	_result := &_VariantByteString{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

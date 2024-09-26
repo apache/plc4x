@@ -83,7 +83,7 @@ func (m *_BACnetLogDataLogDataEntryAnyValue) GetAnyValue() BACnetConstructedData
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogDataEntryAnyValue factory function for _BACnetLogDataLogDataEntryAnyValue
-func NewBACnetLogDataLogDataEntryAnyValue(anyValue BACnetConstructedData, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryAnyValue {
+func NewBACnetLogDataLogDataEntryAnyValue(peekedTagHeader BACnetTagHeader, anyValue BACnetConstructedData) *_BACnetLogDataLogDataEntryAnyValue {
 	_result := &_BACnetLogDataLogDataEntryAnyValue{
 		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
 		AnyValue:                          anyValue,

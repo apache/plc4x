@@ -83,7 +83,7 @@ func (m *_BACnetTimerStateChangeValueNull) GetNullValue() BACnetApplicationTagNu
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimerStateChangeValueNull factory function for _BACnetTimerStateChangeValueNull
-func NewBACnetTimerStateChangeValueNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNull {
+func NewBACnetTimerStateChangeValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetTimerStateChangeValueNull must not be nil")
 	}

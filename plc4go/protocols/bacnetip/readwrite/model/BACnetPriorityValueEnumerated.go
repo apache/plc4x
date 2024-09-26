@@ -83,7 +83,7 @@ func (m *_BACnetPriorityValueEnumerated) GetEnumeratedValue() BACnetApplicationT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueEnumerated factory function for _BACnetPriorityValueEnumerated
-func NewBACnetPriorityValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
+func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueEnumerated {
 	if enumeratedValue == nil {
 		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetPriorityValueEnumerated must not be nil")
 	}

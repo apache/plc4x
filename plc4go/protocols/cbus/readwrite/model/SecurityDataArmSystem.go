@@ -140,7 +140,7 @@ func (m *_SecurityDataArmSystem) GetIsArmToHighestLevelOfProtection() bool {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataArmSystem factory function for _SecurityDataArmSystem
-func NewSecurityDataArmSystem(armMode byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataArmSystem {
+func NewSecurityDataArmSystem(commandTypeContainer SecurityCommandTypeContainer, argument byte, armMode byte) *_SecurityDataArmSystem {
 	_result := &_SecurityDataArmSystem{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ArmMode:              armMode,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
-func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
+func NewBACnetConstructedDataTransition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transition BACnetLightingTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
 	if transition == nil {
 		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
 	}

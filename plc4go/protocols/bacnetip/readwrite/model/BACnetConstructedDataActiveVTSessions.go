@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataActiveVTSessions) GetActiveVTSession() []BACnetVT
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveVTSessions factory function for _BACnetConstructedDataActiveVTSessions
-func NewBACnetConstructedDataActiveVTSessions(activeVTSession []BACnetVTSession, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
+func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeVTSession []BACnetVTSession, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveVTSessions {
 	_result := &_BACnetConstructedDataActiveVTSessions{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ActiveVTSession:               activeVTSession,

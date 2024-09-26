@@ -104,7 +104,7 @@ func (m *_RequestReset) GetThirdTilde() *RequestType {
 ///////////////////////////////////////////////////////////
 
 // NewRequestReset factory function for _RequestReset
-func NewRequestReset(tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestReset {
+func NewRequestReset(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, tildePeek RequestType, secondTilde *RequestType, tildePeek2 RequestType, thirdTilde *RequestType, cBusOptions CBusOptions) *_RequestReset {
 	_result := &_RequestReset{
 		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 		TildePeek:       tildePeek,

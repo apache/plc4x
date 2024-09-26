@@ -94,7 +94,7 @@ func (m *_COTPPacketTpduError) GetRejectCause() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketTpduError factory function for _COTPPacketTpduError
-func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketTpduError {
+func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, destinationReference uint16, rejectCause uint8, cotpLen uint16) *_COTPPacketTpduError {
 	_result := &_COTPPacketTpduError{
 		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
 		DestinationReference: destinationReference,

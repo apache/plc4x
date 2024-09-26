@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesLiftGroupMode) GetLiftGroupMode() BACnetLiftGroupM
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesLiftGroupMode factory function for _BACnetPropertyStatesLiftGroupMode
-func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLiftGroupMode {
+func NewBACnetPropertyStatesLiftGroupMode(peekedTagHeader BACnetTagHeader, liftGroupMode BACnetLiftGroupModeTagged) *_BACnetPropertyStatesLiftGroupMode {
 	if liftGroupMode == nil {
 		panic("liftGroupMode of type BACnetLiftGroupModeTagged for BACnetPropertyStatesLiftGroupMode must not be nil")
 	}

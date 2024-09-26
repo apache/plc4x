@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataInputReference) GetActualValue() BACnetObjectProp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataInputReference factory function for _BACnetConstructedDataInputReference
-func NewBACnetConstructedDataInputReference(inputReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
+func NewBACnetConstructedDataInputReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inputReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInputReference {
 	if inputReference == nil {
 		panic("inputReference of type BACnetObjectPropertyReference for BACnetConstructedDataInputReference must not be nil")
 	}

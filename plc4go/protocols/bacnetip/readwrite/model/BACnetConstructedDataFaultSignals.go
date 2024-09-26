@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataFaultSignals) GetFaultSignals() []BACnetLiftFault
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataFaultSignals factory function for _BACnetConstructedDataFaultSignals
-func NewBACnetConstructedDataFaultSignals(faultSignals []BACnetLiftFaultTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultSignals {
+func NewBACnetConstructedDataFaultSignals(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultSignals []BACnetLiftFaultTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultSignals {
 	_result := &_BACnetConstructedDataFaultSignals{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		FaultSignals:                  faultSignals,

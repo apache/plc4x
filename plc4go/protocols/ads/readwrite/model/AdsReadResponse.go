@@ -98,7 +98,7 @@ func (m *_AdsReadResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsReadResponse factory function for _AdsReadResponse
-func NewAdsReadResponse(result ReturnCode, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadResponse {
+func NewAdsReadResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, data []byte) *_AdsReadResponse {
 	_result := &_AdsReadResponse{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		Result:            result,

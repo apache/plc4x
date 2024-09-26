@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataAlarmValue) GetActualValue() BACnetBinaryPVTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
-func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
+func NewBACnetConstructedDataAlarmValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
 	if binaryPv == nil {
 		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
 	}

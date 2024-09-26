@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetIsSetTheNextSelecti
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataNextPreviousSelection factory function for _MediaTransportControlDataNextPreviousSelection
-func NewMediaTransportControlDataNextPreviousSelection(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataNextPreviousSelection {
+func NewMediaTransportControlDataNextPreviousSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousSelection {
 	_result := &_MediaTransportControlDataNextPreviousSelection{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

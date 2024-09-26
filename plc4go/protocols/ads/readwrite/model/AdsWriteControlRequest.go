@@ -105,7 +105,7 @@ func (m *_AdsWriteControlRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewAdsWriteControlRequest factory function for _AdsWriteControlRequest
-func NewAdsWriteControlRequest(adsState uint16, deviceState uint16, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteControlRequest {
+func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, adsState uint16, deviceState uint16, data []byte) *_AdsWriteControlRequest {
 	_result := &_AdsWriteControlRequest{
 		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
 		AdsState:          adsState,

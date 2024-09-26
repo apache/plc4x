@@ -125,7 +125,7 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////////////////////////////////////////
 
 // NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
+func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
 	_result := &_RequestDirectCommandAccess{
 		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
 		CalData:         calData,

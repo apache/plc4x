@@ -95,7 +95,7 @@ func (m *_S7PayloadAlarmS) GetAlarmMessage() AlarmMessagePushType {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadAlarmS factory function for _S7PayloadAlarmS
-func NewS7PayloadAlarmS(alarmMessage AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadAlarmS {
+func NewS7PayloadAlarmS(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessagePushType) *_S7PayloadAlarmS {
 	if alarmMessage == nil {
 		panic("alarmMessage of type AlarmMessagePushType for S7PayloadAlarmS must not be nil")
 	}

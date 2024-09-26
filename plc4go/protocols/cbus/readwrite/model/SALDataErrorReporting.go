@@ -87,7 +87,7 @@ func (m *_SALDataErrorReporting) GetErrorReportingData() ErrorReportingData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataErrorReporting factory function for _SALDataErrorReporting
-func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SALData) *_SALDataErrorReporting {
+func NewSALDataErrorReporting(salData SALData, errorReportingData ErrorReportingData) *_SALDataErrorReporting {
 	if errorReportingData == nil {
 		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
 	}

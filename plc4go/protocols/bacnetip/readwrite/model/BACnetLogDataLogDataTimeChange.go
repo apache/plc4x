@@ -83,7 +83,7 @@ func (m *_BACnetLogDataLogDataTimeChange) GetTimeChange() BACnetContextTagReal {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogDataTimeChange factory function for _BACnetLogDataLogDataTimeChange
-func NewBACnetLogDataLogDataTimeChange(timeChange BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogDataTimeChange {
+func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogDataLogDataTimeChange {
 	if timeChange == nil {
 		panic("timeChange of type BACnetContextTagReal for BACnetLogDataLogDataTimeChange must not be nil")
 	}

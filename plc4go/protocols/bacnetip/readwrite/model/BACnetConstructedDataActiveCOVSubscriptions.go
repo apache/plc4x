@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) GetActiveCOVSubscriptions
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataActiveCOVSubscriptions factory function for _BACnetConstructedDataActiveCOVSubscriptions
-func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BACnetCOVSubscription, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
+func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeCOVSubscriptions []BACnetCOVSubscription, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveCOVSubscriptions {
 	_result := &_BACnetConstructedDataActiveCOVSubscriptions{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		ActiveCOVSubscriptions:        activeCOVSubscriptions,

@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataMemberOf) GetZones() []BACnetDeviceObjectReferenc
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMemberOf factory function for _BACnetConstructedDataMemberOf
-func NewBACnetConstructedDataMemberOf(zones []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
+func NewBACnetConstructedDataMemberOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zones []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
 	_result := &_BACnetConstructedDataMemberOf{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		Zones:                         zones,

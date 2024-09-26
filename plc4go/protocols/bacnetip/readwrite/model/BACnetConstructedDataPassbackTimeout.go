@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPassbackTimeout) GetActualValue() BACnetApplicati
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
-func NewBACnetConstructedDataPassbackTimeout(passbackTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
+func NewBACnetConstructedDataPassbackTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
 	if passbackTimeout == nil {
 		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
 	}

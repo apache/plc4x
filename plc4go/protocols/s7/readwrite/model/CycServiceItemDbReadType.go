@@ -90,7 +90,7 @@ func (m *_CycServiceItemDbReadType) GetItems() []SubItem {
 ///////////////////////////////////////////////////////////
 
 // NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
-func NewCycServiceItemDbReadType(numberOfAreas uint8, items []SubItem, byteLength uint8, syntaxId uint8) *_CycServiceItemDbReadType {
+func NewCycServiceItemDbReadType(byteLength uint8, syntaxId uint8, numberOfAreas uint8, items []SubItem) *_CycServiceItemDbReadType {
 	_result := &_CycServiceItemDbReadType{
 		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
 		NumberOfAreas:              numberOfAreas,

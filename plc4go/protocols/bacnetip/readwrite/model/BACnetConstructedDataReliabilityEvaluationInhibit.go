@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) GetActualValue() BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliabilityEvaluationInhibit factory function for _BACnetConstructedDataReliabilityEvaluationInhibit
-func NewBACnetConstructedDataReliabilityEvaluationInhibit(reliabilityEvaluationInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
+func NewBACnetConstructedDataReliabilityEvaluationInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliabilityEvaluationInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliabilityEvaluationInhibit {
 	if reliabilityEvaluationInhibit == nil {
 		panic("reliabilityEvaluationInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataReliabilityEvaluationInhibit must not be nil")
 	}

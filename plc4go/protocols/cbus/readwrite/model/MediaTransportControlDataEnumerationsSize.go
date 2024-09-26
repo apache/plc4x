@@ -138,7 +138,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataEnumerationsSize factory function for _MediaTransportControlDataEnumerationsSize
-func NewMediaTransportControlDataEnumerationsSize(sizeType byte, start uint8, size uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerationsSize {
+func NewMediaTransportControlDataEnumerationsSize(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, sizeType byte, start uint8, size uint8) *_MediaTransportControlDataEnumerationsSize {
 	_result := &_MediaTransportControlDataEnumerationsSize{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		SizeType:                          sizeType,

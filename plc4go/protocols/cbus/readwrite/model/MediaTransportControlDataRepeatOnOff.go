@@ -116,7 +116,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatTracks() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataRepeatOnOff factory function for _MediaTransportControlDataRepeatOnOff
-func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataRepeatOnOff {
+func NewMediaTransportControlDataRepeatOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, repeatType byte) *_MediaTransportControlDataRepeatOnOff {
 	_result := &_MediaTransportControlDataRepeatOnOff{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		RepeatType:                        repeatType,

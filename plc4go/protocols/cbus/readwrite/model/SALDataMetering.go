@@ -87,7 +87,7 @@ func (m *_SALDataMetering) GetMeteringData() MeteringData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataMetering factory function for _SALDataMetering
-func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMetering {
+func NewSALDataMetering(salData SALData, meteringData MeteringData) *_SALDataMetering {
 	if meteringData == nil {
 		panic("meteringData of type MeteringData for SALDataMetering must not be nil")
 	}

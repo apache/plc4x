@@ -90,7 +90,7 @@ func (m *_CALDataGetStatus) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataGetStatus factory function for _CALDataGetStatus
-func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataGetStatus {
+func NewCALDataGetStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataGetStatus {
 	_result := &_CALDataGetStatus{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		ParamNo:         paramNo,

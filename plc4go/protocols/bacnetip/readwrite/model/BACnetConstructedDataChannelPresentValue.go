@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataChannelPresentValue) GetActualValue() BACnetChann
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataChannelPresentValue factory function for _BACnetConstructedDataChannelPresentValue
-func NewBACnetConstructedDataChannelPresentValue(presentValue BACnetChannelValue, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelPresentValue {
+func NewBACnetConstructedDataChannelPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetChannelValue, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChannelPresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetChannelValue for BACnetConstructedDataChannelPresentValue must not be nil")
 	}

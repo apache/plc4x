@@ -83,7 +83,7 @@ func (m *_BACnetLandingCallStatusCommandDirection) GetDirection() BACnetLiftCarD
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLandingCallStatusCommandDirection factory function for _BACnetLandingCallStatusCommandDirection
-func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirectionTagged, peekedTagHeader BACnetTagHeader) *_BACnetLandingCallStatusCommandDirection {
+func NewBACnetLandingCallStatusCommandDirection(peekedTagHeader BACnetTagHeader, direction BACnetLiftCarDirectionTagged) *_BACnetLandingCallStatusCommandDirection {
 	if direction == nil {
 		panic("direction of type BACnetLiftCarDirectionTagged for BACnetLandingCallStatusCommandDirection must not be nil")
 	}

@@ -83,7 +83,7 @@ func (m *_BACnetChannelValueBoolean) GetBooleanValue() BACnetApplicationTagBoole
 ///////////////////////////////////////////////////////////
 
 // NewBACnetChannelValueBoolean factory function for _BACnetChannelValueBoolean
-func NewBACnetChannelValueBoolean(booleanValue BACnetApplicationTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueBoolean {
+func NewBACnetChannelValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue BACnetApplicationTagBoolean) *_BACnetChannelValueBoolean {
 	if booleanValue == nil {
 		panic("booleanValue of type BACnetApplicationTagBoolean for BACnetChannelValueBoolean must not be nil")
 	}

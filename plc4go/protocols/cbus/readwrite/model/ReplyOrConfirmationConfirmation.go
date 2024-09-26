@@ -90,7 +90,7 @@ func (m *_ReplyOrConfirmationConfirmation) GetEmbeddedReply() ReplyOrConfirmatio
 ///////////////////////////////////////////////////////////
 
 // NewReplyOrConfirmationConfirmation factory function for _ReplyOrConfirmationConfirmation
-func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply ReplyOrConfirmation, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
+func NewReplyOrConfirmationConfirmation(peekedByte byte, confirmation Confirmation, embeddedReply ReplyOrConfirmation, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmationConfirmation {
 	if confirmation == nil {
 		panic("confirmation of type Confirmation for ReplyOrConfirmationConfirmation must not be nil")
 	}

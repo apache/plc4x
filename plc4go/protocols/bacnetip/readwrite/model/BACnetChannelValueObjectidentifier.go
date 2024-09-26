@@ -83,7 +83,7 @@ func (m *_BACnetChannelValueObjectidentifier) GetObjectidentifierValue() BACnetA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetChannelValueObjectidentifier factory function for _BACnetChannelValueObjectidentifier
-func NewBACnetChannelValueObjectidentifier(objectidentifierValue BACnetApplicationTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueObjectidentifier {
+func NewBACnetChannelValueObjectidentifier(peekedTagHeader BACnetTagHeader, objectidentifierValue BACnetApplicationTagObjectIdentifier) *_BACnetChannelValueObjectidentifier {
 	if objectidentifierValue == nil {
 		panic("objectidentifierValue of type BACnetApplicationTagObjectIdentifier for BACnetChannelValueObjectidentifier must not be nil")
 	}

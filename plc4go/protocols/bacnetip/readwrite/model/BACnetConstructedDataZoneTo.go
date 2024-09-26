@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataZoneTo) GetActualValue() BACnetDeviceObjectRefere
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
-func NewBACnetConstructedDataZoneTo(zoneTo BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
+func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
 	if zoneTo == nil {
 		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
 	}

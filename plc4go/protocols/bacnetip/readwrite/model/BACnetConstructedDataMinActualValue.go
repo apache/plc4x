@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMinActualValue) GetActualValue() BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMinActualValue factory function for _BACnetConstructedDataMinActualValue
-func NewBACnetConstructedDataMinActualValue(minActualValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
+func NewBACnetConstructedDataMinActualValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minActualValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinActualValue {
 	if minActualValue == nil {
 		panic("minActualValue of type BACnetApplicationTagReal for BACnetConstructedDataMinActualValue must not be nil")
 	}

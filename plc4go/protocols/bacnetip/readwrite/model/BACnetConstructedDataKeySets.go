@@ -117,7 +117,7 @@ func (m *_BACnetConstructedDataKeySets) GetZero() uint64 {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataKeySets factory function for _BACnetConstructedDataKeySets
-func NewBACnetConstructedDataKeySets(numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataKeySets {
+func NewBACnetConstructedDataKeySets(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, keySets []BACnetSecurityKeySet, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataKeySets {
 	_result := &_BACnetConstructedDataKeySets{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		NumberOfDataElements:          numberOfDataElements,

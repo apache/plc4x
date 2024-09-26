@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPower) GetActualValue() BACnetApplicationTagReal 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPower factory function for _BACnetConstructedDataPower
-func NewBACnetConstructedDataPower(power BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
+func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, power BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPower {
 	if power == nil {
 		panic("power of type BACnetApplicationTagReal for BACnetConstructedDataPower must not be nil")
 	}

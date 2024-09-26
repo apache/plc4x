@@ -83,7 +83,7 @@ func (m *_TelephonyDataDivert) GetNumber() string {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataDivert factory function for _TelephonyDataDivert
-func NewTelephonyDataDivert(number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDivert {
+func NewTelephonyDataDivert(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataDivert {
 	_result := &_TelephonyDataDivert{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Number:                number,

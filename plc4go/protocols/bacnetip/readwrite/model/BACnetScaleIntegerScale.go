@@ -83,7 +83,7 @@ func (m *_BACnetScaleIntegerScale) GetIntegerScale() BACnetContextTagSignedInteg
 ///////////////////////////////////////////////////////////
 
 // NewBACnetScaleIntegerScale factory function for _BACnetScaleIntegerScale
-func NewBACnetScaleIntegerScale(integerScale BACnetContextTagSignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetScaleIntegerScale {
+func NewBACnetScaleIntegerScale(peekedTagHeader BACnetTagHeader, integerScale BACnetContextTagSignedInteger) *_BACnetScaleIntegerScale {
 	if integerScale == nil {
 		panic("integerScale of type BACnetContextTagSignedInteger for BACnetScaleIntegerScale must not be nil")
 	}

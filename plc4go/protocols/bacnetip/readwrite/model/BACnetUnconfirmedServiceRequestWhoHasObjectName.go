@@ -83,7 +83,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetObjectName() BACne
 ///////////////////////////////////////////////////////////
 
 // NewBACnetUnconfirmedServiceRequestWhoHasObjectName factory function for _BACnetUnconfirmedServiceRequestWhoHasObjectName
-func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(objectName BACnetContextTagCharacterString, peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectName(peekedTagHeader BACnetTagHeader, objectName BACnetContextTagCharacterString) *_BACnetUnconfirmedServiceRequestWhoHasObjectName {
 	if objectName == nil {
 		panic("objectName of type BACnetContextTagCharacterString for BACnetUnconfirmedServiceRequestWhoHasObjectName must not be nil")
 	}

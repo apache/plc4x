@@ -94,7 +94,7 @@ func (m *_COTPPacketData) GetTpduRef() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCOTPPacketData factory function for _COTPPacketData
-func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketData {
+func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, tpduRef uint8, cotpLen uint16) *_COTPPacketData {
 	_result := &_COTPPacketData{
 		COTPPacketContract: NewCOTPPacket(parameters, payload, cotpLen),
 		Eot:                eot,

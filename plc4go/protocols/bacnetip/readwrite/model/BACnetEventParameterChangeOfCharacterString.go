@@ -104,7 +104,7 @@ func (m *_BACnetEventParameterChangeOfCharacterString) GetClosingTag() BACnetClo
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventParameterChangeOfCharacterString factory function for _BACnetEventParameterChangeOfCharacterString
-func NewBACnetEventParameterChangeOfCharacterString(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfCharacterString {
+func NewBACnetEventParameterChangeOfCharacterString(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, listOfAlarmValues BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfCharacterString {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfCharacterString must not be nil")
 	}

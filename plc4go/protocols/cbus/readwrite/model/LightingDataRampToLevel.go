@@ -90,7 +90,7 @@ func (m *_LightingDataRampToLevel) GetLevel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewLightingDataRampToLevel factory function for _LightingDataRampToLevel
-func NewLightingDataRampToLevel(group byte, level byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataRampToLevel {
+func NewLightingDataRampToLevel(commandTypeContainer LightingCommandTypeContainer, group byte, level byte) *_LightingDataRampToLevel {
 	_result := &_LightingDataRampToLevel{
 		LightingDataContract: NewLightingData(commandTypeContainer),
 		Group:                group,

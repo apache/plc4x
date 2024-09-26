@@ -105,7 +105,7 @@ func (m *_OpcuaHelloRequest) GetEndpoint() PascalString {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(version uint32, limits OpcuaProtocolLimits, endpoint PascalString, chunk ChunkType) *_OpcuaHelloRequest {
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
 	}

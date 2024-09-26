@@ -83,7 +83,7 @@ func (m *_SecurityDataOff) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataOff factory function for _SecurityDataOff
-func NewSecurityDataOff(data []byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataOff {
+func NewSecurityDataOff(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataOff {
 	_result := &_SecurityDataOff{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Data:                 data,

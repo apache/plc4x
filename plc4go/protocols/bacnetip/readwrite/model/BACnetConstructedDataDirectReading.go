@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataDirectReading) GetActualValue() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDirectReading factory function for _BACnetConstructedDataDirectReading
-func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
+func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, directReading BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDirectReading {
 	if directReading == nil {
 		panic("directReading of type BACnetApplicationTagReal for BACnetConstructedDataDirectReading must not be nil")
 	}

@@ -83,7 +83,7 @@ func (m *_SecurityDataDisplayMessage) GetMessage() string {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
-func NewSecurityDataDisplayMessage(message string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDisplayMessage {
+func NewSecurityDataDisplayMessage(commandTypeContainer SecurityCommandTypeContainer, argument byte, message string) *_SecurityDataDisplayMessage {
 	_result := &_SecurityDataDisplayMessage{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		Message:              message,

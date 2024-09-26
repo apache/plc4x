@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBitStringValueRelinquishDefault) GetActualValue()
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBitStringValueRelinquishDefault factory function for _BACnetConstructedDataBitStringValueRelinquishDefault
-func NewBACnetConstructedDataBitStringValueRelinquishDefault(relinquishDefault BACnetApplicationTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueRelinquishDefault {
+func NewBACnetConstructedDataBitStringValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueRelinquishDefault {
 	if relinquishDefault == nil {
 		panic("relinquishDefault of type BACnetApplicationTagBitString for BACnetConstructedDataBitStringValueRelinquishDefault must not be nil")
 	}

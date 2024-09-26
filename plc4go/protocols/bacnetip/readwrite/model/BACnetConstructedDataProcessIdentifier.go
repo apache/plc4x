@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataProcessIdentifier) GetActualValue() BACnetApplica
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProcessIdentifier factory function for _BACnetConstructedDataProcessIdentifier
-func NewBACnetConstructedDataProcessIdentifier(processIdentifier BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
+func NewBACnetConstructedDataProcessIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifier BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifier {
 	if processIdentifier == nil {
 		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataProcessIdentifier must not be nil")
 	}

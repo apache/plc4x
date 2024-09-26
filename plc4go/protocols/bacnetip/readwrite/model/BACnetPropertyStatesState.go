@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesState) GetState() BACnetEventStateTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesState factory function for _BACnetPropertyStatesState
-func NewBACnetPropertyStatesState(state BACnetEventStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesState {
+func NewBACnetPropertyStatesState(peekedTagHeader BACnetTagHeader, state BACnetEventStateTagged) *_BACnetPropertyStatesState {
 	if state == nil {
 		panic("state of type BACnetEventStateTagged for BACnetPropertyStatesState must not be nil")
 	}

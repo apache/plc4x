@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataLoopAction) GetActualValue() BACnetActionTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataLoopAction factory function for _BACnetConstructedDataLoopAction
-func NewBACnetConstructedDataLoopAction(action BACnetActionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
+func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, action BACnetActionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAction {
 	if action == nil {
 		panic("action of type BACnetActionTagged for BACnetConstructedDataLoopAction must not be nil")
 	}

@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesBacnetIpMode) GetBacnetIpMode() BACnetIPModeTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesBacnetIpMode factory function for _BACnetPropertyStatesBacnetIpMode
-func NewBACnetPropertyStatesBacnetIpMode(bacnetIpMode BACnetIPModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBacnetIpMode {
+func NewBACnetPropertyStatesBacnetIpMode(peekedTagHeader BACnetTagHeader, bacnetIpMode BACnetIPModeTagged) *_BACnetPropertyStatesBacnetIpMode {
 	if bacnetIpMode == nil {
 		panic("bacnetIpMode of type BACnetIPModeTagged for BACnetPropertyStatesBacnetIpMode must not be nil")
 	}

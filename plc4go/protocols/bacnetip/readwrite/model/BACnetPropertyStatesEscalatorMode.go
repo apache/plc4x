@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesEscalatorMode) GetEscalatorMode() BACnetEscalatorM
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesEscalatorMode factory function for _BACnetPropertyStatesEscalatorMode
-func NewBACnetPropertyStatesEscalatorMode(escalatorMode BACnetEscalatorModeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEscalatorMode {
+func NewBACnetPropertyStatesEscalatorMode(peekedTagHeader BACnetTagHeader, escalatorMode BACnetEscalatorModeTagged) *_BACnetPropertyStatesEscalatorMode {
 	if escalatorMode == nil {
 		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetPropertyStatesEscalatorMode must not be nil")
 	}

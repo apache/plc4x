@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataCarLoadUnits) GetActualValue() BACnetEngineeringU
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCarLoadUnits factory function for _BACnetConstructedDataCarLoadUnits
-func NewBACnetConstructedDataCarLoadUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoadUnits {
+func NewBACnetConstructedDataCarLoadUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoadUnits {
 	if units == nil {
 		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataCarLoadUnits must not be nil")
 	}

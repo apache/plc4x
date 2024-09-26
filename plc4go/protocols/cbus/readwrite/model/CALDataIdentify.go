@@ -83,7 +83,7 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentify {
+func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
 	_result := &_CALDataIdentify{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		Attribute:       attribute,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataScale) GetActualValue() BACnetScale {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(scale BACnetScale, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
 	if scale == nil {
 		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
 	}

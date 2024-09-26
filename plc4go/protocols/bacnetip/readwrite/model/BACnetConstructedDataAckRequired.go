@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataAckRequired) GetActualValue() BACnetEventTransiti
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataAckRequired factory function for _BACnetConstructedDataAckRequired
-func NewBACnetConstructedDataAckRequired(ackRequired BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckRequired {
+func NewBACnetConstructedDataAckRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ackRequired BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAckRequired {
 	if ackRequired == nil {
 		panic("ackRequired of type BACnetEventTransitionBitsTagged for BACnetConstructedDataAckRequired must not be nil")
 	}

@@ -83,7 +83,7 @@ func (m *_BACnetShedLevelPercent) GetPercent() BACnetContextTagUnsignedInteger {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetShedLevelPercent factory function for _BACnetShedLevelPercent
-func NewBACnetShedLevelPercent(percent BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetShedLevelPercent {
+func NewBACnetShedLevelPercent(peekedTagHeader BACnetTagHeader, percent BACnetContextTagUnsignedInteger) *_BACnetShedLevelPercent {
 	if percent == nil {
 		panic("percent of type BACnetContextTagUnsignedInteger for BACnetShedLevelPercent must not be nil")
 	}

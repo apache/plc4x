@@ -86,7 +86,7 @@ func (m *_StatusRequestBinaryState) GetApplication() ApplicationIdContainer {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestBinaryState factory function for _StatusRequestBinaryState
-func NewStatusRequestBinaryState(application ApplicationIdContainer, statusType byte) *_StatusRequestBinaryState {
+func NewStatusRequestBinaryState(statusType byte, application ApplicationIdContainer) *_StatusRequestBinaryState {
 	_result := &_StatusRequestBinaryState{
 		StatusRequestContract: NewStatusRequest(statusType),
 		Application:           application,

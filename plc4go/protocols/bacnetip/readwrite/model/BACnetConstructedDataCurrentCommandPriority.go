@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetActualValue() BACnetOp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataCurrentCommandPriority factory function for _BACnetConstructedDataCurrentCommandPriority
-func NewBACnetConstructedDataCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
+func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, currentCommandPriority BACnetOptionalUnsigned, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCurrentCommandPriority {
 	if currentCommandPriority == nil {
 		panic("currentCommandPriority of type BACnetOptionalUnsigned for BACnetConstructedDataCurrentCommandPriority must not be nil")
 	}

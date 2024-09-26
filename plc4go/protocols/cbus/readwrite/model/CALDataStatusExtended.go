@@ -138,7 +138,7 @@ func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
+func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
 	_result := &_CALDataStatusExtended{
 		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
 		Coding:           coding,

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataProtocolLevel) GetActualValue() BACnetProtocolLev
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataProtocolLevel factory function for _BACnetConstructedDataProtocolLevel
-func NewBACnetConstructedDataProtocolLevel(protocolLevel BACnetProtocolLevelTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
+func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolLevel BACnetProtocolLevelTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolLevel {
 	if protocolLevel == nil {
 		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetConstructedDataProtocolLevel must not be nil")
 	}

@@ -97,7 +97,7 @@ func (m *_CALDataStatus) GetStatusBytes() []StatusByte {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataStatus factory function for _CALDataStatus
-func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatus {
+func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, requestContext RequestContext) *_CALDataStatus {
 	_result := &_CALDataStatus{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		Application:     application,

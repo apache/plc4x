@@ -111,7 +111,7 @@ func (m *_AirConditioningDataZoneHumidityPlantStatus) GetHumidityErrorCode() HVA
 ///////////////////////////////////////////////////////////
 
 // NewAirConditioningDataZoneHumidityPlantStatus factory function for _AirConditioningDataZoneHumidityPlantStatus
-func NewAirConditioningDataZoneHumidityPlantStatus(zoneGroup byte, zoneList HVACZoneList, humidityType HVACHumidityType, humidityStatus HVACHumidityStatusFlags, humidityErrorCode HVACHumidityError, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneHumidityPlantStatus {
+func NewAirConditioningDataZoneHumidityPlantStatus(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, humidityType HVACHumidityType, humidityStatus HVACHumidityStatusFlags, humidityErrorCode HVACHumidityError) *_AirConditioningDataZoneHumidityPlantStatus {
 	if zoneList == nil {
 		panic("zoneList of type HVACZoneList for AirConditioningDataZoneHumidityPlantStatus must not be nil")
 	}

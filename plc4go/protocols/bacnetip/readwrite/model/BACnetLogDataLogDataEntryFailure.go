@@ -83,7 +83,7 @@ func (m *_BACnetLogDataLogDataEntryFailure) GetFailure() ErrorEnclosed {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetLogDataLogDataEntryFailure factory function for _BACnetLogDataLogDataEntryFailure
-func NewBACnetLogDataLogDataEntryFailure(failure ErrorEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryFailure {
+func NewBACnetLogDataLogDataEntryFailure(peekedTagHeader BACnetTagHeader, failure ErrorEnclosed) *_BACnetLogDataLogDataEntryFailure {
 	if failure == nil {
 		panic("failure of type ErrorEnclosed for BACnetLogDataLogDataEntryFailure must not be nil")
 	}

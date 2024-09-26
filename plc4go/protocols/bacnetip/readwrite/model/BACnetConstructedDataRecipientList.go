@@ -91,7 +91,7 @@ func (m *_BACnetConstructedDataRecipientList) GetRecipientList() []BACnetDestina
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataRecipientList factory function for _BACnetConstructedDataRecipientList
-func NewBACnetConstructedDataRecipientList(recipientList []BACnetDestination, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
+func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, recipientList []BACnetDestination, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRecipientList {
 	_result := &_BACnetConstructedDataRecipientList{
 		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
 		RecipientList:                 recipientList,

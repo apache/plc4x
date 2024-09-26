@@ -93,7 +93,7 @@ func (m *_StatusRequestLevel) GetStartingGroupAddressLabel() byte {
 ///////////////////////////////////////////////////////////
 
 // NewStatusRequestLevel factory function for _StatusRequestLevel
-func NewStatusRequestLevel(application ApplicationIdContainer, startingGroupAddressLabel byte, statusType byte) *_StatusRequestLevel {
+func NewStatusRequestLevel(statusType byte, application ApplicationIdContainer, startingGroupAddressLabel byte) *_StatusRequestLevel {
 	_result := &_StatusRequestLevel{
 		StatusRequestContract:     NewStatusRequest(statusType),
 		Application:               application,

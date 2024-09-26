@@ -156,7 +156,7 @@ func (m *_MediaTransportControlDataRewind) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataRewind factory function for _MediaTransportControlDataRewind
-func NewMediaTransportControlDataRewind(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataRewind {
+func NewMediaTransportControlDataRewind(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataRewind {
 	_result := &_MediaTransportControlDataRewind{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

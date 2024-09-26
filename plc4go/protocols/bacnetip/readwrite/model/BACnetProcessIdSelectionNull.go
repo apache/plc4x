@@ -83,7 +83,7 @@ func (m *_BACnetProcessIdSelectionNull) GetNullValue() BACnetApplicationTagNull 
 ///////////////////////////////////////////////////////////
 
 // NewBACnetProcessIdSelectionNull factory function for _BACnetProcessIdSelectionNull
-func NewBACnetProcessIdSelectionNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelectionNull {
+func NewBACnetProcessIdSelectionNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetProcessIdSelectionNull {
 	if nullValue == nil {
 		panic("nullValue of type BACnetApplicationTagNull for BACnetProcessIdSelectionNull must not be nil")
 	}

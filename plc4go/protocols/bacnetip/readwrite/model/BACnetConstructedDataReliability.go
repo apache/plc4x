@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataReliability) GetActualValue() BACnetReliabilityTa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(reliability BACnetReliabilityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
+func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
 	if reliability == nil {
 		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
 	}

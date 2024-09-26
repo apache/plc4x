@@ -111,7 +111,7 @@ func (m *_CycServiceItemAnyType) GetAddress() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewCycServiceItemAnyType factory function for _CycServiceItemAnyType
-func NewCycServiceItemAnyType(transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32, byteLength uint8, syntaxId uint8) *_CycServiceItemAnyType {
+func NewCycServiceItemAnyType(byteLength uint8, syntaxId uint8, transportSize TransportSize, length uint16, dbNumber uint16, memoryArea MemoryArea, address uint32) *_CycServiceItemAnyType {
 	_result := &_CycServiceItemAnyType{
 		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
 		TransportSize:              transportSize,

@@ -98,7 +98,7 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk ChunkType) *_OpcuaMessageError {
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
 	if reason == nil {
 		panic("reason of type PascalString for OpcuaMessageError must not be nil")
 	}

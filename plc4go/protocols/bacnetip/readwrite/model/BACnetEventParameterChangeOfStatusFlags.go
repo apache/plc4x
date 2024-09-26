@@ -104,7 +104,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) GetClosingTag() BACnetClosing
 ///////////////////////////////////////////////////////////
 
 // NewBACnetEventParameterChangeOfStatusFlags factory function for _BACnetEventParameterChangeOfStatusFlags
-func NewBACnetEventParameterChangeOfStatusFlags(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, selectedFlags BACnetStatusFlagsTagged, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetEventParameterChangeOfStatusFlags {
+func NewBACnetEventParameterChangeOfStatusFlags(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, selectedFlags BACnetStatusFlagsTagged, closingTag BACnetClosingTag) *_BACnetEventParameterChangeOfStatusFlags {
 	if openingTag == nil {
 		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStatusFlags must not be nil")
 	}

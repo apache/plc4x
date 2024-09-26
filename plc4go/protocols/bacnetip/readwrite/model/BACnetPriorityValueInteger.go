@@ -83,7 +83,7 @@ func (m *_BACnetPriorityValueInteger) GetIntegerValue() BACnetApplicationTagSign
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPriorityValueInteger factory function for _BACnetPriorityValueInteger
-func NewBACnetPriorityValueInteger(integerValue BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
+func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue BACnetApplicationTagSignedInteger, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueInteger {
 	if integerValue == nil {
 		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetPriorityValueInteger must not be nil")
 	}

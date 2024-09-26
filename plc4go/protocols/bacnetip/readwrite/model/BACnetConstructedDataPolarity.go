@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataPolarity) GetActualValue() BACnetPolarityTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataPolarity factory function for _BACnetConstructedDataPolarity
-func NewBACnetConstructedDataPolarity(polarity BACnetPolarityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
+func NewBACnetConstructedDataPolarity(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, polarity BACnetPolarityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPolarity {
 	if polarity == nil {
 		panic("polarity of type BACnetPolarityTagged for BACnetConstructedDataPolarity must not be nil")
 	}

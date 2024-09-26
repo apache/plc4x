@@ -87,7 +87,7 @@ func (m *_BinaryPayload) GetPayload() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(payload []byte, sequenceHeader SequenceHeader, byteCount uint32) *_BinaryPayload {
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
 	_result := &_BinaryPayload{
 		PayloadContract: NewPayload(sequenceHeader, byteCount),
 		Payload:         payload,

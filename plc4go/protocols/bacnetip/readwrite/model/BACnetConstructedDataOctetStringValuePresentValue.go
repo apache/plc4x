@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataOctetStringValuePresentValue) GetActualValue() BA
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataOctetStringValuePresentValue factory function for _BACnetConstructedDataOctetStringValuePresentValue
-func NewBACnetConstructedDataOctetStringValuePresentValue(presentValue BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValuePresentValue {
+func NewBACnetConstructedDataOctetStringValuePresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOctetStringValuePresentValue {
 	if presentValue == nil {
 		panic("presentValue of type BACnetApplicationTagOctetString for BACnetConstructedDataOctetStringValuePresentValue must not be nil")
 	}

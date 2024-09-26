@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesEventType) GetEventType() BACnetEventTypeTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
-func NewBACnetPropertyStatesEventType(eventType BACnetEventTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEventType {
+func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType BACnetEventTypeTagged) *_BACnetPropertyStatesEventType {
 	if eventType == nil {
 		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
 	}

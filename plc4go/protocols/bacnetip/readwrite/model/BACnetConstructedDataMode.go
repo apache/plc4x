@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataMode) GetActualValue() BACnetLifeSafetyModeTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataMode factory function for _BACnetConstructedDataMode
-func NewBACnetConstructedDataMode(mode BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
+func NewBACnetConstructedDataMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, mode BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMode {
 	if mode == nil {
 		panic("mode of type BACnetLifeSafetyModeTagged for BACnetConstructedDataMode must not be nil")
 	}

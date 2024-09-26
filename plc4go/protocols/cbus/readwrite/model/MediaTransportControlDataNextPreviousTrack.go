@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataNextPreviousTrack) GetIsSetTheNextTrack() boo
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataNextPreviousTrack factory function for _MediaTransportControlDataNextPreviousTrack
-func NewMediaTransportControlDataNextPreviousTrack(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataNextPreviousTrack {
+func NewMediaTransportControlDataNextPreviousTrack(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousTrack {
 	_result := &_MediaTransportControlDataNextPreviousTrack{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		Operation:                         operation,

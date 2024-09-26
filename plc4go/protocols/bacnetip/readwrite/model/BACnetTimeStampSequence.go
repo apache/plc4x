@@ -83,7 +83,7 @@ func (m *_BACnetTimeStampSequence) GetSequenceNumber() BACnetContextTagUnsignedI
 ///////////////////////////////////////////////////////////
 
 // NewBACnetTimeStampSequence factory function for _BACnetTimeStampSequence
-func NewBACnetTimeStampSequence(sequenceNumber BACnetContextTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetTimeStampSequence {
+func NewBACnetTimeStampSequence(peekedTagHeader BACnetTagHeader, sequenceNumber BACnetContextTagUnsignedInteger) *_BACnetTimeStampSequence {
 	if sequenceNumber == nil {
 		panic("sequenceNumber of type BACnetContextTagUnsignedInteger for BACnetTimeStampSequence must not be nil")
 	}

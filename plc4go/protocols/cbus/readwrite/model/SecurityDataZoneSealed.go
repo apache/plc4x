@@ -83,7 +83,7 @@ func (m *_SecurityDataZoneSealed) GetZoneNumber() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewSecurityDataZoneSealed factory function for _SecurityDataZoneSealed
-func NewSecurityDataZoneSealed(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneSealed {
+func NewSecurityDataZoneSealed(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneSealed {
 	_result := &_SecurityDataZoneSealed{
 		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
 		ZoneNumber:           zoneNumber,

@@ -94,7 +94,7 @@ func (m *_VariantFloat) GetValue() []float32 {
 ///////////////////////////////////////////////////////////
 
 // NewVariantFloat factory function for _VariantFloat
-func NewVariantFloat(arrayLength *int32, value []float32, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantFloat {
+func NewVariantFloat(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float32) *_VariantFloat {
 	_result := &_VariantFloat{
 		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
 		ArrayLength:     arrayLength,

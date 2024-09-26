@@ -143,7 +143,7 @@ func (m *_MeasurementDataChannelMeasurementData) GetValue() float64 {
 ///////////////////////////////////////////////////////////
 
 // NewMeasurementDataChannelMeasurementData factory function for _MeasurementDataChannelMeasurementData
-func NewMeasurementDataChannelMeasurementData(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8, commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementDataChannelMeasurementData {
+func NewMeasurementDataChannelMeasurementData(commandTypeContainer MeasurementCommandTypeContainer, deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) *_MeasurementDataChannelMeasurementData {
 	_result := &_MeasurementDataChannelMeasurementData{
 		MeasurementDataContract: NewMeasurementData(commandTypeContainer),
 		DeviceId:                deviceId,

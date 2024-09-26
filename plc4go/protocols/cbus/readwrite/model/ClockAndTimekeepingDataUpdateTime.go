@@ -145,7 +145,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) GetIsUnknown() bool {
 ///////////////////////////////////////////////////////////
 
 // NewClockAndTimekeepingDataUpdateTime factory function for _ClockAndTimekeepingDataUpdateTime
-func NewClockAndTimekeepingDataUpdateTime(hours uint8, minute uint8, second uint8, daylightSaving byte, commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingDataUpdateTime {
+func NewClockAndTimekeepingDataUpdateTime(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte, hours uint8, minute uint8, second uint8, daylightSaving byte) *_ClockAndTimekeepingDataUpdateTime {
 	_result := &_ClockAndTimekeepingDataUpdateTime{
 		ClockAndTimekeepingDataContract: NewClockAndTimekeepingData(commandTypeContainer, argument),
 		Hours:                           hours,

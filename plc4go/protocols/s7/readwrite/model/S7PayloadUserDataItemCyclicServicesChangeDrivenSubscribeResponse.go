@@ -102,7 +102,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) GetI
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse factory function for _S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse
-func NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(itemsCount uint16, items []AssociatedQueryValueType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
+func NewS7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, items []AssociatedQueryValueType) *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse {
 	_result := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		ItemsCount:                    itemsCount,

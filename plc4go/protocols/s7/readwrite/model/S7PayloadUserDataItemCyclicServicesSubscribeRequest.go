@@ -116,7 +116,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) GetItem() []CycSe
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCyclicServicesSubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesSubscribeRequest
-func NewS7PayloadUserDataItemCyclicServicesSubscribeRequest(itemsCount uint16, timeBase TimeBase, timeFactor uint8, item []CycServiceItemType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesSubscribeRequest {
+func NewS7PayloadUserDataItemCyclicServicesSubscribeRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, itemsCount uint16, timeBase TimeBase, timeFactor uint8, item []CycServiceItemType) *_S7PayloadUserDataItemCyclicServicesSubscribeRequest {
 	_result := &_S7PayloadUserDataItemCyclicServicesSubscribeRequest{
 		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 		ItemsCount:                    itemsCount,

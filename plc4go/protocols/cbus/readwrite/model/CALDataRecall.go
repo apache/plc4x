@@ -90,7 +90,7 @@ func (m *_CALDataRecall) GetCount() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCALDataRecall factory function for _CALDataRecall
-func NewCALDataRecall(paramNo Parameter, count uint8, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataRecall {
+func NewCALDataRecall(commandTypeContainer CALCommandTypeContainer, additionalData CALData, paramNo Parameter, count uint8, requestContext RequestContext) *_CALDataRecall {
 	_result := &_CALDataRecall{
 		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
 		ParamNo:         paramNo,

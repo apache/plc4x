@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataNodeType) GetActualValue() BACnetNodeTypeTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataNodeType factory function for _BACnetConstructedDataNodeType
-func NewBACnetConstructedDataNodeType(nodeType BACnetNodeTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
+func NewBACnetConstructedDataNodeType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeType BACnetNodeTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeType {
 	if nodeType == nil {
 		panic("nodeType of type BACnetNodeTypeTagged for BACnetConstructedDataNodeType must not be nil")
 	}

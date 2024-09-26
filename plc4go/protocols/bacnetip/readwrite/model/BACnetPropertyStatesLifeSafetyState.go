@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesLifeSafetyState) GetLifeSafetyState() BACnetLifeSa
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesLifeSafetyState factory function for _BACnetPropertyStatesLifeSafetyState
-func NewBACnetPropertyStatesLifeSafetyState(lifeSafetyState BACnetLifeSafetyStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLifeSafetyState {
+func NewBACnetPropertyStatesLifeSafetyState(peekedTagHeader BACnetTagHeader, lifeSafetyState BACnetLifeSafetyStateTagged) *_BACnetPropertyStatesLifeSafetyState {
 	if lifeSafetyState == nil {
 		panic("lifeSafetyState of type BACnetLifeSafetyStateTagged for BACnetPropertyStatesLifeSafetyState must not be nil")
 	}

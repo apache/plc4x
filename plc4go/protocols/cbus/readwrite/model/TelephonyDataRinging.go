@@ -85,7 +85,7 @@ func (m *_TelephonyDataRinging) GetNumber() string {
 ///////////////////////////////////////////////////////////
 
 // NewTelephonyDataRinging factory function for _TelephonyDataRinging
-func NewTelephonyDataRinging(number string, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataRinging {
+func NewTelephonyDataRinging(commandTypeContainer TelephonyCommandTypeContainer, argument byte, number string) *_TelephonyDataRinging {
 	_result := &_TelephonyDataRinging{
 		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
 		Number:                number,

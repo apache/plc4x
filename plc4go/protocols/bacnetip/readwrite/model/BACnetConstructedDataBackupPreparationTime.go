@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataBackupPreparationTime) GetActualValue() BACnetApp
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataBackupPreparationTime factory function for _BACnetConstructedDataBackupPreparationTime
-func NewBACnetConstructedDataBackupPreparationTime(backupPreparationTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
+func NewBACnetConstructedDataBackupPreparationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupPreparationTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupPreparationTime {
 	if backupPreparationTime == nil {
 		panic("backupPreparationTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataBackupPreparationTime must not be nil")
 	}

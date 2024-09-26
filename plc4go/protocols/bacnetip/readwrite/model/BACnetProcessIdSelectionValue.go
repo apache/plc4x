@@ -83,7 +83,7 @@ func (m *_BACnetProcessIdSelectionValue) GetProcessIdentifier() BACnetApplicatio
 ///////////////////////////////////////////////////////////
 
 // NewBACnetProcessIdSelectionValue factory function for _BACnetProcessIdSelectionValue
-func NewBACnetProcessIdSelectionValue(processIdentifier BACnetApplicationTagUnsignedInteger, peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelectionValue {
+func NewBACnetProcessIdSelectionValue(peekedTagHeader BACnetTagHeader, processIdentifier BACnetApplicationTagUnsignedInteger) *_BACnetProcessIdSelectionValue {
 	if processIdentifier == nil {
 		panic("processIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetProcessIdSelectionValue must not be nil")
 	}

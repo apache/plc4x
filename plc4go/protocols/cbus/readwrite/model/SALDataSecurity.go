@@ -87,7 +87,7 @@ func (m *_SALDataSecurity) GetSecurityData() SecurityData {
 ///////////////////////////////////////////////////////////
 
 // NewSALDataSecurity factory function for _SALDataSecurity
-func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSecurity {
+func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSecurity {
 	if securityData == nil {
 		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
 	}

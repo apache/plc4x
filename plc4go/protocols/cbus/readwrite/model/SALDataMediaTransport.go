@@ -87,7 +87,7 @@ func (m *_SALDataMediaTransport) GetMediaTransportControlData() MediaTransportCo
 ///////////////////////////////////////////////////////////
 
 // NewSALDataMediaTransport factory function for _SALDataMediaTransport
-func NewSALDataMediaTransport(mediaTransportControlData MediaTransportControlData, salData SALData) *_SALDataMediaTransport {
+func NewSALDataMediaTransport(salData SALData, mediaTransportControlData MediaTransportControlData) *_SALDataMediaTransport {
 	if mediaTransportControlData == nil {
 		panic("mediaTransportControlData of type MediaTransportControlData for SALDataMediaTransport must not be nil")
 	}

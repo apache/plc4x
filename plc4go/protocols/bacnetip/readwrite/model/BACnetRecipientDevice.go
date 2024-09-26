@@ -83,7 +83,7 @@ func (m *_BACnetRecipientDevice) GetDeviceValue() BACnetContextTagObjectIdentifi
 ///////////////////////////////////////////////////////////
 
 // NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
-func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetRecipientDevice {
+func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACnetContextTagObjectIdentifier) *_BACnetRecipientDevice {
 	if deviceValue == nil {
 		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
 	}

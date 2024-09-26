@@ -92,7 +92,7 @@ func (m *_CBusPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////////////////////////////////////////
 
 // NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
+func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
 	if salData == nil {
 		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
 	}

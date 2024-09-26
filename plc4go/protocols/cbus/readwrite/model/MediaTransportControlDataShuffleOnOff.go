@@ -108,7 +108,7 @@ func (m *_MediaTransportControlDataShuffleOnOff) GetIsOn() bool {
 ///////////////////////////////////////////////////////////
 
 // NewMediaTransportControlDataShuffleOnOff factory function for _MediaTransportControlDataShuffleOnOff
-func NewMediaTransportControlDataShuffleOnOff(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataShuffleOnOff {
+func NewMediaTransportControlDataShuffleOnOff(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataShuffleOnOff {
 	_result := &_MediaTransportControlDataShuffleOnOff{
 		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
 		State:                             state,

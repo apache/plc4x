@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataEventEnable) GetActualValue() BACnetEventTransiti
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataEventEnable factory function for _BACnetConstructedDataEventEnable
-func NewBACnetConstructedDataEventEnable(eventEnable BACnetEventTransitionBitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnable {
+func NewBACnetConstructedDataEventEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventEnable BACnetEventTransitionBitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventEnable {
 	if eventEnable == nil {
 		panic("eventEnable of type BACnetEventTransitionBitsTagged for BACnetConstructedDataEventEnable must not be nil")
 	}

@@ -108,7 +108,7 @@ func (m *_BACnetConstructedDataDaysRemaining) GetActualValue() BACnetApplication
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConstructedDataDaysRemaining factory function for _BACnetConstructedDataDaysRemaining
-func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
+func NewBACnetConstructedDataDaysRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, daysRemaining BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDaysRemaining {
 	if daysRemaining == nil {
 		panic("daysRemaining of type BACnetApplicationTagSignedInteger for BACnetConstructedDataDaysRemaining must not be nil")
 	}

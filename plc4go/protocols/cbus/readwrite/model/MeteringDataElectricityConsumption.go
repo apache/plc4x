@@ -83,7 +83,7 @@ func (m *_MeteringDataElectricityConsumption) GetKWhr() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
-func NewMeteringDataElectricityConsumption(kWhr uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataElectricityConsumption {
+func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kWhr uint32) *_MeteringDataElectricityConsumption {
 	_result := &_MeteringDataElectricityConsumption{
 		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
 		KWhr:                 kWhr,

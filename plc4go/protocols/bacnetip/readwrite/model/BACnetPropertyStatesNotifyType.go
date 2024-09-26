@@ -83,7 +83,7 @@ func (m *_BACnetPropertyStatesNotifyType) GetNotifyType() BACnetNotifyTypeTagged
 ///////////////////////////////////////////////////////////
 
 // NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
-func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNotifyType {
+func NewBACnetPropertyStatesNotifyType(peekedTagHeader BACnetTagHeader, notifyType BACnetNotifyTypeTagged) *_BACnetPropertyStatesNotifyType {
 	if notifyType == nil {
 		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
 	}

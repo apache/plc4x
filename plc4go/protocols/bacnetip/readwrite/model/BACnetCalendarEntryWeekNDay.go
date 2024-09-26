@@ -83,7 +83,7 @@ func (m *_BACnetCalendarEntryWeekNDay) GetWeekNDay() BACnetWeekNDayTagged {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetCalendarEntryWeekNDay factory function for _BACnetCalendarEntryWeekNDay
-func NewBACnetCalendarEntryWeekNDay(weekNDay BACnetWeekNDayTagged, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryWeekNDay {
+func NewBACnetCalendarEntryWeekNDay(peekedTagHeader BACnetTagHeader, weekNDay BACnetWeekNDayTagged) *_BACnetCalendarEntryWeekNDay {
 	if weekNDay == nil {
 		panic("weekNDay of type BACnetWeekNDayTagged for BACnetCalendarEntryWeekNDay must not be nil")
 	}

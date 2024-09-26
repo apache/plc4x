@@ -174,9 +174,9 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         super(
         <#assign needsSeparator = false>
         <#if type.parentPropertyFields?has_content>
-            <#list type.parentPropertyFields as field>
+            <#list type.parentPropertyFields as parentField>
                 <#assign needsSeparator = true>
-                ${field.name}<#sep>, </#sep>
+                ${parentField.name}<#sep>, </#sep>
             </#list>
         </#if>
         <#if helper.isGeneratePropertiesForParserArguments()>
