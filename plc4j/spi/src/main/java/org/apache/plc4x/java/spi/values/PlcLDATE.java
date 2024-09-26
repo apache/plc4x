@@ -73,56 +73,56 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
     public PlcLDATE(Byte secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Short secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Integer secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Long secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond((long) secondsSinceEpoch, 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Float secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(Double secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(BigInteger secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
     public PlcLDATE(BigDecimal secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         this.value = LocalDateTime.ofEpochSecond(secondsSinceEpoch.longValue(), 0,
-            OffsetDateTime.now().getOffset() ).toLocalDate();
+            OffsetDateTime.now().getOffset()).toLocalDate();
         this.isNullable = false;
     }
 
