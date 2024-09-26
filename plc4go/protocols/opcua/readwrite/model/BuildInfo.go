@@ -338,8 +338,8 @@ func (b *_BuildInfo) CreateBuildInfoBuilder() BuildInfoBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BuildInfo) GetIdentifier() string {
-	return "340"
+func (m *_BuildInfo) GetExtensionId() int32 {
+	return int32(340)
 }
 
 ///////////////////////
@@ -428,7 +428,7 @@ func (m *_BuildInfo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BuildInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__buildInfo BuildInfo, err error) {
+func (m *_BuildInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__buildInfo BuildInfo, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

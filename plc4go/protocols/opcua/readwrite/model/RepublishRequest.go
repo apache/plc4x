@@ -41,7 +41,7 @@ type RepublishRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
 	// GetRetransmitSequenceNumber returns RetransmitSequenceNumber (property field)
@@ -55,7 +55,7 @@ type RepublishRequest interface {
 // _RepublishRequest is the data-structure of this message
 type _RepublishRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader            ExtensionObjectDefinition
+	RequestHeader            RequestHeader
 	SubscriptionId           uint32
 	RetransmitSequenceNumber uint32
 }
@@ -64,9 +64,9 @@ var _ RepublishRequest = (*_RepublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RepublishRequest)(nil)
 
 // NewRepublishRequest factory function for _RepublishRequest
-func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
+func NewRepublishRequest(requestHeader RequestHeader, subscriptionId uint32, retransmitSequenceNumber uint32) *_RepublishRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RepublishRequest must not be nil")
+		panic("requestHeader of type RequestHeader for RepublishRequest must not be nil")
 	}
 	_result := &_RepublishRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -209,8 +209,8 @@ func (b *_RepublishRequest) CreateRepublishRequestBuilder() RepublishRequestBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RepublishRequest) GetIdentifier() string {
-	return "832"
+func (m *_RepublishRequest) GetExtensionId() int32 {
+	return int32(832)
 }
 
 ///////////////////////
@@ -227,7 +227,7 @@ func (m *_RepublishRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_RepublishRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_RepublishRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -278,7 +278,7 @@ func (m *_RepublishRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RepublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__republishRequest RepublishRequest, err error) {
+func (m *_RepublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__republishRequest RepublishRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -289,7 +289,7 @@ func (m *_RepublishRequest) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -332,7 +332,7 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for RepublishRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 

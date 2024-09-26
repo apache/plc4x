@@ -233,8 +233,8 @@ func (b *_UserManagementDataType) CreateUserManagementDataTypeBuilder() UserMana
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UserManagementDataType) GetIdentifier() string {
-	return "24283"
+func (m *_UserManagementDataType) GetExtensionId() int32 {
+	return int32(24283)
 }
 
 ///////////////////////
@@ -302,7 +302,7 @@ func (m *_UserManagementDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UserManagementDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__userManagementDataType UserManagementDataType, err error) {
+func (m *_UserManagementDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__userManagementDataType UserManagementDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

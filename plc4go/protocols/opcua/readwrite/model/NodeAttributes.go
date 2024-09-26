@@ -255,8 +255,8 @@ func (b *_NodeAttributes) CreateNodeAttributesBuilder() NodeAttributesBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NodeAttributes) GetIdentifier() string {
-	return "351"
+func (m *_NodeAttributes) GetExtensionId() int32 {
+	return int32(351)
 }
 
 ///////////////////////
@@ -338,7 +338,7 @@ func (m *_NodeAttributes) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NodeAttributes) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nodeAttributes NodeAttributes, err error) {
+func (m *_NodeAttributes) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__nodeAttributes NodeAttributes, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

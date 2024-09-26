@@ -198,8 +198,8 @@ func (b *_MonitoredItemNotification) CreateMonitoredItemNotificationBuilder() Mo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoredItemNotification) GetIdentifier() string {
-	return "808"
+func (m *_MonitoredItemNotification) GetExtensionId() int32 {
+	return int32(808)
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func (m *_MonitoredItemNotification) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoredItemNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemNotification MonitoredItemNotification, err error) {
+func (m *_MonitoredItemNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoredItemNotification MonitoredItemNotification, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -174,8 +174,8 @@ func (b *_ServiceCounterDataType) CreateServiceCounterDataTypeBuilder() ServiceC
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ServiceCounterDataType) GetIdentifier() string {
-	return "873"
+func (m *_ServiceCounterDataType) GetExtensionId() int32 {
+	return int32(873)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_ServiceCounterDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ServiceCounterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__serviceCounterDataType ServiceCounterDataType, err error) {
+func (m *_ServiceCounterDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__serviceCounterDataType ServiceCounterDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -46,6 +46,8 @@ type NodeIdGuid interface {
 	GetId() []byte
 	// GetIdentifier returns Identifier (virtual field)
 	GetIdentifier() string
+	// GetNamespace returns Namespace (virtual field)
+	GetNamespace() int16
 	// IsNodeIdGuid is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdGuid()
 	// CreateBuilder creates a NodeIdGuidBuilder
@@ -217,6 +219,12 @@ func (m *_NodeIdGuid) GetIdentifier() string {
 	return fmt.Sprintf("%v", m.GetId())
 }
 
+func (m *_NodeIdGuid) GetNamespace() int16 {
+	ctx := context.Background()
+	_ = ctx
+	return int16(m.GetNamespaceIndex())
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
@@ -247,6 +255,8 @@ func (m *_NodeIdGuid) GetLengthInBits(ctx context.Context) uint16 {
 	if len(m.Id) > 0 {
 		lengthInBits += 8 * uint16(len(m.Id))
 	}
+
+	// A virtual field doesn't have any in- or output.
 
 	// A virtual field doesn't have any in- or output.
 
@@ -286,6 +296,12 @@ func (m *_NodeIdGuid) parse(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	}
 	_ = identifier
 
+	namespace, err := ReadVirtualField[int16](ctx, "namespace", (*int16)(nil), namespaceIndex)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespace' field"))
+	}
+	_ = namespace
+
 	if closeErr := readBuffer.CloseContext("NodeIdGuid"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdGuid")
 	}
@@ -323,6 +339,12 @@ func (m *_NodeIdGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		_ = identifier
 		if _identifierErr := writeBuffer.WriteVirtual(ctx, "identifier", m.GetIdentifier()); _identifierErr != nil {
 			return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
+		}
+		// Virtual field
+		namespace := m.GetNamespace()
+		_ = namespace
+		if _namespaceErr := writeBuffer.WriteVirtual(ctx, "namespace", m.GetNamespace()); _namespaceErr != nil {
+			return errors.Wrap(_namespaceErr, "Error serializing 'namespace' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeIdGuid"); popErr != nil {

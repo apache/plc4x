@@ -316,8 +316,8 @@ func (b *_AddReferencesItem) CreateAddReferencesItemBuilder() AddReferencesItemB
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AddReferencesItem) GetIdentifier() string {
-	return "381"
+func (m *_AddReferencesItem) GetExtensionId() int32 {
+	return int32(381)
 }
 
 ///////////////////////
@@ -409,7 +409,7 @@ func (m *_AddReferencesItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AddReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addReferencesItem AddReferencesItem, err error) {
+func (m *_AddReferencesItem) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__addReferencesItem AddReferencesItem, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

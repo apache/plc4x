@@ -255,8 +255,8 @@ func (b *_MonitoredItemCreateResult) CreateMonitoredItemCreateResultBuilder() Mo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoredItemCreateResult) GetIdentifier() string {
-	return "748"
+func (m *_MonitoredItemCreateResult) GetExtensionId() int32 {
+	return int32(748)
 }
 
 ///////////////////////
@@ -338,7 +338,7 @@ func (m *_MonitoredItemCreateResult) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoredItemCreateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoredItemCreateResult MonitoredItemCreateResult, err error) {
+func (m *_MonitoredItemCreateResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoredItemCreateResult MonitoredItemCreateResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -373,7 +373,7 @@ func (m *_MonitoredItemCreateResult) parse(ctx context.Context, readBuffer utils
 	}
 	m.RevisedQueueSize = revisedQueueSize
 
-	filterResult, err := ReadSimpleField[ExtensionObject](ctx, "filterResult", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	filterResult, err := ReadSimpleField[ExtensionObject](ctx, "filterResult", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}

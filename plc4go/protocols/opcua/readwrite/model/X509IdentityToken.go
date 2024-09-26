@@ -38,157 +38,49 @@ type X509IdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
-	utils.Copyable
-	UserIdentityTokenDefinition
+	ExtensionObjectDefinition
+	// GetPolicyId returns PolicyId (property field)
+	GetPolicyId() PascalString
 	// GetCertificateData returns CertificateData (property field)
 	GetCertificateData() PascalByteString
 	// IsX509IdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsX509IdentityToken()
-	// CreateBuilder creates a X509IdentityTokenBuilder
-	CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder
 }
 
 // _X509IdentityToken is the data-structure of this message
 type _X509IdentityToken struct {
-	UserIdentityTokenDefinitionContract
+	ExtensionObjectDefinitionContract
+	PolicyId        PascalString
 	CertificateData PascalByteString
 }
 
 var _ X509IdentityToken = (*_X509IdentityToken)(nil)
-var _ UserIdentityTokenDefinitionRequirements = (*_X509IdentityToken)(nil)
+var _ ExtensionObjectDefinitionRequirements = (*_X509IdentityToken)(nil)
 
 // NewX509IdentityToken factory function for _X509IdentityToken
-func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken {
+func NewX509IdentityToken(policyId PascalString, certificateData PascalByteString) *_X509IdentityToken {
+	if policyId == nil {
+		panic("policyId of type PascalString for X509IdentityToken must not be nil")
+	}
 	if certificateData == nil {
 		panic("certificateData of type PascalByteString for X509IdentityToken must not be nil")
 	}
 	_result := &_X509IdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-		CertificateData:                     certificateData,
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		PolicyId:                          policyId,
+		CertificateData:                   certificateData,
 	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
-
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Builder
-///////////////////////
-
-// X509IdentityTokenBuilder is a builder for X509IdentityToken
-type X509IdentityTokenBuilder interface {
-	utils.Copyable
-	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(certificateData PascalByteString) X509IdentityTokenBuilder
-	// WithCertificateData adds CertificateData (property field)
-	WithCertificateData(PascalByteString) X509IdentityTokenBuilder
-	// WithCertificateDataBuilder adds CertificateData (property field) which is build by the builder
-	WithCertificateDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder
-	// Build builds the X509IdentityToken or returns an error if something is wrong
-	Build() (X509IdentityToken, error)
-	// MustBuild does the same as Build but panics on error
-	MustBuild() X509IdentityToken
-}
-
-// NewX509IdentityTokenBuilder() creates a X509IdentityTokenBuilder
-func NewX509IdentityTokenBuilder() X509IdentityTokenBuilder {
-	return &_X509IdentityTokenBuilder{_X509IdentityToken: new(_X509IdentityToken)}
-}
-
-type _X509IdentityTokenBuilder struct {
-	*_X509IdentityToken
-
-	parentBuilder *_UserIdentityTokenDefinitionBuilder
-
-	err *utils.MultiError
-}
-
-var _ (X509IdentityTokenBuilder) = (*_X509IdentityTokenBuilder)(nil)
-
-func (b *_X509IdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
-	b.UserIdentityTokenDefinitionContract = contract
-}
-
-func (b *_X509IdentityTokenBuilder) WithMandatoryFields(certificateData PascalByteString) X509IdentityTokenBuilder {
-	return b.WithCertificateData(certificateData)
-}
-
-func (b *_X509IdentityTokenBuilder) WithCertificateData(certificateData PascalByteString) X509IdentityTokenBuilder {
-	b.CertificateData = certificateData
-	return b
-}
-
-func (b *_X509IdentityTokenBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder {
-	builder := builderSupplier(b.CertificateData.CreatePascalByteStringBuilder())
-	var err error
-	b.CertificateData, err = builder.Build()
-	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
-	}
-	return b
-}
-
-func (b *_X509IdentityTokenBuilder) Build() (X509IdentityToken, error) {
-	if b.CertificateData == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'certificateData' not set"))
-	}
-	if b.err != nil {
-		return nil, errors.Wrap(b.err, "error occurred during build")
-	}
-	return b._X509IdentityToken.deepCopy(), nil
-}
-
-func (b *_X509IdentityTokenBuilder) MustBuild() X509IdentityToken {
-	build, err := b.Build()
-	if err != nil {
-		panic(err)
-	}
-	return build
-}
-
-// Done is used to finish work on this child and return to the parent builder
-func (b *_X509IdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
-	return b.parentBuilder
-}
-
-func (b *_X509IdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
-	return b.Build()
-}
-
-func (b *_X509IdentityTokenBuilder) DeepCopy() any {
-	_copy := b.CreateX509IdentityTokenBuilder().(*_X509IdentityTokenBuilder)
-	if b.err != nil {
-		_copy.err = b.err.DeepCopy().(*utils.MultiError)
-	}
-	return _copy
-}
-
-// CreateX509IdentityTokenBuilder creates a X509IdentityTokenBuilder
-func (b *_X509IdentityToken) CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder {
-	if b == nil {
-		return NewX509IdentityTokenBuilder()
-	}
-	return &_X509IdentityTokenBuilder{_X509IdentityToken: b.deepCopy()}
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_X509IdentityToken) GetIdentifier() string {
-	return "certificate"
+func (m *_X509IdentityToken) GetExtensionId() int32 {
+	return int32(327)
 }
 
 ///////////////////////
@@ -196,14 +88,18 @@ func (m *_X509IdentityToken) GetIdentifier() string {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_X509IdentityToken) GetParent() UserIdentityTokenDefinitionContract {
-	return m.UserIdentityTokenDefinitionContract
+func (m *_X509IdentityToken) GetParent() ExtensionObjectDefinitionContract {
+	return m.ExtensionObjectDefinitionContract
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_X509IdentityToken) GetPolicyId() PascalString {
+	return m.PolicyId
+}
 
 func (m *_X509IdentityToken) GetCertificateData() PascalByteString {
 	return m.CertificateData
@@ -230,7 +126,10 @@ func (m *_X509IdentityToken) GetTypeName() string {
 }
 
 func (m *_X509IdentityToken) GetLengthInBits(ctx context.Context) uint16 {
-	lengthInBits := uint16(m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).getLengthInBits(ctx))
+	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
+
+	// Simple field (policyId)
+	lengthInBits += m.PolicyId.GetLengthInBits(ctx)
 
 	// Simple field (certificateData)
 	lengthInBits += m.CertificateData.GetLengthInBits(ctx)
@@ -242,8 +141,8 @@ func (m *_X509IdentityToken) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_X509IdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_UserIdentityTokenDefinition, identifier string) (__x509IdentityToken X509IdentityToken, err error) {
-	m.UserIdentityTokenDefinitionContract = parent
+func (m *_X509IdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__x509IdentityToken X509IdentityToken, err error) {
+	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
 	_ = positionAware
@@ -252,6 +151,12 @@ func (m *_X509IdentityToken) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
+
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
+	}
+	m.PolicyId = policyId
 
 	certificateData, err := ReadSimpleField[PascalByteString](ctx, "certificateData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
 	if err != nil {
@@ -284,6 +189,10 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for X509IdentityToken")
 		}
 
+		if err := WriteSimpleField[PascalString](ctx, "policyId", m.GetPolicyId(), WriteComplex[PascalString](writeBuffer)); err != nil {
+			return errors.Wrap(err, "Error serializing 'policyId' field")
+		}
+
 		if err := WriteSimpleField[PascalByteString](ctx, "certificateData", m.GetCertificateData(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'certificateData' field")
 		}
@@ -293,26 +202,10 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 		}
 		return nil
 	}
-	return m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).serializeParent(ctx, writeBuffer, m, ser)
+	return m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).serializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_X509IdentityToken) IsX509IdentityToken() {}
-
-func (m *_X509IdentityToken) DeepCopy() any {
-	return m.deepCopy()
-}
-
-func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
-	if m == nil {
-		return nil
-	}
-	_X509IdentityTokenCopy := &_X509IdentityToken{
-		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
-		m.CertificateData.DeepCopy().(PascalByteString),
-	}
-	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
-	return _X509IdentityTokenCopy
-}
 
 func (m *_X509IdentityToken) String() string {
 	if m == nil {

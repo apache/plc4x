@@ -150,8 +150,8 @@ func (b *_QosDataType) CreateQosDataTypeBuilder() QosDataTypeBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QosDataType) GetIdentifier() string {
-	return "23605"
+func (m *_QosDataType) GetExtensionId() int32 {
+	return int32(23605)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_QosDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QosDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__qosDataType QosDataType, err error) {
+func (m *_QosDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__qosDataType QosDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

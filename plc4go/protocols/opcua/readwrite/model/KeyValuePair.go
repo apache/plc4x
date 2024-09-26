@@ -222,8 +222,8 @@ func (b *_KeyValuePair) CreateKeyValuePairBuilder() KeyValuePairBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_KeyValuePair) GetIdentifier() string {
-	return "14535"
+func (m *_KeyValuePair) GetExtensionId() int32 {
+	return int32(14535)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_KeyValuePair) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_KeyValuePair) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__keyValuePair KeyValuePair, err error) {
+func (m *_KeyValuePair) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__keyValuePair KeyValuePair, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

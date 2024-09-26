@@ -198,8 +198,8 @@ func (b *_IdentityMappingRuleType) CreateIdentityMappingRuleTypeBuilder() Identi
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_IdentityMappingRuleType) GetIdentifier() string {
-	return "15636"
+func (m *_IdentityMappingRuleType) GetExtensionId() int32 {
+	return int32(15636)
 }
 
 ///////////////////////
@@ -260,7 +260,7 @@ func (m *_IdentityMappingRuleType) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_IdentityMappingRuleType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__identityMappingRuleType IdentityMappingRuleType, err error) {
+func (m *_IdentityMappingRuleType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__identityMappingRuleType IdentityMappingRuleType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -41,21 +41,17 @@ type ActivateSessionRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetClientSignature returns ClientSignature (property field)
-	GetClientSignature() ExtensionObjectDefinition
-	// GetNoOfClientSoftwareCertificates returns NoOfClientSoftwareCertificates (property field)
-	GetNoOfClientSoftwareCertificates() int32
+	GetClientSignature() SignatureData
 	// GetClientSoftwareCertificates returns ClientSoftwareCertificates (property field)
-	GetClientSoftwareCertificates() []ExtensionObjectDefinition
-	// GetNoOfLocaleIds returns NoOfLocaleIds (property field)
-	GetNoOfLocaleIds() int32
+	GetClientSoftwareCertificates() []SignedSoftwareCertificate
 	// GetLocaleIds returns LocaleIds (property field)
 	GetLocaleIds() []PascalString
 	// GetUserIdentityToken returns UserIdentityToken (property field)
 	GetUserIdentityToken() ExtensionObject
 	// GetUserTokenSignature returns UserTokenSignature (property field)
-	GetUserTokenSignature() ExtensionObjectDefinition
+	GetUserTokenSignature() SignatureData
 	// IsActivateSessionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsActivateSessionRequest()
 	// CreateBuilder creates a ActivateSessionRequestBuilder
@@ -65,40 +61,36 @@ type ActivateSessionRequest interface {
 // _ActivateSessionRequest is the data-structure of this message
 type _ActivateSessionRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader                  ExtensionObjectDefinition
-	ClientSignature                ExtensionObjectDefinition
-	NoOfClientSoftwareCertificates int32
-	ClientSoftwareCertificates     []ExtensionObjectDefinition
-	NoOfLocaleIds                  int32
-	LocaleIds                      []PascalString
-	UserIdentityToken              ExtensionObject
-	UserTokenSignature             ExtensionObjectDefinition
+	RequestHeader              RequestHeader
+	ClientSignature            SignatureData
+	ClientSoftwareCertificates []SignedSoftwareCertificate
+	LocaleIds                  []PascalString
+	UserIdentityToken          ExtensionObject
+	UserTokenSignature         SignatureData
 }
 
 var _ ActivateSessionRequest = (*_ActivateSessionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionRequest)(nil)
 
 // NewActivateSessionRequest factory function for _ActivateSessionRequest
-func NewActivateSessionRequest(requestHeader ExtensionObjectDefinition, clientSignature ExtensionObjectDefinition, noOfClientSoftwareCertificates int32, clientSoftwareCertificates []ExtensionObjectDefinition, noOfLocaleIds int32, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature ExtensionObjectDefinition) *_ActivateSessionRequest {
+func NewActivateSessionRequest(requestHeader RequestHeader, clientSignature SignatureData, clientSoftwareCertificates []SignedSoftwareCertificate, localeIds []PascalString, userIdentityToken ExtensionObject, userTokenSignature SignatureData) *_ActivateSessionRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+		panic("requestHeader of type RequestHeader for ActivateSessionRequest must not be nil")
 	}
 	if clientSignature == nil {
-		panic("clientSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+		panic("clientSignature of type SignatureData for ActivateSessionRequest must not be nil")
 	}
 	if userIdentityToken == nil {
 		panic("userIdentityToken of type ExtensionObject for ActivateSessionRequest must not be nil")
 	}
 	if userTokenSignature == nil {
-		panic("userTokenSignature of type ExtensionObjectDefinition for ActivateSessionRequest must not be nil")
+		panic("userTokenSignature of type SignatureData for ActivateSessionRequest must not be nil")
 	}
 	_result := &_ActivateSessionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		ClientSignature:                   clientSignature,
-		NoOfClientSoftwareCertificates:    noOfClientSoftwareCertificates,
 		ClientSoftwareCertificates:        clientSoftwareCertificates,
-		NoOfLocaleIds:                     noOfLocaleIds,
 		LocaleIds:                         localeIds,
 		UserIdentityToken:                 userIdentityToken,
 		UserTokenSignature:                userTokenSignature,
@@ -336,8 +328,8 @@ func (b *_ActivateSessionRequest) CreateActivateSessionRequestBuilder() Activate
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ActivateSessionRequest) GetIdentifier() string {
-	return "467"
+func (m *_ActivateSessionRequest) GetExtensionId() int32 {
+	return int32(467)
 }
 
 ///////////////////////
@@ -354,24 +346,16 @@ func (m *_ActivateSessionRequest) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ActivateSessionRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_ActivateSessionRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_ActivateSessionRequest) GetClientSignature() ExtensionObjectDefinition {
+func (m *_ActivateSessionRequest) GetClientSignature() SignatureData {
 	return m.ClientSignature
 }
 
-func (m *_ActivateSessionRequest) GetNoOfClientSoftwareCertificates() int32 {
-	return m.NoOfClientSoftwareCertificates
-}
-
-func (m *_ActivateSessionRequest) GetClientSoftwareCertificates() []ExtensionObjectDefinition {
+func (m *_ActivateSessionRequest) GetClientSoftwareCertificates() []SignedSoftwareCertificate {
 	return m.ClientSoftwareCertificates
-}
-
-func (m *_ActivateSessionRequest) GetNoOfLocaleIds() int32 {
-	return m.NoOfLocaleIds
 }
 
 func (m *_ActivateSessionRequest) GetLocaleIds() []PascalString {
@@ -382,7 +366,7 @@ func (m *_ActivateSessionRequest) GetUserIdentityToken() ExtensionObject {
 	return m.UserIdentityToken
 }
 
-func (m *_ActivateSessionRequest) GetUserTokenSignature() ExtensionObjectDefinition {
+func (m *_ActivateSessionRequest) GetUserTokenSignature() SignatureData {
 	return m.UserTokenSignature
 }
 
@@ -415,7 +399,7 @@ func (m *_ActivateSessionRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (clientSignature)
 	lengthInBits += m.ClientSignature.GetLengthInBits(ctx)
 
-	// Simple field (noOfClientSoftwareCertificates)
+	// Implicit Field (noOfClientSoftwareCertificates)
 	lengthInBits += 32
 
 	// Array field
@@ -428,7 +412,7 @@ func (m *_ActivateSessionRequest) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfLocaleIds)
+	// Implicit Field (noOfLocaleIds)
 	lengthInBits += 32
 
 	// Array field
@@ -454,7 +438,7 @@ func (m *_ActivateSessionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ActivateSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__activateSessionRequest ActivateSessionRequest, err error) {
+func (m *_ActivateSessionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__activateSessionRequest ActivateSessionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -465,35 +449,35 @@ func (m *_ActivateSessionRequest) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	clientSignature, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "clientSignature", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("458")), readBuffer))
+	clientSignature, err := ReadSimpleField[SignatureData](ctx, "clientSignature", ReadComplex[SignatureData](ExtensionObjectDefinitionParseWithBufferProducer[SignatureData]((int32)(int32(458))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientSignature' field"))
 	}
 	m.ClientSignature = clientSignature
 
-	noOfClientSoftwareCertificates, err := ReadSimpleField(ctx, "noOfClientSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	noOfClientSoftwareCertificates, err := ReadImplicitField[int32](ctx, "noOfClientSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfClientSoftwareCertificates' field"))
 	}
-	m.NoOfClientSoftwareCertificates = noOfClientSoftwareCertificates
+	_ = noOfClientSoftwareCertificates
 
-	clientSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "clientSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("346")), readBuffer), uint64(noOfClientSoftwareCertificates))
+	clientSoftwareCertificates, err := ReadCountArrayField[SignedSoftwareCertificate](ctx, "clientSoftwareCertificates", ReadComplex[SignedSoftwareCertificate](ExtensionObjectDefinitionParseWithBufferProducer[SignedSoftwareCertificate]((int32)(int32(346))), readBuffer), uint64(noOfClientSoftwareCertificates))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientSoftwareCertificates' field"))
 	}
 	m.ClientSoftwareCertificates = clientSoftwareCertificates
 
-	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfLocaleIds, err := ReadImplicitField[int32](ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	m.NoOfLocaleIds = noOfLocaleIds
+	_ = noOfLocaleIds
 
 	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
 	if err != nil {
@@ -501,13 +485,13 @@ func (m *_ActivateSessionRequest) parse(ctx context.Context, readBuffer utils.Re
 	}
 	m.LocaleIds = localeIds
 
-	userIdentityToken, err := ReadSimpleField[ExtensionObject](ctx, "userIdentityToken", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	userIdentityToken, err := ReadSimpleField[ExtensionObject](ctx, "userIdentityToken", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer[ExtensionObject]((bool)(bool(true))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityToken' field"))
 	}
 	m.UserIdentityToken = userIdentityToken
 
-	userTokenSignature, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "userTokenSignature", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("458")), readBuffer))
+	userTokenSignature, err := ReadSimpleField[SignatureData](ctx, "userTokenSignature", ReadComplex[SignatureData](ExtensionObjectDefinitionParseWithBufferProducer[SignatureData]((int32)(int32(458))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenSignature' field"))
 	}
@@ -538,23 +522,23 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for ActivateSessionRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "clientSignature", m.GetClientSignature(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SignatureData](ctx, "clientSignature", m.GetClientSignature(), WriteComplex[SignatureData](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientSignature' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfClientSoftwareCertificates", m.GetNoOfClientSoftwareCertificates(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfClientSoftwareCertificates := int32(utils.InlineIf(bool((m.GetClientSoftwareCertificates()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetClientSoftwareCertificates()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfClientSoftwareCertificates", noOfClientSoftwareCertificates, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfClientSoftwareCertificates' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "clientSoftwareCertificates", m.GetClientSoftwareCertificates(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'clientSoftwareCertificates' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfLocaleIds", m.GetNoOfLocaleIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfLocaleIds := int32(utils.InlineIf(bool((m.GetLocaleIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetLocaleIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfLocaleIds", noOfLocaleIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfLocaleIds' field")
 		}
 
@@ -566,7 +550,7 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(err, "Error serializing 'userIdentityToken' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "userTokenSignature", m.GetUserTokenSignature(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[SignatureData](ctx, "userTokenSignature", m.GetUserTokenSignature(), WriteComplex[SignatureData](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'userTokenSignature' field")
 		}
 

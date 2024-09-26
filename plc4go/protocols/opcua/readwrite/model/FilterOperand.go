@@ -150,8 +150,8 @@ func (b *_FilterOperand) CreateFilterOperandBuilder() FilterOperandBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FilterOperand) GetIdentifier() string {
-	return "591"
+func (m *_FilterOperand) GetExtensionId() int32 {
+	return int32(591)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_FilterOperand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FilterOperand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__filterOperand FilterOperand, err error) {
+func (m *_FilterOperand) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__filterOperand FilterOperand, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

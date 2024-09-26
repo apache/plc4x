@@ -246,8 +246,8 @@ func (b *_RelativePathElement) CreateRelativePathElementBuilder() RelativePathEl
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RelativePathElement) GetIdentifier() string {
-	return "539"
+func (m *_RelativePathElement) GetExtensionId() int32 {
+	return int32(539)
 }
 
 ///////////////////////
@@ -325,7 +325,7 @@ func (m *_RelativePathElement) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RelativePathElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__relativePathElement RelativePathElement, err error) {
+func (m *_RelativePathElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__relativePathElement RelativePathElement, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

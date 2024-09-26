@@ -150,8 +150,8 @@ func (b *_DataSetWriterTransportDataType) CreateDataSetWriterTransportDataTypeBu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataSetWriterTransportDataType) GetIdentifier() string {
-	return "15600"
+func (m *_DataSetWriterTransportDataType) GetExtensionId() int32 {
+	return int32(15600)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_DataSetWriterTransportDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataSetWriterTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetWriterTransportDataType DataSetWriterTransportDataType, err error) {
+func (m *_DataSetWriterTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataSetWriterTransportDataType DataSetWriterTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

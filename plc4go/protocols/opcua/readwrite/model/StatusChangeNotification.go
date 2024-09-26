@@ -222,8 +222,8 @@ func (b *_StatusChangeNotification) CreateStatusChangeNotificationBuilder() Stat
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_StatusChangeNotification) GetIdentifier() string {
-	return "820"
+func (m *_StatusChangeNotification) GetExtensionId() int32 {
+	return int32(820)
 }
 
 ///////////////////////
@@ -271,9 +271,6 @@ func (m *_StatusChangeNotification) GetTypeName() string {
 func (m *_StatusChangeNotification) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
-	// Implicit Field (notificationLength)
-	lengthInBits += 32
-
 	// Simple field (status)
 	lengthInBits += m.Status.GetLengthInBits(ctx)
 
@@ -287,7 +284,7 @@ func (m *_StatusChangeNotification) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_StatusChangeNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__statusChangeNotification StatusChangeNotification, err error) {
+func (m *_StatusChangeNotification) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__statusChangeNotification StatusChangeNotification, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -297,12 +294,6 @@ func (m *_StatusChangeNotification) parse(ctx context.Context, readBuffer utils.
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, uint8(32)))
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
-	}
-	_ = notificationLength
 
 	status, err := ReadSimpleField[StatusCode](ctx, "status", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
 	if err != nil {
@@ -339,10 +330,6 @@ func (m *_StatusChangeNotification) SerializeWithWriteBuffer(ctx context.Context
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("StatusChangeNotification"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for StatusChangeNotification")
-		}
-		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		if err := WriteImplicitField(ctx, "notificationLength", notificationLength, WriteSignedInt(writeBuffer, 32)); err != nil {
-			return errors.Wrap(err, "Error serializing 'notificationLength' field")
 		}
 
 		if err := WriteSimpleField[StatusCode](ctx, "status", m.GetStatus(), WriteComplex[StatusCode](writeBuffer)); err != nil {

@@ -41,7 +41,7 @@ type CancelResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetCancelCount returns CancelCount (property field)
 	GetCancelCount() uint32
 	// IsCancelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -53,7 +53,7 @@ type CancelResponse interface {
 // _CancelResponse is the data-structure of this message
 type _CancelResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 	CancelCount    uint32
 }
 
@@ -61,9 +61,9 @@ var _ CancelResponse = (*_CancelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelResponse)(nil)
 
 // NewCancelResponse factory function for _CancelResponse
-func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uint32) *_CancelResponse {
+func NewCancelResponse(responseHeader ResponseHeader, cancelCount uint32) *_CancelResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CancelResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CancelResponse must not be nil")
 	}
 	_result := &_CancelResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -198,8 +198,8 @@ func (b *_CancelResponse) CreateCancelResponseBuilder() CancelResponseBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CancelResponse) GetIdentifier() string {
-	return "482"
+func (m *_CancelResponse) GetExtensionId() int32 {
+	return int32(482)
 }
 
 ///////////////////////
@@ -216,7 +216,7 @@ func (m *_CancelResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CancelResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CancelResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -260,7 +260,7 @@ func (m *_CancelResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CancelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__cancelResponse CancelResponse, err error) {
+func (m *_CancelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__cancelResponse CancelResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -271,7 +271,7 @@ func (m *_CancelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -308,7 +308,7 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for CancelResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

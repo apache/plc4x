@@ -41,9 +41,7 @@ type UnregisterNodesRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfNodesToUnregister returns NoOfNodesToUnregister (property field)
-	GetNoOfNodesToUnregister() int32
+	GetRequestHeader() RequestHeader
 	// GetNodesToUnregister returns NodesToUnregister (property field)
 	GetNodesToUnregister() []NodeId
 	// IsUnregisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -55,23 +53,21 @@ type UnregisterNodesRequest interface {
 // _UnregisterNodesRequest is the data-structure of this message
 type _UnregisterNodesRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader         ExtensionObjectDefinition
-	NoOfNodesToUnregister int32
-	NodesToUnregister     []NodeId
+	RequestHeader     RequestHeader
+	NodesToUnregister []NodeId
 }
 
 var _ UnregisterNodesRequest = (*_UnregisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesRequest)(nil)
 
 // NewUnregisterNodesRequest factory function for _UnregisterNodesRequest
-func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
+func NewUnregisterNodesRequest(requestHeader RequestHeader, nodesToUnregister []NodeId) *_UnregisterNodesRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for UnregisterNodesRequest must not be nil")
+		panic("requestHeader of type RequestHeader for UnregisterNodesRequest must not be nil")
 	}
 	_result := &_UnregisterNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfNodesToUnregister:             noOfNodesToUnregister,
 		NodesToUnregister:                 nodesToUnregister,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -209,8 +205,8 @@ func (b *_UnregisterNodesRequest) CreateUnregisterNodesRequestBuilder() Unregist
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UnregisterNodesRequest) GetIdentifier() string {
-	return "566"
+func (m *_UnregisterNodesRequest) GetExtensionId() int32 {
+	return int32(566)
 }
 
 ///////////////////////
@@ -227,12 +223,8 @@ func (m *_UnregisterNodesRequest) GetParent() ExtensionObjectDefinitionContract 
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_UnregisterNodesRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_UnregisterNodesRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
-}
-
-func (m *_UnregisterNodesRequest) GetNoOfNodesToUnregister() int32 {
-	return m.NoOfNodesToUnregister
 }
 
 func (m *_UnregisterNodesRequest) GetNodesToUnregister() []NodeId {
@@ -265,7 +257,7 @@ func (m *_UnregisterNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfNodesToUnregister)
+	// Implicit Field (noOfNodesToUnregister)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +277,7 @@ func (m *_UnregisterNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unregisterNodesRequest UnregisterNodesRequest, err error) {
+func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__unregisterNodesRequest UnregisterNodesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,17 +288,17 @@ func (m *_UnregisterNodesRequest) parse(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToUnregister, err := ReadSimpleField(ctx, "noOfNodesToUnregister", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToUnregister, err := ReadImplicitField[int32](ctx, "noOfNodesToUnregister", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToUnregister' field"))
 	}
-	m.NoOfNodesToUnregister = noOfNodesToUnregister
+	_ = noOfNodesToUnregister
 
 	nodesToUnregister, err := ReadCountArrayField[NodeId](ctx, "nodesToUnregister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToUnregister))
 	if err != nil {
@@ -339,11 +331,11 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for UnregisterNodesRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToUnregister", m.GetNoOfNodesToUnregister(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToUnregister := int32(utils.InlineIf(bool((m.GetNodesToUnregister()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToUnregister()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToUnregister", noOfNodesToUnregister, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToUnregister' field")
 		}
 

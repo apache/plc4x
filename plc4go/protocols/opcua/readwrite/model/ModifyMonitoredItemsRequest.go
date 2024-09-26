@@ -41,15 +41,13 @@ type ModifyMonitoredItemsRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetSubscriptionId returns SubscriptionId (property field)
 	GetSubscriptionId() uint32
 	// GetTimestampsToReturn returns TimestampsToReturn (property field)
 	GetTimestampsToReturn() TimestampsToReturn
-	// GetNoOfItemsToModify returns NoOfItemsToModify (property field)
-	GetNoOfItemsToModify() int32
 	// GetItemsToModify returns ItemsToModify (property field)
-	GetItemsToModify() []ExtensionObjectDefinition
+	GetItemsToModify() []MonitoredItemModifyRequest
 	// IsModifyMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModifyMonitoredItemsRequest()
 	// CreateBuilder creates a ModifyMonitoredItemsRequestBuilder
@@ -59,27 +57,25 @@ type ModifyMonitoredItemsRequest interface {
 // _ModifyMonitoredItemsRequest is the data-structure of this message
 type _ModifyMonitoredItemsRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader      ExtensionObjectDefinition
+	RequestHeader      RequestHeader
 	SubscriptionId     uint32
 	TimestampsToReturn TimestampsToReturn
-	NoOfItemsToModify  int32
-	ItemsToModify      []ExtensionObjectDefinition
+	ItemsToModify      []MonitoredItemModifyRequest
 }
 
 var _ ModifyMonitoredItemsRequest = (*_ModifyMonitoredItemsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModifyMonitoredItemsRequest)(nil)
 
 // NewModifyMonitoredItemsRequest factory function for _ModifyMonitoredItemsRequest
-func NewModifyMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToModify int32, itemsToModify []ExtensionObjectDefinition) *_ModifyMonitoredItemsRequest {
+func NewModifyMonitoredItemsRequest(requestHeader RequestHeader, subscriptionId uint32, timestampsToReturn TimestampsToReturn, itemsToModify []MonitoredItemModifyRequest) *_ModifyMonitoredItemsRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for ModifyMonitoredItemsRequest must not be nil")
+		panic("requestHeader of type RequestHeader for ModifyMonitoredItemsRequest must not be nil")
 	}
 	_result := &_ModifyMonitoredItemsRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		SubscriptionId:                    subscriptionId,
 		TimestampsToReturn:                timestampsToReturn,
-		NoOfItemsToModify:                 noOfItemsToModify,
 		ItemsToModify:                     itemsToModify,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -231,8 +227,8 @@ func (b *_ModifyMonitoredItemsRequest) CreateModifyMonitoredItemsRequestBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ModifyMonitoredItemsRequest) GetIdentifier() string {
-	return "763"
+func (m *_ModifyMonitoredItemsRequest) GetExtensionId() int32 {
+	return int32(763)
 }
 
 ///////////////////////
@@ -249,7 +245,7 @@ func (m *_ModifyMonitoredItemsRequest) GetParent() ExtensionObjectDefinitionCont
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ModifyMonitoredItemsRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_ModifyMonitoredItemsRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -261,11 +257,7 @@ func (m *_ModifyMonitoredItemsRequest) GetTimestampsToReturn() TimestampsToRetur
 	return m.TimestampsToReturn
 }
 
-func (m *_ModifyMonitoredItemsRequest) GetNoOfItemsToModify() int32 {
-	return m.NoOfItemsToModify
-}
-
-func (m *_ModifyMonitoredItemsRequest) GetItemsToModify() []ExtensionObjectDefinition {
+func (m *_ModifyMonitoredItemsRequest) GetItemsToModify() []MonitoredItemModifyRequest {
 	return m.ItemsToModify
 }
 
@@ -301,7 +293,7 @@ func (m *_ModifyMonitoredItemsRequest) GetLengthInBits(ctx context.Context) uint
 	// Simple field (timestampsToReturn)
 	lengthInBits += 32
 
-	// Simple field (noOfItemsToModify)
+	// Implicit Field (noOfItemsToModify)
 	lengthInBits += 32
 
 	// Array field
@@ -321,7 +313,7 @@ func (m *_ModifyMonitoredItemsRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ModifyMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modifyMonitoredItemsRequest ModifyMonitoredItemsRequest, err error) {
+func (m *_ModifyMonitoredItemsRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__modifyMonitoredItemsRequest ModifyMonitoredItemsRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -332,7 +324,7 @@ func (m *_ModifyMonitoredItemsRequest) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -350,13 +342,13 @@ func (m *_ModifyMonitoredItemsRequest) parse(ctx context.Context, readBuffer uti
 	}
 	m.TimestampsToReturn = timestampsToReturn
 
-	noOfItemsToModify, err := ReadSimpleField(ctx, "noOfItemsToModify", ReadSignedInt(readBuffer, uint8(32)))
+	noOfItemsToModify, err := ReadImplicitField[int32](ctx, "noOfItemsToModify", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfItemsToModify' field"))
 	}
-	m.NoOfItemsToModify = noOfItemsToModify
+	_ = noOfItemsToModify
 
-	itemsToModify, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "itemsToModify", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("757")), readBuffer), uint64(noOfItemsToModify))
+	itemsToModify, err := ReadCountArrayField[MonitoredItemModifyRequest](ctx, "itemsToModify", ReadComplex[MonitoredItemModifyRequest](ExtensionObjectDefinitionParseWithBufferProducer[MonitoredItemModifyRequest]((int32)(int32(757))), readBuffer), uint64(noOfItemsToModify))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsToModify' field"))
 	}
@@ -387,7 +379,7 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for ModifyMonitoredItemsRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -398,8 +390,8 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 		if err := WriteSimpleEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", m.GetTimestampsToReturn(), WriteEnum[TimestampsToReturn, uint32](TimestampsToReturn.GetValue, TimestampsToReturn.PLC4XEnumName, WriteUnsignedInt(writeBuffer, 32))); err != nil {
 			return errors.Wrap(err, "Error serializing 'timestampsToReturn' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfItemsToModify", m.GetNoOfItemsToModify(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfItemsToModify := int32(utils.InlineIf(bool((m.GetItemsToModify()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetItemsToModify()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfItemsToModify", noOfItemsToModify, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfItemsToModify' field")
 		}
 

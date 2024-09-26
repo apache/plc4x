@@ -257,8 +257,8 @@ func (b *_TransactionErrorType) CreateTransactionErrorTypeBuilder() TransactionE
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_TransactionErrorType) GetIdentifier() string {
-	return "32287"
+func (m *_TransactionErrorType) GetExtensionId() int32 {
+	return int32(32287)
 }
 
 ///////////////////////
@@ -326,7 +326,7 @@ func (m *_TransactionErrorType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_TransactionErrorType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__transactionErrorType TransactionErrorType, err error) {
+func (m *_TransactionErrorType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__transactionErrorType TransactionErrorType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

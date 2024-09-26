@@ -46,8 +46,6 @@ type Argument interface {
 	GetDataType() NodeId
 	// GetValueRank returns ValueRank (property field)
 	GetValueRank() int32
-	// GetNoOfArrayDimensions returns NoOfArrayDimensions (property field)
-	GetNoOfArrayDimensions() int32
 	// GetArrayDimensions returns ArrayDimensions (property field)
 	GetArrayDimensions() []uint32
 	// GetDescription returns Description (property field)
@@ -61,19 +59,18 @@ type Argument interface {
 // _Argument is the data-structure of this message
 type _Argument struct {
 	ExtensionObjectDefinitionContract
-	Name                PascalString
-	DataType            NodeId
-	ValueRank           int32
-	NoOfArrayDimensions int32
-	ArrayDimensions     []uint32
-	Description         LocalizedText
+	Name            PascalString
+	DataType        NodeId
+	ValueRank       int32
+	ArrayDimensions []uint32
+	Description     LocalizedText
 }
 
 var _ Argument = (*_Argument)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Argument)(nil)
 
 // NewArgument factory function for _Argument
-func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) *_Argument {
+func NewArgument(name PascalString, dataType NodeId, valueRank int32, arrayDimensions []uint32, description LocalizedText) *_Argument {
 	if name == nil {
 		panic("name of type PascalString for Argument must not be nil")
 	}
@@ -88,7 +85,6 @@ func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayD
 		Name:                              name,
 		DataType:                          dataType,
 		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
 		ArrayDimensions:                   arrayDimensions,
 		Description:                       description,
 	}
@@ -290,8 +286,8 @@ func (b *_Argument) CreateArgumentBuilder() ArgumentBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Argument) GetIdentifier() string {
-	return "298"
+func (m *_Argument) GetExtensionId() int32 {
+	return int32(298)
 }
 
 ///////////////////////
@@ -318,10 +314,6 @@ func (m *_Argument) GetDataType() NodeId {
 
 func (m *_Argument) GetValueRank() int32 {
 	return m.ValueRank
-}
-
-func (m *_Argument) GetNoOfArrayDimensions() int32 {
-	return m.NoOfArrayDimensions
 }
 
 func (m *_Argument) GetArrayDimensions() []uint32 {
@@ -364,7 +356,7 @@ func (m *_Argument) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (valueRank)
 	lengthInBits += 32
 
-	// Simple field (noOfArrayDimensions)
+	// Implicit Field (noOfArrayDimensions)
 	lengthInBits += 32
 
 	// Array field
@@ -382,7 +374,7 @@ func (m *_Argument) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Argument) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__argument Argument, err error) {
+func (m *_Argument) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__argument Argument, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -411,11 +403,11 @@ func (m *_Argument) parse(ctx context.Context, readBuffer utils.ReadBuffer, pare
 	}
 	m.ValueRank = valueRank
 
-	noOfArrayDimensions, err := ReadSimpleField(ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
+	noOfArrayDimensions, err := ReadImplicitField[int32](ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
 	}
-	m.NoOfArrayDimensions = noOfArrayDimensions
+	_ = noOfArrayDimensions
 
 	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfArrayDimensions))
 	if err != nil {
@@ -465,8 +457,8 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		if err := WriteSimpleField[int32](ctx, "valueRank", m.GetValueRank(), WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'valueRank' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfArrayDimensions", m.GetNoOfArrayDimensions(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfArrayDimensions := int32(utils.InlineIf(bool((m.GetArrayDimensions()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetArrayDimensions()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfArrayDimensions", noOfArrayDimensions, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfArrayDimensions' field")
 		}
 

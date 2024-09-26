@@ -209,8 +209,8 @@ func (b *_ModificationInfo) CreateModificationInfoBuilder() ModificationInfoBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ModificationInfo) GetIdentifier() string {
-	return "11218"
+func (m *_ModificationInfo) GetExtensionId() int32 {
+	return int32(11218)
 }
 
 ///////////////////////
@@ -278,7 +278,7 @@ func (m *_ModificationInfo) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ModificationInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__modificationInfo ModificationInfo, err error) {
+func (m *_ModificationInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__modificationInfo ModificationInfo, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

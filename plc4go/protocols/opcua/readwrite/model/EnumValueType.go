@@ -233,8 +233,8 @@ func (b *_EnumValueType) CreateEnumValueTypeBuilder() EnumValueTypeBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EnumValueType) GetIdentifier() string {
-	return "7596"
+func (m *_EnumValueType) GetExtensionId() int32 {
+	return int32(7596)
 }
 
 ///////////////////////
@@ -302,7 +302,7 @@ func (m *_EnumValueType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EnumValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__enumValueType EnumValueType, err error) {
+func (m *_EnumValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__enumValueType EnumValueType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

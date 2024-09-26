@@ -268,8 +268,8 @@ func (b *_WriteValue) CreateWriteValueBuilder() WriteValueBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_WriteValue) GetIdentifier() string {
-	return "670"
+func (m *_WriteValue) GetExtensionId() int32 {
+	return int32(670)
 }
 
 ///////////////////////
@@ -344,7 +344,7 @@ func (m *_WriteValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_WriteValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__writeValue WriteValue, err error) {
+func (m *_WriteValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__writeValue WriteValue, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

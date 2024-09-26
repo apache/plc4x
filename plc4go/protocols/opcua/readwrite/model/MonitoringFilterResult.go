@@ -150,8 +150,8 @@ func (b *_MonitoringFilterResult) CreateMonitoringFilterResultBuilder() Monitori
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_MonitoringFilterResult) GetIdentifier() string {
-	return "733"
+func (m *_MonitoringFilterResult) GetExtensionId() int32 {
+	return int32(733)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_MonitoringFilterResult) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_MonitoringFilterResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__monitoringFilterResult MonitoringFilterResult, err error) {
+func (m *_MonitoringFilterResult) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__monitoringFilterResult MonitoringFilterResult, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

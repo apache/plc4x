@@ -268,8 +268,8 @@ func (b *_EUInformation) CreateEUInformationBuilder() EUInformationBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EUInformation) GetIdentifier() string {
-	return "889"
+func (m *_EUInformation) GetExtensionId() int32 {
+	return int32(889)
 }
 
 ///////////////////////
@@ -344,7 +344,7 @@ func (m *_EUInformation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EUInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__eUInformation EUInformation, err error) {
+func (m *_EUInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__eUInformation EUInformation, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -41,15 +41,11 @@ type ActivateSessionResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// GetServerNonce returns ServerNonce (property field)
 	GetServerNonce() PascalByteString
-	// GetNoOfResults returns NoOfResults (property field)
-	GetNoOfResults() int32
 	// GetResults returns Results (property field)
 	GetResults() []StatusCode
-	// GetNoOfDiagnosticInfos returns NoOfDiagnosticInfos (property field)
-	GetNoOfDiagnosticInfos() int32
 	// GetDiagnosticInfos returns DiagnosticInfos (property field)
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsActivateSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -61,21 +57,19 @@ type ActivateSessionResponse interface {
 // _ActivateSessionResponse is the data-structure of this message
 type _ActivateSessionResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader      ExtensionObjectDefinition
-	ServerNonce         PascalByteString
-	NoOfResults         int32
-	Results             []StatusCode
-	NoOfDiagnosticInfos int32
-	DiagnosticInfos     []DiagnosticInfo
+	ResponseHeader  ResponseHeader
+	ServerNonce     PascalByteString
+	Results         []StatusCode
+	DiagnosticInfos []DiagnosticInfo
 }
 
 var _ ActivateSessionResponse = (*_ActivateSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionResponse)(nil)
 
 // NewActivateSessionResponse factory function for _ActivateSessionResponse
-func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
+func NewActivateSessionResponse(responseHeader ResponseHeader, serverNonce PascalByteString, results []StatusCode, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for ActivateSessionResponse must not be nil")
 	}
 	if serverNonce == nil {
 		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
@@ -84,9 +78,7 @@ func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, server
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
 		ServerNonce:                       serverNonce,
-		NoOfResults:                       noOfResults,
 		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
 		DiagnosticInfos:                   diagnosticInfos,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -266,8 +258,8 @@ func (b *_ActivateSessionResponse) CreateActivateSessionResponseBuilder() Activa
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ActivateSessionResponse) GetIdentifier() string {
-	return "470"
+func (m *_ActivateSessionResponse) GetExtensionId() int32 {
+	return int32(470)
 }
 
 ///////////////////////
@@ -284,7 +276,7 @@ func (m *_ActivateSessionResponse) GetParent() ExtensionObjectDefinitionContract
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_ActivateSessionResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_ActivateSessionResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -292,16 +284,8 @@ func (m *_ActivateSessionResponse) GetServerNonce() PascalByteString {
 	return m.ServerNonce
 }
 
-func (m *_ActivateSessionResponse) GetNoOfResults() int32 {
-	return m.NoOfResults
-}
-
 func (m *_ActivateSessionResponse) GetResults() []StatusCode {
 	return m.Results
-}
-
-func (m *_ActivateSessionResponse) GetNoOfDiagnosticInfos() int32 {
-	return m.NoOfDiagnosticInfos
 }
 
 func (m *_ActivateSessionResponse) GetDiagnosticInfos() []DiagnosticInfo {
@@ -337,7 +321,7 @@ func (m *_ActivateSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (serverNonce)
 	lengthInBits += m.ServerNonce.GetLengthInBits(ctx)
 
-	// Simple field (noOfResults)
+	// Implicit Field (noOfResults)
 	lengthInBits += 32
 
 	// Array field
@@ -350,7 +334,7 @@ func (m *_ActivateSessionResponse) GetLengthInBits(ctx context.Context) uint16 {
 		}
 	}
 
-	// Simple field (noOfDiagnosticInfos)
+	// Implicit Field (noOfDiagnosticInfos)
 	lengthInBits += 32
 
 	// Array field
@@ -370,7 +354,7 @@ func (m *_ActivateSessionResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ActivateSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__activateSessionResponse ActivateSessionResponse, err error) {
+func (m *_ActivateSessionResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__activateSessionResponse ActivateSessionResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -381,7 +365,7 @@ func (m *_ActivateSessionResponse) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -393,11 +377,11 @@ func (m *_ActivateSessionResponse) parse(ctx context.Context, readBuffer utils.R
 	}
 	m.ServerNonce = serverNonce
 
-	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	noOfResults, err := ReadImplicitField[int32](ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
 	}
-	m.NoOfResults = noOfResults
+	_ = noOfResults
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
@@ -405,11 +389,11 @@ func (m *_ActivateSessionResponse) parse(ctx context.Context, readBuffer utils.R
 	}
 	m.Results = results
 
-	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	noOfDiagnosticInfos, err := ReadImplicitField[int32](ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	_ = noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
@@ -442,23 +426,23 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for ActivateSessionResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 
 		if err := WriteSimpleField[PascalByteString](ctx, "serverNonce", m.GetServerNonce(), WriteComplex[PascalByteString](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'serverNonce' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfResults", m.GetNoOfResults(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfResults := int32(utils.InlineIf(bool((m.GetResults()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetResults()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfResults", noOfResults, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfResults' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "results", m.GetResults(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'results' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfDiagnosticInfos", m.GetNoOfDiagnosticInfos(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfDiagnosticInfos := int32(utils.InlineIf(bool((m.GetDiagnosticInfos()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetDiagnosticInfos()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfDiagnosticInfos", noOfDiagnosticInfos, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 

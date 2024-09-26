@@ -174,8 +174,8 @@ func (b *_RationalNumber) CreateRationalNumberBuilder() RationalNumberBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_RationalNumber) GetIdentifier() string {
-	return "18808"
+func (m *_RationalNumber) GetExtensionId() int32 {
+	return int32(18808)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_RationalNumber) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_RationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__rationalNumber RationalNumber, err error) {
+func (m *_RationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__rationalNumber RationalNumber, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

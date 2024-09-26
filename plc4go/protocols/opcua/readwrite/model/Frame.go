@@ -150,8 +150,8 @@ func (b *_Frame) CreateFrameBuilder() FrameBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_Frame) GetIdentifier() string {
-	return "18815"
+func (m *_Frame) GetExtensionId() int32 {
+	return int32(18815)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_Frame) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_Frame) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__frame Frame, err error) {
+func (m *_Frame) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__frame Frame, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -41,7 +41,7 @@ type CloseSecureChannelRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// IsCloseSecureChannelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSecureChannelRequest()
 	// CreateBuilder creates a CloseSecureChannelRequestBuilder
@@ -51,16 +51,16 @@ type CloseSecureChannelRequest interface {
 // _CloseSecureChannelRequest is the data-structure of this message
 type _CloseSecureChannelRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader ExtensionObjectDefinition
+	RequestHeader RequestHeader
 }
 
 var _ CloseSecureChannelRequest = (*_CloseSecureChannelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSecureChannelRequest)(nil)
 
 // NewCloseSecureChannelRequest factory function for _CloseSecureChannelRequest
-func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_CloseSecureChannelRequest {
+func NewCloseSecureChannelRequest(requestHeader RequestHeader) *_CloseSecureChannelRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CloseSecureChannelRequest must not be nil")
+		panic("requestHeader of type RequestHeader for CloseSecureChannelRequest must not be nil")
 	}
 	_result := &_CloseSecureChannelRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_CloseSecureChannelRequest) CreateCloseSecureChannelRequestBuilder() Cl
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CloseSecureChannelRequest) GetIdentifier() string {
-	return "452"
+func (m *_CloseSecureChannelRequest) GetExtensionId() int32 {
+	return int32(452)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_CloseSecureChannelRequest) GetParent() ExtensionObjectDefinitionContra
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CloseSecureChannelRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_CloseSecureChannelRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_CloseSecureChannelRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CloseSecureChannelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSecureChannelRequest CloseSecureChannelRequest, err error) {
+func (m *_CloseSecureChannelRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__closeSecureChannelRequest CloseSecureChannelRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_CloseSecureChannelRequest) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_CloseSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for CloseSecureChannelRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 

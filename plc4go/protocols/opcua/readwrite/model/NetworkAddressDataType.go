@@ -187,8 +187,8 @@ func (b *_NetworkAddressDataType) CreateNetworkAddressDataTypeBuilder() NetworkA
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NetworkAddressDataType) GetIdentifier() string {
-	return "15504"
+func (m *_NetworkAddressDataType) GetExtensionId() int32 {
+	return int32(15504)
 }
 
 ///////////////////////
@@ -242,7 +242,7 @@ func (m *_NetworkAddressDataType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NetworkAddressDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__networkAddressDataType NetworkAddressDataType, err error) {
+func (m *_NetworkAddressDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__networkAddressDataType NetworkAddressDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

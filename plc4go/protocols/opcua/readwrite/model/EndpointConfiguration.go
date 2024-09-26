@@ -253,8 +253,8 @@ func (b *_EndpointConfiguration) CreateEndpointConfigurationBuilder() EndpointCo
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_EndpointConfiguration) GetIdentifier() string {
-	return "333"
+func (m *_EndpointConfiguration) GetExtensionId() int32 {
+	return int32(333)
 }
 
 ///////////////////////
@@ -367,7 +367,7 @@ func (m *_EndpointConfiguration) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_EndpointConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__endpointConfiguration EndpointConfiguration, err error) {
+func (m *_EndpointConfiguration) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__endpointConfiguration EndpointConfiguration, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

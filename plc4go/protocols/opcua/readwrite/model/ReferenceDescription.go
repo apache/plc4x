@@ -351,8 +351,8 @@ func (b *_ReferenceDescription) CreateReferenceDescriptionBuilder() ReferenceDes
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReferenceDescription) GetIdentifier() string {
-	return "520"
+func (m *_ReferenceDescription) GetExtensionId() int32 {
+	return int32(520)
 }
 
 ///////////////////////
@@ -451,7 +451,7 @@ func (m *_ReferenceDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReferenceDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceDescription ReferenceDescription, err error) {
+func (m *_ReferenceDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__referenceDescription ReferenceDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

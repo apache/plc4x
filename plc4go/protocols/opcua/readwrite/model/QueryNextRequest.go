@@ -41,7 +41,7 @@ type QueryNextRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetReleaseContinuationPoint returns ReleaseContinuationPoint (property field)
 	GetReleaseContinuationPoint() bool
 	// GetContinuationPoint returns ContinuationPoint (property field)
@@ -55,7 +55,7 @@ type QueryNextRequest interface {
 // _QueryNextRequest is the data-structure of this message
 type _QueryNextRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader            ExtensionObjectDefinition
+	RequestHeader            RequestHeader
 	ReleaseContinuationPoint bool
 	ContinuationPoint        PascalByteString
 	// Reserved Fields
@@ -66,9 +66,9 @@ var _ QueryNextRequest = (*_QueryNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextRequest)(nil)
 
 // NewQueryNextRequest factory function for _QueryNextRequest
-func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
+func NewQueryNextRequest(requestHeader RequestHeader, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
+		panic("requestHeader of type RequestHeader for QueryNextRequest must not be nil")
 	}
 	if continuationPoint == nil {
 		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
@@ -235,8 +235,8 @@ func (b *_QueryNextRequest) CreateQueryNextRequestBuilder() QueryNextRequestBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_QueryNextRequest) GetIdentifier() string {
-	return "621"
+func (m *_QueryNextRequest) GetExtensionId() int32 {
+	return int32(621)
 }
 
 ///////////////////////
@@ -253,7 +253,7 @@ func (m *_QueryNextRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_QueryNextRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_QueryNextRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -307,7 +307,7 @@ func (m *_QueryNextRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_QueryNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__queryNextRequest QueryNextRequest, err error) {
+func (m *_QueryNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__queryNextRequest QueryNextRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -318,7 +318,7 @@ func (m *_QueryNextRequest) parse(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -367,7 +367,7 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for QueryNextRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 

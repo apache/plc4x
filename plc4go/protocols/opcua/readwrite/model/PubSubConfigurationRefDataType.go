@@ -196,8 +196,8 @@ func (b *_PubSubConfigurationRefDataType) CreatePubSubConfigurationRefDataTypeBu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PubSubConfigurationRefDataType) GetIdentifier() string {
-	return "25521"
+func (m *_PubSubConfigurationRefDataType) GetExtensionId() int32 {
+	return int32(25521)
 }
 
 ///////////////////////
@@ -272,7 +272,7 @@ func (m *_PubSubConfigurationRefDataType) GetLengthInBytes(ctx context.Context) 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PubSubConfigurationRefDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__pubSubConfigurationRefDataType PubSubConfigurationRefDataType, err error) {
+func (m *_PubSubConfigurationRefDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__pubSubConfigurationRefDataType PubSubConfigurationRefDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

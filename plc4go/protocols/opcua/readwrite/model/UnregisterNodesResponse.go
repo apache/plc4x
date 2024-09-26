@@ -41,7 +41,7 @@ type UnregisterNodesResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsUnregisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnregisterNodesResponse()
 	// CreateBuilder creates a UnregisterNodesResponseBuilder
@@ -51,16 +51,16 @@ type UnregisterNodesResponse interface {
 // _UnregisterNodesResponse is the data-structure of this message
 type _UnregisterNodesResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ UnregisterNodesResponse = (*_UnregisterNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnregisterNodesResponse)(nil)
 
 // NewUnregisterNodesResponse factory function for _UnregisterNodesResponse
-func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_UnregisterNodesResponse {
+func NewUnregisterNodesResponse(responseHeader ResponseHeader) *_UnregisterNodesResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for UnregisterNodesResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for UnregisterNodesResponse must not be nil")
 	}
 	_result := &_UnregisterNodesResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_UnregisterNodesResponse) CreateUnregisterNodesResponseBuilder() Unregi
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UnregisterNodesResponse) GetIdentifier() string {
-	return "569"
+func (m *_UnregisterNodesResponse) GetExtensionId() int32 {
+	return int32(569)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_UnregisterNodesResponse) GetParent() ExtensionObjectDefinitionContract
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_UnregisterNodesResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_UnregisterNodesResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_UnregisterNodesResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unregisterNodesResponse UnregisterNodesResponse, err error) {
+func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__unregisterNodesResponse UnregisterNodesResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_UnregisterNodesResponse) parse(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_UnregisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for UnregisterNodesResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

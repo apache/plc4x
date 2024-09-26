@@ -41,11 +41,9 @@ type AddNodesRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
-	// GetNoOfNodesToAdd returns NoOfNodesToAdd (property field)
-	GetNoOfNodesToAdd() int32
+	GetRequestHeader() RequestHeader
 	// GetNodesToAdd returns NodesToAdd (property field)
-	GetNodesToAdd() []ExtensionObjectDefinition
+	GetNodesToAdd() []AddNodesItem
 	// IsAddNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddNodesRequest()
 	// CreateBuilder creates a AddNodesRequestBuilder
@@ -55,23 +53,21 @@ type AddNodesRequest interface {
 // _AddNodesRequest is the data-structure of this message
 type _AddNodesRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader  ExtensionObjectDefinition
-	NoOfNodesToAdd int32
-	NodesToAdd     []ExtensionObjectDefinition
+	RequestHeader RequestHeader
+	NodesToAdd    []AddNodesItem
 }
 
 var _ AddNodesRequest = (*_AddNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddNodesRequest)(nil)
 
 // NewAddNodesRequest factory function for _AddNodesRequest
-func NewAddNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) *_AddNodesRequest {
+func NewAddNodesRequest(requestHeader RequestHeader, nodesToAdd []AddNodesItem) *_AddNodesRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddNodesRequest must not be nil")
+		panic("requestHeader of type RequestHeader for AddNodesRequest must not be nil")
 	}
 	_result := &_AddNodesRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
-		NoOfNodesToAdd:                    noOfNodesToAdd,
 		NodesToAdd:                        nodesToAdd,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -209,8 +205,8 @@ func (b *_AddNodesRequest) CreateAddNodesRequestBuilder() AddNodesRequestBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_AddNodesRequest) GetIdentifier() string {
-	return "488"
+func (m *_AddNodesRequest) GetExtensionId() int32 {
+	return int32(488)
 }
 
 ///////////////////////
@@ -227,15 +223,11 @@ func (m *_AddNodesRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_AddNodesRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_AddNodesRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_AddNodesRequest) GetNoOfNodesToAdd() int32 {
-	return m.NoOfNodesToAdd
-}
-
-func (m *_AddNodesRequest) GetNodesToAdd() []ExtensionObjectDefinition {
+func (m *_AddNodesRequest) GetNodesToAdd() []AddNodesItem {
 	return m.NodesToAdd
 }
 
@@ -265,7 +257,7 @@ func (m *_AddNodesRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (requestHeader)
 	lengthInBits += m.RequestHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfNodesToAdd)
+	// Implicit Field (noOfNodesToAdd)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +277,7 @@ func (m *_AddNodesRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_AddNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__addNodesRequest AddNodesRequest, err error) {
+func (m *_AddNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__addNodesRequest AddNodesRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +288,19 @@ func (m *_AddNodesRequest) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	noOfNodesToAdd, err := ReadSimpleField(ctx, "noOfNodesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToAdd, err := ReadImplicitField[int32](ctx, "noOfNodesToAdd", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToAdd' field"))
 	}
-	m.NoOfNodesToAdd = noOfNodesToAdd
+	_ = noOfNodesToAdd
 
-	nodesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToAdd", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("378")), readBuffer), uint64(noOfNodesToAdd))
+	nodesToAdd, err := ReadCountArrayField[AddNodesItem](ctx, "nodesToAdd", ReadComplex[AddNodesItem](ExtensionObjectDefinitionParseWithBufferProducer[AddNodesItem]((int32)(int32(378))), readBuffer), uint64(noOfNodesToAdd))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToAdd' field"))
 	}
@@ -339,11 +331,11 @@ func (m *_AddNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for AddNodesRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToAdd", m.GetNoOfNodesToAdd(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToAdd := int32(utils.InlineIf(bool((m.GetNodesToAdd()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToAdd()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToAdd", noOfNodesToAdd, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToAdd' field")
 		}
 

@@ -41,11 +41,9 @@ type FindServersResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
-	// GetNoOfServers returns NoOfServers (property field)
-	GetNoOfServers() int32
+	GetResponseHeader() ResponseHeader
 	// GetServers returns Servers (property field)
-	GetServers() []ExtensionObjectDefinition
+	GetServers() []ApplicationDescription
 	// IsFindServersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFindServersResponse()
 	// CreateBuilder creates a FindServersResponseBuilder
@@ -55,23 +53,21 @@ type FindServersResponse interface {
 // _FindServersResponse is the data-structure of this message
 type _FindServersResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
-	NoOfServers    int32
-	Servers        []ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
+	Servers        []ApplicationDescription
 }
 
 var _ FindServersResponse = (*_FindServersResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersResponse)(nil)
 
 // NewFindServersResponse factory function for _FindServersResponse
-func NewFindServersResponse(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) *_FindServersResponse {
+func NewFindServersResponse(responseHeader ResponseHeader, servers []ApplicationDescription) *_FindServersResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for FindServersResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for FindServersResponse must not be nil")
 	}
 	_result := &_FindServersResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		ResponseHeader:                    responseHeader,
-		NoOfServers:                       noOfServers,
 		Servers:                           servers,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -209,8 +205,8 @@ func (b *_FindServersResponse) CreateFindServersResponseBuilder() FindServersRes
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FindServersResponse) GetIdentifier() string {
-	return "425"
+func (m *_FindServersResponse) GetExtensionId() int32 {
+	return int32(425)
 }
 
 ///////////////////////
@@ -227,15 +223,11 @@ func (m *_FindServersResponse) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_FindServersResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_FindServersResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
-func (m *_FindServersResponse) GetNoOfServers() int32 {
-	return m.NoOfServers
-}
-
-func (m *_FindServersResponse) GetServers() []ExtensionObjectDefinition {
+func (m *_FindServersResponse) GetServers() []ApplicationDescription {
 	return m.Servers
 }
 
@@ -265,7 +257,7 @@ func (m *_FindServersResponse) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (responseHeader)
 	lengthInBits += m.ResponseHeader.GetLengthInBits(ctx)
 
-	// Simple field (noOfServers)
+	// Implicit Field (noOfServers)
 	lengthInBits += 32
 
 	// Array field
@@ -285,7 +277,7 @@ func (m *_FindServersResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FindServersResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersResponse FindServersResponse, err error) {
+func (m *_FindServersResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__findServersResponse FindServersResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -296,19 +288,19 @@ func (m *_FindServersResponse) parse(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 	m.ResponseHeader = responseHeader
 
-	noOfServers, err := ReadSimpleField(ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServers, err := ReadImplicitField[int32](ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServers' field"))
 	}
-	m.NoOfServers = noOfServers
+	_ = noOfServers
 
-	servers, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "servers", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer), uint64(noOfServers))
+	servers, err := ReadCountArrayField[ApplicationDescription](ctx, "servers", ReadComplex[ApplicationDescription](ExtensionObjectDefinitionParseWithBufferProducer[ApplicationDescription]((int32)(int32(310))), readBuffer), uint64(noOfServers))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servers' field"))
 	}
@@ -339,11 +331,11 @@ func (m *_FindServersResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(pushErr, "Error pushing for FindServersResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServers", m.GetNoOfServers(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServers := int32(utils.InlineIf(bool((m.GetServers()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServers()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServers", noOfServers, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServers' field")
 		}
 

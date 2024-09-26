@@ -41,7 +41,7 @@ type CreateSubscriptionRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetRequestedPublishingInterval returns RequestedPublishingInterval (property field)
 	GetRequestedPublishingInterval() float64
 	// GetRequestedLifetimeCount returns RequestedLifetimeCount (property field)
@@ -63,7 +63,7 @@ type CreateSubscriptionRequest interface {
 // _CreateSubscriptionRequest is the data-structure of this message
 type _CreateSubscriptionRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader               ExtensionObjectDefinition
+	RequestHeader               RequestHeader
 	RequestedPublishingInterval float64
 	RequestedLifetimeCount      uint32
 	RequestedMaxKeepAliveCount  uint32
@@ -78,9 +78,9 @@ var _ CreateSubscriptionRequest = (*_CreateSubscriptionRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSubscriptionRequest)(nil)
 
 // NewCreateSubscriptionRequest factory function for _CreateSubscriptionRequest
-func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
+func NewCreateSubscriptionRequest(requestHeader RequestHeader, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) *_CreateSubscriptionRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CreateSubscriptionRequest must not be nil")
+		panic("requestHeader of type RequestHeader for CreateSubscriptionRequest must not be nil")
 	}
 	_result := &_CreateSubscriptionRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -255,8 +255,8 @@ func (b *_CreateSubscriptionRequest) CreateCreateSubscriptionRequestBuilder() Cr
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CreateSubscriptionRequest) GetIdentifier() string {
-	return "787"
+func (m *_CreateSubscriptionRequest) GetExtensionId() int32 {
+	return int32(787)
 }
 
 ///////////////////////
@@ -273,7 +273,7 @@ func (m *_CreateSubscriptionRequest) GetParent() ExtensionObjectDefinitionContra
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CreateSubscriptionRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_CreateSubscriptionRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -355,7 +355,7 @@ func (m *_CreateSubscriptionRequest) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CreateSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__createSubscriptionRequest CreateSubscriptionRequest, err error) {
+func (m *_CreateSubscriptionRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__createSubscriptionRequest CreateSubscriptionRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -366,7 +366,7 @@ func (m *_CreateSubscriptionRequest) parse(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -439,7 +439,7 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for CreateSubscriptionRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 

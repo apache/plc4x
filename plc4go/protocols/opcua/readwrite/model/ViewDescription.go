@@ -209,8 +209,8 @@ func (b *_ViewDescription) CreateViewDescriptionBuilder() ViewDescriptionBuilder
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ViewDescription) GetIdentifier() string {
-	return "513"
+func (m *_ViewDescription) GetExtensionId() int32 {
+	return int32(513)
 }
 
 ///////////////////////
@@ -278,7 +278,7 @@ func (m *_ViewDescription) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ViewDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__viewDescription ViewDescription, err error) {
+func (m *_ViewDescription) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__viewDescription ViewDescription, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

@@ -40,12 +40,8 @@ type SessionlessInvokeResponseType interface {
 	utils.Serializable
 	utils.Copyable
 	ExtensionObjectDefinition
-	// GetNoOfNamespaceUris returns NoOfNamespaceUris (property field)
-	GetNoOfNamespaceUris() int32
 	// GetNamespaceUris returns NamespaceUris (property field)
 	GetNamespaceUris() []PascalString
-	// GetNoOfServerUris returns NoOfServerUris (property field)
-	GetNoOfServerUris() int32
 	// GetServerUris returns ServerUris (property field)
 	GetServerUris() []PascalString
 	// GetServiceId returns ServiceId (property field)
@@ -59,23 +55,19 @@ type SessionlessInvokeResponseType interface {
 // _SessionlessInvokeResponseType is the data-structure of this message
 type _SessionlessInvokeResponseType struct {
 	ExtensionObjectDefinitionContract
-	NoOfNamespaceUris int32
-	NamespaceUris     []PascalString
-	NoOfServerUris    int32
-	ServerUris        []PascalString
-	ServiceId         uint32
+	NamespaceUris []PascalString
+	ServerUris    []PascalString
+	ServiceId     uint32
 }
 
 var _ SessionlessInvokeResponseType = (*_SessionlessInvokeResponseType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeResponseType)(nil)
 
 // NewSessionlessInvokeResponseType factory function for _SessionlessInvokeResponseType
-func NewSessionlessInvokeResponseType(noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
+func NewSessionlessInvokeResponseType(namespaceUris []PascalString, serverUris []PascalString, serviceId uint32) *_SessionlessInvokeResponseType {
 	_result := &_SessionlessInvokeResponseType{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfNamespaceUris:                 noOfNamespaceUris,
 		NamespaceUris:                     namespaceUris,
-		NoOfServerUris:                    noOfServerUris,
 		ServerUris:                        serverUris,
 		ServiceId:                         serviceId,
 	}
@@ -207,8 +199,8 @@ func (b *_SessionlessInvokeResponseType) CreateSessionlessInvokeResponseTypeBuil
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SessionlessInvokeResponseType) GetIdentifier() string {
-	return "21001"
+func (m *_SessionlessInvokeResponseType) GetExtensionId() int32 {
+	return int32(21001)
 }
 
 ///////////////////////
@@ -225,16 +217,8 @@ func (m *_SessionlessInvokeResponseType) GetParent() ExtensionObjectDefinitionCo
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_SessionlessInvokeResponseType) GetNoOfNamespaceUris() int32 {
-	return m.NoOfNamespaceUris
-}
-
 func (m *_SessionlessInvokeResponseType) GetNamespaceUris() []PascalString {
 	return m.NamespaceUris
-}
-
-func (m *_SessionlessInvokeResponseType) GetNoOfServerUris() int32 {
-	return m.NoOfServerUris
 }
 
 func (m *_SessionlessInvokeResponseType) GetServerUris() []PascalString {
@@ -268,7 +252,7 @@ func (m *_SessionlessInvokeResponseType) GetTypeName() string {
 func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).getLengthInBits(ctx))
 
-	// Simple field (noOfNamespaceUris)
+	// Implicit Field (noOfNamespaceUris)
 	lengthInBits += 32
 
 	// Array field
@@ -281,7 +265,7 @@ func (m *_SessionlessInvokeResponseType) GetLengthInBits(ctx context.Context) ui
 		}
 	}
 
-	// Simple field (noOfServerUris)
+	// Implicit Field (noOfServerUris)
 	lengthInBits += 32
 
 	// Array field
@@ -304,7 +288,7 @@ func (m *_SessionlessInvokeResponseType) GetLengthInBytes(ctx context.Context) u
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SessionlessInvokeResponseType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__sessionlessInvokeResponseType SessionlessInvokeResponseType, err error) {
+func (m *_SessionlessInvokeResponseType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__sessionlessInvokeResponseType SessionlessInvokeResponseType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -315,11 +299,11 @@ func (m *_SessionlessInvokeResponseType) parse(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noOfNamespaceUris, err := ReadSimpleField(ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNamespaceUris, err := ReadImplicitField[int32](ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaceUris' field"))
 	}
-	m.NoOfNamespaceUris = noOfNamespaceUris
+	_ = noOfNamespaceUris
 
 	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris))
 	if err != nil {
@@ -327,11 +311,11 @@ func (m *_SessionlessInvokeResponseType) parse(ctx context.Context, readBuffer u
 	}
 	m.NamespaceUris = namespaceUris
 
-	noOfServerUris, err := ReadSimpleField(ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerUris, err := ReadImplicitField[int32](ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
-	m.NoOfServerUris = noOfServerUris
+	_ = noOfServerUris
 
 	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
 	if err != nil {
@@ -369,16 +353,16 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 		if pushErr := writeBuffer.PushContext("SessionlessInvokeResponseType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for SessionlessInvokeResponseType")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNamespaceUris", m.GetNoOfNamespaceUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNamespaceUris := int32(utils.InlineIf(bool((m.GetNamespaceUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNamespaceUris()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNamespaceUris", noOfNamespaceUris, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNamespaceUris' field")
 		}
 
 		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer); err != nil {
 			return errors.Wrap(err, "Error serializing 'namespaceUris' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServerUris", m.GetNoOfServerUris(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServerUris := int32(utils.InlineIf(bool((m.GetServerUris()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerUris()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServerUris", noOfServerUris, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerUris' field")
 		}
 

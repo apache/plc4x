@@ -46,8 +46,6 @@ type NodeReference interface {
 	GetReferenceTypeId() NodeId
 	// GetIsForward returns IsForward (property field)
 	GetIsForward() bool
-	// GetNoOfReferencedNodeIds returns NoOfReferencedNodeIds (property field)
-	GetNoOfReferencedNodeIds() int32
 	// GetReferencedNodeIds returns ReferencedNodeIds (property field)
 	GetReferencedNodeIds() []NodeId
 	// IsNodeReference is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,11 +57,10 @@ type NodeReference interface {
 // _NodeReference is the data-structure of this message
 type _NodeReference struct {
 	ExtensionObjectDefinitionContract
-	NodeId                NodeId
-	ReferenceTypeId       NodeId
-	IsForward             bool
-	NoOfReferencedNodeIds int32
-	ReferencedNodeIds     []NodeId
+	NodeId            NodeId
+	ReferenceTypeId   NodeId
+	IsForward         bool
+	ReferencedNodeIds []NodeId
 	// Reserved Fields
 	reservedField0 *uint8
 }
@@ -72,7 +69,7 @@ var _ NodeReference = (*_NodeReference)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NodeReference)(nil)
 
 // NewNodeReference factory function for _NodeReference
-func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) *_NodeReference {
+func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, referencedNodeIds []NodeId) *_NodeReference {
 	if nodeId == nil {
 		panic("nodeId of type NodeId for NodeReference must not be nil")
 	}
@@ -84,7 +81,6 @@ func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noO
 		NodeId:                            nodeId,
 		ReferenceTypeId:                   referenceTypeId,
 		IsForward:                         isForward,
-		NoOfReferencedNodeIds:             noOfReferencedNodeIds,
 		ReferencedNodeIds:                 referencedNodeIds,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -257,8 +253,8 @@ func (b *_NodeReference) CreateNodeReferenceBuilder() NodeReferenceBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_NodeReference) GetIdentifier() string {
-	return "582"
+func (m *_NodeReference) GetExtensionId() int32 {
+	return int32(582)
 }
 
 ///////////////////////
@@ -285,10 +281,6 @@ func (m *_NodeReference) GetReferenceTypeId() NodeId {
 
 func (m *_NodeReference) GetIsForward() bool {
 	return m.IsForward
-}
-
-func (m *_NodeReference) GetNoOfReferencedNodeIds() int32 {
-	return m.NoOfReferencedNodeIds
 }
 
 func (m *_NodeReference) GetReferencedNodeIds() []NodeId {
@@ -330,7 +322,7 @@ func (m *_NodeReference) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (isForward)
 	lengthInBits += 1
 
-	// Simple field (noOfReferencedNodeIds)
+	// Implicit Field (noOfReferencedNodeIds)
 	lengthInBits += 32
 
 	// Array field
@@ -350,7 +342,7 @@ func (m *_NodeReference) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_NodeReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__nodeReference NodeReference, err error) {
+func (m *_NodeReference) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__nodeReference NodeReference, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -385,11 +377,11 @@ func (m *_NodeReference) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.IsForward = isForward
 
-	noOfReferencedNodeIds, err := ReadSimpleField(ctx, "noOfReferencedNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	noOfReferencedNodeIds, err := ReadImplicitField[int32](ctx, "noOfReferencedNodeIds", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodeIds' field"))
 	}
-	m.NoOfReferencedNodeIds = noOfReferencedNodeIds
+	_ = noOfReferencedNodeIds
 
 	referencedNodeIds, err := ReadCountArrayField[NodeId](ctx, "referencedNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodeIds))
 	if err != nil {
@@ -437,8 +429,8 @@ func (m *_NodeReference) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		if err := WriteSimpleField[bool](ctx, "isForward", m.GetIsForward(), WriteBoolean(writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'isForward' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfReferencedNodeIds", m.GetNoOfReferencedNodeIds(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfReferencedNodeIds := int32(utils.InlineIf(bool((m.GetReferencedNodeIds()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetReferencedNodeIds()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfReferencedNodeIds", noOfReferencedNodeIds, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfReferencedNodeIds' field")
 		}
 

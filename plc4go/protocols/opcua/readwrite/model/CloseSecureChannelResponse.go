@@ -41,7 +41,7 @@ type CloseSecureChannelResponse interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
-	GetResponseHeader() ExtensionObjectDefinition
+	GetResponseHeader() ResponseHeader
 	// IsCloseSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSecureChannelResponse()
 	// CreateBuilder creates a CloseSecureChannelResponseBuilder
@@ -51,16 +51,16 @@ type CloseSecureChannelResponse interface {
 // _CloseSecureChannelResponse is the data-structure of this message
 type _CloseSecureChannelResponse struct {
 	ExtensionObjectDefinitionContract
-	ResponseHeader ExtensionObjectDefinition
+	ResponseHeader ResponseHeader
 }
 
 var _ CloseSecureChannelResponse = (*_CloseSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSecureChannelResponse)(nil)
 
 // NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
-func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
+func NewCloseSecureChannelResponse(responseHeader ResponseHeader) *_CloseSecureChannelResponse {
 	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
+		panic("responseHeader of type ResponseHeader for CloseSecureChannelResponse must not be nil")
 	}
 	_result := &_CloseSecureChannelResponse{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
@@ -187,8 +187,8 @@ func (b *_CloseSecureChannelResponse) CreateCloseSecureChannelResponseBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_CloseSecureChannelResponse) GetIdentifier() string {
-	return "455"
+func (m *_CloseSecureChannelResponse) GetExtensionId() int32 {
+	return int32(455)
 }
 
 ///////////////////////
@@ -205,7 +205,7 @@ func (m *_CloseSecureChannelResponse) GetParent() ExtensionObjectDefinitionContr
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CloseSecureChannelResponse) GetResponseHeader() ExtensionObjectDefinition {
+func (m *_CloseSecureChannelResponse) GetResponseHeader() ResponseHeader {
 	return m.ResponseHeader
 }
 
@@ -242,7 +242,7 @@ func (m *_CloseSecureChannelResponse) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_CloseSecureChannelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__closeSecureChannelResponse CloseSecureChannelResponse, err error) {
+func (m *_CloseSecureChannelResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__closeSecureChannelResponse CloseSecureChannelResponse, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -253,7 +253,7 @@ func (m *_CloseSecureChannelResponse) parse(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	responseHeader, err := ReadSimpleField[ResponseHeader](ctx, "responseHeader", ReadComplex[ResponseHeader](ExtensionObjectDefinitionParseWithBufferProducer[ResponseHeader]((int32)(int32(394))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
@@ -284,7 +284,7 @@ func (m *_CloseSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for CloseSecureChannelResponse")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ResponseHeader](ctx, "responseHeader", m.GetResponseHeader(), WriteComplex[ResponseHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'responseHeader' field")
 		}
 

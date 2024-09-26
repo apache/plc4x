@@ -41,13 +41,11 @@ type FindServersOnNetworkRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetStartingRecordId returns StartingRecordId (property field)
 	GetStartingRecordId() uint32
 	// GetMaxRecordsToReturn returns MaxRecordsToReturn (property field)
 	GetMaxRecordsToReturn() uint32
-	// GetNoOfServerCapabilityFilter returns NoOfServerCapabilityFilter (property field)
-	GetNoOfServerCapabilityFilter() int32
 	// GetServerCapabilityFilter returns ServerCapabilityFilter (property field)
 	GetServerCapabilityFilter() []PascalString
 	// IsFindServersOnNetworkRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
@@ -59,27 +57,25 @@ type FindServersOnNetworkRequest interface {
 // _FindServersOnNetworkRequest is the data-structure of this message
 type _FindServersOnNetworkRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader              ExtensionObjectDefinition
-	StartingRecordId           uint32
-	MaxRecordsToReturn         uint32
-	NoOfServerCapabilityFilter int32
-	ServerCapabilityFilter     []PascalString
+	RequestHeader          RequestHeader
+	StartingRecordId       uint32
+	MaxRecordsToReturn     uint32
+	ServerCapabilityFilter []PascalString
 }
 
 var _ FindServersOnNetworkRequest = (*_FindServersOnNetworkRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_FindServersOnNetworkRequest)(nil)
 
 // NewFindServersOnNetworkRequest factory function for _FindServersOnNetworkRequest
-func NewFindServersOnNetworkRequest(requestHeader ExtensionObjectDefinition, startingRecordId uint32, maxRecordsToReturn uint32, noOfServerCapabilityFilter int32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
+func NewFindServersOnNetworkRequest(requestHeader RequestHeader, startingRecordId uint32, maxRecordsToReturn uint32, serverCapabilityFilter []PascalString) *_FindServersOnNetworkRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for FindServersOnNetworkRequest must not be nil")
+		panic("requestHeader of type RequestHeader for FindServersOnNetworkRequest must not be nil")
 	}
 	_result := &_FindServersOnNetworkRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		StartingRecordId:                  startingRecordId,
 		MaxRecordsToReturn:                maxRecordsToReturn,
-		NoOfServerCapabilityFilter:        noOfServerCapabilityFilter,
 		ServerCapabilityFilter:            serverCapabilityFilter,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -231,8 +227,8 @@ func (b *_FindServersOnNetworkRequest) CreateFindServersOnNetworkRequestBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_FindServersOnNetworkRequest) GetIdentifier() string {
-	return "12192"
+func (m *_FindServersOnNetworkRequest) GetExtensionId() int32 {
+	return int32(12192)
 }
 
 ///////////////////////
@@ -249,7 +245,7 @@ func (m *_FindServersOnNetworkRequest) GetParent() ExtensionObjectDefinitionCont
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_FindServersOnNetworkRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_FindServersOnNetworkRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
@@ -259,10 +255,6 @@ func (m *_FindServersOnNetworkRequest) GetStartingRecordId() uint32 {
 
 func (m *_FindServersOnNetworkRequest) GetMaxRecordsToReturn() uint32 {
 	return m.MaxRecordsToReturn
-}
-
-func (m *_FindServersOnNetworkRequest) GetNoOfServerCapabilityFilter() int32 {
-	return m.NoOfServerCapabilityFilter
 }
 
 func (m *_FindServersOnNetworkRequest) GetServerCapabilityFilter() []PascalString {
@@ -301,7 +293,7 @@ func (m *_FindServersOnNetworkRequest) GetLengthInBits(ctx context.Context) uint
 	// Simple field (maxRecordsToReturn)
 	lengthInBits += 32
 
-	// Simple field (noOfServerCapabilityFilter)
+	// Implicit Field (noOfServerCapabilityFilter)
 	lengthInBits += 32
 
 	// Array field
@@ -321,7 +313,7 @@ func (m *_FindServersOnNetworkRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__findServersOnNetworkRequest FindServersOnNetworkRequest, err error) {
+func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__findServersOnNetworkRequest FindServersOnNetworkRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -332,7 +324,7 @@ func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
@@ -350,11 +342,11 @@ func (m *_FindServersOnNetworkRequest) parse(ctx context.Context, readBuffer uti
 	}
 	m.MaxRecordsToReturn = maxRecordsToReturn
 
-	noOfServerCapabilityFilter, err := ReadSimpleField(ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)))
+	noOfServerCapabilityFilter, err := ReadImplicitField[int32](ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilityFilter' field"))
 	}
-	m.NoOfServerCapabilityFilter = noOfServerCapabilityFilter
+	_ = noOfServerCapabilityFilter
 
 	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter))
 	if err != nil {
@@ -387,7 +379,7 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for FindServersOnNetworkRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
@@ -398,8 +390,8 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 		if err := WriteSimpleField[uint32](ctx, "maxRecordsToReturn", m.GetMaxRecordsToReturn(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'maxRecordsToReturn' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfServerCapabilityFilter", m.GetNoOfServerCapabilityFilter(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfServerCapabilityFilter := int32(utils.InlineIf(bool((m.GetServerCapabilityFilter()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetServerCapabilityFilter()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfServerCapabilityFilter", noOfServerCapabilityFilter, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfServerCapabilityFilter' field")
 		}
 

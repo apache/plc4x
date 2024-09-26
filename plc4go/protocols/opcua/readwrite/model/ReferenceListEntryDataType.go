@@ -235,8 +235,8 @@ func (b *_ReferenceListEntryDataType) CreateReferenceListEntryDataTypeBuilder() 
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ReferenceListEntryDataType) GetIdentifier() string {
-	return "32662"
+func (m *_ReferenceListEntryDataType) GetExtensionId() int32 {
+	return int32(32662)
 }
 
 ///////////////////////
@@ -307,7 +307,7 @@ func (m *_ReferenceListEntryDataType) GetLengthInBytes(ctx context.Context) uint
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ReferenceListEntryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__referenceListEntryDataType ReferenceListEntryDataType, err error) {
+func (m *_ReferenceListEntryDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__referenceListEntryDataType ReferenceListEntryDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

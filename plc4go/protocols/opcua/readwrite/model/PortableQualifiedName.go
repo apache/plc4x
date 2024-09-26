@@ -222,8 +222,8 @@ func (b *_PortableQualifiedName) CreatePortableQualifiedNameBuilder() PortableQu
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_PortableQualifiedName) GetIdentifier() string {
-	return "24107"
+func (m *_PortableQualifiedName) GetExtensionId() int32 {
+	return int32(24107)
 }
 
 ///////////////////////
@@ -284,7 +284,7 @@ func (m *_PortableQualifiedName) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_PortableQualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__portableQualifiedName PortableQualifiedName, err error) {
+func (m *_PortableQualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__portableQualifiedName PortableQualifiedName, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

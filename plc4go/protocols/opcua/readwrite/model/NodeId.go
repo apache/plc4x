@@ -41,8 +41,6 @@ type NodeId interface {
 	utils.Copyable
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeIdTypeDefinition
-	// GetId returns Id (virtual field)
-	GetId() string
 	// IsNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeId()
 	// CreateBuilder creates a NodeIdBuilder
@@ -176,21 +174,6 @@ func (m *_NodeId) GetNodeId() NodeIdTypeDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for virtual fields.
-///////////////////////
-
-func (m *_NodeId) GetId() string {
-	ctx := context.Background()
-	_ = ctx
-	return fmt.Sprintf("%v", m.GetNodeId().GetIdentifier())
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastNodeId(structType any) NodeId {
@@ -215,8 +198,6 @@ func (m *_NodeId) GetLengthInBits(ctx context.Context) uint16 {
 
 	// Simple field (nodeId)
 	lengthInBits += m.NodeId.GetLengthInBits(ctx)
-
-	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
@@ -264,12 +245,6 @@ func (m *_NodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nod
 	}
 	m.NodeId = nodeId
 
-	id, err := ReadVirtualField[string](ctx, "id", (*string)(nil), nodeId.GetIdentifier())
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
-	}
-	_ = id
-
 	if closeErr := readBuffer.CloseContext("NodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeId")
 	}
@@ -300,12 +275,6 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 
 	if err := WriteSimpleField[NodeIdTypeDefinition](ctx, "nodeId", m.GetNodeId(), WriteComplex[NodeIdTypeDefinition](writeBuffer)); err != nil {
 		return errors.Wrap(err, "Error serializing 'nodeId' field")
-	}
-	// Virtual field
-	id := m.GetId()
-	_ = id
-	if _idErr := writeBuffer.WriteVirtual(ctx, "id", m.GetId()); _idErr != nil {
-		return errors.Wrap(_idErr, "Error serializing 'id' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NodeId"); popErr != nil {

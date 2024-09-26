@@ -41,15 +41,13 @@ type BrowseRequest interface {
 	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
-	GetRequestHeader() ExtensionObjectDefinition
+	GetRequestHeader() RequestHeader
 	// GetView returns View (property field)
-	GetView() ExtensionObjectDefinition
+	GetView() ViewDescription
 	// GetRequestedMaxReferencesPerNode returns RequestedMaxReferencesPerNode (property field)
 	GetRequestedMaxReferencesPerNode() uint32
-	// GetNoOfNodesToBrowse returns NoOfNodesToBrowse (property field)
-	GetNoOfNodesToBrowse() int32
 	// GetNodesToBrowse returns NodesToBrowse (property field)
-	GetNodesToBrowse() []ExtensionObjectDefinition
+	GetNodesToBrowse() []BrowseDescription
 	// IsBrowseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseRequest()
 	// CreateBuilder creates a BrowseRequestBuilder
@@ -59,30 +57,28 @@ type BrowseRequest interface {
 // _BrowseRequest is the data-structure of this message
 type _BrowseRequest struct {
 	ExtensionObjectDefinitionContract
-	RequestHeader                 ExtensionObjectDefinition
-	View                          ExtensionObjectDefinition
+	RequestHeader                 RequestHeader
+	View                          ViewDescription
 	RequestedMaxReferencesPerNode uint32
-	NoOfNodesToBrowse             int32
-	NodesToBrowse                 []ExtensionObjectDefinition
+	NodesToBrowse                 []BrowseDescription
 }
 
 var _ BrowseRequest = (*_BrowseRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseRequest)(nil)
 
 // NewBrowseRequest factory function for _BrowseRequest
-func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
+func NewBrowseRequest(requestHeader RequestHeader, view ViewDescription, requestedMaxReferencesPerNode uint32, nodesToBrowse []BrowseDescription) *_BrowseRequest {
 	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+		panic("requestHeader of type RequestHeader for BrowseRequest must not be nil")
 	}
 	if view == nil {
-		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+		panic("view of type ViewDescription for BrowseRequest must not be nil")
 	}
 	_result := &_BrowseRequest{
 		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
 		RequestHeader:                     requestHeader,
 		View:                              view,
 		RequestedMaxReferencesPerNode:     requestedMaxReferencesPerNode,
-		NoOfNodesToBrowse:                 noOfNodesToBrowse,
 		NodesToBrowse:                     nodesToBrowse,
 	}
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
@@ -255,8 +251,8 @@ func (b *_BrowseRequest) CreateBrowseRequestBuilder() BrowseRequestBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BrowseRequest) GetIdentifier() string {
-	return "527"
+func (m *_BrowseRequest) GetExtensionId() int32 {
+	return int32(527)
 }
 
 ///////////////////////
@@ -273,11 +269,11 @@ func (m *_BrowseRequest) GetParent() ExtensionObjectDefinitionContract {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_BrowseRequest) GetRequestHeader() ExtensionObjectDefinition {
+func (m *_BrowseRequest) GetRequestHeader() RequestHeader {
 	return m.RequestHeader
 }
 
-func (m *_BrowseRequest) GetView() ExtensionObjectDefinition {
+func (m *_BrowseRequest) GetView() ViewDescription {
 	return m.View
 }
 
@@ -285,11 +281,7 @@ func (m *_BrowseRequest) GetRequestedMaxReferencesPerNode() uint32 {
 	return m.RequestedMaxReferencesPerNode
 }
 
-func (m *_BrowseRequest) GetNoOfNodesToBrowse() int32 {
-	return m.NoOfNodesToBrowse
-}
-
-func (m *_BrowseRequest) GetNodesToBrowse() []ExtensionObjectDefinition {
+func (m *_BrowseRequest) GetNodesToBrowse() []BrowseDescription {
 	return m.NodesToBrowse
 }
 
@@ -325,7 +317,7 @@ func (m *_BrowseRequest) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (requestedMaxReferencesPerNode)
 	lengthInBits += 32
 
-	// Simple field (noOfNodesToBrowse)
+	// Implicit Field (noOfNodesToBrowse)
 	lengthInBits += 32
 
 	// Array field
@@ -345,7 +337,7 @@ func (m *_BrowseRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BrowseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__browseRequest BrowseRequest, err error) {
+func (m *_BrowseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__browseRequest BrowseRequest, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -356,13 +348,13 @@ func (m *_BrowseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	requestHeader, err := ReadSimpleField[RequestHeader](ctx, "requestHeader", ReadComplex[RequestHeader](ExtensionObjectDefinitionParseWithBufferProducer[RequestHeader]((int32)(int32(391))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 	m.RequestHeader = requestHeader
 
-	view, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "view", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("513")), readBuffer))
+	view, err := ReadSimpleField[ViewDescription](ctx, "view", ReadComplex[ViewDescription](ExtensionObjectDefinitionParseWithBufferProducer[ViewDescription]((int32)(int32(513))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'view' field"))
 	}
@@ -374,13 +366,13 @@ func (m *_BrowseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	m.RequestedMaxReferencesPerNode = requestedMaxReferencesPerNode
 
-	noOfNodesToBrowse, err := ReadSimpleField(ctx, "noOfNodesToBrowse", ReadSignedInt(readBuffer, uint8(32)))
+	noOfNodesToBrowse, err := ReadImplicitField[int32](ctx, "noOfNodesToBrowse", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToBrowse' field"))
 	}
-	m.NoOfNodesToBrowse = noOfNodesToBrowse
+	_ = noOfNodesToBrowse
 
-	nodesToBrowse, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToBrowse", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("516")), readBuffer), uint64(noOfNodesToBrowse))
+	nodesToBrowse, err := ReadCountArrayField[BrowseDescription](ctx, "nodesToBrowse", ReadComplex[BrowseDescription](ExtensionObjectDefinitionParseWithBufferProducer[BrowseDescription]((int32)(int32(516))), readBuffer), uint64(noOfNodesToBrowse))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToBrowse' field"))
 	}
@@ -411,19 +403,19 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(pushErr, "Error pushing for BrowseRequest")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[RequestHeader](ctx, "requestHeader", m.GetRequestHeader(), WriteComplex[RequestHeader](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestHeader' field")
 		}
 
-		if err := WriteSimpleField[ExtensionObjectDefinition](ctx, "view", m.GetView(), WriteComplex[ExtensionObjectDefinition](writeBuffer)); err != nil {
+		if err := WriteSimpleField[ViewDescription](ctx, "view", m.GetView(), WriteComplex[ViewDescription](writeBuffer)); err != nil {
 			return errors.Wrap(err, "Error serializing 'view' field")
 		}
 
 		if err := WriteSimpleField[uint32](ctx, "requestedMaxReferencesPerNode", m.GetRequestedMaxReferencesPerNode(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'requestedMaxReferencesPerNode' field")
 		}
-
-		if err := WriteSimpleField[int32](ctx, "noOfNodesToBrowse", m.GetNoOfNodesToBrowse(), WriteSignedInt(writeBuffer, 32)); err != nil {
+		noOfNodesToBrowse := int32(utils.InlineIf(bool((m.GetNodesToBrowse()) == (nil)), func() any { return int32(-(int32(1))) }, func() any { return int32(int32(len(m.GetNodesToBrowse()))) }).(int32))
+		if err := WriteImplicitField(ctx, "noOfNodesToBrowse", noOfNodesToBrowse, WriteSignedInt(writeBuffer, 32)); err != nil {
 			return errors.Wrap(err, "Error serializing 'noOfNodesToBrowse' field")
 		}
 

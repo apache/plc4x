@@ -150,8 +150,8 @@ func (b *_DataSetReaderMessageDataType) CreateDataSetReaderMessageDataTypeBuilde
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_DataSetReaderMessageDataType) GetIdentifier() string {
-	return "15631"
+func (m *_DataSetReaderMessageDataType) GetExtensionId() int32 {
+	return int32(15631)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_DataSetReaderMessageDataType) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_DataSetReaderMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__dataSetReaderMessageDataType DataSetReaderMessageDataType, err error) {
+func (m *_DataSetReaderMessageDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__dataSetReaderMessageDataType DataSetReaderMessageDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

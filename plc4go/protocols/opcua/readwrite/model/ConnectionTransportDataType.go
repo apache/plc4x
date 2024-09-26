@@ -150,8 +150,8 @@ func (b *_ConnectionTransportDataType) CreateConnectionTransportDataTypeBuilder(
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_ConnectionTransportDataType) GetIdentifier() string {
-	return "15620"
+func (m *_ConnectionTransportDataType) GetExtensionId() int32 {
+	return int32(15620)
 }
 
 ///////////////////////
@@ -188,7 +188,7 @@ func (m *_ConnectionTransportDataType) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_ConnectionTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__connectionTransportDataType ConnectionTransportDataType, err error) {
+func (m *_ConnectionTransportDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__connectionTransportDataType ConnectionTransportDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

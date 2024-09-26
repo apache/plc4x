@@ -196,8 +196,8 @@ func (b *_SamplingIntervalDiagnosticsDataType) CreateSamplingIntervalDiagnostics
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_SamplingIntervalDiagnosticsDataType) GetIdentifier() string {
-	return "858"
+func (m *_SamplingIntervalDiagnosticsDataType) GetExtensionId() int32 {
+	return int32(858)
 }
 
 ///////////////////////
@@ -272,7 +272,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetLengthInBytes(ctx context.Cont
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_SamplingIntervalDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__samplingIntervalDiagnosticsDataType SamplingIntervalDiagnosticsDataType, err error) {
+func (m *_SamplingIntervalDiagnosticsDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__samplingIntervalDiagnosticsDataType SamplingIntervalDiagnosticsDataType, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

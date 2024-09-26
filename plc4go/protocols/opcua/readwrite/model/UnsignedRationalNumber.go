@@ -174,8 +174,8 @@ func (b *_UnsignedRationalNumber) CreateUnsignedRationalNumberBuilder() Unsigned
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_UnsignedRationalNumber) GetIdentifier() string {
-	return "24109"
+func (m *_UnsignedRationalNumber) GetExtensionId() int32 {
+	return int32(24109)
 }
 
 ///////////////////////
@@ -236,7 +236,7 @@ func (m *_UnsignedRationalNumber) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, identifier string) (__unsignedRationalNumber UnsignedRationalNumber, err error) {
+func (m *_UnsignedRationalNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_ExtensionObjectDefinition, extensionId int32) (__unsignedRationalNumber UnsignedRationalNumber, err error) {
 	m.ExtensionObjectDefinitionContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
