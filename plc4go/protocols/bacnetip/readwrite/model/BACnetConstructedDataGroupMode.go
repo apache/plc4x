@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataGroupMode) deepCopy() *_BACnetConstructedDataGrou
 		return nil
 	}
 	_BACnetConstructedDataGroupModeCopy := &_BACnetConstructedDataGroupMode{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.GroupMode.DeepCopy().(BACnetLiftGroupModeTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

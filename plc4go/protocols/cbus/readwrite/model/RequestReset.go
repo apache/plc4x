@@ -241,7 +241,7 @@ func (m *_RequestReset) deepCopy() *_RequestReset {
 		return nil
 	}
 	_RequestResetCopy := &_RequestReset{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 		m.TildePeek,
 		utils.CopyPtr[RequestType](m.SecondTilde),
 		m.TildePeek2,

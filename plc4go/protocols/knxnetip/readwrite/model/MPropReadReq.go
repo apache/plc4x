@@ -274,7 +274,7 @@ func (m *_MPropReadReq) deepCopy() *_MPropReadReq {
 		return nil
 	}
 	_MPropReadReqCopy := &_MPropReadReq{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.InterfaceObjectType,
 		m.ObjectInstance,
 		m.PropertyId,

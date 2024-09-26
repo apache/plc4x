@@ -189,7 +189,7 @@ func (m *_BACnetLogRecordLogDatumBitStringValue) deepCopy() *_BACnetLogRecordLog
 		return nil
 	}
 	_BACnetLogRecordLogDatumBitStringValueCopy := &_BACnetLogRecordLogDatumBitStringValue{
-		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
 		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
 	}
 	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m

@@ -157,7 +157,7 @@ func (m *_DataSetReaderTransportDataType) deepCopy() *_DataSetReaderTransportDat
 		return nil
 	}
 	_DataSetReaderTransportDataTypeCopy := &_DataSetReaderTransportDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetReaderTransportDataTypeCopy

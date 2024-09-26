@@ -229,7 +229,7 @@ func (m *_DeleteNodesItem) deepCopy() *_DeleteNodesItem {
 		return nil
 	}
 	_DeleteNodesItemCopy := &_DeleteNodesItem{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(NodeId),
 		m.DeleteTargetReferences,
 		m.reservedField0,

@@ -284,7 +284,7 @@ func (m *_ModifyMonitoredItemsRequest) deepCopy() *_ModifyMonitoredItemsRequest 
 		return nil
 	}
 	_ModifyMonitoredItemsRequestCopy := &_ModifyMonitoredItemsRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.TimestampsToReturn,

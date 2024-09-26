@@ -215,7 +215,7 @@ func (m *_FirmataMessageAnalogIO) deepCopy() *_FirmataMessageAnalogIO {
 		return nil
 	}
 	_FirmataMessageAnalogIOCopy := &_FirmataMessageAnalogIO{
-		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
 		m.Pin,
 		utils.DeepCopySlice[int8, int8](m.Data),
 	}

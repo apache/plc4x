@@ -310,7 +310,7 @@ func (m *_BACnetNotificationParametersSignedOutOfRange) deepCopy() *_BACnetNotif
 		return nil
 	}
 	_BACnetNotificationParametersSignedOutOfRangeCopy := &_BACnetNotificationParametersSignedOutOfRange{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ExceedingValue.DeepCopy().(BACnetContextTagSignedInteger),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

@@ -416,7 +416,7 @@ func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
 		return nil
 	}
 	_ErrorReportingDataGenericCopy := &_ErrorReportingDataGeneric{
-		m.ErrorReportingDataContract.DeepCopy().(ErrorReportingDataContract),
+		m.ErrorReportingDataContract.(*_ErrorReportingData).deepCopy(),
 		m.SystemCategory.DeepCopy().(ErrorReportingSystemCategory),
 		m.MostRecent,
 		m.Acknowledge,

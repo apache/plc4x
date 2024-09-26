@@ -186,7 +186,7 @@ func (m *_SecurityDataZoneUnsealed) deepCopy() *_SecurityDataZoneUnsealed {
 		return nil
 	}
 	_SecurityDataZoneUnsealedCopy := &_SecurityDataZoneUnsealed{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.ZoneNumber,
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

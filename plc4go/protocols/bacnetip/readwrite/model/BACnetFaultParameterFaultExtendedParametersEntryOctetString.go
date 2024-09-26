@@ -190,7 +190,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryOctetString) deepCopy(
 		return nil
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryOctetStringCopy := &_BACnetFaultParameterFaultExtendedParametersEntryOctetString{
-		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
 		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m

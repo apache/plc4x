@@ -220,7 +220,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) deepCopy() *_BACnetConfirme
 		return nil
 	}
 	_BACnetConfirmedServiceRequestCreateObjectCopy := &_BACnetConfirmedServiceRequestCreateObject{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.ObjectSpecifier.DeepCopy().(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier),
 		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
 	}

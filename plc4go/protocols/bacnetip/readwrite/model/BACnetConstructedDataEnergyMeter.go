@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEnergyMeter) deepCopy() *_BACnetConstructedDataEn
 		return nil
 	}
 	_BACnetConstructedDataEnergyMeterCopy := &_BACnetConstructedDataEnergyMeter{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EnergyMeter.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

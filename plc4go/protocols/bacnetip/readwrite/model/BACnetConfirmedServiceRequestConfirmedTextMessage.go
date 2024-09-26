@@ -269,7 +269,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessage) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessage{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.TextMessageSourceDevice.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.MessageClass.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass),
 		m.MessagePriority.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged),

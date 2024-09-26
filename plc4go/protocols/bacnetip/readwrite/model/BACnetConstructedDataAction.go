@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataAction) deepCopy() *_BACnetConstructedDataAction 
 		return nil
 	}
 	_BACnetConstructedDataActionCopy := &_BACnetConstructedDataAction{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetActionList, BACnetActionList](m.ActionLists),
 	}

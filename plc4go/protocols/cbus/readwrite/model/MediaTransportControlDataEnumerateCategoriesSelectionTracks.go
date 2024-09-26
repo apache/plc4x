@@ -305,7 +305,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) deepCopy(
 		return nil
 	}
 	_MediaTransportControlDataEnumerateCategoriesSelectionTracksCopy := &_MediaTransportControlDataEnumerateCategoriesSelectionTracks{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.EnumerateType,
 		m.Start,
 	}

@@ -157,7 +157,7 @@ func (m *_NullExtension) deepCopy() *_NullExtension {
 		return nil
 	}
 	_NullExtensionCopy := &_NullExtension{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _NullExtensionCopy

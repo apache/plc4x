@@ -389,7 +389,7 @@ func (m *_SetTriggeringResponse) deepCopy() *_SetTriggeringResponse {
 		return nil
 	}
 	_SetTriggeringResponseCopy := &_SetTriggeringResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfAddResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.AddResults),

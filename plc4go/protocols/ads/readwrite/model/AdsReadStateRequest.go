@@ -161,7 +161,7 @@ func (m *_AdsReadStateRequest) deepCopy() *_AdsReadStateRequest {
 		return nil
 	}
 	_AdsReadStateRequestCopy := &_AdsReadStateRequest{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 	}
 	m.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadStateRequestCopy

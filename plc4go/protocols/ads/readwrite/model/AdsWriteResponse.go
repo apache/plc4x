@@ -194,7 +194,7 @@ func (m *_AdsWriteResponse) deepCopy() *_AdsWriteResponse {
 		return nil
 	}
 	_AdsWriteResponseCopy := &_AdsWriteResponse{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.Result,
 	}
 	m.AmsPacketContract.(*_AmsPacket)._SubType = m

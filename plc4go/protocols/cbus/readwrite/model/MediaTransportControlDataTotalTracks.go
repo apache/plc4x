@@ -249,7 +249,7 @@ func (m *_MediaTransportControlDataTotalTracks) deepCopy() *_MediaTransportContr
 		return nil
 	}
 	_MediaTransportControlDataTotalTracksCopy := &_MediaTransportControlDataTotalTracks{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.TotalTracksMSB,
 		m.TotalTracksMMSB,
 		m.TotalTracksMLSB,

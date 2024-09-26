@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataAccessDoors) deepCopy() *_BACnetConstructedDataAc
 		return nil
 	}
 	_BACnetConstructedDataAccessDoorsCopy := &_BACnetConstructedDataAccessDoors{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.AccessDoors),
 	}

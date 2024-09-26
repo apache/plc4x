@@ -216,7 +216,7 @@ func (m *_ReplyOrConfirmationConfirmation) deepCopy() *_ReplyOrConfirmationConfi
 		return nil
 	}
 	_ReplyOrConfirmationConfirmationCopy := &_ReplyOrConfirmationConfirmation{
-		m.ReplyOrConfirmationContract.DeepCopy().(ReplyOrConfirmationContract),
+		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
 		m.Confirmation.DeepCopy().(Confirmation),
 		m.EmbeddedReply.DeepCopy().(ReplyOrConfirmation),
 	}

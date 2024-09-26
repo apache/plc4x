@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataEventLogLogBufferCopy := &_BACnetConstructedDataEventLogLogBuffer{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetEventLogRecord, BACnetEventLogRecord](m.FloorText),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

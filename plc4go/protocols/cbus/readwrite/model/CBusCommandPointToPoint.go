@@ -189,7 +189,7 @@ func (m *_CBusCommandPointToPoint) deepCopy() *_CBusCommandPointToPoint {
 		return nil
 	}
 	_CBusCommandPointToPointCopy := &_CBusCommandPointToPoint{
-		m.CBusCommandContract.DeepCopy().(CBusCommandContract),
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
 		m.Command.DeepCopy().(CBusPointToPointCommand),
 	}
 	m.CBusCommandContract.(*_CBusCommand)._SubType = m

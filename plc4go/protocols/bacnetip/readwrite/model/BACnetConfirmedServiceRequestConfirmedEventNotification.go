@@ -494,7 +494,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedEventNotification) deepCopy() *_
 		return nil
 	}
 	_BACnetConfirmedServiceRequestConfirmedEventNotificationCopy := &_BACnetConfirmedServiceRequestConfirmedEventNotification{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),

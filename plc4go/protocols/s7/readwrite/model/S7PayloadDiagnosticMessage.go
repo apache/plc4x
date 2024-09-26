@@ -327,7 +327,7 @@ func (m *_S7PayloadDiagnosticMessage) deepCopy() *_S7PayloadDiagnosticMessage {
 		return nil
 	}
 	_S7PayloadDiagnosticMessageCopy := &_S7PayloadDiagnosticMessage{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.EventId,
 		m.PriorityClass,
 		m.ObNumber,

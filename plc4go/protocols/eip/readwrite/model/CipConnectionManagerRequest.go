@@ -602,7 +602,7 @@ func (m *_CipConnectionManagerRequest) deepCopy() *_CipConnectionManagerRequest 
 		return nil
 	}
 	_CipConnectionManagerRequestCopy := &_CipConnectionManagerRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.ClassSegment.DeepCopy().(PathSegment),
 		m.InstanceSegment.DeepCopy().(PathSegment),
 		m.Priority,

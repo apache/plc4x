@@ -158,7 +158,7 @@ func (m *_RoutingIndication) deepCopy() *_RoutingIndication {
 		return nil
 	}
 	_RoutingIndicationCopy := &_RoutingIndication{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 	}
 	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
 	return _RoutingIndicationCopy

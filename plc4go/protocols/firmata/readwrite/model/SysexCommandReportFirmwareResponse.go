@@ -238,7 +238,7 @@ func (m *_SysexCommandReportFirmwareResponse) deepCopy() *_SysexCommandReportFir
 		return nil
 	}
 	_SysexCommandReportFirmwareResponseCopy := &_SysexCommandReportFirmwareResponse{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 		m.MajorVersion,
 		m.MinorVersion,
 		utils.DeepCopySlice[byte, byte](m.FileName),

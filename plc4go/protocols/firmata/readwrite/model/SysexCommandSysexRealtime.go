@@ -161,7 +161,7 @@ func (m *_SysexCommandSysexRealtime) deepCopy() *_SysexCommandSysexRealtime {
 		return nil
 	}
 	_SysexCommandSysexRealtimeCopy := &_SysexCommandSysexRealtime{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandSysexRealtimeCopy

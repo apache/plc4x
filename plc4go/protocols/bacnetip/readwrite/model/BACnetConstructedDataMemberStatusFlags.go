@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMemberStatusFlags) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataMemberStatusFlagsCopy := &_BACnetConstructedDataMemberStatusFlags{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -157,7 +157,7 @@ func (m *_ReaderGroupTransportDataType) deepCopy() *_ReaderGroupTransportDataTyp
 		return nil
 	}
 	_ReaderGroupTransportDataTypeCopy := &_ReaderGroupTransportDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReaderGroupTransportDataTypeCopy

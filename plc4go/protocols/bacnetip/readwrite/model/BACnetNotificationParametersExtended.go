@@ -285,7 +285,7 @@ func (m *_BACnetNotificationParametersExtended) deepCopy() *_BACnetNotificationP
 		return nil
 	}
 	_BACnetNotificationParametersExtendedCopy := &_BACnetNotificationParametersExtended{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
 		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),

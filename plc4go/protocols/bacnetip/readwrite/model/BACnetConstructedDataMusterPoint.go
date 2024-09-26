@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMusterPoint) deepCopy() *_BACnetConstructedDataMu
 		return nil
 	}
 	_BACnetConstructedDataMusterPointCopy := &_BACnetConstructedDataMusterPoint{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MusterPoint.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

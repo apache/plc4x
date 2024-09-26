@@ -221,7 +221,7 @@ func (m *_VariantDiagnosticInfo) deepCopy() *_VariantDiagnosticInfo {
 		return nil
 	}
 	_VariantDiagnosticInfoCopy := &_VariantDiagnosticInfo{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.Value),
 	}

@@ -153,7 +153,7 @@ func (m *_ClockAndTimekeepingDataRequestRefresh) deepCopy() *_ClockAndTimekeepin
 		return nil
 	}
 	_ClockAndTimekeepingDataRequestRefreshCopy := &_ClockAndTimekeepingDataRequestRefresh{
-		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+		m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).deepCopy(),
 	}
 	m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = m
 	return _ClockAndTimekeepingDataRequestRefreshCopy

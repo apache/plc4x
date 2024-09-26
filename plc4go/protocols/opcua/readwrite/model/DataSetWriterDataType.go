@@ -413,7 +413,7 @@ func (m *_DataSetWriterDataType) deepCopy() *_DataSetWriterDataType {
 		return nil
 	}
 	_DataSetWriterDataTypeCopy := &_DataSetWriterDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.Enabled,
 		m.DataSetWriterId,

@@ -337,7 +337,7 @@ func (m *_QuantityDimension) deepCopy() *_QuantityDimension {
 		return nil
 	}
 	_QuantityDimensionCopy := &_QuantityDimension{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.MassExponent,
 		m.LengthExponent,
 		m.TimeExponent,

@@ -47,7 +47,6 @@ type Payload interface {
 
 // PayloadContract provides a set of functions which can be overwritten by a sub struct
 type PayloadContract interface {
-	utils.Copyable
 	// GetSequenceHeader returns SequenceHeader (property field)
 	GetSequenceHeader() SequenceHeader
 	// GetByteCount() returns a parser argument

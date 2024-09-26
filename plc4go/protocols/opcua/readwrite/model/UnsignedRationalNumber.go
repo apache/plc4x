@@ -211,7 +211,7 @@ func (m *_UnsignedRationalNumber) deepCopy() *_UnsignedRationalNumber {
 		return nil
 	}
 	_UnsignedRationalNumberCopy := &_UnsignedRationalNumber{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Numerator,
 		m.Denominator,
 	}

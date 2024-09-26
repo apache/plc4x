@@ -301,7 +301,7 @@ func (m *_MultipleServiceResponse) deepCopy() *_MultipleServiceResponse {
 		return nil
 	}
 	_MultipleServiceResponseCopy := &_MultipleServiceResponse{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.ExtStatus,
 		m.ServiceNb,

@@ -157,7 +157,7 @@ func (m *_ApduControlDisconnect) deepCopy() *_ApduControlDisconnect {
 		return nil
 	}
 	_ApduControlDisconnectCopy := &_ApduControlDisconnect{
-		m.ApduControlContract.DeepCopy().(ApduControlContract),
+		m.ApduControlContract.(*_ApduControl).deepCopy(),
 	}
 	m.ApduControlContract.(*_ApduControl)._SubType = m
 	return _ApduControlDisconnectCopy

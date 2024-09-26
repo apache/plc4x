@@ -255,7 +255,7 @@ func (m *_AirConditioningDataZoneTemperature) deepCopy() *_AirConditioningDataZo
 		return nil
 	}
 	_AirConditioningDataZoneTemperatureCopy := &_AirConditioningDataZoneTemperature{
-		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
 		m.ZoneList.DeepCopy().(HVACZoneList),
 		m.Temperature.DeepCopy().(HVACTemperature),

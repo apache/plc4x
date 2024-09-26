@@ -285,7 +285,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) deepCopy() *_BACnetNotifica
 		return nil
 	}
 	_BACnetNotificationParametersUnsignedRangeCopy := &_BACnetNotificationParametersUnsignedRange{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.SequenceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

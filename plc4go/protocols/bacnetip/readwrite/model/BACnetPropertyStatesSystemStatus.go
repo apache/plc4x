@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesSystemStatus) deepCopy() *_BACnetPropertyStatesSys
 		return nil
 	}
 	_BACnetPropertyStatesSystemStatusCopy := &_BACnetPropertyStatesSystemStatus{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

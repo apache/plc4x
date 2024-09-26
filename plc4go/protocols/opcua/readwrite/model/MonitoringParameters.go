@@ -292,7 +292,7 @@ func (m *_MonitoringParameters) deepCopy() *_MonitoringParameters {
 		return nil
 	}
 	_MonitoringParametersCopy := &_MonitoringParameters{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ClientHandle,
 		m.SamplingInterval,
 		m.Filter.DeepCopy().(ExtensionObject),

@@ -192,7 +192,7 @@ func (m *_IdentifyReplyCommandGAVValuesStored) deepCopy() *_IdentifyReplyCommand
 		return nil
 	}
 	_IdentifyReplyCommandGAVValuesStoredCopy := &_IdentifyReplyCommandGAVValuesStored{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Values),
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

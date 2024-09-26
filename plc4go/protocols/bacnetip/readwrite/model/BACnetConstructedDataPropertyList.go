@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataPropertyList) deepCopy() *_BACnetConstructedDataP
 		return nil
 	}
 	_BACnetConstructedDataPropertyListCopy := &_BACnetConstructedDataPropertyList{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetPropertyIdentifierTagged, BACnetPropertyIdentifierTagged](m.PropertyList),
 	}

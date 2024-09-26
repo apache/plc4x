@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesNetworkType) deepCopy() *_BACnetPropertyStatesNetw
 		return nil
 	}
 	_BACnetPropertyStatesNetworkTypeCopy := &_BACnetPropertyStatesNetworkType{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.NetworkType.DeepCopy().(BACnetNetworkTypeTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

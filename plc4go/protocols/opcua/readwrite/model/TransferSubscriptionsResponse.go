@@ -291,7 +291,7 @@ func (m *_TransferSubscriptionsResponse) deepCopy() *_TransferSubscriptionsRespo
 		return nil
 	}
 	_TransferSubscriptionsResponseCopy := &_TransferSubscriptionsResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),

@@ -223,7 +223,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) deepCopy() *_S7Payload
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionReadSzlRequestCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlRequest{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.SzlId.DeepCopy().(SzlId),
 		m.SzlIndex,
 	}

@@ -166,7 +166,7 @@ func (m *_BACnetConstructedDataEventEnrollmentAll) deepCopy() *_BACnetConstructe
 		return nil
 	}
 	_BACnetConstructedDataEventEnrollmentAllCopy := &_BACnetConstructedDataEventEnrollmentAll{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataEventEnrollmentAllCopy

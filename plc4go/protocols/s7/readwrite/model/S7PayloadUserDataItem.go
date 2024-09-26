@@ -47,7 +47,6 @@ type S7PayloadUserDataItem interface {
 
 // S7PayloadUserDataItemContract provides a set of functions which can be overwritten by a sub struct
 type S7PayloadUserDataItemContract interface {
-	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)

@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetConstructedDataTrendLogLogDeviceObjectPropertyCopy := &_BACnetConstructedDataTrendLogLogDeviceObjectProperty{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LogDeviceObjectProperty.DeepCopy().(BACnetDeviceObjectPropertyReference),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

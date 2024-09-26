@@ -206,7 +206,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetConfirmedServiceRequestReadPropertyConditionalCopy := &_BACnetConfirmedServiceRequestReadPropertyConditional{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceRequestPayloadLength,
 	}

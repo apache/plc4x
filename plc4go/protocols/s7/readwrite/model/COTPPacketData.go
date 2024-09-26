@@ -211,7 +211,7 @@ func (m *_COTPPacketData) deepCopy() *_COTPPacketData {
 		return nil
 	}
 	_COTPPacketDataCopy := &_COTPPacketData{
-		m.COTPPacketContract.DeepCopy().(COTPPacketContract),
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
 		m.Eot,
 		m.TpduRef,
 	}

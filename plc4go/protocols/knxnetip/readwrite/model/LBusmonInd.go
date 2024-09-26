@@ -263,7 +263,7 @@ func (m *_LBusmonInd) deepCopy() *_LBusmonInd {
 		return nil
 	}
 	_LBusmonIndCopy := &_LBusmonInd{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.AdditionalInformationLength,
 		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
 		m.DataFrame.DeepCopy().(LDataFrame),

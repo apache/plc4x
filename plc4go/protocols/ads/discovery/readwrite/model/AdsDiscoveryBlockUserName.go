@@ -193,7 +193,7 @@ func (m *_AdsDiscoveryBlockUserName) deepCopy() *_AdsDiscoveryBlockUserName {
 		return nil
 	}
 	_AdsDiscoveryBlockUserNameCopy := &_AdsDiscoveryBlockUserName{
-		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		m.UserName.DeepCopy().(AmsString),
 	}
 	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m

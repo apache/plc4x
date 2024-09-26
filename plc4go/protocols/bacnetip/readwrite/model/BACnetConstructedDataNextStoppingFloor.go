@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataNextStoppingFloor) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataNextStoppingFloorCopy := &_BACnetConstructedDataNextStoppingFloor{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NextStoppingFloor.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

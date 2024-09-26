@@ -174,7 +174,7 @@ func (m *_ApduDataGroupValueRead) deepCopy() *_ApduDataGroupValueRead {
 		return nil
 	}
 	_ApduDataGroupValueReadCopy := &_ApduDataGroupValueRead{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.reservedField0,
 	}
 	m.ApduDataContract.(*_ApduData)._SubType = m

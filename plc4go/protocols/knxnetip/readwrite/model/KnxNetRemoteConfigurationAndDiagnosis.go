@@ -190,7 +190,7 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) deepCopy() *_KnxNetRemoteConfig
 		return nil
 	}
 	_KnxNetRemoteConfigurationAndDiagnosisCopy := &_KnxNetRemoteConfigurationAndDiagnosis{
-		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
 	m.ServiceIdContract.(*_ServiceId)._SubType = m

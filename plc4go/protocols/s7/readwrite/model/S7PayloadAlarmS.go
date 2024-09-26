@@ -201,7 +201,7 @@ func (m *_S7PayloadAlarmS) deepCopy() *_S7PayloadAlarmS {
 		return nil
 	}
 	_S7PayloadAlarmSCopy := &_S7PayloadAlarmS{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.AlarmMessage.DeepCopy().(AlarmMessagePushType),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m

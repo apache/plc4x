@@ -238,7 +238,7 @@ func (m *_GetAttributeAllRequest) deepCopy() *_GetAttributeAllRequest {
 		return nil
 	}
 	_GetAttributeAllRequestCopy := &_GetAttributeAllRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.ClassSegment.DeepCopy().(PathSegment),
 		m.InstanceSegment.DeepCopy().(PathSegment),
 	}

@@ -224,7 +224,7 @@ func (m *_BACnetContextTagReal) deepCopy() *_BACnetContextTagReal {
 		return nil
 	}
 	_BACnetContextTagRealCopy := &_BACnetContextTagReal{
-		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadReal),
 	}
 	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m

@@ -206,7 +206,7 @@ func (m *_ConnectionRequestInformationTunnelConnection) deepCopy() *_ConnectionR
 		return nil
 	}
 	_ConnectionRequestInformationTunnelConnectionCopy := &_ConnectionRequestInformationTunnelConnection{
-		m.ConnectionRequestInformationContract.DeepCopy().(ConnectionRequestInformationContract),
+		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
 		m.KnxLayer,
 		m.reservedField0,
 	}

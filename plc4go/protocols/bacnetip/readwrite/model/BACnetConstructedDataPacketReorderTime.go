@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataPacketReorderTime) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataPacketReorderTimeCopy := &_BACnetConstructedDataPacketReorderTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PacketReorderTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

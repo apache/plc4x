@@ -157,7 +157,7 @@ func (m *_DataTypeDefinition) deepCopy() *_DataTypeDefinition {
 		return nil
 	}
 	_DataTypeDefinitionCopy := &_DataTypeDefinition{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeDefinitionCopy

@@ -162,7 +162,7 @@ func (m *_SALDataRoomControlSystem) deepCopy() *_SALDataRoomControlSystem {
 		return nil
 	}
 	_SALDataRoomControlSystemCopy := &_SALDataRoomControlSystem{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataRoomControlSystemCopy

@@ -219,7 +219,7 @@ func (m *_DescriptionResponse) deepCopy() *_DescriptionResponse {
 		return nil
 	}
 	_DescriptionResponseCopy := &_DescriptionResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
 		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
 	}

@@ -225,7 +225,7 @@ func (m *_CBusPointToMultiPointCommandNormal) deepCopy() *_CBusPointToMultiPoint
 		return nil
 	}
 	_CBusPointToMultiPointCommandNormalCopy := &_CBusPointToMultiPointCommandNormal{
-		m.CBusPointToMultiPointCommandContract.DeepCopy().(CBusPointToMultiPointCommandContract),
+		m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).deepCopy(),
 		m.Application,
 		m.SalData.DeepCopy().(SALData),
 		m.reservedField0,

@@ -186,7 +186,7 @@ func (m *_CALDataIdentify) deepCopy() *_CALDataIdentify {
 		return nil
 	}
 	_CALDataIdentifyCopy := &_CALDataIdentify{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.Attribute,
 	}
 	m.CALDataContract.(*_CALData)._SubType = m

@@ -297,7 +297,7 @@ func (m *_DF1SymbolMessageFrame) deepCopy() *_DF1SymbolMessageFrame {
 		return nil
 	}
 	_DF1SymbolMessageFrameCopy := &_DF1SymbolMessageFrame{
-		m.DF1SymbolContract.DeepCopy().(DF1SymbolContract),
+		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
 		m.DestinationAddress,
 		m.SourceAddress,
 		m.Command.DeepCopy().(DF1Command),

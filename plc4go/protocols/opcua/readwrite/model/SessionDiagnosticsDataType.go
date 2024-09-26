@@ -1202,7 +1202,7 @@ func (m *_SessionDiagnosticsDataType) deepCopy() *_SessionDiagnosticsDataType {
 		return nil
 	}
 	_SessionDiagnosticsDataTypeCopy := &_SessionDiagnosticsDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SessionId.DeepCopy().(NodeId),
 		m.SessionName.DeepCopy().(PascalString),
 		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),

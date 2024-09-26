@@ -259,7 +259,7 @@ func (m *_MonitoredItemModifyResult) deepCopy() *_MonitoredItemModifyResult {
 		return nil
 	}
 	_MonitoredItemModifyResultCopy := &_MonitoredItemModifyResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.RevisedSamplingInterval,
 		m.RevisedQueueSize,

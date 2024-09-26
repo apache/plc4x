@@ -204,7 +204,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) deepCopy() *_CBusPointToPoi
 		return nil
 	}
 	_CBusPointToPointToMultiPointCommandStatusCopy := &_CBusPointToPointToMultiPointCommandStatus{
-		m.CBusPointToPointToMultiPointCommandContract.DeepCopy().(CBusPointToPointToMultiPointCommandContract),
+		m.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand).deepCopy(),
 		m.StatusRequest.DeepCopy().(StatusRequest),
 		m.reservedField0,
 	}

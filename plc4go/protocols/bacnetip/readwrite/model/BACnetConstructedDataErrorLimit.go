@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataErrorLimit) deepCopy() *_BACnetConstructedDataErr
 		return nil
 	}
 	_BACnetConstructedDataErrorLimitCopy := &_BACnetConstructedDataErrorLimit{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ErrorLimit.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

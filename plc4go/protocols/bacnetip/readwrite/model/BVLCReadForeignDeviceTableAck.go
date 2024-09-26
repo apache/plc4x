@@ -209,7 +209,7 @@ func (m *_BVLCReadForeignDeviceTableAck) deepCopy() *_BVLCReadForeignDeviceTable
 		return nil
 	}
 	_BVLCReadForeignDeviceTableAckCopy := &_BVLCReadForeignDeviceTableAck{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCForeignDeviceTableEntry, BVLCForeignDeviceTableEntry](m.Table),
 		m.BvlcPayloadLength,
 	}

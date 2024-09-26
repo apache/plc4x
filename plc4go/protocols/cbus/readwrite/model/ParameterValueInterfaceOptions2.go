@@ -221,7 +221,7 @@ func (m *_ParameterValueInterfaceOptions2) deepCopy() *_ParameterValueInterfaceO
 		return nil
 	}
 	_ParameterValueInterfaceOptions2Copy := &_ParameterValueInterfaceOptions2{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		m.Value.DeepCopy().(InterfaceOptions2),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

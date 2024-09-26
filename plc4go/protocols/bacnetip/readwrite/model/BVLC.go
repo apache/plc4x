@@ -52,7 +52,6 @@ type BVLC interface {
 
 // BVLCContract provides a set of functions which can be overwritten by a sub struct
 type BVLCContract interface {
-	utils.Copyable
 	// GetBvlcPayloadLength returns BvlcPayloadLength (virtual field)
 	GetBvlcPayloadLength() uint16
 	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)

@@ -269,7 +269,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) deepCopy() *_BA
 		return nil
 	}
 	_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{
-		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
 		m.TextMessageSourceDevice.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.MessageClass.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass),
 		m.MessagePriority.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged),

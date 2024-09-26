@@ -441,7 +441,7 @@ func (m *_NLMUpdateKeyUpdate) deepCopy() *_NLMUpdateKeyUpdate {
 		return nil
 	}
 	_NLMUpdateKeyUpdateCopy := &_NLMUpdateKeyUpdate{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.ControlFlags.DeepCopy().(NLMUpdateKeyUpdateControlFlags),
 		utils.CopyPtr[byte](m.Set1KeyRevision),
 		utils.CopyPtr[uint32](m.Set1ActivationTime),

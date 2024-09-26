@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataVerificationTime) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataVerificationTimeCopy := &_BACnetConstructedDataVerificationTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.VerificationTime.DeepCopy().(BACnetApplicationTagSignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

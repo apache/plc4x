@@ -257,7 +257,7 @@ func (m *_LightingDataLabel) deepCopy() *_LightingDataLabel {
 		return nil
 	}
 	_LightingDataLabelCopy := &_LightingDataLabel{
-		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
 		m.LabelOptions.DeepCopy().(LightingLabelOptions),
 		utils.CopyPtr[Language](m.Language),

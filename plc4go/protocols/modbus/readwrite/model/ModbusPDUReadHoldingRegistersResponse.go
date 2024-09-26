@@ -213,7 +213,7 @@ func (m *_ModbusPDUReadHoldingRegistersResponse) deepCopy() *_ModbusPDUReadHoldi
 		return nil
 	}
 	_ModbusPDUReadHoldingRegistersResponseCopy := &_ModbusPDUReadHoldingRegistersResponse{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m

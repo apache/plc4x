@@ -359,7 +359,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) deepCopy() *_S7ParameterUserDataI
 		return nil
 	}
 	_S7ParameterUserDataItemCPUFunctionsCopy := &_S7ParameterUserDataItemCPUFunctions{
-		m.S7ParameterUserDataItemContract.DeepCopy().(S7ParameterUserDataItemContract),
+		m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).deepCopy(),
 		m.Method,
 		m.CpuFunctionType,
 		m.CpuFunctionGroup,

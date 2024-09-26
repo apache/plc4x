@@ -157,7 +157,7 @@ func (m *_SubscribedDataSetDataType) deepCopy() *_SubscribedDataSetDataType {
 		return nil
 	}
 	_SubscribedDataSetDataTypeCopy := &_SubscribedDataSetDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _SubscribedDataSetDataTypeCopy

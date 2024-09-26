@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) deepCopy() *_BACnetCo
 		return nil
 	}
 	_BACnetConstructedDataLargeAnalogValueResolutionCopy := &_BACnetConstructedDataLargeAnalogValueResolution{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Resolution.DeepCopy().(BACnetApplicationTagDouble),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

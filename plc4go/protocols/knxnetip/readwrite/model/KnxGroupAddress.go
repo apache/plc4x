@@ -45,7 +45,6 @@ type KnxGroupAddress interface {
 
 // KnxGroupAddressContract provides a set of functions which can be overwritten by a sub struct
 type KnxGroupAddressContract interface {
-	utils.Copyable
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
 }

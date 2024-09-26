@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataBinaryLightingOutputFeedbackValue) deepCopy() *_B
 		return nil
 	}
 	_BACnetConstructedDataBinaryLightingOutputFeedbackValueCopy := &_BACnetConstructedDataBinaryLightingOutputFeedbackValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.FeedbackValue.DeepCopy().(BACnetBinaryLightingPVTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

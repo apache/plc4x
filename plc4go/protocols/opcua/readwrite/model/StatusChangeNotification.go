@@ -230,7 +230,7 @@ func (m *_StatusChangeNotification) deepCopy() *_StatusChangeNotification {
 		return nil
 	}
 	_StatusChangeNotificationCopy := &_StatusChangeNotification{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Status.DeepCopy().(StatusCode),
 		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
 	}

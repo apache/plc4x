@@ -260,7 +260,7 @@ func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
 		return nil
 	}
 	_NotificationMessageCopy := &_NotificationMessage{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SequenceNumber,
 		m.PublishTime,
 		m.NoOfNotificationData,

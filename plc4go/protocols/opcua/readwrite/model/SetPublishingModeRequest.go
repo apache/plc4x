@@ -273,7 +273,7 @@ func (m *_SetPublishingModeRequest) deepCopy() *_SetPublishingModeRequest {
 		return nil
 	}
 	_SetPublishingModeRequestCopy := &_SetPublishingModeRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.PublishingEnabled,
 		m.NoOfSubscriptionIds,

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTimeOfDeviceRestart) deepCopy() *_BACnetConstruct
 		return nil
 	}
 	_BACnetConstructedDataTimeOfDeviceRestartCopy := &_BACnetConstructedDataTimeOfDeviceRestart{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.TimeOfDeviceRestart.DeepCopy().(BACnetTimeStamp),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

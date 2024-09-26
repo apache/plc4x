@@ -157,7 +157,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) deepCopy() *_ApduDataExtDomainA
 		return nil
 	}
 	_ApduDataExtDomainAddressSelectiveReadCopy := &_ApduDataExtDomainAddressSelectiveRead{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtDomainAddressSelectiveReadCopy

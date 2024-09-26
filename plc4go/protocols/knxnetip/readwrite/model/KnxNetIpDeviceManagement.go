@@ -190,7 +190,7 @@ func (m *_KnxNetIpDeviceManagement) deepCopy() *_KnxNetIpDeviceManagement {
 		return nil
 	}
 	_KnxNetIpDeviceManagementCopy := &_KnxNetIpDeviceManagement{
-		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
 	m.ServiceIdContract.(*_ServiceId)._SubType = m

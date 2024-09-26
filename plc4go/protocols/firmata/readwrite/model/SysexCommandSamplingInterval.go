@@ -161,7 +161,7 @@ func (m *_SysexCommandSamplingInterval) deepCopy() *_SysexCommandSamplingInterva
 		return nil
 	}
 	_SysexCommandSamplingIntervalCopy := &_SysexCommandSamplingInterval{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandSamplingIntervalCopy

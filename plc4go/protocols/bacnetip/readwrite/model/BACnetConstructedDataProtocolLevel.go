@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataProtocolLevel) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataProtocolLevelCopy := &_BACnetConstructedDataProtocolLevel{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

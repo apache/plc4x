@@ -242,7 +242,7 @@ func (m *_GetEndpointsResponse) deepCopy() *_GetEndpointsResponse {
 		return nil
 	}
 	_GetEndpointsResponseCopy := &_GetEndpointsResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfEndpoints,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Endpoints),

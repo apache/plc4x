@@ -298,7 +298,7 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) deepCopy() *_Modbus
 		return nil
 	}
 	_ModbusPDUReadWriteMultipleHoldingRegistersRequestCopy := &_ModbusPDUReadWriteMultipleHoldingRegistersRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.ReadStartingAddress,
 		m.ReadQuantity,
 		m.WriteStartingAddress,

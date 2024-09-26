@@ -235,7 +235,7 @@ func (m *_ViewDescription) deepCopy() *_ViewDescription {
 		return nil
 	}
 	_ViewDescriptionCopy := &_ViewDescription{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ViewId.DeepCopy().(NodeId),
 		m.Timestamp,
 		m.ViewVersion,

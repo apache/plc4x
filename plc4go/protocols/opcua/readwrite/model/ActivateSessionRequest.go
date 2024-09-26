@@ -363,7 +363,7 @@ func (m *_ActivateSessionRequest) deepCopy() *_ActivateSessionRequest {
 		return nil
 	}
 	_ActivateSessionRequestCopy := &_ActivateSessionRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.ClientSignature.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfClientSoftwareCertificates,

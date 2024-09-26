@@ -157,7 +157,7 @@ func (m *_ApduControlAck) deepCopy() *_ApduControlAck {
 		return nil
 	}
 	_ApduControlAckCopy := &_ApduControlAck{
-		m.ApduControlContract.DeepCopy().(ApduControlContract),
+		m.ApduControlContract.(*_ApduControl).deepCopy(),
 	}
 	m.ApduControlContract.(*_ApduControl)._SubType = m
 	return _ApduControlAckCopy

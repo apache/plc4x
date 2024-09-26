@@ -157,7 +157,7 @@ func (m *_ApduDataRestart) deepCopy() *_ApduDataRestart {
 		return nil
 	}
 	_ApduDataRestartCopy := &_ApduDataRestart{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
 	m.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataRestartCopy

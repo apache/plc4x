@@ -165,7 +165,7 @@ func (m *_SetAttributeSingleRequest) deepCopy() *_SetAttributeSingleRequest {
 		return nil
 	}
 	_SetAttributeSingleRequestCopy := &_SetAttributeSingleRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 	}
 	m.CipServiceContract.(*_CipService)._SubType = m
 	return _SetAttributeSingleRequestCopy

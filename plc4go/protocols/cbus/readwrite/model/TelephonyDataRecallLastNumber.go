@@ -260,7 +260,7 @@ func (m *_TelephonyDataRecallLastNumber) deepCopy() *_TelephonyDataRecallLastNum
 		return nil
 	}
 	_TelephonyDataRecallLastNumberCopy := &_TelephonyDataRecallLastNumber{
-		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 		m.RecallLastNumberType,
 		m.Number,
 	}

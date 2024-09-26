@@ -234,7 +234,7 @@ func (m *_OpcuaOpenResponse) deepCopy() *_OpcuaOpenResponse {
 		return nil
 	}
 	_OpcuaOpenResponseCopy := &_OpcuaOpenResponse{
-		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		m.OpenResponse.DeepCopy().(OpenChannelMessage),
 		m.Message.DeepCopy().(Payload),
 		m.TotalLength,

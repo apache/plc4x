@@ -47,7 +47,6 @@ type PortSegmentType interface {
 
 // PortSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type PortSegmentTypeContract interface {
-	utils.Copyable
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
 }

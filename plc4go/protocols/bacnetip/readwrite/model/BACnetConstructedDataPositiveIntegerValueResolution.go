@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueResolution) deepCopy() *_BACn
 		return nil
 	}
 	_BACnetConstructedDataPositiveIntegerValueResolutionCopy := &_BACnetConstructedDataPositiveIntegerValueResolution{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

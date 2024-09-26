@@ -189,7 +189,7 @@ func (m *_BACnetScaleFloatScale) deepCopy() *_BACnetScaleFloatScale {
 		return nil
 	}
 	_BACnetScaleFloatScaleCopy := &_BACnetScaleFloatScale{
-		m.BACnetScaleContract.DeepCopy().(BACnetScaleContract),
+		m.BACnetScaleContract.(*_BACnetScale).deepCopy(),
 		m.FloatScale.DeepCopy().(BACnetContextTagReal),
 	}
 	m.BACnetScaleContract.(*_BACnetScale)._SubType = m

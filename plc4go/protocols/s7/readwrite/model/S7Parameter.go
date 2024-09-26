@@ -47,7 +47,6 @@ type S7Parameter interface {
 
 // S7ParameterContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterContract interface {
-	utils.Copyable
 	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
 }

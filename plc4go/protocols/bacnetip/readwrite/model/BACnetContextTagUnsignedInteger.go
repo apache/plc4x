@@ -224,7 +224,7 @@ func (m *_BACnetContextTagUnsignedInteger) deepCopy() *_BACnetContextTagUnsigned
 		return nil
 	}
 	_BACnetContextTagUnsignedIntegerCopy := &_BACnetContextTagUnsignedInteger{
-		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
 	}
 	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m

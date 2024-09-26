@@ -253,7 +253,7 @@ func (m *_ChannelSecurityToken) deepCopy() *_ChannelSecurityToken {
 		return nil
 	}
 	_ChannelSecurityTokenCopy := &_ChannelSecurityToken{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ChannelId,
 		m.TokenId,
 		m.CreatedAt,

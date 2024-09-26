@@ -49,7 +49,6 @@ type FirmataMessage interface {
 
 // FirmataMessageContract provides a set of functions which can be overwritten by a sub struct
 type FirmataMessageContract interface {
-	utils.Copyable
 	// GetResponse() returns a parser argument
 	GetResponse() bool
 	// IsFirmataMessage is a marker method to prevent unintentional type checks (interfaces of same signature)

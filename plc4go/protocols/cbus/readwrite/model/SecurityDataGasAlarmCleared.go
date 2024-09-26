@@ -153,7 +153,7 @@ func (m *_SecurityDataGasAlarmCleared) deepCopy() *_SecurityDataGasAlarmCleared 
 		return nil
 	}
 	_SecurityDataGasAlarmClearedCopy := &_SecurityDataGasAlarmCleared{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataGasAlarmClearedCopy

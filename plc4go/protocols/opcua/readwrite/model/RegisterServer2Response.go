@@ -291,7 +291,7 @@ func (m *_RegisterServer2Response) deepCopy() *_RegisterServer2Response {
 		return nil
 	}
 	_RegisterServer2ResponseCopy := &_RegisterServer2Response{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfConfigurationResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.ConfigurationResults),

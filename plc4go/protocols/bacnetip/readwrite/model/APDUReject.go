@@ -229,7 +229,7 @@ func (m *_APDUReject) deepCopy() *_APDUReject {
 		return nil
 	}
 	_APDURejectCopy := &_APDUReject{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.OriginalInvokeId,
 		m.RejectReason.DeepCopy().(BACnetRejectReasonTagged),
 		m.reservedField0,

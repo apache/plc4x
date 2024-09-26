@@ -223,7 +223,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoIs) deepCopy() *_BACnetUnconfirmedSe
 		return nil
 	}
 	_BACnetUnconfirmedServiceRequestWhoIsCopy := &_BACnetUnconfirmedServiceRequestWhoIs{
-		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
 		m.DeviceInstanceRangeLowLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.DeviceInstanceRangeHighLimit.DeepCopy().(BACnetContextTagUnsignedInteger),
 	}

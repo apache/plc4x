@@ -346,7 +346,7 @@ func (m *_ClockAndTimekeepingDataUpdateTime) deepCopy() *_ClockAndTimekeepingDat
 		return nil
 	}
 	_ClockAndTimekeepingDataUpdateTimeCopy := &_ClockAndTimekeepingDataUpdateTime{
-		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+		m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).deepCopy(),
 		m.Hours,
 		m.Minute,
 		m.Second,

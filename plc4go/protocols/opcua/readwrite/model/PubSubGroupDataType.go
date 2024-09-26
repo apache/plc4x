@@ -393,7 +393,7 @@ func (m *_PubSubGroupDataType) deepCopy() *_PubSubGroupDataType {
 		return nil
 	}
 	_PubSubGroupDataTypeCopy := &_PubSubGroupDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.Enabled,
 		m.SecurityMode,

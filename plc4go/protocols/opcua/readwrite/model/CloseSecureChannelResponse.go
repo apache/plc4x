@@ -193,7 +193,7 @@ func (m *_CloseSecureChannelResponse) deepCopy() *_CloseSecureChannelResponse {
 		return nil
 	}
 	_CloseSecureChannelResponseCopy := &_CloseSecureChannelResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

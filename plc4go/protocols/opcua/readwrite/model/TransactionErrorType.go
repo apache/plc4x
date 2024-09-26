@@ -241,7 +241,7 @@ func (m *_TransactionErrorType) deepCopy() *_TransactionErrorType {
 		return nil
 	}
 	_TransactionErrorTypeCopy := &_TransactionErrorType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.TargetId.DeepCopy().(NodeId),
 		m.Error.DeepCopy().(StatusCode),
 		m.Message.DeepCopy().(LocalizedText),

@@ -47,7 +47,6 @@ type EncodedReply interface {
 
 // EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
 type EncodedReplyContract interface {
-	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsMonitoredSAL returns IsMonitoredSAL (virtual field)

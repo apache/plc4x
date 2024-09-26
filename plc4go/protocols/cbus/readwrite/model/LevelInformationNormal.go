@@ -260,7 +260,7 @@ func (m *_LevelInformationNormal) deepCopy() *_LevelInformationNormal {
 		return nil
 	}
 	_LevelInformationNormalCopy := &_LevelInformationNormal{
-		m.LevelInformationContract.DeepCopy().(LevelInformationContract),
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
 		m.Pair1,
 		m.Pair2,
 	}

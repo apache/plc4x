@@ -191,7 +191,7 @@ func (m *_DF1UnprotectedReadResponse) deepCopy() *_DF1UnprotectedReadResponse {
 		return nil
 	}
 	_DF1UnprotectedReadResponseCopy := &_DF1UnprotectedReadResponse{
-		m.DF1CommandContract.DeepCopy().(DF1CommandContract),
+		m.DF1CommandContract.(*_DF1Command).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
 	m.DF1CommandContract.(*_DF1Command)._SubType = m

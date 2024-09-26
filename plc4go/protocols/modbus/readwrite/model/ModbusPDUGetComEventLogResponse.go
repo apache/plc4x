@@ -276,7 +276,7 @@ func (m *_ModbusPDUGetComEventLogResponse) deepCopy() *_ModbusPDUGetComEventLogR
 		return nil
 	}
 	_ModbusPDUGetComEventLogResponseCopy := &_ModbusPDUGetComEventLogResponse{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.Status,
 		m.EventCount,
 		m.MessageCount,

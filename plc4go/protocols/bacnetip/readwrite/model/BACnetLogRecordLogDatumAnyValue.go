@@ -192,7 +192,7 @@ func (m *_BACnetLogRecordLogDatumAnyValue) deepCopy() *_BACnetLogRecordLogDatumA
 		return nil
 	}
 	_BACnetLogRecordLogDatumAnyValueCopy := &_BACnetLogRecordLogDatumAnyValue{
-		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
 		m.AnyValue.DeepCopy().(BACnetConstructedData),
 	}
 	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m

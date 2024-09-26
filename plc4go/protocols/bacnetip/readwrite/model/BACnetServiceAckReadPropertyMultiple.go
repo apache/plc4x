@@ -207,7 +207,7 @@ func (m *_BACnetServiceAckReadPropertyMultiple) deepCopy() *_BACnetServiceAckRea
 		return nil
 	}
 	_BACnetServiceAckReadPropertyMultipleCopy := &_BACnetServiceAckReadPropertyMultiple{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		utils.DeepCopySlice[BACnetReadAccessResult, BACnetReadAccessResult](m.Data),
 		m.ServiceAckPayloadLength,
 	}

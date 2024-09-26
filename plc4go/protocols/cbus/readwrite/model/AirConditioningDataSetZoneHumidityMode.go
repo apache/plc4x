@@ -336,7 +336,7 @@ func (m *_AirConditioningDataSetZoneHumidityMode) deepCopy() *_AirConditioningDa
 		return nil
 	}
 	_AirConditioningDataSetZoneHumidityModeCopy := &_AirConditioningDataSetZoneHumidityMode{
-		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
 		m.ZoneList.DeepCopy().(HVACZoneList),
 		m.HumidityModeAndFlags.DeepCopy().(HVACHumidityModeAndFlags),

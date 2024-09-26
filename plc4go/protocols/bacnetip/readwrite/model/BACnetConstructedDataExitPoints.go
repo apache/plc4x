@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataExitPoints) deepCopy() *_BACnetConstructedDataExi
 		return nil
 	}
 	_BACnetConstructedDataExitPointsCopy := &_BACnetConstructedDataExitPoints{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.ExitPoints),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

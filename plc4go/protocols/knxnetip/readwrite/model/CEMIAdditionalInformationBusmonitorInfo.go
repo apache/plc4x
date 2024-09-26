@@ -324,7 +324,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) deepCopy() *_CEMIAdditionalIn
 		return nil
 	}
 	_CEMIAdditionalInformationBusmonitorInfoCopy := &_CEMIAdditionalInformationBusmonitorInfo{
-		m.CEMIAdditionalInformationContract.DeepCopy().(CEMIAdditionalInformationContract),
+		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
 		m.FrameErrorFlag,
 		m.BitErrorFlag,
 		m.ParityErrorFlag,

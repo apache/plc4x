@@ -165,7 +165,7 @@ func (m *_EipDisconnectRequest) deepCopy() *_EipDisconnectRequest {
 		return nil
 	}
 	_EipDisconnectRequestCopy := &_EipDisconnectRequest{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
 	m.EipPacketContract.(*_EipPacket)._SubType = m
 	return _EipDisconnectRequestCopy

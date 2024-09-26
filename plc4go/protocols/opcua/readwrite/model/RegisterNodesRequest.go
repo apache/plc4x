@@ -242,7 +242,7 @@ func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
 		return nil
 	}
 	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfNodesToRegister,
 		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),

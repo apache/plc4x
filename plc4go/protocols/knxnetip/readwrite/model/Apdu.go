@@ -47,7 +47,6 @@ type Apdu interface {
 
 // ApduContract provides a set of functions which can be overwritten by a sub struct
 type ApduContract interface {
-	utils.Copyable
 	// GetNumbered returns Numbered (property field)
 	GetNumbered() bool
 	// GetCounter returns Counter (property field)

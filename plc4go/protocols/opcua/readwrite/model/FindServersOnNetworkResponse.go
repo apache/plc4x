@@ -263,7 +263,7 @@ func (m *_FindServersOnNetworkResponse) deepCopy() *_FindServersOnNetworkRespons
 		return nil
 	}
 	_FindServersOnNetworkResponseCopy := &_FindServersOnNetworkResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.LastCounterResetTime,
 		m.NoOfServers,

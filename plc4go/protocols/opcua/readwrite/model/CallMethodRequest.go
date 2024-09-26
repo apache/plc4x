@@ -266,7 +266,7 @@ func (m *_CallMethodRequest) deepCopy() *_CallMethodRequest {
 		return nil
 	}
 	_CallMethodRequestCopy := &_CallMethodRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ObjectId.DeepCopy().(NodeId),
 		m.MethodId.DeepCopy().(NodeId),
 		m.NoOfInputArguments,

@@ -189,7 +189,7 @@ func (m *_BACnetLandingCallStatusCommandDirection) deepCopy() *_BACnetLandingCal
 		return nil
 	}
 	_BACnetLandingCallStatusCommandDirectionCopy := &_BACnetLandingCallStatusCommandDirection{
-		m.BACnetLandingCallStatusCommandContract.DeepCopy().(BACnetLandingCallStatusCommandContract),
+		m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand).deepCopy(),
 		m.Direction.DeepCopy().(BACnetLiftCarDirectionTagged),
 	}
 	m.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = m

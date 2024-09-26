@@ -259,7 +259,7 @@ func (m *_CurrencyUnitType) deepCopy() *_CurrencyUnitType {
 		return nil
 	}
 	_CurrencyUnitTypeCopy := &_CurrencyUnitType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NumericCode,
 		m.Exponent,
 		m.AlphabeticCode.DeepCopy().(PascalString),

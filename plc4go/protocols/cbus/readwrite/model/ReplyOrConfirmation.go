@@ -47,7 +47,6 @@ type ReplyOrConfirmation interface {
 
 // ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
 type ReplyOrConfirmationContract interface {
-	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetIsAlpha returns IsAlpha (virtual field)

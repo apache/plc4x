@@ -217,7 +217,7 @@ func (m *_EphemeralKeyType) deepCopy() *_EphemeralKeyType {
 		return nil
 	}
 	_EphemeralKeyTypeCopy := &_EphemeralKeyType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.PublicKey.DeepCopy().(PascalByteString),
 		m.Signature.DeepCopy().(PascalByteString),
 	}

@@ -363,7 +363,7 @@ func (m *_StructureField) deepCopy() *_StructureField {
 		return nil
 	}
 	_StructureFieldCopy := &_StructureField{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.Description.DeepCopy().(LocalizedText),
 		m.DataType.DeepCopy().(NodeId),

@@ -374,7 +374,7 @@ func (m *_PublishedVariableDataType) deepCopy() *_PublishedVariableDataType {
 		return nil
 	}
 	_PublishedVariableDataTypeCopy := &_PublishedVariableDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.PublishedVariable.DeepCopy().(NodeId),
 		m.AttributeId,
 		m.SamplingIntervalHint,

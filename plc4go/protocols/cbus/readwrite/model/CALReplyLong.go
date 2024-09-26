@@ -367,7 +367,7 @@ func (m *_CALReplyLong) deepCopy() *_CALReplyLong {
 		return nil
 	}
 	_CALReplyLongCopy := &_CALReplyLong{
-		m.CALReplyContract.DeepCopy().(CALReplyContract),
+		m.CALReplyContract.(*_CALReply).deepCopy(),
 		m.TerminatingByte,
 		m.UnitAddress.DeepCopy().(UnitAddress),
 		m.BridgeAddress.DeepCopy().(BridgeAddress),

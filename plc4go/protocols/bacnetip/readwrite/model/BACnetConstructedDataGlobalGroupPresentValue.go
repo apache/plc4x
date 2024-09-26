@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataGlobalGroupPresentValue) deepCopy() *_BACnetConst
 		return nil
 	}
 	_BACnetConstructedDataGlobalGroupPresentValueCopy := &_BACnetConstructedDataGlobalGroupPresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetPropertyAccessResult, BACnetPropertyAccessResult](m.PresentValue),
 	}

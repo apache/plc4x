@@ -266,7 +266,7 @@ func (m *_BrowseResult) deepCopy() *_BrowseResult {
 		return nil
 	}
 	_BrowseResultCopy := &_BrowseResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.ContinuationPoint.DeepCopy().(PascalByteString),
 		m.NoOfReferences,

@@ -221,7 +221,7 @@ func (m *_VariantGuid) deepCopy() *_VariantGuid {
 		return nil
 	}
 	_VariantGuidCopy := &_VariantGuid{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[GuidValue, GuidValue](m.Value),
 	}

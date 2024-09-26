@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataIPv6DNSServer) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataIPv6DNSServerCopy := &_BACnetConstructedDataIPv6DNSServer{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagOctetString, BACnetApplicationTagOctetString](m.Ipv6DnsServer),
 	}

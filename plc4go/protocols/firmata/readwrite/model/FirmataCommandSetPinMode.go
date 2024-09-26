@@ -211,7 +211,7 @@ func (m *_FirmataCommandSetPinMode) deepCopy() *_FirmataCommandSetPinMode {
 		return nil
 	}
 	_FirmataCommandSetPinModeCopy := &_FirmataCommandSetPinMode{
-		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
 		m.Pin,
 		m.Mode,
 	}

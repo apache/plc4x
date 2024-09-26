@@ -205,7 +205,7 @@ func (m *_BACnetServiceAckAuthenticate) deepCopy() *_BACnetServiceAckAuthenticat
 		return nil
 	}
 	_BACnetServiceAckAuthenticateCopy := &_BACnetServiceAckAuthenticate{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceAckPayloadLength,
 	}

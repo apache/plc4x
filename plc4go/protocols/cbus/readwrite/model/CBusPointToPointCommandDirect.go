@@ -204,7 +204,7 @@ func (m *_CBusPointToPointCommandDirect) deepCopy() *_CBusPointToPointCommandDir
 		return nil
 	}
 	_CBusPointToPointCommandDirectCopy := &_CBusPointToPointCommandDirect{
-		m.CBusPointToPointCommandContract.DeepCopy().(CBusPointToPointCommandContract),
+		m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).deepCopy(),
 		m.UnitAddress.DeepCopy().(UnitAddress),
 		m.reservedField0,
 	}

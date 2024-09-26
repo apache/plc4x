@@ -290,7 +290,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) deepCopy() 
 		return nil
 	}
 	_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{
-		m.BACnetUnconfirmedServiceRequestContract.DeepCopy().(BACnetUnconfirmedServiceRequestContract),
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
 		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),

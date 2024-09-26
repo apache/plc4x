@@ -213,7 +213,7 @@ func (m *_NLMVendorProprietaryMessage) deepCopy() *_NLMVendorProprietaryMessage 
 		return nil
 	}
 	_NLMVendorProprietaryMessageCopy := &_NLMVendorProprietaryMessage{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.VendorId,
 		utils.DeepCopySlice[byte, byte](m.ProprietaryMessage),
 	}

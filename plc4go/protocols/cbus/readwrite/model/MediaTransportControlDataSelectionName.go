@@ -186,7 +186,7 @@ func (m *_MediaTransportControlDataSelectionName) deepCopy() *_MediaTransportCon
 		return nil
 	}
 	_MediaTransportControlDataSelectionNameCopy := &_MediaTransportControlDataSelectionName{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.SelectionName,
 	}
 	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m

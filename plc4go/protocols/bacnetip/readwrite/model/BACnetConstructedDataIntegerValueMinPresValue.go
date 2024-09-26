@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataIntegerValueMinPresValue) deepCopy() *_BACnetCons
 		return nil
 	}
 	_BACnetConstructedDataIntegerValueMinPresValueCopy := &_BACnetConstructedDataIntegerValueMinPresValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MinPresValue.DeepCopy().(BACnetApplicationTagSignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

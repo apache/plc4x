@@ -278,7 +278,7 @@ func (m *_BrowseNextRequest) deepCopy() *_BrowseNextRequest {
 		return nil
 	}
 	_BrowseNextRequestCopy := &_BrowseNextRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.ReleaseContinuationPoints,
 		m.NoOfContinuationPoints,

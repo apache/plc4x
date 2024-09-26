@@ -193,7 +193,7 @@ func (m *_SALDataEnableControl) deepCopy() *_SALDataEnableControl {
 		return nil
 	}
 	_SALDataEnableControlCopy := &_SALDataEnableControl{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 		m.EnableControlData.DeepCopy().(EnableControlData),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m

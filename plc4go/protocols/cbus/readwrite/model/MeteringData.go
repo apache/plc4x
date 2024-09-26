@@ -47,7 +47,6 @@ type MeteringData interface {
 
 // MeteringDataContract provides a set of functions which can be overwritten by a sub struct
 type MeteringDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeteringCommandTypeContainer
 	// GetArgument returns Argument (property field)

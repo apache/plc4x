@@ -217,7 +217,7 @@ func (m *_IssuedIdentityToken) deepCopy() *_IssuedIdentityToken {
 		return nil
 	}
 	_IssuedIdentityTokenCopy := &_IssuedIdentityToken{
-		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
 		m.TokenData.DeepCopy().(PascalByteString),
 		m.EncryptionAlgorithm.DeepCopy().(PascalString),
 	}

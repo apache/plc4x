@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) deepCopy() *_BACne
 		return nil
 	}
 	_BACnetConstructedDataTimeSynchronizationRecipientsCopy := &_BACnetConstructedDataTimeSynchronizationRecipients{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.TimeSynchronizationRecipients),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

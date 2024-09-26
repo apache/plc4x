@@ -213,7 +213,7 @@ func (m *_ApduDataDeviceDescriptorResponse) deepCopy() *_ApduDataDeviceDescripto
 		return nil
 	}
 	_ApduDataDeviceDescriptorResponseCopy := &_ApduDataDeviceDescriptorResponse{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.DescriptorType,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

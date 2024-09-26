@@ -255,7 +255,7 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) deepCopy() *_ModbusPDUWriteMultipl
 		return nil
 	}
 	_ModbusPDUWriteMultipleCoilsRequestCopy := &_ModbusPDUWriteMultipleCoilsRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.StartingAddress,
 		m.Quantity,
 		utils.DeepCopySlice[byte, byte](m.Value),

@@ -237,7 +237,7 @@ func (m *_DeleteSubscriptionsRequest) deepCopy() *_DeleteSubscriptionsRequest {
 		return nil
 	}
 	_DeleteSubscriptionsRequestCopy := &_DeleteSubscriptionsRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfSubscriptionIds,
 		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),

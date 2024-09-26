@@ -253,7 +253,7 @@ func (m *_QueryNextRequest) deepCopy() *_QueryNextRequest {
 		return nil
 	}
 	_QueryNextRequestCopy := &_QueryNextRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.ReleaseContinuationPoint,
 		m.ContinuationPoint.DeepCopy().(PascalByteString),

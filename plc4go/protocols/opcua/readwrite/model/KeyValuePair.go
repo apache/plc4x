@@ -217,7 +217,7 @@ func (m *_KeyValuePair) deepCopy() *_KeyValuePair {
 		return nil
 	}
 	_KeyValuePairCopy := &_KeyValuePair{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Key.DeepCopy().(QualifiedName),
 		m.Value.DeepCopy().(Variant),
 	}

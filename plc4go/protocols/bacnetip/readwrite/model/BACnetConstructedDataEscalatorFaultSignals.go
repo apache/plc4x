@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataEscalatorFaultSignalsCopy := &_BACnetConstructedDataEscalatorFaultSignals{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetEscalatorFaultTagged, BACnetEscalatorFaultTagged](m.FaultSignals),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

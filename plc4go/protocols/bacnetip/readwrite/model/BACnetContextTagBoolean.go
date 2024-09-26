@@ -250,7 +250,7 @@ func (m *_BACnetContextTagBoolean) deepCopy() *_BACnetContextTagBoolean {
 		return nil
 	}
 	_BACnetContextTagBooleanCopy := &_BACnetContextTagBoolean{
-		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
 		m.Value,
 		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
 	}

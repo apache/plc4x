@@ -47,7 +47,6 @@ type BACnetConstructedData interface {
 
 // BACnetConstructedDataContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConstructedDataContract interface {
-	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)

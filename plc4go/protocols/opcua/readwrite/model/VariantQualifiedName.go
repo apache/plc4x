@@ -221,7 +221,7 @@ func (m *_VariantQualifiedName) deepCopy() *_VariantQualifiedName {
 		return nil
 	}
 	_VariantQualifiedNameCopy := &_VariantQualifiedName{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.Value),
 	}

@@ -192,7 +192,7 @@ func (m *_ParameterValueRaw) deepCopy() *_ParameterValueRaw {
 		return nil
 	}
 	_ParameterValueRawCopy := &_ParameterValueRaw{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
 	m.ParameterValueContract.(*_ParameterValue)._SubType = m

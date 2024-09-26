@@ -157,7 +157,7 @@ func (m *_MFuncPropCommandReq) deepCopy() *_MFuncPropCommandReq {
 		return nil
 	}
 	_MFuncPropCommandReqCopy := &_MFuncPropCommandReq{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _MFuncPropCommandReqCopy

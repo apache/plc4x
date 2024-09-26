@@ -190,7 +190,7 @@ func (m *_IdentifyReplyCommandType) deepCopy() *_IdentifyReplyCommandType {
 		return nil
 	}
 	_IdentifyReplyCommandTypeCopy := &_IdentifyReplyCommandType{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.UnitType,
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

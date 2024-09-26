@@ -310,7 +310,7 @@ func (m *_BuildInfo) deepCopy() *_BuildInfo {
 		return nil
 	}
 	_BuildInfoCopy := &_BuildInfo{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ProductUri.DeepCopy().(PascalString),
 		m.ManufacturerName.DeepCopy().(PascalString),
 		m.ProductName.DeepCopy().(PascalString),

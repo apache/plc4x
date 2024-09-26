@@ -227,7 +227,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) deep
 		return nil
 	}
 	_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseCopy := &_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.ItemsCount,
 		utils.DeepCopySlice[AssociatedQueryValueType, AssociatedQueryValueType](m.Items),
 	}

@@ -214,7 +214,7 @@ func (m *_IdentityMappingRuleType) deepCopy() *_IdentityMappingRuleType {
 		return nil
 	}
 	_IdentityMappingRuleTypeCopy := &_IdentityMappingRuleType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.CriteriaType,
 		m.Criteria.DeepCopy().(PascalString),
 	}

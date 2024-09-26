@@ -450,7 +450,7 @@ func (m *_ProgramDiagnosticDataType) deepCopy() *_ProgramDiagnosticDataType {
 		return nil
 	}
 	_ProgramDiagnosticDataTypeCopy := &_ProgramDiagnosticDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.CreateSessionId.DeepCopy().(NodeId),
 		m.CreateClientName.DeepCopy().(PascalString),
 		m.InvocationCreationTime,

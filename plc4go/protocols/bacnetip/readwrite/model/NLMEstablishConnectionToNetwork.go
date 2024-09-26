@@ -211,7 +211,7 @@ func (m *_NLMEstablishConnectionToNetwork) deepCopy() *_NLMEstablishConnectionTo
 		return nil
 	}
 	_NLMEstablishConnectionToNetworkCopy := &_NLMEstablishConnectionToNetwork{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.DestinationNetworkAddress,
 		m.TerminationTime,
 	}

@@ -283,7 +283,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) deepCopy
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.Result,
 		m.Reserved01,
 		m.AlarmType,

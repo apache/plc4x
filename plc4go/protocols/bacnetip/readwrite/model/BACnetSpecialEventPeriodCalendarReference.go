@@ -189,7 +189,7 @@ func (m *_BACnetSpecialEventPeriodCalendarReference) deepCopy() *_BACnetSpecialE
 		return nil
 	}
 	_BACnetSpecialEventPeriodCalendarReferenceCopy := &_BACnetSpecialEventPeriodCalendarReference{
-		m.BACnetSpecialEventPeriodContract.DeepCopy().(BACnetSpecialEventPeriodContract),
+		m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod).deepCopy(),
 		m.CalendarReference.DeepCopy().(BACnetContextTagObjectIdentifier),
 	}
 	m.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = m

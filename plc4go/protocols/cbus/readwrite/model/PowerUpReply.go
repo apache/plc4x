@@ -189,7 +189,7 @@ func (m *_PowerUpReply) deepCopy() *_PowerUpReply {
 		return nil
 	}
 	_PowerUpReplyCopy := &_PowerUpReply{
-		m.ReplyContract.DeepCopy().(ReplyContract),
+		m.ReplyContract.(*_Reply).deepCopy(),
 		m.PowerUpIndicator.DeepCopy().(PowerUp),
 	}
 	m.ReplyContract.(*_Reply)._SubType = m

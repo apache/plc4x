@@ -211,7 +211,7 @@ func (m *_NLMICouldBeRouterToNetwork) deepCopy() *_NLMICouldBeRouterToNetwork {
 		return nil
 	}
 	_NLMICouldBeRouterToNetworkCopy := &_NLMICouldBeRouterToNetwork{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.DestinationNetworkAddress,
 		m.PerformanceIndex,
 	}

@@ -47,7 +47,6 @@ type CEMIAdditionalInformation interface {
 
 // CEMIAdditionalInformationContract provides a set of functions which can be overwritten by a sub struct
 type CEMIAdditionalInformationContract interface {
-	utils.Copyable
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
 }

@@ -201,7 +201,7 @@ func (m *_S7PayloadWriteVarRequest) deepCopy() *_S7PayloadWriteVarRequest {
 		return nil
 	}
 	_S7PayloadWriteVarRequestCopy := &_S7PayloadWriteVarRequest{
-		m.S7PayloadContract.DeepCopy().(S7PayloadContract),
+		m.S7PayloadContract.(*_S7Payload).deepCopy(),
 		utils.DeepCopySlice[S7VarPayloadDataItem, S7VarPayloadDataItem](m.Items),
 	}
 	m.S7PayloadContract.(*_S7Payload)._SubType = m

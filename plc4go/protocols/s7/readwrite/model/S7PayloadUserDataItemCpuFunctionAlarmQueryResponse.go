@@ -201,7 +201,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) deepCopy() *_S7Pay
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionAlarmQueryResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Items),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m

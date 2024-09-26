@@ -211,7 +211,7 @@ func (m *_Range) deepCopy() *_Range {
 		return nil
 	}
 	_RangeCopy := &_Range{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Low,
 		m.High,
 	}

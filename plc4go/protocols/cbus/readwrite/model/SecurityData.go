@@ -47,7 +47,6 @@ type SecurityData interface {
 
 // SecurityDataContract provides a set of functions which can be overwritten by a sub struct
 type SecurityDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() SecurityCommandTypeContainer
 	// GetArgument returns Argument (property field)

@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) deepCopy() *_BACnetC
 		return nil
 	}
 	_BACnetConstructedDataSupportedSecurityAlgorithmsCopy := &_BACnetConstructedDataSupportedSecurityAlgorithms{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.SupportedSecurityAlgorithms),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

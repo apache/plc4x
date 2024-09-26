@@ -161,7 +161,7 @@ func (m *_SysexCommandExtendedAnalog) deepCopy() *_SysexCommandExtendedAnalog {
 		return nil
 	}
 	_SysexCommandExtendedAnalogCopy := &_SysexCommandExtendedAnalog{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandExtendedAnalogCopy

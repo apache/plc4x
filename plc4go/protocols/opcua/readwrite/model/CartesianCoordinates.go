@@ -157,7 +157,7 @@ func (m *_CartesianCoordinates) deepCopy() *_CartesianCoordinates {
 		return nil
 	}
 	_CartesianCoordinatesCopy := &_CartesianCoordinates{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CartesianCoordinatesCopy

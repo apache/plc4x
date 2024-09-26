@@ -216,7 +216,7 @@ func (m *_VariantInt32) deepCopy() *_VariantInt32 {
 		return nil
 	}
 	_VariantInt32Copy := &_VariantInt32{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[int32, int32](m.Value),
 	}

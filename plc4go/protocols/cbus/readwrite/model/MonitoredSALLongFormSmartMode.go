@@ -393,7 +393,7 @@ func (m *_MonitoredSALLongFormSmartMode) deepCopy() *_MonitoredSALLongFormSmartM
 		return nil
 	}
 	_MonitoredSALLongFormSmartModeCopy := &_MonitoredSALLongFormSmartMode{
-		m.MonitoredSALContract.DeepCopy().(MonitoredSALContract),
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
 		m.TerminatingByte,
 		m.UnitAddress.DeepCopy().(UnitAddress),
 		m.BridgeAddress.DeepCopy().(BridgeAddress),

@@ -192,7 +192,7 @@ func (m *_NLMRouterAvailableToNetwork) deepCopy() *_NLMRouterAvailableToNetwork 
 		return nil
 	}
 	_NLMRouterAvailableToNetworkCopy := &_NLMRouterAvailableToNetwork{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
 	}
 	m.NLMContract.(*_NLM)._SubType = m

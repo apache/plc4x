@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataCharacterStringValueFaultValues) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetConstructedDataCharacterStringValueFaultValuesCopy := &_BACnetConstructedDataCharacterStringValueFaultValues{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.FaultValues),
 	}

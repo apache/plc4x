@@ -214,7 +214,7 @@ func (m *_S7ParameterWriteVarRequest) deepCopy() *_S7ParameterWriteVarRequest {
 		return nil
 	}
 	_S7ParameterWriteVarRequestCopy := &_S7ParameterWriteVarRequest{
-		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		utils.DeepCopySlice[S7VarRequestParameterItem, S7VarRequestParameterItem](m.Items),
 	}
 	m.S7ParameterContract.(*_S7Parameter)._SubType = m

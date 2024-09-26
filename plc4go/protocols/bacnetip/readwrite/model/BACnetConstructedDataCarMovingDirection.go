@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataCarMovingDirection) deepCopy() *_BACnetConstructe
 		return nil
 	}
 	_BACnetConstructedDataCarMovingDirectionCopy := &_BACnetConstructedDataCarMovingDirection{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CarMovingDirection.DeepCopy().(BACnetLiftCarDirectionTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

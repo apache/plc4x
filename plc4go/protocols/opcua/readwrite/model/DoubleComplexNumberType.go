@@ -211,7 +211,7 @@ func (m *_DoubleComplexNumberType) deepCopy() *_DoubleComplexNumberType {
 		return nil
 	}
 	_DoubleComplexNumberTypeCopy := &_DoubleComplexNumberType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Real,
 		m.Imaginary,
 	}

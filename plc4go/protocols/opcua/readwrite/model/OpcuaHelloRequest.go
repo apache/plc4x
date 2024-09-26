@@ -242,7 +242,7 @@ func (m *_OpcuaHelloRequest) deepCopy() *_OpcuaHelloRequest {
 		return nil
 	}
 	_OpcuaHelloRequestCopy := &_OpcuaHelloRequest{
-		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		m.Version,
 		m.Limits.DeepCopy().(OpcuaProtocolLimits),
 		m.Endpoint.DeepCopy().(PascalString),

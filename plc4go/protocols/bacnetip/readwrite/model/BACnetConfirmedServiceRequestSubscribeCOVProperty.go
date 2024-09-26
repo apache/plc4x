@@ -323,7 +323,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConfirmedServiceRequestSubscribeCOVPropertyCopy := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),

@@ -52,7 +52,6 @@ type DF1Symbol interface {
 
 // DF1SymbolContract provides a set of functions which can be overwritten by a sub struct
 type DF1SymbolContract interface {
-	utils.Copyable
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
 }

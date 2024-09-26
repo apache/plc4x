@@ -192,7 +192,7 @@ func (m *_BVLCRegisterForeignDevice) deepCopy() *_BVLCRegisterForeignDevice {
 		return nil
 	}
 	_BVLCRegisterForeignDeviceCopy := &_BVLCRegisterForeignDevice{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Ttl,
 	}
 	m.BVLCContract.(*_BVLC)._SubType = m

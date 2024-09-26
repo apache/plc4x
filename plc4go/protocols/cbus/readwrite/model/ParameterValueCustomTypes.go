@@ -193,7 +193,7 @@ func (m *_ParameterValueCustomTypes) deepCopy() *_ParameterValueCustomTypes {
 		return nil
 	}
 	_ParameterValueCustomTypesCopy := &_ParameterValueCustomTypes{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		m.Value.DeepCopy().(CustomTypes),
 	}
 	m.ParameterValueContract.(*_ParameterValue)._SubType = m

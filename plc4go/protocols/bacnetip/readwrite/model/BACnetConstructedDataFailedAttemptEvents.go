@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) deepCopy() *_BACnetConstruct
 		return nil
 	}
 	_BACnetConstructedDataFailedAttemptEventsCopy := &_BACnetConstructedDataFailedAttemptEvents{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessEventTagged, BACnetAccessEventTagged](m.FailedAttemptEvents),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -223,7 +223,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) deepCopy() *_CEMIAdditiona
 		return nil
 	}
 	_CEMIAdditionalInformationRelativeTimestampCopy := &_CEMIAdditionalInformationRelativeTimestamp{
-		m.CEMIAdditionalInformationContract.DeepCopy().(CEMIAdditionalInformationContract),
+		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
 		m.RelativeTimestamp.DeepCopy().(RelativeTimestamp),
 	}
 	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m

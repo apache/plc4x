@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataBACnetIPNATTraversalCopy := &_BACnetConstructedDataBACnetIPNATTraversal{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.BacnetIPNATTraversal.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

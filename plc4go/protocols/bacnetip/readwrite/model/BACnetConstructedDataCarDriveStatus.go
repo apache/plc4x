@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataCarDriveStatus) deepCopy() *_BACnetConstructedDat
 		return nil
 	}
 	_BACnetConstructedDataCarDriveStatusCopy := &_BACnetConstructedDataCarDriveStatus{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CarDriveStatus.DeepCopy().(BACnetLiftCarDriveStatusTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

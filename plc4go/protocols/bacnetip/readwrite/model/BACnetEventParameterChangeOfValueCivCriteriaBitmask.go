@@ -190,7 +190,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaBitmask) deepCopy() *_BACn
 		return nil
 	}
 	_BACnetEventParameterChangeOfValueCivCriteriaBitmaskCopy := &_BACnetEventParameterChangeOfValueCivCriteriaBitmask{
-		m.BACnetEventParameterChangeOfValueCivCriteriaContract.DeepCopy().(BACnetEventParameterChangeOfValueCivCriteriaContract),
+		m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).deepCopy(),
 		m.Bitmask.DeepCopy().(BACnetContextTagBitString),
 	}
 	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m

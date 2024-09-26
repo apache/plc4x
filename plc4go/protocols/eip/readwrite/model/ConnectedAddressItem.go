@@ -205,7 +205,7 @@ func (m *_ConnectedAddressItem) deepCopy() *_ConnectedAddressItem {
 		return nil
 	}
 	_ConnectedAddressItemCopy := &_ConnectedAddressItem{
-		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.TypeIdContract.(*_TypeId).deepCopy(),
 		m.ConnectionId,
 		m.reservedField0,
 	}

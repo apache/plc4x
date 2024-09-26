@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataRoutingTable) deepCopy() *_BACnetConstructedDataR
 		return nil
 	}
 	_BACnetConstructedDataRoutingTableCopy := &_BACnetConstructedDataRoutingTable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetRouterEntry, BACnetRouterEntry](m.RoutingTable),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

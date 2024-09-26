@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMACAddress) deepCopy() *_BACnetConstructedDataMAC
 		return nil
 	}
 	_BACnetConstructedDataMACAddressCopy := &_BACnetConstructedDataMACAddress{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MacAddress.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

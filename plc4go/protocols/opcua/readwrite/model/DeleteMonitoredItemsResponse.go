@@ -291,7 +291,7 @@ func (m *_DeleteMonitoredItemsResponse) deepCopy() *_DeleteMonitoredItemsRespons
 		return nil
 	}
 	_DeleteMonitoredItemsResponseCopy := &_DeleteMonitoredItemsResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),

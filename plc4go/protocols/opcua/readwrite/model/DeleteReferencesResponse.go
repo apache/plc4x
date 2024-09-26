@@ -291,7 +291,7 @@ func (m *_DeleteReferencesResponse) deepCopy() *_DeleteReferencesResponse {
 		return nil
 	}
 	_DeleteReferencesResponseCopy := &_DeleteReferencesResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),

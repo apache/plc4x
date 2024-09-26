@@ -291,7 +291,7 @@ func (m *_HistoryReadResponse) deepCopy() *_HistoryReadResponse {
 		return nil
 	}
 	_HistoryReadResponseCopy := &_HistoryReadResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),

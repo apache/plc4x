@@ -157,7 +157,7 @@ func (m *_ApduDataUserMessage) deepCopy() *_ApduDataUserMessage {
 		return nil
 	}
 	_ApduDataUserMessageCopy := &_ApduDataUserMessage{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
 	m.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataUserMessageCopy

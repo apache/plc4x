@@ -379,7 +379,7 @@ func (m *_IdentifyReplyCommandDSIStatus) deepCopy() *_IdentifyReplyCommandDSISta
 		return nil
 	}
 	_IdentifyReplyCommandDSIStatusCopy := &_IdentifyReplyCommandDSIStatus{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.ChannelStatus1,
 		m.ChannelStatus2,
 		m.ChannelStatus3,

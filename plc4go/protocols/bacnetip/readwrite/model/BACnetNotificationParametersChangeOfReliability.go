@@ -286,7 +286,7 @@ func (m *_BACnetNotificationParametersChangeOfReliability) deepCopy() *_BACnetNo
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfReliabilityCopy := &_BACnetNotificationParametersChangeOfReliability{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

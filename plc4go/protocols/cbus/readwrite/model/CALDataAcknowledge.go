@@ -207,7 +207,7 @@ func (m *_CALDataAcknowledge) deepCopy() *_CALDataAcknowledge {
 		return nil
 	}
 	_CALDataAcknowledgeCopy := &_CALDataAcknowledge{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.ParamNo,
 		m.Code,
 	}

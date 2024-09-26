@@ -208,7 +208,7 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConfirmedServiceRequestReadPropertyMultipleCopy := &_BACnetConfirmedServiceRequestReadPropertyMultiple{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[BACnetReadAccessSpecification, BACnetReadAccessSpecification](m.Data),
 		m.ServiceRequestPayloadLength,
 	}

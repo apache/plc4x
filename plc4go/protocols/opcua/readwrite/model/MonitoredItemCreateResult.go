@@ -280,7 +280,7 @@ func (m *_MonitoredItemCreateResult) deepCopy() *_MonitoredItemCreateResult {
 		return nil
 	}
 	_MonitoredItemCreateResultCopy := &_MonitoredItemCreateResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.MonitoredItemId,
 		m.RevisedSamplingInterval,

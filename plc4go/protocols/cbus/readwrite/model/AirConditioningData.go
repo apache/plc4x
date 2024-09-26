@@ -47,7 +47,6 @@ type AirConditioningData interface {
 
 // AirConditioningDataContract provides a set of functions which can be overwritten by a sub struct
 type AirConditioningDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AirConditioningCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)

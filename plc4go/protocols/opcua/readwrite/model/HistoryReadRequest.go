@@ -323,7 +323,7 @@ func (m *_HistoryReadRequest) deepCopy() *_HistoryReadRequest {
 		return nil
 	}
 	_HistoryReadRequestCopy := &_HistoryReadRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.HistoryReadDetails.DeepCopy().(ExtensionObject),
 		m.TimestampsToReturn,

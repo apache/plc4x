@@ -280,7 +280,7 @@ func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
 		return nil
 	}
 	_DataChangeNotificationCopy := &_DataChangeNotification{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfMonitoredItems,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
 		m.NoOfDiagnosticInfos,

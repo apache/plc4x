@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataAccumulatorMinPresValue) deepCopy() *_BACnetConst
 		return nil
 	}
 	_BACnetConstructedDataAccumulatorMinPresValueCopy := &_BACnetConstructedDataAccumulatorMinPresValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MinPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

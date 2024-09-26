@@ -161,7 +161,7 @@ func (m *_AdsReadDeviceInfoRequest) deepCopy() *_AdsReadDeviceInfoRequest {
 		return nil
 	}
 	_AdsReadDeviceInfoRequestCopy := &_AdsReadDeviceInfoRequest{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 	}
 	m.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _AdsReadDeviceInfoRequestCopy

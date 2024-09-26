@@ -186,7 +186,7 @@ func (m *_TelephonyDataDialOutFailure) deepCopy() *_TelephonyDataDialOutFailure 
 		return nil
 	}
 	_TelephonyDataDialOutFailureCopy := &_TelephonyDataDialOutFailure{
-		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 		m.Reason,
 	}
 	m.TelephonyDataContract.(*_TelephonyData)._SubType = m

@@ -291,7 +291,7 @@ func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
 		return nil
 	}
 	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),

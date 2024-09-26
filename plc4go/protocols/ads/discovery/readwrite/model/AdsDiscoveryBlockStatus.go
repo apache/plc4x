@@ -219,7 +219,7 @@ func (m *_AdsDiscoveryBlockStatus) deepCopy() *_AdsDiscoveryBlockStatus {
 		return nil
 	}
 	_AdsDiscoveryBlockStatusCopy := &_AdsDiscoveryBlockStatus{
-		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		m.Status,
 	}
 	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m

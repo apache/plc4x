@@ -157,7 +157,7 @@ func (m *_LRawInd) deepCopy() *_LRawInd {
 		return nil
 	}
 	_LRawIndCopy := &_LRawInd{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _LRawIndCopy

@@ -166,7 +166,7 @@ func (m *_BACnetConstructedDataTimerAll) deepCopy() *_BACnetConstructedDataTimer
 		return nil
 	}
 	_BACnetConstructedDataTimerAllCopy := &_BACnetConstructedDataTimerAll{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataTimerAllCopy

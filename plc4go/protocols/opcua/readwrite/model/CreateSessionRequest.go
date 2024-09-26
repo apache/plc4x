@@ -379,7 +379,7 @@ func (m *_CreateSessionRequest) deepCopy() *_CreateSessionRequest {
 		return nil
 	}
 	_CreateSessionRequestCopy := &_CreateSessionRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),
 		m.ServerUri.DeepCopy().(PascalString),

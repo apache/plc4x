@@ -263,7 +263,7 @@ func (m *_BACnetConstructedDataCommandTimeArray) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataCommandTimeArrayCopy := &_BACnetConstructedDataCommandTimeArray{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetTimeStamp, BACnetTimeStamp](m.CommandTimeArray),
 	}

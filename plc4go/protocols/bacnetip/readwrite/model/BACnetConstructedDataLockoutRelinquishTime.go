@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataLockoutRelinquishTime) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataLockoutRelinquishTimeCopy := &_BACnetConstructedDataLockoutRelinquishTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LockoutRelinquishTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

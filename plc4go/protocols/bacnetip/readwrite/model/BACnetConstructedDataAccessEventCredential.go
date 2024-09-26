@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataAccessEventCredential) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataAccessEventCredentialCopy := &_BACnetConstructedDataAccessEventCredential{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.AccessEventCredential.DeepCopy().(BACnetDeviceObjectReference),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

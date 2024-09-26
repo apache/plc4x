@@ -157,7 +157,7 @@ func (m *_ApduDataExtKeyResponse) deepCopy() *_ApduDataExtKeyResponse {
 		return nil
 	}
 	_ApduDataExtKeyResponseCopy := &_ApduDataExtKeyResponse{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtKeyResponseCopy

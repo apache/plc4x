@@ -193,7 +193,7 @@ func (m *_BACnetServiceAckAtomicWriteFile) deepCopy() *_BACnetServiceAckAtomicWr
 		return nil
 	}
 	_BACnetServiceAckAtomicWriteFileCopy := &_BACnetServiceAckAtomicWriteFile{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		m.FileStartPosition.DeepCopy().(BACnetContextTagSignedInteger),
 	}
 	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m

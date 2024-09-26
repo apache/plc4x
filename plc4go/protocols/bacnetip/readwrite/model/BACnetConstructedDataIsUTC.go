@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataIsUTC) deepCopy() *_BACnetConstructedDataIsUTC {
 		return nil
 	}
 	_BACnetConstructedDataIsUTCCopy := &_BACnetConstructedDataIsUTC{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.IsUtc.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

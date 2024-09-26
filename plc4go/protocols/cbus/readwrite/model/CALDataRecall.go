@@ -207,7 +207,7 @@ func (m *_CALDataRecall) deepCopy() *_CALDataRecall {
 		return nil
 	}
 	_CALDataRecallCopy := &_CALDataRecall{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.ParamNo,
 		m.Count,
 	}

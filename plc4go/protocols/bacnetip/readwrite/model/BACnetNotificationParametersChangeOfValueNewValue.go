@@ -47,7 +47,6 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 
 // BACnetNotificationParametersChangeOfValueNewValueContract provides a set of functions which can be overwritten by a sub struct
 type BACnetNotificationParametersChangeOfValueNewValueContract interface {
-	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)

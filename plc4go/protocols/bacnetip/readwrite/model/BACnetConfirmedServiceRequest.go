@@ -47,7 +47,6 @@ type BACnetConfirmedServiceRequest interface {
 
 // BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestContract interface {
-	utils.Copyable
 	// GetServiceRequestPayloadLength returns ServiceRequestPayloadLength (virtual field)
 	GetServiceRequestPayloadLength() uint32
 	// GetServiceRequestLength() returns a parser argument

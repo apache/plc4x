@@ -252,7 +252,7 @@ func (m *_BVLCForwardedNPDU) deepCopy() *_BVLCForwardedNPDU {
 		return nil
 	}
 	_BVLCForwardedNPDUCopy := &_BVLCForwardedNPDU{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[uint8, uint8](m.Ip),
 		m.Port,
 		m.Npdu.DeepCopy().(NPDU),

@@ -217,7 +217,7 @@ func (m *_SignedSoftwareCertificate) deepCopy() *_SignedSoftwareCertificate {
 		return nil
 	}
 	_SignedSoftwareCertificateCopy := &_SignedSoftwareCertificate{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.CertificateData.DeepCopy().(PascalByteString),
 		m.Signature.DeepCopy().(PascalByteString),
 	}

@@ -189,7 +189,7 @@ func (m *_BACnetEventLogRecordLogDatumTimeChange) deepCopy() *_BACnetEventLogRec
 		return nil
 	}
 	_BACnetEventLogRecordLogDatumTimeChangeCopy := &_BACnetEventLogRecordLogDatumTimeChange{
-		m.BACnetEventLogRecordLogDatumContract.DeepCopy().(BACnetEventLogRecordLogDatumContract),
+		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
 		m.TimeChange.DeepCopy().(BACnetContextTagReal),
 	}
 	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m

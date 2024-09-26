@@ -286,7 +286,7 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) deepCopy() *_BACn
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfCharacterStringCopy := &_BACnetNotificationParametersChangeOfCharacterString{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ChangedValue.DeepCopy().(BACnetContextTagCharacterString),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

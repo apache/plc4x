@@ -268,7 +268,7 @@ func (m *_SendUnitData) deepCopy() *_SendUnitData {
 		return nil
 	}
 	_SendUnitDataCopy := &_SendUnitData{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 		m.Timeout,
 		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
 	}

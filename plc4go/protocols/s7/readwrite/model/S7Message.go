@@ -50,7 +50,6 @@ type S7Message interface {
 
 // S7MessageContract provides a set of functions which can be overwritten by a sub struct
 type S7MessageContract interface {
-	utils.Copyable
 	// GetTpduReference returns TpduReference (property field)
 	GetTpduReference() uint16
 	// GetParameter returns Parameter (property field)

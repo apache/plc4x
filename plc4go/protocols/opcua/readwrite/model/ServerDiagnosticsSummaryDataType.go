@@ -421,7 +421,7 @@ func (m *_ServerDiagnosticsSummaryDataType) deepCopy() *_ServerDiagnosticsSummar
 		return nil
 	}
 	_ServerDiagnosticsSummaryDataTypeCopy := &_ServerDiagnosticsSummaryDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ServerViewCount,
 		m.CurrentSessionCount,
 		m.CumulatedSessionCount,

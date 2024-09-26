@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataRegisteredCarCall) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataRegisteredCarCallCopy := &_BACnetConstructedDataRegisteredCarCall{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetLiftCarCallList, BACnetLiftCarCallList](m.RegisteredCarCall),
 	}

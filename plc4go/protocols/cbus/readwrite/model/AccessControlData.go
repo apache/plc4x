@@ -47,7 +47,6 @@ type AccessControlData interface {
 
 // AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
 type AccessControlDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() AccessControlCommandTypeContainer
 	// GetNetworkId returns NetworkId (property field)

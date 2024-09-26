@@ -201,7 +201,7 @@ func (m *_S7PayloadAlarmAckInd) deepCopy() *_S7PayloadAlarmAckInd {
 		return nil
 	}
 	_S7PayloadAlarmAckIndCopy := &_S7PayloadAlarmAckInd{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.AlarmMessage.DeepCopy().(AlarmMessageAckPushType),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m

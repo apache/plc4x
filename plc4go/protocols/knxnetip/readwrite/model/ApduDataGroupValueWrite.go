@@ -213,7 +213,7 @@ func (m *_ApduDataGroupValueWrite) deepCopy() *_ApduDataGroupValueWrite {
 		return nil
 	}
 	_ApduDataGroupValueWriteCopy := &_ApduDataGroupValueWrite{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.DataFirstByte,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

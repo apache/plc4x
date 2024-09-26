@@ -221,7 +221,7 @@ func (m *_ParameterValueSerialNumber) deepCopy() *_ParameterValueSerialNumber {
 		return nil
 	}
 	_ParameterValueSerialNumberCopy := &_ParameterValueSerialNumber{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		m.Value.DeepCopy().(SerialNumber),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

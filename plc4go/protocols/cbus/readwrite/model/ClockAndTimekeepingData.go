@@ -47,7 +47,6 @@ type ClockAndTimekeepingData interface {
 
 // ClockAndTimekeepingDataContract provides a set of functions which can be overwritten by a sub struct
 type ClockAndTimekeepingDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ClockAndTimekeepingCommandTypeContainer
 	// GetArgument returns Argument (property field)

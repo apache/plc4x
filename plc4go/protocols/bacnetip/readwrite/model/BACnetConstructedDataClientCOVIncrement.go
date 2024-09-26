@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataClientCOVIncrement) deepCopy() *_BACnetConstructe
 		return nil
 	}
 	_BACnetConstructedDataClientCOVIncrementCopy := &_BACnetConstructedDataClientCOVIncrement{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CovIncrement.DeepCopy().(BACnetClientCOV),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

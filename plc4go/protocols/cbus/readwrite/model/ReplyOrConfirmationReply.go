@@ -213,7 +213,7 @@ func (m *_ReplyOrConfirmationReply) deepCopy() *_ReplyOrConfirmationReply {
 		return nil
 	}
 	_ReplyOrConfirmationReplyCopy := &_ReplyOrConfirmationReply{
-		m.ReplyOrConfirmationContract.DeepCopy().(ReplyOrConfirmationContract),
+		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
 		m.Reply.DeepCopy().(Reply),
 		m.Termination.DeepCopy().(ResponseTermination),
 	}

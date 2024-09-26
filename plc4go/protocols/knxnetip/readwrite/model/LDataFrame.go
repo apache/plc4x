@@ -47,7 +47,6 @@ type LDataFrame interface {
 
 // LDataFrameContract provides a set of functions which can be overwritten by a sub struct
 type LDataFrameContract interface {
-	utils.Copyable
 	// GetFrameType returns FrameType (property field)
 	GetFrameType() bool
 	// GetNotRepeated returns NotRepeated (property field)

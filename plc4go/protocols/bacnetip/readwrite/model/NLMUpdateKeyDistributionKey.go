@@ -214,7 +214,7 @@ func (m *_NLMUpdateKeyDistributionKey) deepCopy() *_NLMUpdateKeyDistributionKey 
 		return nil
 	}
 	_NLMUpdateKeyDistributionKeyCopy := &_NLMUpdateKeyDistributionKey{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.KeyRevision,
 		m.Key.DeepCopy().(NLMUpdateKeyUpdateKeyEntry),
 	}

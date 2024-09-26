@@ -47,7 +47,6 @@ type DF1RequestMessage interface {
 
 // DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
 type DF1RequestMessageContract interface {
-	utils.Copyable
 	// GetDestinationAddress returns DestinationAddress (property field)
 	GetDestinationAddress() uint8
 	// GetSourceAddress returns SourceAddress (property field)

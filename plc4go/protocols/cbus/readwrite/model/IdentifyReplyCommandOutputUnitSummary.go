@@ -262,7 +262,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) deepCopy() *_IdentifyReplyComma
 		return nil
 	}
 	_IdentifyReplyCommandOutputUnitSummaryCopy := &_IdentifyReplyCommandOutputUnitSummary{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.UnitFlags.DeepCopy().(IdentifyReplyCommandUnitSummary),
 		utils.CopyPtr[byte](m.GavStoreEnabledByte1),
 		utils.CopyPtr[byte](m.GavStoreEnabledByte2),

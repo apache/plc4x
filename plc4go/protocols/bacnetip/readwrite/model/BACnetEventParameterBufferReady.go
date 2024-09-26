@@ -261,7 +261,7 @@ func (m *_BACnetEventParameterBufferReady) deepCopy() *_BACnetEventParameterBuff
 		return nil
 	}
 	_BACnetEventParameterBufferReadyCopy := &_BACnetEventParameterBufferReady{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.NotificationThreshold.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.PreviousNotificationCount.DeepCopy().(BACnetContextTagUnsignedInteger),

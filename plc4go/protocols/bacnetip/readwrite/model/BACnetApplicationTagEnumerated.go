@@ -220,7 +220,7 @@ func (m *_BACnetApplicationTagEnumerated) deepCopy() *_BACnetApplicationTagEnume
 		return nil
 	}
 	_BACnetApplicationTagEnumeratedCopy := &_BACnetApplicationTagEnumerated{
-		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
 	}
 	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m

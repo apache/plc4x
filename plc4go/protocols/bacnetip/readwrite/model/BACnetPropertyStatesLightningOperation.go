@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesLightningOperation) deepCopy() *_BACnetPropertySta
 		return nil
 	}
 	_BACnetPropertyStatesLightningOperationCopy := &_BACnetPropertyStatesLightningOperation{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.LightningOperation.DeepCopy().(BACnetLightingOperationTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

@@ -190,7 +190,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) 
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString{
-		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
 		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m

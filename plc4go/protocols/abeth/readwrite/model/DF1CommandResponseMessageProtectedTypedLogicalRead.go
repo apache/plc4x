@@ -193,7 +193,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) deepCopy() *_DF1Co
 		return nil
 	}
 	_DF1CommandResponseMessageProtectedTypedLogicalReadCopy := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		m.DF1ResponseMessageContract.DeepCopy().(DF1ResponseMessageContract),
+		m.DF1ResponseMessageContract.(*_DF1ResponseMessage).deepCopy(),
 		utils.DeepCopySlice[uint8, uint8](m.Data),
 	}
 	m.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m

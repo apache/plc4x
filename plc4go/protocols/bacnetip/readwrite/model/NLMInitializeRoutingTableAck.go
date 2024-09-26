@@ -218,7 +218,7 @@ func (m *_NLMInitializeRoutingTableAck) deepCopy() *_NLMInitializeRoutingTableAc
 		return nil
 	}
 	_NLMInitializeRoutingTableAckCopy := &_NLMInitializeRoutingTableAck{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.NumberOfPorts,
 		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
 	}

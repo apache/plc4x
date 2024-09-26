@@ -236,7 +236,7 @@ func (m *_AdsReadRequest) deepCopy() *_AdsReadRequest {
 		return nil
 	}
 	_AdsReadRequestCopy := &_AdsReadRequest{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.IndexGroup,
 		m.IndexOffset,
 		m.Length,

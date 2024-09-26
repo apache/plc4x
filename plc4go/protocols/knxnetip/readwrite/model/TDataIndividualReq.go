@@ -157,7 +157,7 @@ func (m *_TDataIndividualReq) deepCopy() *_TDataIndividualReq {
 		return nil
 	}
 	_TDataIndividualReqCopy := &_TDataIndividualReq{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _TDataIndividualReqCopy

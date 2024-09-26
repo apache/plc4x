@@ -196,7 +196,7 @@ func (m *_SysexCommandExtendedId) deepCopy() *_SysexCommandExtendedId {
 		return nil
 	}
 	_SysexCommandExtendedIdCopy := &_SysexCommandExtendedId{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 		utils.DeepCopySlice[int8, int8](m.Id),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m

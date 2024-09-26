@@ -371,7 +371,7 @@ func (m *_MediaTransportControlDataFastForward) deepCopy() *_MediaTransportContr
 		return nil
 	}
 	_MediaTransportControlDataFastForwardCopy := &_MediaTransportControlDataFastForward{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.Operation,
 	}
 	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m

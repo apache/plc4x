@@ -263,7 +263,7 @@ func (m *_BACnetConstructedDataKeySets) deepCopy() *_BACnetConstructedDataKeySet
 		return nil
 	}
 	_BACnetConstructedDataKeySetsCopy := &_BACnetConstructedDataKeySets{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetSecurityKeySet, BACnetSecurityKeySet](m.KeySets),
 	}

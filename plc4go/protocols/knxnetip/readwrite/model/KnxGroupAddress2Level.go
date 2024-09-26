@@ -211,7 +211,7 @@ func (m *_KnxGroupAddress2Level) deepCopy() *_KnxGroupAddress2Level {
 		return nil
 	}
 	_KnxGroupAddress2LevelCopy := &_KnxGroupAddress2Level{
-		m.KnxGroupAddressContract.DeepCopy().(KnxGroupAddressContract),
+		m.KnxGroupAddressContract.(*_KnxGroupAddress).deepCopy(),
 		m.MainGroup,
 		m.SubGroup,
 	}

@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataIntegerValueCOVIncrement) deepCopy() *_BACnetCons
 		return nil
 	}
 	_BACnetConstructedDataIntegerValueCOVIncrementCopy := &_BACnetConstructedDataIntegerValueCOVIncrement{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CovIncrement.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -47,7 +47,6 @@ type BACnetUnconfirmedServiceRequest interface {
 
 // BACnetUnconfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
 type BACnetUnconfirmedServiceRequestContract interface {
-	utils.Copyable
 	// GetServiceRequestLength() returns a parser argument
 	GetServiceRequestLength() uint16
 	// IsBACnetUnconfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)

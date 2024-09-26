@@ -253,7 +253,7 @@ func (m *_AdsMultiRequestItemReadWrite) deepCopy() *_AdsMultiRequestItemReadWrit
 		return nil
 	}
 	_AdsMultiRequestItemReadWriteCopy := &_AdsMultiRequestItemReadWrite{
-		m.AdsMultiRequestItemContract.DeepCopy().(AdsMultiRequestItemContract),
+		m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).deepCopy(),
 		m.ItemIndexGroup,
 		m.ItemIndexOffset,
 		m.ItemReadLength,

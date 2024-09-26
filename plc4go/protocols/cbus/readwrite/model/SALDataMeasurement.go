@@ -193,7 +193,7 @@ func (m *_SALDataMeasurement) deepCopy() *_SALDataMeasurement {
 		return nil
 	}
 	_SALDataMeasurementCopy := &_SALDataMeasurement{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 		m.MeasurementData.DeepCopy().(MeasurementData),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m

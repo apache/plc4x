@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataTimerMaxPresValueCopy := &_BACnetConstructedDataTimerMaxPresValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

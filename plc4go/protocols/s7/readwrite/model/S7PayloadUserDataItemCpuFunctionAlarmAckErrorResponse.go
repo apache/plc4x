@@ -166,7 +166,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) deepCopy() *_S7
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy

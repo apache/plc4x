@@ -161,7 +161,7 @@ func (m *_SysexCommandStringData) deepCopy() *_SysexCommandStringData {
 		return nil
 	}
 	_SysexCommandStringDataCopy := &_SysexCommandStringData{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandStringDataCopy

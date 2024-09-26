@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataDefaultFadeTime) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataDefaultFadeTimeCopy := &_BACnetConstructedDataDefaultFadeTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.DefaultFadeTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

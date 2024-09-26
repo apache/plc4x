@@ -358,7 +358,7 @@ func (m *_SessionlessInvokeRequestType) deepCopy() *_SessionlessInvokeRequestTyp
 		return nil
 	}
 	_SessionlessInvokeRequestTypeCopy := &_SessionlessInvokeRequestType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.UrisVersion,
 		m.NoOfNamespaceUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),

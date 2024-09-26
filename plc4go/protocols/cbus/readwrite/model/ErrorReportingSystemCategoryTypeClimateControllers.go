@@ -191,7 +191,7 @@ func (m *_ErrorReportingSystemCategoryTypeClimateControllers) deepCopy() *_Error
 		return nil
 	}
 	_ErrorReportingSystemCategoryTypeClimateControllersCopy := &_ErrorReportingSystemCategoryTypeClimateControllers{
-		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
 		m.CategoryForType,
 	}
 	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m

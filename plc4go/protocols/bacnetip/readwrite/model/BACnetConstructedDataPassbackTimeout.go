@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataPassbackTimeout) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataPassbackTimeoutCopy := &_BACnetConstructedDataPassbackTimeout{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PassbackTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

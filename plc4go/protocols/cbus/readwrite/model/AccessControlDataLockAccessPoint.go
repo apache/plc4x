@@ -153,7 +153,7 @@ func (m *_AccessControlDataLockAccessPoint) deepCopy() *_AccessControlDataLockAc
 		return nil
 	}
 	_AccessControlDataLockAccessPointCopy := &_AccessControlDataLockAccessPoint{
-		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
 	}
 	m.AccessControlDataContract.(*_AccessControlData)._SubType = m
 	return _AccessControlDataLockAccessPointCopy

@@ -267,7 +267,7 @@ func (m *_ContentFilterResult) deepCopy() *_ContentFilterResult {
 		return nil
 	}
 	_ContentFilterResultCopy := &_ContentFilterResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfElementResults,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ElementResults),
 		m.NoOfElementDiagnosticInfos,

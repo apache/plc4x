@@ -231,7 +231,7 @@ func (m *_CALDataWrite) deepCopy() *_CALDataWrite {
 		return nil
 	}
 	_CALDataWriteCopy := &_CALDataWrite{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.ParamNo,
 		m.Code,
 		m.ParameterValue.DeepCopy().(ParameterValue),

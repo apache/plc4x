@@ -193,7 +193,7 @@ func (m *_ExtensiblePayload) deepCopy() *_ExtensiblePayload {
 		return nil
 	}
 	_ExtensiblePayloadCopy := &_ExtensiblePayload{
-		m.PayloadContract.DeepCopy().(PayloadContract),
+		m.PayloadContract.(*_Payload).deepCopy(),
 		m.Payload.DeepCopy().(ExtensionObject),
 	}
 	m.PayloadContract.(*_Payload)._SubType = m

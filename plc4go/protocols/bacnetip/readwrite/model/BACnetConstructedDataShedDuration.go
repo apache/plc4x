@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataShedDuration) deepCopy() *_BACnetConstructedDataS
 		return nil
 	}
 	_BACnetConstructedDataShedDurationCopy := &_BACnetConstructedDataShedDuration{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ShedDuration.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -274,7 +274,7 @@ func (m *_DF1RequestProtectedTypedLogicalRead) deepCopy() *_DF1RequestProtectedT
 		return nil
 	}
 	_DF1RequestProtectedTypedLogicalReadCopy := &_DF1RequestProtectedTypedLogicalRead{
-		m.DF1RequestCommandContract.DeepCopy().(DF1RequestCommandContract),
+		m.DF1RequestCommandContract.(*_DF1RequestCommand).deepCopy(),
 		m.ByteSize,
 		m.FileNumber,
 		m.FileType,

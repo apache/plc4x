@@ -47,7 +47,6 @@ type Request interface {
 
 // RequestContract provides a set of functions which can be overwritten by a sub struct
 type RequestContract interface {
-	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() RequestType
 	// GetStartingCR returns StartingCR (property field)

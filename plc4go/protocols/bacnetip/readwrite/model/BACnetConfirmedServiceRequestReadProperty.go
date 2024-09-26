@@ -244,7 +244,7 @@ func (m *_BACnetConfirmedServiceRequestReadProperty) deepCopy() *_BACnetConfirme
 		return nil
 	}
 	_BACnetConfirmedServiceRequestReadPropertyCopy := &_BACnetConfirmedServiceRequestReadProperty{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
 		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),

@@ -237,7 +237,7 @@ func (m *_BACnetEventLogRecordLogDatumNotification) deepCopy() *_BACnetEventLogR
 		return nil
 	}
 	_BACnetEventLogRecordLogDatumNotificationCopy := &_BACnetEventLogRecordLogDatumNotification{
-		m.BACnetEventLogRecordLogDatumContract.DeepCopy().(BACnetEventLogRecordLogDatumContract),
+		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.Notification.DeepCopy().(ConfirmedEventNotificationRequest),
 		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),

@@ -153,7 +153,7 @@ func (m *_SecurityDataAlarmOff) deepCopy() *_SecurityDataAlarmOff {
 		return nil
 	}
 	_SecurityDataAlarmOffCopy := &_SecurityDataAlarmOff{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataAlarmOffCopy

@@ -222,7 +222,7 @@ func (m *_ModbusPDUWriteFileRecordRequest) deepCopy() *_ModbusPDUWriteFileRecord
 		return nil
 	}
 	_ModbusPDUWriteFileRecordRequestCopy := &_ModbusPDUWriteFileRecordRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[ModbusPDUWriteFileRecordRequestItem, ModbusPDUWriteFileRecordRequestItem](m.Items),
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m

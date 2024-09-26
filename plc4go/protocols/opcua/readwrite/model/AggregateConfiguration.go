@@ -303,7 +303,7 @@ func (m *_AggregateConfiguration) deepCopy() *_AggregateConfiguration {
 		return nil
 	}
 	_AggregateConfigurationCopy := &_AggregateConfiguration{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.TreatUncertainAsBad,
 		m.UseServerCapabilitiesDefaults,
 		m.PercentDataBad,

@@ -235,7 +235,7 @@ func (m *_ModificationInfo) deepCopy() *_ModificationInfo {
 		return nil
 	}
 	_ModificationInfoCopy := &_ModificationInfo{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ModificationTime,
 		m.UpdateType,
 		m.UserName.DeepCopy().(PascalString),

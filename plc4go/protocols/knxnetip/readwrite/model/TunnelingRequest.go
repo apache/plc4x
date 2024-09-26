@@ -232,7 +232,7 @@ func (m *_TunnelingRequest) deepCopy() *_TunnelingRequest {
 		return nil
 	}
 	_TunnelingRequestCopy := &_TunnelingRequest{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.TunnelingRequestDataBlock.DeepCopy().(TunnelingRequestDataBlock),
 		m.Cemi.DeepCopy().(CEMI),
 		m.TotalLength,

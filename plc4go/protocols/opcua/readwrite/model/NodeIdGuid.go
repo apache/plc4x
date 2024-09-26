@@ -244,7 +244,7 @@ func (m *_NodeIdGuid) deepCopy() *_NodeIdGuid {
 		return nil
 	}
 	_NodeIdGuidCopy := &_NodeIdGuid{
-		m.NodeIdTypeDefinitionContract.DeepCopy().(NodeIdTypeDefinitionContract),
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
 		m.NamespaceIndex,
 		utils.DeepCopySlice[byte, byte](m.Id),
 	}

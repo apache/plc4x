@@ -189,7 +189,7 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) deepCopy() *_BACnetLogRecordLogD
 		return nil
 	}
 	_BACnetLogRecordLogDatumUnsignedValueCopy := &_BACnetLogRecordLogDatumUnsignedValue{
-		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
 		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
 	}
 	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m

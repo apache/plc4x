@@ -190,7 +190,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) deepCopy() 
 		return nil
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryReferenceCopy := &_BACnetFaultParameterFaultExtendedParametersEntryReference{
-		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
 		m.Reference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
 	}
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m

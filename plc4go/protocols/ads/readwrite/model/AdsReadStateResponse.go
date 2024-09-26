@@ -236,7 +236,7 @@ func (m *_AdsReadStateResponse) deepCopy() *_AdsReadStateResponse {
 		return nil
 	}
 	_AdsReadStateResponseCopy := &_AdsReadStateResponse{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.Result,
 		m.AdsState,
 		m.DeviceState,

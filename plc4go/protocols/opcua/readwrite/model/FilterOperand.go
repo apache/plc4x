@@ -157,7 +157,7 @@ func (m *_FilterOperand) deepCopy() *_FilterOperand {
 		return nil
 	}
 	_FilterOperandCopy := &_FilterOperand{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FilterOperandCopy

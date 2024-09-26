@@ -189,7 +189,7 @@ func (m *_BACnetCalendarEntryWeekNDay) deepCopy() *_BACnetCalendarEntryWeekNDay 
 		return nil
 	}
 	_BACnetCalendarEntryWeekNDayCopy := &_BACnetCalendarEntryWeekNDay{
-		m.BACnetCalendarEntryContract.DeepCopy().(BACnetCalendarEntryContract),
+		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
 		m.WeekNDay.DeepCopy().(BACnetWeekNDayTagged),
 	}
 	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m

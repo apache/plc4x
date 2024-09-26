@@ -211,7 +211,7 @@ func (m *_S7MessageResponse) deepCopy() *_S7MessageResponse {
 		return nil
 	}
 	_S7MessageResponseCopy := &_S7MessageResponse{
-		m.S7MessageContract.DeepCopy().(S7MessageContract),
+		m.S7MessageContract.(*_S7Message).deepCopy(),
 		m.ErrorClass,
 		m.ErrorCode,
 	}

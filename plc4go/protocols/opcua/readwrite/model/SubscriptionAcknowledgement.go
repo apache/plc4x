@@ -211,7 +211,7 @@ func (m *_SubscriptionAcknowledgement) deepCopy() *_SubscriptionAcknowledgement 
 		return nil
 	}
 	_SubscriptionAcknowledgementCopy := &_SubscriptionAcknowledgement{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SubscriptionId,
 		m.SequenceNumber,
 	}

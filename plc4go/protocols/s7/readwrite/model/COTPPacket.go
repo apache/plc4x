@@ -47,7 +47,6 @@ type COTPPacket interface {
 
 // COTPPacketContract provides a set of functions which can be overwritten by a sub struct
 type COTPPacketContract interface {
-	utils.Copyable
 	// GetParameters returns Parameters (property field)
 	GetParameters() []COTPParameter
 	// GetPayload returns Payload (property field)

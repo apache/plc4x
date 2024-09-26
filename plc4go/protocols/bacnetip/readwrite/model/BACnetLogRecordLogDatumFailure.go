@@ -189,7 +189,7 @@ func (m *_BACnetLogRecordLogDatumFailure) deepCopy() *_BACnetLogRecordLogDatumFa
 		return nil
 	}
 	_BACnetLogRecordLogDatumFailureCopy := &_BACnetLogRecordLogDatumFailure{
-		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
 		m.Failure.DeepCopy().(ErrorEnclosed),
 	}
 	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m

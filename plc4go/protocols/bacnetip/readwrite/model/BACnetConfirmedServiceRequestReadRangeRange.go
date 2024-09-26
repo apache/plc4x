@@ -47,7 +47,6 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 
 // BACnetConfirmedServiceRequestReadRangeRangeContract provides a set of functions which can be overwritten by a sub struct
 type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
-	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetOpeningTag returns OpeningTag (property field)

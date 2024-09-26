@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataUserType) deepCopy() *_BACnetConstructedDataUserT
 		return nil
 	}
 	_BACnetConstructedDataUserTypeCopy := &_BACnetConstructedDataUserType{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.UserType.DeepCopy().(BACnetAccessUserTypeTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

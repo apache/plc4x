@@ -272,7 +272,7 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) deepCopy() *_BACnetCon
 		return nil
 	}
 	_BACnetConfirmedServiceRequestRemoveListElementCopy := &_BACnetConfirmedServiceRequestRemoveListElement{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
 		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),

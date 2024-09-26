@@ -190,7 +190,7 @@ func (m *_BACnetPropertyAccessResultAccessResultPropertyAccessError) deepCopy() 
 		return nil
 	}
 	_BACnetPropertyAccessResultAccessResultPropertyAccessErrorCopy := &_BACnetPropertyAccessResultAccessResultPropertyAccessError{
-		m.BACnetPropertyAccessResultAccessResultContract.DeepCopy().(BACnetPropertyAccessResultAccessResultContract),
+		m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult).deepCopy(),
 		m.PropertyAccessError.DeepCopy().(ErrorEnclosed),
 	}
 	m.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = m

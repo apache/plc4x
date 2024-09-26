@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataRecipientList) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataRecipientListCopy := &_BACnetConstructedDataRecipientList{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetDestination, BACnetDestination](m.RecipientList),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

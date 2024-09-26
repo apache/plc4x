@@ -217,7 +217,7 @@ func (m *_WritePropertyMultipleError) deepCopy() *_WritePropertyMultipleError {
 		return nil
 	}
 	_WritePropertyMultipleErrorCopy := &_WritePropertyMultipleError{
-		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
 		m.ErrorType.DeepCopy().(ErrorEnclosed),
 		m.FirstFailedWriteAttempt.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
 	}

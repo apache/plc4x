@@ -211,7 +211,7 @@ func (m *_COTPPacketTpduError) deepCopy() *_COTPPacketTpduError {
 		return nil
 	}
 	_COTPPacketTpduErrorCopy := &_COTPPacketTpduError{
-		m.COTPPacketContract.DeepCopy().(COTPPacketContract),
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
 		m.DestinationReference,
 		m.RejectCause,
 	}

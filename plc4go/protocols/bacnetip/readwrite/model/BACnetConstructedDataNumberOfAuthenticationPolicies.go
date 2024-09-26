@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataNumberOfAuthenticationPolicies) deepCopy() *_BACn
 		return nil
 	}
 	_BACnetConstructedDataNumberOfAuthenticationPoliciesCopy := &_BACnetConstructedDataNumberOfAuthenticationPolicies{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfAuthenticationPolicies.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

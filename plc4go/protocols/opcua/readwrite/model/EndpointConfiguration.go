@@ -373,7 +373,7 @@ func (m *_EndpointConfiguration) deepCopy() *_EndpointConfiguration {
 		return nil
 	}
 	_EndpointConfigurationCopy := &_EndpointConfiguration{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.OperationTimeout,
 		m.UseBinaryEncoding,
 		m.MaxStringLength,

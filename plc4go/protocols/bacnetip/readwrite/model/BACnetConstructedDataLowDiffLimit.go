@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLowDiffLimit) deepCopy() *_BACnetConstructedDataL
 		return nil
 	}
 	_BACnetConstructedDataLowDiffLimitCopy := &_BACnetConstructedDataLowDiffLimit{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LowDiffLimit.DeepCopy().(BACnetOptionalREAL),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

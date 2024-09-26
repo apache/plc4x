@@ -193,7 +193,7 @@ func (m *_CBusMessageToClient) deepCopy() *_CBusMessageToClient {
 		return nil
 	}
 	_CBusMessageToClientCopy := &_CBusMessageToClient{
-		m.CBusMessageContract.DeepCopy().(CBusMessageContract),
+		m.CBusMessageContract.(*_CBusMessage).deepCopy(),
 		m.Reply.DeepCopy().(ReplyOrConfirmation),
 	}
 	m.CBusMessageContract.(*_CBusMessage)._SubType = m

@@ -193,7 +193,7 @@ func (m *_SALDataMediaTransport) deepCopy() *_SALDataMediaTransport {
 		return nil
 	}
 	_SALDataMediaTransportCopy := &_SALDataMediaTransport{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 		m.MediaTransportControlData.DeepCopy().(MediaTransportControlData),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m

@@ -278,7 +278,7 @@ func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
 		return nil
 	}
 	_CipWriteRequestCopy := &_CipWriteRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Tag),
 		m.DataType,
 		m.ElementNb,

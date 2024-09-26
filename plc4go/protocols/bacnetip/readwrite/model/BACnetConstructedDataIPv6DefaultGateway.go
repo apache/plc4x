@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) deepCopy() *_BACnetConstructe
 		return nil
 	}
 	_BACnetConstructedDataIPv6DefaultGatewayCopy := &_BACnetConstructedDataIPv6DefaultGateway{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Ipv6DefaultGateway.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

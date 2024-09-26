@@ -262,7 +262,7 @@ func (m *_ReadValueId) deepCopy() *_ReadValueId {
 		return nil
 	}
 	_ReadValueIdCopy := &_ReadValueId{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(NodeId),
 		m.AttributeId,
 		m.IndexRange.DeepCopy().(PascalString),

@@ -185,7 +185,7 @@ func (m *_RequestNull) deepCopy() *_RequestNull {
 		return nil
 	}
 	_RequestNullCopy := &_RequestNull{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 	}
 	m.RequestContract.(*_Request)._SubType = m
 	return _RequestNullCopy

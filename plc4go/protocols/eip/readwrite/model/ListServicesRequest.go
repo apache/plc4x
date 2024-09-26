@@ -165,7 +165,7 @@ func (m *_ListServicesRequest) deepCopy() *_ListServicesRequest {
 		return nil
 	}
 	_ListServicesRequestCopy := &_ListServicesRequest{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
 	m.EipPacketContract.(*_EipPacket)._SubType = m
 	return _ListServicesRequestCopy

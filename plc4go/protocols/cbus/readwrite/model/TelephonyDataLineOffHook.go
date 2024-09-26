@@ -207,7 +207,7 @@ func (m *_TelephonyDataLineOffHook) deepCopy() *_TelephonyDataLineOffHook {
 		return nil
 	}
 	_TelephonyDataLineOffHookCopy := &_TelephonyDataLineOffHook{
-		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 		m.Reason,
 		m.Number,
 	}

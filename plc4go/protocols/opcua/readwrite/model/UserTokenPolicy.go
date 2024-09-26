@@ -286,7 +286,7 @@ func (m *_UserTokenPolicy) deepCopy() *_UserTokenPolicy {
 		return nil
 	}
 	_UserTokenPolicyCopy := &_UserTokenPolicy{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.PolicyId.DeepCopy().(PascalString),
 		m.TokenType,
 		m.IssuedTokenType.DeepCopy().(PascalString),

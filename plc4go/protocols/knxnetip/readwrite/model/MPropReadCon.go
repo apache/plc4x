@@ -295,7 +295,7 @@ func (m *_MPropReadCon) deepCopy() *_MPropReadCon {
 		return nil
 	}
 	_MPropReadConCopy := &_MPropReadCon{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.InterfaceObjectType,
 		m.ObjectInstance,
 		m.PropertyId,

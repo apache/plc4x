@@ -193,7 +193,7 @@ func (m *_UnregisterNodesResponse) deepCopy() *_UnregisterNodesResponse {
 		return nil
 	}
 	_UnregisterNodesResponseCopy := &_UnregisterNodesResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

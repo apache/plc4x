@@ -47,7 +47,6 @@ type S7ParameterUserDataItem interface {
 
 // S7ParameterUserDataItemContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterUserDataItemContract interface {
-	utils.Copyable
 	// IsS7ParameterUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserDataItem()
 }

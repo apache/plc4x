@@ -47,7 +47,6 @@ type Variant interface {
 
 // VariantContract provides a set of functions which can be overwritten by a sub struct
 type VariantContract interface {
-	utils.Copyable
 	// GetArrayLengthSpecified returns ArrayLengthSpecified (property field)
 	GetArrayLengthSpecified() bool
 	// GetArrayDimensionsSpecified returns ArrayDimensionsSpecified (property field)

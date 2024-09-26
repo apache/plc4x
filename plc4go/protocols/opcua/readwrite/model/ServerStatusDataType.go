@@ -301,7 +301,7 @@ func (m *_ServerStatusDataType) deepCopy() *_ServerStatusDataType {
 		return nil
 	}
 	_ServerStatusDataTypeCopy := &_ServerStatusDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StartTime,
 		m.CurrentTime,
 		m.State,

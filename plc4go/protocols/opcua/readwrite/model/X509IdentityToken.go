@@ -193,7 +193,7 @@ func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
 		return nil
 	}
 	_X509IdentityTokenCopy := &_X509IdentityToken{
-		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
 		m.CertificateData.DeepCopy().(PascalByteString),
 	}
 	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m

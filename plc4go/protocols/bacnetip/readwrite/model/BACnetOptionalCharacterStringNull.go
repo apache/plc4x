@@ -189,7 +189,7 @@ func (m *_BACnetOptionalCharacterStringNull) deepCopy() *_BACnetOptionalCharacte
 		return nil
 	}
 	_BACnetOptionalCharacterStringNullCopy := &_BACnetOptionalCharacterStringNull{
-		m.BACnetOptionalCharacterStringContract.DeepCopy().(BACnetOptionalCharacterStringContract),
+		m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString).deepCopy(),
 		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
 	}
 	m.BACnetOptionalCharacterStringContract.(*_BACnetOptionalCharacterString)._SubType = m

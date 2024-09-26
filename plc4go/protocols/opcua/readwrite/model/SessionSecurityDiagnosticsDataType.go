@@ -407,7 +407,7 @@ func (m *_SessionSecurityDiagnosticsDataType) deepCopy() *_SessionSecurityDiagno
 		return nil
 	}
 	_SessionSecurityDiagnosticsDataTypeCopy := &_SessionSecurityDiagnosticsDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SessionId.DeepCopy().(NodeId),
 		m.ClientUserIdOfSession.DeepCopy().(PascalString),
 		m.NoOfClientUserIdHistory,

@@ -643,7 +643,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) deepCopy() *_IdentifyRe
 		return nil
 	}
 	_IdentifyReplyCommandExtendedDiagnosticSummaryCopy := &_IdentifyReplyCommandExtendedDiagnosticSummary{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.LowApplication,
 		m.HighApplication,
 		m.Area,

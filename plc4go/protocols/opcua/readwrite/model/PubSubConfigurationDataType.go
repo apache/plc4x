@@ -303,7 +303,7 @@ func (m *_PubSubConfigurationDataType) deepCopy() *_PubSubConfigurationDataType 
 		return nil
 	}
 	_PubSubConfigurationDataTypeCopy := &_PubSubConfigurationDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfPublishedDataSets,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.PublishedDataSets),
 		m.NoOfConnections,

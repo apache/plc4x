@@ -161,7 +161,7 @@ func (m *_SysexCommandCapabilityResponse) deepCopy() *_SysexCommandCapabilityRes
 		return nil
 	}
 	_SysexCommandCapabilityResponseCopy := &_SysexCommandCapabilityResponse{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandCapabilityResponseCopy

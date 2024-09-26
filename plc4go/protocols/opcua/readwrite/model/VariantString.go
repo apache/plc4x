@@ -221,7 +221,7 @@ func (m *_VariantString) deepCopy() *_VariantString {
 		return nil
 	}
 	_VariantStringCopy := &_VariantString{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[PascalString, PascalString](m.Value),
 	}

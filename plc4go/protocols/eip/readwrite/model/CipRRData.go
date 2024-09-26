@@ -260,7 +260,7 @@ func (m *_CipRRData) deepCopy() *_CipRRData {
 		return nil
 	}
 	_CipRRDataCopy := &_CipRRData{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 		m.InterfaceHandle,
 		m.Timeout,
 		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),

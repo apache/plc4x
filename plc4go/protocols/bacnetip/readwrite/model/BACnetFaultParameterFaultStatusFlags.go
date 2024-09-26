@@ -237,7 +237,7 @@ func (m *_BACnetFaultParameterFaultStatusFlags) deepCopy() *_BACnetFaultParamete
 		return nil
 	}
 	_BACnetFaultParameterFaultStatusFlagsCopy := &_BACnetFaultParameterFaultStatusFlags{
-		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.StatusFlagsReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
 		m.ClosingTag.DeepCopy().(BACnetClosingTag),

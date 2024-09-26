@@ -245,7 +245,7 @@ func (m *_NodeIdByteString) deepCopy() *_NodeIdByteString {
 		return nil
 	}
 	_NodeIdByteStringCopy := &_NodeIdByteString{
-		m.NodeIdTypeDefinitionContract.DeepCopy().(NodeIdTypeDefinitionContract),
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
 		m.NamespaceIndex,
 		m.Id.DeepCopy().(PascalByteString),
 	}

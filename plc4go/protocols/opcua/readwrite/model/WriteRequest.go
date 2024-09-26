@@ -242,7 +242,7 @@ func (m *_WriteRequest) deepCopy() *_WriteRequest {
 		return nil
 	}
 	_WriteRequestCopy := &_WriteRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfNodesToWrite,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToWrite),

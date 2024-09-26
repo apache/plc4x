@@ -310,7 +310,7 @@ func (m *_BACnetNotificationParametersChangeOfLifeSafety) deepCopy() *_BACnetNot
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfLifeSafetyCopy := &_BACnetNotificationParametersChangeOfLifeSafety{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.NewState.DeepCopy().(BACnetLifeSafetyStateTagged),
 		m.NewMode.DeepCopy().(BACnetLifeSafetyModeTagged),

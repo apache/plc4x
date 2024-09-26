@@ -189,7 +189,7 @@ func (m *_BACnetEventParameterNone) deepCopy() *_BACnetEventParameterNone {
 		return nil
 	}
 	_BACnetEventParameterNoneCopy := &_BACnetEventParameterNone{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.None.DeepCopy().(BACnetContextTagNull),
 	}
 	m.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = m

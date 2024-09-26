@@ -220,7 +220,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) deepCopy() *_S7
 		return nil
 	}
 	_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.Function,
 		m.JobId,
 	}

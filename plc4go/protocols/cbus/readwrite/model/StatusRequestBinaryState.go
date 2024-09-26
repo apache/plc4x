@@ -215,7 +215,7 @@ func (m *_StatusRequestBinaryState) deepCopy() *_StatusRequestBinaryState {
 		return nil
 	}
 	_StatusRequestBinaryStateCopy := &_StatusRequestBinaryState{
-		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
 		m.Application,
 		m.reservedField0,
 		m.reservedField1,

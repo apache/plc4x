@@ -213,7 +213,7 @@ func (m *_APDUUnknown) deepCopy() *_APDUUnknown {
 		return nil
 	}
 	_APDUUnknownCopy := &_APDUUnknown{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.UnknownTypeRest,
 		utils.DeepCopySlice[byte, byte](m.UnknownBytes),
 	}

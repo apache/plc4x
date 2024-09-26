@@ -433,7 +433,7 @@ func (m *_CipConnectionManagerCloseRequest) deepCopy() *_CipConnectionManagerClo
 		return nil
 	}
 	_CipConnectionManagerCloseRequestCopy := &_CipConnectionManagerCloseRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.RequestPathSize,
 		m.ClassSegment.DeepCopy().(PathSegment),
 		m.InstanceSegment.DeepCopy().(PathSegment),

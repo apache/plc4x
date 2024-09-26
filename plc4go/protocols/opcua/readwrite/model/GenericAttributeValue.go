@@ -214,7 +214,7 @@ func (m *_GenericAttributeValue) deepCopy() *_GenericAttributeValue {
 		return nil
 	}
 	_GenericAttributeValueCopy := &_GenericAttributeValue{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.AttributeId,
 		m.Value.DeepCopy().(Variant),
 	}

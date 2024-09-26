@@ -47,7 +47,6 @@ type MeasurementData interface {
 
 // MeasurementDataContract provides a set of functions which can be overwritten by a sub struct
 type MeasurementDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MeasurementCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)

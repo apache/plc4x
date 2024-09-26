@@ -193,7 +193,7 @@ func (m *_LogicalSegment) deepCopy() *_LogicalSegment {
 		return nil
 	}
 	_LogicalSegmentCopy := &_LogicalSegment{
-		m.PathSegmentContract.DeepCopy().(PathSegmentContract),
+		m.PathSegmentContract.(*_PathSegment).deepCopy(),
 		m.SegmentType.DeepCopy().(LogicalSegmentType),
 	}
 	m.PathSegmentContract.(*_PathSegment)._SubType = m

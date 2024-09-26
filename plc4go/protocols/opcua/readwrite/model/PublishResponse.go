@@ -416,7 +416,7 @@ func (m *_PublishResponse) deepCopy() *_PublishResponse {
 		return nil
 	}
 	_PublishResponseCopy := &_PublishResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.NoOfAvailableSequenceNumbers,

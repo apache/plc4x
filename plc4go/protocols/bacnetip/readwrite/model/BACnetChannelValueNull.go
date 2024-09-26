@@ -189,7 +189,7 @@ func (m *_BACnetChannelValueNull) deepCopy() *_BACnetChannelValueNull {
 		return nil
 	}
 	_BACnetChannelValueNullCopy := &_BACnetChannelValueNull{
-		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
 		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
 	}
 	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m

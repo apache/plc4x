@@ -190,7 +190,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryTime) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetFaultParameterFaultExtendedParametersEntryTimeCopy := &_BACnetFaultParameterFaultExtendedParametersEntryTime{
-		m.BACnetFaultParameterFaultExtendedParametersEntryContract.DeepCopy().(BACnetFaultParameterFaultExtendedParametersEntryContract),
+		m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry).deepCopy(),
 		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
 	}
 	m.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = m

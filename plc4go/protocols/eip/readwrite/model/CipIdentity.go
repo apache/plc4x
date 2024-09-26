@@ -519,7 +519,7 @@ func (m *_CipIdentity) deepCopy() *_CipIdentity {
 		return nil
 	}
 	_CipIdentityCopy := &_CipIdentity{
-		m.CommandSpecificDataItemContract.DeepCopy().(CommandSpecificDataItemContract),
+		m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).deepCopy(),
 		m.EncapsulationProtocolVersion,
 		m.SocketAddressFamily,
 		m.SocketAddressPort,

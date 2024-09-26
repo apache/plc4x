@@ -170,7 +170,7 @@ func (m *_LevelInformationAbsent) deepCopy() *_LevelInformationAbsent {
 		return nil
 	}
 	_LevelInformationAbsentCopy := &_LevelInformationAbsent{
-		m.LevelInformationContract.DeepCopy().(LevelInformationContract),
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
 		m.reservedField0,
 	}
 	m.LevelInformationContract.(*_LevelInformation)._SubType = m

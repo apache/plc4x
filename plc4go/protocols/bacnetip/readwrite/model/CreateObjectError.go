@@ -217,7 +217,7 @@ func (m *_CreateObjectError) deepCopy() *_CreateObjectError {
 		return nil
 	}
 	_CreateObjectErrorCopy := &_CreateObjectError{
-		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
 		m.ErrorType.DeepCopy().(ErrorEnclosed),
 		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
 	}

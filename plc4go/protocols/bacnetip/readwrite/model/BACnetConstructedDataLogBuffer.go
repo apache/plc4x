@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataLogBuffer) deepCopy() *_BACnetConstructedDataLogB
 		return nil
 	}
 	_BACnetConstructedDataLogBufferCopy := &_BACnetConstructedDataLogBuffer{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetLogRecord, BACnetLogRecord](m.FloorText),
 	}

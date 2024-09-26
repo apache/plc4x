@@ -249,7 +249,7 @@ func (m *_MediaTransportControlDataSetTrack) deepCopy() *_MediaTransportControlD
 		return nil
 	}
 	_MediaTransportControlDataSetTrackCopy := &_MediaTransportControlDataSetTrack{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.TrackMSB,
 		m.TrackMMSB,
 		m.TrackMLSB,

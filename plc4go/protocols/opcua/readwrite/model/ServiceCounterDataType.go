@@ -211,7 +211,7 @@ func (m *_ServiceCounterDataType) deepCopy() *_ServiceCounterDataType {
 		return nil
 	}
 	_ServiceCounterDataTypeCopy := &_ServiceCounterDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.TotalCount,
 		m.ErrorCount,
 	}

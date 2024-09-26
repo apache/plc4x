@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) deepCopy() *_BACnetCon
 		return nil
 	}
 	_BACnetConstructedDataBitStringValueAlarmValuesCopy := &_BACnetConstructedDataBitStringValueAlarmValues{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagBitString, BACnetApplicationTagBitString](m.AlarmValues),
 	}

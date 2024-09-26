@@ -360,7 +360,7 @@ func (m *_BACnetNotificationParametersAccessEvent) deepCopy() *_BACnetNotificati
 		return nil
 	}
 	_BACnetNotificationParametersAccessEventCopy := &_BACnetNotificationParametersAccessEvent{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

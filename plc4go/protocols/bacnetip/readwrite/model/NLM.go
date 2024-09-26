@@ -47,7 +47,6 @@ type NLM interface {
 
 // NLMContract provides a set of functions which can be overwritten by a sub struct
 type NLMContract interface {
-	utils.Copyable
 	// GetIsVendorProprietaryMessage returns IsVendorProprietaryMessage (virtual field)
 	GetIsVendorProprietaryMessage() bool
 	// GetApduLength() returns a parser argument

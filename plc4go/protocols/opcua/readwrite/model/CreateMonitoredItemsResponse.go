@@ -291,7 +291,7 @@ func (m *_CreateMonitoredItemsResponse) deepCopy() *_CreateMonitoredItemsRespons
 		return nil
 	}
 	_CreateMonitoredItemsResponseCopy := &_CreateMonitoredItemsResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),

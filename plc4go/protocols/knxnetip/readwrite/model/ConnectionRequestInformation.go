@@ -47,7 +47,6 @@ type ConnectionRequestInformation interface {
 
 // ConnectionRequestInformationContract provides a set of functions which can be overwritten by a sub struct
 type ConnectionRequestInformationContract interface {
-	utils.Copyable
 	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformation()
 }

@@ -266,7 +266,7 @@ func (m *_QueryNextResponse) deepCopy() *_QueryNextResponse {
 		return nil
 	}
 	_QueryNextResponseCopy := &_QueryNextResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfQueryDataSets,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),

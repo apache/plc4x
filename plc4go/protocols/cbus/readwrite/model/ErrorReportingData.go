@@ -47,7 +47,6 @@ type ErrorReportingData interface {
 
 // ErrorReportingDataContract provides a set of functions which can be overwritten by a sub struct
 type ErrorReportingDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() ErrorReportingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)

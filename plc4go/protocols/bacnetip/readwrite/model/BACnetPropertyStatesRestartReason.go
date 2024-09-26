@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesRestartReason) deepCopy() *_BACnetPropertyStatesRe
 		return nil
 	}
 	_BACnetPropertyStatesRestartReasonCopy := &_BACnetPropertyStatesRestartReason{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.RestartReason.DeepCopy().(BACnetRestartReasonTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

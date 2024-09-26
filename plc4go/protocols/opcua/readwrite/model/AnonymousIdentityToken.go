@@ -157,7 +157,7 @@ func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
 		return nil
 	}
 	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
-		m.UserIdentityTokenDefinitionContract.DeepCopy().(UserIdentityTokenDefinitionContract),
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
 	}
 	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
 	return _AnonymousIdentityTokenCopy

@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataStateText) deepCopy() *_BACnetConstructedDataStat
 		return nil
 	}
 	_BACnetConstructedDataStateTextCopy := &_BACnetConstructedDataStateText{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.StateText),
 	}

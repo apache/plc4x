@@ -161,7 +161,7 @@ func (m *_ErrorResponse) deepCopy() *_ErrorResponse {
 		return nil
 	}
 	_ErrorResponseCopy := &_ErrorResponse{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 	}
 	m.AmsPacketContract.(*_AmsPacket)._SubType = m
 	return _ErrorResponseCopy

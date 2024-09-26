@@ -157,7 +157,7 @@ func (m *_FirmataCommandSystemReset) deepCopy() *_FirmataCommandSystemReset {
 		return nil
 	}
 	_FirmataCommandSystemResetCopy := &_FirmataCommandSystemReset{
-		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
 	}
 	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
 	return _FirmataCommandSystemResetCopy

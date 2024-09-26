@@ -285,7 +285,7 @@ func (m *_BACnetEventParameterChangeOfBitstring) deepCopy() *_BACnetEventParamet
 		return nil
 	}
 	_BACnetEventParameterChangeOfBitstringCopy := &_BACnetEventParameterChangeOfBitstring{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.Bitmask.DeepCopy().(BACnetContextTagBitString),

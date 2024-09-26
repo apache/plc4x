@@ -209,7 +209,7 @@ func (m *_BVLCReadBroadcastDistributionTableAck) deepCopy() *_BVLCReadBroadcastD
 		return nil
 	}
 	_BVLCReadBroadcastDistributionTableAckCopy := &_BVLCReadBroadcastDistributionTableAck{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		utils.DeepCopySlice[BVLCBroadcastDistributionTableEntry, BVLCBroadcastDistributionTableEntry](m.Table),
 		m.BvlcPayloadLength,
 	}

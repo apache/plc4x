@@ -186,7 +186,7 @@ func (m *_SecurityDataDisplayMessage) deepCopy() *_SecurityDataDisplayMessage {
 		return nil
 	}
 	_SecurityDataDisplayMessageCopy := &_SecurityDataDisplayMessage{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.Message,
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

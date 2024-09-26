@@ -189,7 +189,7 @@ func (m *_BACnetLogRecordLogDatumBooleanValue) deepCopy() *_BACnetLogRecordLogDa
 		return nil
 	}
 	_BACnetLogRecordLogDatumBooleanValueCopy := &_BACnetLogRecordLogDatumBooleanValue{
-		m.BACnetLogRecordLogDatumContract.DeepCopy().(BACnetLogRecordLogDatumContract),
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
 		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
 	}
 	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m

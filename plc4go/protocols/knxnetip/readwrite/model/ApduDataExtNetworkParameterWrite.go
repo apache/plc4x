@@ -157,7 +157,7 @@ func (m *_ApduDataExtNetworkParameterWrite) deepCopy() *_ApduDataExtNetworkParam
 		return nil
 	}
 	_ApduDataExtNetworkParameterWriteCopy := &_ApduDataExtNetworkParameterWrite{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtNetworkParameterWriteCopy

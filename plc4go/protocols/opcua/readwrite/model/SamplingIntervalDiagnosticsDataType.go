@@ -253,7 +253,7 @@ func (m *_SamplingIntervalDiagnosticsDataType) deepCopy() *_SamplingIntervalDiag
 		return nil
 	}
 	_SamplingIntervalDiagnosticsDataTypeCopy := &_SamplingIntervalDiagnosticsDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SamplingInterval,
 		m.MonitoredItemCount,
 		m.MaxMonitoredItemCount,

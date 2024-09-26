@@ -302,7 +302,7 @@ func (m *_NodeReference) deepCopy() *_NodeReference {
 		return nil
 	}
 	_NodeReferenceCopy := &_NodeReference{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(NodeId),
 		m.ReferenceTypeId.DeepCopy().(NodeId),
 		m.IsForward,

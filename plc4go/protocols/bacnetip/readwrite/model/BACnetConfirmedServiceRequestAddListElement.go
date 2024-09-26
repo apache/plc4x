@@ -272,7 +272,7 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) deepCopy() *_BACnetConfir
 		return nil
 	}
 	_BACnetConfirmedServiceRequestAddListElementCopy := &_BACnetConfirmedServiceRequestAddListElement{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
 		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),

@@ -218,7 +218,7 @@ func (m *_OpcuaMessageError) deepCopy() *_OpcuaMessageError {
 		return nil
 	}
 	_OpcuaMessageErrorCopy := &_OpcuaMessageError{
-		m.MessagePDUContract.DeepCopy().(MessagePDUContract),
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
 		m.Error,
 		m.Reason.DeepCopy().(PascalString),
 	}

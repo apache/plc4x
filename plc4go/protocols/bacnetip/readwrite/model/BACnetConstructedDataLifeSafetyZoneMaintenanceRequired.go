@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) deepCopy() *_B
 		return nil
 	}
 	_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredCopy := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaintenanceRequired.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

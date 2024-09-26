@@ -242,7 +242,7 @@ func (m *_CipConnectedRequest) deepCopy() *_CipConnectedRequest {
 		return nil
 	}
 	_CipConnectedRequestCopy := &_CipConnectedRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.PathSegments),
 		m.reservedField0,
 		m.reservedField1,

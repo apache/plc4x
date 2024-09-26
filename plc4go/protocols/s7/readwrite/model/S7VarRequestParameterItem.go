@@ -47,7 +47,6 @@ type S7VarRequestParameterItem interface {
 
 // S7VarRequestParameterItemContract provides a set of functions which can be overwritten by a sub struct
 type S7VarRequestParameterItemContract interface {
-	utils.Copyable
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
 }

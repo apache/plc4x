@@ -45,7 +45,6 @@ type CBusMessage interface {
 
 // CBusMessageContract provides a set of functions which can be overwritten by a sub struct
 type CBusMessageContract interface {
-	utils.Copyable
 	// GetRequestContext() returns a parser argument
 	GetRequestContext() RequestContext
 	// GetCBusOptions() returns a parser argument

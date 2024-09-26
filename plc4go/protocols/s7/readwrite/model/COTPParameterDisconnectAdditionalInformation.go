@@ -193,7 +193,7 @@ func (m *_COTPParameterDisconnectAdditionalInformation) deepCopy() *_COTPParamet
 		return nil
 	}
 	_COTPParameterDisconnectAdditionalInformationCopy := &_COTPParameterDisconnectAdditionalInformation{
-		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
 	m.COTPParameterContract.(*_COTPParameter)._SubType = m

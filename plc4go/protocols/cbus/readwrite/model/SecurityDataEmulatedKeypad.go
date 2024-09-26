@@ -437,7 +437,7 @@ func (m *_SecurityDataEmulatedKeypad) deepCopy() *_SecurityDataEmulatedKeypad {
 		return nil
 	}
 	_SecurityDataEmulatedKeypadCopy := &_SecurityDataEmulatedKeypad{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.Key,
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

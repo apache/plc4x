@@ -221,7 +221,7 @@ func (m *_VariantExpandedNodeId) deepCopy() *_VariantExpandedNodeId {
 		return nil
 	}
 	_VariantExpandedNodeIdCopy := &_VariantExpandedNodeId{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.Value),
 	}

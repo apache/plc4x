@@ -189,7 +189,7 @@ func (m *_BACnetHostAddressIpAddress) deepCopy() *_BACnetHostAddressIpAddress {
 		return nil
 	}
 	_BACnetHostAddressIpAddressCopy := &_BACnetHostAddressIpAddress{
-		m.BACnetHostAddressContract.DeepCopy().(BACnetHostAddressContract),
+		m.BACnetHostAddressContract.(*_BACnetHostAddress).deepCopy(),
 		m.IpAddress.DeepCopy().(BACnetContextTagOctetString),
 	}
 	m.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = m

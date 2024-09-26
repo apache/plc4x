@@ -190,7 +190,7 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncremen
 		return nil
 	}
 	_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementCopy := &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{
-		m.BACnetEventParameterChangeOfValueCivCriteriaContract.DeepCopy().(BACnetEventParameterChangeOfValueCivCriteriaContract),
+		m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria).deepCopy(),
 		m.ReferencedPropertyIncrement.DeepCopy().(BACnetContextTagReal),
 	}
 	m.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = m

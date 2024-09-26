@@ -45,7 +45,6 @@ type UserIdentityTokenDefinition interface {
 
 // UserIdentityTokenDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type UserIdentityTokenDefinitionContract interface {
-	utils.Copyable
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
 }

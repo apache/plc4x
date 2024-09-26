@@ -319,7 +319,7 @@ func (m *_ModifySubscriptionRequest) deepCopy() *_ModifySubscriptionRequest {
 		return nil
 	}
 	_ModifySubscriptionRequestCopy := &_ModifySubscriptionRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.RequestedPublishingInterval,

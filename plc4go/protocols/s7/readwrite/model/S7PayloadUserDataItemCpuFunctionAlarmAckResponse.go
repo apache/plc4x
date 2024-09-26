@@ -235,7 +235,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) deepCopy() *_S7Paylo
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionAlarmAckResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.FunctionId,
 		utils.DeepCopySlice[uint8, uint8](m.MessageObjects),
 	}

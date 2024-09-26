@@ -153,7 +153,7 @@ func (m *_MediaTransportControlDataPlay) deepCopy() *_MediaTransportControlDataP
 		return nil
 	}
 	_MediaTransportControlDataPlayCopy := &_MediaTransportControlDataPlay{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 	}
 	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
 	return _MediaTransportControlDataPlayCopy

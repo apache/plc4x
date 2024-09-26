@@ -220,7 +220,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) deepCopy()
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.Result,
 		m.Reserved01,
 	}

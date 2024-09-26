@@ -189,7 +189,7 @@ func (m *_SecurityDataSystemArmedDisarmed) deepCopy() *_SecurityDataSystemArmedD
 		return nil
 	}
 	_SecurityDataSystemArmedDisarmedCopy := &_SecurityDataSystemArmedDisarmed{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.ArmCodeType.DeepCopy().(SecurityArmCode),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

@@ -158,7 +158,7 @@ func (m *_BVLCReadBroadcastDistributionTable) deepCopy() *_BVLCReadBroadcastDist
 		return nil
 	}
 	_BVLCReadBroadcastDistributionTableCopy := &_BVLCReadBroadcastDistributionTable{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 	}
 	m.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadBroadcastDistributionTableCopy

@@ -153,7 +153,7 @@ func (m *_TriggerControlDataTriggerMin) deepCopy() *_TriggerControlDataTriggerMi
 		return nil
 	}
 	_TriggerControlDataTriggerMinCopy := &_TriggerControlDataTriggerMin{
-		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
 	}
 	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
 	return _TriggerControlDataTriggerMinCopy

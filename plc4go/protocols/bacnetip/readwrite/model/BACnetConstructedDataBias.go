@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataBias) deepCopy() *_BACnetConstructedDataBias {
 		return nil
 	}
 	_BACnetConstructedDataBiasCopy := &_BACnetConstructedDataBias{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Bias.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -157,7 +157,7 @@ func (m *_MPropWriteReq) deepCopy() *_MPropWriteReq {
 		return nil
 	}
 	_MPropWriteReqCopy := &_MPropWriteReq{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _MPropWriteReqCopy

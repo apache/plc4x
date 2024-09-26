@@ -186,7 +186,7 @@ func (m *_MeteringDataDrinkingWaterConsumption) deepCopy() *_MeteringDataDrinkin
 		return nil
 	}
 	_MeteringDataDrinkingWaterConsumptionCopy := &_MeteringDataDrinkingWaterConsumption{
-		m.MeteringDataContract.DeepCopy().(MeteringDataContract),
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
 		m.KL,
 	}
 	m.MeteringDataContract.(*_MeteringData)._SubType = m

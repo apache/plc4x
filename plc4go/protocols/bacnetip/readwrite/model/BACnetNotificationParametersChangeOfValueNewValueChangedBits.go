@@ -190,7 +190,7 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedBits) deepCopy
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfValueNewValueChangedBitsCopy := &_BACnetNotificationParametersChangeOfValueNewValueChangedBits{
-		m.BACnetNotificationParametersChangeOfValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfValueNewValueContract),
+		m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue).deepCopy(),
 		m.ChangedBits.DeepCopy().(BACnetContextTagBitString),
 	}
 	m.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = m

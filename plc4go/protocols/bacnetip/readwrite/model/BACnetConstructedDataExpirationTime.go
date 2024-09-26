@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataExpirationTime) deepCopy() *_BACnetConstructedDat
 		return nil
 	}
 	_BACnetConstructedDataExpirationTimeCopy := &_BACnetConstructedDataExpirationTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ExpirationTime.DeepCopy().(BACnetDateTime),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

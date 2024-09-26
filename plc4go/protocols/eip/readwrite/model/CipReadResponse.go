@@ -261,7 +261,7 @@ func (m *_CipReadResponse) deepCopy() *_CipReadResponse {
 		return nil
 	}
 	_CipReadResponseCopy := &_CipReadResponse{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.ExtStatus,
 		m.Data.DeepCopy().(CIPData),

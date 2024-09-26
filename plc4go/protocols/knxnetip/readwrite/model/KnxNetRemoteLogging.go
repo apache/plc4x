@@ -190,7 +190,7 @@ func (m *_KnxNetRemoteLogging) deepCopy() *_KnxNetRemoteLogging {
 		return nil
 	}
 	_KnxNetRemoteLoggingCopy := &_KnxNetRemoteLogging{
-		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
 	m.ServiceIdContract.(*_ServiceId)._SubType = m

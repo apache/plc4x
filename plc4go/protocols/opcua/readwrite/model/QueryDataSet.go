@@ -266,7 +266,7 @@ func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
 		return nil
 	}
 	_QueryDataSetCopy := &_QueryDataSet{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(ExpandedNodeId),
 		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
 		m.NoOfValues,

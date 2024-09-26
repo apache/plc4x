@@ -472,7 +472,7 @@ func (m *_PubSubConnectionDataType) deepCopy() *_PubSubConnectionDataType {
 		return nil
 	}
 	_PubSubConnectionDataTypeCopy := &_PubSubConnectionDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.Enabled,
 		m.PublisherId.DeepCopy().(Variant),

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataMaxFailedAttemptsCopy := &_BACnetConstructedDataMaxFailedAttempts{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaxFailedAttempts.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) deepCopy() *_BACnetConstruct
 		return nil
 	}
 	_BACnetConstructedDataMaxSegmentsAcceptedCopy := &_BACnetConstructedDataMaxSegmentsAccepted{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaxSegmentsAccepted.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

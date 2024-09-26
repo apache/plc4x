@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataSchedulePresentValue) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataSchedulePresentValueCopy := &_BACnetConstructedDataSchedulePresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PresentValue.DeepCopy().(BACnetConstructedDataElement),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

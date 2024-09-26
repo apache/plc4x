@@ -213,7 +213,7 @@ func (m *_ApduDataGroupValueResponse) deepCopy() *_ApduDataGroupValueResponse {
 		return nil
 	}
 	_ApduDataGroupValueResponseCopy := &_ApduDataGroupValueResponse{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.DataFirstByte,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

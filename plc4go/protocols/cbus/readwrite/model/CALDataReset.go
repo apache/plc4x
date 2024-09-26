@@ -153,7 +153,7 @@ func (m *_CALDataReset) deepCopy() *_CALDataReset {
 		return nil
 	}
 	_CALDataResetCopy := &_CALDataReset{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 	}
 	m.CALDataContract.(*_CALData)._SubType = m
 	return _CALDataResetCopy

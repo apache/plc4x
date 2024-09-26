@@ -270,7 +270,7 @@ func (m *_CycServiceItemAnyType) deepCopy() *_CycServiceItemAnyType {
 		return nil
 	}
 	_CycServiceItemAnyTypeCopy := &_CycServiceItemAnyType{
-		m.CycServiceItemTypeContract.DeepCopy().(CycServiceItemTypeContract),
+		m.CycServiceItemTypeContract.(*_CycServiceItemType).deepCopy(),
 		m.TransportSize,
 		m.Length,
 		m.DbNumber,

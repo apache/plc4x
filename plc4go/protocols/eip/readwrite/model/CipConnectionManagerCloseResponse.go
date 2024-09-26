@@ -332,7 +332,7 @@ func (m *_CipConnectionManagerCloseResponse) deepCopy() *_CipConnectionManagerCl
 		return nil
 	}
 	_CipConnectionManagerCloseResponseCopy := &_CipConnectionManagerCloseResponse{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.AdditionalStatusWords,
 		m.ConnectionSerialNumber,

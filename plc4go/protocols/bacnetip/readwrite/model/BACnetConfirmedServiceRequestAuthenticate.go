@@ -205,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestAuthenticate) deepCopy() *_BACnetConfirme
 		return nil
 	}
 	_BACnetConfirmedServiceRequestAuthenticateCopy := &_BACnetConfirmedServiceRequestAuthenticate{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
 		m.ServiceRequestPayloadLength,
 	}

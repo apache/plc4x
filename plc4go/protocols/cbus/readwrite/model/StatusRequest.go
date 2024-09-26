@@ -47,7 +47,6 @@ type StatusRequest interface {
 
 // StatusRequestContract provides a set of functions which can be overwritten by a sub struct
 type StatusRequestContract interface {
-	utils.Copyable
 	// GetStatusType returns StatusType (property field)
 	GetStatusType() byte
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)

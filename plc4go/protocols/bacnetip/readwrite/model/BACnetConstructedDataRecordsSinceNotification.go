@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataRecordsSinceNotification) deepCopy() *_BACnetCons
 		return nil
 	}
 	_BACnetConstructedDataRecordsSinceNotificationCopy := &_BACnetConstructedDataRecordsSinceNotification{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.RecordsSinceNotifications.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

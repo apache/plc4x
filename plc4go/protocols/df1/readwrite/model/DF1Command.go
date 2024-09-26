@@ -47,7 +47,6 @@ type DF1Command interface {
 
 // DF1CommandContract provides a set of functions which can be overwritten by a sub struct
 type DF1CommandContract interface {
-	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetTransactionCounter returns TransactionCounter (property field)

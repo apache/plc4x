@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataDeadband) deepCopy() *_BACnetConstructedDataDeadb
 		return nil
 	}
 	_BACnetConstructedDataDeadbandCopy := &_BACnetConstructedDataDeadband{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Deadband.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

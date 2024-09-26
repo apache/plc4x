@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) deepCopy() *_BACnetConstr
 		return nil
 	}
 	_BACnetConstructedDataVirtualMACAddressTableCopy := &_BACnetConstructedDataVirtualMACAddressTable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetVMACEntry, BACnetVMACEntry](m.VirtualMacAddressTable),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

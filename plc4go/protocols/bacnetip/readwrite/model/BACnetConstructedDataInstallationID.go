@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataInstallationID) deepCopy() *_BACnetConstructedDat
 		return nil
 	}
 	_BACnetConstructedDataInstallationIDCopy := &_BACnetConstructedDataInstallationID{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.InstallationId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

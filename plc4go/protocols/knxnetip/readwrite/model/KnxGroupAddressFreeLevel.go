@@ -190,7 +190,7 @@ func (m *_KnxGroupAddressFreeLevel) deepCopy() *_KnxGroupAddressFreeLevel {
 		return nil
 	}
 	_KnxGroupAddressFreeLevelCopy := &_KnxGroupAddressFreeLevel{
-		m.KnxGroupAddressContract.DeepCopy().(KnxGroupAddressContract),
+		m.KnxGroupAddressContract.(*_KnxGroupAddress).deepCopy(),
 		m.SubGroup,
 	}
 	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m

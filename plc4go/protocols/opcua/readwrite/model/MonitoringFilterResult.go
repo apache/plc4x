@@ -157,7 +157,7 @@ func (m *_MonitoringFilterResult) deepCopy() *_MonitoringFilterResult {
 		return nil
 	}
 	_MonitoringFilterResultCopy := &_MonitoringFilterResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoringFilterResultCopy

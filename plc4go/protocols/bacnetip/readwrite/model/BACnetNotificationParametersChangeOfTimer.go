@@ -366,7 +366,7 @@ func (m *_BACnetNotificationParametersChangeOfTimer) deepCopy() *_BACnetNotifica
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfTimerCopy := &_BACnetNotificationParametersChangeOfTimer{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.NewValue.DeepCopy().(BACnetTimerStateTagged),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

@@ -229,7 +229,7 @@ func (m *_ModbusRtuADU) deepCopy() *_ModbusRtuADU {
 		return nil
 	}
 	_ModbusRtuADUCopy := &_ModbusRtuADU{
-		m.ModbusADUContract.DeepCopy().(ModbusADUContract),
+		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
 		m.Address,
 		m.Pdu.DeepCopy().(ModbusPDU),
 	}

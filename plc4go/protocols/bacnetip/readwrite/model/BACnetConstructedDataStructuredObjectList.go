@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataStructuredObjectList) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataStructuredObjectListCopy := &_BACnetConstructedDataStructuredObjectList{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.StructuredObjectList),
 	}

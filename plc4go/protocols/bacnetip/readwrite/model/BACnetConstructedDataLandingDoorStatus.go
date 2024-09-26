@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataLandingDoorStatus) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataLandingDoorStatusCopy := &_BACnetConstructedDataLandingDoorStatus{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetLandingDoorStatus, BACnetLandingDoorStatus](m.LandingDoorStatus),
 	}

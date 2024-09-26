@@ -157,7 +157,7 @@ func (m *_HistoryReadDetails) deepCopy() *_HistoryReadDetails {
 		return nil
 	}
 	_HistoryReadDetailsCopy := &_HistoryReadDetails{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryReadDetailsCopy

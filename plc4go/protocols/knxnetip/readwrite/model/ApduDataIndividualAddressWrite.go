@@ -157,7 +157,7 @@ func (m *_ApduDataIndividualAddressWrite) deepCopy() *_ApduDataIndividualAddress
 		return nil
 	}
 	_ApduDataIndividualAddressWriteCopy := &_ApduDataIndividualAddressWrite{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
 	m.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataIndividualAddressWriteCopy

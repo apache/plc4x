@@ -47,7 +47,6 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValue interface {
 
 // BACnetFaultParameterFaultOutOfRangeMinNormalValueContract provides a set of functions which can be overwritten by a sub struct
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueContract interface {
-	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)

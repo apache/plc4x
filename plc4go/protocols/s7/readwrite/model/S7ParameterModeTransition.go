@@ -306,7 +306,7 @@ func (m *_S7ParameterModeTransition) deepCopy() *_S7ParameterModeTransition {
 		return nil
 	}
 	_S7ParameterModeTransitionCopy := &_S7ParameterModeTransition{
-		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		m.Method,
 		m.CpuFunctionType,
 		m.CpuFunctionGroup,

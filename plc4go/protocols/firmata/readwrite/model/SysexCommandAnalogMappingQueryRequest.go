@@ -161,7 +161,7 @@ func (m *_SysexCommandAnalogMappingQueryRequest) deepCopy() *_SysexCommandAnalog
 		return nil
 	}
 	_SysexCommandAnalogMappingQueryRequestCopy := &_SysexCommandAnalogMappingQueryRequest{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandAnalogMappingQueryRequestCopy

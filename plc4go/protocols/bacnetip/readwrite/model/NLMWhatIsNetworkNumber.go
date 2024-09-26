@@ -157,7 +157,7 @@ func (m *_NLMWhatIsNetworkNumber) deepCopy() *_NLMWhatIsNetworkNumber {
 		return nil
 	}
 	_NLMWhatIsNetworkNumberCopy := &_NLMWhatIsNetworkNumber{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 	}
 	m.NLMContract.(*_NLM)._SubType = m
 	return _NLMWhatIsNetworkNumberCopy

@@ -157,7 +157,7 @@ func (m *_ApduDataExtFileStreamInfoReport) deepCopy() *_ApduDataExtFileStreamInf
 		return nil
 	}
 	_ApduDataExtFileStreamInfoReportCopy := &_ApduDataExtFileStreamInfoReport{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtFileStreamInfoReportCopy

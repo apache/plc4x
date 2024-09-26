@@ -47,7 +47,6 @@ type CBusPointToMultiPointCommand interface {
 
 // CBusPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToMultiPointCommandContract interface {
-	utils.Copyable
 	// GetPeekedApplication returns PeekedApplication (property field)
 	GetPeekedApplication() byte
 	// GetCBusOptions() returns a parser argument

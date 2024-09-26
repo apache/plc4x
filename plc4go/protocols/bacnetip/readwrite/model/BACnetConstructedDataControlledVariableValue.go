@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataControlledVariableValue) deepCopy() *_BACnetConst
 		return nil
 	}
 	_BACnetConstructedDataControlledVariableValueCopy := &_BACnetConstructedDataControlledVariableValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ControlledVariableValue.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

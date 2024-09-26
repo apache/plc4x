@@ -261,7 +261,7 @@ func (m *_BACnetFaultParameterFaultLifeSafety) deepCopy() *_BACnetFaultParameter
 		return nil
 	}
 	_BACnetFaultParameterFaultLifeSafetyCopy := &_BACnetFaultParameterFaultLifeSafety{
-		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ListOfFaultValues.DeepCopy().(BACnetFaultParameterFaultLifeSafetyListOfFaultValues),
 		m.ModePropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),

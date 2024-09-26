@@ -195,7 +195,7 @@ func (m *_TunnelingResponse) deepCopy() *_TunnelingResponse {
 		return nil
 	}
 	_TunnelingResponseCopy := &_TunnelingResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.TunnelingResponseDataBlock.DeepCopy().(TunnelingResponseDataBlock),
 	}
 	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m

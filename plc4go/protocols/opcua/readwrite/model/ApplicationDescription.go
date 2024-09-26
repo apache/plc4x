@@ -359,7 +359,7 @@ func (m *_ApplicationDescription) deepCopy() *_ApplicationDescription {
 		return nil
 	}
 	_ApplicationDescriptionCopy := &_ApplicationDescription{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ApplicationUri.DeepCopy().(PascalString),
 		m.ProductUri.DeepCopy().(PascalString),
 		m.ApplicationName.DeepCopy().(LocalizedText),

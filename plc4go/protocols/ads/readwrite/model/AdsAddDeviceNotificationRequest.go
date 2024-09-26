@@ -328,7 +328,7 @@ func (m *_AdsAddDeviceNotificationRequest) deepCopy() *_AdsAddDeviceNotification
 		return nil
 	}
 	_AdsAddDeviceNotificationRequestCopy := &_AdsAddDeviceNotificationRequest{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.IndexGroup,
 		m.IndexOffset,
 		m.Length,

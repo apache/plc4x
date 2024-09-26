@@ -157,7 +157,7 @@ func (m *_Union) deepCopy() *_Union {
 		return nil
 	}
 	_UnionCopy := &_Union{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UnionCopy

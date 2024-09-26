@@ -262,7 +262,7 @@ func (m *_EUInformation) deepCopy() *_EUInformation {
 		return nil
 	}
 	_EUInformationCopy := &_EUInformation{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NamespaceUri.DeepCopy().(PascalString),
 		m.UnitId,
 		m.DisplayName.DeepCopy().(LocalizedText),

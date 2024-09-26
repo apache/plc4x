@@ -165,7 +165,7 @@ func (m *_NullCommandRequest) deepCopy() *_NullCommandRequest {
 		return nil
 	}
 	_NullCommandRequestCopy := &_NullCommandRequest{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
 	m.EipPacketContract.(*_EipPacket)._SubType = m
 	return _NullCommandRequestCopy

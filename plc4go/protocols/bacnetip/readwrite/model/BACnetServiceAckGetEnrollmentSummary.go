@@ -292,7 +292,7 @@ func (m *_BACnetServiceAckGetEnrollmentSummary) deepCopy() *_BACnetServiceAckGet
 		return nil
 	}
 	_BACnetServiceAckGetEnrollmentSummaryCopy := &_BACnetServiceAckGetEnrollmentSummary{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
 		m.EventType.DeepCopy().(BACnetEventTypeTagged),
 		m.EventState.DeepCopy().(BACnetEventStateTagged),

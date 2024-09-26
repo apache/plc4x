@@ -219,7 +219,7 @@ func (m *_ModbusPDUDiagnosticResponse) deepCopy() *_ModbusPDUDiagnosticResponse 
 		return nil
 	}
 	_ModbusPDUDiagnosticResponseCopy := &_ModbusPDUDiagnosticResponse{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.SubFunction,
 		m.Data,
 	}

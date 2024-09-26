@@ -445,7 +445,7 @@ func (m *_APDUComplexAck) deepCopy() *_APDUComplexAck {
 		return nil
 	}
 	_APDUComplexAckCopy := &_APDUComplexAck{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.SegmentedMessage,
 		m.MoreFollows,
 		m.OriginalInvokeId,

@@ -285,7 +285,7 @@ func (m *_BACnetNotificationParametersBufferReady) deepCopy() *_BACnetNotificati
 		return nil
 	}
 	_BACnetNotificationParametersBufferReadyCopy := &_BACnetNotificationParametersBufferReady{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.BufferProperty.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
 		m.PreviousNotification.DeepCopy().(BACnetContextTagUnsignedInteger),

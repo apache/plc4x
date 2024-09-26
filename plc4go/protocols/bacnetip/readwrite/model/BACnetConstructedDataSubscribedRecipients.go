@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataSubscribedRecipients) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataSubscribedRecipientsCopy := &_BACnetConstructedDataSubscribedRecipients{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetEventNotificationSubscription, BACnetEventNotificationSubscription](m.SubscribedRecipients),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

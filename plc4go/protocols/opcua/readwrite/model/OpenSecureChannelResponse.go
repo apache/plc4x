@@ -262,7 +262,7 @@ func (m *_OpenSecureChannelResponse) deepCopy() *_OpenSecureChannelResponse {
 		return nil
 	}
 	_OpenSecureChannelResponseCopy := &_OpenSecureChannelResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.ServerProtocolVersion,
 		m.SecurityToken.DeepCopy().(ExtensionObjectDefinition),

@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) deepCopy() *_BACnetConstr
 		return nil
 	}
 	_BACnetConstructedDataRestorePreparationTimeCopy := &_BACnetConstructedDataRestorePreparationTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.RestorePreparationTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -153,7 +153,7 @@ func (m *_SecurityDataLowBatteryCorrected) deepCopy() *_SecurityDataLowBatteryCo
 		return nil
 	}
 	_SecurityDataLowBatteryCorrectedCopy := &_SecurityDataLowBatteryCorrected{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m
 	return _SecurityDataLowBatteryCorrectedCopy

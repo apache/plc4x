@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLockout) deepCopy() *_BACnetConstructedDataLockou
 		return nil
 	}
 	_BACnetConstructedDataLockoutCopy := &_BACnetConstructedDataLockout{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Lockout.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

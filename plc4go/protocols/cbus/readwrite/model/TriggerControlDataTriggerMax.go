@@ -153,7 +153,7 @@ func (m *_TriggerControlDataTriggerMax) deepCopy() *_TriggerControlDataTriggerMa
 		return nil
 	}
 	_TriggerControlDataTriggerMaxCopy := &_TriggerControlDataTriggerMax{
-		m.TriggerControlDataContract.DeepCopy().(TriggerControlDataContract),
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
 	}
 	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
 	return _TriggerControlDataTriggerMaxCopy

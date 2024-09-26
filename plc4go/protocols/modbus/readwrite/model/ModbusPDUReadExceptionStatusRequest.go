@@ -165,7 +165,7 @@ func (m *_ModbusPDUReadExceptionStatusRequest) deepCopy() *_ModbusPDUReadExcepti
 		return nil
 	}
 	_ModbusPDUReadExceptionStatusRequestCopy := &_ModbusPDUReadExceptionStatusRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUReadExceptionStatusRequestCopy

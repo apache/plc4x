@@ -453,7 +453,7 @@ func (m *_CreateSessionResponse) deepCopy() *_CreateSessionResponse {
 		return nil
 	}
 	_CreateSessionResponseCopy := &_CreateSessionResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SessionId.DeepCopy().(NodeId),
 		m.AuthenticationToken.DeepCopy().(NodeId),

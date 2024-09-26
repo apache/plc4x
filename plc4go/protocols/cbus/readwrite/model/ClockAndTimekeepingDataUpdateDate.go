@@ -270,7 +270,7 @@ func (m *_ClockAndTimekeepingDataUpdateDate) deepCopy() *_ClockAndTimekeepingDat
 		return nil
 	}
 	_ClockAndTimekeepingDataUpdateDateCopy := &_ClockAndTimekeepingDataUpdateDate{
-		m.ClockAndTimekeepingDataContract.DeepCopy().(ClockAndTimekeepingDataContract),
+		m.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData).deepCopy(),
 		m.YearHigh,
 		m.YearLow,
 		m.Month,

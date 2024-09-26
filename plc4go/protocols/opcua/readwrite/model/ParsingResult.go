@@ -291,7 +291,7 @@ func (m *_ParsingResult) deepCopy() *_ParsingResult {
 		return nil
 	}
 	_ParsingResultCopy := &_ParsingResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.NoOfDataStatusCodes,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),

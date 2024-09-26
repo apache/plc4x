@@ -333,7 +333,7 @@ func (m *_BACnetEventParameterFloatingLimit) deepCopy() *_BACnetEventParameterFl
 		return nil
 	}
 	_BACnetEventParameterFloatingLimitCopy := &_BACnetEventParameterFloatingLimit{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.SetpointReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),

@@ -220,7 +220,7 @@ func (m *_BACnetApplicationTagDouble) deepCopy() *_BACnetApplicationTagDouble {
 		return nil
 	}
 	_BACnetApplicationTagDoubleCopy := &_BACnetApplicationTagDouble{
-		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
 	}
 	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataDefaultStepIncrementCopy := &_BACnetConstructedDataDefaultStepIncrement{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.DefaultStepIncrement.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

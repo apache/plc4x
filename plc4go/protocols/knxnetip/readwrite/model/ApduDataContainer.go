@@ -193,7 +193,7 @@ func (m *_ApduDataContainer) deepCopy() *_ApduDataContainer {
 		return nil
 	}
 	_ApduDataContainerCopy := &_ApduDataContainer{
-		m.ApduContract.DeepCopy().(ApduContract),
+		m.ApduContract.(*_Apdu).deepCopy(),
 		m.DataApdu.DeepCopy().(ApduData),
 	}
 	m.ApduContract.(*_Apdu)._SubType = m

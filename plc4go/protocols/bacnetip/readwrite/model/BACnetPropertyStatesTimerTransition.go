@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesTimerTransition) deepCopy() *_BACnetPropertyStates
 		return nil
 	}
 	_BACnetPropertyStatesTimerTransitionCopy := &_BACnetPropertyStatesTimerTransition{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.TimerTransition.DeepCopy().(BACnetTimerTransitionTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

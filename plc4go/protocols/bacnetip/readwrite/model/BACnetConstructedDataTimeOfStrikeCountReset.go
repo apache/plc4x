@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataTimeOfStrikeCountReset) deepCopy() *_BACnetConstr
 		return nil
 	}
 	_BACnetConstructedDataTimeOfStrikeCountResetCopy := &_BACnetConstructedDataTimeOfStrikeCountReset{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.TimeOfStrikeCountReset.DeepCopy().(BACnetDateTime),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

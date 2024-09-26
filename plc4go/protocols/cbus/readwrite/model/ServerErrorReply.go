@@ -185,7 +185,7 @@ func (m *_ServerErrorReply) deepCopy() *_ServerErrorReply {
 		return nil
 	}
 	_ServerErrorReplyCopy := &_ServerErrorReply{
-		m.ReplyOrConfirmationContract.DeepCopy().(ReplyOrConfirmationContract),
+		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
 	}
 	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
 	return _ServerErrorReplyCopy

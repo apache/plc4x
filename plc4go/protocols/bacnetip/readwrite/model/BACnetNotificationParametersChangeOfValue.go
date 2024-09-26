@@ -261,7 +261,7 @@ func (m *_BACnetNotificationParametersChangeOfValue) deepCopy() *_BACnetNotifica
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfValueCopy := &_BACnetNotificationParametersChangeOfValue{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.NewValue.DeepCopy().(BACnetNotificationParametersChangeOfValueNewValue),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

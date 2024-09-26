@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataMaxPresValue) deepCopy() *_BACnetConstructedDataM
 		return nil
 	}
 	_BACnetConstructedDataMaxPresValueCopy := &_BACnetConstructedDataMaxPresValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaxPresValue.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

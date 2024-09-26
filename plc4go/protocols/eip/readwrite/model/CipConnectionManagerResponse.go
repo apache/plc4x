@@ -366,7 +366,7 @@ func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerRespons
 		return nil
 	}
 	_CipConnectionManagerResponseCopy := &_CipConnectionManagerResponse{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.OtConnectionId,
 		m.ToConnectionId,
 		m.ConnectionSerialNumber,

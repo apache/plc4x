@@ -198,7 +198,7 @@ func (m *_ModbusPDUError) deepCopy() *_ModbusPDUError {
 		return nil
 	}
 	_ModbusPDUErrorCopy := &_ModbusPDUError{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.ExceptionCode,
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m

@@ -262,7 +262,7 @@ func (m *_WriteValue) deepCopy() *_WriteValue {
 		return nil
 	}
 	_WriteValueCopy := &_WriteValue{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(NodeId),
 		m.AttributeId,
 		m.IndexRange.DeepCopy().(PascalString),

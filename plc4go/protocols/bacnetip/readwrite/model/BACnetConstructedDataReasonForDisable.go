@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataReasonForDisable) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataReasonForDisableCopy := &_BACnetConstructedDataReasonForDisable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessCredentialDisableReasonTagged, BACnetAccessCredentialDisableReasonTagged](m.ReasonForDisable),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

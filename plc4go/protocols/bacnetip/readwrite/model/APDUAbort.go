@@ -250,7 +250,7 @@ func (m *_APDUAbort) deepCopy() *_APDUAbort {
 		return nil
 	}
 	_APDUAbortCopy := &_APDUAbort{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.Server,
 		m.OriginalInvokeId,
 		m.AbortReason.DeepCopy().(BACnetAbortReasonTagged),

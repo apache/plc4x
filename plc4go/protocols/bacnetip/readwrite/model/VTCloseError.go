@@ -220,7 +220,7 @@ func (m *_VTCloseError) deepCopy() *_VTCloseError {
 		return nil
 	}
 	_VTCloseErrorCopy := &_VTCloseError{
-		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
 		m.ErrorType.DeepCopy().(ErrorEnclosed),
 		m.ListOfVtSessionIdentifiers.DeepCopy().(VTCloseErrorListOfVTSessionIdentifiers),
 	}

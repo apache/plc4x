@@ -217,7 +217,7 @@ func (m *_StatusResult) deepCopy() *_StatusResult {
 		return nil
 	}
 	_StatusResultCopy := &_StatusResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.DiagnosticInfo.DeepCopy().(DiagnosticInfo),
 	}

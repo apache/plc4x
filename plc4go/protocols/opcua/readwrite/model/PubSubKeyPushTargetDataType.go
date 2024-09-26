@@ -454,7 +454,7 @@ func (m *_PubSubKeyPushTargetDataType) deepCopy() *_PubSubKeyPushTargetDataType 
 		return nil
 	}
 	_PubSubKeyPushTargetDataTypeCopy := &_PubSubKeyPushTargetDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ApplicationUri.DeepCopy().(PascalString),
 		m.NoOfPushTargetFolder,
 		utils.DeepCopySlice[PascalString, PascalString](m.PushTargetFolder),

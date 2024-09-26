@@ -220,7 +220,7 @@ func (m *_BACnetApplicationTagBoolean) deepCopy() *_BACnetApplicationTagBoolean 
 		return nil
 	}
 	_BACnetApplicationTagBooleanCopy := &_BACnetApplicationTagBoolean{
-		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
 	}
 	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m

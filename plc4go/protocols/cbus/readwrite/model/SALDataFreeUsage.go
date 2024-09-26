@@ -162,7 +162,7 @@ func (m *_SALDataFreeUsage) deepCopy() *_SALDataFreeUsage {
 		return nil
 	}
 	_SALDataFreeUsageCopy := &_SALDataFreeUsage{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m
 	return _SALDataFreeUsageCopy

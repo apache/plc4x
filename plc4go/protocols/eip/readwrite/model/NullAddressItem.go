@@ -174,7 +174,7 @@ func (m *_NullAddressItem) deepCopy() *_NullAddressItem {
 		return nil
 	}
 	_NullAddressItemCopy := &_NullAddressItem{
-		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.TypeIdContract.(*_TypeId).deepCopy(),
 		m.reservedField0,
 	}
 	m.TypeIdContract.(*_TypeId)._SubType = m

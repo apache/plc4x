@@ -331,7 +331,7 @@ func (m *_FieldTargetDataType) deepCopy() *_FieldTargetDataType {
 		return nil
 	}
 	_FieldTargetDataTypeCopy := &_FieldTargetDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.DataSetFieldId.DeepCopy().(GuidValue),
 		m.ReceiverIndexRange.DeepCopy().(PascalString),
 		m.TargetNodeId.DeepCopy().(NodeId),

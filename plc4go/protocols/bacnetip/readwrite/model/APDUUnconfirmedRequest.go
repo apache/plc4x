@@ -208,7 +208,7 @@ func (m *_APDUUnconfirmedRequest) deepCopy() *_APDUUnconfirmedRequest {
 		return nil
 	}
 	_APDUUnconfirmedRequestCopy := &_APDUUnconfirmedRequest{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.ServiceRequest.DeepCopy().(BACnetUnconfirmedServiceRequest),
 		m.reservedField0,
 	}

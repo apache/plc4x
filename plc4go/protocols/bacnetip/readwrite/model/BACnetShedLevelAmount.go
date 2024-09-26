@@ -189,7 +189,7 @@ func (m *_BACnetShedLevelAmount) deepCopy() *_BACnetShedLevelAmount {
 		return nil
 	}
 	_BACnetShedLevelAmountCopy := &_BACnetShedLevelAmount{
-		m.BACnetShedLevelContract.DeepCopy().(BACnetShedLevelContract),
+		m.BACnetShedLevelContract.(*_BACnetShedLevel).deepCopy(),
 		m.Amount.DeepCopy().(BACnetContextTagReal),
 	}
 	m.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = m

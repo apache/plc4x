@@ -195,7 +195,7 @@ func (m *_DescriptionRequest) deepCopy() *_DescriptionRequest {
 		return nil
 	}
 	_DescriptionRequestCopy := &_DescriptionRequest{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
 	}
 	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m

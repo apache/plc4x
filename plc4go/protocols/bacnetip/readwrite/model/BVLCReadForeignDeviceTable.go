@@ -158,7 +158,7 @@ func (m *_BVLCReadForeignDeviceTable) deepCopy() *_BVLCReadForeignDeviceTable {
 		return nil
 	}
 	_BVLCReadForeignDeviceTableCopy := &_BVLCReadForeignDeviceTable{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 	}
 	m.BVLCContract.(*_BVLC)._SubType = m
 	return _BVLCReadForeignDeviceTableCopy

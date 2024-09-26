@@ -249,7 +249,7 @@ func (m *_LevelInformationCorrupted) deepCopy() *_LevelInformationCorrupted {
 		return nil
 	}
 	_LevelInformationCorruptedCopy := &_LevelInformationCorrupted{
-		m.LevelInformationContract.DeepCopy().(LevelInformationContract),
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
 		m.CorruptedNibble1,
 		m.CorruptedNibble2,
 		m.CorruptedNibble3,

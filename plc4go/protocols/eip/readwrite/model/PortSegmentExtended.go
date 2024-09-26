@@ -263,7 +263,7 @@ func (m *_PortSegmentExtended) deepCopy() *_PortSegmentExtended {
 		return nil
 	}
 	_PortSegmentExtendedCopy := &_PortSegmentExtended{
-		m.PortSegmentTypeContract.DeepCopy().(PortSegmentTypeContract),
+		m.PortSegmentTypeContract.(*_PortSegmentType).deepCopy(),
 		m.Port,
 		m.LinkAddressSize,
 		m.Address,

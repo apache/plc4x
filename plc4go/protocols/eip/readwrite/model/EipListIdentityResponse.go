@@ -218,7 +218,7 @@ func (m *_EipListIdentityResponse) deepCopy() *_EipListIdentityResponse {
 		return nil
 	}
 	_EipListIdentityResponseCopy := &_EipListIdentityResponse{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 		utils.DeepCopySlice[CommandSpecificDataItem, CommandSpecificDataItem](m.Items),
 	}
 	m.EipPacketContract.(*_EipPacket)._SubType = m

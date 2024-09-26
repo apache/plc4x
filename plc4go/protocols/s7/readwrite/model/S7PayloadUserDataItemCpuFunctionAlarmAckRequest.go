@@ -248,7 +248,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) deepCopy() *_S7Payloa
 		return nil
 	}
 	_S7PayloadUserDataItemCpuFunctionAlarmAckRequestCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckRequest{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		utils.DeepCopySlice[AlarmMessageObjectAckType, AlarmMessageObjectAckType](m.MessageObjects),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m

@@ -285,7 +285,7 @@ func (m *_BACnetFaultParameterFaultExtended) deepCopy() *_BACnetFaultParameterFa
 		return nil
 	}
 	_BACnetFaultParameterFaultExtendedCopy := &_BACnetFaultParameterFaultExtended{
-		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
 		m.ExtendedFaultType.DeepCopy().(BACnetContextTagUnsignedInteger),

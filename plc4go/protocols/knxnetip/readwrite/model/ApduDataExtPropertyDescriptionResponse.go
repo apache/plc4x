@@ -366,7 +366,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) deepCopy() *_ApduDataExtProper
 		return nil
 	}
 	_ApduDataExtPropertyDescriptionResponseCopy := &_ApduDataExtPropertyDescriptionResponse{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 		m.ObjectIndex,
 		m.PropertyId,
 		m.Index,

@@ -201,7 +201,7 @@ func (m *_TelephonyDataRinging) deepCopy() *_TelephonyDataRinging {
 		return nil
 	}
 	_TelephonyDataRingingCopy := &_TelephonyDataRinging{
-		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 		m.Number,
 		m.reservedField0,
 	}

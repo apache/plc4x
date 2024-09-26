@@ -261,7 +261,7 @@ func (m *_BACnetEventParameterCommandFailure) deepCopy() *_BACnetEventParameterC
 		return nil
 	}
 	_BACnetEventParameterCommandFailureCopy := &_BACnetEventParameterCommandFailure{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.FeedbackPropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),

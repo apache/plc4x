@@ -213,7 +213,7 @@ func (m *_ConnectionStateResponse) deepCopy() *_ConnectionStateResponse {
 		return nil
 	}
 	_ConnectionStateResponseCopy := &_ConnectionStateResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.Status,
 	}

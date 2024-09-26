@@ -451,7 +451,7 @@ func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
 		return nil
 	}
 	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.NoOfSecurityGroupFolder,
 		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),

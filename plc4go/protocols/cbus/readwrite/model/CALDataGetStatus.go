@@ -207,7 +207,7 @@ func (m *_CALDataGetStatus) deepCopy() *_CALDataGetStatus {
 		return nil
 	}
 	_CALDataGetStatusCopy := &_CALDataGetStatus{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.ParamNo,
 		m.Count,
 	}

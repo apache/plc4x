@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEgressTime) deepCopy() *_BACnetConstructedDataEgr
 		return nil
 	}
 	_BACnetConstructedDataEgressTimeCopy := &_BACnetConstructedDataEgressTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EgressTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

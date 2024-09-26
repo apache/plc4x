@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataDoorExtendedPulseTime) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataDoorExtendedPulseTimeCopy := &_BACnetConstructedDataDoorExtendedPulseTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.DoorExtendedPulseTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataCarDoorText) deepCopy() *_BACnetConstructedDataCa
 		return nil
 	}
 	_BACnetConstructedDataCarDoorTextCopy := &_BACnetConstructedDataCarDoorText{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.CarDoorText),
 	}

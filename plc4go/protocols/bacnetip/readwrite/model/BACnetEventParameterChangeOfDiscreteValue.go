@@ -237,7 +237,7 @@ func (m *_BACnetEventParameterChangeOfDiscreteValue) deepCopy() *_BACnetEventPar
 		return nil
 	}
 	_BACnetEventParameterChangeOfDiscreteValueCopy := &_BACnetEventParameterChangeOfDiscreteValue{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.ClosingTag.DeepCopy().(BACnetClosingTag),

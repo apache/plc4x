@@ -380,7 +380,7 @@ func (m *_EndpointDescription) deepCopy() *_EndpointDescription {
 		return nil
 	}
 	_EndpointDescriptionCopy := &_EndpointDescription{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.EndpointUrl.DeepCopy().(PascalString),
 		m.Server.DeepCopy().(ExtensionObjectDefinition),
 		m.ServerCertificate.DeepCopy().(PascalByteString),

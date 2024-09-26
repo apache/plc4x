@@ -158,7 +158,7 @@ func (m *_DF1SymbolMessageFrameNAK) deepCopy() *_DF1SymbolMessageFrameNAK {
 		return nil
 	}
 	_DF1SymbolMessageFrameNAKCopy := &_DF1SymbolMessageFrameNAK{
-		m.DF1SymbolContract.DeepCopy().(DF1SymbolContract),
+		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
 	}
 	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
 	return _DF1SymbolMessageFrameNAKCopy

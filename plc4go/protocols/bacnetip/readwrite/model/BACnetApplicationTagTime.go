@@ -189,7 +189,7 @@ func (m *_BACnetApplicationTagTime) deepCopy() *_BACnetApplicationTagTime {
 		return nil
 	}
 	_BACnetApplicationTagTimeCopy := &_BACnetApplicationTagTime{
-		m.BACnetApplicationTagContract.DeepCopy().(BACnetApplicationTagContract),
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadTime),
 	}
 	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m

@@ -287,7 +287,7 @@ func (m *_BrowseRequest) deepCopy() *_BrowseRequest {
 		return nil
 	}
 	_BrowseRequestCopy := &_BrowseRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.View.DeepCopy().(ExtensionObjectDefinition),
 		m.RequestedMaxReferencesPerNode,

@@ -271,7 +271,7 @@ func (m *_BACnetServiceAckReadProperty) deepCopy() *_BACnetServiceAckReadPropert
 		return nil
 	}
 	_BACnetServiceAckReadPropertyCopy := &_BACnetServiceAckReadProperty{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
 		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),

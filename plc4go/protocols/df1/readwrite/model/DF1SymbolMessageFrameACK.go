@@ -158,7 +158,7 @@ func (m *_DF1SymbolMessageFrameACK) deepCopy() *_DF1SymbolMessageFrameACK {
 		return nil
 	}
 	_DF1SymbolMessageFrameACKCopy := &_DF1SymbolMessageFrameACK{
-		m.DF1SymbolContract.DeepCopy().(DF1SymbolContract),
+		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
 	}
 	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
 	return _DF1SymbolMessageFrameACKCopy

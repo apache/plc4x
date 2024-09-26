@@ -165,7 +165,7 @@ func (m *_S7PayloadUserDataItemClkFRequest) deepCopy() *_S7PayloadUserDataItemCl
 		return nil
 	}
 	_S7PayloadUserDataItemClkFRequestCopy := &_S7PayloadUserDataItemClkFRequest{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 	}
 	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
 	return _S7PayloadUserDataItemClkFRequestCopy

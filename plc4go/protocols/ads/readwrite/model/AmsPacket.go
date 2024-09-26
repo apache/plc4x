@@ -57,7 +57,6 @@ type AmsPacket interface {
 
 // AmsPacketContract provides a set of functions which can be overwritten by a sub struct
 type AmsPacketContract interface {
-	utils.Copyable
 	// GetTargetAmsNetId returns TargetAmsNetId (property field)
 	GetTargetAmsNetId() AmsNetId
 	// GetTargetAmsPort returns TargetAmsPort (property field)

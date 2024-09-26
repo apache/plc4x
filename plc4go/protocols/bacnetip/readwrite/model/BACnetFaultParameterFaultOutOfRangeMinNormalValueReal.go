@@ -190,7 +190,7 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) deepCopy() *_BA
 		return nil
 	}
 	_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealCopy := &_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal{
-		m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.DeepCopy().(BACnetFaultParameterFaultOutOfRangeMinNormalValueContract),
+		m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue).deepCopy(),
 		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = m

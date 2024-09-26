@@ -195,7 +195,7 @@ func (m *_DeviceConfigurationAck) deepCopy() *_DeviceConfigurationAck {
 		return nil
 	}
 	_DeviceConfigurationAckCopy := &_DeviceConfigurationAck{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.DeviceConfigurationAckDataBlock.DeepCopy().(DeviceConfigurationAckDataBlock),
 	}
 	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m

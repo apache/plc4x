@@ -316,7 +316,7 @@ func (m *_NLMRequestKeyUpdate) deepCopy() *_NLMRequestKeyUpdate {
 		return nil
 	}
 	_NLMRequestKeyUpdateCopy := &_NLMRequestKeyUpdate{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.Set1KeyRevision,
 		m.Set1ActivationTime,
 		m.Set1ExpirationTime,

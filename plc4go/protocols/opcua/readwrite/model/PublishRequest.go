@@ -242,7 +242,7 @@ func (m *_PublishRequest) deepCopy() *_PublishRequest {
 		return nil
 	}
 	_PublishRequestCopy := &_PublishRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfSubscriptionAcknowledgements,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SubscriptionAcknowledgements),

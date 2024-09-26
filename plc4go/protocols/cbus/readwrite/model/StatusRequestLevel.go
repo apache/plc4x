@@ -241,7 +241,7 @@ func (m *_StatusRequestLevel) deepCopy() *_StatusRequestLevel {
 		return nil
 	}
 	_StatusRequestLevelCopy := &_StatusRequestLevel{
-		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
 		m.Application,
 		m.StartingGroupAddressLabel,
 		m.reservedField0,

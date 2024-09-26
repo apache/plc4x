@@ -128,7 +128,6 @@ type ${type.name} interface {
 <#if type.isDiscriminatedParentTypeDefinition()>
 // ${type.name}Contract provides a set of functions which can be overwritten by a sub struct
 type ${type.name}Contract interface {
-	utils.Copyable
 	<#if type.isDiscriminatedChildTypeDefinition()>
 	${type.parentType.orElseThrow().name?cap_first}<#if type.isDiscriminatedParentTypeDefinition()>Contract</#if>
 	</#if>
@@ -1631,7 +1630,7 @@ func (m *_${type.name}) deepCopy() *_${type.name} {
 	}
 	_${type.name}Copy := &_${type.name} {
 <#if type.parentType.isPresent()>
-	m.${type.parentType.orElseThrow().name}Contract.DeepCopy().(${type.parentType.orElseThrow().name}Contract),
+	m.${type.parentType.orElseThrow().name}Contract.(*_${type.parentType.orElseThrow().name}).deepCopy(),
 </#if>
 <#if type.isDiscriminatedParentTypeDefinition()>
 	nil, // will be set by child

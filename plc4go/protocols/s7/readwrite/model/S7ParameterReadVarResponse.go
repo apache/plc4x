@@ -194,7 +194,7 @@ func (m *_S7ParameterReadVarResponse) deepCopy() *_S7ParameterReadVarResponse {
 		return nil
 	}
 	_S7ParameterReadVarResponseCopy := &_S7ParameterReadVarResponse{
-		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		m.NumItems,
 	}
 	m.S7ParameterContract.(*_S7Parameter)._SubType = m

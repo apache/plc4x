@@ -209,7 +209,7 @@ func (m *_AccessControlDataValidAccessRequest) deepCopy() *_AccessControlDataVal
 		return nil
 	}
 	_AccessControlDataValidAccessRequestCopy := &_AccessControlDataValidAccessRequest{
-		m.AccessControlDataContract.DeepCopy().(AccessControlDataContract),
+		m.AccessControlDataContract.(*_AccessControlData).deepCopy(),
 		m.AccessControlDirection,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

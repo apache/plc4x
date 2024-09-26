@@ -208,7 +208,7 @@ func (m *_BVLCOriginalBroadcastNPDU) deepCopy() *_BVLCOriginalBroadcastNPDU {
 		return nil
 	}
 	_BVLCOriginalBroadcastNPDUCopy := &_BVLCOriginalBroadcastNPDU{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Npdu.DeepCopy().(NPDU),
 		m.BvlcPayloadLength,
 	}

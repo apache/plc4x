@@ -211,7 +211,7 @@ func (m *_NLMRejectMessageToNetwork) deepCopy() *_NLMRejectMessageToNetwork {
 		return nil
 	}
 	_NLMRejectMessageToNetworkCopy := &_NLMRejectMessageToNetwork{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.RejectReason,
 		m.DestinationNetworkAddress,
 	}

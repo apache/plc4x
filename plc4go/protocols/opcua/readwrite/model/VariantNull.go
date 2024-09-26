@@ -157,7 +157,7 @@ func (m *_VariantNull) deepCopy() *_VariantNull {
 		return nil
 	}
 	_VariantNullCopy := &_VariantNull{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 	}
 	m.VariantContract.(*_Variant)._SubType = m
 	return _VariantNullCopy

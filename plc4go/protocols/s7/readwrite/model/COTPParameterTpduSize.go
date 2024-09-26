@@ -190,7 +190,7 @@ func (m *_COTPParameterTpduSize) deepCopy() *_COTPParameterTpduSize {
 		return nil
 	}
 	_COTPParameterTpduSizeCopy := &_COTPParameterTpduSize{
-		m.COTPParameterContract.DeepCopy().(COTPParameterContract),
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
 		m.TpduSize,
 	}
 	m.COTPParameterContract.(*_COTPParameter)._SubType = m

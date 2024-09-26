@@ -242,7 +242,7 @@ func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
 		return nil
 	}
 	_AddReferencesRequestCopy := &_AddReferencesRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfReferencesToAdd,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToAdd),

@@ -237,7 +237,7 @@ func (m *_BACnetFaultParameterFaultCharacterString) deepCopy() *_BACnetFaultPara
 		return nil
 	}
 	_BACnetFaultParameterFaultCharacterStringCopy := &_BACnetFaultParameterFaultCharacterString{
-		m.BACnetFaultParameterContract.DeepCopy().(BACnetFaultParameterContract),
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ListOfFaultValues.DeepCopy().(BACnetFaultParameterFaultCharacterStringListOfFaultValues),
 		m.ClosingTag.DeepCopy().(BACnetClosingTag),

@@ -189,7 +189,7 @@ func (m *_BACnetPropertyStatesSilencedState) deepCopy() *_BACnetPropertyStatesSi
 		return nil
 	}
 	_BACnetPropertyStatesSilencedStateCopy := &_BACnetPropertyStatesSilencedState{
-		m.BACnetPropertyStatesContract.DeepCopy().(BACnetPropertyStatesContract),
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
 		m.SilencedState.DeepCopy().(BACnetSilencedStateTagged),
 	}
 	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m

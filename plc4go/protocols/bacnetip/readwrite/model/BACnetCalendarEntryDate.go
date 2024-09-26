@@ -189,7 +189,7 @@ func (m *_BACnetCalendarEntryDate) deepCopy() *_BACnetCalendarEntryDate {
 		return nil
 	}
 	_BACnetCalendarEntryDateCopy := &_BACnetCalendarEntryDate{
-		m.BACnetCalendarEntryContract.DeepCopy().(BACnetCalendarEntryContract),
+		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
 		m.DateValue.DeepCopy().(BACnetContextTagDate),
 	}
 	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m

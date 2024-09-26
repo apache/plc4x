@@ -218,7 +218,7 @@ func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
 		return nil
 	}
 	_EndpointUrlListDataTypeCopy := &_EndpointUrlListDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfEndpointUrlList,
 		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
 	}

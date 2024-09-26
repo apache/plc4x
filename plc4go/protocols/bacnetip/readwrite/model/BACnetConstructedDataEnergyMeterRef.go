@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEnergyMeterRef) deepCopy() *_BACnetConstructedDat
 		return nil
 	}
 	_BACnetConstructedDataEnergyMeterRefCopy := &_BACnetConstructedDataEnergyMeterRef{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EnergyMeterRef.DeepCopy().(BACnetDeviceObjectReference),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

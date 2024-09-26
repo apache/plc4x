@@ -231,7 +231,7 @@ func (m *_ConnectionStateRequest) deepCopy() *_ConnectionStateRequest {
 		return nil
 	}
 	_ConnectionStateRequestCopy := &_ConnectionStateRequest{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
 		m.reservedField0,

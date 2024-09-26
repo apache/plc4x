@@ -243,7 +243,7 @@ func (m *_SearchResponse) deepCopy() *_SearchResponse {
 		return nil
 	}
 	_SearchResponseCopy := &_SearchResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
 		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
 		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),

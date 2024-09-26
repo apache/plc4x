@@ -306,7 +306,7 @@ func (m *_Argument) deepCopy() *_Argument {
 		return nil
 	}
 	_ArgumentCopy := &_Argument{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.DataType.DeepCopy().(NodeId),
 		m.ValueRank,

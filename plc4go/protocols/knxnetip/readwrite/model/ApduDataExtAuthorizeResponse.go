@@ -190,7 +190,7 @@ func (m *_ApduDataExtAuthorizeResponse) deepCopy() *_ApduDataExtAuthorizeRespons
 		return nil
 	}
 	_ApduDataExtAuthorizeResponseCopy := &_ApduDataExtAuthorizeResponse{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 		m.Level,
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m

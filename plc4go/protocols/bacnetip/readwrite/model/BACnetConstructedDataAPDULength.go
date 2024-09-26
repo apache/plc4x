@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAPDULength) deepCopy() *_BACnetConstructedDataAPD
 		return nil
 	}
 	_BACnetConstructedDataAPDULengthCopy := &_BACnetConstructedDataAPDULength{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ApduLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

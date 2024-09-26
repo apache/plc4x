@@ -47,7 +47,6 @@ type CBusPointToPointToMultiPointCommand interface {
 
 // CBusPointToPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToPointToMultiPointCommandContract interface {
-	utils.Copyable
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
 	// GetNetworkRoute returns NetworkRoute (property field)

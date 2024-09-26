@@ -306,7 +306,7 @@ func (m *_AxisInformation) deepCopy() *_AxisInformation {
 		return nil
 	}
 	_AxisInformationCopy := &_AxisInformation{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.EngineeringUnits.DeepCopy().(ExtensionObjectDefinition),
 		m.EURange.DeepCopy().(ExtensionObjectDefinition),
 		m.Title.DeepCopy().(LocalizedText),

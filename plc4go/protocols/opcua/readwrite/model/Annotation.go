@@ -238,7 +238,7 @@ func (m *_Annotation) deepCopy() *_Annotation {
 		return nil
 	}
 	_AnnotationCopy := &_Annotation{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Message.DeepCopy().(PascalString),
 		m.UserName.DeepCopy().(PascalString),
 		m.AnnotationTime,

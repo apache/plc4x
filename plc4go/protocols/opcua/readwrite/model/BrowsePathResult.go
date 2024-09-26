@@ -242,7 +242,7 @@ func (m *_BrowsePathResult) deepCopy() *_BrowsePathResult {
 		return nil
 	}
 	_BrowsePathResultCopy := &_BrowsePathResult{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.NoOfTargets,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Targets),

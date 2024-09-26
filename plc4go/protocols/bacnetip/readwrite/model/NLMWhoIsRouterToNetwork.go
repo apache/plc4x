@@ -193,7 +193,7 @@ func (m *_NLMWhoIsRouterToNetwork) deepCopy() *_NLMWhoIsRouterToNetwork {
 		return nil
 	}
 	_NLMWhoIsRouterToNetworkCopy := &_NLMWhoIsRouterToNetwork{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
 	}
 	m.NLMContract.(*_NLM)._SubType = m

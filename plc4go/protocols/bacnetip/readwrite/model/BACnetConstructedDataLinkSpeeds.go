@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataLinkSpeeds) deepCopy() *_BACnetConstructedDataLin
 		return nil
 	}
 	_BACnetConstructedDataLinkSpeedsCopy := &_BACnetConstructedDataLinkSpeeds{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagReal, BACnetApplicationTagReal](m.LinkSpeeds),
 	}

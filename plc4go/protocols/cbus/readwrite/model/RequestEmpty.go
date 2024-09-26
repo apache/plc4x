@@ -153,7 +153,7 @@ func (m *_RequestEmpty) deepCopy() *_RequestEmpty {
 		return nil
 	}
 	_RequestEmptyCopy := &_RequestEmpty{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 	}
 	m.RequestContract.(*_Request)._SubType = m
 	return _RequestEmptyCopy

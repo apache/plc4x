@@ -332,7 +332,7 @@ func (m *_ResponseHeader) deepCopy() *_ResponseHeader {
 		return nil
 	}
 	_ResponseHeaderCopy := &_ResponseHeader{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Timestamp,
 		m.RequestHandle,
 		m.ServiceResult.DeepCopy().(StatusCode),

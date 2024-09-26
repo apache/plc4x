@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEventEnable) deepCopy() *_BACnetConstructedDataEv
 		return nil
 	}
 	_BACnetConstructedDataEventEnableCopy := &_BACnetConstructedDataEventEnable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EventEnable.DeepCopy().(BACnetEventTransitionBitsTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

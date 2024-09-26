@@ -251,7 +251,7 @@ func (m *_S7ParameterSetupCommunication) deepCopy() *_S7ParameterSetupCommunicat
 		return nil
 	}
 	_S7ParameterSetupCommunicationCopy := &_S7ParameterSetupCommunication{
-		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		m.MaxAmqCaller,
 		m.MaxAmqCallee,
 		m.PduLength,

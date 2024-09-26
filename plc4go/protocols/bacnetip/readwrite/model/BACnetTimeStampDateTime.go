@@ -189,7 +189,7 @@ func (m *_BACnetTimeStampDateTime) deepCopy() *_BACnetTimeStampDateTime {
 		return nil
 	}
 	_BACnetTimeStampDateTimeCopy := &_BACnetTimeStampDateTime{
-		m.BACnetTimeStampContract.DeepCopy().(BACnetTimeStampContract),
+		m.BACnetTimeStampContract.(*_BACnetTimeStamp).deepCopy(),
 		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
 	}
 	m.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = m

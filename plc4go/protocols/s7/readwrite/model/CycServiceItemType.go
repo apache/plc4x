@@ -50,7 +50,6 @@ type CycServiceItemType interface {
 
 // CycServiceItemTypeContract provides a set of functions which can be overwritten by a sub struct
 type CycServiceItemTypeContract interface {
-	utils.Copyable
 	// GetByteLength returns ByteLength (property field)
 	GetByteLength() uint8
 	// GetSyntaxId returns SyntaxId (property field)

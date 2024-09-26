@@ -205,7 +205,7 @@ func (m *_AdsDiscoveryBlockVersion) deepCopy() *_AdsDiscoveryBlockVersion {
 		return nil
 	}
 	_AdsDiscoveryBlockVersionCopy := &_AdsDiscoveryBlockVersion{
-		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.VersionData),
 	}
 	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m

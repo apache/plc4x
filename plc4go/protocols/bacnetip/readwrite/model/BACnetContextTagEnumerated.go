@@ -224,7 +224,7 @@ func (m *_BACnetContextTagEnumerated) deepCopy() *_BACnetContextTagEnumerated {
 		return nil
 	}
 	_BACnetContextTagEnumeratedCopy := &_BACnetContextTagEnumerated{
-		m.BACnetContextTagContract.DeepCopy().(BACnetContextTagContract),
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
 		m.Payload.DeepCopy().(BACnetTagPayloadEnumerated),
 	}
 	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m

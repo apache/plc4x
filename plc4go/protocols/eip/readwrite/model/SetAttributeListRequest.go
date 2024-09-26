@@ -165,7 +165,7 @@ func (m *_SetAttributeListRequest) deepCopy() *_SetAttributeListRequest {
 		return nil
 	}
 	_SetAttributeListRequestCopy := &_SetAttributeListRequest{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 	}
 	m.CipServiceContract.(*_CipService)._SubType = m
 	return _SetAttributeListRequestCopy

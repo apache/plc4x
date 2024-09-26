@@ -218,7 +218,7 @@ func (m *_ParameterValueBaudRateSelector) deepCopy() *_ParameterValueBaudRateSel
 		return nil
 	}
 	_ParameterValueBaudRateSelectorCopy := &_ParameterValueBaudRateSelector{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		m.Value,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

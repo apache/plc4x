@@ -365,7 +365,7 @@ func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
 		return nil
 	}
 	_DataTypeSchemaHeaderCopy := &_DataTypeSchemaHeader{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfNamespaces,
 		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
 		m.NoOfStructureDataTypes,

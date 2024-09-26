@@ -286,7 +286,7 @@ func (m *_BACnetNotificationParametersCommandFailure) deepCopy() *_BACnetNotific
 		return nil
 	}
 	_BACnetNotificationParametersCommandFailureCopy := &_BACnetNotificationParametersCommandFailure{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.CommandValue.DeepCopy().(BACnetConstructedData),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

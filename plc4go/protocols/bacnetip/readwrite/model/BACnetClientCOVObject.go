@@ -189,7 +189,7 @@ func (m *_BACnetClientCOVObject) deepCopy() *_BACnetClientCOVObject {
 		return nil
 	}
 	_BACnetClientCOVObjectCopy := &_BACnetClientCOVObject{
-		m.BACnetClientCOVContract.DeepCopy().(BACnetClientCOVContract),
+		m.BACnetClientCOVContract.(*_BACnetClientCOV).deepCopy(),
 		m.RealIncrement.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = m

@@ -165,7 +165,7 @@ func (m *_ModbusPDUGetComEventCounterRequest) deepCopy() *_ModbusPDUGetComEventC
 		return nil
 	}
 	_ModbusPDUGetComEventCounterRequestCopy := &_ModbusPDUGetComEventCounterRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
 	return _ModbusPDUGetComEventCounterRequestCopy

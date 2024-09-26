@@ -211,7 +211,7 @@ func (m *_ApduDataMemoryRead) deepCopy() *_ApduDataMemoryRead {
 		return nil
 	}
 	_ApduDataMemoryReadCopy := &_ApduDataMemoryRead{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.NumBytes,
 		m.Address,
 	}

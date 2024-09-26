@@ -232,7 +232,7 @@ func (m *_RequestSmartConnectShortcut) deepCopy() *_RequestSmartConnectShortcut 
 		return nil
 	}
 	_RequestSmartConnectShortcutCopy := &_RequestSmartConnectShortcut{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 		m.PipePeek,
 		utils.CopyPtr[byte](m.SecondPipe),
 	}

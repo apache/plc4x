@@ -219,7 +219,7 @@ func (m *_ModbusPDUReadDiscreteInputsRequest) deepCopy() *_ModbusPDUReadDiscrete
 		return nil
 	}
 	_ModbusPDUReadDiscreteInputsRequestCopy := &_ModbusPDUReadDiscreteInputsRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.StartingAddress,
 		m.Quantity,
 	}

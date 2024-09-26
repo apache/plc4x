@@ -231,7 +231,7 @@ func (m *_DisconnectRequest) deepCopy() *_DisconnectRequest {
 		return nil
 	}
 	_DisconnectRequestCopy := &_DisconnectRequest{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
 		m.reservedField0,

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTrigger) deepCopy() *_BACnetConstructedDataTrigge
 		return nil
 	}
 	_BACnetConstructedDataTriggerCopy := &_BACnetConstructedDataTrigger{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Trigger.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

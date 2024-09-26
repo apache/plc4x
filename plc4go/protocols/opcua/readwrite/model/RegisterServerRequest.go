@@ -217,7 +217,7 @@ func (m *_RegisterServerRequest) deepCopy() *_RegisterServerRequest {
 		return nil
 	}
 	_RegisterServerRequestCopy := &_RegisterServerRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.Server.DeepCopy().(ExtensionObjectDefinition),
 	}

@@ -274,7 +274,7 @@ func (m *_RelativePathElement) deepCopy() *_RelativePathElement {
 		return nil
 	}
 	_RelativePathElementCopy := &_RelativePathElement{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ReferenceTypeId.DeepCopy().(NodeId),
 		m.IncludeSubtypes,
 		m.IsInverse,

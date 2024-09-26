@@ -248,7 +248,7 @@ func (m *_BACnetConfirmedServiceRequestDeviceCommunicationControl) deepCopy() *_
 		return nil
 	}
 	_BACnetConfirmedServiceRequestDeviceCommunicationControlCopy := &_BACnetConfirmedServiceRequestDeviceCommunicationControl{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.TimeDuration.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.EnableDisable.DeepCopy().(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged),
 		m.Password.DeepCopy().(BACnetContextTagCharacterString),

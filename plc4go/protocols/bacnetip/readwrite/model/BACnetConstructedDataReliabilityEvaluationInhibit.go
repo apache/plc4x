@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataReliabilityEvaluationInhibit) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConstructedDataReliabilityEvaluationInhibitCopy := &_BACnetConstructedDataReliabilityEvaluationInhibit{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ReliabilityEvaluationInhibit.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

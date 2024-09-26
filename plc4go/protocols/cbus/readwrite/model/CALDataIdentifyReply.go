@@ -210,7 +210,7 @@ func (m *_CALDataIdentifyReply) deepCopy() *_CALDataIdentifyReply {
 		return nil
 	}
 	_CALDataIdentifyReplyCopy := &_CALDataIdentifyReply{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.Attribute,
 		m.IdentifyReplyCommand.DeepCopy().(IdentifyReplyCommand),
 	}

@@ -47,7 +47,6 @@ type CALData interface {
 
 // CALDataContract provides a set of functions which can be overwritten by a sub struct
 type CALDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() CALCommandTypeContainer
 	// GetAdditionalData returns AdditionalData (property field)

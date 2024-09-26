@@ -242,7 +242,7 @@ func (m *_UnregisterNodesRequest) deepCopy() *_UnregisterNodesRequest {
 		return nil
 	}
 	_UnregisterNodesRequestCopy := &_UnregisterNodesRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfNodesToUnregister,
 		utils.DeepCopySlice[NodeId, NodeId](m.NodesToUnregister),

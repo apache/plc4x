@@ -191,7 +191,7 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) deepCopy() 
 		return nil
 	}
 	_ErrorReportingSystemCategoryTypeBuildingManagementSystemsCopy := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
-		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
 		m.CategoryForType,
 	}
 	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m

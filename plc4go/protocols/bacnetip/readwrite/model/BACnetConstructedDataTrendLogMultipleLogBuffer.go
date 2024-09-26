@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) deepCopy() *_BACnetCon
 		return nil
 	}
 	_BACnetConstructedDataTrendLogMultipleLogBufferCopy := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetLogMultipleRecord, BACnetLogMultipleRecord](m.FloorText),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -166,7 +166,7 @@ func (m *_BACnetConstructedDataAccessDoorAll) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataAccessDoorAllCopy := &_BACnetConstructedDataAccessDoorAll{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataAccessDoorAllCopy

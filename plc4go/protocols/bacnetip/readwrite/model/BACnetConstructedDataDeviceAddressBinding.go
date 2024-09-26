@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataDeviceAddressBindingCopy := &_BACnetConstructedDataDeviceAddressBinding{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAddressBinding, BACnetAddressBinding](m.DeviceAddressBinding),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -193,7 +193,7 @@ func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
 		return nil
 	}
 	_RegisterServerResponseCopy := &_RegisterServerResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

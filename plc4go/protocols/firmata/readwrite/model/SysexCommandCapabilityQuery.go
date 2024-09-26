@@ -161,7 +161,7 @@ func (m *_SysexCommandCapabilityQuery) deepCopy() *_SysexCommandCapabilityQuery 
 		return nil
 	}
 	_SysexCommandCapabilityQueryCopy := &_SysexCommandCapabilityQuery{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 	}
 	m.SysexCommandContract.(*_SysexCommand)._SubType = m
 	return _SysexCommandCapabilityQueryCopy

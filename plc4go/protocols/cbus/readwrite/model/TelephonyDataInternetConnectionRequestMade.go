@@ -154,7 +154,7 @@ func (m *_TelephonyDataInternetConnectionRequestMade) deepCopy() *_TelephonyData
 		return nil
 	}
 	_TelephonyDataInternetConnectionRequestMadeCopy := &_TelephonyDataInternetConnectionRequestMade{
-		m.TelephonyDataContract.DeepCopy().(TelephonyDataContract),
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
 	}
 	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
 	return _TelephonyDataInternetConnectionRequestMadeCopy

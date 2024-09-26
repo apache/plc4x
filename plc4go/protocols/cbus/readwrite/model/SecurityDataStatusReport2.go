@@ -193,7 +193,7 @@ func (m *_SecurityDataStatusReport2) deepCopy() *_SecurityDataStatusReport2 {
 		return nil
 	}
 	_SecurityDataStatusReport2Copy := &_SecurityDataStatusReport2{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

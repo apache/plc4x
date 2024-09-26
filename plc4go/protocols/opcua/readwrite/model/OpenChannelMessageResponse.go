@@ -262,7 +262,7 @@ func (m *_OpenChannelMessageResponse) deepCopy() *_OpenChannelMessageResponse {
 		return nil
 	}
 	_OpenChannelMessageResponseCopy := &_OpenChannelMessageResponse{
-		m.OpenChannelMessageContract.DeepCopy().(OpenChannelMessageContract),
+		m.OpenChannelMessageContract.(*_OpenChannelMessage).deepCopy(),
 		m.SecureChannelId,
 		m.SecurityPolicyUri.DeepCopy().(PascalString),
 		m.SenderCertificate.DeepCopy().(PascalByteString),

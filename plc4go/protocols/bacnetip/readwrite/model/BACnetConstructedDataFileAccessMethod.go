@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataFileAccessMethod) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataFileAccessMethodCopy := &_BACnetConstructedDataFileAccessMethod{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.FileAccessMethod.DeepCopy().(BACnetFileAccessMethodTagged),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -157,7 +157,7 @@ func (m *_ApduDataExtReadRoutingTableRequest) deepCopy() *_ApduDataExtReadRoutin
 		return nil
 	}
 	_ApduDataExtReadRoutingTableRequestCopy := &_ApduDataExtReadRoutingTableRequest{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 	}
 	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
 	return _ApduDataExtReadRoutingTableRequestCopy

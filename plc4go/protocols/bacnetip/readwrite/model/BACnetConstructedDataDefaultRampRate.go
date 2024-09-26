@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataDefaultRampRate) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataDefaultRampRateCopy := &_BACnetConstructedDataDefaultRampRate{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.DefaultRampRate.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

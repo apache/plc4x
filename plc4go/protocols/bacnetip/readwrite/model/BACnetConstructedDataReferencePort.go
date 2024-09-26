@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataReferencePort) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataReferencePortCopy := &_BACnetConstructedDataReferencePort{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ReferencePort.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

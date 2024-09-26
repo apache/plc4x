@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEventDetectionEnable) deepCopy() *_BACnetConstruc
 		return nil
 	}
 	_BACnetConstructedDataEventDetectionEnableCopy := &_BACnetConstructedDataEventDetectionEnable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EventDetectionEnable.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

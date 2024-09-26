@@ -243,7 +243,7 @@ func (m *_AdsDeviceNotificationRequest) deepCopy() *_AdsDeviceNotificationReques
 		return nil
 	}
 	_AdsDeviceNotificationRequestCopy := &_AdsDeviceNotificationRequest{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.Length,
 		m.Stamps,
 		utils.DeepCopySlice[AdsStampHeader, AdsStampHeader](m.AdsStampHeaders),

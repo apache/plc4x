@@ -280,7 +280,7 @@ func (m *_NodeAttributes) deepCopy() *_NodeAttributes {
 		return nil
 	}
 	_NodeAttributesCopy := &_NodeAttributes{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedAttributes,
 		m.DisplayName.DeepCopy().(LocalizedText),
 		m.Description.DeepCopy().(LocalizedText),

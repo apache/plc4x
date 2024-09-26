@@ -325,7 +325,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) deepCopy() *_MediaTransport
 		return nil
 	}
 	_MediaTransportControlDataEnumerationsSizeCopy := &_MediaTransportControlDataEnumerationsSize{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.SizeType,
 		m.Start,
 		m.Size,

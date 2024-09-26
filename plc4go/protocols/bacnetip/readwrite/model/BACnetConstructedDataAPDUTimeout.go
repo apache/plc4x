@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) deepCopy() *_BACnetConstructedDataAP
 		return nil
 	}
 	_BACnetConstructedDataAPDUTimeoutCopy := &_BACnetConstructedDataAPDUTimeout{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ApduTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

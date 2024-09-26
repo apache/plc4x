@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) deepCopy() *_BACnetConst
 		return nil
 	}
 	_BACnetConstructedDataAuthorizationExemptionsCopy := &_BACnetConstructedDataAuthorizationExemptions{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAuthorizationExemptionTagged, BACnetAuthorizationExemptionTagged](m.AuthorizationExemption),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

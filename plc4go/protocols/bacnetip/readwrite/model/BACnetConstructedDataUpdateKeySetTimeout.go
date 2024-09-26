@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) deepCopy() *_BACnetConstruct
 		return nil
 	}
 	_BACnetConstructedDataUpdateKeySetTimeoutCopy := &_BACnetConstructedDataUpdateKeySetTimeout{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.UpdateKeySetTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

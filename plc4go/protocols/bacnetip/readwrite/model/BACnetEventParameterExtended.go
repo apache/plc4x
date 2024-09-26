@@ -285,7 +285,7 @@ func (m *_BACnetEventParameterExtended) deepCopy() *_BACnetEventParameterExtende
 		return nil
 	}
 	_BACnetEventParameterExtendedCopy := &_BACnetEventParameterExtended{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
 		m.ExtendedEventType.DeepCopy().(BACnetContextTagUnsignedInteger),

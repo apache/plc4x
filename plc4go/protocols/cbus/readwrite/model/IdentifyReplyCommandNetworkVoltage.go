@@ -258,7 +258,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) deepCopy() *_IdentifyReplyCommandN
 		return nil
 	}
 	_IdentifyReplyCommandNetworkVoltageCopy := &_IdentifyReplyCommandNetworkVoltage{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.Volts,
 		m.VoltsDecimalPlace,
 	}

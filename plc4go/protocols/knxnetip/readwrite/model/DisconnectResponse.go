@@ -213,7 +213,7 @@ func (m *_DisconnectResponse) deepCopy() *_DisconnectResponse {
 		return nil
 	}
 	_DisconnectResponseCopy := &_DisconnectResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.Status,
 	}

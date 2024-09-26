@@ -213,7 +213,7 @@ func (m *_ApduDataExtAuthorizeRequest) deepCopy() *_ApduDataExtAuthorizeRequest 
 		return nil
 	}
 	_ApduDataExtAuthorizeRequestCopy := &_ApduDataExtAuthorizeRequest{
-		m.ApduDataExtContract.DeepCopy().(ApduDataExtContract),
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
 		m.Level,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

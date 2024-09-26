@@ -189,7 +189,7 @@ func (m *_BACnetChannelValueEnumerated) deepCopy() *_BACnetChannelValueEnumerate
 		return nil
 	}
 	_BACnetChannelValueEnumeratedCopy := &_BACnetChannelValueEnumerated{
-		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
 		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
 	}
 	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m

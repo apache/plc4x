@@ -310,7 +310,7 @@ func (m *_S7AddressAny) deepCopy() *_S7AddressAny {
 		return nil
 	}
 	_S7AddressAnyCopy := &_S7AddressAny{
-		m.S7AddressContract.DeepCopy().(S7AddressContract),
+		m.S7AddressContract.(*_S7Address).deepCopy(),
 		m.TransportSize,
 		m.NumberOfElements,
 		m.DbNumber,

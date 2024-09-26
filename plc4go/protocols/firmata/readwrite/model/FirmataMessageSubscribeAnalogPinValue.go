@@ -228,7 +228,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) deepCopy() *_FirmataMessageSubs
 		return nil
 	}
 	_FirmataMessageSubscribeAnalogPinValueCopy := &_FirmataMessageSubscribeAnalogPinValue{
-		m.FirmataMessageContract.DeepCopy().(FirmataMessageContract),
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
 		m.Pin,
 		m.Enable,
 		m.reservedField0,

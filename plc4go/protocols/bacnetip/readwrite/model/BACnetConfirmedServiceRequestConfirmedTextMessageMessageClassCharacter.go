@@ -190,7 +190,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
 		return nil
 	}
 	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{
-		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.DeepCopy().(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract),
+		m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass).deepCopy(),
 		m.CharacterValue.DeepCopy().(BACnetContextTagCharacterString),
 	}
 	m.BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract.(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)._SubType = m

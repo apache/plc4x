@@ -269,7 +269,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) deepCopy() *_S7Pa
 		return nil
 	}
 	_S7PayloadUserDataItemCyclicServicesSubscribeRequestCopy := &_S7PayloadUserDataItemCyclicServicesSubscribeRequest{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.ItemsCount,
 		m.TimeBase,
 		m.TimeFactor,

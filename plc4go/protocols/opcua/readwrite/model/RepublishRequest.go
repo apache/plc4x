@@ -235,7 +235,7 @@ func (m *_RepublishRequest) deepCopy() *_RepublishRequest {
 		return nil
 	}
 	_RepublishRequestCopy := &_RepublishRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.RetransmitSequenceNumber,

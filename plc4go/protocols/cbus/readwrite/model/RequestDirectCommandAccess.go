@@ -275,7 +275,7 @@ func (m *_RequestDirectCommandAccess) deepCopy() *_RequestDirectCommandAccess {
 		return nil
 	}
 	_RequestDirectCommandAccessCopy := &_RequestDirectCommandAccess{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 		m.CalData.DeepCopy().(CALData),
 		m.Alpha.DeepCopy().(Alpha),
 	}

@@ -234,7 +234,7 @@ func (m *_CipWriteResponse) deepCopy() *_CipWriteResponse {
 		return nil
 	}
 	_CipWriteResponseCopy := &_CipWriteResponse{
-		m.CipServiceContract.DeepCopy().(CipServiceContract),
+		m.CipServiceContract.(*_CipService).deepCopy(),
 		m.Status,
 		m.ExtStatus,
 		m.reservedField0,

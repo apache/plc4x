@@ -242,7 +242,7 @@ func (m *_CallRequest) deepCopy() *_CallRequest {
 		return nil
 	}
 	_CallRequestCopy := &_CallRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfMethodsToCall,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MethodsToCall),

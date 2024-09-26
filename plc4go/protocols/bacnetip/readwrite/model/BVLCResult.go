@@ -192,7 +192,7 @@ func (m *_BVLCResult) deepCopy() *_BVLCResult {
 		return nil
 	}
 	_BVLCResultCopy := &_BVLCResult{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Code,
 	}
 	m.BVLCContract.(*_BVLC)._SubType = m

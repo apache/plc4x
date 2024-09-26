@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataAuthenticationPolicyList) deepCopy() *_BACnetCons
 		return nil
 	}
 	_BACnetConstructedDataAuthenticationPolicyListCopy := &_BACnetConstructedDataAuthenticationPolicyList{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetAuthenticationPolicy, BACnetAuthenticationPolicy](m.AuthenticationPolicyList),
 	}

@@ -232,7 +232,7 @@ func (m *_COTPPacketDisconnectRequest) deepCopy() *_COTPPacketDisconnectRequest 
 		return nil
 	}
 	_COTPPacketDisconnectRequestCopy := &_COTPPacketDisconnectRequest{
-		m.COTPPacketContract.DeepCopy().(COTPPacketContract),
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
 		m.DestinationReference,
 		m.SourceReference,
 		m.ProtocolClass,

@@ -219,7 +219,7 @@ func (m *_ModbusPDUReadCoilsRequest) deepCopy() *_ModbusPDUReadCoilsRequest {
 		return nil
 	}
 	_ModbusPDUReadCoilsRequestCopy := &_ModbusPDUReadCoilsRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.StartingAddress,
 		m.Quantity,
 	}

@@ -296,7 +296,7 @@ func (m *_BACnetConfirmedServiceRequestAtomicWriteFile) deepCopy() *_BACnetConfi
 		return nil
 	}
 	_BACnetConfirmedServiceRequestAtomicWriteFileCopy := &_BACnetConfirmedServiceRequestAtomicWriteFile{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),

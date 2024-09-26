@@ -157,7 +157,7 @@ func (m *_MResetReq) deepCopy() *_MResetReq {
 		return nil
 	}
 	_MResetReqCopy := &_MResetReq{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _MResetReqCopy

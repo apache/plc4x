@@ -226,7 +226,7 @@ func (m *_FirmataCommandSetDigitalPinValue) deepCopy() *_FirmataCommandSetDigita
 		return nil
 	}
 	_FirmataCommandSetDigitalPinValueCopy := &_FirmataCommandSetDigitalPinValue{
-		m.FirmataCommandContract.DeepCopy().(FirmataCommandContract),
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
 		m.Pin,
 		m.On,
 		m.reservedField0,

@@ -255,7 +255,7 @@ func (m *_NLMSecurityResponse) deepCopy() *_NLMSecurityResponse {
 		return nil
 	}
 	_NLMSecurityResponseCopy := &_NLMSecurityResponse{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.ResponseCode,
 		m.OriginalMessageId,
 		m.OriginalTimestamp,

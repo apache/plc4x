@@ -45,7 +45,6 @@ type OpenChannelMessage interface {
 
 // OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
 type OpenChannelMessageContract interface {
-	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
 }

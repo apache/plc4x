@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataBACnetIPv6MulticastAddress) deepCopy() *_BACnetCo
 		return nil
 	}
 	_BACnetConstructedDataBACnetIPv6MulticastAddressCopy := &_BACnetConstructedDataBACnetIPv6MulticastAddress{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Ipv6MulticastAddress.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

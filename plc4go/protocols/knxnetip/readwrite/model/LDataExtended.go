@@ -320,7 +320,7 @@ func (m *_LDataExtended) deepCopy() *_LDataExtended {
 		return nil
 	}
 	_LDataExtendedCopy := &_LDataExtended{
-		m.LDataFrameContract.DeepCopy().(LDataFrameContract),
+		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
 		m.GroupAddress,
 		m.HopCount,
 		m.ExtendedFrameFormat,

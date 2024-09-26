@@ -189,7 +189,7 @@ func (m *_BACnetRecipientAddress) deepCopy() *_BACnetRecipientAddress {
 		return nil
 	}
 	_BACnetRecipientAddressCopy := &_BACnetRecipientAddress{
-		m.BACnetRecipientContract.DeepCopy().(BACnetRecipientContract),
+		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
 		m.AddressValue.DeepCopy().(BACnetAddressEnclosed),
 	}
 	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m

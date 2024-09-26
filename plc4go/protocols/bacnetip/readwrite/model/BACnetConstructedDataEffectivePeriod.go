@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataEffectivePeriod) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataEffectivePeriodCopy := &_BACnetConstructedDataEffectivePeriod{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.DateRange.DeepCopy().(BACnetDateRange),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

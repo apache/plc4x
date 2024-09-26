@@ -297,7 +297,7 @@ func (m *_ServicesResponse) deepCopy() *_ServicesResponse {
 		return nil
 	}
 	_ServicesResponseCopy := &_ServicesResponse{
-		m.TypeIdContract.DeepCopy().(TypeIdContract),
+		m.TypeIdContract.(*_TypeId).deepCopy(),
 		m.EncapsulationProtocol,
 		m.SupportsCIPEncapsulation,
 		m.SupportsUDP,

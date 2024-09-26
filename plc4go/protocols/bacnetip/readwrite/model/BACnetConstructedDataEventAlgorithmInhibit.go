@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataEventAlgorithmInhibitCopy := &_BACnetConstructedDataEventAlgorithmInhibit{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.EventAlgorithmInhibit.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

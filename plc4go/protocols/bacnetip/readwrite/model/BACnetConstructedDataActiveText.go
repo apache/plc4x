@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataActiveText) deepCopy() *_BACnetConstructedDataAct
 		return nil
 	}
 	_BACnetConstructedDataActiveTextCopy := &_BACnetConstructedDataActiveText{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ActiveText.DeepCopy().(BACnetApplicationTagCharacterString),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

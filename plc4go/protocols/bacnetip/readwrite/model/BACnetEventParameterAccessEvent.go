@@ -261,7 +261,7 @@ func (m *_BACnetEventParameterAccessEvent) deepCopy() *_BACnetEventParameterAcce
 		return nil
 	}
 	_BACnetEventParameterAccessEventCopy := &_BACnetEventParameterAccessEvent{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ListOfAccessEvents.DeepCopy().(BACnetEventParameterAccessEventListOfAccessEvents),
 		m.AccessEventTimeReference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),

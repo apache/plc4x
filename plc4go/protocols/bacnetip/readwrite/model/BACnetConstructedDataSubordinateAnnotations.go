@@ -259,7 +259,7 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) deepCopy() *_BACnetConstr
 		return nil
 	}
 	_BACnetConstructedDataSubordinateAnnotationsCopy := &_BACnetConstructedDataSubordinateAnnotations{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.SubordinateAnnotations),
 	}

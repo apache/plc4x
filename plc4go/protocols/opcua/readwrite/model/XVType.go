@@ -211,7 +211,7 @@ func (m *_XVType) deepCopy() *_XVType {
 		return nil
 	}
 	_XVTypeCopy := &_XVType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.X,
 		m.Value,
 	}

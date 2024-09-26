@@ -253,7 +253,7 @@ func (m *_LinearConversionDataType) deepCopy() *_LinearConversionDataType {
 		return nil
 	}
 	_LinearConversionDataTypeCopy := &_LinearConversionDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.InitialAddend,
 		m.Multiplicand,
 		m.Divisor,

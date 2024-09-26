@@ -289,7 +289,7 @@ func (m *_APDUSegmentAck) deepCopy() *_APDUSegmentAck {
 		return nil
 	}
 	_APDUSegmentAckCopy := &_APDUSegmentAck{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.NegativeAck,
 		m.Server,
 		m.OriginalInvokeId,

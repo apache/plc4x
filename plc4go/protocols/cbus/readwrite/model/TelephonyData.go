@@ -47,7 +47,6 @@ type TelephonyData interface {
 
 // TelephonyDataContract provides a set of functions which can be overwritten by a sub struct
 type TelephonyDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TelephonyCommandTypeContainer
 	// GetArgument returns Argument (property field)

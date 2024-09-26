@@ -207,7 +207,7 @@ func (m *_UnknownMessage) deepCopy() *_UnknownMessage {
 		return nil
 	}
 	_UnknownMessageCopy := &_UnknownMessage{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.UnknownData),
 		m.TotalLength,
 	}

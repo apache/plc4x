@@ -47,7 +47,6 @@ type TriggerControlData interface {
 
 // TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
 type TriggerControlDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TriggerControlCommandTypeContainer
 	// GetTriggerGroup returns TriggerGroup (property field)

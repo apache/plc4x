@@ -325,7 +325,7 @@ func (m *_RequestHeader) deepCopy() *_RequestHeader {
 		return nil
 	}
 	_RequestHeaderCopy := &_RequestHeader{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.AuthenticationToken.DeepCopy().(NodeId),
 		m.Timestamp,
 		m.RequestHandle,

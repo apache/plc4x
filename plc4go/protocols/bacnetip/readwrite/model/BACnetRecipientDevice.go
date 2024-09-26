@@ -189,7 +189,7 @@ func (m *_BACnetRecipientDevice) deepCopy() *_BACnetRecipientDevice {
 		return nil
 	}
 	_BACnetRecipientDeviceCopy := &_BACnetRecipientDevice{
-		m.BACnetRecipientContract.DeepCopy().(BACnetRecipientContract),
+		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
 		m.DeviceValue.DeepCopy().(BACnetContextTagObjectIdentifier),
 	}
 	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m

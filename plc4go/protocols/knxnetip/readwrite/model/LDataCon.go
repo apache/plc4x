@@ -239,7 +239,7 @@ func (m *_LDataCon) deepCopy() *_LDataCon {
 		return nil
 	}
 	_LDataConCopy := &_LDataCon{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 		m.AdditionalInformationLength,
 		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
 		m.DataFrame.DeepCopy().(LDataFrame),

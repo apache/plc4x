@@ -280,7 +280,7 @@ func (m *_AdsReadDeviceInfoResponse) deepCopy() *_AdsReadDeviceInfoResponse {
 		return nil
 	}
 	_AdsReadDeviceInfoResponseCopy := &_AdsReadDeviceInfoResponse{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.Result,
 		m.MajorVersion,
 		m.MinorVersion,

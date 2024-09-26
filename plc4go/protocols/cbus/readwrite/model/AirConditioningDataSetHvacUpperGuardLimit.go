@@ -258,7 +258,7 @@ func (m *_AirConditioningDataSetHvacUpperGuardLimit) deepCopy() *_AirConditionin
 		return nil
 	}
 	_AirConditioningDataSetHvacUpperGuardLimitCopy := &_AirConditioningDataSetHvacUpperGuardLimit{
-		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
 		m.ZoneList.DeepCopy().(HVACZoneList),
 		m.Limit.DeepCopy().(HVACTemperature),

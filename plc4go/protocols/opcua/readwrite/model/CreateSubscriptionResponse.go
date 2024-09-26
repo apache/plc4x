@@ -277,7 +277,7 @@ func (m *_CreateSubscriptionResponse) deepCopy() *_CreateSubscriptionResponse {
 		return nil
 	}
 	_CreateSubscriptionResponseCopy := &_CreateSubscriptionResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.RevisedPublishingInterval,

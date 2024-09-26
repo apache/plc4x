@@ -226,7 +226,7 @@ func (m *_APDUSimpleAck) deepCopy() *_APDUSimpleAck {
 		return nil
 	}
 	_APDUSimpleAckCopy := &_APDUSimpleAck{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.OriginalInvokeId,
 		m.ServiceChoice,
 		m.reservedField0,

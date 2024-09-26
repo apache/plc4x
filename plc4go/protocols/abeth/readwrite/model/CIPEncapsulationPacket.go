@@ -49,7 +49,6 @@ type CIPEncapsulationPacket interface {
 
 // CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
 type CIPEncapsulationPacketContract interface {
-	utils.Copyable
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)

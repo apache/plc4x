@@ -305,7 +305,7 @@ func (m *_SecurityDataPasswordEntryStatus) deepCopy() *_SecurityDataPasswordEntr
 		return nil
 	}
 	_SecurityDataPasswordEntryStatusCopy := &_SecurityDataPasswordEntryStatus{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.Code,
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

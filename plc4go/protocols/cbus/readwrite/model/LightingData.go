@@ -47,7 +47,6 @@ type LightingData interface {
 
 // LightingDataContract provides a set of functions which can be overwritten by a sub struct
 type LightingDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() LightingCommandTypeContainer
 	// GetCommandType returns CommandType (virtual field)

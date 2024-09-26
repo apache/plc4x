@@ -239,7 +239,7 @@ func (m *_ComObjectTableRealisationType1) deepCopy() *_ComObjectTableRealisation
 		return nil
 	}
 	_ComObjectTableRealisationType1Copy := &_ComObjectTableRealisationType1{
-		m.ComObjectTableContract.DeepCopy().(ComObjectTableContract),
+		m.ComObjectTableContract.(*_ComObjectTable).deepCopy(),
 		m.NumEntries,
 		m.RamFlagsTablePointer,
 		utils.DeepCopySlice[GroupObjectDescriptorRealisationType1, GroupObjectDescriptorRealisationType1](m.ComObjectDescriptors),

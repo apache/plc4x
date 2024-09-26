@@ -442,7 +442,7 @@ func (m *_FieldMetaData) deepCopy() *_FieldMetaData {
 		return nil
 	}
 	_FieldMetaDataCopy := &_FieldMetaData{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Name.DeepCopy().(PascalString),
 		m.Description.DeepCopy().(LocalizedText),
 		m.FieldFlags,

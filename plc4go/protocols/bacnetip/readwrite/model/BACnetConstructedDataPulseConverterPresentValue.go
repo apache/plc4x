@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataPulseConverterPresentValue) deepCopy() *_BACnetCo
 		return nil
 	}
 	_BACnetConstructedDataPulseConverterPresentValueCopy := &_BACnetConstructedDataPulseConverterPresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PresentValue.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

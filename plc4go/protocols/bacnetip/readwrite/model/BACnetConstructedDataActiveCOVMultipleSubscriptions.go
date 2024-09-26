@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) deepCopy() *_BACn
 		return nil
 	}
 	_BACnetConstructedDataActiveCOVMultipleSubscriptionsCopy := &_BACnetConstructedDataActiveCOVMultipleSubscriptions{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetCOVMultipleSubscription, BACnetCOVMultipleSubscription](m.ActiveCOVMultipleSubscriptions),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

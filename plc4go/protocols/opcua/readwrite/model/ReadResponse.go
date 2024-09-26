@@ -291,7 +291,7 @@ func (m *_ReadResponse) deepCopy() *_ReadResponse {
 		return nil
 	}
 	_ReadResponseCopy := &_ReadResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[DataValue, DataValue](m.Results),

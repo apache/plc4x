@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLoggingRecord) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataLoggingRecordCopy := &_BACnetConstructedDataLoggingRecord{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LoggingRecord.DeepCopy().(BACnetAccumulatorRecord),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

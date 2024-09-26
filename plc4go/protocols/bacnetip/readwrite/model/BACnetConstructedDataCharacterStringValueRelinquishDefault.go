@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataCharacterStringValueRelinquishDefault) deepCopy()
 		return nil
 	}
 	_BACnetConstructedDataCharacterStringValueRelinquishDefaultCopy := &_BACnetConstructedDataCharacterStringValueRelinquishDefault{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagCharacterString),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

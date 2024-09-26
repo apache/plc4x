@@ -258,7 +258,7 @@ func (m *_BACnetConstructedDataControlGroups) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataControlGroupsCopy := &_BACnetConstructedDataControlGroups{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ControlGroups),
 	}

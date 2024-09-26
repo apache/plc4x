@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataProtocolVersion) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataProtocolVersionCopy := &_BACnetConstructedDataProtocolVersion{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.ProtocolVersion.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLastAccessPoint) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataLastAccessPointCopy := &_BACnetConstructedDataLastAccessPoint{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LastAccessPoint.DeepCopy().(BACnetDeviceObjectReference),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

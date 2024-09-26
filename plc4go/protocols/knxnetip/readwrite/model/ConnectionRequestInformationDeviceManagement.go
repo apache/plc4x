@@ -158,7 +158,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) deepCopy() *_ConnectionR
 		return nil
 	}
 	_ConnectionRequestInformationDeviceManagementCopy := &_ConnectionRequestInformationDeviceManagement{
-		m.ConnectionRequestInformationContract.DeepCopy().(ConnectionRequestInformationContract),
+		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
 	}
 	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
 	return _ConnectionRequestInformationDeviceManagementCopy

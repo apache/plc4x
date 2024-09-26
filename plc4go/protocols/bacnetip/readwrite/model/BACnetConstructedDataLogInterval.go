@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLogInterval) deepCopy() *_BACnetConstructedDataLo
 		return nil
 	}
 	_BACnetConstructedDataLogIntervalCopy := &_BACnetConstructedDataLogInterval{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LogInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

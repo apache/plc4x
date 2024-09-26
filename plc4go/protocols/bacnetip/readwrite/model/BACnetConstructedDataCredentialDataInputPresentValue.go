@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) deepCopy() *_BAC
 		return nil
 	}
 	_BACnetConstructedDataCredentialDataInputPresentValueCopy := &_BACnetConstructedDataCredentialDataInputPresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PresentValue.DeepCopy().(BACnetAuthenticationFactor),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

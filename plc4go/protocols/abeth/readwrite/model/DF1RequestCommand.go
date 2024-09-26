@@ -47,7 +47,6 @@ type DF1RequestCommand interface {
 
 // DF1RequestCommandContract provides a set of functions which can be overwritten by a sub struct
 type DF1RequestCommandContract interface {
-	utils.Copyable
 	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestCommand()
 }

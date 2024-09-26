@@ -186,7 +186,7 @@ func (m *_LightingDataOff) deepCopy() *_LightingDataOff {
 		return nil
 	}
 	_LightingDataOffCopy := &_LightingDataOff{
-		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
 	}
 	m.LightingDataContract.(*_LightingData)._SubType = m

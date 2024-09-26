@@ -47,7 +47,6 @@ type CBusPointToPointCommand interface {
 
 // CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusPointToPointCommandContract interface {
-	utils.Copyable
 	// GetBridgeAddressCountPeek returns BridgeAddressCountPeek (property field)
 	GetBridgeAddressCountPeek() uint16
 	// GetCalData returns CalData (property field)

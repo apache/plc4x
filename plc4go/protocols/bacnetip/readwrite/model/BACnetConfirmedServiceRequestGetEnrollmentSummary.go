@@ -329,7 +329,7 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummary) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConfirmedServiceRequestGetEnrollmentSummaryCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummary{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.AcknowledgmentFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged),
 		m.EnrollmentFilter.DeepCopy().(BACnetRecipientProcessEnclosed),
 		m.EventStateFilter.DeepCopy().(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged),

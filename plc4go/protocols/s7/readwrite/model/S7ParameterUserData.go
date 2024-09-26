@@ -214,7 +214,7 @@ func (m *_S7ParameterUserData) deepCopy() *_S7ParameterUserData {
 		return nil
 	}
 	_S7ParameterUserDataCopy := &_S7ParameterUserData{
-		m.S7ParameterContract.DeepCopy().(S7ParameterContract),
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
 		utils.DeepCopySlice[S7ParameterUserDataItem, S7ParameterUserDataItem](m.Items),
 	}
 	m.S7ParameterContract.(*_S7Parameter)._SubType = m

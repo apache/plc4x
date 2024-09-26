@@ -315,7 +315,7 @@ func (m *_FindServersRequest) deepCopy() *_FindServersRequest {
 		return nil
 	}
 	_FindServersRequestCopy := &_FindServersRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.EndpointUrl.DeepCopy().(PascalString),
 		m.NoOfLocaleIds,

@@ -291,7 +291,7 @@ func (m *_BrowseNextResponse) deepCopy() *_BrowseNextResponse {
 		return nil
 	}
 	_BrowseNextResponseCopy := &_BrowseNextResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfResults,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),

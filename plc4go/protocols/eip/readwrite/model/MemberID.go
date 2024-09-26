@@ -211,7 +211,7 @@ func (m *_MemberID) deepCopy() *_MemberID {
 		return nil
 	}
 	_MemberIDCopy := &_MemberID{
-		m.LogicalSegmentTypeContract.DeepCopy().(LogicalSegmentTypeContract),
+		m.LogicalSegmentTypeContract.(*_LogicalSegmentType).deepCopy(),
 		m.Format,
 		m.Instance,
 	}

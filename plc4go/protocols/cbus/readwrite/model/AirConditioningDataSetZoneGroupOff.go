@@ -186,7 +186,7 @@ func (m *_AirConditioningDataSetZoneGroupOff) deepCopy() *_AirConditioningDataSe
 		return nil
 	}
 	_AirConditioningDataSetZoneGroupOffCopy := &_AirConditioningDataSetZoneGroupOff{
-		m.AirConditioningDataContract.DeepCopy().(AirConditioningDataContract),
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
 		m.ZoneGroup,
 	}
 	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m

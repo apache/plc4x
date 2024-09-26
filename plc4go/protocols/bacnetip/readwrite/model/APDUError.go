@@ -250,7 +250,7 @@ func (m *_APDUError) deepCopy() *_APDUError {
 		return nil
 	}
 	_APDUErrorCopy := &_APDUError{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.OriginalInvokeId,
 		m.ErrorChoice,
 		m.Error.DeepCopy().(BACnetError),

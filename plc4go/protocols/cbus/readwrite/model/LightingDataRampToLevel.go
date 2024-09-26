@@ -207,7 +207,7 @@ func (m *_LightingDataRampToLevel) deepCopy() *_LightingDataRampToLevel {
 		return nil
 	}
 	_LightingDataRampToLevelCopy := &_LightingDataRampToLevel{
-		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
 		m.Level,
 	}

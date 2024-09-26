@@ -193,7 +193,7 @@ func (m *_SALDataMetering) deepCopy() *_SALDataMetering {
 		return nil
 	}
 	_SALDataMeteringCopy := &_SALDataMetering{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 		m.MeteringData.DeepCopy().(MeteringData),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m

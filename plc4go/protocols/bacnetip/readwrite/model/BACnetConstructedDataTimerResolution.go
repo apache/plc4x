@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTimerResolution) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataTimerResolutionCopy := &_BACnetConstructedDataTimerResolution{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Resolution.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

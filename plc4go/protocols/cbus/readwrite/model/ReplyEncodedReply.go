@@ -261,7 +261,7 @@ func (m *_ReplyEncodedReply) deepCopy() *_ReplyEncodedReply {
 		return nil
 	}
 	_ReplyEncodedReplyCopy := &_ReplyEncodedReply{
-		m.ReplyContract.DeepCopy().(ReplyContract),
+		m.ReplyContract.(*_Reply).deepCopy(),
 		m.EncodedReply.DeepCopy().(EncodedReply),
 		m.Chksum.DeepCopy().(Checksum),
 	}

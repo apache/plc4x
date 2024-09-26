@@ -190,7 +190,7 @@ func (m *_KnxNetIpTunneling) deepCopy() *_KnxNetIpTunneling {
 		return nil
 	}
 	_KnxNetIpTunnelingCopy := &_KnxNetIpTunneling{
-		m.ServiceIdContract.DeepCopy().(ServiceIdContract),
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
 		m.Version,
 	}
 	m.ServiceIdContract.(*_ServiceId)._SubType = m

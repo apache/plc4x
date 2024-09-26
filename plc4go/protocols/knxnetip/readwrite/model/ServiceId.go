@@ -47,7 +47,6 @@ type ServiceId interface {
 
 // ServiceIdContract provides a set of functions which can be overwritten by a sub struct
 type ServiceIdContract interface {
-	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
 }

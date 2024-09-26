@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataTraceFlag) deepCopy() *_BACnetConstructedDataTrac
 		return nil
 	}
 	_BACnetConstructedDataTraceFlagCopy := &_BACnetConstructedDataTraceFlag{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.TraceFlag.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

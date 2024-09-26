@@ -268,7 +268,7 @@ func (m *_ConfirmedPrivateTransferError) deepCopy() *_ConfirmedPrivateTransferEr
 		return nil
 	}
 	_ConfirmedPrivateTransferErrorCopy := &_ConfirmedPrivateTransferError{
-		m.BACnetErrorContract.DeepCopy().(BACnetErrorContract),
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
 		m.ErrorType.DeepCopy().(ErrorEnclosed),
 		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
 		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),

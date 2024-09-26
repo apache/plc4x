@@ -157,7 +157,7 @@ func (m *_Frame) deepCopy() *_Frame {
 		return nil
 	}
 	_FrameCopy := &_Frame{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FrameCopy

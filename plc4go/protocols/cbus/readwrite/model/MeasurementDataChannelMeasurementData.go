@@ -344,7 +344,7 @@ func (m *_MeasurementDataChannelMeasurementData) deepCopy() *_MeasurementDataCha
 		return nil
 	}
 	_MeasurementDataChannelMeasurementDataCopy := &_MeasurementDataChannelMeasurementData{
-		m.MeasurementDataContract.DeepCopy().(MeasurementDataContract),
+		m.MeasurementDataContract.(*_MeasurementData).deepCopy(),
 		m.DeviceId,
 		m.Channel,
 		m.Units,

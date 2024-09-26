@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataInstantaneousPower) deepCopy() *_BACnetConstructe
 		return nil
 	}
 	_BACnetConstructedDataInstantaneousPowerCopy := &_BACnetConstructedDataInstantaneousPower{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.InstantaneousPower.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

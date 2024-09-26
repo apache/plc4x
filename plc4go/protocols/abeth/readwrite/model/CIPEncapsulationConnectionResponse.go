@@ -158,7 +158,7 @@ func (m *_CIPEncapsulationConnectionResponse) deepCopy() *_CIPEncapsulationConne
 		return nil
 	}
 	_CIPEncapsulationConnectionResponseCopy := &_CIPEncapsulationConnectionResponse{
-		m.CIPEncapsulationPacketContract.DeepCopy().(CIPEncapsulationPacketContract),
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
 	}
 	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
 	return _CIPEncapsulationConnectionResponseCopy

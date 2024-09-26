@@ -207,7 +207,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) deepCopy() *_BACnetConfirmedServ
 		return nil
 	}
 	_BACnetConfirmedServiceRequestVTCloseCopy := &_BACnetConfirmedServiceRequestVTClose{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.ListOfRemoteVtSessionIdentifiers),
 		m.ServiceRequestPayloadLength,
 	}

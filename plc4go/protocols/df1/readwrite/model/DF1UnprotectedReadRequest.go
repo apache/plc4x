@@ -211,7 +211,7 @@ func (m *_DF1UnprotectedReadRequest) deepCopy() *_DF1UnprotectedReadRequest {
 		return nil
 	}
 	_DF1UnprotectedReadRequestCopy := &_DF1UnprotectedReadRequest{
-		m.DF1CommandContract.DeepCopy().(DF1CommandContract),
+		m.DF1CommandContract.(*_DF1Command).deepCopy(),
 		m.Address,
 		m.Size,
 	}

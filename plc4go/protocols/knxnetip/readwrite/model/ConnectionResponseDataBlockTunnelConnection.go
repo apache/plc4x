@@ -194,7 +194,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) deepCopy() *_ConnectionRe
 		return nil
 	}
 	_ConnectionResponseDataBlockTunnelConnectionCopy := &_ConnectionResponseDataBlockTunnelConnection{
-		m.ConnectionResponseDataBlockContract.DeepCopy().(ConnectionResponseDataBlockContract),
+		m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock).deepCopy(),
 		m.KnxAddress.DeepCopy().(KnxAddress),
 	}
 	m.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = m

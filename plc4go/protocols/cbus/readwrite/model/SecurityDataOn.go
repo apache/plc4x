@@ -188,7 +188,7 @@ func (m *_SecurityDataOn) deepCopy() *_SecurityDataOn {
 		return nil
 	}
 	_SecurityDataOnCopy := &_SecurityDataOn{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
 	m.SecurityDataContract.(*_SecurityData)._SubType = m

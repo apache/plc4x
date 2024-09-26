@@ -238,7 +238,7 @@ func (m *_ModelChangeStructureDataType) deepCopy() *_ModelChangeStructureDataTyp
 		return nil
 	}
 	_ModelChangeStructureDataTypeCopy := &_ModelChangeStructureDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Affected.DeepCopy().(NodeId),
 		m.AffectedType.DeepCopy().(NodeId),
 		m.Verb,

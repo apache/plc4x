@@ -253,7 +253,7 @@ func (m *_PubSubConfigurationRefDataType) deepCopy() *_PubSubConfigurationRefDat
 		return nil
 	}
 	_PubSubConfigurationRefDataTypeCopy := &_PubSubConfigurationRefDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ConfigurationMask,
 		m.ElementIndex,
 		m.ConnectionIndex,

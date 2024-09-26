@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) deepCopy() *_BACnet
 		return nil
 	}
 	_BACnetConstructedDataLargeAnalogValueCOVIncrementCopy := &_BACnetConstructedDataLargeAnalogValueCOVIncrement{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CovIncrement.DeepCopy().(BACnetApplicationTagDouble),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

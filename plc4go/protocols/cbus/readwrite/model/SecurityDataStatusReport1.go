@@ -265,7 +265,7 @@ func (m *_SecurityDataStatusReport1) deepCopy() *_SecurityDataStatusReport1 {
 		return nil
 	}
 	_SecurityDataStatusReport1Copy := &_SecurityDataStatusReport1{
-		m.SecurityDataContract.DeepCopy().(SecurityDataContract),
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
 		m.ArmCodeType.DeepCopy().(SecurityArmCode),
 		m.TamperStatus.DeepCopy().(TamperStatus),
 		m.PanicStatus.DeepCopy().(PanicStatus),

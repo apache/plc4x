@@ -47,7 +47,6 @@ type CipService interface {
 
 // CipServiceContract provides a set of functions which can be overwritten by a sub struct
 type CipServiceContract interface {
-	utils.Copyable
 	// GetServiceLen() returns a parser argument
 	GetServiceLen() uint16
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)

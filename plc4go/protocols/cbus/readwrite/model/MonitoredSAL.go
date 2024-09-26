@@ -47,7 +47,6 @@ type MonitoredSAL interface {
 
 // MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
 type MonitoredSALContract interface {
-	utils.Copyable
 	// GetSalType returns SalType (property field)
 	GetSalType() byte
 	// GetCBusOptions() returns a parser argument

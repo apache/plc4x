@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataCOVPeriod) deepCopy() *_BACnetConstructedDataCOVP
 		return nil
 	}
 	_BACnetConstructedDataCOVPeriodCopy := &_BACnetConstructedDataCOVPeriod{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.CovPeriod.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

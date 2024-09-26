@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataAccessZoneAlarmValues) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataAccessZoneAlarmValuesCopy := &_BACnetConstructedDataAccessZoneAlarmValues{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetAccessZoneOccupancyStateTagged, BACnetAccessZoneOccupancyStateTagged](m.AlarmValues),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

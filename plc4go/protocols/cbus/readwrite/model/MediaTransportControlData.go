@@ -47,7 +47,6 @@ type MediaTransportControlData interface {
 
 // MediaTransportControlDataContract provides a set of functions which can be overwritten by a sub struct
 type MediaTransportControlDataContract interface {
-	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() MediaTransportControlCommandTypeContainer
 	// GetMediaLinkGroup returns MediaLinkGroup (property field)

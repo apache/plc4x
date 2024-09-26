@@ -232,7 +232,7 @@ func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
 		return nil
 	}
 	_DeviceConfigurationRequestCopy := &_DeviceConfigurationRequest{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.DeviceConfigurationRequestDataBlock.DeepCopy().(DeviceConfigurationRequestDataBlock),
 		m.Cemi.DeepCopy().(CEMI),
 		m.TotalLength,

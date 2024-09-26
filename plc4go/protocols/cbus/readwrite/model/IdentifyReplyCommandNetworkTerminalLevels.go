@@ -192,7 +192,7 @@ func (m *_IdentifyReplyCommandNetworkTerminalLevels) deepCopy() *_IdentifyReplyC
 		return nil
 	}
 	_IdentifyReplyCommandNetworkTerminalLevelsCopy := &_IdentifyReplyCommandNetworkTerminalLevels{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.NetworkTerminalLevels),
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

@@ -229,7 +229,7 @@ func (m *_CloseSessionRequest) deepCopy() *_CloseSessionRequest {
 		return nil
 	}
 	_CloseSessionRequestCopy := &_CloseSessionRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.DeleteSubscriptions,
 		m.reservedField0,

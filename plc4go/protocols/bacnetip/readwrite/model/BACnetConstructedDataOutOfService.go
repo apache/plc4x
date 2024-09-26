@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataOutOfService) deepCopy() *_BACnetConstructedDataO
 		return nil
 	}
 	_BACnetConstructedDataOutOfServiceCopy := &_BACnetConstructedDataOutOfService{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.OutOfService.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

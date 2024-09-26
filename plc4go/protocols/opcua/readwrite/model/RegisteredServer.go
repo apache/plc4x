@@ -420,7 +420,7 @@ func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
 		return nil
 	}
 	_RegisteredServerCopy := &_RegisteredServer{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ServerUri.DeepCopy().(PascalString),
 		m.ProductUri.DeepCopy().(PascalString),
 		m.NoOfServerNames,

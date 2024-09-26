@@ -279,7 +279,7 @@ func (m *_ModbusTcpADU) deepCopy() *_ModbusTcpADU {
 		return nil
 	}
 	_ModbusTcpADUCopy := &_ModbusTcpADU{
-		m.ModbusADUContract.DeepCopy().(ModbusADUContract),
+		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
 		m.TransactionIdentifier,
 		m.UnitIdentifier,
 		m.Pdu.DeepCopy().(ModbusPDU),

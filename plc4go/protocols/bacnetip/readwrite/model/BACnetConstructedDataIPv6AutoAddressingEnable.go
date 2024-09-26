@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataIPv6AutoAddressingEnable) deepCopy() *_BACnetCons
 		return nil
 	}
 	_BACnetConstructedDataIPv6AutoAddressingEnableCopy := &_BACnetConstructedDataIPv6AutoAddressingEnable{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.AutoAddressingEnable.DeepCopy().(BACnetApplicationTagBoolean),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

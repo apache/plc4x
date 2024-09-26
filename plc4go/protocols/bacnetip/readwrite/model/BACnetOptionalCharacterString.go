@@ -47,7 +47,6 @@ type BACnetOptionalCharacterString interface {
 
 // BACnetOptionalCharacterStringContract provides a set of functions which can be overwritten by a sub struct
 type BACnetOptionalCharacterStringContract interface {
-	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetPeekedTagNumber returns PeekedTagNumber (virtual field)

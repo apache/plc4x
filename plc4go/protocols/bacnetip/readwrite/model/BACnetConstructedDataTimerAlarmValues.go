@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataTimerAlarmValues) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataTimerAlarmValuesCopy := &_BACnetConstructedDataTimerAlarmValues{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

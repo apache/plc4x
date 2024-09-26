@@ -189,7 +189,7 @@ func (m *_BACnetLogDataLogDataEntryNullValue) deepCopy() *_BACnetLogDataLogDataE
 		return nil
 	}
 	_BACnetLogDataLogDataEntryNullValueCopy := &_BACnetLogDataLogDataEntryNullValue{
-		m.BACnetLogDataLogDataEntryContract.DeepCopy().(BACnetLogDataLogDataEntryContract),
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
 		m.NullValue.DeepCopy().(BACnetContextTagNull),
 	}
 	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m

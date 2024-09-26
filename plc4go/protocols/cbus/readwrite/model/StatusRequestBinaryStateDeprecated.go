@@ -215,7 +215,7 @@ func (m *_StatusRequestBinaryStateDeprecated) deepCopy() *_StatusRequestBinarySt
 		return nil
 	}
 	_StatusRequestBinaryStateDeprecatedCopy := &_StatusRequestBinaryStateDeprecated{
-		m.StatusRequestContract.DeepCopy().(StatusRequestContract),
+		m.StatusRequestContract.(*_StatusRequest).deepCopy(),
 		m.Application,
 		m.reservedField0,
 		m.reservedField1,

@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataAnalogInputPresentValue) deepCopy() *_BACnetConst
 		return nil
 	}
 	_BACnetConstructedDataAnalogInputPresentValueCopy := &_BACnetConstructedDataAnalogInputPresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PresentValue.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

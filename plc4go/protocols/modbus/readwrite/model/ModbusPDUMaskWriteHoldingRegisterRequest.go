@@ -240,7 +240,7 @@ func (m *_ModbusPDUMaskWriteHoldingRegisterRequest) deepCopy() *_ModbusPDUMaskWr
 		return nil
 	}
 	_ModbusPDUMaskWriteHoldingRegisterRequestCopy := &_ModbusPDUMaskWriteHoldingRegisterRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.ReferenceAddress,
 		m.AndMask,
 		m.OrMask,

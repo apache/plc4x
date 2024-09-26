@@ -157,7 +157,7 @@ func (m *_DataSetWriterMessageDataType) deepCopy() *_DataSetWriterMessageDataTyp
 		return nil
 	}
 	_DataSetWriterMessageDataTypeCopy := &_DataSetWriterMessageDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataSetWriterMessageDataTypeCopy

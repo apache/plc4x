@@ -293,7 +293,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) deepCop
 		return nil
 	}
 	_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleCopy := &_BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
 		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),

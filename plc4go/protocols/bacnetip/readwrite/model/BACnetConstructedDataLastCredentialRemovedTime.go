@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataLastCredentialRemovedTime) deepCopy() *_BACnetCon
 		return nil
 	}
 	_BACnetConstructedDataLastCredentialRemovedTimeCopy := &_BACnetConstructedDataLastCredentialRemovedTime{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LastCredentialRemovedTime.DeepCopy().(BACnetDateTime),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

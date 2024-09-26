@@ -190,7 +190,7 @@ func (m *_IdentifyReplyCommandManufacturer) deepCopy() *_IdentifyReplyCommandMan
 		return nil
 	}
 	_IdentifyReplyCommandManufacturerCopy := &_IdentifyReplyCommandManufacturer{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.ManufacturerName,
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

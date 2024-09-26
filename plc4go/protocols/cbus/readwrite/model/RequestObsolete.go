@@ -246,7 +246,7 @@ func (m *_RequestObsolete) deepCopy() *_RequestObsolete {
 		return nil
 	}
 	_RequestObsoleteCopy := &_RequestObsolete{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 		m.CalData.DeepCopy().(CALData),
 		m.Alpha.DeepCopy().(Alpha),
 	}

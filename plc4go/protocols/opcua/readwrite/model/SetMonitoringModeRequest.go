@@ -279,7 +279,7 @@ func (m *_SetMonitoringModeRequest) deepCopy() *_SetMonitoringModeRequest {
 		return nil
 	}
 	_SetMonitoringModeRequestCopy := &_SetMonitoringModeRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.SubscriptionId,
 		m.MonitoringMode,

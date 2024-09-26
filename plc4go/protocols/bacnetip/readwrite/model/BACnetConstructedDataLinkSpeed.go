@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataLinkSpeed) deepCopy() *_BACnetConstructedDataLink
 		return nil
 	}
 	_BACnetConstructedDataLinkSpeedCopy := &_BACnetConstructedDataLinkSpeed{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.LinkSpeed.DeepCopy().(BACnetApplicationTagReal),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

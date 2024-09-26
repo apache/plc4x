@@ -309,7 +309,7 @@ func (m *_BACnetNotificationParametersFloatingLimit) deepCopy() *_BACnetNotifica
 		return nil
 	}
 	_BACnetNotificationParametersFloatingLimitCopy := &_BACnetNotificationParametersFloatingLimit{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ReferenceValue.DeepCopy().(BACnetContextTagReal),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

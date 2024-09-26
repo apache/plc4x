@@ -45,7 +45,6 @@ type ErrorReportingSystemCategoryType interface {
 
 // ErrorReportingSystemCategoryTypeContract provides a set of functions which can be overwritten by a sub struct
 type ErrorReportingSystemCategoryTypeContract interface {
-	utils.Copyable
 	// IsErrorReportingSystemCategoryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryType()
 }

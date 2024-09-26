@@ -232,7 +232,7 @@ func (m *_IdentifyReplyCommandSummary) deepCopy() *_IdentifyReplyCommandSummary 
 		return nil
 	}
 	_IdentifyReplyCommandSummaryCopy := &_IdentifyReplyCommandSummary{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		m.PartName,
 		m.UnitServiceType,
 		m.Version,

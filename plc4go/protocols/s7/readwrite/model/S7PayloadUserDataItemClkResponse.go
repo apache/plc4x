@@ -243,7 +243,7 @@ func (m *_S7PayloadUserDataItemClkResponse) deepCopy() *_S7PayloadUserDataItemCl
 		return nil
 	}
 	_S7PayloadUserDataItemClkResponseCopy := &_S7PayloadUserDataItemClkResponse{
-		m.S7PayloadUserDataItemContract.DeepCopy().(S7PayloadUserDataItemContract),
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
 		m.Res,
 		m.Year1,
 		m.TimeStamp.DeepCopy().(DateAndTime),

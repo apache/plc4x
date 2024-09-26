@@ -205,7 +205,7 @@ func (m *_AdsDiscoveryBlockFingerprint) deepCopy() *_AdsDiscoveryBlockFingerprin
 		return nil
 	}
 	_AdsDiscoveryBlockFingerprintCopy := &_AdsDiscoveryBlockFingerprint{
-		m.AdsDiscoveryBlockContract.DeepCopy().(AdsDiscoveryBlockContract),
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}
 	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m

@@ -226,7 +226,7 @@ func (m *_ApduDataMemoryResponse) deepCopy() *_ApduDataMemoryResponse {
 		return nil
 	}
 	_ApduDataMemoryResponseCopy := &_ApduDataMemoryResponse{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 		m.Address,
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

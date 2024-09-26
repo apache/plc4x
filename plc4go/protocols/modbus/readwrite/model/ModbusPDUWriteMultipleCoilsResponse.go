@@ -219,7 +219,7 @@ func (m *_ModbusPDUWriteMultipleCoilsResponse) deepCopy() *_ModbusPDUWriteMultip
 		return nil
 	}
 	_ModbusPDUWriteMultipleCoilsResponseCopy := &_ModbusPDUWriteMultipleCoilsResponse{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.StartingAddress,
 		m.Quantity,
 	}

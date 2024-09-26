@@ -213,7 +213,7 @@ func (m *_BACnetServiceAckAtomicReadFileStream) deepCopy() *_BACnetServiceAckAto
 		return nil
 	}
 	_BACnetServiceAckAtomicReadFileStreamCopy := &_BACnetServiceAckAtomicReadFileStream{
-		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.DeepCopy().(BACnetServiceAckAtomicReadFileStreamOrRecordContract),
+		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).deepCopy(),
 		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
 		m.FileData.DeepCopy().(BACnetApplicationTagOctetString),
 	}

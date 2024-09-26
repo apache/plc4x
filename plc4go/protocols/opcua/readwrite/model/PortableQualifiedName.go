@@ -217,7 +217,7 @@ func (m *_PortableQualifiedName) deepCopy() *_PortableQualifiedName {
 		return nil
 	}
 	_PortableQualifiedNameCopy := &_PortableQualifiedName{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NamespaceUri.DeepCopy().(PascalString),
 		m.Name.DeepCopy().(PascalString),
 	}

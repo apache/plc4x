@@ -161,7 +161,7 @@ func (m *_LDataFrameACK) deepCopy() *_LDataFrameACK {
 		return nil
 	}
 	_LDataFrameACKCopy := &_LDataFrameACK{
-		m.LDataFrameContract.DeepCopy().(LDataFrameContract),
+		m.LDataFrameContract.(*_LDataFrame).deepCopy(),
 	}
 	m.LDataFrameContract.(*_LDataFrame)._SubType = m
 	return _LDataFrameACKCopy

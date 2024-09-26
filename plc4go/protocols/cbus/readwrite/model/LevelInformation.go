@@ -47,7 +47,6 @@ type LevelInformation interface {
 
 // LevelInformationContract provides a set of functions which can be overwritten by a sub struct
 type LevelInformationContract interface {
-	utils.Copyable
 	// GetRaw returns Raw (property field)
 	GetRaw() uint16
 	// GetNibble1 returns Nibble1 (virtual field)

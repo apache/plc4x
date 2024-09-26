@@ -47,7 +47,6 @@ type CALReply interface {
 
 // CALReplyContract provides a set of functions which can be overwritten by a sub struct
 type CALReplyContract interface {
-	utils.Copyable
 	// GetCalType returns CalType (property field)
 	GetCalType() byte
 	// GetCalData returns CalData (property field)

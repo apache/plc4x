@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataPriorityArray) deepCopy() *_BACnetConstructedData
 		return nil
 	}
 	_BACnetConstructedDataPriorityArrayCopy := &_BACnetConstructedDataPriorityArray{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PriorityArray.DeepCopy().(BACnetPriorityArray),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

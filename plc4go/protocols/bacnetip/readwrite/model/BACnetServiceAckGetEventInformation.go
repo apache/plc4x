@@ -217,7 +217,7 @@ func (m *_BACnetServiceAckGetEventInformation) deepCopy() *_BACnetServiceAckGetE
 		return nil
 	}
 	_BACnetServiceAckGetEventInformationCopy := &_BACnetServiceAckGetEventInformation{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		m.ListOfEventSummaries.DeepCopy().(BACnetEventSummariesList),
 		m.MoreEvents.DeepCopy().(BACnetContextTagBoolean),
 	}

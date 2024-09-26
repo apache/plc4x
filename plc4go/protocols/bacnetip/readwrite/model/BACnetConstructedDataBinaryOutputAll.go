@@ -166,7 +166,7 @@ func (m *_BACnetConstructedDataBinaryOutputAll) deepCopy() *_BACnetConstructedDa
 		return nil
 	}
 	_BACnetConstructedDataBinaryOutputAllCopy := &_BACnetConstructedDataBinaryOutputAll{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
 	return _BACnetConstructedDataBinaryOutputAllCopy

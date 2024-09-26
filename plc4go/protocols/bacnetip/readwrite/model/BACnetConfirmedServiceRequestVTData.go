@@ -241,7 +241,7 @@ func (m *_BACnetConfirmedServiceRequestVTData) deepCopy() *_BACnetConfirmedServi
 		return nil
 	}
 	_BACnetConfirmedServiceRequestVTDataCopy := &_BACnetConfirmedServiceRequestVTData{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
 		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),

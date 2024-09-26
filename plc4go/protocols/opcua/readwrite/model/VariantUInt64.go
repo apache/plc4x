@@ -216,7 +216,7 @@ func (m *_VariantUInt64) deepCopy() *_VariantUInt64 {
 		return nil
 	}
 	_VariantUInt64Copy := &_VariantUInt64{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[uint64, uint64](m.Value),
 	}

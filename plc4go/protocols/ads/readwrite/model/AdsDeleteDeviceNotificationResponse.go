@@ -194,7 +194,7 @@ func (m *_AdsDeleteDeviceNotificationResponse) deepCopy() *_AdsDeleteDeviceNotif
 		return nil
 	}
 	_AdsDeleteDeviceNotificationResponseCopy := &_AdsDeleteDeviceNotificationResponse{
-		m.AmsPacketContract.DeepCopy().(AmsPacketContract),
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
 		m.Result,
 	}
 	m.AmsPacketContract.(*_AmsPacket)._SubType = m

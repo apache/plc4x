@@ -218,7 +218,7 @@ func (m *_HistoryData) deepCopy() *_HistoryData {
 		return nil
 	}
 	_HistoryDataCopy := &_HistoryData{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NoOfDataValues,
 		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
 	}

@@ -308,7 +308,7 @@ func (m *_S7MessageObjectRequest) deepCopy() *_S7MessageObjectRequest {
 		return nil
 	}
 	_S7MessageObjectRequestCopy := &_S7MessageObjectRequest{
-		m.S7DataAlarmMessageContract.DeepCopy().(S7DataAlarmMessageContract),
+		m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).deepCopy(),
 		m.SyntaxId,
 		m.QueryType,
 		m.AlarmType,

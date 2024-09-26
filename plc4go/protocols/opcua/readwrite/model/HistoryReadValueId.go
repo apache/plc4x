@@ -265,7 +265,7 @@ func (m *_HistoryReadValueId) deepCopy() *_HistoryReadValueId {
 		return nil
 	}
 	_HistoryReadValueIdCopy := &_HistoryReadValueId{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(NodeId),
 		m.IndexRange.DeepCopy().(PascalString),
 		m.DataEncoding.DeepCopy().(QualifiedName),

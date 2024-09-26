@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataBufferSize) deepCopy() *_BACnetConstructedDataBuf
 		return nil
 	}
 	_BACnetConstructedDataBufferSizeCopy := &_BACnetConstructedDataBufferSize{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.BufferSize.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

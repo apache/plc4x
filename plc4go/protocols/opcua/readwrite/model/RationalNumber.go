@@ -211,7 +211,7 @@ func (m *_RationalNumber) deepCopy() *_RationalNumber {
 		return nil
 	}
 	_RationalNumberCopy := &_RationalNumber{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Numerator,
 		m.Denominator,
 	}

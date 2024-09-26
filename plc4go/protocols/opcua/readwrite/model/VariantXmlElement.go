@@ -221,7 +221,7 @@ func (m *_VariantXmlElement) deepCopy() *_VariantXmlElement {
 		return nil
 	}
 	_VariantXmlElementCopy := &_VariantXmlElement{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[PascalString, PascalString](m.Value),
 	}

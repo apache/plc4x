@@ -189,7 +189,7 @@ func (m *_BACnetOptionalBinaryPVValue) deepCopy() *_BACnetOptionalBinaryPVValue 
 		return nil
 	}
 	_BACnetOptionalBinaryPVValueCopy := &_BACnetOptionalBinaryPVValue{
-		m.BACnetOptionalBinaryPVContract.DeepCopy().(BACnetOptionalBinaryPVContract),
+		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
 		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
 	}
 	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m

@@ -165,7 +165,7 @@ func (m *_NullEipConnectionResponse) deepCopy() *_NullEipConnectionResponse {
 		return nil
 	}
 	_NullEipConnectionResponseCopy := &_NullEipConnectionResponse{
-		m.EipPacketContract.DeepCopy().(EipPacketContract),
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
 	}
 	m.EipPacketContract.(*_EipPacket)._SubType = m
 	return _NullEipConnectionResponseCopy

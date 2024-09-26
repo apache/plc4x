@@ -186,7 +186,7 @@ func (m *_LightingDataTerminateRamp) deepCopy() *_LightingDataTerminateRamp {
 		return nil
 	}
 	_LightingDataTerminateRampCopy := &_LightingDataTerminateRamp{
-		m.LightingDataContract.DeepCopy().(LightingDataContract),
+		m.LightingDataContract.(*_LightingData).deepCopy(),
 		m.Group,
 	}
 	m.LightingDataContract.(*_LightingData)._SubType = m

@@ -236,7 +236,7 @@ func (m *_SysexCommandPinStateResponse) deepCopy() *_SysexCommandPinStateRespons
 		return nil
 	}
 	_SysexCommandPinStateResponseCopy := &_SysexCommandPinStateResponse{
-		m.SysexCommandContract.DeepCopy().(SysexCommandContract),
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
 		m.Pin,
 		m.PinMode,
 		m.PinState,

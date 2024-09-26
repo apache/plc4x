@@ -341,7 +341,7 @@ func (m *_CALDataStatusExtended) deepCopy() *_CALDataStatusExtended {
 		return nil
 	}
 	_CALDataStatusExtendedCopy := &_CALDataStatusExtended{
-		m.CALDataContract.DeepCopy().(CALDataContract),
+		m.CALDataContract.(*_CALData).deepCopy(),
 		m.Coding,
 		m.Application,
 		m.BlockStart,

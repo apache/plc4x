@@ -192,7 +192,7 @@ func (m *_BinaryPayload) deepCopy() *_BinaryPayload {
 		return nil
 	}
 	_BinaryPayloadCopy := &_BinaryPayload{
-		m.PayloadContract.DeepCopy().(PayloadContract),
+		m.PayloadContract.(*_Payload).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Payload),
 	}
 	m.PayloadContract.(*_Payload)._SubType = m

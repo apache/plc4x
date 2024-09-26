@@ -334,7 +334,7 @@ func (m *_AddNodesItem) deepCopy() *_AddNodesItem {
 		return nil
 	}
 	_AddNodesItemCopy := &_AddNodesItem{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ParentNodeId.DeepCopy().(ExpandedNodeId),
 		m.ReferenceTypeId.DeepCopy().(NodeId),
 		m.RequestedNewNodeId.DeepCopy().(ExpandedNodeId),

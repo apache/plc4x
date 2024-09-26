@@ -299,7 +299,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) deepCopy() 
 		return nil
 	}
 	_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleCopy := &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple{
-		m.BACnetConfirmedServiceRequestContract.DeepCopy().(BACnetConfirmedServiceRequestContract),
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
 		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
 		m.Lifetime.DeepCopy().(BACnetContextTagUnsignedInteger),

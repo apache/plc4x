@@ -335,7 +335,7 @@ func (m *_BACnetConstructedDataEventMessageTexts) deepCopy() *_BACnetConstructed
 		return nil
 	}
 	_BACnetConstructedDataEventMessageTextsCopy := &_BACnetConstructedDataEventMessageTexts{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.EventMessageTexts),
 	}

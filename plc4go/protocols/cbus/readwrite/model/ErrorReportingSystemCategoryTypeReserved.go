@@ -190,7 +190,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) deepCopy() *_ErrorReportingS
 		return nil
 	}
 	_ErrorReportingSystemCategoryTypeReservedCopy := &_ErrorReportingSystemCategoryTypeReserved{
-		m.ErrorReportingSystemCategoryTypeContract.DeepCopy().(ErrorReportingSystemCategoryTypeContract),
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
 		m.ReservedValue,
 	}
 	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m

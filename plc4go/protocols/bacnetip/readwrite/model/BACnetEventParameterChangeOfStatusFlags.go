@@ -261,7 +261,7 @@ func (m *_BACnetEventParameterChangeOfStatusFlags) deepCopy() *_BACnetEventParam
 		return nil
 	}
 	_BACnetEventParameterChangeOfStatusFlagsCopy := &_BACnetEventParameterChangeOfStatusFlags{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.SelectedFlags.DeepCopy().(BACnetStatusFlagsTagged),

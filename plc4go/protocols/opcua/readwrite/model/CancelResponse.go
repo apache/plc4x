@@ -214,7 +214,7 @@ func (m *_CancelResponse) deepCopy() *_CancelResponse {
 		return nil
 	}
 	_CancelResponseCopy := &_CancelResponse{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.CancelCount,
 	}

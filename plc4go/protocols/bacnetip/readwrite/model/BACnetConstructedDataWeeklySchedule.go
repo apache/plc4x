@@ -263,7 +263,7 @@ func (m *_BACnetConstructedDataWeeklySchedule) deepCopy() *_BACnetConstructedDat
 		return nil
 	}
 	_BACnetConstructedDataWeeklyScheduleCopy := &_BACnetConstructedDataWeeklySchedule{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 		utils.DeepCopySlice[BACnetDailySchedule, BACnetDailySchedule](m.WeeklySchedule),
 	}

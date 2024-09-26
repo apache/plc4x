@@ -189,7 +189,7 @@ func (m *_BACnetChannelValueLightingCommand) deepCopy() *_BACnetChannelValueLigh
 		return nil
 	}
 	_BACnetChannelValueLightingCommandCopy := &_BACnetChannelValueLightingCommand{
-		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
 		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
 	}
 	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m

@@ -192,7 +192,7 @@ func (m *_IdentifyReplyCommandMaximumLevels) deepCopy() *_IdentifyReplyCommandMa
 		return nil
 	}
 	_IdentifyReplyCommandMaximumLevelsCopy := &_IdentifyReplyCommandMaximumLevels{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.MaximumLevels),
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

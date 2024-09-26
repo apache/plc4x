@@ -226,7 +226,7 @@ func (m *_NLMNetworkNumberIs) deepCopy() *_NLMNetworkNumberIs {
 		return nil
 	}
 	_NLMNetworkNumberIsCopy := &_NLMNetworkNumberIs{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.NetworkNumber,
 		m.NetworkNumberConfigured,
 		m.reservedField0,

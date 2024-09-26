@@ -208,7 +208,7 @@ func (m *_BVLCDistributeBroadcastToNetwork) deepCopy() *_BVLCDistributeBroadcast
 		return nil
 	}
 	_BVLCDistributeBroadcastToNetworkCopy := &_BVLCDistributeBroadcastToNetwork{
-		m.BVLCContract.DeepCopy().(BVLCContract),
+		m.BVLCContract.(*_BVLC).deepCopy(),
 		m.Npdu.DeepCopy().(NPDU),
 		m.BvlcPayloadLength,
 	}

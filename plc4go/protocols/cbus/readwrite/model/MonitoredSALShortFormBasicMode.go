@@ -299,7 +299,7 @@ func (m *_MonitoredSALShortFormBasicMode) deepCopy() *_MonitoredSALShortFormBasi
 		return nil
 	}
 	_MonitoredSALShortFormBasicModeCopy := &_MonitoredSALShortFormBasicMode{
-		m.MonitoredSALContract.DeepCopy().(MonitoredSALContract),
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
 		m.Counts,
 		utils.CopyPtr[uint8](m.BridgeCount),
 		utils.CopyPtr[uint8](m.NetworkNumber),

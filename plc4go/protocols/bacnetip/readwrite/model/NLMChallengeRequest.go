@@ -232,7 +232,7 @@ func (m *_NLMChallengeRequest) deepCopy() *_NLMChallengeRequest {
 		return nil
 	}
 	_NLMChallengeRequestCopy := &_NLMChallengeRequest{
-		m.NLMContract.DeepCopy().(NLMContract),
+		m.NLMContract.(*_NLM).deepCopy(),
 		m.MessageChallenge,
 		m.OriginalMessageId,
 		m.OriginalTimestamp,

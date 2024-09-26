@@ -189,7 +189,7 @@ func (m *_BACnetPriorityValueCharacterString) deepCopy() *_BACnetPriorityValueCh
 		return nil
 	}
 	_BACnetPriorityValueCharacterStringCopy := &_BACnetPriorityValueCharacterString{
-		m.BACnetPriorityValueContract.DeepCopy().(BACnetPriorityValueContract),
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
 		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
 	}
 	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m

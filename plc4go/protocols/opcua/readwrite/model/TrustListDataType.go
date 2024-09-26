@@ -386,7 +386,7 @@ func (m *_TrustListDataType) deepCopy() *_TrustListDataType {
 		return nil
 	}
 	_TrustListDataTypeCopy := &_TrustListDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.SpecifiedLists,
 		m.NoOfTrustedCertificates,
 		utils.DeepCopySlice[PascalByteString, PascalByteString](m.TrustedCertificates),

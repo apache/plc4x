@@ -262,7 +262,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) deepCopy() *_BACnetNoti
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfBitStringCopy := &_BACnetNotificationParametersChangeOfBitString{
-		m.BACnetNotificationParametersContract.DeepCopy().(BACnetNotificationParametersContract),
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
 		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.ChangeOfBitString.DeepCopy().(BACnetContextTagBitString),
 		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),

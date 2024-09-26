@@ -197,7 +197,7 @@ func (m *_IdentifyReplyCommandLogicalAssignment) deepCopy() *_IdentifyReplyComma
 		return nil
 	}
 	_IdentifyReplyCommandLogicalAssignmentCopy := &_IdentifyReplyCommandLogicalAssignment{
-		m.IdentifyReplyCommandContract.DeepCopy().(IdentifyReplyCommandContract),
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
 		utils.DeepCopySlice[LogicAssignment, LogicAssignment](m.LogicAssigment),
 	}
 	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m

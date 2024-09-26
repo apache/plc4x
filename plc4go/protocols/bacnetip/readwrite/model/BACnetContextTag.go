@@ -47,7 +47,6 @@ type BACnetContextTag interface {
 
 // BACnetContextTagContract provides a set of functions which can be overwritten by a sub struct
 type BACnetContextTagContract interface {
-	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetTagNumber returns TagNumber (virtual field)

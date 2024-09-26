@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataRestartNotificationRecipients) deepCopy() *_BACne
 		return nil
 	}
 	_BACnetConstructedDataRestartNotificationRecipientsCopy := &_BACnetConstructedDataRestartNotificationRecipients{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.RestartNotificationRecipients),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

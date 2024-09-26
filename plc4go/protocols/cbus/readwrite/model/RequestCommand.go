@@ -322,7 +322,7 @@ func (m *_RequestCommand) deepCopy() *_RequestCommand {
 		return nil
 	}
 	_RequestCommandCopy := &_RequestCommand{
-		m.RequestContract.DeepCopy().(RequestContract),
+		m.RequestContract.(*_Request).deepCopy(),
 		m.CbusCommand.DeepCopy().(CBusCommand),
 		m.Chksum.DeepCopy().(Checksum),
 		m.Alpha.DeepCopy().(Alpha),

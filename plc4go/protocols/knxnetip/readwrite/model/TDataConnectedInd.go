@@ -157,7 +157,7 @@ func (m *_TDataConnectedInd) deepCopy() *_TDataConnectedInd {
 		return nil
 	}
 	_TDataConnectedIndCopy := &_TDataConnectedInd{
-		m.CEMIContract.DeepCopy().(CEMIContract),
+		m.CEMIContract.(*_CEMI).deepCopy(),
 	}
 	m.CEMIContract.(*_CEMI)._SubType = m
 	return _TDataConnectedIndCopy

@@ -213,7 +213,7 @@ func (m *_ModbusPDUReportServerIdResponse) deepCopy() *_ModbusPDUReportServerIdR
 		return nil
 	}
 	_ModbusPDUReportServerIdResponseCopy := &_ModbusPDUReportServerIdResponse{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		utils.DeepCopySlice[byte, byte](m.Value),
 	}
 	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m

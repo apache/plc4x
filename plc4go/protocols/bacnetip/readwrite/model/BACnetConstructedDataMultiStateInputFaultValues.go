@@ -199,7 +199,7 @@ func (m *_BACnetConstructedDataMultiStateInputFaultValues) deepCopy() *_BACnetCo
 		return nil
 	}
 	_BACnetConstructedDataMultiStateInputFaultValuesCopy := &_BACnetConstructedDataMultiStateInputFaultValues{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FaultValues),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

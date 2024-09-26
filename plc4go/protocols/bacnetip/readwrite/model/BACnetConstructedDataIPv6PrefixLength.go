@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) deepCopy() *_BACnetConstructedD
 		return nil
 	}
 	_BACnetConstructedDataIPv6PrefixLengthCopy := &_BACnetConstructedDataIPv6PrefixLength{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.Ipv6PrefixLength.DeepCopy().(BACnetApplicationTagUnsignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

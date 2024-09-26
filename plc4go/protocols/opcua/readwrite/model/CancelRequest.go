@@ -214,7 +214,7 @@ func (m *_CancelRequest) deepCopy() *_CancelRequest {
 		return nil
 	}
 	_CancelRequestCopy := &_CancelRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.RequestHandle,
 	}

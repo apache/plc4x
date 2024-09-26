@@ -508,7 +508,7 @@ func (m *_APDUConfirmedRequest) deepCopy() *_APDUConfirmedRequest {
 		return nil
 	}
 	_APDUConfirmedRequestCopy := &_APDUConfirmedRequest{
-		m.APDUContract.DeepCopy().(APDUContract),
+		m.APDUContract.(*_APDU).deepCopy(),
 		m.SegmentedMessage,
 		m.MoreFollows,
 		m.SegmentedResponseAccepted,

@@ -190,7 +190,7 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) d
 		return nil
 	}
 	_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated{
-		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.DeepCopy().(BACnetNotificationParametersChangeOfDiscreteValueNewValueContract),
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
 		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
 	}
 	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m

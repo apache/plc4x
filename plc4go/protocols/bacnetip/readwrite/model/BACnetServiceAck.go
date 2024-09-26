@@ -47,7 +47,6 @@ type BACnetServiceAck interface {
 
 // BACnetServiceAckContract provides a set of functions which can be overwritten by a sub struct
 type BACnetServiceAckContract interface {
-	utils.Copyable
 	// GetServiceAckPayloadLength returns ServiceAckPayloadLength (virtual field)
 	GetServiceAckPayloadLength() uint32
 	// GetServiceAckLength() returns a parser argument

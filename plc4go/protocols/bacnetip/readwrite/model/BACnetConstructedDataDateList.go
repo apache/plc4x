@@ -198,7 +198,7 @@ func (m *_BACnetConstructedDataDateList) deepCopy() *_BACnetConstructedDataDateL
 		return nil
 	}
 	_BACnetConstructedDataDateListCopy := &_BACnetConstructedDataDateList{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		utils.DeepCopySlice[BACnetCalendarEntry, BACnetCalendarEntry](m.DateList),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

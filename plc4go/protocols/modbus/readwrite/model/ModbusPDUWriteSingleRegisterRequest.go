@@ -219,7 +219,7 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) deepCopy() *_ModbusPDUWriteSingle
 		return nil
 	}
 	_ModbusPDUWriteSingleRegisterRequestCopy := &_ModbusPDUWriteSingleRegisterRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.Address,
 		m.Value,
 	}

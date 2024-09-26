@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) deepCopy() *_BACnetConstru
 		return nil
 	}
 	_BACnetConstructedDataMaximumValueTimestampCopy := &_BACnetConstructedDataMaximumValueTimestamp{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.MaximumValueTimestamp.DeepCopy().(BACnetDateTime),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

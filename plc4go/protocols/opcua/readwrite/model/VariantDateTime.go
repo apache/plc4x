@@ -216,7 +216,7 @@ func (m *_VariantDateTime) deepCopy() *_VariantDateTime {
 		return nil
 	}
 	_VariantDateTimeCopy := &_VariantDateTime{
-		m.VariantContract.DeepCopy().(VariantContract),
+		m.VariantContract.(*_Variant).deepCopy(),
 		utils.CopyPtr[int32](m.ArrayLength),
 		utils.DeepCopySlice[int64, int64](m.Value),
 	}

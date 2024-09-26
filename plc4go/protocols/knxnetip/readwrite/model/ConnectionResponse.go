@@ -267,7 +267,7 @@ func (m *_ConnectionResponse) deepCopy() *_ConnectionResponse {
 		return nil
 	}
 	_ConnectionResponseCopy := &_ConnectionResponse{
-		m.KnxNetIpMessageContract.DeepCopy().(KnxNetIpMessageContract),
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
 		m.CommunicationChannelId,
 		m.Status,
 		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),

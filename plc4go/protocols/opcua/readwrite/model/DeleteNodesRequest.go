@@ -242,7 +242,7 @@ func (m *_DeleteNodesRequest) deepCopy() *_DeleteNodesRequest {
 		return nil
 	}
 	_DeleteNodesRequestCopy := &_DeleteNodesRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfNodesToDelete,
 		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToDelete),

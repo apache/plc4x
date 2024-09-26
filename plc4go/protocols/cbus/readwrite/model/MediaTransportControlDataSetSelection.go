@@ -207,7 +207,7 @@ func (m *_MediaTransportControlDataSetSelection) deepCopy() *_MediaTransportCont
 		return nil
 	}
 	_MediaTransportControlDataSetSelectionCopy := &_MediaTransportControlDataSetSelection{
-		m.MediaTransportControlDataContract.DeepCopy().(MediaTransportControlDataContract),
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
 		m.SelectionHi,
 		m.SelectionLo,
 	}

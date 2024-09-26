@@ -248,7 +248,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) deepCopy() *_ModbusPDUReadDe
 		return nil
 	}
 	_ModbusPDUReadDeviceIdentificationRequestCopy := &_ModbusPDUReadDeviceIdentificationRequest{
-		m.ModbusPDUContract.DeepCopy().(ModbusPDUContract),
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
 		m.Level,
 		m.ObjectId,
 	}

@@ -309,7 +309,7 @@ func (m *_BACnetEventParameterSignedOutOfRange) deepCopy() *_BACnetEventParamete
 		return nil
 	}
 	_BACnetEventParameterSignedOutOfRangeCopy := &_BACnetEventParameterSignedOutOfRange{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.LowLimit.DeepCopy().(BACnetContextTagSignedInteger),

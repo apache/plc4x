@@ -47,7 +47,6 @@ type CBusCommand interface {
 
 // CBusCommandContract provides a set of functions which can be overwritten by a sub struct
 type CBusCommandContract interface {
-	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() CBusHeader
 	// GetIsDeviceManagement returns IsDeviceManagement (virtual field)

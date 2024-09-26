@@ -236,7 +236,7 @@ func (m *_CBusCommandDeviceManagement) deepCopy() *_CBusCommandDeviceManagement 
 		return nil
 	}
 	_CBusCommandDeviceManagementCopy := &_CBusCommandDeviceManagement{
-		m.CBusCommandContract.DeepCopy().(CBusCommandContract),
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
 		m.ParamNo,
 		m.ParameterValue,
 	}

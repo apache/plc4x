@@ -228,7 +228,7 @@ func (m *_BACnetConstructedDataUTCOffset) deepCopy() *_BACnetConstructedDataUTCO
 		return nil
 	}
 	_BACnetConstructedDataUTCOffsetCopy := &_BACnetConstructedDataUTCOffset{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.UtcOffset.DeepCopy().(BACnetApplicationTagSignedInteger),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m

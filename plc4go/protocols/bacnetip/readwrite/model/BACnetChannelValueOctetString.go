@@ -189,7 +189,7 @@ func (m *_BACnetChannelValueOctetString) deepCopy() *_BACnetChannelValueOctetStr
 		return nil
 	}
 	_BACnetChannelValueOctetStringCopy := &_BACnetChannelValueOctetString{
-		m.BACnetChannelValueContract.DeepCopy().(BACnetChannelValueContract),
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
 		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
 	}
 	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m

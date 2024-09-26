@@ -221,7 +221,7 @@ func (m *_ParameterValueApplicationAddress2) deepCopy() *_ParameterValueApplicat
 		return nil
 	}
 	_ParameterValueApplicationAddress2Copy := &_ParameterValueApplicationAddress2{
-		m.ParameterValueContract.DeepCopy().(ParameterValueContract),
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
 		m.Value.DeepCopy().(ApplicationAddress2),
 		utils.DeepCopySlice[byte, byte](m.Data),
 	}

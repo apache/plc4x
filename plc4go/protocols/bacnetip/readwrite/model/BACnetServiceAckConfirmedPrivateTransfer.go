@@ -244,7 +244,7 @@ func (m *_BACnetServiceAckConfirmedPrivateTransfer) deepCopy() *_BACnetServiceAc
 		return nil
 	}
 	_BACnetServiceAckConfirmedPrivateTransferCopy := &_BACnetServiceAckConfirmedPrivateTransfer{
-		m.BACnetServiceAckContract.DeepCopy().(BACnetServiceAckContract),
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
 		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
 		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.ResultBlock.DeepCopy().(BACnetConstructedData),

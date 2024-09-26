@@ -47,7 +47,6 @@ type Reply interface {
 
 // ReplyContract provides a set of functions which can be overwritten by a sub struct
 type ReplyContract interface {
-	utils.Copyable
 	// GetPeekedByte returns PeekedByte (property field)
 	GetPeekedByte() byte
 	// GetCBusOptions() returns a parser argument

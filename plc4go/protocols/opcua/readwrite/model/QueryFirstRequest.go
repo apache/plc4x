@@ -332,7 +332,7 @@ func (m *_QueryFirstRequest) deepCopy() *_QueryFirstRequest {
 		return nil
 	}
 	_QueryFirstRequestCopy := &_QueryFirstRequest{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
 		m.View.DeepCopy().(ExtensionObjectDefinition),
 		m.NoOfNodeTypes,

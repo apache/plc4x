@@ -193,7 +193,7 @@ func (m *_SALDataAudioAndVideo) deepCopy() *_SALDataAudioAndVideo {
 		return nil
 	}
 	_SALDataAudioAndVideoCopy := &_SALDataAudioAndVideo{
-		m.SALDataContract.DeepCopy().(SALDataContract),
+		m.SALDataContract.(*_SALData).deepCopy(),
 		m.AudioVideoData.DeepCopy().(LightingData),
 	}
 	m.SALDataContract.(*_SALData)._SubType = m

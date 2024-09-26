@@ -157,7 +157,7 @@ func (m *_ApduDataMemoryWrite) deepCopy() *_ApduDataMemoryWrite {
 		return nil
 	}
 	_ApduDataMemoryWriteCopy := &_ApduDataMemoryWrite{
-		m.ApduDataContract.DeepCopy().(ApduDataContract),
+		m.ApduDataContract.(*_ApduData).deepCopy(),
 	}
 	m.ApduDataContract.(*_ApduData)._SubType = m
 	return _ApduDataMemoryWriteCopy

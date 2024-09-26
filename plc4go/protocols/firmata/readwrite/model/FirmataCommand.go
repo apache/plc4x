@@ -47,7 +47,6 @@ type FirmataCommand interface {
 
 // FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
 type FirmataCommandContract interface {
-	utils.Copyable
 	// GetResponse() returns a parser argument
 	GetResponse() bool
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)

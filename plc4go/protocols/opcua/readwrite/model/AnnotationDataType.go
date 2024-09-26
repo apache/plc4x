@@ -241,7 +241,7 @@ func (m *_AnnotationDataType) deepCopy() *_AnnotationDataType {
 		return nil
 	}
 	_AnnotationDataTypeCopy := &_AnnotationDataType{
-		m.ExtensionObjectDefinitionContract.DeepCopy().(ExtensionObjectDefinitionContract),
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.Annotation.DeepCopy().(PascalString),
 		m.Discipline.DeepCopy().(PascalString),
 		m.Uri.DeepCopy().(PascalString),

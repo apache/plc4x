@@ -45,7 +45,6 @@ type ParameterValue interface {
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
 type ParameterValueContract interface {
-	utils.Copyable
 	// GetNumBytes() returns a parser argument
 	GetNumBytes() uint8
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)

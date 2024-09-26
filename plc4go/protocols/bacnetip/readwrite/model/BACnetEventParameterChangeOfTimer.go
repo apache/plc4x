@@ -285,7 +285,7 @@ func (m *_BACnetEventParameterChangeOfTimer) deepCopy() *_BACnetEventParameterCh
 		return nil
 	}
 	_BACnetEventParameterChangeOfTimerCopy := &_BACnetEventParameterChangeOfTimer{
-		m.BACnetEventParameterContract.DeepCopy().(BACnetEventParameterContract),
+		m.BACnetEventParameterContract.(*_BACnetEventParameter).deepCopy(),
 		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
 		m.TimeDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
 		m.AlarmValues.DeepCopy().(BACnetEventParameterChangeOfTimerAlarmValue),

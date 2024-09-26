@@ -229,7 +229,7 @@ func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) deepCopy() *_BACnetC
 		return nil
 	}
 	_BACnetConstructedDataAlertEnrollmentPresentValueCopy := &_BACnetConstructedDataAlertEnrollmentPresentValue{
-		m.BACnetConstructedDataContract.DeepCopy().(BACnetConstructedDataContract),
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
 		m.PresentValue.DeepCopy().(BACnetApplicationTagObjectIdentifier),
 	}
 	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
