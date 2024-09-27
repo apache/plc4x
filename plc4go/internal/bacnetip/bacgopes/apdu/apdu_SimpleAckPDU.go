@@ -28,6 +28,10 @@ type SimpleAckPDU struct {
 
 var _ readWriteModel.APDUComplexAck = (*SimpleAckPDU)(nil)
 
+func (s *SimpleAckPDU) CreateAPDUComplexAckBuilder() readWriteModel.APDUComplexAckBuilder {
+	panic("implement me")
+}
+
 func (s *SimpleAckPDU) GetSegmentedMessage() bool {
 	//TODO implement me
 	panic("implement me")

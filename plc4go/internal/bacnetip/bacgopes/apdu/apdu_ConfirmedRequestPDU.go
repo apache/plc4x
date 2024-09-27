@@ -86,6 +86,11 @@ func (c *ConfirmedRequestPDU) buildConfirmedRequest(serviceRequest readWriteMode
 	)
 }
 
+func (c *ConfirmedRequestPDU) CreateAPDUConfirmedRequestBuilder() readWriteModel.APDUConfirmedRequestBuilder {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (c *ConfirmedRequestPDU) GetSegmentedMessage() bool {
 	return c.apduSeg
 }

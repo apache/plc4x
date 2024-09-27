@@ -21,7 +21,6 @@ package ads
 
 import (
 	"context"
-	"errors"
 	"runtime/debug"
 	"time"
 

@@ -68,6 +68,10 @@ func (u *UnconfirmedRequestPDU) buildUnconfirmedServiceRequest(serviceRequest re
 	return readWriteModel.NewAPDUUnconfirmedRequest(serviceRequest, 0)
 }
 
+func (u *UnconfirmedRequestPDU) CreateAPDUUnconfirmedRequestBuilder() readWriteModel.APDUUnconfirmedRequestBuilder {
+	panic("implement me")
+}
+
 func (u *UnconfirmedRequestPDU) GetServiceRequest() readWriteModel.BACnetUnconfirmedServiceRequest {
 	return u.serviceRequest
 }

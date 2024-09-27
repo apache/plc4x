@@ -345,7 +345,7 @@ type ${type.name}Builder interface {
 	<#assign typeRef=field.asTypedField().orElseThrow().type>
 	// With${field.name?cap_first} adds ${field.name?cap_first} (property field)
 	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}(${helper.getLanguageTypeNameForTypeReference(typeRef, true)}) ${type.name}Builder
-	<#if typeRef.isComplexTypeReference()>
+	<#if typeRef.isComplexTypeReference() && !typeRef.asComplexTypeReference().orElseThrow().typeDefinition.isAbstract()>
 	// With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder adds ${field.name?cap_first} (property field) which is build by the builder
 	With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder
 	</#if>
@@ -395,7 +395,7 @@ func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${
 	return m
 }
 
-	<#if typeRef.isComplexTypeReference()>
+	<#if typeRef.isComplexTypeReference() && !typeRef.asComplexTypeReference().orElseThrow().typeDefinition.isAbstract()>
 func (m *_${type.name}Builder) With<#if field.isOptionalField()>Optional</#if>${field.name?cap_first}Builder(builderSupplier func(${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder)${helper.getLanguageTypeNameForTypeReference(typeRef)}Builder) ${type.name}Builder {
 	builder:=builderSupplier(m.${field.name?cap_first}.Create${helper.getLanguageTypeNameForField(field)}Builder())
 	var err error
