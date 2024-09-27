@@ -48,6 +48,8 @@ type BACnetConstructedDataCharacterStringValueAlarmValues interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataCharacterStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCharacterStringValueAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	CreateBACnetConstructedDataCharacterStringValueAlarmValuesBuilder() BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataCharacterStringValueAlarmValues is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataCharacterStringValueAlarmValues(openingTag BACnetOp
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCharacterStringValueAlarmValuesBuilder is a builder for BACnetConstructedDataCharacterStringValueAlarmValues
+type BACnetConstructedDataCharacterStringValueAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataCharacterStringValueAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataCharacterStringValueAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCharacterStringValueAlarmValues
+}
+
+// NewBACnetConstructedDataCharacterStringValueAlarmValuesBuilder() creates a BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+func NewBACnetConstructedDataCharacterStringValueAlarmValuesBuilder() BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	return &_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder{_BACnetConstructedDataCharacterStringValueAlarmValues: new(_BACnetConstructedDataCharacterStringValueAlarmValues)}
+}
+
+type _BACnetConstructedDataCharacterStringValueAlarmValuesBuilder struct {
+	*_BACnetConstructedDataCharacterStringValueAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) = (*_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	return m.WithAlarmValues(alarmValues...)
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetOptionalCharacterString) BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	m.AlarmValues = alarmValues
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) Build() (BACnetConstructedDataCharacterStringValueAlarmValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCharacterStringValueAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) MustBuild() BACnetConstructedDataCharacterStringValueAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCharacterStringValueAlarmValuesBuilder()
+}
+
+// CreateBACnetConstructedDataCharacterStringValueAlarmValuesBuilder creates a BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+func (m *_BACnetConstructedDataCharacterStringValueAlarmValues) CreateBACnetConstructedDataCharacterStringValueAlarmValuesBuilder() BACnetConstructedDataCharacterStringValueAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCharacterStringValueAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataCharacterStringValueAlarmValuesBuilder{_BACnetConstructedDataCharacterStringValueAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

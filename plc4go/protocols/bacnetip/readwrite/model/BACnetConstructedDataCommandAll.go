@@ -40,6 +40,8 @@ type BACnetConstructedDataCommandAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataCommandAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommandAll()
+	// CreateBuilder creates a BACnetConstructedDataCommandAllBuilder
+	CreateBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder
 }
 
 // _BACnetConstructedDataCommandAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataCommandAll(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCommandAllBuilder is a builder for BACnetConstructedDataCommandAll
+type BACnetConstructedDataCommandAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataCommandAllBuilder
+	// Build builds the BACnetConstructedDataCommandAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataCommandAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCommandAll
+}
+
+// NewBACnetConstructedDataCommandAllBuilder() creates a BACnetConstructedDataCommandAllBuilder
+func NewBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder {
+	return &_BACnetConstructedDataCommandAllBuilder{_BACnetConstructedDataCommandAll: new(_BACnetConstructedDataCommandAll)}
+}
+
+type _BACnetConstructedDataCommandAllBuilder struct {
+	*_BACnetConstructedDataCommandAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCommandAllBuilder) = (*_BACnetConstructedDataCommandAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataCommandAllBuilder) WithMandatoryFields() BACnetConstructedDataCommandAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandAllBuilder) Build() (BACnetConstructedDataCommandAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCommandAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCommandAllBuilder) MustBuild() BACnetConstructedDataCommandAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCommandAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCommandAllBuilder()
+}
+
+// CreateBACnetConstructedDataCommandAllBuilder creates a BACnetConstructedDataCommandAllBuilder
+func (m *_BACnetConstructedDataCommandAll) CreateBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCommandAllBuilder()
+	}
+	return &_BACnetConstructedDataCommandAllBuilder{_BACnetConstructedDataCommandAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

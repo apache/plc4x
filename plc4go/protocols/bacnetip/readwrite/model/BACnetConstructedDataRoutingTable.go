@@ -44,6 +44,8 @@ type BACnetConstructedDataRoutingTable interface {
 	GetRoutingTable() []BACnetRouterEntry
 	// IsBACnetConstructedDataRoutingTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRoutingTable()
+	// CreateBuilder creates a BACnetConstructedDataRoutingTableBuilder
+	CreateBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingTableBuilder
 }
 
 // _BACnetConstructedDataRoutingTable is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataRoutingTable(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRoutingTableBuilder is a builder for BACnetConstructedDataRoutingTable
+type BACnetConstructedDataRoutingTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder
+	// WithRoutingTable adds RoutingTable (property field)
+	WithRoutingTable(...BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder
+	// Build builds the BACnetConstructedDataRoutingTable or returns an error if something is wrong
+	Build() (BACnetConstructedDataRoutingTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRoutingTable
+}
+
+// NewBACnetConstructedDataRoutingTableBuilder() creates a BACnetConstructedDataRoutingTableBuilder
+func NewBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingTableBuilder {
+	return &_BACnetConstructedDataRoutingTableBuilder{_BACnetConstructedDataRoutingTable: new(_BACnetConstructedDataRoutingTable)}
+}
+
+type _BACnetConstructedDataRoutingTableBuilder struct {
+	*_BACnetConstructedDataRoutingTable
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRoutingTableBuilder) = (*_BACnetConstructedDataRoutingTableBuilder)(nil)
+
+func (m *_BACnetConstructedDataRoutingTableBuilder) WithMandatoryFields(routingTable []BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
+	return m.WithRoutingTable(routingTable...)
+}
+
+func (m *_BACnetConstructedDataRoutingTableBuilder) WithRoutingTable(routingTable ...BACnetRouterEntry) BACnetConstructedDataRoutingTableBuilder {
+	m.RoutingTable = routingTable
+	return m
+}
+
+func (m *_BACnetConstructedDataRoutingTableBuilder) Build() (BACnetConstructedDataRoutingTable, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRoutingTable.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRoutingTableBuilder) MustBuild() BACnetConstructedDataRoutingTable {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRoutingTableBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRoutingTableBuilder()
+}
+
+// CreateBACnetConstructedDataRoutingTableBuilder creates a BACnetConstructedDataRoutingTableBuilder
+func (m *_BACnetConstructedDataRoutingTable) CreateBACnetConstructedDataRoutingTableBuilder() BACnetConstructedDataRoutingTableBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRoutingTableBuilder()
+	}
+	return &_BACnetConstructedDataRoutingTableBuilder{_BACnetConstructedDataRoutingTable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

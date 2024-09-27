@@ -43,6 +43,8 @@ type ClockAndTimekeepingData interface {
 	utils.Copyable
 	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingData()
+	// CreateBuilder creates a ClockAndTimekeepingDataBuilder
+	CreateClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder
 }
 
 // ClockAndTimekeepingDataContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type ClockAndTimekeepingDataContract interface {
 	GetCommandType() ClockAndTimekeepingCommandType
 	// IsClockAndTimekeepingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingData()
+	// CreateBuilder creates a ClockAndTimekeepingDataBuilder
+	CreateClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder
 }
 
 // ClockAndTimekeepingDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +84,85 @@ var _ ClockAndTimekeepingDataContract = (*_ClockAndTimekeepingData)(nil)
 func NewClockAndTimekeepingData(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) *_ClockAndTimekeepingData {
 	return &_ClockAndTimekeepingData{CommandTypeContainer: commandTypeContainer, Argument: argument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ClockAndTimekeepingDataBuilder is a builder for ClockAndTimekeepingData
+type ClockAndTimekeepingDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) ClockAndTimekeepingDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingDataBuilder
+	// WithArgument adds Argument (property field)
+	WithArgument(byte) ClockAndTimekeepingDataBuilder
+	// Build builds the ClockAndTimekeepingData or returns an error if something is wrong
+	Build() (ClockAndTimekeepingDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ClockAndTimekeepingDataContract
+}
+
+// NewClockAndTimekeepingDataBuilder() creates a ClockAndTimekeepingDataBuilder
+func NewClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder {
+	return &_ClockAndTimekeepingDataBuilder{_ClockAndTimekeepingData: new(_ClockAndTimekeepingData)}
+}
+
+type _ClockAndTimekeepingDataBuilder struct {
+	*_ClockAndTimekeepingData
+
+	err *utils.MultiError
+}
+
+var _ (ClockAndTimekeepingDataBuilder) = (*_ClockAndTimekeepingDataBuilder)(nil)
+
+func (m *_ClockAndTimekeepingDataBuilder) WithMandatoryFields(commandTypeContainer ClockAndTimekeepingCommandTypeContainer, argument byte) ClockAndTimekeepingDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+}
+
+func (m *_ClockAndTimekeepingDataBuilder) WithCommandTypeContainer(commandTypeContainer ClockAndTimekeepingCommandTypeContainer) ClockAndTimekeepingDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_ClockAndTimekeepingDataBuilder) WithArgument(argument byte) ClockAndTimekeepingDataBuilder {
+	m.Argument = argument
+	return m
+}
+
+func (m *_ClockAndTimekeepingDataBuilder) Build() (ClockAndTimekeepingDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ClockAndTimekeepingData.deepCopy(), nil
+}
+
+func (m *_ClockAndTimekeepingDataBuilder) MustBuild() ClockAndTimekeepingDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ClockAndTimekeepingDataBuilder) DeepCopy() any {
+	return m.CreateClockAndTimekeepingDataBuilder()
+}
+
+// CreateClockAndTimekeepingDataBuilder creates a ClockAndTimekeepingDataBuilder
+func (m *_ClockAndTimekeepingData) CreateClockAndTimekeepingDataBuilder() ClockAndTimekeepingDataBuilder {
+	if m == nil {
+		return NewClockAndTimekeepingDataBuilder()
+	}
+	return &_ClockAndTimekeepingDataBuilder{_ClockAndTimekeepingData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

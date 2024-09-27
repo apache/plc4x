@@ -46,6 +46,8 @@ type BACnetConstructedDataLifeSafetyZonePresentValue interface {
 	GetActualValue() BACnetLifeSafetyStateTagged
 	// IsBACnetConstructedDataLifeSafetyZonePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyZonePresentValue()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+	CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstructedDataLifeSafetyZonePresentValueBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyZonePresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLifeSafetyZonePresentValue(openingTag BACnetOpening
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyZonePresentValueBuilder is a builder for BACnetConstructedDataLifeSafetyZonePresentValue
+type BACnetConstructedDataLifeSafetyZonePresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyZonePresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyZonePresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyZonePresentValue
+}
+
+// NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder() creates a BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+func NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	return &_BACnetConstructedDataLifeSafetyZonePresentValueBuilder{_BACnetConstructedDataLifeSafetyZonePresentValue: new(_BACnetConstructedDataLifeSafetyZonePresentValue)}
+}
+
+type _BACnetConstructedDataLifeSafetyZonePresentValueBuilder struct {
+	*_BACnetConstructedDataLifeSafetyZonePresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyZonePresentValueBuilder) = (*_BACnetConstructedDataLifeSafetyZonePresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValue(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetLifeSafetyStateTaggedBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) Build() (BACnetConstructedDataLifeSafetyZonePresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLifeSafetyZonePresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) MustBuild() BACnetConstructedDataLifeSafetyZonePresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder creates a BACnetConstructedDataLifeSafetyZonePresentValueBuilder
+func (m *_BACnetConstructedDataLifeSafetyZonePresentValue) CreateBACnetConstructedDataLifeSafetyZonePresentValueBuilder() BACnetConstructedDataLifeSafetyZonePresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLifeSafetyZonePresentValueBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyZonePresentValueBuilder{_BACnetConstructedDataLifeSafetyZonePresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

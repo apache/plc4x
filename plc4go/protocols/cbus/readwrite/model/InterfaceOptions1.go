@@ -53,6 +53,8 @@ type InterfaceOptions1 interface {
 	GetConnect() bool
 	// IsInterfaceOptions1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsInterfaceOptions1()
+	// CreateBuilder creates a InterfaceOptions1Builder
+	CreateInterfaceOptions1Builder() InterfaceOptions1Builder
 }
 
 // _InterfaceOptions1 is the data-structure of this message
@@ -74,6 +76,113 @@ var _ InterfaceOptions1 = (*_InterfaceOptions1)(nil)
 func NewInterfaceOptions1(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) *_InterfaceOptions1 {
 	return &_InterfaceOptions1{Idmon: idmon, Monitor: monitor, Smart: smart, Srchk: srchk, XonXoff: xonXoff, Connect: connect}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// InterfaceOptions1Builder is a builder for InterfaceOptions1
+type InterfaceOptions1Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) InterfaceOptions1Builder
+	// WithIdmon adds Idmon (property field)
+	WithIdmon(bool) InterfaceOptions1Builder
+	// WithMonitor adds Monitor (property field)
+	WithMonitor(bool) InterfaceOptions1Builder
+	// WithSmart adds Smart (property field)
+	WithSmart(bool) InterfaceOptions1Builder
+	// WithSrchk adds Srchk (property field)
+	WithSrchk(bool) InterfaceOptions1Builder
+	// WithXonXoff adds XonXoff (property field)
+	WithXonXoff(bool) InterfaceOptions1Builder
+	// WithConnect adds Connect (property field)
+	WithConnect(bool) InterfaceOptions1Builder
+	// Build builds the InterfaceOptions1 or returns an error if something is wrong
+	Build() (InterfaceOptions1, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() InterfaceOptions1
+}
+
+// NewInterfaceOptions1Builder() creates a InterfaceOptions1Builder
+func NewInterfaceOptions1Builder() InterfaceOptions1Builder {
+	return &_InterfaceOptions1Builder{_InterfaceOptions1: new(_InterfaceOptions1)}
+}
+
+type _InterfaceOptions1Builder struct {
+	*_InterfaceOptions1
+
+	err *utils.MultiError
+}
+
+var _ (InterfaceOptions1Builder) = (*_InterfaceOptions1Builder)(nil)
+
+func (m *_InterfaceOptions1Builder) WithMandatoryFields(idmon bool, monitor bool, smart bool, srchk bool, xonXoff bool, connect bool) InterfaceOptions1Builder {
+	return m.WithIdmon(idmon).WithMonitor(monitor).WithSmart(smart).WithSrchk(srchk).WithXonXoff(xonXoff).WithConnect(connect)
+}
+
+func (m *_InterfaceOptions1Builder) WithIdmon(idmon bool) InterfaceOptions1Builder {
+	m.Idmon = idmon
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) WithMonitor(monitor bool) InterfaceOptions1Builder {
+	m.Monitor = monitor
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) WithSmart(smart bool) InterfaceOptions1Builder {
+	m.Smart = smart
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) WithSrchk(srchk bool) InterfaceOptions1Builder {
+	m.Srchk = srchk
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) WithXonXoff(xonXoff bool) InterfaceOptions1Builder {
+	m.XonXoff = xonXoff
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) WithConnect(connect bool) InterfaceOptions1Builder {
+	m.Connect = connect
+	return m
+}
+
+func (m *_InterfaceOptions1Builder) Build() (InterfaceOptions1, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._InterfaceOptions1.deepCopy(), nil
+}
+
+func (m *_InterfaceOptions1Builder) MustBuild() InterfaceOptions1 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_InterfaceOptions1Builder) DeepCopy() any {
+	return m.CreateInterfaceOptions1Builder()
+}
+
+// CreateInterfaceOptions1Builder creates a InterfaceOptions1Builder
+func (m *_InterfaceOptions1) CreateInterfaceOptions1Builder() InterfaceOptions1Builder {
+	if m == nil {
+		return NewInterfaceOptions1Builder()
+	}
+	return &_InterfaceOptions1Builder{_InterfaceOptions1: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

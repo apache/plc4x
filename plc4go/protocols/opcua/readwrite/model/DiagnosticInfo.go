@@ -69,6 +69,8 @@ type DiagnosticInfo interface {
 	GetInnerDiagnosticInfo() DiagnosticInfo
 	// IsDiagnosticInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDiagnosticInfo()
+	// CreateBuilder creates a DiagnosticInfoBuilder
+	CreateDiagnosticInfoBuilder() DiagnosticInfoBuilder
 }
 
 // _DiagnosticInfo is the data-structure of this message
@@ -97,6 +99,214 @@ var _ DiagnosticInfo = (*_DiagnosticInfo)(nil)
 func NewDiagnosticInfo(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool, symbolicId *int32, namespaceURI *int32, locale *int32, localizedText *int32, additionalInfo PascalString, innerStatusCode StatusCode, innerDiagnosticInfo DiagnosticInfo) *_DiagnosticInfo {
 	return &_DiagnosticInfo{InnerDiagnosticInfoSpecified: innerDiagnosticInfoSpecified, InnerStatusCodeSpecified: innerStatusCodeSpecified, AdditionalInfoSpecified: additionalInfoSpecified, LocaleSpecified: localeSpecified, LocalizedTextSpecified: localizedTextSpecified, NamespaceURISpecified: namespaceURISpecified, SymbolicIdSpecified: symbolicIdSpecified, SymbolicId: symbolicId, NamespaceURI: namespaceURI, Locale: locale, LocalizedText: localizedText, AdditionalInfo: additionalInfo, InnerStatusCode: innerStatusCode, InnerDiagnosticInfo: innerDiagnosticInfo}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DiagnosticInfoBuilder is a builder for DiagnosticInfo
+type DiagnosticInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool) DiagnosticInfoBuilder
+	// WithInnerDiagnosticInfoSpecified adds InnerDiagnosticInfoSpecified (property field)
+	WithInnerDiagnosticInfoSpecified(bool) DiagnosticInfoBuilder
+	// WithInnerStatusCodeSpecified adds InnerStatusCodeSpecified (property field)
+	WithInnerStatusCodeSpecified(bool) DiagnosticInfoBuilder
+	// WithAdditionalInfoSpecified adds AdditionalInfoSpecified (property field)
+	WithAdditionalInfoSpecified(bool) DiagnosticInfoBuilder
+	// WithLocaleSpecified adds LocaleSpecified (property field)
+	WithLocaleSpecified(bool) DiagnosticInfoBuilder
+	// WithLocalizedTextSpecified adds LocalizedTextSpecified (property field)
+	WithLocalizedTextSpecified(bool) DiagnosticInfoBuilder
+	// WithNamespaceURISpecified adds NamespaceURISpecified (property field)
+	WithNamespaceURISpecified(bool) DiagnosticInfoBuilder
+	// WithSymbolicIdSpecified adds SymbolicIdSpecified (property field)
+	WithSymbolicIdSpecified(bool) DiagnosticInfoBuilder
+	// WithSymbolicId adds SymbolicId (property field)
+	WithOptionalSymbolicId(int32) DiagnosticInfoBuilder
+	// WithNamespaceURI adds NamespaceURI (property field)
+	WithOptionalNamespaceURI(int32) DiagnosticInfoBuilder
+	// WithLocale adds Locale (property field)
+	WithOptionalLocale(int32) DiagnosticInfoBuilder
+	// WithLocalizedText adds LocalizedText (property field)
+	WithOptionalLocalizedText(int32) DiagnosticInfoBuilder
+	// WithAdditionalInfo adds AdditionalInfo (property field)
+	WithOptionalAdditionalInfo(PascalString) DiagnosticInfoBuilder
+	// WithOptionalAdditionalInfoBuilder adds AdditionalInfo (property field) which is build by the builder
+	WithOptionalAdditionalInfoBuilder(func(PascalStringBuilder) PascalStringBuilder) DiagnosticInfoBuilder
+	// WithInnerStatusCode adds InnerStatusCode (property field)
+	WithOptionalInnerStatusCode(StatusCode) DiagnosticInfoBuilder
+	// WithOptionalInnerStatusCodeBuilder adds InnerStatusCode (property field) which is build by the builder
+	WithOptionalInnerStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) DiagnosticInfoBuilder
+	// WithInnerDiagnosticInfo adds InnerDiagnosticInfo (property field)
+	WithOptionalInnerDiagnosticInfo(DiagnosticInfo) DiagnosticInfoBuilder
+	// WithOptionalInnerDiagnosticInfoBuilder adds InnerDiagnosticInfo (property field) which is build by the builder
+	WithOptionalInnerDiagnosticInfoBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) DiagnosticInfoBuilder
+	// Build builds the DiagnosticInfo or returns an error if something is wrong
+	Build() (DiagnosticInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DiagnosticInfo
+}
+
+// NewDiagnosticInfoBuilder() creates a DiagnosticInfoBuilder
+func NewDiagnosticInfoBuilder() DiagnosticInfoBuilder {
+	return &_DiagnosticInfoBuilder{_DiagnosticInfo: new(_DiagnosticInfo)}
+}
+
+type _DiagnosticInfoBuilder struct {
+	*_DiagnosticInfo
+
+	err *utils.MultiError
+}
+
+var _ (DiagnosticInfoBuilder) = (*_DiagnosticInfoBuilder)(nil)
+
+func (m *_DiagnosticInfoBuilder) WithMandatoryFields(innerDiagnosticInfoSpecified bool, innerStatusCodeSpecified bool, additionalInfoSpecified bool, localeSpecified bool, localizedTextSpecified bool, namespaceURISpecified bool, symbolicIdSpecified bool) DiagnosticInfoBuilder {
+	return m.WithInnerDiagnosticInfoSpecified(innerDiagnosticInfoSpecified).WithInnerStatusCodeSpecified(innerStatusCodeSpecified).WithAdditionalInfoSpecified(additionalInfoSpecified).WithLocaleSpecified(localeSpecified).WithLocalizedTextSpecified(localizedTextSpecified).WithNamespaceURISpecified(namespaceURISpecified).WithSymbolicIdSpecified(symbolicIdSpecified)
+}
+
+func (m *_DiagnosticInfoBuilder) WithInnerDiagnosticInfoSpecified(innerDiagnosticInfoSpecified bool) DiagnosticInfoBuilder {
+	m.InnerDiagnosticInfoSpecified = innerDiagnosticInfoSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithInnerStatusCodeSpecified(innerStatusCodeSpecified bool) DiagnosticInfoBuilder {
+	m.InnerStatusCodeSpecified = innerStatusCodeSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithAdditionalInfoSpecified(additionalInfoSpecified bool) DiagnosticInfoBuilder {
+	m.AdditionalInfoSpecified = additionalInfoSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithLocaleSpecified(localeSpecified bool) DiagnosticInfoBuilder {
+	m.LocaleSpecified = localeSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithLocalizedTextSpecified(localizedTextSpecified bool) DiagnosticInfoBuilder {
+	m.LocalizedTextSpecified = localizedTextSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithNamespaceURISpecified(namespaceURISpecified bool) DiagnosticInfoBuilder {
+	m.NamespaceURISpecified = namespaceURISpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithSymbolicIdSpecified(symbolicIdSpecified bool) DiagnosticInfoBuilder {
+	m.SymbolicIdSpecified = symbolicIdSpecified
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalSymbolicId(symbolicId int32) DiagnosticInfoBuilder {
+	m.SymbolicId = &symbolicId
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalNamespaceURI(namespaceURI int32) DiagnosticInfoBuilder {
+	m.NamespaceURI = &namespaceURI
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalLocale(locale int32) DiagnosticInfoBuilder {
+	m.Locale = &locale
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalLocalizedText(localizedText int32) DiagnosticInfoBuilder {
+	m.LocalizedText = &localizedText
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalAdditionalInfo(additionalInfo PascalString) DiagnosticInfoBuilder {
+	m.AdditionalInfo = additionalInfo
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalAdditionalInfoBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DiagnosticInfoBuilder {
+	builder := builderSupplier(m.AdditionalInfo.CreatePascalStringBuilder())
+	var err error
+	m.AdditionalInfo, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalInnerStatusCode(innerStatusCode StatusCode) DiagnosticInfoBuilder {
+	m.InnerStatusCode = innerStatusCode
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalInnerStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) DiagnosticInfoBuilder {
+	builder := builderSupplier(m.InnerStatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.InnerStatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalInnerDiagnosticInfo(innerDiagnosticInfo DiagnosticInfo) DiagnosticInfoBuilder {
+	m.InnerDiagnosticInfo = innerDiagnosticInfo
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) WithOptionalInnerDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) DiagnosticInfoBuilder {
+	builder := builderSupplier(m.InnerDiagnosticInfo.CreateDiagnosticInfoBuilder())
+	var err error
+	m.InnerDiagnosticInfo, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DiagnosticInfoBuilder) Build() (DiagnosticInfo, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DiagnosticInfo.deepCopy(), nil
+}
+
+func (m *_DiagnosticInfoBuilder) MustBuild() DiagnosticInfo {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DiagnosticInfoBuilder) DeepCopy() any {
+	return m.CreateDiagnosticInfoBuilder()
+}
+
+// CreateDiagnosticInfoBuilder creates a DiagnosticInfoBuilder
+func (m *_DiagnosticInfo) CreateDiagnosticInfoBuilder() DiagnosticInfoBuilder {
+	if m == nil {
+		return NewDiagnosticInfoBuilder()
+	}
+	return &_DiagnosticInfoBuilder{_DiagnosticInfo: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

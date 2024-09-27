@@ -48,6 +48,8 @@ type BVLC interface {
 	utils.Copyable
 	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLC()
+	// CreateBuilder creates a BVLCBuilder
+	CreateBVLCBuilder() BVLCBuilder
 }
 
 // BVLCContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +58,8 @@ type BVLCContract interface {
 	GetBvlcPayloadLength() uint16
 	// IsBVLC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLC()
+	// CreateBuilder creates a BVLCBuilder
+	CreateBVLCBuilder() BVLCBuilder
 }
 
 // BVLCRequirements provides a set of functions which need to be implemented by a sub struct
@@ -77,6 +81,71 @@ var _ BVLCContract = (*_BVLC)(nil)
 func NewBVLC() *_BVLC {
 	return &_BVLC{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCBuilder is a builder for BVLC
+type BVLCBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BVLCBuilder
+	// Build builds the BVLC or returns an error if something is wrong
+	Build() (BVLCContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCContract
+}
+
+// NewBVLCBuilder() creates a BVLCBuilder
+func NewBVLCBuilder() BVLCBuilder {
+	return &_BVLCBuilder{_BVLC: new(_BVLC)}
+}
+
+type _BVLCBuilder struct {
+	*_BVLC
+
+	err *utils.MultiError
+}
+
+var _ (BVLCBuilder) = (*_BVLCBuilder)(nil)
+
+func (m *_BVLCBuilder) WithMandatoryFields() BVLCBuilder {
+	return m
+}
+
+func (m *_BVLCBuilder) Build() (BVLCContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BVLC.deepCopy(), nil
+}
+
+func (m *_BVLCBuilder) MustBuild() BVLCContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BVLCBuilder) DeepCopy() any {
+	return m.CreateBVLCBuilder()
+}
+
+// CreateBVLCBuilder creates a BVLCBuilder
+func (m *_BVLC) CreateBVLCBuilder() BVLCBuilder {
+	if m == nil {
+		return NewBVLCBuilder()
+	}
+	return &_BVLCBuilder{_BVLC: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

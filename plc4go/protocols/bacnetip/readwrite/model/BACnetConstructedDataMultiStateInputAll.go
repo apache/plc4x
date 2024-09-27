@@ -40,6 +40,8 @@ type BACnetConstructedDataMultiStateInputAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataMultiStateInputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateInputAll()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateInputAllBuilder
+	CreateBACnetConstructedDataMultiStateInputAllBuilder() BACnetConstructedDataMultiStateInputAllBuilder
 }
 
 // _BACnetConstructedDataMultiStateInputAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataMultiStateInputAll(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateInputAllBuilder is a builder for BACnetConstructedDataMultiStateInputAll
+type BACnetConstructedDataMultiStateInputAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataMultiStateInputAllBuilder
+	// Build builds the BACnetConstructedDataMultiStateInputAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateInputAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateInputAll
+}
+
+// NewBACnetConstructedDataMultiStateInputAllBuilder() creates a BACnetConstructedDataMultiStateInputAllBuilder
+func NewBACnetConstructedDataMultiStateInputAllBuilder() BACnetConstructedDataMultiStateInputAllBuilder {
+	return &_BACnetConstructedDataMultiStateInputAllBuilder{_BACnetConstructedDataMultiStateInputAll: new(_BACnetConstructedDataMultiStateInputAll)}
+}
+
+type _BACnetConstructedDataMultiStateInputAllBuilder struct {
+	*_BACnetConstructedDataMultiStateInputAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateInputAllBuilder) = (*_BACnetConstructedDataMultiStateInputAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataMultiStateInputAllBuilder) WithMandatoryFields() BACnetConstructedDataMultiStateInputAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAllBuilder) Build() (BACnetConstructedDataMultiStateInputAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMultiStateInputAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAllBuilder) MustBuild() BACnetConstructedDataMultiStateInputAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMultiStateInputAllBuilder()
+}
+
+// CreateBACnetConstructedDataMultiStateInputAllBuilder creates a BACnetConstructedDataMultiStateInputAllBuilder
+func (m *_BACnetConstructedDataMultiStateInputAll) CreateBACnetConstructedDataMultiStateInputAllBuilder() BACnetConstructedDataMultiStateInputAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMultiStateInputAllBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateInputAllBuilder{_BACnetConstructedDataMultiStateInputAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

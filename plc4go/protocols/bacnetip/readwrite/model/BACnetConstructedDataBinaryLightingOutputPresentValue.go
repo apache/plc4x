@@ -46,6 +46,8 @@ type BACnetConstructedDataBinaryLightingOutputPresentValue interface {
 	GetActualValue() BACnetBinaryLightingPVTagged
 	// IsBACnetConstructedDataBinaryLightingOutputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryLightingOutputPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	CreateBACnetConstructedDataBinaryLightingOutputPresentValueBuilder() BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
 }
 
 // _BACnetConstructedDataBinaryLightingOutputPresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBinaryLightingOutputPresentValue(openingTag BACnetO
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryLightingOutputPresentValueBuilder is a builder for BACnetConstructedDataBinaryLightingOutputPresentValue
+type BACnetConstructedDataBinaryLightingOutputPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+	// Build builds the BACnetConstructedDataBinaryLightingOutputPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryLightingOutputPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryLightingOutputPresentValue
+}
+
+// NewBACnetConstructedDataBinaryLightingOutputPresentValueBuilder() creates a BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+func NewBACnetConstructedDataBinaryLightingOutputPresentValueBuilder() BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
+	return &_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder{_BACnetConstructedDataBinaryLightingOutputPresentValue: new(_BACnetConstructedDataBinaryLightingOutputPresentValue)}
+}
+
+type _BACnetConstructedDataBinaryLightingOutputPresentValueBuilder struct {
+	*_BACnetConstructedDataBinaryLightingOutputPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) = (*_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) WithPresentValue(presentValue BACnetBinaryLightingPVTagged) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetBinaryLightingPVTaggedBuilder) BACnetBinaryLightingPVTaggedBuilder) BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetBinaryLightingPVTaggedBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetBinaryLightingPVTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) Build() (BACnetConstructedDataBinaryLightingOutputPresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBinaryLightingOutputPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) MustBuild() BACnetConstructedDataBinaryLightingOutputPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBinaryLightingOutputPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataBinaryLightingOutputPresentValueBuilder creates a BACnetConstructedDataBinaryLightingOutputPresentValueBuilder
+func (m *_BACnetConstructedDataBinaryLightingOutputPresentValue) CreateBACnetConstructedDataBinaryLightingOutputPresentValueBuilder() BACnetConstructedDataBinaryLightingOutputPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBinaryLightingOutputPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataBinaryLightingOutputPresentValueBuilder{_BACnetConstructedDataBinaryLightingOutputPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

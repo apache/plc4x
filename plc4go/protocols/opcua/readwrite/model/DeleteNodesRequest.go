@@ -48,6 +48,8 @@ type DeleteNodesRequest interface {
 	GetNodesToDelete() []ExtensionObjectDefinition
 	// IsDeleteNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteNodesRequest()
+	// CreateBuilder creates a DeleteNodesRequestBuilder
+	CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder
 }
 
 // _DeleteNodesRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToD
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteNodesRequestBuilder is a builder for DeleteNodesRequest
+type DeleteNodesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// WithNoOfNodesToDelete adds NoOfNodesToDelete (property field)
+	WithNoOfNodesToDelete(int32) DeleteNodesRequestBuilder
+	// WithNodesToDelete adds NodesToDelete (property field)
+	WithNodesToDelete(...ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// Build builds the DeleteNodesRequest or returns an error if something is wrong
+	Build() (DeleteNodesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteNodesRequest
+}
+
+// NewDeleteNodesRequestBuilder() creates a DeleteNodesRequestBuilder
+func NewDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
+	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: new(_DeleteNodesRequest)}
+}
+
+type _DeleteNodesRequestBuilder struct {
+	*_DeleteNodesRequest
+
+	err *utils.MultiError
+}
+
+var _ (DeleteNodesRequestBuilder) = (*_DeleteNodesRequestBuilder)(nil)
+
+func (m *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
+}
+
+func (m *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
+	m.NoOfNodesToDelete = noOfNodesToDelete
+	return m
+}
+
+func (m *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	m.NodesToDelete = nodesToDelete
+	return m
+}
+
+func (m *_DeleteNodesRequestBuilder) Build() (DeleteNodesRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeleteNodesRequest.deepCopy(), nil
+}
+
+func (m *_DeleteNodesRequestBuilder) MustBuild() DeleteNodesRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeleteNodesRequestBuilder) DeepCopy() any {
+	return m.CreateDeleteNodesRequestBuilder()
+}
+
+// CreateDeleteNodesRequestBuilder creates a DeleteNodesRequestBuilder
+func (m *_DeleteNodesRequest) CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
+	if m == nil {
+		return NewDeleteNodesRequestBuilder()
+	}
+	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

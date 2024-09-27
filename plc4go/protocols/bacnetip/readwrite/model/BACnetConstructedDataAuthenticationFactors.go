@@ -48,6 +48,8 @@ type BACnetConstructedDataAuthenticationFactors interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAuthenticationFactors is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAuthenticationFactors()
+	// CreateBuilder creates a BACnetConstructedDataAuthenticationFactorsBuilder
+	CreateBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDataAuthenticationFactorsBuilder
 }
 
 // _BACnetConstructedDataAuthenticationFactors is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAuthenticationFactors(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAuthenticationFactorsBuilder is a builder for BACnetConstructedDataAuthenticationFactors
+type BACnetConstructedDataAuthenticationFactorsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(authenticationFactors []BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationFactorsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationFactorsBuilder
+	// WithAuthenticationFactors adds AuthenticationFactors (property field)
+	WithAuthenticationFactors(...BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder
+	// Build builds the BACnetConstructedDataAuthenticationFactors or returns an error if something is wrong
+	Build() (BACnetConstructedDataAuthenticationFactors, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAuthenticationFactors
+}
+
+// NewBACnetConstructedDataAuthenticationFactorsBuilder() creates a BACnetConstructedDataAuthenticationFactorsBuilder
+func NewBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDataAuthenticationFactorsBuilder {
+	return &_BACnetConstructedDataAuthenticationFactorsBuilder{_BACnetConstructedDataAuthenticationFactors: new(_BACnetConstructedDataAuthenticationFactors)}
+}
+
+type _BACnetConstructedDataAuthenticationFactorsBuilder struct {
+	*_BACnetConstructedDataAuthenticationFactors
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAuthenticationFactorsBuilder) = (*_BACnetConstructedDataAuthenticationFactorsBuilder)(nil)
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithMandatoryFields(authenticationFactors []BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
+	return m.WithAuthenticationFactors(authenticationFactors...)
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationFactorsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationFactorsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) WithAuthenticationFactors(authenticationFactors ...BACnetCredentialAuthenticationFactor) BACnetConstructedDataAuthenticationFactorsBuilder {
+	m.AuthenticationFactors = authenticationFactors
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) Build() (BACnetConstructedDataAuthenticationFactors, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAuthenticationFactors.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) MustBuild() BACnetConstructedDataAuthenticationFactors {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAuthenticationFactorsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAuthenticationFactorsBuilder()
+}
+
+// CreateBACnetConstructedDataAuthenticationFactorsBuilder creates a BACnetConstructedDataAuthenticationFactorsBuilder
+func (m *_BACnetConstructedDataAuthenticationFactors) CreateBACnetConstructedDataAuthenticationFactorsBuilder() BACnetConstructedDataAuthenticationFactorsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAuthenticationFactorsBuilder()
+	}
+	return &_BACnetConstructedDataAuthenticationFactorsBuilder{_BACnetConstructedDataAuthenticationFactors: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

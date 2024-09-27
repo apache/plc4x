@@ -49,6 +49,8 @@ type ErrorCodeTagged interface {
 	GetIsProprietary() bool
 	// IsErrorCodeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorCodeTagged()
+	// CreateBuilder creates a ErrorCodeTaggedBuilder
+	CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder
 }
 
 // _ErrorCodeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValu
 	}
 	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorCodeTaggedBuilder is a builder for ErrorCodeTagged
+type ErrorCodeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) ErrorCodeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(ErrorCode) ErrorCodeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) ErrorCodeTaggedBuilder
+	// Build builds the ErrorCodeTagged or returns an error if something is wrong
+	Build() (ErrorCodeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorCodeTagged
+}
+
+// NewErrorCodeTaggedBuilder() creates a ErrorCodeTaggedBuilder
+func NewErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
+	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: new(_ErrorCodeTagged)}
+}
+
+type _ErrorCodeTaggedBuilder struct {
+	*_ErrorCodeTagged
+
+	err *utils.MultiError
+}
+
+var _ (ErrorCodeTaggedBuilder) = (*_ErrorCodeTaggedBuilder)(nil)
+
+func (m *_ErrorCodeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_ErrorCodeTaggedBuilder) WithHeader(header BACnetTagHeader) ErrorCodeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_ErrorCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ErrorCodeTaggedBuilder) WithValue(value ErrorCode) ErrorCodeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ErrorCodeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_ErrorCodeTaggedBuilder) Build() (ErrorCodeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ErrorCodeTagged.deepCopy(), nil
+}
+
+func (m *_ErrorCodeTaggedBuilder) MustBuild() ErrorCodeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorCodeTaggedBuilder) DeepCopy() any {
+	return m.CreateErrorCodeTaggedBuilder()
+}
+
+// CreateErrorCodeTaggedBuilder creates a ErrorCodeTaggedBuilder
+func (m *_ErrorCodeTagged) CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
+	if m == nil {
+		return NewErrorCodeTaggedBuilder()
+	}
+	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -53,6 +53,8 @@ type ModbusTcpADU interface {
 	GetPdu() ModbusPDU
 	// IsModbusTcpADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusTcpADU()
+	// CreateBuilder creates a ModbusTcpADUBuilder
+	CreateModbusTcpADUBuilder() ModbusTcpADUBuilder
 }
 
 // _ModbusTcpADU is the data-structure of this message
@@ -80,6 +82,98 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu Mod
 	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusTcpADUBuilder is a builder for ModbusTcpADU
+type ModbusTcpADUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADUBuilder
+	// WithTransactionIdentifier adds TransactionIdentifier (property field)
+	WithTransactionIdentifier(uint16) ModbusTcpADUBuilder
+	// WithUnitIdentifier adds UnitIdentifier (property field)
+	WithUnitIdentifier(uint8) ModbusTcpADUBuilder
+	// WithPdu adds Pdu (property field)
+	WithPdu(ModbusPDU) ModbusTcpADUBuilder
+	// Build builds the ModbusTcpADU or returns an error if something is wrong
+	Build() (ModbusTcpADU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusTcpADU
+}
+
+// NewModbusTcpADUBuilder() creates a ModbusTcpADUBuilder
+func NewModbusTcpADUBuilder() ModbusTcpADUBuilder {
+	return &_ModbusTcpADUBuilder{_ModbusTcpADU: new(_ModbusTcpADU)}
+}
+
+type _ModbusTcpADUBuilder struct {
+	*_ModbusTcpADU
+
+	err *utils.MultiError
+}
+
+var _ (ModbusTcpADUBuilder) = (*_ModbusTcpADUBuilder)(nil)
+
+func (m *_ModbusTcpADUBuilder) WithMandatoryFields(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADUBuilder {
+	return m.WithTransactionIdentifier(transactionIdentifier).WithUnitIdentifier(unitIdentifier).WithPdu(pdu)
+}
+
+func (m *_ModbusTcpADUBuilder) WithTransactionIdentifier(transactionIdentifier uint16) ModbusTcpADUBuilder {
+	m.TransactionIdentifier = transactionIdentifier
+	return m
+}
+
+func (m *_ModbusTcpADUBuilder) WithUnitIdentifier(unitIdentifier uint8) ModbusTcpADUBuilder {
+	m.UnitIdentifier = unitIdentifier
+	return m
+}
+
+func (m *_ModbusTcpADUBuilder) WithPdu(pdu ModbusPDU) ModbusTcpADUBuilder {
+	m.Pdu = pdu
+	return m
+}
+
+func (m *_ModbusTcpADUBuilder) Build() (ModbusTcpADU, error) {
+	if m.Pdu == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusTcpADU.deepCopy(), nil
+}
+
+func (m *_ModbusTcpADUBuilder) MustBuild() ModbusTcpADU {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusTcpADUBuilder) DeepCopy() any {
+	return m.CreateModbusTcpADUBuilder()
+}
+
+// CreateModbusTcpADUBuilder creates a ModbusTcpADUBuilder
+func (m *_ModbusTcpADU) CreateModbusTcpADUBuilder() ModbusTcpADUBuilder {
+	if m == nil {
+		return NewModbusTcpADUBuilder()
+	}
+	return &_ModbusTcpADUBuilder{_ModbusTcpADU: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

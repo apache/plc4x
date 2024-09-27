@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegerValueResolution interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataIntegerValueResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueResolution()
+	// CreateBuilder creates a BACnetConstructedDataIntegerValueResolutionBuilder
+	CreateBACnetConstructedDataIntegerValueResolutionBuilder() BACnetConstructedDataIntegerValueResolutionBuilder
 }
 
 // _BACnetConstructedDataIntegerValueResolution is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegerValueResolution(openingTag BACnetOpeningTag,
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegerValueResolutionBuilder is a builder for BACnetConstructedDataIntegerValueResolution
+type BACnetConstructedDataIntegerValueResolutionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(resolution BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueResolutionBuilder
+	// WithResolution adds Resolution (property field)
+	WithResolution(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueResolutionBuilder
+	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
+	WithResolutionBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueResolutionBuilder
+	// Build builds the BACnetConstructedDataIntegerValueResolution or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegerValueResolution, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegerValueResolution
+}
+
+// NewBACnetConstructedDataIntegerValueResolutionBuilder() creates a BACnetConstructedDataIntegerValueResolutionBuilder
+func NewBACnetConstructedDataIntegerValueResolutionBuilder() BACnetConstructedDataIntegerValueResolutionBuilder {
+	return &_BACnetConstructedDataIntegerValueResolutionBuilder{_BACnetConstructedDataIntegerValueResolution: new(_BACnetConstructedDataIntegerValueResolution)}
+}
+
+type _BACnetConstructedDataIntegerValueResolutionBuilder struct {
+	*_BACnetConstructedDataIntegerValueResolution
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegerValueResolutionBuilder) = (*_BACnetConstructedDataIntegerValueResolutionBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueResolutionBuilder {
+	return m.WithResolution(resolution)
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) WithResolution(resolution BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueResolutionBuilder {
+	m.Resolution = resolution
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueResolutionBuilder {
+	builder := builderSupplier(m.Resolution.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.Resolution, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) Build() (BACnetConstructedDataIntegerValueResolution, error) {
+	if m.Resolution == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'resolution' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegerValueResolution.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) MustBuild() BACnetConstructedDataIntegerValueResolution {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegerValueResolutionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegerValueResolutionBuilder()
+}
+
+// CreateBACnetConstructedDataIntegerValueResolutionBuilder creates a BACnetConstructedDataIntegerValueResolutionBuilder
+func (m *_BACnetConstructedDataIntegerValueResolution) CreateBACnetConstructedDataIntegerValueResolutionBuilder() BACnetConstructedDataIntegerValueResolutionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegerValueResolutionBuilder()
+	}
+	return &_BACnetConstructedDataIntegerValueResolutionBuilder{_BACnetConstructedDataIntegerValueResolution: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

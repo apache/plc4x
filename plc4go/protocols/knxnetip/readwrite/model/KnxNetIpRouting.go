@@ -44,6 +44,8 @@ type KnxNetIpRouting interface {
 	GetVersion() uint8
 	// IsKnxNetIpRouting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpRouting()
+	// CreateBuilder creates a KnxNetIpRoutingBuilder
+	CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder
 }
 
 // _KnxNetIpRouting is the data-structure of this message
@@ -64,6 +66,78 @@ func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
 	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpRoutingBuilder is a builder for KnxNetIpRouting
+type KnxNetIpRoutingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetIpRoutingBuilder
+	// Build builds the KnxNetIpRouting or returns an error if something is wrong
+	Build() (KnxNetIpRouting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpRouting
+}
+
+// NewKnxNetIpRoutingBuilder() creates a KnxNetIpRoutingBuilder
+func NewKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
+	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: new(_KnxNetIpRouting)}
+}
+
+type _KnxNetIpRoutingBuilder struct {
+	*_KnxNetIpRouting
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpRoutingBuilder) = (*_KnxNetIpRoutingBuilder)(nil)
+
+func (m *_KnxNetIpRoutingBuilder) WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder {
+	return m.WithVersion(version)
+}
+
+func (m *_KnxNetIpRoutingBuilder) WithVersion(version uint8) KnxNetIpRoutingBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_KnxNetIpRoutingBuilder) Build() (KnxNetIpRouting, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxNetIpRouting.deepCopy(), nil
+}
+
+func (m *_KnxNetIpRoutingBuilder) MustBuild() KnxNetIpRouting {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxNetIpRoutingBuilder) DeepCopy() any {
+	return m.CreateKnxNetIpRoutingBuilder()
+}
+
+// CreateKnxNetIpRoutingBuilder creates a KnxNetIpRoutingBuilder
+func (m *_KnxNetIpRouting) CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
+	if m == nil {
+		return NewKnxNetIpRoutingBuilder()
+	}
+	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

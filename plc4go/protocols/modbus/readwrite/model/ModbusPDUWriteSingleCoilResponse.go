@@ -46,6 +46,8 @@ type ModbusPDUWriteSingleCoilResponse interface {
 	GetValue() uint16
 	// IsModbusPDUWriteSingleCoilResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUWriteSingleCoilResponse()
+	// CreateBuilder creates a ModbusPDUWriteSingleCoilResponseBuilder
+	CreateModbusPDUWriteSingleCoilResponseBuilder() ModbusPDUWriteSingleCoilResponseBuilder
 }
 
 // _ModbusPDUWriteSingleCoilResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUWriteSingleCoilResponse(address uint16, value uint16) *_ModbusP
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUWriteSingleCoilResponseBuilder is a builder for ModbusPDUWriteSingleCoilResponse
+type ModbusPDUWriteSingleCoilResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleCoilResponseBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) ModbusPDUWriteSingleCoilResponseBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint16) ModbusPDUWriteSingleCoilResponseBuilder
+	// Build builds the ModbusPDUWriteSingleCoilResponse or returns an error if something is wrong
+	Build() (ModbusPDUWriteSingleCoilResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUWriteSingleCoilResponse
+}
+
+// NewModbusPDUWriteSingleCoilResponseBuilder() creates a ModbusPDUWriteSingleCoilResponseBuilder
+func NewModbusPDUWriteSingleCoilResponseBuilder() ModbusPDUWriteSingleCoilResponseBuilder {
+	return &_ModbusPDUWriteSingleCoilResponseBuilder{_ModbusPDUWriteSingleCoilResponse: new(_ModbusPDUWriteSingleCoilResponse)}
+}
+
+type _ModbusPDUWriteSingleCoilResponseBuilder struct {
+	*_ModbusPDUWriteSingleCoilResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUWriteSingleCoilResponseBuilder) = (*_ModbusPDUWriteSingleCoilResponseBuilder)(nil)
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleCoilResponseBuilder {
+	return m.WithAddress(address).WithValue(value)
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) WithAddress(address uint16) ModbusPDUWriteSingleCoilResponseBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) WithValue(value uint16) ModbusPDUWriteSingleCoilResponseBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) Build() (ModbusPDUWriteSingleCoilResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUWriteSingleCoilResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) MustBuild() ModbusPDUWriteSingleCoilResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUWriteSingleCoilResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUWriteSingleCoilResponseBuilder()
+}
+
+// CreateModbusPDUWriteSingleCoilResponseBuilder creates a ModbusPDUWriteSingleCoilResponseBuilder
+func (m *_ModbusPDUWriteSingleCoilResponse) CreateModbusPDUWriteSingleCoilResponseBuilder() ModbusPDUWriteSingleCoilResponseBuilder {
+	if m == nil {
+		return NewModbusPDUWriteSingleCoilResponseBuilder()
+	}
+	return &_ModbusPDUWriteSingleCoilResponseBuilder{_ModbusPDUWriteSingleCoilResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

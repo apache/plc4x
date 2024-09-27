@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegerValueMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataIntegerValueMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueMaxPresValue()
+	// CreateBuilder creates a BACnetConstructedDataIntegerValueMaxPresValueBuilder
+	CreateBACnetConstructedDataIntegerValueMaxPresValueBuilder() BACnetConstructedDataIntegerValueMaxPresValueBuilder
 }
 
 // _BACnetConstructedDataIntegerValueMaxPresValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegerValueMaxPresValue(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegerValueMaxPresValueBuilder is a builder for BACnetConstructedDataIntegerValueMaxPresValue
+type BACnetConstructedDataIntegerValueMaxPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMaxPresValueBuilder
+	// WithMaxPresValue adds MaxPresValue (property field)
+	WithMaxPresValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMaxPresValueBuilder
+	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
+	WithMaxPresValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueMaxPresValueBuilder
+	// Build builds the BACnetConstructedDataIntegerValueMaxPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegerValueMaxPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegerValueMaxPresValue
+}
+
+// NewBACnetConstructedDataIntegerValueMaxPresValueBuilder() creates a BACnetConstructedDataIntegerValueMaxPresValueBuilder
+func NewBACnetConstructedDataIntegerValueMaxPresValueBuilder() BACnetConstructedDataIntegerValueMaxPresValueBuilder {
+	return &_BACnetConstructedDataIntegerValueMaxPresValueBuilder{_BACnetConstructedDataIntegerValueMaxPresValue: new(_BACnetConstructedDataIntegerValueMaxPresValue)}
+}
+
+type _BACnetConstructedDataIntegerValueMaxPresValueBuilder struct {
+	*_BACnetConstructedDataIntegerValueMaxPresValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegerValueMaxPresValueBuilder) = (*_BACnetConstructedDataIntegerValueMaxPresValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMaxPresValueBuilder {
+	return m.WithMaxPresValue(maxPresValue)
+}
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMaxPresValueBuilder {
+	m.MaxPresValue = maxPresValue
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueMaxPresValueBuilder {
+	builder := builderSupplier(m.MaxPresValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.MaxPresValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) Build() (BACnetConstructedDataIntegerValueMaxPresValue, error) {
+	if m.MaxPresValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegerValueMaxPresValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) MustBuild() BACnetConstructedDataIntegerValueMaxPresValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegerValueMaxPresValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegerValueMaxPresValueBuilder()
+}
+
+// CreateBACnetConstructedDataIntegerValueMaxPresValueBuilder creates a BACnetConstructedDataIntegerValueMaxPresValueBuilder
+func (m *_BACnetConstructedDataIntegerValueMaxPresValue) CreateBACnetConstructedDataIntegerValueMaxPresValueBuilder() BACnetConstructedDataIntegerValueMaxPresValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegerValueMaxPresValueBuilder()
+	}
+	return &_BACnetConstructedDataIntegerValueMaxPresValueBuilder{_BACnetConstructedDataIntegerValueMaxPresValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

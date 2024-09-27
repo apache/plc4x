@@ -44,6 +44,8 @@ type MeteringDataGasConsumption interface {
 	GetMJ() uint32
 	// IsMeteringDataGasConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataGasConsumption()
+	// CreateBuilder creates a MeteringDataGasConsumptionBuilder
+	CreateMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder
 }
 
 // _MeteringDataGasConsumption is the data-structure of this message
@@ -64,6 +66,78 @@ func NewMeteringDataGasConsumption(commandTypeContainer MeteringCommandTypeConta
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataGasConsumptionBuilder is a builder for MeteringDataGasConsumption
+type MeteringDataGasConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(mJ uint32) MeteringDataGasConsumptionBuilder
+	// WithMJ adds MJ (property field)
+	WithMJ(uint32) MeteringDataGasConsumptionBuilder
+	// Build builds the MeteringDataGasConsumption or returns an error if something is wrong
+	Build() (MeteringDataGasConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataGasConsumption
+}
+
+// NewMeteringDataGasConsumptionBuilder() creates a MeteringDataGasConsumptionBuilder
+func NewMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder {
+	return &_MeteringDataGasConsumptionBuilder{_MeteringDataGasConsumption: new(_MeteringDataGasConsumption)}
+}
+
+type _MeteringDataGasConsumptionBuilder struct {
+	*_MeteringDataGasConsumption
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataGasConsumptionBuilder) = (*_MeteringDataGasConsumptionBuilder)(nil)
+
+func (m *_MeteringDataGasConsumptionBuilder) WithMandatoryFields(mJ uint32) MeteringDataGasConsumptionBuilder {
+	return m.WithMJ(mJ)
+}
+
+func (m *_MeteringDataGasConsumptionBuilder) WithMJ(mJ uint32) MeteringDataGasConsumptionBuilder {
+	m.MJ = mJ
+	return m
+}
+
+func (m *_MeteringDataGasConsumptionBuilder) Build() (MeteringDataGasConsumption, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataGasConsumption.deepCopy(), nil
+}
+
+func (m *_MeteringDataGasConsumptionBuilder) MustBuild() MeteringDataGasConsumption {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataGasConsumptionBuilder) DeepCopy() any {
+	return m.CreateMeteringDataGasConsumptionBuilder()
+}
+
+// CreateMeteringDataGasConsumptionBuilder creates a MeteringDataGasConsumptionBuilder
+func (m *_MeteringDataGasConsumption) CreateMeteringDataGasConsumptionBuilder() MeteringDataGasConsumptionBuilder {
+	if m == nil {
+		return NewMeteringDataGasConsumptionBuilder()
+	}
+	return &_MeteringDataGasConsumptionBuilder{_MeteringDataGasConsumption: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

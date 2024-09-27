@@ -40,6 +40,8 @@ type BACnetConstructedDataAccessDoorAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccessDoorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoorAll()
+	// CreateBuilder creates a BACnetConstructedDataAccessDoorAllBuilder
+	CreateBACnetConstructedDataAccessDoorAllBuilder() BACnetConstructedDataAccessDoorAllBuilder
 }
 
 // _BACnetConstructedDataAccessDoorAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataAccessDoorAll(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessDoorAllBuilder is a builder for BACnetConstructedDataAccessDoorAll
+type BACnetConstructedDataAccessDoorAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataAccessDoorAllBuilder
+	// Build builds the BACnetConstructedDataAccessDoorAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessDoorAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessDoorAll
+}
+
+// NewBACnetConstructedDataAccessDoorAllBuilder() creates a BACnetConstructedDataAccessDoorAllBuilder
+func NewBACnetConstructedDataAccessDoorAllBuilder() BACnetConstructedDataAccessDoorAllBuilder {
+	return &_BACnetConstructedDataAccessDoorAllBuilder{_BACnetConstructedDataAccessDoorAll: new(_BACnetConstructedDataAccessDoorAll)}
+}
+
+type _BACnetConstructedDataAccessDoorAllBuilder struct {
+	*_BACnetConstructedDataAccessDoorAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessDoorAllBuilder) = (*_BACnetConstructedDataAccessDoorAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessDoorAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessDoorAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessDoorAllBuilder) Build() (BACnetConstructedDataAccessDoorAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessDoorAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessDoorAllBuilder) MustBuild() BACnetConstructedDataAccessDoorAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessDoorAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessDoorAllBuilder()
+}
+
+// CreateBACnetConstructedDataAccessDoorAllBuilder creates a BACnetConstructedDataAccessDoorAllBuilder
+func (m *_BACnetConstructedDataAccessDoorAll) CreateBACnetConstructedDataAccessDoorAllBuilder() BACnetConstructedDataAccessDoorAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessDoorAllBuilder()
+	}
+	return &_BACnetConstructedDataAccessDoorAllBuilder{_BACnetConstructedDataAccessDoorAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type BACnetConstructedDataPulseConverterAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataPulseConverterAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPulseConverterAll()
+	// CreateBuilder creates a BACnetConstructedDataPulseConverterAllBuilder
+	CreateBACnetConstructedDataPulseConverterAllBuilder() BACnetConstructedDataPulseConverterAllBuilder
 }
 
 // _BACnetConstructedDataPulseConverterAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataPulseConverterAll(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPulseConverterAllBuilder is a builder for BACnetConstructedDataPulseConverterAll
+type BACnetConstructedDataPulseConverterAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataPulseConverterAllBuilder
+	// Build builds the BACnetConstructedDataPulseConverterAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataPulseConverterAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPulseConverterAll
+}
+
+// NewBACnetConstructedDataPulseConverterAllBuilder() creates a BACnetConstructedDataPulseConverterAllBuilder
+func NewBACnetConstructedDataPulseConverterAllBuilder() BACnetConstructedDataPulseConverterAllBuilder {
+	return &_BACnetConstructedDataPulseConverterAllBuilder{_BACnetConstructedDataPulseConverterAll: new(_BACnetConstructedDataPulseConverterAll)}
+}
+
+type _BACnetConstructedDataPulseConverterAllBuilder struct {
+	*_BACnetConstructedDataPulseConverterAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPulseConverterAllBuilder) = (*_BACnetConstructedDataPulseConverterAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataPulseConverterAllBuilder) WithMandatoryFields() BACnetConstructedDataPulseConverterAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataPulseConverterAllBuilder) Build() (BACnetConstructedDataPulseConverterAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPulseConverterAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPulseConverterAllBuilder) MustBuild() BACnetConstructedDataPulseConverterAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPulseConverterAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPulseConverterAllBuilder()
+}
+
+// CreateBACnetConstructedDataPulseConverterAllBuilder creates a BACnetConstructedDataPulseConverterAllBuilder
+func (m *_BACnetConstructedDataPulseConverterAll) CreateBACnetConstructedDataPulseConverterAllBuilder() BACnetConstructedDataPulseConverterAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPulseConverterAllBuilder()
+	}
+	return &_BACnetConstructedDataPulseConverterAllBuilder{_BACnetConstructedDataPulseConverterAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

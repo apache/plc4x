@@ -48,6 +48,8 @@ type BACnetServiceAckVTData interface {
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
 	// IsBACnetServiceAckVTData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckVTData()
+	// CreateBuilder creates a BACnetServiceAckVTDataBuilder
+	CreateBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder
 }
 
 // _BACnetServiceAckVTData is the data-structure of this message
@@ -81,6 +83,155 @@ func NewBACnetServiceAckVTData(vtSessionIdentifier BACnetApplicationTagUnsignedI
 	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckVTDataBuilder is a builder for BACnetServiceAckVTData
+type BACnetServiceAckVTDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder
+	// WithVtSessionIdentifier adds VtSessionIdentifier (property field)
+	WithVtSessionIdentifier(BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder
+	// WithVtSessionIdentifierBuilder adds VtSessionIdentifier (property field) which is build by the builder
+	WithVtSessionIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder
+	// WithVtNewData adds VtNewData (property field)
+	WithVtNewData(BACnetApplicationTagOctetString) BACnetServiceAckVTDataBuilder
+	// WithVtNewDataBuilder adds VtNewData (property field) which is build by the builder
+	WithVtNewDataBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckVTDataBuilder
+	// WithVtDataFlag adds VtDataFlag (property field)
+	WithVtDataFlag(BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder
+	// WithVtDataFlagBuilder adds VtDataFlag (property field) which is build by the builder
+	WithVtDataFlagBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder
+	// Build builds the BACnetServiceAckVTData or returns an error if something is wrong
+	Build() (BACnetServiceAckVTData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckVTData
+}
+
+// NewBACnetServiceAckVTDataBuilder() creates a BACnetServiceAckVTDataBuilder
+func NewBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder {
+	return &_BACnetServiceAckVTDataBuilder{_BACnetServiceAckVTData: new(_BACnetServiceAckVTData)}
+}
+
+type _BACnetServiceAckVTDataBuilder struct {
+	*_BACnetServiceAckVTData
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckVTDataBuilder) = (*_BACnetServiceAckVTDataBuilder)(nil)
+
+func (m *_BACnetServiceAckVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	return m.WithVtSessionIdentifier(vtSessionIdentifier).WithVtNewData(vtNewData).WithVtDataFlag(vtDataFlag)
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifier(vtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	m.VtSessionIdentifier = vtSessionIdentifier
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(m.VtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.VtSessionIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtNewData(vtNewData BACnetApplicationTagOctetString) BACnetServiceAckVTDataBuilder {
+	m.VtNewData = vtNewData
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtNewDataBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(m.VtNewData.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.VtNewData, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtDataFlag(vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTDataBuilder {
+	m.VtDataFlag = vtDataFlag
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) WithVtDataFlagBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTDataBuilder {
+	builder := builderSupplier(m.VtDataFlag.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.VtDataFlag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) Build() (BACnetServiceAckVTData, error) {
+	if m.VtSessionIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'vtSessionIdentifier' not set"))
+	}
+	if m.VtNewData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'vtNewData' not set"))
+	}
+	if m.VtDataFlag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'vtDataFlag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetServiceAckVTData.deepCopy(), nil
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) MustBuild() BACnetServiceAckVTData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetServiceAckVTDataBuilder) DeepCopy() any {
+	return m.CreateBACnetServiceAckVTDataBuilder()
+}
+
+// CreateBACnetServiceAckVTDataBuilder creates a BACnetServiceAckVTDataBuilder
+func (m *_BACnetServiceAckVTData) CreateBACnetServiceAckVTDataBuilder() BACnetServiceAckVTDataBuilder {
+	if m == nil {
+		return NewBACnetServiceAckVTDataBuilder()
+	}
+	return &_BACnetServiceAckVTDataBuilder{_BACnetServiceAckVTData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

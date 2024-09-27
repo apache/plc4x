@@ -52,6 +52,8 @@ type ApduDataExtPropertyValueResponse interface {
 	GetData() []byte
 	// IsApduDataExtPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtPropertyValueResponse()
+	// CreateBuilder creates a ApduDataExtPropertyValueResponseBuilder
+	CreateApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder
 }
 
 // _ApduDataExtPropertyValueResponse is the data-structure of this message
@@ -80,6 +82,106 @@ func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, co
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtPropertyValueResponseBuilder is a builder for ApduDataExtPropertyValueResponse
+type ApduDataExtPropertyValueResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueResponseBuilder
+	// WithObjectIndex adds ObjectIndex (property field)
+	WithObjectIndex(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithCount adds Count (property field)
+	WithCount(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(uint16) ApduDataExtPropertyValueResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataExtPropertyValueResponseBuilder
+	// Build builds the ApduDataExtPropertyValueResponse or returns an error if something is wrong
+	Build() (ApduDataExtPropertyValueResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtPropertyValueResponse
+}
+
+// NewApduDataExtPropertyValueResponseBuilder() creates a ApduDataExtPropertyValueResponseBuilder
+func NewApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder {
+	return &_ApduDataExtPropertyValueResponseBuilder{_ApduDataExtPropertyValueResponse: new(_ApduDataExtPropertyValueResponse)}
+}
+
+type _ApduDataExtPropertyValueResponseBuilder struct {
+	*_ApduDataExtPropertyValueResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtPropertyValueResponseBuilder) = (*_ApduDataExtPropertyValueResponseBuilder)(nil)
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueResponseBuilder {
+	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithCount(count).WithIndex(index).WithData(data...)
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyValueResponseBuilder {
+	m.ObjectIndex = objectIndex
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyValueResponseBuilder {
+	m.PropertyId = propertyId
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithCount(count uint8) ApduDataExtPropertyValueResponseBuilder {
+	m.Count = count
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithIndex(index uint16) ApduDataExtPropertyValueResponseBuilder {
+	m.Index = index
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) WithData(data ...byte) ApduDataExtPropertyValueResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) Build() (ApduDataExtPropertyValueResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtPropertyValueResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) MustBuild() ApduDataExtPropertyValueResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtPropertyValueResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtPropertyValueResponseBuilder()
+}
+
+// CreateApduDataExtPropertyValueResponseBuilder creates a ApduDataExtPropertyValueResponseBuilder
+func (m *_ApduDataExtPropertyValueResponse) CreateApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder {
+	if m == nil {
+		return NewApduDataExtPropertyValueResponseBuilder()
+	}
+	return &_ApduDataExtPropertyValueResponseBuilder{_ApduDataExtPropertyValueResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

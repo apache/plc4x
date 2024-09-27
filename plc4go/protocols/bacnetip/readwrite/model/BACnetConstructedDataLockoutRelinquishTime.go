@@ -46,6 +46,8 @@ type BACnetConstructedDataLockoutRelinquishTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataLockoutRelinquishTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLockoutRelinquishTime()
+	// CreateBuilder creates a BACnetConstructedDataLockoutRelinquishTimeBuilder
+	CreateBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDataLockoutRelinquishTimeBuilder
 }
 
 // _BACnetConstructedDataLockoutRelinquishTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLockoutRelinquishTime(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLockoutRelinquishTimeBuilder is a builder for BACnetConstructedDataLockoutRelinquishTime
+type BACnetConstructedDataLockoutRelinquishTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder
+	// WithLockoutRelinquishTime adds LockoutRelinquishTime (property field)
+	WithLockoutRelinquishTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder
+	// WithLockoutRelinquishTimeBuilder adds LockoutRelinquishTime (property field) which is build by the builder
+	WithLockoutRelinquishTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLockoutRelinquishTimeBuilder
+	// Build builds the BACnetConstructedDataLockoutRelinquishTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataLockoutRelinquishTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLockoutRelinquishTime
+}
+
+// NewBACnetConstructedDataLockoutRelinquishTimeBuilder() creates a BACnetConstructedDataLockoutRelinquishTimeBuilder
+func NewBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	return &_BACnetConstructedDataLockoutRelinquishTimeBuilder{_BACnetConstructedDataLockoutRelinquishTime: new(_BACnetConstructedDataLockoutRelinquishTime)}
+}
+
+type _BACnetConstructedDataLockoutRelinquishTimeBuilder struct {
+	*_BACnetConstructedDataLockoutRelinquishTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLockoutRelinquishTimeBuilder) = (*_BACnetConstructedDataLockoutRelinquishTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithMandatoryFields(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	return m.WithLockoutRelinquishTime(lockoutRelinquishTime)
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTime(lockoutRelinquishTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	m.LockoutRelinquishTime = lockoutRelinquishTime
+	return m
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) WithLockoutRelinquishTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	builder := builderSupplier(m.LockoutRelinquishTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.LockoutRelinquishTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) Build() (BACnetConstructedDataLockoutRelinquishTime, error) {
+	if m.LockoutRelinquishTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lockoutRelinquishTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLockoutRelinquishTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) MustBuild() BACnetConstructedDataLockoutRelinquishTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLockoutRelinquishTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLockoutRelinquishTimeBuilder()
+}
+
+// CreateBACnetConstructedDataLockoutRelinquishTimeBuilder creates a BACnetConstructedDataLockoutRelinquishTimeBuilder
+func (m *_BACnetConstructedDataLockoutRelinquishTime) CreateBACnetConstructedDataLockoutRelinquishTimeBuilder() BACnetConstructedDataLockoutRelinquishTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLockoutRelinquishTimeBuilder()
+	}
+	return &_BACnetConstructedDataLockoutRelinquishTimeBuilder{_BACnetConstructedDataLockoutRelinquishTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

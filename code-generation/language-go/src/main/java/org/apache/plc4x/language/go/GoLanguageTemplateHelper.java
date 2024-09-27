@@ -114,7 +114,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return getLanguageTypeNameForTypeReference(typeReference, null);
     }
 
+    public String getLanguageTypeNameForTypeReference(TypeReference typeReference, boolean variadic) {
+        return getLanguageTypeNameForTypeReference(typeReference, null, variadic);
+    }
+
     public String getLanguageTypeNameForTypeReference(TypeReference typeReference, String encoding) {
+        return getLanguageTypeNameForTypeReference(typeReference, encoding, false);
+    }
+
+    public String getLanguageTypeNameForTypeReference(TypeReference typeReference, String encoding, boolean variadic) {
         if (typeReference == null) {
             // TODO: shouldn't this be an error case
             return "";
@@ -122,7 +130,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = (ArrayTypeReference) typeReference;
             TypeReference elementTypeReference = arrayTypeReference.getElementTypeReference();
-            return "[]" + getLanguageTypeNameForTypeReference(elementTypeReference);
+            String arrayDeclaration = "[]";
+            if (variadic) {
+                arrayDeclaration = "...";
+            }
+            return arrayDeclaration + getLanguageTypeNameForTypeReference(elementTypeReference);
         }
         if (typeReference.isNonSimpleTypeReference()) {
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();

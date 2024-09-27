@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString interf
 	GetOctetStringValue() BACnetApplicationTagOctetString
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString(ope
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+	// WithOctetStringValue adds OctetStringValue (property field)
+	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
+	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder {
+	return m.WithOctetStringValue(octetStringValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder {
+	m.OctetStringValue = octetStringValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder {
+	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.OctetStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString, error) {
+	if m.OctetStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStringBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

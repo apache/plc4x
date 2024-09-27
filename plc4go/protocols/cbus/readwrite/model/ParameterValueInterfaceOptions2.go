@@ -46,6 +46,8 @@ type ParameterValueInterfaceOptions2 interface {
 	GetData() []byte
 	// IsParameterValueInterfaceOptions2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueInterfaceOptions2()
+	// CreateBuilder creates a ParameterValueInterfaceOptions2Builder
+	CreateParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2Builder
 }
 
 // _ParameterValueInterfaceOptions2 is the data-structure of this message
@@ -71,6 +73,106 @@ func NewParameterValueInterfaceOptions2(value InterfaceOptions2, data []byte, nu
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueInterfaceOptions2Builder is a builder for ParameterValueInterfaceOptions2
+type ParameterValueInterfaceOptions2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value InterfaceOptions2, data []byte) ParameterValueInterfaceOptions2Builder
+	// WithValue adds Value (property field)
+	WithValue(InterfaceOptions2) ParameterValueInterfaceOptions2Builder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(InterfaceOptions2Builder) InterfaceOptions2Builder) ParameterValueInterfaceOptions2Builder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueInterfaceOptions2Builder
+	// Build builds the ParameterValueInterfaceOptions2 or returns an error if something is wrong
+	Build() (ParameterValueInterfaceOptions2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueInterfaceOptions2
+}
+
+// NewParameterValueInterfaceOptions2Builder() creates a ParameterValueInterfaceOptions2Builder
+func NewParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2Builder {
+	return &_ParameterValueInterfaceOptions2Builder{_ParameterValueInterfaceOptions2: new(_ParameterValueInterfaceOptions2)}
+}
+
+type _ParameterValueInterfaceOptions2Builder struct {
+	*_ParameterValueInterfaceOptions2
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueInterfaceOptions2Builder) = (*_ParameterValueInterfaceOptions2Builder)(nil)
+
+func (m *_ParameterValueInterfaceOptions2Builder) WithMandatoryFields(value InterfaceOptions2, data []byte) ParameterValueInterfaceOptions2Builder {
+	return m.WithValue(value).WithData(data...)
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) WithValue(value InterfaceOptions2) ParameterValueInterfaceOptions2Builder {
+	m.Value = value
+	return m
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) WithValueBuilder(builderSupplier func(InterfaceOptions2Builder) InterfaceOptions2Builder) ParameterValueInterfaceOptions2Builder {
+	builder := builderSupplier(m.Value.CreateInterfaceOptions2Builder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "InterfaceOptions2Builder failed"))
+	}
+	return m
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) WithData(data ...byte) ParameterValueInterfaceOptions2Builder {
+	m.Data = data
+	return m
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) Build() (ParameterValueInterfaceOptions2, error) {
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueInterfaceOptions2.deepCopy(), nil
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) MustBuild() ParameterValueInterfaceOptions2 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueInterfaceOptions2Builder) DeepCopy() any {
+	return m.CreateParameterValueInterfaceOptions2Builder()
+}
+
+// CreateParameterValueInterfaceOptions2Builder creates a ParameterValueInterfaceOptions2Builder
+func (m *_ParameterValueInterfaceOptions2) CreateParameterValueInterfaceOptions2Builder() ParameterValueInterfaceOptions2Builder {
+	if m == nil {
+		return NewParameterValueInterfaceOptions2Builder()
+	}
+	return &_ParameterValueInterfaceOptions2Builder{_ParameterValueInterfaceOptions2: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type SALDataMetering interface {
 	GetMeteringData() MeteringData
 	// IsSALDataMetering is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataMetering()
+	// CreateBuilder creates a SALDataMeteringBuilder
+	CreateSALDataMeteringBuilder() SALDataMeteringBuilder
 }
 
 // _SALDataMetering is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataMetering(salData SALData, meteringData MeteringData) *_SALDataMet
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataMeteringBuilder is a builder for SALDataMetering
+type SALDataMeteringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder
+	// WithMeteringData adds MeteringData (property field)
+	WithMeteringData(MeteringData) SALDataMeteringBuilder
+	// Build builds the SALDataMetering or returns an error if something is wrong
+	Build() (SALDataMetering, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataMetering
+}
+
+// NewSALDataMeteringBuilder() creates a SALDataMeteringBuilder
+func NewSALDataMeteringBuilder() SALDataMeteringBuilder {
+	return &_SALDataMeteringBuilder{_SALDataMetering: new(_SALDataMetering)}
+}
+
+type _SALDataMeteringBuilder struct {
+	*_SALDataMetering
+
+	err *utils.MultiError
+}
+
+var _ (SALDataMeteringBuilder) = (*_SALDataMeteringBuilder)(nil)
+
+func (m *_SALDataMeteringBuilder) WithMandatoryFields(meteringData MeteringData) SALDataMeteringBuilder {
+	return m.WithMeteringData(meteringData)
+}
+
+func (m *_SALDataMeteringBuilder) WithMeteringData(meteringData MeteringData) SALDataMeteringBuilder {
+	m.MeteringData = meteringData
+	return m
+}
+
+func (m *_SALDataMeteringBuilder) Build() (SALDataMetering, error) {
+	if m.MeteringData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'meteringData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataMetering.deepCopy(), nil
+}
+
+func (m *_SALDataMeteringBuilder) MustBuild() SALDataMetering {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataMeteringBuilder) DeepCopy() any {
+	return m.CreateSALDataMeteringBuilder()
+}
+
+// CreateSALDataMeteringBuilder creates a SALDataMeteringBuilder
+func (m *_SALDataMetering) CreateSALDataMeteringBuilder() SALDataMeteringBuilder {
+	if m == nil {
+		return NewSALDataMeteringBuilder()
+	}
+	return &_SALDataMeteringBuilder{_SALDataMetering: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

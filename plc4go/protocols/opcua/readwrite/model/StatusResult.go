@@ -46,6 +46,8 @@ type StatusResult interface {
 	GetDiagnosticInfo() DiagnosticInfo
 	// IsStatusResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusResult()
+	// CreateBuilder creates a StatusResultBuilder
+	CreateStatusResultBuilder() StatusResultBuilder
 }
 
 // _StatusResult is the data-structure of this message
@@ -74,6 +76,127 @@ func NewStatusResult(statusCode StatusCode, diagnosticInfo DiagnosticInfo) *_Sta
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StatusResultBuilder is a builder for StatusResult
+type StatusResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, diagnosticInfo DiagnosticInfo) StatusResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) StatusResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) StatusResultBuilder
+	// WithDiagnosticInfo adds DiagnosticInfo (property field)
+	WithDiagnosticInfo(DiagnosticInfo) StatusResultBuilder
+	// WithDiagnosticInfoBuilder adds DiagnosticInfo (property field) which is build by the builder
+	WithDiagnosticInfoBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusResultBuilder
+	// Build builds the StatusResult or returns an error if something is wrong
+	Build() (StatusResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusResult
+}
+
+// NewStatusResultBuilder() creates a StatusResultBuilder
+func NewStatusResultBuilder() StatusResultBuilder {
+	return &_StatusResultBuilder{_StatusResult: new(_StatusResult)}
+}
+
+type _StatusResultBuilder struct {
+	*_StatusResult
+
+	err *utils.MultiError
+}
+
+var _ (StatusResultBuilder) = (*_StatusResultBuilder)(nil)
+
+func (m *_StatusResultBuilder) WithMandatoryFields(statusCode StatusCode, diagnosticInfo DiagnosticInfo) StatusResultBuilder {
+	return m.WithStatusCode(statusCode).WithDiagnosticInfo(diagnosticInfo)
+}
+
+func (m *_StatusResultBuilder) WithStatusCode(statusCode StatusCode) StatusResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_StatusResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) StatusResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_StatusResultBuilder) WithDiagnosticInfo(diagnosticInfo DiagnosticInfo) StatusResultBuilder {
+	m.DiagnosticInfo = diagnosticInfo
+	return m
+}
+
+func (m *_StatusResultBuilder) WithDiagnosticInfoBuilder(builderSupplier func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) StatusResultBuilder {
+	builder := builderSupplier(m.DiagnosticInfo.CreateDiagnosticInfoBuilder())
+	var err error
+	m.DiagnosticInfo, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
+	}
+	return m
+}
+
+func (m *_StatusResultBuilder) Build() (StatusResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.DiagnosticInfo == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'diagnosticInfo' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._StatusResult.deepCopy(), nil
+}
+
+func (m *_StatusResultBuilder) MustBuild() StatusResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_StatusResultBuilder) DeepCopy() any {
+	return m.CreateStatusResultBuilder()
+}
+
+// CreateStatusResultBuilder creates a StatusResultBuilder
+func (m *_StatusResult) CreateStatusResultBuilder() StatusResultBuilder {
+	if m == nil {
+		return NewStatusResultBuilder()
+	}
+	return &_StatusResultBuilder{_StatusResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataCarDriveStatus interface {
 	GetActualValue() BACnetLiftCarDriveStatusTagged
 	// IsBACnetConstructedDataCarDriveStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarDriveStatus()
+	// CreateBuilder creates a BACnetConstructedDataCarDriveStatusBuilder
+	CreateBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder
 }
 
 // _BACnetConstructedDataCarDriveStatus is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCarDriveStatus(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarDriveStatusBuilder is a builder for BACnetConstructedDataCarDriveStatus
+type BACnetConstructedDataCarDriveStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder
+	// WithCarDriveStatus adds CarDriveStatus (property field)
+	WithCarDriveStatus(BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder
+	// WithCarDriveStatusBuilder adds CarDriveStatus (property field) which is build by the builder
+	WithCarDriveStatusBuilder(func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetConstructedDataCarDriveStatusBuilder
+	// Build builds the BACnetConstructedDataCarDriveStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarDriveStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarDriveStatus
+}
+
+// NewBACnetConstructedDataCarDriveStatusBuilder() creates a BACnetConstructedDataCarDriveStatusBuilder
+func NewBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder {
+	return &_BACnetConstructedDataCarDriveStatusBuilder{_BACnetConstructedDataCarDriveStatus: new(_BACnetConstructedDataCarDriveStatus)}
+}
+
+type _BACnetConstructedDataCarDriveStatusBuilder struct {
+	*_BACnetConstructedDataCarDriveStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarDriveStatusBuilder) = (*_BACnetConstructedDataCarDriveStatusBuilder)(nil)
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) WithMandatoryFields(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder {
+	return m.WithCarDriveStatus(carDriveStatus)
+}
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) WithCarDriveStatus(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder {
+	m.CarDriveStatus = carDriveStatus
+	return m
+}
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) WithCarDriveStatusBuilder(builderSupplier func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetConstructedDataCarDriveStatusBuilder {
+	builder := builderSupplier(m.CarDriveStatus.CreateBACnetLiftCarDriveStatusTaggedBuilder())
+	var err error
+	m.CarDriveStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) Build() (BACnetConstructedDataCarDriveStatus, error) {
+	if m.CarDriveStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'carDriveStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCarDriveStatus.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) MustBuild() BACnetConstructedDataCarDriveStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCarDriveStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCarDriveStatusBuilder()
+}
+
+// CreateBACnetConstructedDataCarDriveStatusBuilder creates a BACnetConstructedDataCarDriveStatusBuilder
+func (m *_BACnetConstructedDataCarDriveStatus) CreateBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCarDriveStatusBuilder()
+	}
+	return &_BACnetConstructedDataCarDriveStatusBuilder{_BACnetConstructedDataCarDriveStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

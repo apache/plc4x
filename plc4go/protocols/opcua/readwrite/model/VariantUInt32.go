@@ -46,6 +46,8 @@ type VariantUInt32 interface {
 	GetValue() []uint32
 	// IsVariantUInt32 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantUInt32()
+	// CreateBuilder creates a VariantUInt32Builder
+	CreateVariantUInt32Builder() VariantUInt32Builder
 }
 
 // _VariantUInt32 is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantUInt32(arrayLengthSpecified bool, arrayDimensionsSpecified bool, 
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantUInt32Builder is a builder for VariantUInt32
+type VariantUInt32Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []uint32) VariantUInt32Builder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantUInt32Builder
+	// WithValue adds Value (property field)
+	WithValue(...uint32) VariantUInt32Builder
+	// Build builds the VariantUInt32 or returns an error if something is wrong
+	Build() (VariantUInt32, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantUInt32
+}
+
+// NewVariantUInt32Builder() creates a VariantUInt32Builder
+func NewVariantUInt32Builder() VariantUInt32Builder {
+	return &_VariantUInt32Builder{_VariantUInt32: new(_VariantUInt32)}
+}
+
+type _VariantUInt32Builder struct {
+	*_VariantUInt32
+
+	err *utils.MultiError
+}
+
+var _ (VariantUInt32Builder) = (*_VariantUInt32Builder)(nil)
+
+func (m *_VariantUInt32Builder) WithMandatoryFields(value []uint32) VariantUInt32Builder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantUInt32Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt32Builder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantUInt32Builder) WithValue(value ...uint32) VariantUInt32Builder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantUInt32Builder) Build() (VariantUInt32, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantUInt32.deepCopy(), nil
+}
+
+func (m *_VariantUInt32Builder) MustBuild() VariantUInt32 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantUInt32Builder) DeepCopy() any {
+	return m.CreateVariantUInt32Builder()
+}
+
+// CreateVariantUInt32Builder creates a VariantUInt32Builder
+func (m *_VariantUInt32) CreateVariantUInt32Builder() VariantUInt32Builder {
+	if m == nil {
+		return NewVariantUInt32Builder()
+	}
+	return &_VariantUInt32Builder{_VariantUInt32: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type IdentifyReplyCommandSummary interface {
 	GetVersion() string
 	// IsIdentifyReplyCommandSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandSummary()
+	// CreateBuilder creates a IdentifyReplyCommandSummaryBuilder
+	CreateIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder
 }
 
 // _IdentifyReplyCommandSummary is the data-structure of this message
@@ -72,6 +74,92 @@ func NewIdentifyReplyCommandSummary(partName string, unitServiceType byte, versi
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandSummaryBuilder is a builder for IdentifyReplyCommandSummary
+type IdentifyReplyCommandSummaryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(partName string, unitServiceType byte, version string) IdentifyReplyCommandSummaryBuilder
+	// WithPartName adds PartName (property field)
+	WithPartName(string) IdentifyReplyCommandSummaryBuilder
+	// WithUnitServiceType adds UnitServiceType (property field)
+	WithUnitServiceType(byte) IdentifyReplyCommandSummaryBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(string) IdentifyReplyCommandSummaryBuilder
+	// Build builds the IdentifyReplyCommandSummary or returns an error if something is wrong
+	Build() (IdentifyReplyCommandSummary, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandSummary
+}
+
+// NewIdentifyReplyCommandSummaryBuilder() creates a IdentifyReplyCommandSummaryBuilder
+func NewIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder {
+	return &_IdentifyReplyCommandSummaryBuilder{_IdentifyReplyCommandSummary: new(_IdentifyReplyCommandSummary)}
+}
+
+type _IdentifyReplyCommandSummaryBuilder struct {
+	*_IdentifyReplyCommandSummary
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandSummaryBuilder) = (*_IdentifyReplyCommandSummaryBuilder)(nil)
+
+func (m *_IdentifyReplyCommandSummaryBuilder) WithMandatoryFields(partName string, unitServiceType byte, version string) IdentifyReplyCommandSummaryBuilder {
+	return m.WithPartName(partName).WithUnitServiceType(unitServiceType).WithVersion(version)
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) WithPartName(partName string) IdentifyReplyCommandSummaryBuilder {
+	m.PartName = partName
+	return m
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) WithUnitServiceType(unitServiceType byte) IdentifyReplyCommandSummaryBuilder {
+	m.UnitServiceType = unitServiceType
+	return m
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) WithVersion(version string) IdentifyReplyCommandSummaryBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) Build() (IdentifyReplyCommandSummary, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandSummary.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) MustBuild() IdentifyReplyCommandSummary {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandSummaryBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandSummaryBuilder()
+}
+
+// CreateIdentifyReplyCommandSummaryBuilder creates a IdentifyReplyCommandSummaryBuilder
+func (m *_IdentifyReplyCommandSummary) CreateIdentifyReplyCommandSummaryBuilder() IdentifyReplyCommandSummaryBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandSummaryBuilder()
+	}
+	return &_IdentifyReplyCommandSummaryBuilder{_IdentifyReplyCommandSummary: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

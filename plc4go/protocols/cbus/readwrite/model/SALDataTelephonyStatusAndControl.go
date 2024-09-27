@@ -44,6 +44,8 @@ type SALDataTelephonyStatusAndControl interface {
 	GetTelephonyData() TelephonyData
 	// IsSALDataTelephonyStatusAndControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataTelephonyStatusAndControl()
+	// CreateBuilder creates a SALDataTelephonyStatusAndControlBuilder
+	CreateSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndControlBuilder
 }
 
 // _SALDataTelephonyStatusAndControl is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataTelephonyStatusAndControl(salData SALData, telephonyData Telephon
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataTelephonyStatusAndControlBuilder is a builder for SALDataTelephonyStatusAndControl
+type SALDataTelephonyStatusAndControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder
+	// WithTelephonyData adds TelephonyData (property field)
+	WithTelephonyData(TelephonyData) SALDataTelephonyStatusAndControlBuilder
+	// Build builds the SALDataTelephonyStatusAndControl or returns an error if something is wrong
+	Build() (SALDataTelephonyStatusAndControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataTelephonyStatusAndControl
+}
+
+// NewSALDataTelephonyStatusAndControlBuilder() creates a SALDataTelephonyStatusAndControlBuilder
+func NewSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndControlBuilder {
+	return &_SALDataTelephonyStatusAndControlBuilder{_SALDataTelephonyStatusAndControl: new(_SALDataTelephonyStatusAndControl)}
+}
+
+type _SALDataTelephonyStatusAndControlBuilder struct {
+	*_SALDataTelephonyStatusAndControl
+
+	err *utils.MultiError
+}
+
+var _ (SALDataTelephonyStatusAndControlBuilder) = (*_SALDataTelephonyStatusAndControlBuilder)(nil)
+
+func (m *_SALDataTelephonyStatusAndControlBuilder) WithMandatoryFields(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
+	return m.WithTelephonyData(telephonyData)
+}
+
+func (m *_SALDataTelephonyStatusAndControlBuilder) WithTelephonyData(telephonyData TelephonyData) SALDataTelephonyStatusAndControlBuilder {
+	m.TelephonyData = telephonyData
+	return m
+}
+
+func (m *_SALDataTelephonyStatusAndControlBuilder) Build() (SALDataTelephonyStatusAndControl, error) {
+	if m.TelephonyData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'telephonyData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataTelephonyStatusAndControl.deepCopy(), nil
+}
+
+func (m *_SALDataTelephonyStatusAndControlBuilder) MustBuild() SALDataTelephonyStatusAndControl {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataTelephonyStatusAndControlBuilder) DeepCopy() any {
+	return m.CreateSALDataTelephonyStatusAndControlBuilder()
+}
+
+// CreateSALDataTelephonyStatusAndControlBuilder creates a SALDataTelephonyStatusAndControlBuilder
+func (m *_SALDataTelephonyStatusAndControl) CreateSALDataTelephonyStatusAndControlBuilder() SALDataTelephonyStatusAndControlBuilder {
+	if m == nil {
+		return NewSALDataTelephonyStatusAndControlBuilder()
+	}
+	return &_SALDataTelephonyStatusAndControlBuilder{_SALDataTelephonyStatusAndControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

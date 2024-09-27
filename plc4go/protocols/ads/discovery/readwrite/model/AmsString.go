@@ -44,6 +44,8 @@ type AmsString interface {
 	GetText() string
 	// IsAmsString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsString()
+	// CreateBuilder creates a AmsStringBuilder
+	CreateAmsStringBuilder() AmsStringBuilder
 }
 
 // _AmsString is the data-structure of this message
@@ -59,6 +61,78 @@ var _ AmsString = (*_AmsString)(nil)
 func NewAmsString(text string) *_AmsString {
 	return &_AmsString{Text: text}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsStringBuilder is a builder for AmsString
+type AmsStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(text string) AmsStringBuilder
+	// WithText adds Text (property field)
+	WithText(string) AmsStringBuilder
+	// Build builds the AmsString or returns an error if something is wrong
+	Build() (AmsString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsString
+}
+
+// NewAmsStringBuilder() creates a AmsStringBuilder
+func NewAmsStringBuilder() AmsStringBuilder {
+	return &_AmsStringBuilder{_AmsString: new(_AmsString)}
+}
+
+type _AmsStringBuilder struct {
+	*_AmsString
+
+	err *utils.MultiError
+}
+
+var _ (AmsStringBuilder) = (*_AmsStringBuilder)(nil)
+
+func (m *_AmsStringBuilder) WithMandatoryFields(text string) AmsStringBuilder {
+	return m.WithText(text)
+}
+
+func (m *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
+	m.Text = text
+	return m
+}
+
+func (m *_AmsStringBuilder) Build() (AmsString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AmsString.deepCopy(), nil
+}
+
+func (m *_AmsStringBuilder) MustBuild() AmsString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AmsStringBuilder) DeepCopy() any {
+	return m.CreateAmsStringBuilder()
+}
+
+// CreateAmsStringBuilder creates a AmsStringBuilder
+func (m *_AmsString) CreateAmsStringBuilder() AmsStringBuilder {
+	if m == nil {
+		return NewAmsStringBuilder()
+	}
+	return &_AmsStringBuilder{_AmsString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

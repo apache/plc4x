@@ -40,6 +40,8 @@ type LRawInd interface {
 	CEMI
 	// IsLRawInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawInd()
+	// CreateBuilder creates a LRawIndBuilder
+	CreateLRawIndBuilder() LRawIndBuilder
 }
 
 // _LRawInd is the data-structure of this message
@@ -58,6 +60,71 @@ func NewLRawInd(size uint16) *_LRawInd {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LRawIndBuilder is a builder for LRawInd
+type LRawIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LRawIndBuilder
+	// Build builds the LRawInd or returns an error if something is wrong
+	Build() (LRawInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LRawInd
+}
+
+// NewLRawIndBuilder() creates a LRawIndBuilder
+func NewLRawIndBuilder() LRawIndBuilder {
+	return &_LRawIndBuilder{_LRawInd: new(_LRawInd)}
+}
+
+type _LRawIndBuilder struct {
+	*_LRawInd
+
+	err *utils.MultiError
+}
+
+var _ (LRawIndBuilder) = (*_LRawIndBuilder)(nil)
+
+func (m *_LRawIndBuilder) WithMandatoryFields() LRawIndBuilder {
+	return m
+}
+
+func (m *_LRawIndBuilder) Build() (LRawInd, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LRawInd.deepCopy(), nil
+}
+
+func (m *_LRawIndBuilder) MustBuild() LRawInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LRawIndBuilder) DeepCopy() any {
+	return m.CreateLRawIndBuilder()
+}
+
+// CreateLRawIndBuilder creates a LRawIndBuilder
+func (m *_LRawInd) CreateLRawIndBuilder() LRawIndBuilder {
+	if m == nil {
+		return NewLRawIndBuilder()
+	}
+	return &_LRawIndBuilder{_LRawInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

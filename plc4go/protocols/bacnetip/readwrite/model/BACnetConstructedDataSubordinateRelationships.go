@@ -48,6 +48,8 @@ type BACnetConstructedDataSubordinateRelationships interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateRelationships is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateRelationships()
+	// CreateBuilder creates a BACnetConstructedDataSubordinateRelationshipsBuilder
+	CreateBACnetConstructedDataSubordinateRelationshipsBuilder() BACnetConstructedDataSubordinateRelationshipsBuilder
 }
 
 // _BACnetConstructedDataSubordinateRelationships is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataSubordinateRelationships(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSubordinateRelationshipsBuilder is a builder for BACnetConstructedDataSubordinateRelationships
+type BACnetConstructedDataSubordinateRelationshipsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subordinateRelationships []BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateRelationshipsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateRelationshipsBuilder
+	// WithSubordinateRelationships adds SubordinateRelationships (property field)
+	WithSubordinateRelationships(...BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder
+	// Build builds the BACnetConstructedDataSubordinateRelationships or returns an error if something is wrong
+	Build() (BACnetConstructedDataSubordinateRelationships, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSubordinateRelationships
+}
+
+// NewBACnetConstructedDataSubordinateRelationshipsBuilder() creates a BACnetConstructedDataSubordinateRelationshipsBuilder
+func NewBACnetConstructedDataSubordinateRelationshipsBuilder() BACnetConstructedDataSubordinateRelationshipsBuilder {
+	return &_BACnetConstructedDataSubordinateRelationshipsBuilder{_BACnetConstructedDataSubordinateRelationships: new(_BACnetConstructedDataSubordinateRelationships)}
+}
+
+type _BACnetConstructedDataSubordinateRelationshipsBuilder struct {
+	*_BACnetConstructedDataSubordinateRelationships
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSubordinateRelationshipsBuilder) = (*_BACnetConstructedDataSubordinateRelationshipsBuilder)(nil)
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithMandatoryFields(subordinateRelationships []BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder {
+	return m.WithSubordinateRelationships(subordinateRelationships...)
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateRelationshipsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateRelationshipsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) WithSubordinateRelationships(subordinateRelationships ...BACnetRelationshipTagged) BACnetConstructedDataSubordinateRelationshipsBuilder {
+	m.SubordinateRelationships = subordinateRelationships
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) Build() (BACnetConstructedDataSubordinateRelationships, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSubordinateRelationships.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) MustBuild() BACnetConstructedDataSubordinateRelationships {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSubordinateRelationshipsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSubordinateRelationshipsBuilder()
+}
+
+// CreateBACnetConstructedDataSubordinateRelationshipsBuilder creates a BACnetConstructedDataSubordinateRelationshipsBuilder
+func (m *_BACnetConstructedDataSubordinateRelationships) CreateBACnetConstructedDataSubordinateRelationshipsBuilder() BACnetConstructedDataSubordinateRelationshipsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSubordinateRelationshipsBuilder()
+	}
+	return &_BACnetConstructedDataSubordinateRelationshipsBuilder{_BACnetConstructedDataSubordinateRelationships: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

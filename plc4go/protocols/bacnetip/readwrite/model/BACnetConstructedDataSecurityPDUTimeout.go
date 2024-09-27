@@ -46,6 +46,8 @@ type BACnetConstructedDataSecurityPDUTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataSecurityPDUTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSecurityPDUTimeout()
+	// CreateBuilder creates a BACnetConstructedDataSecurityPDUTimeoutBuilder
+	CreateBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSecurityPDUTimeoutBuilder
 }
 
 // _BACnetConstructedDataSecurityPDUTimeout is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataSecurityPDUTimeout(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSecurityPDUTimeoutBuilder is a builder for BACnetConstructedDataSecurityPDUTimeout
+type BACnetConstructedDataSecurityPDUTimeoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder
+	// WithSecurityPduTimeout adds SecurityPduTimeout (property field)
+	WithSecurityPduTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder
+	// WithSecurityPduTimeoutBuilder adds SecurityPduTimeout (property field) which is build by the builder
+	WithSecurityPduTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityPDUTimeoutBuilder
+	// Build builds the BACnetConstructedDataSecurityPDUTimeout or returns an error if something is wrong
+	Build() (BACnetConstructedDataSecurityPDUTimeout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSecurityPDUTimeout
+}
+
+// NewBACnetConstructedDataSecurityPDUTimeoutBuilder() creates a BACnetConstructedDataSecurityPDUTimeoutBuilder
+func NewBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	return &_BACnetConstructedDataSecurityPDUTimeoutBuilder{_BACnetConstructedDataSecurityPDUTimeout: new(_BACnetConstructedDataSecurityPDUTimeout)}
+}
+
+type _BACnetConstructedDataSecurityPDUTimeoutBuilder struct {
+	*_BACnetConstructedDataSecurityPDUTimeout
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSecurityPDUTimeoutBuilder) = (*_BACnetConstructedDataSecurityPDUTimeoutBuilder)(nil)
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithMandatoryFields(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	return m.WithSecurityPduTimeout(securityPduTimeout)
+}
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeout(securityPduTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	m.SecurityPduTimeout = securityPduTimeout
+	return m
+}
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) WithSecurityPduTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	builder := builderSupplier(m.SecurityPduTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.SecurityPduTimeout, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) Build() (BACnetConstructedDataSecurityPDUTimeout, error) {
+	if m.SecurityPduTimeout == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityPduTimeout' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSecurityPDUTimeout.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) MustBuild() BACnetConstructedDataSecurityPDUTimeout {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSecurityPDUTimeoutBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSecurityPDUTimeoutBuilder()
+}
+
+// CreateBACnetConstructedDataSecurityPDUTimeoutBuilder creates a BACnetConstructedDataSecurityPDUTimeoutBuilder
+func (m *_BACnetConstructedDataSecurityPDUTimeout) CreateBACnetConstructedDataSecurityPDUTimeoutBuilder() BACnetConstructedDataSecurityPDUTimeoutBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSecurityPDUTimeoutBuilder()
+	}
+	return &_BACnetConstructedDataSecurityPDUTimeoutBuilder{_BACnetConstructedDataSecurityPDUTimeout: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

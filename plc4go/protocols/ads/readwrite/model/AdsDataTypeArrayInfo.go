@@ -49,6 +49,8 @@ type AdsDataTypeArrayInfo interface {
 	GetUpperBound() uint32
 	// IsAdsDataTypeArrayInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeArrayInfo()
+	// CreateBuilder creates a AdsDataTypeArrayInfoBuilder
+	CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder
 }
 
 // _AdsDataTypeArrayInfo is the data-structure of this message
@@ -63,6 +65,85 @@ var _ AdsDataTypeArrayInfo = (*_AdsDataTypeArrayInfo)(nil)
 func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTypeArrayInfo {
 	return &_AdsDataTypeArrayInfo{LowerBound: lowerBound, NumElements: numElements}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDataTypeArrayInfoBuilder is a builder for AdsDataTypeArrayInfo
+type AdsDataTypeArrayInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder
+	// WithLowerBound adds LowerBound (property field)
+	WithLowerBound(uint32) AdsDataTypeArrayInfoBuilder
+	// WithNumElements adds NumElements (property field)
+	WithNumElements(uint32) AdsDataTypeArrayInfoBuilder
+	// Build builds the AdsDataTypeArrayInfo or returns an error if something is wrong
+	Build() (AdsDataTypeArrayInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDataTypeArrayInfo
+}
+
+// NewAdsDataTypeArrayInfoBuilder() creates a AdsDataTypeArrayInfoBuilder
+func NewAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
+	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: new(_AdsDataTypeArrayInfo)}
+}
+
+type _AdsDataTypeArrayInfoBuilder struct {
+	*_AdsDataTypeArrayInfo
+
+	err *utils.MultiError
+}
+
+var _ (AdsDataTypeArrayInfoBuilder) = (*_AdsDataTypeArrayInfoBuilder)(nil)
+
+func (m *_AdsDataTypeArrayInfoBuilder) WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder {
+	return m.WithLowerBound(lowerBound).WithNumElements(numElements)
+}
+
+func (m *_AdsDataTypeArrayInfoBuilder) WithLowerBound(lowerBound uint32) AdsDataTypeArrayInfoBuilder {
+	m.LowerBound = lowerBound
+	return m
+}
+
+func (m *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDataTypeArrayInfoBuilder {
+	m.NumElements = numElements
+	return m
+}
+
+func (m *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDataTypeArrayInfo.deepCopy(), nil
+}
+
+func (m *_AdsDataTypeArrayInfoBuilder) MustBuild() AdsDataTypeArrayInfo {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDataTypeArrayInfoBuilder) DeepCopy() any {
+	return m.CreateAdsDataTypeArrayInfoBuilder()
+}
+
+// CreateAdsDataTypeArrayInfoBuilder creates a AdsDataTypeArrayInfoBuilder
+func (m *_AdsDataTypeArrayInfo) CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
+	if m == nil {
+		return NewAdsDataTypeArrayInfoBuilder()
+	}
+	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

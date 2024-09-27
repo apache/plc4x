@@ -40,6 +40,8 @@ type ClockAndTimekeepingDataRequestRefresh interface {
 	ClockAndTimekeepingData
 	// IsClockAndTimekeepingDataRequestRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClockAndTimekeepingDataRequestRefresh()
+	// CreateBuilder creates a ClockAndTimekeepingDataRequestRefreshBuilder
+	CreateClockAndTimekeepingDataRequestRefreshBuilder() ClockAndTimekeepingDataRequestRefreshBuilder
 }
 
 // _ClockAndTimekeepingDataRequestRefresh is the data-structure of this message
@@ -58,6 +60,71 @@ func NewClockAndTimekeepingDataRequestRefresh(commandTypeContainer ClockAndTimek
 	_result.ClockAndTimekeepingDataContract.(*_ClockAndTimekeepingData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ClockAndTimekeepingDataRequestRefreshBuilder is a builder for ClockAndTimekeepingDataRequestRefresh
+type ClockAndTimekeepingDataRequestRefreshBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ClockAndTimekeepingDataRequestRefreshBuilder
+	// Build builds the ClockAndTimekeepingDataRequestRefresh or returns an error if something is wrong
+	Build() (ClockAndTimekeepingDataRequestRefresh, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ClockAndTimekeepingDataRequestRefresh
+}
+
+// NewClockAndTimekeepingDataRequestRefreshBuilder() creates a ClockAndTimekeepingDataRequestRefreshBuilder
+func NewClockAndTimekeepingDataRequestRefreshBuilder() ClockAndTimekeepingDataRequestRefreshBuilder {
+	return &_ClockAndTimekeepingDataRequestRefreshBuilder{_ClockAndTimekeepingDataRequestRefresh: new(_ClockAndTimekeepingDataRequestRefresh)}
+}
+
+type _ClockAndTimekeepingDataRequestRefreshBuilder struct {
+	*_ClockAndTimekeepingDataRequestRefresh
+
+	err *utils.MultiError
+}
+
+var _ (ClockAndTimekeepingDataRequestRefreshBuilder) = (*_ClockAndTimekeepingDataRequestRefreshBuilder)(nil)
+
+func (m *_ClockAndTimekeepingDataRequestRefreshBuilder) WithMandatoryFields() ClockAndTimekeepingDataRequestRefreshBuilder {
+	return m
+}
+
+func (m *_ClockAndTimekeepingDataRequestRefreshBuilder) Build() (ClockAndTimekeepingDataRequestRefresh, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ClockAndTimekeepingDataRequestRefresh.deepCopy(), nil
+}
+
+func (m *_ClockAndTimekeepingDataRequestRefreshBuilder) MustBuild() ClockAndTimekeepingDataRequestRefresh {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ClockAndTimekeepingDataRequestRefreshBuilder) DeepCopy() any {
+	return m.CreateClockAndTimekeepingDataRequestRefreshBuilder()
+}
+
+// CreateClockAndTimekeepingDataRequestRefreshBuilder creates a ClockAndTimekeepingDataRequestRefreshBuilder
+func (m *_ClockAndTimekeepingDataRequestRefresh) CreateClockAndTimekeepingDataRequestRefreshBuilder() ClockAndTimekeepingDataRequestRefreshBuilder {
+	if m == nil {
+		return NewClockAndTimekeepingDataRequestRefreshBuilder()
+	}
+	return &_ClockAndTimekeepingDataRequestRefreshBuilder{_ClockAndTimekeepingDataRequestRefresh: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	GetJobId() uint8
 	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(returnCode DataTra
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder is a builder for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+type S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(function uint8, jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// WithFunction adds Function (property field)
+	WithFunction(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// WithJobId adds JobId (property field)
+	WithJobId(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesUnsubscribeRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+}
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest: new(_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithMandatoryFields(function uint8, jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	return m.WithFunction(function).WithJobId(jobId)
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithFunction(function uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	m.Function = function
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithJobId(jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	m.JobId = jobId
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesUnsubscribeRequest.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

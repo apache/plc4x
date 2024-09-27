@@ -47,6 +47,8 @@ type SzlId interface {
 	GetSublistList() SzlSublist
 	// IsSzlId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSzlId()
+	// CreateBuilder creates a SzlIdBuilder
+	CreateSzlIdBuilder() SzlIdBuilder
 }
 
 // _SzlId is the data-structure of this message
@@ -62,6 +64,92 @@ var _ SzlId = (*_SzlId)(nil)
 func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
 	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SzlIdBuilder is a builder for SzlId
+type SzlIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder
+	// WithTypeClass adds TypeClass (property field)
+	WithTypeClass(SzlModuleTypeClass) SzlIdBuilder
+	// WithSublistExtract adds SublistExtract (property field)
+	WithSublistExtract(uint8) SzlIdBuilder
+	// WithSublistList adds SublistList (property field)
+	WithSublistList(SzlSublist) SzlIdBuilder
+	// Build builds the SzlId or returns an error if something is wrong
+	Build() (SzlId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SzlId
+}
+
+// NewSzlIdBuilder() creates a SzlIdBuilder
+func NewSzlIdBuilder() SzlIdBuilder {
+	return &_SzlIdBuilder{_SzlId: new(_SzlId)}
+}
+
+type _SzlIdBuilder struct {
+	*_SzlId
+
+	err *utils.MultiError
+}
+
+var _ (SzlIdBuilder) = (*_SzlIdBuilder)(nil)
+
+func (m *_SzlIdBuilder) WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder {
+	return m.WithTypeClass(typeClass).WithSublistExtract(sublistExtract).WithSublistList(sublistList)
+}
+
+func (m *_SzlIdBuilder) WithTypeClass(typeClass SzlModuleTypeClass) SzlIdBuilder {
+	m.TypeClass = typeClass
+	return m
+}
+
+func (m *_SzlIdBuilder) WithSublistExtract(sublistExtract uint8) SzlIdBuilder {
+	m.SublistExtract = sublistExtract
+	return m
+}
+
+func (m *_SzlIdBuilder) WithSublistList(sublistList SzlSublist) SzlIdBuilder {
+	m.SublistList = sublistList
+	return m
+}
+
+func (m *_SzlIdBuilder) Build() (SzlId, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SzlId.deepCopy(), nil
+}
+
+func (m *_SzlIdBuilder) MustBuild() SzlId {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SzlIdBuilder) DeepCopy() any {
+	return m.CreateSzlIdBuilder()
+}
+
+// CreateSzlIdBuilder creates a SzlIdBuilder
+func (m *_SzlId) CreateSzlIdBuilder() SzlIdBuilder {
+	if m == nil {
+		return NewSzlIdBuilder()
+	}
+	return &_SzlIdBuilder{_SzlId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type SysexCommandCapabilityQuery interface {
 	SysexCommand
 	// IsSysexCommandCapabilityQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandCapabilityQuery()
+	// CreateBuilder creates a SysexCommandCapabilityQueryBuilder
+	CreateSysexCommandCapabilityQueryBuilder() SysexCommandCapabilityQueryBuilder
 }
 
 // _SysexCommandCapabilityQuery is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandCapabilityQuery() *_SysexCommandCapabilityQuery {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandCapabilityQueryBuilder is a builder for SysexCommandCapabilityQuery
+type SysexCommandCapabilityQueryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandCapabilityQueryBuilder
+	// Build builds the SysexCommandCapabilityQuery or returns an error if something is wrong
+	Build() (SysexCommandCapabilityQuery, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandCapabilityQuery
+}
+
+// NewSysexCommandCapabilityQueryBuilder() creates a SysexCommandCapabilityQueryBuilder
+func NewSysexCommandCapabilityQueryBuilder() SysexCommandCapabilityQueryBuilder {
+	return &_SysexCommandCapabilityQueryBuilder{_SysexCommandCapabilityQuery: new(_SysexCommandCapabilityQuery)}
+}
+
+type _SysexCommandCapabilityQueryBuilder struct {
+	*_SysexCommandCapabilityQuery
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandCapabilityQueryBuilder) = (*_SysexCommandCapabilityQueryBuilder)(nil)
+
+func (m *_SysexCommandCapabilityQueryBuilder) WithMandatoryFields() SysexCommandCapabilityQueryBuilder {
+	return m
+}
+
+func (m *_SysexCommandCapabilityQueryBuilder) Build() (SysexCommandCapabilityQuery, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandCapabilityQuery.deepCopy(), nil
+}
+
+func (m *_SysexCommandCapabilityQueryBuilder) MustBuild() SysexCommandCapabilityQuery {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandCapabilityQueryBuilder) DeepCopy() any {
+	return m.CreateSysexCommandCapabilityQueryBuilder()
+}
+
+// CreateSysexCommandCapabilityQueryBuilder creates a SysexCommandCapabilityQueryBuilder
+func (m *_SysexCommandCapabilityQuery) CreateSysexCommandCapabilityQueryBuilder() SysexCommandCapabilityQueryBuilder {
+	if m == nil {
+		return NewSysexCommandCapabilityQueryBuilder()
+	}
+	return &_SysexCommandCapabilityQueryBuilder{_SysexCommandCapabilityQuery: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

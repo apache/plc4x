@@ -46,6 +46,8 @@ type BACnetConstructedDataTransactionNotificationClass interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTransactionNotificationClass is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTransactionNotificationClass()
+	// CreateBuilder creates a BACnetConstructedDataTransactionNotificationClassBuilder
+	CreateBACnetConstructedDataTransactionNotificationClassBuilder() BACnetConstructedDataTransactionNotificationClassBuilder
 }
 
 // _BACnetConstructedDataTransactionNotificationClass is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTransactionNotificationClass(openingTag BACnetOpeni
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTransactionNotificationClassBuilder is a builder for BACnetConstructedDataTransactionNotificationClass
+type BACnetConstructedDataTransactionNotificationClassBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(transactionNotificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTransactionNotificationClassBuilder
+	// WithTransactionNotificationClass adds TransactionNotificationClass (property field)
+	WithTransactionNotificationClass(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTransactionNotificationClassBuilder
+	// WithTransactionNotificationClassBuilder adds TransactionNotificationClass (property field) which is build by the builder
+	WithTransactionNotificationClassBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTransactionNotificationClassBuilder
+	// Build builds the BACnetConstructedDataTransactionNotificationClass or returns an error if something is wrong
+	Build() (BACnetConstructedDataTransactionNotificationClass, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTransactionNotificationClass
+}
+
+// NewBACnetConstructedDataTransactionNotificationClassBuilder() creates a BACnetConstructedDataTransactionNotificationClassBuilder
+func NewBACnetConstructedDataTransactionNotificationClassBuilder() BACnetConstructedDataTransactionNotificationClassBuilder {
+	return &_BACnetConstructedDataTransactionNotificationClassBuilder{_BACnetConstructedDataTransactionNotificationClass: new(_BACnetConstructedDataTransactionNotificationClass)}
+}
+
+type _BACnetConstructedDataTransactionNotificationClassBuilder struct {
+	*_BACnetConstructedDataTransactionNotificationClass
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTransactionNotificationClassBuilder) = (*_BACnetConstructedDataTransactionNotificationClassBuilder)(nil)
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) WithMandatoryFields(transactionNotificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTransactionNotificationClassBuilder {
+	return m.WithTransactionNotificationClass(transactionNotificationClass)
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) WithTransactionNotificationClass(transactionNotificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTransactionNotificationClassBuilder {
+	m.TransactionNotificationClass = transactionNotificationClass
+	return m
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) WithTransactionNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTransactionNotificationClassBuilder {
+	builder := builderSupplier(m.TransactionNotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.TransactionNotificationClass, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) Build() (BACnetConstructedDataTransactionNotificationClass, error) {
+	if m.TransactionNotificationClass == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'transactionNotificationClass' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTransactionNotificationClass.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) MustBuild() BACnetConstructedDataTransactionNotificationClass {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTransactionNotificationClassBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTransactionNotificationClassBuilder()
+}
+
+// CreateBACnetConstructedDataTransactionNotificationClassBuilder creates a BACnetConstructedDataTransactionNotificationClassBuilder
+func (m *_BACnetConstructedDataTransactionNotificationClass) CreateBACnetConstructedDataTransactionNotificationClassBuilder() BACnetConstructedDataTransactionNotificationClassBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTransactionNotificationClassBuilder()
+	}
+	return &_BACnetConstructedDataTransactionNotificationClassBuilder{_BACnetConstructedDataTransactionNotificationClass: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

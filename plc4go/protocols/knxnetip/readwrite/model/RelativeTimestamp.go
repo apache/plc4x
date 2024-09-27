@@ -43,6 +43,8 @@ type RelativeTimestamp interface {
 	GetTimestamp() uint16
 	// IsRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRelativeTimestamp()
+	// CreateBuilder creates a RelativeTimestampBuilder
+	CreateRelativeTimestampBuilder() RelativeTimestampBuilder
 }
 
 // _RelativeTimestamp is the data-structure of this message
@@ -56,6 +58,78 @@ var _ RelativeTimestamp = (*_RelativeTimestamp)(nil)
 func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
 	return &_RelativeTimestamp{Timestamp: timestamp}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RelativeTimestampBuilder is a builder for RelativeTimestamp
+type RelativeTimestampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp uint16) RelativeTimestampBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(uint16) RelativeTimestampBuilder
+	// Build builds the RelativeTimestamp or returns an error if something is wrong
+	Build() (RelativeTimestamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RelativeTimestamp
+}
+
+// NewRelativeTimestampBuilder() creates a RelativeTimestampBuilder
+func NewRelativeTimestampBuilder() RelativeTimestampBuilder {
+	return &_RelativeTimestampBuilder{_RelativeTimestamp: new(_RelativeTimestamp)}
+}
+
+type _RelativeTimestampBuilder struct {
+	*_RelativeTimestamp
+
+	err *utils.MultiError
+}
+
+var _ (RelativeTimestampBuilder) = (*_RelativeTimestampBuilder)(nil)
+
+func (m *_RelativeTimestampBuilder) WithMandatoryFields(timestamp uint16) RelativeTimestampBuilder {
+	return m.WithTimestamp(timestamp)
+}
+
+func (m *_RelativeTimestampBuilder) WithTimestamp(timestamp uint16) RelativeTimestampBuilder {
+	m.Timestamp = timestamp
+	return m
+}
+
+func (m *_RelativeTimestampBuilder) Build() (RelativeTimestamp, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RelativeTimestamp.deepCopy(), nil
+}
+
+func (m *_RelativeTimestampBuilder) MustBuild() RelativeTimestamp {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RelativeTimestampBuilder) DeepCopy() any {
+	return m.CreateRelativeTimestampBuilder()
+}
+
+// CreateRelativeTimestampBuilder creates a RelativeTimestampBuilder
+func (m *_RelativeTimestamp) CreateRelativeTimestampBuilder() RelativeTimestampBuilder {
+	if m == nil {
+		return NewRelativeTimestampBuilder()
+	}
+	return &_RelativeTimestampBuilder{_RelativeTimestamp: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

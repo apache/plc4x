@@ -46,6 +46,8 @@ type BACnetConstructedDataObjectPropertyReference interface {
 	GetActualValue() BACnetDeviceObjectPropertyReference
 	// IsBACnetConstructedDataObjectPropertyReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectPropertyReference()
+	// CreateBuilder creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+	CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder
 }
 
 // _BACnetConstructedDataObjectPropertyReference is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectPropertyReferenceBuilder is a builder for BACnetConstructedDataObjectPropertyReference
+type BACnetConstructedDataObjectPropertyReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// WithPropertyReference adds PropertyReference (property field)
+	WithPropertyReference(BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// WithPropertyReferenceBuilder adds PropertyReference (property field) which is build by the builder
+	WithPropertyReferenceBuilder(func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// Build builds the BACnetConstructedDataObjectPropertyReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectPropertyReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectPropertyReference
+}
+
+// NewBACnetConstructedDataObjectPropertyReferenceBuilder() creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+func NewBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
+	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: new(_BACnetConstructedDataObjectPropertyReference)}
+}
+
+type _BACnetConstructedDataObjectPropertyReferenceBuilder struct {
+	*_BACnetConstructedDataObjectPropertyReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectPropertyReferenceBuilder) = (*_BACnetConstructedDataObjectPropertyReferenceBuilder)(nil)
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	return m.WithPropertyReference(propertyReference)
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReference(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	m.PropertyReference = propertyReference
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	builder := builderSupplier(m.PropertyReference.CreateBACnetDeviceObjectPropertyReferenceBuilder())
+	var err error
+	m.PropertyReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) Build() (BACnetConstructedDataObjectPropertyReference, error) {
+	if m.PropertyReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'propertyReference' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataObjectPropertyReference.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) MustBuild() BACnetConstructedDataObjectPropertyReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataObjectPropertyReferenceBuilder()
+}
+
+// CreateBACnetConstructedDataObjectPropertyReferenceBuilder creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+func (m *_BACnetConstructedDataObjectPropertyReference) CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataObjectPropertyReferenceBuilder()
+	}
+	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

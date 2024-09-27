@@ -40,6 +40,8 @@ type MeteringDataMeasureElectricity interface {
 	MeteringData
 	// IsMeteringDataMeasureElectricity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureElectricity()
+	// CreateBuilder creates a MeteringDataMeasureElectricityBuilder
+	CreateMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBuilder
 }
 
 // _MeteringDataMeasureElectricity is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMeteringDataMeasureElectricity(commandTypeContainer MeteringCommandTypeC
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataMeasureElectricityBuilder is a builder for MeteringDataMeasureElectricity
+type MeteringDataMeasureElectricityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MeteringDataMeasureElectricityBuilder
+	// Build builds the MeteringDataMeasureElectricity or returns an error if something is wrong
+	Build() (MeteringDataMeasureElectricity, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataMeasureElectricity
+}
+
+// NewMeteringDataMeasureElectricityBuilder() creates a MeteringDataMeasureElectricityBuilder
+func NewMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBuilder {
+	return &_MeteringDataMeasureElectricityBuilder{_MeteringDataMeasureElectricity: new(_MeteringDataMeasureElectricity)}
+}
+
+type _MeteringDataMeasureElectricityBuilder struct {
+	*_MeteringDataMeasureElectricity
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataMeasureElectricityBuilder) = (*_MeteringDataMeasureElectricityBuilder)(nil)
+
+func (m *_MeteringDataMeasureElectricityBuilder) WithMandatoryFields() MeteringDataMeasureElectricityBuilder {
+	return m
+}
+
+func (m *_MeteringDataMeasureElectricityBuilder) Build() (MeteringDataMeasureElectricity, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataMeasureElectricity.deepCopy(), nil
+}
+
+func (m *_MeteringDataMeasureElectricityBuilder) MustBuild() MeteringDataMeasureElectricity {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataMeasureElectricityBuilder) DeepCopy() any {
+	return m.CreateMeteringDataMeasureElectricityBuilder()
+}
+
+// CreateMeteringDataMeasureElectricityBuilder creates a MeteringDataMeasureElectricityBuilder
+func (m *_MeteringDataMeasureElectricity) CreateMeteringDataMeasureElectricityBuilder() MeteringDataMeasureElectricityBuilder {
+	if m == nil {
+		return NewMeteringDataMeasureElectricityBuilder()
+	}
+	return &_MeteringDataMeasureElectricityBuilder{_MeteringDataMeasureElectricity: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

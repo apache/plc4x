@@ -44,6 +44,8 @@ type BACnetConstructedDataMultiStateInputFaultValues interface {
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMultiStateInputFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateInputFaultValues()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateInputFaultValuesBuilder
+	CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstructedDataMultiStateInputFaultValuesBuilder
 }
 
 // _BACnetConstructedDataMultiStateInputFaultValues is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataMultiStateInputFaultValues(openingTag BACnetOpening
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateInputFaultValuesBuilder is a builder for BACnetConstructedDataMultiStateInputFaultValues
+type BACnetConstructedDataMultiStateInputFaultValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder
+	// WithFaultValues adds FaultValues (property field)
+	WithFaultValues(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder
+	// Build builds the BACnetConstructedDataMultiStateInputFaultValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateInputFaultValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateInputFaultValues
+}
+
+// NewBACnetConstructedDataMultiStateInputFaultValuesBuilder() creates a BACnetConstructedDataMultiStateInputFaultValuesBuilder
+func NewBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	return &_BACnetConstructedDataMultiStateInputFaultValuesBuilder{_BACnetConstructedDataMultiStateInputFaultValues: new(_BACnetConstructedDataMultiStateInputFaultValues)}
+}
+
+type _BACnetConstructedDataMultiStateInputFaultValuesBuilder struct {
+	*_BACnetConstructedDataMultiStateInputFaultValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateInputFaultValuesBuilder) = (*_BACnetConstructedDataMultiStateInputFaultValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	return m.WithFaultValues(faultValues...)
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) WithFaultValues(faultValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	m.FaultValues = faultValues
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) Build() (BACnetConstructedDataMultiStateInputFaultValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMultiStateInputFaultValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) MustBuild() BACnetConstructedDataMultiStateInputFaultValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMultiStateInputFaultValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder()
+}
+
+// CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder creates a BACnetConstructedDataMultiStateInputFaultValuesBuilder
+func (m *_BACnetConstructedDataMultiStateInputFaultValues) CreateBACnetConstructedDataMultiStateInputFaultValuesBuilder() BACnetConstructedDataMultiStateInputFaultValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMultiStateInputFaultValuesBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateInputFaultValuesBuilder{_BACnetConstructedDataMultiStateInputFaultValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataDoorStatus interface {
 	GetActualValue() BACnetDoorStatusTagged
 	// IsBACnetConstructedDataDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDoorStatus()
+	// CreateBuilder creates a BACnetConstructedDataDoorStatusBuilder
+	CreateBACnetConstructedDataDoorStatusBuilder() BACnetConstructedDataDoorStatusBuilder
 }
 
 // _BACnetConstructedDataDoorStatus is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDoorStatus(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDoorStatusBuilder is a builder for BACnetConstructedDataDoorStatus
+type BACnetConstructedDataDoorStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder
+	// WithDoorStatus adds DoorStatus (property field)
+	WithDoorStatus(BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder
+	// WithDoorStatusBuilder adds DoorStatus (property field) which is build by the builder
+	WithDoorStatusBuilder(func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetConstructedDataDoorStatusBuilder
+	// Build builds the BACnetConstructedDataDoorStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataDoorStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDoorStatus
+}
+
+// NewBACnetConstructedDataDoorStatusBuilder() creates a BACnetConstructedDataDoorStatusBuilder
+func NewBACnetConstructedDataDoorStatusBuilder() BACnetConstructedDataDoorStatusBuilder {
+	return &_BACnetConstructedDataDoorStatusBuilder{_BACnetConstructedDataDoorStatus: new(_BACnetConstructedDataDoorStatus)}
+}
+
+type _BACnetConstructedDataDoorStatusBuilder struct {
+	*_BACnetConstructedDataDoorStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDoorStatusBuilder) = (*_BACnetConstructedDataDoorStatusBuilder)(nil)
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) WithMandatoryFields(doorStatus BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder {
+	return m.WithDoorStatus(doorStatus)
+}
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) WithDoorStatus(doorStatus BACnetDoorStatusTagged) BACnetConstructedDataDoorStatusBuilder {
+	m.DoorStatus = doorStatus
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) WithDoorStatusBuilder(builderSupplier func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetConstructedDataDoorStatusBuilder {
+	builder := builderSupplier(m.DoorStatus.CreateBACnetDoorStatusTaggedBuilder())
+	var err error
+	m.DoorStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) Build() (BACnetConstructedDataDoorStatus, error) {
+	if m.DoorStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doorStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDoorStatus.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) MustBuild() BACnetConstructedDataDoorStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDoorStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDoorStatusBuilder()
+}
+
+// CreateBACnetConstructedDataDoorStatusBuilder creates a BACnetConstructedDataDoorStatusBuilder
+func (m *_BACnetConstructedDataDoorStatus) CreateBACnetConstructedDataDoorStatusBuilder() BACnetConstructedDataDoorStatusBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDoorStatusBuilder()
+	}
+	return &_BACnetConstructedDataDoorStatusBuilder{_BACnetConstructedDataDoorStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

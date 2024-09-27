@@ -40,6 +40,8 @@ type BACnetConstructedDataLiftAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataLiftAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLiftAll()
+	// CreateBuilder creates a BACnetConstructedDataLiftAllBuilder
+	CreateBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilder
 }
 
 // _BACnetConstructedDataLiftAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataLiftAll(openingTag BACnetOpeningTag, peekedTagHeade
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLiftAllBuilder is a builder for BACnetConstructedDataLiftAll
+type BACnetConstructedDataLiftAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataLiftAllBuilder
+	// Build builds the BACnetConstructedDataLiftAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataLiftAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLiftAll
+}
+
+// NewBACnetConstructedDataLiftAllBuilder() creates a BACnetConstructedDataLiftAllBuilder
+func NewBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilder {
+	return &_BACnetConstructedDataLiftAllBuilder{_BACnetConstructedDataLiftAll: new(_BACnetConstructedDataLiftAll)}
+}
+
+type _BACnetConstructedDataLiftAllBuilder struct {
+	*_BACnetConstructedDataLiftAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLiftAllBuilder) = (*_BACnetConstructedDataLiftAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataLiftAllBuilder) WithMandatoryFields() BACnetConstructedDataLiftAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataLiftAllBuilder) Build() (BACnetConstructedDataLiftAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLiftAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLiftAllBuilder) MustBuild() BACnetConstructedDataLiftAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLiftAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLiftAllBuilder()
+}
+
+// CreateBACnetConstructedDataLiftAllBuilder creates a BACnetConstructedDataLiftAllBuilder
+func (m *_BACnetConstructedDataLiftAll) CreateBACnetConstructedDataLiftAllBuilder() BACnetConstructedDataLiftAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLiftAllBuilder()
+	}
+	return &_BACnetConstructedDataLiftAllBuilder{_BACnetConstructedDataLiftAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

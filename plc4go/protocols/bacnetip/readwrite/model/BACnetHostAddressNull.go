@@ -44,6 +44,8 @@ type BACnetHostAddressNull interface {
 	GetNone() BACnetContextTagNull
 	// IsBACnetHostAddressNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddressNull()
+	// CreateBuilder creates a BACnetHostAddressNullBuilder
+	CreateBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder
 }
 
 // _BACnetHostAddressNull is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetHostAddressNull(peekedTagHeader BACnetTagHeader, none BACnetContex
 	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostAddressNullBuilder is a builder for BACnetHostAddressNull
+type BACnetHostAddressNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(none BACnetContextTagNull) BACnetHostAddressNullBuilder
+	// WithNone adds None (property field)
+	WithNone(BACnetContextTagNull) BACnetHostAddressNullBuilder
+	// WithNoneBuilder adds None (property field) which is build by the builder
+	WithNoneBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetHostAddressNullBuilder
+	// Build builds the BACnetHostAddressNull or returns an error if something is wrong
+	Build() (BACnetHostAddressNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostAddressNull
+}
+
+// NewBACnetHostAddressNullBuilder() creates a BACnetHostAddressNullBuilder
+func NewBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder {
+	return &_BACnetHostAddressNullBuilder{_BACnetHostAddressNull: new(_BACnetHostAddressNull)}
+}
+
+type _BACnetHostAddressNullBuilder struct {
+	*_BACnetHostAddressNull
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostAddressNullBuilder) = (*_BACnetHostAddressNullBuilder)(nil)
+
+func (m *_BACnetHostAddressNullBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
+	return m.WithNone(none)
+}
+
+func (m *_BACnetHostAddressNullBuilder) WithNone(none BACnetContextTagNull) BACnetHostAddressNullBuilder {
+	m.None = none
+	return m
+}
+
+func (m *_BACnetHostAddressNullBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetHostAddressNullBuilder {
+	builder := builderSupplier(m.None.CreateBACnetContextTagNullBuilder())
+	var err error
+	m.None, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetHostAddressNullBuilder) Build() (BACnetHostAddressNull, error) {
+	if m.None == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'none' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetHostAddressNull.deepCopy(), nil
+}
+
+func (m *_BACnetHostAddressNullBuilder) MustBuild() BACnetHostAddressNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetHostAddressNullBuilder) DeepCopy() any {
+	return m.CreateBACnetHostAddressNullBuilder()
+}
+
+// CreateBACnetHostAddressNullBuilder creates a BACnetHostAddressNullBuilder
+func (m *_BACnetHostAddressNull) CreateBACnetHostAddressNullBuilder() BACnetHostAddressNullBuilder {
+	if m == nil {
+		return NewBACnetHostAddressNullBuilder()
+	}
+	return &_BACnetHostAddressNullBuilder{_BACnetHostAddressNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

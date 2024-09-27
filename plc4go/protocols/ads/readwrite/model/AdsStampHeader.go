@@ -47,6 +47,8 @@ type AdsStampHeader interface {
 	GetAdsNotificationSamples() []AdsNotificationSample
 	// IsAdsStampHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsStampHeader()
+	// CreateBuilder creates a AdsStampHeaderBuilder
+	CreateAdsStampHeaderBuilder() AdsStampHeaderBuilder
 }
 
 // _AdsStampHeader is the data-structure of this message
@@ -62,6 +64,92 @@ var _ AdsStampHeader = (*_AdsStampHeader)(nil)
 func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) *_AdsStampHeader {
 	return &_AdsStampHeader{Timestamp: timestamp, Samples: samples, AdsNotificationSamples: adsNotificationSamples}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsStampHeaderBuilder is a builder for AdsStampHeader
+type AdsStampHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) AdsStampHeaderBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(uint64) AdsStampHeaderBuilder
+	// WithSamples adds Samples (property field)
+	WithSamples(uint32) AdsStampHeaderBuilder
+	// WithAdsNotificationSamples adds AdsNotificationSamples (property field)
+	WithAdsNotificationSamples(...AdsNotificationSample) AdsStampHeaderBuilder
+	// Build builds the AdsStampHeader or returns an error if something is wrong
+	Build() (AdsStampHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsStampHeader
+}
+
+// NewAdsStampHeaderBuilder() creates a AdsStampHeaderBuilder
+func NewAdsStampHeaderBuilder() AdsStampHeaderBuilder {
+	return &_AdsStampHeaderBuilder{_AdsStampHeader: new(_AdsStampHeader)}
+}
+
+type _AdsStampHeaderBuilder struct {
+	*_AdsStampHeader
+
+	err *utils.MultiError
+}
+
+var _ (AdsStampHeaderBuilder) = (*_AdsStampHeaderBuilder)(nil)
+
+func (m *_AdsStampHeaderBuilder) WithMandatoryFields(timestamp uint64, samples uint32, adsNotificationSamples []AdsNotificationSample) AdsStampHeaderBuilder {
+	return m.WithTimestamp(timestamp).WithSamples(samples).WithAdsNotificationSamples(adsNotificationSamples...)
+}
+
+func (m *_AdsStampHeaderBuilder) WithTimestamp(timestamp uint64) AdsStampHeaderBuilder {
+	m.Timestamp = timestamp
+	return m
+}
+
+func (m *_AdsStampHeaderBuilder) WithSamples(samples uint32) AdsStampHeaderBuilder {
+	m.Samples = samples
+	return m
+}
+
+func (m *_AdsStampHeaderBuilder) WithAdsNotificationSamples(adsNotificationSamples ...AdsNotificationSample) AdsStampHeaderBuilder {
+	m.AdsNotificationSamples = adsNotificationSamples
+	return m
+}
+
+func (m *_AdsStampHeaderBuilder) Build() (AdsStampHeader, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsStampHeader.deepCopy(), nil
+}
+
+func (m *_AdsStampHeaderBuilder) MustBuild() AdsStampHeader {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsStampHeaderBuilder) DeepCopy() any {
+	return m.CreateAdsStampHeaderBuilder()
+}
+
+// CreateAdsStampHeaderBuilder creates a AdsStampHeaderBuilder
+func (m *_AdsStampHeader) CreateAdsStampHeaderBuilder() AdsStampHeaderBuilder {
+	if m == nil {
+		return NewAdsStampHeaderBuilder()
+	}
+	return &_AdsStampHeaderBuilder{_AdsStampHeader: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

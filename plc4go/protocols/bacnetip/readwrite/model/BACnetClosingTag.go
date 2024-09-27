@@ -43,6 +43,8 @@ type BACnetClosingTag interface {
 	GetHeader() BACnetTagHeader
 	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClosingTag()
+	// CreateBuilder creates a BACnetClosingTagBuilder
+	CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder
 }
 
 // _BACnetClosingTag is the data-structure of this message
@@ -62,6 +64,99 @@ func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACn
 	}
 	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetClosingTagBuilder is a builder for BACnetClosingTag
+type BACnetClosingTagBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetClosingTagBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder
+	// Build builds the BACnetClosingTag or returns an error if something is wrong
+	Build() (BACnetClosingTag, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetClosingTag
+}
+
+// NewBACnetClosingTagBuilder() creates a BACnetClosingTagBuilder
+func NewBACnetClosingTagBuilder() BACnetClosingTagBuilder {
+	return &_BACnetClosingTagBuilder{_BACnetClosingTag: new(_BACnetClosingTag)}
+}
+
+type _BACnetClosingTagBuilder struct {
+	*_BACnetClosingTag
+
+	err *utils.MultiError
+}
+
+var _ (BACnetClosingTagBuilder) = (*_BACnetClosingTagBuilder)(nil)
+
+func (m *_BACnetClosingTagBuilder) WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder {
+	return m.WithHeader(header)
+}
+
+func (m *_BACnetClosingTagBuilder) WithHeader(header BACnetTagHeader) BACnetClosingTagBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetClosingTagBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetClosingTagBuilder) Build() (BACnetClosingTag, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetClosingTag.deepCopy(), nil
+}
+
+func (m *_BACnetClosingTagBuilder) MustBuild() BACnetClosingTag {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetClosingTagBuilder) DeepCopy() any {
+	return m.CreateBACnetClosingTagBuilder()
+}
+
+// CreateBACnetClosingTagBuilder creates a BACnetClosingTagBuilder
+func (m *_BACnetClosingTag) CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder {
+	if m == nil {
+		return NewBACnetClosingTagBuilder()
+	}
+	return &_BACnetClosingTagBuilder{_BACnetClosingTag: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

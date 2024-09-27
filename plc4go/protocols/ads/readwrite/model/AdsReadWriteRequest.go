@@ -52,6 +52,8 @@ type AdsReadWriteRequest interface {
 	GetData() []byte
 	// IsAdsReadWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadWriteRequest()
+	// CreateBuilder creates a AdsReadWriteRequestBuilder
+	CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder
 }
 
 // _AdsReadWriteRequest is the data-structure of this message
@@ -80,6 +82,106 @@ func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourc
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadWriteRequestBuilder is a builder for AdsReadWriteRequest
+type AdsReadWriteRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder
+	// WithIndexGroup adds IndexGroup (property field)
+	WithIndexGroup(uint32) AdsReadWriteRequestBuilder
+	// WithIndexOffset adds IndexOffset (property field)
+	WithIndexOffset(uint32) AdsReadWriteRequestBuilder
+	// WithReadLength adds ReadLength (property field)
+	WithReadLength(uint32) AdsReadWriteRequestBuilder
+	// WithItems adds Items (property field)
+	WithItems(...AdsMultiRequestItem) AdsReadWriteRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsReadWriteRequestBuilder
+	// Build builds the AdsReadWriteRequest or returns an error if something is wrong
+	Build() (AdsReadWriteRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadWriteRequest
+}
+
+// NewAdsReadWriteRequestBuilder() creates a AdsReadWriteRequestBuilder
+func NewAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
+	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: new(_AdsReadWriteRequest)}
+}
+
+type _AdsReadWriteRequestBuilder struct {
+	*_AdsReadWriteRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadWriteRequestBuilder) = (*_AdsReadWriteRequestBuilder)(nil)
+
+func (m *_AdsReadWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder {
+	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithReadLength(readLength).WithItems(items...).WithData(data...)
+}
+
+func (m *_AdsReadWriteRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadWriteRequestBuilder {
+	m.IndexGroup = indexGroup
+	return m
+}
+
+func (m *_AdsReadWriteRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadWriteRequestBuilder {
+	m.IndexOffset = indexOffset
+	return m
+}
+
+func (m *_AdsReadWriteRequestBuilder) WithReadLength(readLength uint32) AdsReadWriteRequestBuilder {
+	m.ReadLength = readLength
+	return m
+}
+
+func (m *_AdsReadWriteRequestBuilder) WithItems(items ...AdsMultiRequestItem) AdsReadWriteRequestBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_AdsReadWriteRequestBuilder) WithData(data ...byte) AdsReadWriteRequestBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AdsReadWriteRequestBuilder) Build() (AdsReadWriteRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsReadWriteRequest.deepCopy(), nil
+}
+
+func (m *_AdsReadWriteRequestBuilder) MustBuild() AdsReadWriteRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsReadWriteRequestBuilder) DeepCopy() any {
+	return m.CreateAdsReadWriteRequestBuilder()
+}
+
+// CreateAdsReadWriteRequestBuilder creates a AdsReadWriteRequestBuilder
+func (m *_AdsReadWriteRequest) CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
+	if m == nil {
+		return NewAdsReadWriteRequestBuilder()
+	}
+	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

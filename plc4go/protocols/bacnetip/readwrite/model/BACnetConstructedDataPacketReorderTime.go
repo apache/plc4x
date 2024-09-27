@@ -46,6 +46,8 @@ type BACnetConstructedDataPacketReorderTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPacketReorderTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPacketReorderTime()
+	// CreateBuilder creates a BACnetConstructedDataPacketReorderTimeBuilder
+	CreateBACnetConstructedDataPacketReorderTimeBuilder() BACnetConstructedDataPacketReorderTimeBuilder
 }
 
 // _BACnetConstructedDataPacketReorderTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPacketReorderTime(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPacketReorderTimeBuilder is a builder for BACnetConstructedDataPacketReorderTime
+type BACnetConstructedDataPacketReorderTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(packetReorderTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPacketReorderTimeBuilder
+	// WithPacketReorderTime adds PacketReorderTime (property field)
+	WithPacketReorderTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPacketReorderTimeBuilder
+	// WithPacketReorderTimeBuilder adds PacketReorderTime (property field) which is build by the builder
+	WithPacketReorderTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPacketReorderTimeBuilder
+	// Build builds the BACnetConstructedDataPacketReorderTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataPacketReorderTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPacketReorderTime
+}
+
+// NewBACnetConstructedDataPacketReorderTimeBuilder() creates a BACnetConstructedDataPacketReorderTimeBuilder
+func NewBACnetConstructedDataPacketReorderTimeBuilder() BACnetConstructedDataPacketReorderTimeBuilder {
+	return &_BACnetConstructedDataPacketReorderTimeBuilder{_BACnetConstructedDataPacketReorderTime: new(_BACnetConstructedDataPacketReorderTime)}
+}
+
+type _BACnetConstructedDataPacketReorderTimeBuilder struct {
+	*_BACnetConstructedDataPacketReorderTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPacketReorderTimeBuilder) = (*_BACnetConstructedDataPacketReorderTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) WithMandatoryFields(packetReorderTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPacketReorderTimeBuilder {
+	return m.WithPacketReorderTime(packetReorderTime)
+}
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) WithPacketReorderTime(packetReorderTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPacketReorderTimeBuilder {
+	m.PacketReorderTime = packetReorderTime
+	return m
+}
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) WithPacketReorderTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPacketReorderTimeBuilder {
+	builder := builderSupplier(m.PacketReorderTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.PacketReorderTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) Build() (BACnetConstructedDataPacketReorderTime, error) {
+	if m.PacketReorderTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'packetReorderTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPacketReorderTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) MustBuild() BACnetConstructedDataPacketReorderTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPacketReorderTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPacketReorderTimeBuilder()
+}
+
+// CreateBACnetConstructedDataPacketReorderTimeBuilder creates a BACnetConstructedDataPacketReorderTimeBuilder
+func (m *_BACnetConstructedDataPacketReorderTime) CreateBACnetConstructedDataPacketReorderTimeBuilder() BACnetConstructedDataPacketReorderTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPacketReorderTimeBuilder()
+	}
+	return &_BACnetConstructedDataPacketReorderTimeBuilder{_BACnetConstructedDataPacketReorderTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

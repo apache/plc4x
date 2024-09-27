@@ -43,12 +43,16 @@ type S7Parameter interface {
 	utils.Copyable
 	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
+	// CreateBuilder creates a S7ParameterBuilder
+	CreateS7ParameterBuilder() S7ParameterBuilder
 }
 
 // S7ParameterContract provides a set of functions which can be overwritten by a sub struct
 type S7ParameterContract interface {
 	// IsS7Parameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Parameter()
+	// CreateBuilder creates a S7ParameterBuilder
+	CreateS7ParameterBuilder() S7ParameterBuilder
 }
 
 // S7ParameterRequirements provides a set of functions which need to be implemented by a sub struct
@@ -72,6 +76,71 @@ var _ S7ParameterContract = (*_S7Parameter)(nil)
 func NewS7Parameter() *_S7Parameter {
 	return &_S7Parameter{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterBuilder is a builder for S7Parameter
+type S7ParameterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7ParameterBuilder
+	// Build builds the S7Parameter or returns an error if something is wrong
+	Build() (S7ParameterContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterContract
+}
+
+// NewS7ParameterBuilder() creates a S7ParameterBuilder
+func NewS7ParameterBuilder() S7ParameterBuilder {
+	return &_S7ParameterBuilder{_S7Parameter: new(_S7Parameter)}
+}
+
+type _S7ParameterBuilder struct {
+	*_S7Parameter
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterBuilder) = (*_S7ParameterBuilder)(nil)
+
+func (m *_S7ParameterBuilder) WithMandatoryFields() S7ParameterBuilder {
+	return m
+}
+
+func (m *_S7ParameterBuilder) Build() (S7ParameterContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7Parameter.deepCopy(), nil
+}
+
+func (m *_S7ParameterBuilder) MustBuild() S7ParameterContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7ParameterBuilder) DeepCopy() any {
+	return m.CreateS7ParameterBuilder()
+}
+
+// CreateS7ParameterBuilder creates a S7ParameterBuilder
+func (m *_S7Parameter) CreateS7ParameterBuilder() S7ParameterBuilder {
+	if m == nil {
+		return NewS7ParameterBuilder()
+	}
+	return &_S7ParameterBuilder{_S7Parameter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastS7Parameter(structType any) S7Parameter {

@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime interface
 	GetDateTimeValue() BACnetDateTimeEnclosed
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime(openin
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	return m.WithDateTimeValue(dateTimeValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	m.DateTimeValue = dateTimeValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	m.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
+	if m.DateTimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

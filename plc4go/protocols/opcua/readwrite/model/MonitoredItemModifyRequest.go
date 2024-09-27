@@ -46,6 +46,8 @@ type MonitoredItemModifyRequest interface {
 	GetRequestedParameters() ExtensionObjectDefinition
 	// IsMonitoredItemModifyRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemModifyRequest()
+	// CreateBuilder creates a MonitoredItemModifyRequestBuilder
+	CreateMonitoredItemModifyRequestBuilder() MonitoredItemModifyRequestBuilder
 }
 
 // _MonitoredItemModifyRequest is the data-structure of this message
@@ -71,6 +73,91 @@ func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters E
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredItemModifyRequestBuilder is a builder for MonitoredItemModifyRequest
+type MonitoredItemModifyRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder
+	// WithMonitoredItemId adds MonitoredItemId (property field)
+	WithMonitoredItemId(uint32) MonitoredItemModifyRequestBuilder
+	// WithRequestedParameters adds RequestedParameters (property field)
+	WithRequestedParameters(ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder
+	// Build builds the MonitoredItemModifyRequest or returns an error if something is wrong
+	Build() (MonitoredItemModifyRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredItemModifyRequest
+}
+
+// NewMonitoredItemModifyRequestBuilder() creates a MonitoredItemModifyRequestBuilder
+func NewMonitoredItemModifyRequestBuilder() MonitoredItemModifyRequestBuilder {
+	return &_MonitoredItemModifyRequestBuilder{_MonitoredItemModifyRequest: new(_MonitoredItemModifyRequest)}
+}
+
+type _MonitoredItemModifyRequestBuilder struct {
+	*_MonitoredItemModifyRequest
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredItemModifyRequestBuilder) = (*_MonitoredItemModifyRequestBuilder)(nil)
+
+func (m *_MonitoredItemModifyRequestBuilder) WithMandatoryFields(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder {
+	return m.WithMonitoredItemId(monitoredItemId).WithRequestedParameters(requestedParameters)
+}
+
+func (m *_MonitoredItemModifyRequestBuilder) WithMonitoredItemId(monitoredItemId uint32) MonitoredItemModifyRequestBuilder {
+	m.MonitoredItemId = monitoredItemId
+	return m
+}
+
+func (m *_MonitoredItemModifyRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder {
+	m.RequestedParameters = requestedParameters
+	return m
+}
+
+func (m *_MonitoredItemModifyRequestBuilder) Build() (MonitoredItemModifyRequest, error) {
+	if m.RequestedParameters == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestedParameters' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MonitoredItemModifyRequest.deepCopy(), nil
+}
+
+func (m *_MonitoredItemModifyRequestBuilder) MustBuild() MonitoredItemModifyRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MonitoredItemModifyRequestBuilder) DeepCopy() any {
+	return m.CreateMonitoredItemModifyRequestBuilder()
+}
+
+// CreateMonitoredItemModifyRequestBuilder creates a MonitoredItemModifyRequestBuilder
+func (m *_MonitoredItemModifyRequest) CreateMonitoredItemModifyRequestBuilder() MonitoredItemModifyRequestBuilder {
+	if m == nil {
+		return NewMonitoredItemModifyRequestBuilder()
+	}
+	return &_MonitoredItemModifyRequestBuilder{_MonitoredItemModifyRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

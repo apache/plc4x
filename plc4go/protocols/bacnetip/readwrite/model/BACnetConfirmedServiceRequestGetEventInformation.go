@@ -44,6 +44,8 @@ type BACnetConfirmedServiceRequestGetEventInformation interface {
 	GetLastReceivedObjectIdentifier() BACnetContextTagObjectIdentifier
 	// IsBACnetConfirmedServiceRequestGetEventInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestGetEventInformation()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestGetEventInformationBuilder
+	CreateBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirmedServiceRequestGetEventInformationBuilder
 }
 
 // _BACnetConfirmedServiceRequestGetEventInformation is the data-structure of this message
@@ -64,6 +66,93 @@ func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdent
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestGetEventInformationBuilder is a builder for BACnetConfirmedServiceRequestGetEventInformation
+type BACnetConfirmedServiceRequestGetEventInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConfirmedServiceRequestGetEventInformationBuilder
+	// WithLastReceivedObjectIdentifier adds LastReceivedObjectIdentifier (property field)
+	WithOptionalLastReceivedObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestGetEventInformationBuilder
+	// WithOptionalLastReceivedObjectIdentifierBuilder adds LastReceivedObjectIdentifier (property field) which is build by the builder
+	WithOptionalLastReceivedObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestGetEventInformationBuilder
+	// Build builds the BACnetConfirmedServiceRequestGetEventInformation or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestGetEventInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestGetEventInformation
+}
+
+// NewBACnetConfirmedServiceRequestGetEventInformationBuilder() creates a BACnetConfirmedServiceRequestGetEventInformationBuilder
+func NewBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	return &_BACnetConfirmedServiceRequestGetEventInformationBuilder{_BACnetConfirmedServiceRequestGetEventInformation: new(_BACnetConfirmedServiceRequestGetEventInformation)}
+}
+
+type _BACnetConfirmedServiceRequestGetEventInformationBuilder struct {
+	*_BACnetConfirmedServiceRequestGetEventInformation
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestGetEventInformationBuilder) = (*_BACnetConfirmedServiceRequestGetEventInformationBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifier(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	m.LastReceivedObjectIdentifier = lastReceivedObjectIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) WithOptionalLastReceivedObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	builder := builderSupplier(m.LastReceivedObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.LastReceivedObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) Build() (BACnetConfirmedServiceRequestGetEventInformation, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestGetEventInformation.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) MustBuild() BACnetConfirmedServiceRequestGetEventInformation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformationBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestGetEventInformationBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestGetEventInformationBuilder creates a BACnetConfirmedServiceRequestGetEventInformationBuilder
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) CreateBACnetConfirmedServiceRequestGetEventInformationBuilder() BACnetConfirmedServiceRequestGetEventInformationBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestGetEventInformationBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestGetEventInformationBuilder{_BACnetConfirmedServiceRequestGetEventInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

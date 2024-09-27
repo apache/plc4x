@@ -45,6 +45,8 @@ type BACnetNotifyTypeTagged interface {
 	GetValue() BACnetNotifyType
 	// IsBACnetNotifyTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotifyTypeTagged()
+	// CreateBuilder creates a BACnetNotifyTypeTaggedBuilder
+	CreateBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder
 }
 
 // _BACnetNotifyTypeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, t
 	}
 	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotifyTypeTaggedBuilder is a builder for BACnetNotifyTypeTagged
+type BACnetNotifyTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetNotifyTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
+	// Build builds the BACnetNotifyTypeTagged or returns an error if something is wrong
+	Build() (BACnetNotifyTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotifyTypeTagged
+}
+
+// NewBACnetNotifyTypeTaggedBuilder() creates a BACnetNotifyTypeTaggedBuilder
+func NewBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder {
+	return &_BACnetNotifyTypeTaggedBuilder{_BACnetNotifyTypeTagged: new(_BACnetNotifyTypeTagged)}
+}
+
+type _BACnetNotifyTypeTaggedBuilder struct {
+	*_BACnetNotifyTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotifyTypeTaggedBuilder) = (*_BACnetNotifyTypeTaggedBuilder)(nil)
+
+func (m *_BACnetNotifyTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNotifyTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) WithValue(value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) Build() (BACnetNotifyTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotifyTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) MustBuild() BACnetNotifyTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotifyTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetNotifyTypeTaggedBuilder()
+}
+
+// CreateBACnetNotifyTypeTaggedBuilder creates a BACnetNotifyTypeTaggedBuilder
+func (m *_BACnetNotifyTypeTagged) CreateBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetNotifyTypeTaggedBuilder()
+	}
+	return &_BACnetNotifyTypeTaggedBuilder{_BACnetNotifyTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

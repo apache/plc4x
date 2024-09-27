@@ -43,6 +43,8 @@ type ErrorReportingData interface {
 	utils.Copyable
 	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingData()
+	// CreateBuilder creates a ErrorReportingDataBuilder
+	CreateErrorReportingDataBuilder() ErrorReportingDataBuilder
 }
 
 // ErrorReportingDataContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type ErrorReportingDataContract interface {
 	GetCommandType() ErrorReportingCommandType
 	// IsErrorReportingData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingData()
+	// CreateBuilder creates a ErrorReportingDataBuilder
+	CreateErrorReportingDataBuilder() ErrorReportingDataBuilder
 }
 
 // ErrorReportingDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +79,78 @@ var _ ErrorReportingDataContract = (*_ErrorReportingData)(nil)
 func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingData {
 	return &_ErrorReportingData{CommandTypeContainer: commandTypeContainer}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingDataBuilder is a builder for ErrorReportingData
+type ErrorReportingDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder
+	// Build builds the ErrorReportingData or returns an error if something is wrong
+	Build() (ErrorReportingDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingDataContract
+}
+
+// NewErrorReportingDataBuilder() creates a ErrorReportingDataBuilder
+func NewErrorReportingDataBuilder() ErrorReportingDataBuilder {
+	return &_ErrorReportingDataBuilder{_ErrorReportingData: new(_ErrorReportingData)}
+}
+
+type _ErrorReportingDataBuilder struct {
+	*_ErrorReportingData
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingDataBuilder) = (*_ErrorReportingDataBuilder)(nil)
+
+func (m *_ErrorReportingDataBuilder) WithMandatoryFields(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer)
+}
+
+func (m *_ErrorReportingDataBuilder) WithCommandTypeContainer(commandTypeContainer ErrorReportingCommandTypeContainer) ErrorReportingDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_ErrorReportingDataBuilder) Build() (ErrorReportingDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ErrorReportingData.deepCopy(), nil
+}
+
+func (m *_ErrorReportingDataBuilder) MustBuild() ErrorReportingDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorReportingDataBuilder) DeepCopy() any {
+	return m.CreateErrorReportingDataBuilder()
+}
+
+// CreateErrorReportingDataBuilder creates a ErrorReportingDataBuilder
+func (m *_ErrorReportingData) CreateErrorReportingDataBuilder() ErrorReportingDataBuilder {
+	if m == nil {
+		return NewErrorReportingDataBuilder()
+	}
+	return &_ErrorReportingDataBuilder{_ErrorReportingData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

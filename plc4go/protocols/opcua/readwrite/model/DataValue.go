@@ -65,6 +65,8 @@ type DataValue interface {
 	GetServerPicoseconds() *uint16
 	// IsDataValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataValue()
+	// CreateBuilder creates a DataValueBuilder
+	CreateDataValueBuilder() DataValueBuilder
 }
 
 // _DataValue is the data-structure of this message
@@ -91,6 +93,170 @@ var _ DataValue = (*_DataValue)(nil)
 func NewDataValue(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool, value Variant, statusCode StatusCode, sourceTimestamp *int64, sourcePicoseconds *uint16, serverTimestamp *int64, serverPicoseconds *uint16) *_DataValue {
 	return &_DataValue{ServerPicosecondsSpecified: serverPicosecondsSpecified, SourcePicosecondsSpecified: sourcePicosecondsSpecified, ServerTimestampSpecified: serverTimestampSpecified, SourceTimestampSpecified: sourceTimestampSpecified, StatusCodeSpecified: statusCodeSpecified, ValueSpecified: valueSpecified, Value: value, StatusCode: statusCode, SourceTimestamp: sourceTimestamp, SourcePicoseconds: sourcePicoseconds, ServerTimestamp: serverTimestamp, ServerPicoseconds: serverPicoseconds}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataValueBuilder is a builder for DataValue
+type DataValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool) DataValueBuilder
+	// WithServerPicosecondsSpecified adds ServerPicosecondsSpecified (property field)
+	WithServerPicosecondsSpecified(bool) DataValueBuilder
+	// WithSourcePicosecondsSpecified adds SourcePicosecondsSpecified (property field)
+	WithSourcePicosecondsSpecified(bool) DataValueBuilder
+	// WithServerTimestampSpecified adds ServerTimestampSpecified (property field)
+	WithServerTimestampSpecified(bool) DataValueBuilder
+	// WithSourceTimestampSpecified adds SourceTimestampSpecified (property field)
+	WithSourceTimestampSpecified(bool) DataValueBuilder
+	// WithStatusCodeSpecified adds StatusCodeSpecified (property field)
+	WithStatusCodeSpecified(bool) DataValueBuilder
+	// WithValueSpecified adds ValueSpecified (property field)
+	WithValueSpecified(bool) DataValueBuilder
+	// WithValue adds Value (property field)
+	WithOptionalValue(Variant) DataValueBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithOptionalStatusCode(StatusCode) DataValueBuilder
+	// WithOptionalStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithOptionalStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) DataValueBuilder
+	// WithSourceTimestamp adds SourceTimestamp (property field)
+	WithOptionalSourceTimestamp(int64) DataValueBuilder
+	// WithSourcePicoseconds adds SourcePicoseconds (property field)
+	WithOptionalSourcePicoseconds(uint16) DataValueBuilder
+	// WithServerTimestamp adds ServerTimestamp (property field)
+	WithOptionalServerTimestamp(int64) DataValueBuilder
+	// WithServerPicoseconds adds ServerPicoseconds (property field)
+	WithOptionalServerPicoseconds(uint16) DataValueBuilder
+	// Build builds the DataValue or returns an error if something is wrong
+	Build() (DataValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataValue
+}
+
+// NewDataValueBuilder() creates a DataValueBuilder
+func NewDataValueBuilder() DataValueBuilder {
+	return &_DataValueBuilder{_DataValue: new(_DataValue)}
+}
+
+type _DataValueBuilder struct {
+	*_DataValue
+
+	err *utils.MultiError
+}
+
+var _ (DataValueBuilder) = (*_DataValueBuilder)(nil)
+
+func (m *_DataValueBuilder) WithMandatoryFields(serverPicosecondsSpecified bool, sourcePicosecondsSpecified bool, serverTimestampSpecified bool, sourceTimestampSpecified bool, statusCodeSpecified bool, valueSpecified bool) DataValueBuilder {
+	return m.WithServerPicosecondsSpecified(serverPicosecondsSpecified).WithSourcePicosecondsSpecified(sourcePicosecondsSpecified).WithServerTimestampSpecified(serverTimestampSpecified).WithSourceTimestampSpecified(sourceTimestampSpecified).WithStatusCodeSpecified(statusCodeSpecified).WithValueSpecified(valueSpecified)
+}
+
+func (m *_DataValueBuilder) WithServerPicosecondsSpecified(serverPicosecondsSpecified bool) DataValueBuilder {
+	m.ServerPicosecondsSpecified = serverPicosecondsSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithSourcePicosecondsSpecified(sourcePicosecondsSpecified bool) DataValueBuilder {
+	m.SourcePicosecondsSpecified = sourcePicosecondsSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithServerTimestampSpecified(serverTimestampSpecified bool) DataValueBuilder {
+	m.ServerTimestampSpecified = serverTimestampSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithSourceTimestampSpecified(sourceTimestampSpecified bool) DataValueBuilder {
+	m.SourceTimestampSpecified = sourceTimestampSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithStatusCodeSpecified(statusCodeSpecified bool) DataValueBuilder {
+	m.StatusCodeSpecified = statusCodeSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithValueSpecified(valueSpecified bool) DataValueBuilder {
+	m.ValueSpecified = valueSpecified
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalValue(value Variant) DataValueBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalStatusCode(statusCode StatusCode) DataValueBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) DataValueBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalSourceTimestamp(sourceTimestamp int64) DataValueBuilder {
+	m.SourceTimestamp = &sourceTimestamp
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalSourcePicoseconds(sourcePicoseconds uint16) DataValueBuilder {
+	m.SourcePicoseconds = &sourcePicoseconds
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalServerTimestamp(serverTimestamp int64) DataValueBuilder {
+	m.ServerTimestamp = &serverTimestamp
+	return m
+}
+
+func (m *_DataValueBuilder) WithOptionalServerPicoseconds(serverPicoseconds uint16) DataValueBuilder {
+	m.ServerPicoseconds = &serverPicoseconds
+	return m
+}
+
+func (m *_DataValueBuilder) Build() (DataValue, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DataValue.deepCopy(), nil
+}
+
+func (m *_DataValueBuilder) MustBuild() DataValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DataValueBuilder) DeepCopy() any {
+	return m.CreateDataValueBuilder()
+}
+
+// CreateDataValueBuilder creates a DataValueBuilder
+func (m *_DataValue) CreateDataValueBuilder() DataValueBuilder {
+	if m == nil {
+		return NewDataValueBuilder()
+	}
+	return &_DataValueBuilder{_DataValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

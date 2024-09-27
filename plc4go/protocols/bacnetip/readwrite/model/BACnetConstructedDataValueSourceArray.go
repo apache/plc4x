@@ -48,6 +48,8 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataValueSourceArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueSourceArray()
+	// CreateBuilder creates a BACnetConstructedDataValueSourceArrayBuilder
+	CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder
 }
 
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueSourceArrayBuilder is a builder for BACnetConstructedDataValueSourceArray
+type BACnetConstructedDataValueSourceArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder
+	// WithVtClassesSupported adds VtClassesSupported (property field)
+	WithVtClassesSupported(...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder
+	// Build builds the BACnetConstructedDataValueSourceArray or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueSourceArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueSourceArray
+}
+
+// NewBACnetConstructedDataValueSourceArrayBuilder() creates a BACnetConstructedDataValueSourceArrayBuilder
+func NewBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
+	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: new(_BACnetConstructedDataValueSourceArray)}
+}
+
+type _BACnetConstructedDataValueSourceArrayBuilder struct {
+	*_BACnetConstructedDataValueSourceArray
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueSourceArrayBuilder) = (*_BACnetConstructedDataValueSourceArrayBuilder)(nil)
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	return m.WithVtClassesSupported(vtClassesSupported...)
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	m.VtClassesSupported = vtClassesSupported
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) Build() (BACnetConstructedDataValueSourceArray, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataValueSourceArray.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) MustBuild() BACnetConstructedDataValueSourceArray {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataValueSourceArrayBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataValueSourceArrayBuilder()
+}
+
+// CreateBACnetConstructedDataValueSourceArrayBuilder creates a BACnetConstructedDataValueSourceArrayBuilder
+func (m *_BACnetConstructedDataValueSourceArray) CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataValueSourceArrayBuilder()
+	}
+	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

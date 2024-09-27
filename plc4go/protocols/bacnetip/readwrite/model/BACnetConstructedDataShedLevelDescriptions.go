@@ -48,6 +48,8 @@ type BACnetConstructedDataShedLevelDescriptions interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataShedLevelDescriptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataShedLevelDescriptions()
+	// CreateBuilder creates a BACnetConstructedDataShedLevelDescriptionsBuilder
+	CreateBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDataShedLevelDescriptionsBuilder
 }
 
 // _BACnetConstructedDataShedLevelDescriptions is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataShedLevelDescriptions(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataShedLevelDescriptionsBuilder is a builder for BACnetConstructedDataShedLevelDescriptions
+type BACnetConstructedDataShedLevelDescriptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(shedLevelDescriptions []BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelDescriptionsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelDescriptionsBuilder
+	// WithShedLevelDescriptions adds ShedLevelDescriptions (property field)
+	WithShedLevelDescriptions(...BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder
+	// Build builds the BACnetConstructedDataShedLevelDescriptions or returns an error if something is wrong
+	Build() (BACnetConstructedDataShedLevelDescriptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataShedLevelDescriptions
+}
+
+// NewBACnetConstructedDataShedLevelDescriptionsBuilder() creates a BACnetConstructedDataShedLevelDescriptionsBuilder
+func NewBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDataShedLevelDescriptionsBuilder {
+	return &_BACnetConstructedDataShedLevelDescriptionsBuilder{_BACnetConstructedDataShedLevelDescriptions: new(_BACnetConstructedDataShedLevelDescriptions)}
+}
+
+type _BACnetConstructedDataShedLevelDescriptionsBuilder struct {
+	*_BACnetConstructedDataShedLevelDescriptions
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataShedLevelDescriptionsBuilder) = (*_BACnetConstructedDataShedLevelDescriptionsBuilder)(nil)
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithMandatoryFields(shedLevelDescriptions []BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	return m.WithShedLevelDescriptions(shedLevelDescriptions...)
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) WithShedLevelDescriptions(shedLevelDescriptions ...BACnetApplicationTagCharacterString) BACnetConstructedDataShedLevelDescriptionsBuilder {
+	m.ShedLevelDescriptions = shedLevelDescriptions
+	return m
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) Build() (BACnetConstructedDataShedLevelDescriptions, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataShedLevelDescriptions.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) MustBuild() BACnetConstructedDataShedLevelDescriptions {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataShedLevelDescriptionsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataShedLevelDescriptionsBuilder()
+}
+
+// CreateBACnetConstructedDataShedLevelDescriptionsBuilder creates a BACnetConstructedDataShedLevelDescriptionsBuilder
+func (m *_BACnetConstructedDataShedLevelDescriptions) CreateBACnetConstructedDataShedLevelDescriptionsBuilder() BACnetConstructedDataShedLevelDescriptionsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataShedLevelDescriptionsBuilder()
+	}
+	return &_BACnetConstructedDataShedLevelDescriptionsBuilder{_BACnetConstructedDataShedLevelDescriptions: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

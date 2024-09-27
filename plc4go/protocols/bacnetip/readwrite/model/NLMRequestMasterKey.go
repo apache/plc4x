@@ -46,6 +46,8 @@ type NLMRequestMasterKey interface {
 	GetEncryptionAndSignatureAlgorithms() []byte
 	// IsNLMRequestMasterKey is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMRequestMasterKey()
+	// CreateBuilder creates a NLMRequestMasterKeyBuilder
+	CreateNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder
 }
 
 // _NLMRequestMasterKey is the data-structure of this message
@@ -68,6 +70,85 @@ func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndS
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMRequestMasterKeyBuilder is a builder for NLMRequestMasterKey
+type NLMRequestMasterKeyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) NLMRequestMasterKeyBuilder
+	// WithNumberOfSupportedKeyAlgorithms adds NumberOfSupportedKeyAlgorithms (property field)
+	WithNumberOfSupportedKeyAlgorithms(uint8) NLMRequestMasterKeyBuilder
+	// WithEncryptionAndSignatureAlgorithms adds EncryptionAndSignatureAlgorithms (property field)
+	WithEncryptionAndSignatureAlgorithms(...byte) NLMRequestMasterKeyBuilder
+	// Build builds the NLMRequestMasterKey or returns an error if something is wrong
+	Build() (NLMRequestMasterKey, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMRequestMasterKey
+}
+
+// NewNLMRequestMasterKeyBuilder() creates a NLMRequestMasterKeyBuilder
+func NewNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder {
+	return &_NLMRequestMasterKeyBuilder{_NLMRequestMasterKey: new(_NLMRequestMasterKey)}
+}
+
+type _NLMRequestMasterKeyBuilder struct {
+	*_NLMRequestMasterKey
+
+	err *utils.MultiError
+}
+
+var _ (NLMRequestMasterKeyBuilder) = (*_NLMRequestMasterKeyBuilder)(nil)
+
+func (m *_NLMRequestMasterKeyBuilder) WithMandatoryFields(numberOfSupportedKeyAlgorithms uint8, encryptionAndSignatureAlgorithms []byte) NLMRequestMasterKeyBuilder {
+	return m.WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms).WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms...)
+}
+
+func (m *_NLMRequestMasterKeyBuilder) WithNumberOfSupportedKeyAlgorithms(numberOfSupportedKeyAlgorithms uint8) NLMRequestMasterKeyBuilder {
+	m.NumberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms
+	return m
+}
+
+func (m *_NLMRequestMasterKeyBuilder) WithEncryptionAndSignatureAlgorithms(encryptionAndSignatureAlgorithms ...byte) NLMRequestMasterKeyBuilder {
+	m.EncryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms
+	return m
+}
+
+func (m *_NLMRequestMasterKeyBuilder) Build() (NLMRequestMasterKey, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMRequestMasterKey.deepCopy(), nil
+}
+
+func (m *_NLMRequestMasterKeyBuilder) MustBuild() NLMRequestMasterKey {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMRequestMasterKeyBuilder) DeepCopy() any {
+	return m.CreateNLMRequestMasterKeyBuilder()
+}
+
+// CreateNLMRequestMasterKeyBuilder creates a NLMRequestMasterKeyBuilder
+func (m *_NLMRequestMasterKey) CreateNLMRequestMasterKeyBuilder() NLMRequestMasterKeyBuilder {
+	if m == nil {
+		return NewNLMRequestMasterKeyBuilder()
+	}
+	return &_NLMRequestMasterKeyBuilder{_NLMRequestMasterKey: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

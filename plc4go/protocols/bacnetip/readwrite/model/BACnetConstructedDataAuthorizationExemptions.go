@@ -44,6 +44,8 @@ type BACnetConstructedDataAuthorizationExemptions interface {
 	GetAuthorizationExemption() []BACnetAuthorizationExemptionTagged
 	// IsBACnetConstructedDataAuthorizationExemptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAuthorizationExemptions()
+	// CreateBuilder creates a BACnetConstructedDataAuthorizationExemptionsBuilder
+	CreateBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedDataAuthorizationExemptionsBuilder
 }
 
 // _BACnetConstructedDataAuthorizationExemptions is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataAuthorizationExemptions(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAuthorizationExemptionsBuilder is a builder for BACnetConstructedDataAuthorizationExemptions
+type BACnetConstructedDataAuthorizationExemptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder
+	// WithAuthorizationExemption adds AuthorizationExemption (property field)
+	WithAuthorizationExemption(...BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder
+	// Build builds the BACnetConstructedDataAuthorizationExemptions or returns an error if something is wrong
+	Build() (BACnetConstructedDataAuthorizationExemptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAuthorizationExemptions
+}
+
+// NewBACnetConstructedDataAuthorizationExemptionsBuilder() creates a BACnetConstructedDataAuthorizationExemptionsBuilder
+func NewBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedDataAuthorizationExemptionsBuilder {
+	return &_BACnetConstructedDataAuthorizationExemptionsBuilder{_BACnetConstructedDataAuthorizationExemptions: new(_BACnetConstructedDataAuthorizationExemptions)}
+}
+
+type _BACnetConstructedDataAuthorizationExemptionsBuilder struct {
+	*_BACnetConstructedDataAuthorizationExemptions
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAuthorizationExemptionsBuilder) = (*_BACnetConstructedDataAuthorizationExemptionsBuilder)(nil)
+
+func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithMandatoryFields(authorizationExemption []BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
+	return m.WithAuthorizationExemption(authorizationExemption...)
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) WithAuthorizationExemption(authorizationExemption ...BACnetAuthorizationExemptionTagged) BACnetConstructedDataAuthorizationExemptionsBuilder {
+	m.AuthorizationExemption = authorizationExemption
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) Build() (BACnetConstructedDataAuthorizationExemptions, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAuthorizationExemptions.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) MustBuild() BACnetConstructedDataAuthorizationExemptions {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAuthorizationExemptionsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAuthorizationExemptionsBuilder()
+}
+
+// CreateBACnetConstructedDataAuthorizationExemptionsBuilder creates a BACnetConstructedDataAuthorizationExemptionsBuilder
+func (m *_BACnetConstructedDataAuthorizationExemptions) CreateBACnetConstructedDataAuthorizationExemptionsBuilder() BACnetConstructedDataAuthorizationExemptionsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAuthorizationExemptionsBuilder()
+	}
+	return &_BACnetConstructedDataAuthorizationExemptionsBuilder{_BACnetConstructedDataAuthorizationExemptions: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -52,6 +52,8 @@ type TranslateBrowsePathsToNodeIdsResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsTranslateBrowsePathsToNodeIdsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTranslateBrowsePathsToNodeIdsResponse()
+	// CreateBuilder creates a TranslateBrowsePathsToNodeIdsResponseBuilder
+	CreateTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNodeIdsResponseBuilder
 }
 
 // _TranslateBrowsePathsToNodeIdsResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewTranslateBrowsePathsToNodeIdsResponse(responseHeader ExtensionObjectDefi
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TranslateBrowsePathsToNodeIdsResponseBuilder is a builder for TranslateBrowsePathsToNodeIdsResponse
+type TranslateBrowsePathsToNodeIdsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder
+	// Build builds the TranslateBrowsePathsToNodeIdsResponse or returns an error if something is wrong
+	Build() (TranslateBrowsePathsToNodeIdsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TranslateBrowsePathsToNodeIdsResponse
+}
+
+// NewTranslateBrowsePathsToNodeIdsResponseBuilder() creates a TranslateBrowsePathsToNodeIdsResponseBuilder
+func NewTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNodeIdsResponseBuilder {
+	return &_TranslateBrowsePathsToNodeIdsResponseBuilder{_TranslateBrowsePathsToNodeIdsResponse: new(_TranslateBrowsePathsToNodeIdsResponse)}
+}
+
+type _TranslateBrowsePathsToNodeIdsResponseBuilder struct {
+	*_TranslateBrowsePathsToNodeIdsResponse
+
+	err *utils.MultiError
+}
+
+var _ (TranslateBrowsePathsToNodeIdsResponseBuilder) = (*_TranslateBrowsePathsToNodeIdsResponseBuilder)(nil)
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfResults(noOfResults int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) TranslateBrowsePathsToNodeIdsResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) Build() (TranslateBrowsePathsToNodeIdsResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TranslateBrowsePathsToNodeIdsResponse.deepCopy(), nil
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) MustBuild() TranslateBrowsePathsToNodeIdsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TranslateBrowsePathsToNodeIdsResponseBuilder) DeepCopy() any {
+	return m.CreateTranslateBrowsePathsToNodeIdsResponseBuilder()
+}
+
+// CreateTranslateBrowsePathsToNodeIdsResponseBuilder creates a TranslateBrowsePathsToNodeIdsResponseBuilder
+func (m *_TranslateBrowsePathsToNodeIdsResponse) CreateTranslateBrowsePathsToNodeIdsResponseBuilder() TranslateBrowsePathsToNodeIdsResponseBuilder {
+	if m == nil {
+		return NewTranslateBrowsePathsToNodeIdsResponseBuilder()
+	}
+	return &_TranslateBrowsePathsToNodeIdsResponseBuilder{_TranslateBrowsePathsToNodeIdsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

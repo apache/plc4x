@@ -43,6 +43,8 @@ type DF1RequestMessage interface {
 	utils.Copyable
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
+	// CreateBuilder creates a DF1RequestMessageBuilder
+	CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder
 }
 
 // DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type DF1RequestMessageContract interface {
 	GetTransactionCounter() uint16
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
+	// CreateBuilder creates a DF1RequestMessageBuilder
+	CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder
 }
 
 // DF1RequestMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -84,6 +88,99 @@ var _ DF1RequestMessageContract = (*_DF1RequestMessage)(nil)
 func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1RequestMessage {
 	return &_DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1RequestMessageBuilder is a builder for DF1RequestMessage
+type DF1RequestMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(uint8) DF1RequestMessageBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(uint8) DF1RequestMessageBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) DF1RequestMessageBuilder
+	// WithTransactionCounter adds TransactionCounter (property field)
+	WithTransactionCounter(uint16) DF1RequestMessageBuilder
+	// Build builds the DF1RequestMessage or returns an error if something is wrong
+	Build() (DF1RequestMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1RequestMessageContract
+}
+
+// NewDF1RequestMessageBuilder() creates a DF1RequestMessageBuilder
+func NewDF1RequestMessageBuilder() DF1RequestMessageBuilder {
+	return &_DF1RequestMessageBuilder{_DF1RequestMessage: new(_DF1RequestMessage)}
+}
+
+type _DF1RequestMessageBuilder struct {
+	*_DF1RequestMessage
+
+	err *utils.MultiError
+}
+
+var _ (DF1RequestMessageBuilder) = (*_DF1RequestMessageBuilder)(nil)
+
+func (m *_DF1RequestMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder {
+	return m.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
+}
+
+func (m *_DF1RequestMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1RequestMessageBuilder {
+	m.DestinationAddress = destinationAddress
+	return m
+}
+
+func (m *_DF1RequestMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1RequestMessageBuilder {
+	m.SourceAddress = sourceAddress
+	return m
+}
+
+func (m *_DF1RequestMessageBuilder) WithStatus(status uint8) DF1RequestMessageBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_DF1RequestMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1RequestMessageBuilder {
+	m.TransactionCounter = transactionCounter
+	return m
+}
+
+func (m *_DF1RequestMessageBuilder) Build() (DF1RequestMessageContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1RequestMessage.deepCopy(), nil
+}
+
+func (m *_DF1RequestMessageBuilder) MustBuild() DF1RequestMessageContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1RequestMessageBuilder) DeepCopy() any {
+	return m.CreateDF1RequestMessageBuilder()
+}
+
+// CreateDF1RequestMessageBuilder creates a DF1RequestMessageBuilder
+func (m *_DF1RequestMessage) CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder {
+	if m == nil {
+		return NewDF1RequestMessageBuilder()
+	}
+	return &_DF1RequestMessageBuilder{_DF1RequestMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

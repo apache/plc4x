@@ -46,6 +46,8 @@ type BACnetConstructedDataTimePatternValueRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagTime
 	// IsBACnetConstructedDataTimePatternValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimePatternValueRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+	CreateBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder() BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataTimePatternValueRelinquishDefault is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimePatternValueRelinquishDefault(openingTag BACnet
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder is a builder for BACnetConstructedDataTimePatternValueRelinquishDefault
+type BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetApplicationTagTime) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetApplicationTagTime) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataTimePatternValueRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimePatternValueRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimePatternValueRelinquishDefault
+}
+
+// NewBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder() creates a BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+func NewBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder() BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder{_BACnetConstructedDataTimePatternValueRelinquishDefault: new(_BACnetConstructedDataTimePatternValueRelinquishDefault)}
+}
+
+type _BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataTimePatternValueRelinquishDefault
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagTime) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder {
+	return m.WithRelinquishDefault(relinquishDefault)
+}
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagTime) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder {
+	m.RelinquishDefault = relinquishDefault
+	return m
+}
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder {
+	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataTimePatternValueRelinquishDefault, error) {
+	if m.RelinquishDefault == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimePatternValueRelinquishDefault.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataTimePatternValueRelinquishDefault {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder()
+}
+
+// CreateBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder creates a BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder
+func (m *_BACnetConstructedDataTimePatternValueRelinquishDefault) CreateBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder() BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimePatternValueRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataTimePatternValueRelinquishDefaultBuilder{_BACnetConstructedDataTimePatternValueRelinquishDefault: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

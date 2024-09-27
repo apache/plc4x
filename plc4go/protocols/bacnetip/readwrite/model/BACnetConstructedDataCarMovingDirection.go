@@ -46,6 +46,8 @@ type BACnetConstructedDataCarMovingDirection interface {
 	GetActualValue() BACnetLiftCarDirectionTagged
 	// IsBACnetConstructedDataCarMovingDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarMovingDirection()
+	// CreateBuilder creates a BACnetConstructedDataCarMovingDirectionBuilder
+	CreateBACnetConstructedDataCarMovingDirectionBuilder() BACnetConstructedDataCarMovingDirectionBuilder
 }
 
 // _BACnetConstructedDataCarMovingDirection is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCarMovingDirection(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarMovingDirectionBuilder is a builder for BACnetConstructedDataCarMovingDirection
+type BACnetConstructedDataCarMovingDirectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carMovingDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder
+	// WithCarMovingDirection adds CarMovingDirection (property field)
+	WithCarMovingDirection(BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder
+	// WithCarMovingDirectionBuilder adds CarMovingDirection (property field) which is build by the builder
+	WithCarMovingDirectionBuilder(func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarMovingDirectionBuilder
+	// Build builds the BACnetConstructedDataCarMovingDirection or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarMovingDirection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarMovingDirection
+}
+
+// NewBACnetConstructedDataCarMovingDirectionBuilder() creates a BACnetConstructedDataCarMovingDirectionBuilder
+func NewBACnetConstructedDataCarMovingDirectionBuilder() BACnetConstructedDataCarMovingDirectionBuilder {
+	return &_BACnetConstructedDataCarMovingDirectionBuilder{_BACnetConstructedDataCarMovingDirection: new(_BACnetConstructedDataCarMovingDirection)}
+}
+
+type _BACnetConstructedDataCarMovingDirectionBuilder struct {
+	*_BACnetConstructedDataCarMovingDirection
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarMovingDirectionBuilder) = (*_BACnetConstructedDataCarMovingDirectionBuilder)(nil)
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) WithMandatoryFields(carMovingDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder {
+	return m.WithCarMovingDirection(carMovingDirection)
+}
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) WithCarMovingDirection(carMovingDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarMovingDirectionBuilder {
+	m.CarMovingDirection = carMovingDirection
+	return m
+}
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) WithCarMovingDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarMovingDirectionBuilder {
+	builder := builderSupplier(m.CarMovingDirection.CreateBACnetLiftCarDirectionTaggedBuilder())
+	var err error
+	m.CarMovingDirection, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) Build() (BACnetConstructedDataCarMovingDirection, error) {
+	if m.CarMovingDirection == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'carMovingDirection' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCarMovingDirection.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) MustBuild() BACnetConstructedDataCarMovingDirection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCarMovingDirectionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCarMovingDirectionBuilder()
+}
+
+// CreateBACnetConstructedDataCarMovingDirectionBuilder creates a BACnetConstructedDataCarMovingDirectionBuilder
+func (m *_BACnetConstructedDataCarMovingDirection) CreateBACnetConstructedDataCarMovingDirectionBuilder() BACnetConstructedDataCarMovingDirectionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCarMovingDirectionBuilder()
+	}
+	return &_BACnetConstructedDataCarMovingDirectionBuilder{_BACnetConstructedDataCarMovingDirection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -47,6 +47,8 @@ type BACnetEventSummariesList interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventSummariesList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventSummariesList()
+	// CreateBuilder creates a BACnetEventSummariesListBuilder
+	CreateBACnetEventSummariesListBuilder() BACnetEventSummariesListBuilder
 }
 
 // _BACnetEventSummariesList is the data-structure of this message
@@ -71,6 +73,134 @@ func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummari
 	}
 	return &_BACnetEventSummariesList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventSummariesListBuilder is a builder for BACnetEventSummariesList
+type BACnetEventSummariesListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetEventSummariesListBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventSummariesListBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventSummariesListBuilder
+	// WithListOfEventSummaries adds ListOfEventSummaries (property field)
+	WithListOfEventSummaries(...BACnetEventSummary) BACnetEventSummariesListBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventSummariesListBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventSummariesListBuilder
+	// Build builds the BACnetEventSummariesList or returns an error if something is wrong
+	Build() (BACnetEventSummariesList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventSummariesList
+}
+
+// NewBACnetEventSummariesListBuilder() creates a BACnetEventSummariesListBuilder
+func NewBACnetEventSummariesListBuilder() BACnetEventSummariesListBuilder {
+	return &_BACnetEventSummariesListBuilder{_BACnetEventSummariesList: new(_BACnetEventSummariesList)}
+}
+
+type _BACnetEventSummariesListBuilder struct {
+	*_BACnetEventSummariesList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventSummariesListBuilder) = (*_BACnetEventSummariesListBuilder)(nil)
+
+func (m *_BACnetEventSummariesListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetEventSummariesListBuilder {
+	return m.WithOpeningTag(openingTag).WithListOfEventSummaries(listOfEventSummaries...).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetEventSummariesListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventSummariesListBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetEventSummariesListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventSummariesListBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummariesListBuilder) WithListOfEventSummaries(listOfEventSummaries ...BACnetEventSummary) BACnetEventSummariesListBuilder {
+	m.ListOfEventSummaries = listOfEventSummaries
+	return m
+}
+
+func (m *_BACnetEventSummariesListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventSummariesListBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetEventSummariesListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventSummariesListBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummariesListBuilder) Build() (BACnetEventSummariesList, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventSummariesList.deepCopy(), nil
+}
+
+func (m *_BACnetEventSummariesListBuilder) MustBuild() BACnetEventSummariesList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventSummariesListBuilder) DeepCopy() any {
+	return m.CreateBACnetEventSummariesListBuilder()
+}
+
+// CreateBACnetEventSummariesListBuilder creates a BACnetEventSummariesListBuilder
+func (m *_BACnetEventSummariesList) CreateBACnetEventSummariesListBuilder() BACnetEventSummariesListBuilder {
+	if m == nil {
+		return NewBACnetEventSummariesListBuilder()
+	}
+	return &_BACnetEventSummariesListBuilder{_BACnetEventSummariesList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetPriorityValueDateTime interface {
 	GetDateTimeValue() BACnetDateTimeEnclosed
 	// IsBACnetPriorityValueDateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueDateTime()
+	// CreateBuilder creates a BACnetPriorityValueDateTimeBuilder
+	CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder
 }
 
 // _BACnetPriorityValueDateTime is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueDateTime(peekedTagHeader BACnetTagHeader, dateTimeVal
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueDateTimeBuilder is a builder for BACnetPriorityValueDateTime
+type BACnetPriorityValueDateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder
+	// Build builds the BACnetPriorityValueDateTime or returns an error if something is wrong
+	Build() (BACnetPriorityValueDateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueDateTime
+}
+
+// NewBACnetPriorityValueDateTimeBuilder() creates a BACnetPriorityValueDateTimeBuilder
+func NewBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
+	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: new(_BACnetPriorityValueDateTime)}
+}
+
+type _BACnetPriorityValueDateTimeBuilder struct {
+	*_BACnetPriorityValueDateTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueDateTimeBuilder) = (*_BACnetPriorityValueDateTimeBuilder)(nil)
+
+func (m *_BACnetPriorityValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	return m.WithDateTimeValue(dateTimeValue)
+}
+
+func (m *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	m.DateTimeValue = dateTimeValue
+	return m
+}
+
+func (m *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder {
+	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	m.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueDateTimeBuilder) Build() (BACnetPriorityValueDateTime, error) {
+	if m.DateTimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueDateTime.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueDateTimeBuilder) MustBuild() BACnetPriorityValueDateTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueDateTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueDateTimeBuilder()
+}
+
+// CreateBACnetPriorityValueDateTimeBuilder creates a BACnetPriorityValueDateTimeBuilder
+func (m *_BACnetPriorityValueDateTime) CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueDateTimeBuilder()
+	}
+	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

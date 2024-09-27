@@ -48,6 +48,8 @@ type APDUError interface {
 	GetError() BACnetError
 	// IsAPDUError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUError()
+	// CreateBuilder creates a APDUErrorBuilder
+	CreateAPDUErrorBuilder() APDUErrorBuilder
 }
 
 // _APDUError is the data-structure of this message
@@ -77,6 +79,98 @@ func NewAPDUError(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoi
 	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDUErrorBuilder is a builder for APDUError
+type APDUErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) APDUErrorBuilder
+	// WithOriginalInvokeId adds OriginalInvokeId (property field)
+	WithOriginalInvokeId(uint8) APDUErrorBuilder
+	// WithErrorChoice adds ErrorChoice (property field)
+	WithErrorChoice(BACnetConfirmedServiceChoice) APDUErrorBuilder
+	// WithError adds Error (property field)
+	WithError(BACnetError) APDUErrorBuilder
+	// Build builds the APDUError or returns an error if something is wrong
+	Build() (APDUError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUError
+}
+
+// NewAPDUErrorBuilder() creates a APDUErrorBuilder
+func NewAPDUErrorBuilder() APDUErrorBuilder {
+	return &_APDUErrorBuilder{_APDUError: new(_APDUError)}
+}
+
+type _APDUErrorBuilder struct {
+	*_APDUError
+
+	err *utils.MultiError
+}
+
+var _ (APDUErrorBuilder) = (*_APDUErrorBuilder)(nil)
+
+func (m *_APDUErrorBuilder) WithMandatoryFields(originalInvokeId uint8, errorChoice BACnetConfirmedServiceChoice, error BACnetError) APDUErrorBuilder {
+	return m.WithOriginalInvokeId(originalInvokeId).WithErrorChoice(errorChoice).WithError(error)
+}
+
+func (m *_APDUErrorBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUErrorBuilder {
+	m.OriginalInvokeId = originalInvokeId
+	return m
+}
+
+func (m *_APDUErrorBuilder) WithErrorChoice(errorChoice BACnetConfirmedServiceChoice) APDUErrorBuilder {
+	m.ErrorChoice = errorChoice
+	return m
+}
+
+func (m *_APDUErrorBuilder) WithError(error BACnetError) APDUErrorBuilder {
+	m.Error = error
+	return m
+}
+
+func (m *_APDUErrorBuilder) Build() (APDUError, error) {
+	if m.Error == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'error' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._APDUError.deepCopy(), nil
+}
+
+func (m *_APDUErrorBuilder) MustBuild() APDUError {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_APDUErrorBuilder) DeepCopy() any {
+	return m.CreateAPDUErrorBuilder()
+}
+
+// CreateAPDUErrorBuilder creates a APDUErrorBuilder
+func (m *_APDUError) CreateAPDUErrorBuilder() APDUErrorBuilder {
+	if m == nil {
+		return NewAPDUErrorBuilder()
+	}
+	return &_APDUErrorBuilder{_APDUError: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

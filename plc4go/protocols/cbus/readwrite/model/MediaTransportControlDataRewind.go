@@ -60,6 +60,8 @@ type MediaTransportControlDataRewind interface {
 	GetIsReserved() bool
 	// IsMediaTransportControlDataRewind is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataRewind()
+	// CreateBuilder creates a MediaTransportControlDataRewindBuilder
+	CreateMediaTransportControlDataRewindBuilder() MediaTransportControlDataRewindBuilder
 }
 
 // _MediaTransportControlDataRewind is the data-structure of this message
@@ -80,6 +82,78 @@ func NewMediaTransportControlDataRewind(commandTypeContainer MediaTransportContr
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataRewindBuilder is a builder for MediaTransportControlDataRewind
+type MediaTransportControlDataRewindBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operation byte) MediaTransportControlDataRewindBuilder
+	// WithOperation adds Operation (property field)
+	WithOperation(byte) MediaTransportControlDataRewindBuilder
+	// Build builds the MediaTransportControlDataRewind or returns an error if something is wrong
+	Build() (MediaTransportControlDataRewind, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataRewind
+}
+
+// NewMediaTransportControlDataRewindBuilder() creates a MediaTransportControlDataRewindBuilder
+func NewMediaTransportControlDataRewindBuilder() MediaTransportControlDataRewindBuilder {
+	return &_MediaTransportControlDataRewindBuilder{_MediaTransportControlDataRewind: new(_MediaTransportControlDataRewind)}
+}
+
+type _MediaTransportControlDataRewindBuilder struct {
+	*_MediaTransportControlDataRewind
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataRewindBuilder) = (*_MediaTransportControlDataRewindBuilder)(nil)
+
+func (m *_MediaTransportControlDataRewindBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataRewindBuilder {
+	return m.WithOperation(operation)
+}
+
+func (m *_MediaTransportControlDataRewindBuilder) WithOperation(operation byte) MediaTransportControlDataRewindBuilder {
+	m.Operation = operation
+	return m
+}
+
+func (m *_MediaTransportControlDataRewindBuilder) Build() (MediaTransportControlDataRewind, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataRewind.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataRewindBuilder) MustBuild() MediaTransportControlDataRewind {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataRewindBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataRewindBuilder()
+}
+
+// CreateMediaTransportControlDataRewindBuilder creates a MediaTransportControlDataRewindBuilder
+func (m *_MediaTransportControlDataRewind) CreateMediaTransportControlDataRewindBuilder() MediaTransportControlDataRewindBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataRewindBuilder()
+	}
+	return &_MediaTransportControlDataRewindBuilder{_MediaTransportControlDataRewind: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -47,6 +47,8 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	GetTimestamped() BACnetContextTagBoolean
 	// IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference is the data-structure of this message
@@ -68,6 +70,149 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscr
 	}
 	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference{MonitoredProperty: monitoredProperty, CovIncrement: covIncrement, Timestamped: timestamped}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder is a builder for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
+type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(monitoredProperty BACnetPropertyReferenceEnclosed, timestamped BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithMonitoredProperty adds MonitoredProperty (property field)
+	WithMonitoredProperty(BACnetPropertyReferenceEnclosed) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithMonitoredPropertyBuilder adds MonitoredProperty (property field) which is build by the builder
+	WithMonitoredPropertyBuilder(func(BACnetPropertyReferenceEnclosedBuilder) BACnetPropertyReferenceEnclosedBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithOptionalCovIncrement(BACnetContextTagReal) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithOptionalCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
+	WithOptionalCovIncrementBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithTimestamped adds Timestamped (property field)
+	WithTimestamped(BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// WithTimestampedBuilder adds Timestamped (property field) which is build by the builder
+	WithTimestampedBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+	// Build builds the BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
+}
+
+// NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder() creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder{_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference: new(_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference)}
+}
+
+type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder struct {
+	*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithMandatoryFields(monitoredProperty BACnetPropertyReferenceEnclosed, timestamped BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	return m.WithMonitoredProperty(monitoredProperty).WithTimestamped(timestamped)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithMonitoredProperty(monitoredProperty BACnetPropertyReferenceEnclosed) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	m.MonitoredProperty = monitoredProperty
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithMonitoredPropertyBuilder(builderSupplier func(BACnetPropertyReferenceEnclosedBuilder) BACnetPropertyReferenceEnclosedBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	builder := builderSupplier(m.MonitoredProperty.CreateBACnetPropertyReferenceEnclosedBuilder())
+	var err error
+	m.MonitoredProperty, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetPropertyReferenceEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithOptionalCovIncrement(covIncrement BACnetContextTagReal) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	m.CovIncrement = covIncrement
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithOptionalCovIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	builder := builderSupplier(m.CovIncrement.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.CovIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithTimestamped(timestamped BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	m.Timestamped = timestamped
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) WithTimestampedBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	builder := builderSupplier(m.Timestamped.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	m.Timestamped, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) Build() (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
+	if m.MonitoredProperty == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'monitoredProperty' not set"))
+	}
+	if m.Timestamped == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timestamped' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) MustBuild() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference) CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceBuilder{_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

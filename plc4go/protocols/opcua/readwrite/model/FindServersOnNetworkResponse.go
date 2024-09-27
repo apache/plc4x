@@ -50,6 +50,8 @@ type FindServersOnNetworkResponse interface {
 	GetServers() []ExtensionObjectDefinition
 	// IsFindServersOnNetworkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFindServersOnNetworkResponse()
+	// CreateBuilder creates a FindServersOnNetworkResponseBuilder
+	CreateFindServersOnNetworkResponseBuilder() FindServersOnNetworkResponseBuilder
 }
 
 // _FindServersOnNetworkResponse is the data-structure of this message
@@ -79,6 +81,105 @@ func NewFindServersOnNetworkResponse(responseHeader ExtensionObjectDefinition, l
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FindServersOnNetworkResponseBuilder is a builder for FindServersOnNetworkResponse
+type FindServersOnNetworkResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	// WithLastCounterResetTime adds LastCounterResetTime (property field)
+	WithLastCounterResetTime(int64) FindServersOnNetworkResponseBuilder
+	// WithNoOfServers adds NoOfServers (property field)
+	WithNoOfServers(int32) FindServersOnNetworkResponseBuilder
+	// WithServers adds Servers (property field)
+	WithServers(...ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	// Build builds the FindServersOnNetworkResponse or returns an error if something is wrong
+	Build() (FindServersOnNetworkResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FindServersOnNetworkResponse
+}
+
+// NewFindServersOnNetworkResponseBuilder() creates a FindServersOnNetworkResponseBuilder
+func NewFindServersOnNetworkResponseBuilder() FindServersOnNetworkResponseBuilder {
+	return &_FindServersOnNetworkResponseBuilder{_FindServersOnNetworkResponse: new(_FindServersOnNetworkResponse)}
+}
+
+type _FindServersOnNetworkResponseBuilder struct {
+	*_FindServersOnNetworkResponse
+
+	err *utils.MultiError
+}
+
+var _ (FindServersOnNetworkResponseBuilder) = (*_FindServersOnNetworkResponseBuilder)(nil)
+
+func (m *_FindServersOnNetworkResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithLastCounterResetTime(lastCounterResetTime).WithNoOfServers(noOfServers).WithServers(servers...)
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) WithLastCounterResetTime(lastCounterResetTime int64) FindServersOnNetworkResponseBuilder {
+	m.LastCounterResetTime = lastCounterResetTime
+	return m
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) WithNoOfServers(noOfServers int32) FindServersOnNetworkResponseBuilder {
+	m.NoOfServers = noOfServers
+	return m
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) WithServers(servers ...ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
+	m.Servers = servers
+	return m
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) Build() (FindServersOnNetworkResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FindServersOnNetworkResponse.deepCopy(), nil
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) MustBuild() FindServersOnNetworkResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FindServersOnNetworkResponseBuilder) DeepCopy() any {
+	return m.CreateFindServersOnNetworkResponseBuilder()
+}
+
+// CreateFindServersOnNetworkResponseBuilder creates a FindServersOnNetworkResponseBuilder
+func (m *_FindServersOnNetworkResponse) CreateFindServersOnNetworkResponseBuilder() FindServersOnNetworkResponseBuilder {
+	if m == nil {
+		return NewFindServersOnNetworkResponseBuilder()
+	}
+	return &_FindServersOnNetworkResponseBuilder{_FindServersOnNetworkResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

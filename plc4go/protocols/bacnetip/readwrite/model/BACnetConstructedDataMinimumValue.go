@@ -46,6 +46,8 @@ type BACnetConstructedDataMinimumValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMinimumValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMinimumValue()
+	// CreateBuilder creates a BACnetConstructedDataMinimumValueBuilder
+	CreateBACnetConstructedDataMinimumValueBuilder() BACnetConstructedDataMinimumValueBuilder
 }
 
 // _BACnetConstructedDataMinimumValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMinimumValue(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMinimumValueBuilder is a builder for BACnetConstructedDataMinimumValue
+type BACnetConstructedDataMinimumValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumValue BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder
+	// WithMinimumValue adds MinimumValue (property field)
+	WithMinimumValue(BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder
+	// WithMinimumValueBuilder adds MinimumValue (property field) which is build by the builder
+	WithMinimumValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumValueBuilder
+	// Build builds the BACnetConstructedDataMinimumValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMinimumValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMinimumValue
+}
+
+// NewBACnetConstructedDataMinimumValueBuilder() creates a BACnetConstructedDataMinimumValueBuilder
+func NewBACnetConstructedDataMinimumValueBuilder() BACnetConstructedDataMinimumValueBuilder {
+	return &_BACnetConstructedDataMinimumValueBuilder{_BACnetConstructedDataMinimumValue: new(_BACnetConstructedDataMinimumValue)}
+}
+
+type _BACnetConstructedDataMinimumValueBuilder struct {
+	*_BACnetConstructedDataMinimumValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMinimumValueBuilder) = (*_BACnetConstructedDataMinimumValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) WithMandatoryFields(minimumValue BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder {
+	return m.WithMinimumValue(minimumValue)
+}
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) WithMinimumValue(minimumValue BACnetApplicationTagReal) BACnetConstructedDataMinimumValueBuilder {
+	m.MinimumValue = minimumValue
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) WithMinimumValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumValueBuilder {
+	builder := builderSupplier(m.MinimumValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MinimumValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) Build() (BACnetConstructedDataMinimumValue, error) {
+	if m.MinimumValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'minimumValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMinimumValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) MustBuild() BACnetConstructedDataMinimumValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMinimumValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMinimumValueBuilder()
+}
+
+// CreateBACnetConstructedDataMinimumValueBuilder creates a BACnetConstructedDataMinimumValueBuilder
+func (m *_BACnetConstructedDataMinimumValue) CreateBACnetConstructedDataMinimumValueBuilder() BACnetConstructedDataMinimumValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMinimumValueBuilder()
+	}
+	return &_BACnetConstructedDataMinimumValueBuilder{_BACnetConstructedDataMinimumValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

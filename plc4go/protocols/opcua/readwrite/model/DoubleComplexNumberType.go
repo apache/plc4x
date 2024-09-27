@@ -46,6 +46,8 @@ type DoubleComplexNumberType interface {
 	GetImaginary() float64
 	// IsDoubleComplexNumberType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDoubleComplexNumberType()
+	// CreateBuilder creates a DoubleComplexNumberTypeBuilder
+	CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder
 }
 
 // _DoubleComplexNumberType is the data-structure of this message
@@ -68,6 +70,85 @@ func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplex
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DoubleComplexNumberTypeBuilder is a builder for DoubleComplexNumberType
+type DoubleComplexNumberTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder
+	// WithReal adds Real (property field)
+	WithReal(float64) DoubleComplexNumberTypeBuilder
+	// WithImaginary adds Imaginary (property field)
+	WithImaginary(float64) DoubleComplexNumberTypeBuilder
+	// Build builds the DoubleComplexNumberType or returns an error if something is wrong
+	Build() (DoubleComplexNumberType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DoubleComplexNumberType
+}
+
+// NewDoubleComplexNumberTypeBuilder() creates a DoubleComplexNumberTypeBuilder
+func NewDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
+	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: new(_DoubleComplexNumberType)}
+}
+
+type _DoubleComplexNumberTypeBuilder struct {
+	*_DoubleComplexNumberType
+
+	err *utils.MultiError
+}
+
+var _ (DoubleComplexNumberTypeBuilder) = (*_DoubleComplexNumberTypeBuilder)(nil)
+
+func (m *_DoubleComplexNumberTypeBuilder) WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder {
+	return m.WithReal(real).WithImaginary(imaginary)
+}
+
+func (m *_DoubleComplexNumberTypeBuilder) WithReal(real float64) DoubleComplexNumberTypeBuilder {
+	m.Real = real
+	return m
+}
+
+func (m *_DoubleComplexNumberTypeBuilder) WithImaginary(imaginary float64) DoubleComplexNumberTypeBuilder {
+	m.Imaginary = imaginary
+	return m
+}
+
+func (m *_DoubleComplexNumberTypeBuilder) Build() (DoubleComplexNumberType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DoubleComplexNumberType.deepCopy(), nil
+}
+
+func (m *_DoubleComplexNumberTypeBuilder) MustBuild() DoubleComplexNumberType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DoubleComplexNumberTypeBuilder) DeepCopy() any {
+	return m.CreateDoubleComplexNumberTypeBuilder()
+}
+
+// CreateDoubleComplexNumberTypeBuilder creates a DoubleComplexNumberTypeBuilder
+func (m *_DoubleComplexNumberType) CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
+	if m == nil {
+		return NewDoubleComplexNumberTypeBuilder()
+	}
+	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

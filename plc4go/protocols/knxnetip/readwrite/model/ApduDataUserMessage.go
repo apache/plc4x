@@ -40,6 +40,8 @@ type ApduDataUserMessage interface {
 	ApduData
 	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataUserMessage()
+	// CreateBuilder creates a ApduDataUserMessageBuilder
+	CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder
 }
 
 // _ApduDataUserMessage is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataUserMessageBuilder is a builder for ApduDataUserMessage
+type ApduDataUserMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataUserMessageBuilder
+	// Build builds the ApduDataUserMessage or returns an error if something is wrong
+	Build() (ApduDataUserMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataUserMessage
+}
+
+// NewApduDataUserMessageBuilder() creates a ApduDataUserMessageBuilder
+func NewApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
+	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: new(_ApduDataUserMessage)}
+}
+
+type _ApduDataUserMessageBuilder struct {
+	*_ApduDataUserMessage
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataUserMessageBuilder) = (*_ApduDataUserMessageBuilder)(nil)
+
+func (m *_ApduDataUserMessageBuilder) WithMandatoryFields() ApduDataUserMessageBuilder {
+	return m
+}
+
+func (m *_ApduDataUserMessageBuilder) Build() (ApduDataUserMessage, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataUserMessage.deepCopy(), nil
+}
+
+func (m *_ApduDataUserMessageBuilder) MustBuild() ApduDataUserMessage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataUserMessageBuilder) DeepCopy() any {
+	return m.CreateApduDataUserMessageBuilder()
+}
+
+// CreateApduDataUserMessageBuilder creates a ApduDataUserMessageBuilder
+func (m *_ApduDataUserMessage) CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
+	if m == nil {
+		return NewApduDataUserMessageBuilder()
+	}
+	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

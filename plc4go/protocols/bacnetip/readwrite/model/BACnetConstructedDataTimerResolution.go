@@ -46,6 +46,8 @@ type BACnetConstructedDataTimerResolution interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTimerResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerResolution()
+	// CreateBuilder creates a BACnetConstructedDataTimerResolutionBuilder
+	CreateBACnetConstructedDataTimerResolutionBuilder() BACnetConstructedDataTimerResolutionBuilder
 }
 
 // _BACnetConstructedDataTimerResolution is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimerResolution(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerResolutionBuilder is a builder for BACnetConstructedDataTimerResolution
+type BACnetConstructedDataTimerResolutionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(resolution BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder
+	// WithResolution adds Resolution (property field)
+	WithResolution(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder
+	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
+	WithResolutionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerResolutionBuilder
+	// Build builds the BACnetConstructedDataTimerResolution or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerResolution, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerResolution
+}
+
+// NewBACnetConstructedDataTimerResolutionBuilder() creates a BACnetConstructedDataTimerResolutionBuilder
+func NewBACnetConstructedDataTimerResolutionBuilder() BACnetConstructedDataTimerResolutionBuilder {
+	return &_BACnetConstructedDataTimerResolutionBuilder{_BACnetConstructedDataTimerResolution: new(_BACnetConstructedDataTimerResolution)}
+}
+
+type _BACnetConstructedDataTimerResolutionBuilder struct {
+	*_BACnetConstructedDataTimerResolution
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerResolutionBuilder) = (*_BACnetConstructedDataTimerResolutionBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder {
+	return m.WithResolution(resolution)
+}
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) WithResolution(resolution BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerResolutionBuilder {
+	m.Resolution = resolution
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerResolutionBuilder {
+	builder := builderSupplier(m.Resolution.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.Resolution, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) Build() (BACnetConstructedDataTimerResolution, error) {
+	if m.Resolution == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'resolution' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimerResolution.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) MustBuild() BACnetConstructedDataTimerResolution {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimerResolutionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimerResolutionBuilder()
+}
+
+// CreateBACnetConstructedDataTimerResolutionBuilder creates a BACnetConstructedDataTimerResolutionBuilder
+func (m *_BACnetConstructedDataTimerResolution) CreateBACnetConstructedDataTimerResolutionBuilder() BACnetConstructedDataTimerResolutionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimerResolutionBuilder()
+	}
+	return &_BACnetConstructedDataTimerResolutionBuilder{_BACnetConstructedDataTimerResolution: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

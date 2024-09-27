@@ -48,6 +48,8 @@ type BACnetConstructedDataSubordinateList interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataSubordinateList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSubordinateList()
+	// CreateBuilder creates a BACnetConstructedDataSubordinateListBuilder
+	CreateBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubordinateListBuilder
 }
 
 // _BACnetConstructedDataSubordinateList is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataSubordinateList(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSubordinateListBuilder is a builder for BACnetConstructedDataSubordinateList
+type BACnetConstructedDataSubordinateListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subordinateList []BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateListBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateListBuilder
+	// WithSubordinateList adds SubordinateList (property field)
+	WithSubordinateList(...BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder
+	// Build builds the BACnetConstructedDataSubordinateList or returns an error if something is wrong
+	Build() (BACnetConstructedDataSubordinateList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSubordinateList
+}
+
+// NewBACnetConstructedDataSubordinateListBuilder() creates a BACnetConstructedDataSubordinateListBuilder
+func NewBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubordinateListBuilder {
+	return &_BACnetConstructedDataSubordinateListBuilder{_BACnetConstructedDataSubordinateList: new(_BACnetConstructedDataSubordinateList)}
+}
+
+type _BACnetConstructedDataSubordinateListBuilder struct {
+	*_BACnetConstructedDataSubordinateList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSubordinateListBuilder) = (*_BACnetConstructedDataSubordinateListBuilder)(nil)
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) WithMandatoryFields(subordinateList []BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
+	return m.WithSubordinateList(subordinateList...)
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSubordinateListBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSubordinateListBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) WithSubordinateList(subordinateList ...BACnetDeviceObjectReference) BACnetConstructedDataSubordinateListBuilder {
+	m.SubordinateList = subordinateList
+	return m
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) Build() (BACnetConstructedDataSubordinateList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSubordinateList.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) MustBuild() BACnetConstructedDataSubordinateList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSubordinateListBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSubordinateListBuilder()
+}
+
+// CreateBACnetConstructedDataSubordinateListBuilder creates a BACnetConstructedDataSubordinateListBuilder
+func (m *_BACnetConstructedDataSubordinateList) CreateBACnetConstructedDataSubordinateListBuilder() BACnetConstructedDataSubordinateListBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSubordinateListBuilder()
+	}
+	return &_BACnetConstructedDataSubordinateListBuilder{_BACnetConstructedDataSubordinateList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

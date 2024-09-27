@@ -40,6 +40,8 @@ type NullCommandResponse interface {
 	EipPacket
 	// IsNullCommandResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullCommandResponse()
+	// CreateBuilder creates a NullCommandResponseBuilder
+	CreateNullCommandResponseBuilder() NullCommandResponseBuilder
 }
 
 // _NullCommandResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewNullCommandResponse(sessionHandle uint32, status uint32, senderContext [
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NullCommandResponseBuilder is a builder for NullCommandResponse
+type NullCommandResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NullCommandResponseBuilder
+	// Build builds the NullCommandResponse or returns an error if something is wrong
+	Build() (NullCommandResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NullCommandResponse
+}
+
+// NewNullCommandResponseBuilder() creates a NullCommandResponseBuilder
+func NewNullCommandResponseBuilder() NullCommandResponseBuilder {
+	return &_NullCommandResponseBuilder{_NullCommandResponse: new(_NullCommandResponse)}
+}
+
+type _NullCommandResponseBuilder struct {
+	*_NullCommandResponse
+
+	err *utils.MultiError
+}
+
+var _ (NullCommandResponseBuilder) = (*_NullCommandResponseBuilder)(nil)
+
+func (m *_NullCommandResponseBuilder) WithMandatoryFields() NullCommandResponseBuilder {
+	return m
+}
+
+func (m *_NullCommandResponseBuilder) Build() (NullCommandResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NullCommandResponse.deepCopy(), nil
+}
+
+func (m *_NullCommandResponseBuilder) MustBuild() NullCommandResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NullCommandResponseBuilder) DeepCopy() any {
+	return m.CreateNullCommandResponseBuilder()
+}
+
+// CreateNullCommandResponseBuilder creates a NullCommandResponseBuilder
+func (m *_NullCommandResponse) CreateNullCommandResponseBuilder() NullCommandResponseBuilder {
+	if m == nil {
+		return NewNullCommandResponseBuilder()
+	}
+	return &_NullCommandResponseBuilder{_NullCommandResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

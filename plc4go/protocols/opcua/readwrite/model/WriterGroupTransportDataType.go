@@ -40,6 +40,8 @@ type WriterGroupTransportDataType interface {
 	ExtensionObjectDefinition
 	// IsWriterGroupTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriterGroupTransportDataType()
+	// CreateBuilder creates a WriterGroupTransportDataTypeBuilder
+	CreateWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilder
 }
 
 // _WriterGroupTransportDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewWriterGroupTransportDataType() *_WriterGroupTransportDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WriterGroupTransportDataTypeBuilder is a builder for WriterGroupTransportDataType
+type WriterGroupTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() WriterGroupTransportDataTypeBuilder
+	// Build builds the WriterGroupTransportDataType or returns an error if something is wrong
+	Build() (WriterGroupTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WriterGroupTransportDataType
+}
+
+// NewWriterGroupTransportDataTypeBuilder() creates a WriterGroupTransportDataTypeBuilder
+func NewWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilder {
+	return &_WriterGroupTransportDataTypeBuilder{_WriterGroupTransportDataType: new(_WriterGroupTransportDataType)}
+}
+
+type _WriterGroupTransportDataTypeBuilder struct {
+	*_WriterGroupTransportDataType
+
+	err *utils.MultiError
+}
+
+var _ (WriterGroupTransportDataTypeBuilder) = (*_WriterGroupTransportDataTypeBuilder)(nil)
+
+func (m *_WriterGroupTransportDataTypeBuilder) WithMandatoryFields() WriterGroupTransportDataTypeBuilder {
+	return m
+}
+
+func (m *_WriterGroupTransportDataTypeBuilder) Build() (WriterGroupTransportDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._WriterGroupTransportDataType.deepCopy(), nil
+}
+
+func (m *_WriterGroupTransportDataTypeBuilder) MustBuild() WriterGroupTransportDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_WriterGroupTransportDataTypeBuilder) DeepCopy() any {
+	return m.CreateWriterGroupTransportDataTypeBuilder()
+}
+
+// CreateWriterGroupTransportDataTypeBuilder creates a WriterGroupTransportDataTypeBuilder
+func (m *_WriterGroupTransportDataType) CreateWriterGroupTransportDataTypeBuilder() WriterGroupTransportDataTypeBuilder {
+	if m == nil {
+		return NewWriterGroupTransportDataTypeBuilder()
+	}
+	return &_WriterGroupTransportDataTypeBuilder{_WriterGroupTransportDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

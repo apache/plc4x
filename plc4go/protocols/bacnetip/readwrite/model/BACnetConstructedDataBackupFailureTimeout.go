@@ -46,6 +46,8 @@ type BACnetConstructedDataBackupFailureTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataBackupFailureTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBackupFailureTimeout()
+	// CreateBuilder creates a BACnetConstructedDataBackupFailureTimeoutBuilder
+	CreateBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedDataBackupFailureTimeoutBuilder
 }
 
 // _BACnetConstructedDataBackupFailureTimeout is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBackupFailureTimeout(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBackupFailureTimeoutBuilder is a builder for BACnetConstructedDataBackupFailureTimeout
+type BACnetConstructedDataBackupFailureTimeoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder
+	// WithBackupFailureTimeout adds BackupFailureTimeout (property field)
+	WithBackupFailureTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder
+	// WithBackupFailureTimeoutBuilder adds BackupFailureTimeout (property field) which is build by the builder
+	WithBackupFailureTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupFailureTimeoutBuilder
+	// Build builds the BACnetConstructedDataBackupFailureTimeout or returns an error if something is wrong
+	Build() (BACnetConstructedDataBackupFailureTimeout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBackupFailureTimeout
+}
+
+// NewBACnetConstructedDataBackupFailureTimeoutBuilder() creates a BACnetConstructedDataBackupFailureTimeoutBuilder
+func NewBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedDataBackupFailureTimeoutBuilder {
+	return &_BACnetConstructedDataBackupFailureTimeoutBuilder{_BACnetConstructedDataBackupFailureTimeout: new(_BACnetConstructedDataBackupFailureTimeout)}
+}
+
+type _BACnetConstructedDataBackupFailureTimeoutBuilder struct {
+	*_BACnetConstructedDataBackupFailureTimeout
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBackupFailureTimeoutBuilder) = (*_BACnetConstructedDataBackupFailureTimeoutBuilder)(nil)
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithMandatoryFields(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	return m.WithBackupFailureTimeout(backupFailureTimeout)
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeout(backupFailureTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	m.BackupFailureTimeout = backupFailureTimeout
+	return m
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) WithBackupFailureTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBackupFailureTimeoutBuilder {
+	builder := builderSupplier(m.BackupFailureTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.BackupFailureTimeout, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) Build() (BACnetConstructedDataBackupFailureTimeout, error) {
+	if m.BackupFailureTimeout == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'backupFailureTimeout' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBackupFailureTimeout.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) MustBuild() BACnetConstructedDataBackupFailureTimeout {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBackupFailureTimeoutBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBackupFailureTimeoutBuilder()
+}
+
+// CreateBACnetConstructedDataBackupFailureTimeoutBuilder creates a BACnetConstructedDataBackupFailureTimeoutBuilder
+func (m *_BACnetConstructedDataBackupFailureTimeout) CreateBACnetConstructedDataBackupFailureTimeoutBuilder() BACnetConstructedDataBackupFailureTimeoutBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBackupFailureTimeoutBuilder()
+	}
+	return &_BACnetConstructedDataBackupFailureTimeoutBuilder{_BACnetConstructedDataBackupFailureTimeout: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

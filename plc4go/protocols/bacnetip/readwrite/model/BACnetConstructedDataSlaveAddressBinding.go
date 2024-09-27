@@ -44,6 +44,8 @@ type BACnetConstructedDataSlaveAddressBinding interface {
 	GetSlaveAddressBinding() []BACnetAddressBinding
 	// IsBACnetConstructedDataSlaveAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSlaveAddressBinding()
+	// CreateBuilder creates a BACnetConstructedDataSlaveAddressBindingBuilder
+	CreateBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataSlaveAddressBindingBuilder
 }
 
 // _BACnetConstructedDataSlaveAddressBinding is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataSlaveAddressBinding(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSlaveAddressBindingBuilder is a builder for BACnetConstructedDataSlaveAddressBinding
+type BACnetConstructedDataSlaveAddressBindingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder
+	// WithSlaveAddressBinding adds SlaveAddressBinding (property field)
+	WithSlaveAddressBinding(...BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder
+	// Build builds the BACnetConstructedDataSlaveAddressBinding or returns an error if something is wrong
+	Build() (BACnetConstructedDataSlaveAddressBinding, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSlaveAddressBinding
+}
+
+// NewBACnetConstructedDataSlaveAddressBindingBuilder() creates a BACnetConstructedDataSlaveAddressBindingBuilder
+func NewBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataSlaveAddressBindingBuilder {
+	return &_BACnetConstructedDataSlaveAddressBindingBuilder{_BACnetConstructedDataSlaveAddressBinding: new(_BACnetConstructedDataSlaveAddressBinding)}
+}
+
+type _BACnetConstructedDataSlaveAddressBindingBuilder struct {
+	*_BACnetConstructedDataSlaveAddressBinding
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSlaveAddressBindingBuilder) = (*_BACnetConstructedDataSlaveAddressBindingBuilder)(nil)
+
+func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) WithMandatoryFields(slaveAddressBinding []BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
+	return m.WithSlaveAddressBinding(slaveAddressBinding...)
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) WithSlaveAddressBinding(slaveAddressBinding ...BACnetAddressBinding) BACnetConstructedDataSlaveAddressBindingBuilder {
+	m.SlaveAddressBinding = slaveAddressBinding
+	return m
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) Build() (BACnetConstructedDataSlaveAddressBinding, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSlaveAddressBinding.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) MustBuild() BACnetConstructedDataSlaveAddressBinding {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSlaveAddressBindingBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSlaveAddressBindingBuilder()
+}
+
+// CreateBACnetConstructedDataSlaveAddressBindingBuilder creates a BACnetConstructedDataSlaveAddressBindingBuilder
+func (m *_BACnetConstructedDataSlaveAddressBinding) CreateBACnetConstructedDataSlaveAddressBindingBuilder() BACnetConstructedDataSlaveAddressBindingBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSlaveAddressBindingBuilder()
+	}
+	return &_BACnetConstructedDataSlaveAddressBindingBuilder{_BACnetConstructedDataSlaveAddressBinding: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

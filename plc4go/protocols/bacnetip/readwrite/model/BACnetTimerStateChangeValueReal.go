@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetTimerStateChangeValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueReal()
+	// CreateBuilder creates a BACnetTimerStateChangeValueRealBuilder
+	CreateBACnetTimerStateChangeValueRealBuilder() BACnetTimerStateChangeValueRealBuilder
 }
 
 // _BACnetTimerStateChangeValueReal is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueReal(peekedTagHeader BACnetTagHeader, realVal
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueRealBuilder is a builder for BACnetTimerStateChangeValueReal
+type BACnetTimerStateChangeValueRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetTimerStateChangeValueRealBuilder
+	// Build builds the BACnetTimerStateChangeValueReal or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueReal
+}
+
+// NewBACnetTimerStateChangeValueRealBuilder() creates a BACnetTimerStateChangeValueRealBuilder
+func NewBACnetTimerStateChangeValueRealBuilder() BACnetTimerStateChangeValueRealBuilder {
+	return &_BACnetTimerStateChangeValueRealBuilder{_BACnetTimerStateChangeValueReal: new(_BACnetTimerStateChangeValueReal)}
+}
+
+type _BACnetTimerStateChangeValueRealBuilder struct {
+	*_BACnetTimerStateChangeValueReal
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueRealBuilder) = (*_BACnetTimerStateChangeValueRealBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder {
+	return m.WithRealValue(realValue)
+}
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetTimerStateChangeValueRealBuilder {
+	m.RealValue = realValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetTimerStateChangeValueRealBuilder {
+	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.RealValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) Build() (BACnetTimerStateChangeValueReal, error) {
+	if m.RealValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueReal.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) MustBuild() BACnetTimerStateChangeValueReal {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueRealBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueRealBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueRealBuilder creates a BACnetTimerStateChangeValueRealBuilder
+func (m *_BACnetTimerStateChangeValueReal) CreateBACnetTimerStateChangeValueRealBuilder() BACnetTimerStateChangeValueRealBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueRealBuilder()
+	}
+	return &_BACnetTimerStateChangeValueRealBuilder{_BACnetTimerStateChangeValueReal: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

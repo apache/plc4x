@@ -43,6 +43,8 @@ type BACnetValueSource interface {
 	utils.Copyable
 	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSource()
+	// CreateBuilder creates a BACnetValueSourceBuilder
+	CreateBACnetValueSourceBuilder() BACnetValueSourceBuilder
 }
 
 // BACnetValueSourceContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetValueSourceContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSource()
+	// CreateBuilder creates a BACnetValueSourceBuilder
+	CreateBACnetValueSourceBuilder() BACnetValueSourceBuilder
 }
 
 // BACnetValueSourceRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
 	}
 	return &_BACnetValueSource{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetValueSourceBuilder is a builder for BACnetValueSource
+type BACnetValueSourceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetValueSourceBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetValueSourceBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetValueSourceBuilder
+	// Build builds the BACnetValueSource or returns an error if something is wrong
+	Build() (BACnetValueSourceContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetValueSourceContract
+}
+
+// NewBACnetValueSourceBuilder() creates a BACnetValueSourceBuilder
+func NewBACnetValueSourceBuilder() BACnetValueSourceBuilder {
+	return &_BACnetValueSourceBuilder{_BACnetValueSource: new(_BACnetValueSource)}
+}
+
+type _BACnetValueSourceBuilder struct {
+	*_BACnetValueSource
+
+	err *utils.MultiError
+}
+
+var _ (BACnetValueSourceBuilder) = (*_BACnetValueSourceBuilder)(nil)
+
+func (m *_BACnetValueSourceBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetValueSourceBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetValueSourceBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetValueSourceBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetValueSourceBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetValueSourceBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetValueSourceBuilder) Build() (BACnetValueSourceContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetValueSource.deepCopy(), nil
+}
+
+func (m *_BACnetValueSourceBuilder) MustBuild() BACnetValueSourceContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetValueSourceBuilder) DeepCopy() any {
+	return m.CreateBACnetValueSourceBuilder()
+}
+
+// CreateBACnetValueSourceBuilder creates a BACnetValueSourceBuilder
+func (m *_BACnetValueSource) CreateBACnetValueSourceBuilder() BACnetValueSourceBuilder {
+	if m == nil {
+		return NewBACnetValueSourceBuilder()
+	}
+	return &_BACnetValueSourceBuilder{_BACnetValueSource: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

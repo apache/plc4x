@@ -46,6 +46,8 @@ type BACnetConstructedDataMaxActualValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMaxActualValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxActualValue()
+	// CreateBuilder creates a BACnetConstructedDataMaxActualValueBuilder
+	CreateBACnetConstructedDataMaxActualValueBuilder() BACnetConstructedDataMaxActualValueBuilder
 }
 
 // _BACnetConstructedDataMaxActualValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaxActualValue(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxActualValueBuilder is a builder for BACnetConstructedDataMaxActualValue
+type BACnetConstructedDataMaxActualValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxActualValue BACnetApplicationTagReal) BACnetConstructedDataMaxActualValueBuilder
+	// WithMaxActualValue adds MaxActualValue (property field)
+	WithMaxActualValue(BACnetApplicationTagReal) BACnetConstructedDataMaxActualValueBuilder
+	// WithMaxActualValueBuilder adds MaxActualValue (property field) which is build by the builder
+	WithMaxActualValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaxActualValueBuilder
+	// Build builds the BACnetConstructedDataMaxActualValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxActualValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxActualValue
+}
+
+// NewBACnetConstructedDataMaxActualValueBuilder() creates a BACnetConstructedDataMaxActualValueBuilder
+func NewBACnetConstructedDataMaxActualValueBuilder() BACnetConstructedDataMaxActualValueBuilder {
+	return &_BACnetConstructedDataMaxActualValueBuilder{_BACnetConstructedDataMaxActualValue: new(_BACnetConstructedDataMaxActualValue)}
+}
+
+type _BACnetConstructedDataMaxActualValueBuilder struct {
+	*_BACnetConstructedDataMaxActualValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxActualValueBuilder) = (*_BACnetConstructedDataMaxActualValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) WithMandatoryFields(maxActualValue BACnetApplicationTagReal) BACnetConstructedDataMaxActualValueBuilder {
+	return m.WithMaxActualValue(maxActualValue)
+}
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) WithMaxActualValue(maxActualValue BACnetApplicationTagReal) BACnetConstructedDataMaxActualValueBuilder {
+	m.MaxActualValue = maxActualValue
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) WithMaxActualValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaxActualValueBuilder {
+	builder := builderSupplier(m.MaxActualValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MaxActualValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) Build() (BACnetConstructedDataMaxActualValue, error) {
+	if m.MaxActualValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxActualValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaxActualValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) MustBuild() BACnetConstructedDataMaxActualValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaxActualValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaxActualValueBuilder()
+}
+
+// CreateBACnetConstructedDataMaxActualValueBuilder creates a BACnetConstructedDataMaxActualValueBuilder
+func (m *_BACnetConstructedDataMaxActualValue) CreateBACnetConstructedDataMaxActualValueBuilder() BACnetConstructedDataMaxActualValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaxActualValueBuilder()
+	}
+	return &_BACnetConstructedDataMaxActualValueBuilder{_BACnetConstructedDataMaxActualValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

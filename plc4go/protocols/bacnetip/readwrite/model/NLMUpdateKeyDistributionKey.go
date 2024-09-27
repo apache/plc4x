@@ -46,6 +46,8 @@ type NLMUpdateKeyDistributionKey interface {
 	GetKey() NLMUpdateKeyUpdateKeyEntry
 	// IsNLMUpdateKeyDistributionKey is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMUpdateKeyDistributionKey()
+	// CreateBuilder creates a NLMUpdateKeyDistributionKeyBuilder
+	CreateNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder
 }
 
 // _NLMUpdateKeyDistributionKey is the data-structure of this message
@@ -71,6 +73,106 @@ func NewNLMUpdateKeyDistributionKey(keyRevision byte, key NLMUpdateKeyUpdateKeyE
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMUpdateKeyDistributionKeyBuilder is a builder for NLMUpdateKeyDistributionKey
+type NLMUpdateKeyDistributionKeyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder
+	// WithKeyRevision adds KeyRevision (property field)
+	WithKeyRevision(byte) NLMUpdateKeyDistributionKeyBuilder
+	// WithKey adds Key (property field)
+	WithKey(NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder
+	// WithKeyBuilder adds Key (property field) which is build by the builder
+	WithKeyBuilder(func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyDistributionKeyBuilder
+	// Build builds the NLMUpdateKeyDistributionKey or returns an error if something is wrong
+	Build() (NLMUpdateKeyDistributionKey, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMUpdateKeyDistributionKey
+}
+
+// NewNLMUpdateKeyDistributionKeyBuilder() creates a NLMUpdateKeyDistributionKeyBuilder
+func NewNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder {
+	return &_NLMUpdateKeyDistributionKeyBuilder{_NLMUpdateKeyDistributionKey: new(_NLMUpdateKeyDistributionKey)}
+}
+
+type _NLMUpdateKeyDistributionKeyBuilder struct {
+	*_NLMUpdateKeyDistributionKey
+
+	err *utils.MultiError
+}
+
+var _ (NLMUpdateKeyDistributionKeyBuilder) = (*_NLMUpdateKeyDistributionKeyBuilder)(nil)
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) WithMandatoryFields(keyRevision byte, key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
+	return m.WithKeyRevision(keyRevision).WithKey(key)
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKeyRevision(keyRevision byte) NLMUpdateKeyDistributionKeyBuilder {
+	m.KeyRevision = keyRevision
+	return m
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKey(key NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyDistributionKeyBuilder {
+	m.Key = key
+	return m
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) WithKeyBuilder(builderSupplier func(NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyUpdateKeyEntryBuilder) NLMUpdateKeyDistributionKeyBuilder {
+	builder := builderSupplier(m.Key.CreateNLMUpdateKeyUpdateKeyEntryBuilder())
+	var err error
+	m.Key, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateKeyEntryBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) Build() (NLMUpdateKeyDistributionKey, error) {
+	if m.Key == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'key' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMUpdateKeyDistributionKey.deepCopy(), nil
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) MustBuild() NLMUpdateKeyDistributionKey {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMUpdateKeyDistributionKeyBuilder) DeepCopy() any {
+	return m.CreateNLMUpdateKeyDistributionKeyBuilder()
+}
+
+// CreateNLMUpdateKeyDistributionKeyBuilder creates a NLMUpdateKeyDistributionKeyBuilder
+func (m *_NLMUpdateKeyDistributionKey) CreateNLMUpdateKeyDistributionKeyBuilder() NLMUpdateKeyDistributionKeyBuilder {
+	if m == nil {
+		return NewNLMUpdateKeyDistributionKeyBuilder()
+	}
+	return &_NLMUpdateKeyDistributionKeyBuilder{_NLMUpdateKeyDistributionKey: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegralConstant interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataIntegralConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegralConstant()
+	// CreateBuilder creates a BACnetConstructedDataIntegralConstantBuilder
+	CreateBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder
 }
 
 // _BACnetConstructedDataIntegralConstant is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegralConstantBuilder is a builder for BACnetConstructedDataIntegralConstant
+type BACnetConstructedDataIntegralConstantBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder
+	// WithIntegralConstant adds IntegralConstant (property field)
+	WithIntegralConstant(BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder
+	// WithIntegralConstantBuilder adds IntegralConstant (property field) which is build by the builder
+	WithIntegralConstantBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataIntegralConstantBuilder
+	// Build builds the BACnetConstructedDataIntegralConstant or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegralConstant, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegralConstant
+}
+
+// NewBACnetConstructedDataIntegralConstantBuilder() creates a BACnetConstructedDataIntegralConstantBuilder
+func NewBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder {
+	return &_BACnetConstructedDataIntegralConstantBuilder{_BACnetConstructedDataIntegralConstant: new(_BACnetConstructedDataIntegralConstant)}
+}
+
+type _BACnetConstructedDataIntegralConstantBuilder struct {
+	*_BACnetConstructedDataIntegralConstant
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegralConstantBuilder) = (*_BACnetConstructedDataIntegralConstantBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) WithMandatoryFields(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder {
+	return m.WithIntegralConstant(integralConstant)
+}
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) WithIntegralConstant(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder {
+	m.IntegralConstant = integralConstant
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) WithIntegralConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataIntegralConstantBuilder {
+	builder := builderSupplier(m.IntegralConstant.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.IntegralConstant, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) Build() (BACnetConstructedDataIntegralConstant, error) {
+	if m.IntegralConstant == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integralConstant' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegralConstant.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) MustBuild() BACnetConstructedDataIntegralConstant {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegralConstantBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegralConstantBuilder()
+}
+
+// CreateBACnetConstructedDataIntegralConstantBuilder creates a BACnetConstructedDataIntegralConstantBuilder
+func (m *_BACnetConstructedDataIntegralConstant) CreateBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegralConstantBuilder()
+	}
+	return &_BACnetConstructedDataIntegralConstantBuilder{_BACnetConstructedDataIntegralConstant: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

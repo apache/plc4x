@@ -48,6 +48,8 @@ type BACnetUnconfirmedServiceRequestWhoHas interface {
 	GetObject() BACnetUnconfirmedServiceRequestWhoHasObject
 	// IsBACnetUnconfirmedServiceRequestWhoHas is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHas()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestWhoHasBuilder
+	CreateBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceRequestWhoHasBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestWhoHas is the data-structure of this message
@@ -75,6 +77,128 @@ func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceRangeLowLimit BACnet
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestWhoHasBuilder is a builder for BACnetUnconfirmedServiceRequestWhoHas
+type BACnetUnconfirmedServiceRequestWhoHasBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithDeviceInstanceRangeLowLimit adds DeviceInstanceRangeLowLimit (property field)
+	WithOptionalDeviceInstanceRangeLowLimit(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithOptionalDeviceInstanceRangeLowLimitBuilder adds DeviceInstanceRangeLowLimit (property field) which is build by the builder
+	WithOptionalDeviceInstanceRangeLowLimitBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithDeviceInstanceRangeHighLimit adds DeviceInstanceRangeHighLimit (property field)
+	WithOptionalDeviceInstanceRangeHighLimit(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithOptionalDeviceInstanceRangeHighLimitBuilder adds DeviceInstanceRangeHighLimit (property field) which is build by the builder
+	WithOptionalDeviceInstanceRangeHighLimitBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// WithObject adds Object (property field)
+	WithObject(BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestWhoHas or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestWhoHas, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestWhoHas
+}
+
+// NewBACnetUnconfirmedServiceRequestWhoHasBuilder() creates a BACnetUnconfirmedServiceRequestWhoHasBuilder
+func NewBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	return &_BACnetUnconfirmedServiceRequestWhoHasBuilder{_BACnetUnconfirmedServiceRequestWhoHas: new(_BACnetUnconfirmedServiceRequestWhoHas)}
+}
+
+type _BACnetUnconfirmedServiceRequestWhoHasBuilder struct {
+	*_BACnetUnconfirmedServiceRequestWhoHas
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestWhoHasBuilder) = (*_BACnetUnconfirmedServiceRequestWhoHasBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithMandatoryFields(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	return m.WithObject(object)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimit(deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	m.DeviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeLowLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	builder := builderSupplier(m.DeviceInstanceRangeLowLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.DeviceInstanceRangeLowLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimit(deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	m.DeviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithOptionalDeviceInstanceRangeHighLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	builder := builderSupplier(m.DeviceInstanceRangeHighLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.DeviceInstanceRangeHighLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) WithObject(object BACnetUnconfirmedServiceRequestWhoHasObject) BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	m.Object = object
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHas, error) {
+	if m.Object == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'object' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceRequestWhoHas.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHas {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceRequestWhoHasBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceRequestWhoHasBuilder creates a BACnetUnconfirmedServiceRequestWhoHasBuilder
+func (m *_BACnetUnconfirmedServiceRequestWhoHas) CreateBACnetUnconfirmedServiceRequestWhoHasBuilder() BACnetUnconfirmedServiceRequestWhoHasBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceRequestWhoHasBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasBuilder{_BACnetUnconfirmedServiceRequestWhoHas: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

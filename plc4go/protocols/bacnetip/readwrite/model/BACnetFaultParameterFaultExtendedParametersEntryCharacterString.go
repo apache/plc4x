@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 	// IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryCharacterString()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryCharacterString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterString(peekedTa
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryCharacterString
+type BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryCharacterString or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryCharacterString
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryCharacterString: new(_BACnetFaultParameterFaultExtendedParametersEntryCharacterString)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	return m.WithCharacterStringValue(characterStringValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	m.CharacterStringValue = characterStringValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryCharacterString, error) {
+	if m.CharacterStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryCharacterString) CreateBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

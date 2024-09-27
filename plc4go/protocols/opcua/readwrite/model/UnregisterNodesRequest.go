@@ -48,6 +48,8 @@ type UnregisterNodesRequest interface {
 	GetNodesToUnregister() []NodeId
 	// IsUnregisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnregisterNodesRequest()
+	// CreateBuilder creates a UnregisterNodesRequestBuilder
+	CreateUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder
 }
 
 // _UnregisterNodesRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewUnregisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNode
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnregisterNodesRequestBuilder is a builder for UnregisterNodesRequest
+type UnregisterNodesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) UnregisterNodesRequestBuilder
+	// WithNoOfNodesToUnregister adds NoOfNodesToUnregister (property field)
+	WithNoOfNodesToUnregister(int32) UnregisterNodesRequestBuilder
+	// WithNodesToUnregister adds NodesToUnregister (property field)
+	WithNodesToUnregister(...NodeId) UnregisterNodesRequestBuilder
+	// Build builds the UnregisterNodesRequest or returns an error if something is wrong
+	Build() (UnregisterNodesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnregisterNodesRequest
+}
+
+// NewUnregisterNodesRequestBuilder() creates a UnregisterNodesRequestBuilder
+func NewUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder {
+	return &_UnregisterNodesRequestBuilder{_UnregisterNodesRequest: new(_UnregisterNodesRequest)}
+}
+
+type _UnregisterNodesRequestBuilder struct {
+	*_UnregisterNodesRequest
+
+	err *utils.MultiError
+}
+
+var _ (UnregisterNodesRequestBuilder) = (*_UnregisterNodesRequestBuilder)(nil)
+
+func (m *_UnregisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToUnregister int32, nodesToUnregister []NodeId) UnregisterNodesRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfNodesToUnregister(noOfNodesToUnregister).WithNodesToUnregister(nodesToUnregister...)
+}
+
+func (m *_UnregisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) UnregisterNodesRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_UnregisterNodesRequestBuilder) WithNoOfNodesToUnregister(noOfNodesToUnregister int32) UnregisterNodesRequestBuilder {
+	m.NoOfNodesToUnregister = noOfNodesToUnregister
+	return m
+}
+
+func (m *_UnregisterNodesRequestBuilder) WithNodesToUnregister(nodesToUnregister ...NodeId) UnregisterNodesRequestBuilder {
+	m.NodesToUnregister = nodesToUnregister
+	return m
+}
+
+func (m *_UnregisterNodesRequestBuilder) Build() (UnregisterNodesRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UnregisterNodesRequest.deepCopy(), nil
+}
+
+func (m *_UnregisterNodesRequestBuilder) MustBuild() UnregisterNodesRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UnregisterNodesRequestBuilder) DeepCopy() any {
+	return m.CreateUnregisterNodesRequestBuilder()
+}
+
+// CreateUnregisterNodesRequestBuilder creates a UnregisterNodesRequestBuilder
+func (m *_UnregisterNodesRequest) CreateUnregisterNodesRequestBuilder() UnregisterNodesRequestBuilder {
+	if m == nil {
+		return NewUnregisterNodesRequestBuilder()
+	}
+	return &_UnregisterNodesRequestBuilder{_UnregisterNodesRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

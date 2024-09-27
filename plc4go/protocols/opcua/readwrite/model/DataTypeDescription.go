@@ -46,6 +46,8 @@ type DataTypeDescription interface {
 	GetName() QualifiedName
 	// IsDataTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataTypeDescription()
+	// CreateBuilder creates a DataTypeDescriptionBuilder
+	CreateDataTypeDescriptionBuilder() DataTypeDescriptionBuilder
 }
 
 // _DataTypeDescription is the data-structure of this message
@@ -74,6 +76,127 @@ func NewDataTypeDescription(dataTypeId NodeId, name QualifiedName) *_DataTypeDes
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataTypeDescriptionBuilder is a builder for DataTypeDescription
+type DataTypeDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataTypeId NodeId, name QualifiedName) DataTypeDescriptionBuilder
+	// WithDataTypeId adds DataTypeId (property field)
+	WithDataTypeId(NodeId) DataTypeDescriptionBuilder
+	// WithDataTypeIdBuilder adds DataTypeId (property field) which is build by the builder
+	WithDataTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DataTypeDescriptionBuilder
+	// WithName adds Name (property field)
+	WithName(QualifiedName) DataTypeDescriptionBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) DataTypeDescriptionBuilder
+	// Build builds the DataTypeDescription or returns an error if something is wrong
+	Build() (DataTypeDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataTypeDescription
+}
+
+// NewDataTypeDescriptionBuilder() creates a DataTypeDescriptionBuilder
+func NewDataTypeDescriptionBuilder() DataTypeDescriptionBuilder {
+	return &_DataTypeDescriptionBuilder{_DataTypeDescription: new(_DataTypeDescription)}
+}
+
+type _DataTypeDescriptionBuilder struct {
+	*_DataTypeDescription
+
+	err *utils.MultiError
+}
+
+var _ (DataTypeDescriptionBuilder) = (*_DataTypeDescriptionBuilder)(nil)
+
+func (m *_DataTypeDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName) DataTypeDescriptionBuilder {
+	return m.WithDataTypeId(dataTypeId).WithName(name)
+}
+
+func (m *_DataTypeDescriptionBuilder) WithDataTypeId(dataTypeId NodeId) DataTypeDescriptionBuilder {
+	m.DataTypeId = dataTypeId
+	return m
+}
+
+func (m *_DataTypeDescriptionBuilder) WithDataTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DataTypeDescriptionBuilder {
+	builder := builderSupplier(m.DataTypeId.CreateNodeIdBuilder())
+	var err error
+	m.DataTypeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DataTypeDescriptionBuilder) WithName(name QualifiedName) DataTypeDescriptionBuilder {
+	m.Name = name
+	return m
+}
+
+func (m *_DataTypeDescriptionBuilder) WithNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) DataTypeDescriptionBuilder {
+	builder := builderSupplier(m.Name.CreateQualifiedNameBuilder())
+	var err error
+	m.Name, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DataTypeDescriptionBuilder) Build() (DataTypeDescription, error) {
+	if m.DataTypeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataTypeId' not set"))
+	}
+	if m.Name == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DataTypeDescription.deepCopy(), nil
+}
+
+func (m *_DataTypeDescriptionBuilder) MustBuild() DataTypeDescription {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DataTypeDescriptionBuilder) DeepCopy() any {
+	return m.CreateDataTypeDescriptionBuilder()
+}
+
+// CreateDataTypeDescriptionBuilder creates a DataTypeDescriptionBuilder
+func (m *_DataTypeDescription) CreateDataTypeDescriptionBuilder() DataTypeDescriptionBuilder {
+	if m == nil {
+		return NewDataTypeDescriptionBuilder()
+	}
+	return &_DataTypeDescriptionBuilder{_DataTypeDescription: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -52,6 +52,8 @@ type NodeReference interface {
 	GetReferencedNodeIds() []NodeId
 	// IsNodeReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeReference()
+	// CreateBuilder creates a NodeReferenceBuilder
+	CreateNodeReferenceBuilder() NodeReferenceBuilder
 }
 
 // _NodeReference is the data-structure of this message
@@ -88,6 +90,148 @@ func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, noO
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeReferenceBuilder is a builder for NodeReference
+type NodeReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) NodeReferenceBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) NodeReferenceBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) NodeReferenceBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) NodeReferenceBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) NodeReferenceBuilder
+	// WithIsForward adds IsForward (property field)
+	WithIsForward(bool) NodeReferenceBuilder
+	// WithNoOfReferencedNodeIds adds NoOfReferencedNodeIds (property field)
+	WithNoOfReferencedNodeIds(int32) NodeReferenceBuilder
+	// WithReferencedNodeIds adds ReferencedNodeIds (property field)
+	WithReferencedNodeIds(...NodeId) NodeReferenceBuilder
+	// Build builds the NodeReference or returns an error if something is wrong
+	Build() (NodeReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeReference
+}
+
+// NewNodeReferenceBuilder() creates a NodeReferenceBuilder
+func NewNodeReferenceBuilder() NodeReferenceBuilder {
+	return &_NodeReferenceBuilder{_NodeReference: new(_NodeReference)}
+}
+
+type _NodeReferenceBuilder struct {
+	*_NodeReference
+
+	err *utils.MultiError
+}
+
+var _ (NodeReferenceBuilder) = (*_NodeReferenceBuilder)(nil)
+
+func (m *_NodeReferenceBuilder) WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) NodeReferenceBuilder {
+	return m.WithNodeId(nodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithNoOfReferencedNodeIds(noOfReferencedNodeIds).WithReferencedNodeIds(referencedNodeIds...)
+}
+
+func (m *_NodeReferenceBuilder) WithNodeId(nodeId NodeId) NodeReferenceBuilder {
+	m.NodeId = nodeId
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) NodeReferenceBuilder {
+	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+	var err error
+	m.NodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithReferenceTypeId(referenceTypeId NodeId) NodeReferenceBuilder {
+	m.ReferenceTypeId = referenceTypeId
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) NodeReferenceBuilder {
+	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	m.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithIsForward(isForward bool) NodeReferenceBuilder {
+	m.IsForward = isForward
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithNoOfReferencedNodeIds(noOfReferencedNodeIds int32) NodeReferenceBuilder {
+	m.NoOfReferencedNodeIds = noOfReferencedNodeIds
+	return m
+}
+
+func (m *_NodeReferenceBuilder) WithReferencedNodeIds(referencedNodeIds ...NodeId) NodeReferenceBuilder {
+	m.ReferencedNodeIds = referencedNodeIds
+	return m
+}
+
+func (m *_NodeReferenceBuilder) Build() (NodeReference, error) {
+	if m.NodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if m.ReferenceTypeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeReference.deepCopy(), nil
+}
+
+func (m *_NodeReferenceBuilder) MustBuild() NodeReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeReferenceBuilder) DeepCopy() any {
+	return m.CreateNodeReferenceBuilder()
+}
+
+// CreateNodeReferenceBuilder creates a NodeReferenceBuilder
+func (m *_NodeReference) CreateNodeReferenceBuilder() NodeReferenceBuilder {
+	if m == nil {
+		return NewNodeReferenceBuilder()
+	}
+	return &_NodeReferenceBuilder{_NodeReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

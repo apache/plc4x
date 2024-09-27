@@ -46,6 +46,8 @@ type EipConnectionRequest interface {
 	EipPacket
 	// IsEipConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConnectionRequest()
+	// CreateBuilder creates a EipConnectionRequestBuilder
+	CreateEipConnectionRequestBuilder() EipConnectionRequestBuilder
 }
 
 // _EipConnectionRequest is the data-structure of this message
@@ -64,6 +66,71 @@ func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext 
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipConnectionRequestBuilder is a builder for EipConnectionRequest
+type EipConnectionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipConnectionRequestBuilder
+	// Build builds the EipConnectionRequest or returns an error if something is wrong
+	Build() (EipConnectionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipConnectionRequest
+}
+
+// NewEipConnectionRequestBuilder() creates a EipConnectionRequestBuilder
+func NewEipConnectionRequestBuilder() EipConnectionRequestBuilder {
+	return &_EipConnectionRequestBuilder{_EipConnectionRequest: new(_EipConnectionRequest)}
+}
+
+type _EipConnectionRequestBuilder struct {
+	*_EipConnectionRequest
+
+	err *utils.MultiError
+}
+
+var _ (EipConnectionRequestBuilder) = (*_EipConnectionRequestBuilder)(nil)
+
+func (m *_EipConnectionRequestBuilder) WithMandatoryFields() EipConnectionRequestBuilder {
+	return m
+}
+
+func (m *_EipConnectionRequestBuilder) Build() (EipConnectionRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipConnectionRequest.deepCopy(), nil
+}
+
+func (m *_EipConnectionRequestBuilder) MustBuild() EipConnectionRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipConnectionRequestBuilder) DeepCopy() any {
+	return m.CreateEipConnectionRequestBuilder()
+}
+
+// CreateEipConnectionRequestBuilder creates a EipConnectionRequestBuilder
+func (m *_EipConnectionRequest) CreateEipConnectionRequestBuilder() EipConnectionRequestBuilder {
+	if m == nil {
+		return NewEipConnectionRequestBuilder()
+	}
+	return &_EipConnectionRequestBuilder{_EipConnectionRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

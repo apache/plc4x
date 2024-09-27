@@ -44,6 +44,8 @@ type BACnetConstructedDataEntryPoints interface {
 	GetEntryPoints() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataEntryPoints is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEntryPoints()
+	// CreateBuilder creates a BACnetConstructedDataEntryPointsBuilder
+	CreateBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPointsBuilder
 }
 
 // _BACnetConstructedDataEntryPoints is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataEntryPoints(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEntryPointsBuilder is a builder for BACnetConstructedDataEntryPoints
+type BACnetConstructedDataEntryPointsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder
+	// WithEntryPoints adds EntryPoints (property field)
+	WithEntryPoints(...BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder
+	// Build builds the BACnetConstructedDataEntryPoints or returns an error if something is wrong
+	Build() (BACnetConstructedDataEntryPoints, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEntryPoints
+}
+
+// NewBACnetConstructedDataEntryPointsBuilder() creates a BACnetConstructedDataEntryPointsBuilder
+func NewBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPointsBuilder {
+	return &_BACnetConstructedDataEntryPointsBuilder{_BACnetConstructedDataEntryPoints: new(_BACnetConstructedDataEntryPoints)}
+}
+
+type _BACnetConstructedDataEntryPointsBuilder struct {
+	*_BACnetConstructedDataEntryPoints
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEntryPointsBuilder) = (*_BACnetConstructedDataEntryPointsBuilder)(nil)
+
+func (m *_BACnetConstructedDataEntryPointsBuilder) WithMandatoryFields(entryPoints []BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
+	return m.WithEntryPoints(entryPoints...)
+}
+
+func (m *_BACnetConstructedDataEntryPointsBuilder) WithEntryPoints(entryPoints ...BACnetDeviceObjectReference) BACnetConstructedDataEntryPointsBuilder {
+	m.EntryPoints = entryPoints
+	return m
+}
+
+func (m *_BACnetConstructedDataEntryPointsBuilder) Build() (BACnetConstructedDataEntryPoints, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEntryPoints.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEntryPointsBuilder) MustBuild() BACnetConstructedDataEntryPoints {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEntryPointsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEntryPointsBuilder()
+}
+
+// CreateBACnetConstructedDataEntryPointsBuilder creates a BACnetConstructedDataEntryPointsBuilder
+func (m *_BACnetConstructedDataEntryPoints) CreateBACnetConstructedDataEntryPointsBuilder() BACnetConstructedDataEntryPointsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEntryPointsBuilder()
+	}
+	return &_BACnetConstructedDataEntryPointsBuilder{_BACnetConstructedDataEntryPoints: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

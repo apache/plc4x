@@ -47,6 +47,8 @@ type BACnetLandingCallStatus interface {
 	GetFloorText() BACnetContextTagCharacterString
 	// IsBACnetLandingCallStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingCallStatus()
+	// CreateBuilder creates a BACnetLandingCallStatusBuilder
+	CreateBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder
 }
 
 // _BACnetLandingCallStatus is the data-structure of this message
@@ -68,6 +70,134 @@ func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, com
 	}
 	return &_BACnetLandingCallStatus{FloorNumber: floorNumber, Command: command, FloorText: floorText}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLandingCallStatusBuilder is a builder for BACnetLandingCallStatus
+type BACnetLandingCallStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder
+	// WithFloorNumber adds FloorNumber (property field)
+	WithFloorNumber(BACnetContextTagUnsignedInteger) BACnetLandingCallStatusBuilder
+	// WithFloorNumberBuilder adds FloorNumber (property field) which is build by the builder
+	WithFloorNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder
+	// WithFloorText adds FloorText (property field)
+	WithOptionalFloorText(BACnetContextTagCharacterString) BACnetLandingCallStatusBuilder
+	// WithOptionalFloorTextBuilder adds FloorText (property field) which is build by the builder
+	WithOptionalFloorTextBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetLandingCallStatusBuilder
+	// Build builds the BACnetLandingCallStatus or returns an error if something is wrong
+	Build() (BACnetLandingCallStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLandingCallStatus
+}
+
+// NewBACnetLandingCallStatusBuilder() creates a BACnetLandingCallStatusBuilder
+func NewBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder {
+	return &_BACnetLandingCallStatusBuilder{_BACnetLandingCallStatus: new(_BACnetLandingCallStatus)}
+}
+
+type _BACnetLandingCallStatusBuilder struct {
+	*_BACnetLandingCallStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLandingCallStatusBuilder) = (*_BACnetLandingCallStatusBuilder)(nil)
+
+func (m *_BACnetLandingCallStatusBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
+	return m.WithFloorNumber(floorNumber).WithCommand(command)
+}
+
+func (m *_BACnetLandingCallStatusBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetLandingCallStatusBuilder {
+	m.FloorNumber = floorNumber
+	return m
+}
+
+func (m *_BACnetLandingCallStatusBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingCallStatusBuilder {
+	builder := builderSupplier(m.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.FloorNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingCallStatusBuilder) WithCommand(command BACnetLandingCallStatusCommand) BACnetLandingCallStatusBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_BACnetLandingCallStatusBuilder) WithOptionalFloorText(floorText BACnetContextTagCharacterString) BACnetLandingCallStatusBuilder {
+	m.FloorText = floorText
+	return m
+}
+
+func (m *_BACnetLandingCallStatusBuilder) WithOptionalFloorTextBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetLandingCallStatusBuilder {
+	builder := builderSupplier(m.FloorText.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	m.FloorText, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingCallStatusBuilder) Build() (BACnetLandingCallStatus, error) {
+	if m.FloorNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+	}
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLandingCallStatus.deepCopy(), nil
+}
+
+func (m *_BACnetLandingCallStatusBuilder) MustBuild() BACnetLandingCallStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLandingCallStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetLandingCallStatusBuilder()
+}
+
+// CreateBACnetLandingCallStatusBuilder creates a BACnetLandingCallStatusBuilder
+func (m *_BACnetLandingCallStatus) CreateBACnetLandingCallStatusBuilder() BACnetLandingCallStatusBuilder {
+	if m == nil {
+		return NewBACnetLandingCallStatusBuilder()
+	}
+	return &_BACnetLandingCallStatusBuilder{_BACnetLandingCallStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

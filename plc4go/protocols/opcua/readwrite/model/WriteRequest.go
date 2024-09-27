@@ -48,6 +48,8 @@ type WriteRequest interface {
 	GetNodesToWrite() []ExtensionObjectDefinition
 	// IsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriteRequest()
+	// CreateBuilder creates a WriteRequestBuilder
+	CreateWriteRequestBuilder() WriteRequestBuilder
 }
 
 // _WriteRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewWriteRequest(requestHeader ExtensionObjectDefinition, noOfNodesToWrite i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WriteRequestBuilder is a builder for WriteRequest
+type WriteRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) WriteRequestBuilder
+	// WithNoOfNodesToWrite adds NoOfNodesToWrite (property field)
+	WithNoOfNodesToWrite(int32) WriteRequestBuilder
+	// WithNodesToWrite adds NodesToWrite (property field)
+	WithNodesToWrite(...ExtensionObjectDefinition) WriteRequestBuilder
+	// Build builds the WriteRequest or returns an error if something is wrong
+	Build() (WriteRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WriteRequest
+}
+
+// NewWriteRequestBuilder() creates a WriteRequestBuilder
+func NewWriteRequestBuilder() WriteRequestBuilder {
+	return &_WriteRequestBuilder{_WriteRequest: new(_WriteRequest)}
+}
+
+type _WriteRequestBuilder struct {
+	*_WriteRequest
+
+	err *utils.MultiError
+}
+
+var _ (WriteRequestBuilder) = (*_WriteRequestBuilder)(nil)
+
+func (m *_WriteRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfNodesToWrite(noOfNodesToWrite).WithNodesToWrite(nodesToWrite...)
+}
+
+func (m *_WriteRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) WriteRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_WriteRequestBuilder) WithNoOfNodesToWrite(noOfNodesToWrite int32) WriteRequestBuilder {
+	m.NoOfNodesToWrite = noOfNodesToWrite
+	return m
+}
+
+func (m *_WriteRequestBuilder) WithNodesToWrite(nodesToWrite ...ExtensionObjectDefinition) WriteRequestBuilder {
+	m.NodesToWrite = nodesToWrite
+	return m
+}
+
+func (m *_WriteRequestBuilder) Build() (WriteRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._WriteRequest.deepCopy(), nil
+}
+
+func (m *_WriteRequestBuilder) MustBuild() WriteRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_WriteRequestBuilder) DeepCopy() any {
+	return m.CreateWriteRequestBuilder()
+}
+
+// CreateWriteRequestBuilder creates a WriteRequestBuilder
+func (m *_WriteRequest) CreateWriteRequestBuilder() WriteRequestBuilder {
+	if m == nil {
+		return NewWriteRequestBuilder()
+	}
+	return &_WriteRequestBuilder{_WriteRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

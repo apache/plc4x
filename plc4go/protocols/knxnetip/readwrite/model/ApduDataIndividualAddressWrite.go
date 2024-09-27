@@ -40,6 +40,8 @@ type ApduDataIndividualAddressWrite interface {
 	ApduData
 	// IsApduDataIndividualAddressWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressWrite()
+	// CreateBuilder creates a ApduDataIndividualAddressWriteBuilder
+	CreateApduDataIndividualAddressWriteBuilder() ApduDataIndividualAddressWriteBuilder
 }
 
 // _ApduDataIndividualAddressWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataIndividualAddressWrite(dataLength uint8) *_ApduDataIndividualAdd
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataIndividualAddressWriteBuilder is a builder for ApduDataIndividualAddressWrite
+type ApduDataIndividualAddressWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataIndividualAddressWriteBuilder
+	// Build builds the ApduDataIndividualAddressWrite or returns an error if something is wrong
+	Build() (ApduDataIndividualAddressWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataIndividualAddressWrite
+}
+
+// NewApduDataIndividualAddressWriteBuilder() creates a ApduDataIndividualAddressWriteBuilder
+func NewApduDataIndividualAddressWriteBuilder() ApduDataIndividualAddressWriteBuilder {
+	return &_ApduDataIndividualAddressWriteBuilder{_ApduDataIndividualAddressWrite: new(_ApduDataIndividualAddressWrite)}
+}
+
+type _ApduDataIndividualAddressWriteBuilder struct {
+	*_ApduDataIndividualAddressWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataIndividualAddressWriteBuilder) = (*_ApduDataIndividualAddressWriteBuilder)(nil)
+
+func (m *_ApduDataIndividualAddressWriteBuilder) WithMandatoryFields() ApduDataIndividualAddressWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataIndividualAddressWriteBuilder) Build() (ApduDataIndividualAddressWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataIndividualAddressWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataIndividualAddressWriteBuilder) MustBuild() ApduDataIndividualAddressWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataIndividualAddressWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataIndividualAddressWriteBuilder()
+}
+
+// CreateApduDataIndividualAddressWriteBuilder creates a ApduDataIndividualAddressWriteBuilder
+func (m *_ApduDataIndividualAddressWrite) CreateApduDataIndividualAddressWriteBuilder() ApduDataIndividualAddressWriteBuilder {
+	if m == nil {
+		return NewApduDataIndividualAddressWriteBuilder()
+	}
+	return &_ApduDataIndividualAddressWriteBuilder{_ApduDataIndividualAddressWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

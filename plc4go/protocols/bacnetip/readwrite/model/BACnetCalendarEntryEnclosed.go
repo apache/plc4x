@@ -47,6 +47,8 @@ type BACnetCalendarEntryEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetCalendarEntryEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntryEnclosed()
+	// CreateBuilder creates a BACnetCalendarEntryEnclosedBuilder
+	CreateBACnetCalendarEntryEnclosedBuilder() BACnetCalendarEntryEnclosedBuilder
 }
 
 // _BACnetCalendarEntryEnclosed is the data-structure of this message
@@ -74,6 +76,140 @@ func NewBACnetCalendarEntryEnclosed(openingTag BACnetOpeningTag, calendarEntry B
 	}
 	return &_BACnetCalendarEntryEnclosed{OpeningTag: openingTag, CalendarEntry: calendarEntry, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCalendarEntryEnclosedBuilder is a builder for BACnetCalendarEntryEnclosed
+type BACnetCalendarEntryEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetCalendarEntryEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCalendarEntryEnclosedBuilder
+	// WithCalendarEntry adds CalendarEntry (property field)
+	WithCalendarEntry(BACnetCalendarEntry) BACnetCalendarEntryEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder
+	// Build builds the BACnetCalendarEntryEnclosed or returns an error if something is wrong
+	Build() (BACnetCalendarEntryEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntryEnclosed
+}
+
+// NewBACnetCalendarEntryEnclosedBuilder() creates a BACnetCalendarEntryEnclosedBuilder
+func NewBACnetCalendarEntryEnclosedBuilder() BACnetCalendarEntryEnclosedBuilder {
+	return &_BACnetCalendarEntryEnclosedBuilder{_BACnetCalendarEntryEnclosed: new(_BACnetCalendarEntryEnclosed)}
+}
+
+type _BACnetCalendarEntryEnclosedBuilder struct {
+	*_BACnetCalendarEntryEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCalendarEntryEnclosedBuilder) = (*_BACnetCalendarEntryEnclosedBuilder)(nil)
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, calendarEntry BACnetCalendarEntry, closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
+	return m.WithOpeningTag(openingTag).WithCalendarEntry(calendarEntry).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCalendarEntryEnclosedBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCalendarEntryEnclosedBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntry) BACnetCalendarEntryEnclosedBuilder {
+	m.CalendarEntry = calendarEntry
+	return m
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCalendarEntryEnclosedBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCalendarEntryEnclosedBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) Build() (BACnetCalendarEntryEnclosed, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.CalendarEntry == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCalendarEntryEnclosed.deepCopy(), nil
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) MustBuild() BACnetCalendarEntryEnclosed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCalendarEntryEnclosedBuilder) DeepCopy() any {
+	return m.CreateBACnetCalendarEntryEnclosedBuilder()
+}
+
+// CreateBACnetCalendarEntryEnclosedBuilder creates a BACnetCalendarEntryEnclosedBuilder
+func (m *_BACnetCalendarEntryEnclosed) CreateBACnetCalendarEntryEnclosedBuilder() BACnetCalendarEntryEnclosedBuilder {
+	if m == nil {
+		return NewBACnetCalendarEntryEnclosedBuilder()
+	}
+	return &_BACnetCalendarEntryEnclosedBuilder{_BACnetCalendarEntryEnclosed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

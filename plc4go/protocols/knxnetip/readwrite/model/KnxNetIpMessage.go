@@ -48,12 +48,16 @@ type KnxNetIpMessage interface {
 	utils.Copyable
 	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpMessage()
+	// CreateBuilder creates a KnxNetIpMessageBuilder
+	CreateKnxNetIpMessageBuilder() KnxNetIpMessageBuilder
 }
 
 // KnxNetIpMessageContract provides a set of functions which can be overwritten by a sub struct
 type KnxNetIpMessageContract interface {
 	// IsKnxNetIpMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpMessage()
+	// CreateBuilder creates a KnxNetIpMessageBuilder
+	CreateKnxNetIpMessageBuilder() KnxNetIpMessageBuilder
 }
 
 // KnxNetIpMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +79,71 @@ var _ KnxNetIpMessageContract = (*_KnxNetIpMessage)(nil)
 func NewKnxNetIpMessage() *_KnxNetIpMessage {
 	return &_KnxNetIpMessage{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpMessageBuilder is a builder for KnxNetIpMessage
+type KnxNetIpMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() KnxNetIpMessageBuilder
+	// Build builds the KnxNetIpMessage or returns an error if something is wrong
+	Build() (KnxNetIpMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpMessageContract
+}
+
+// NewKnxNetIpMessageBuilder() creates a KnxNetIpMessageBuilder
+func NewKnxNetIpMessageBuilder() KnxNetIpMessageBuilder {
+	return &_KnxNetIpMessageBuilder{_KnxNetIpMessage: new(_KnxNetIpMessage)}
+}
+
+type _KnxNetIpMessageBuilder struct {
+	*_KnxNetIpMessage
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpMessageBuilder) = (*_KnxNetIpMessageBuilder)(nil)
+
+func (m *_KnxNetIpMessageBuilder) WithMandatoryFields() KnxNetIpMessageBuilder {
+	return m
+}
+
+func (m *_KnxNetIpMessageBuilder) Build() (KnxNetIpMessageContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxNetIpMessage.deepCopy(), nil
+}
+
+func (m *_KnxNetIpMessageBuilder) MustBuild() KnxNetIpMessageContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxNetIpMessageBuilder) DeepCopy() any {
+	return m.CreateKnxNetIpMessageBuilder()
+}
+
+// CreateKnxNetIpMessageBuilder creates a KnxNetIpMessageBuilder
+func (m *_KnxNetIpMessage) CreateKnxNetIpMessageBuilder() KnxNetIpMessageBuilder {
+	if m == nil {
+		return NewKnxNetIpMessageBuilder()
+	}
+	return &_KnxNetIpMessageBuilder{_KnxNetIpMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

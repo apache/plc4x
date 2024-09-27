@@ -49,6 +49,8 @@ type BACnetLiftCarModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLiftCarModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLiftCarModeTagged()
+	// CreateBuilder creates a BACnetLiftCarModeTaggedBuilder
+	CreateBACnetLiftCarModeTaggedBuilder() BACnetLiftCarModeTaggedBuilder
 }
 
 // _BACnetLiftCarModeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetLiftCarModeTagged(header BACnetTagHeader, value BACnetLiftCarMode,
 	}
 	return &_BACnetLiftCarModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLiftCarModeTaggedBuilder is a builder for BACnetLiftCarModeTagged
+type BACnetLiftCarModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32) BACnetLiftCarModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLiftCarModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLiftCarMode) BACnetLiftCarModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLiftCarModeTaggedBuilder
+	// Build builds the BACnetLiftCarModeTagged or returns an error if something is wrong
+	Build() (BACnetLiftCarModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLiftCarModeTagged
+}
+
+// NewBACnetLiftCarModeTaggedBuilder() creates a BACnetLiftCarModeTaggedBuilder
+func NewBACnetLiftCarModeTaggedBuilder() BACnetLiftCarModeTaggedBuilder {
+	return &_BACnetLiftCarModeTaggedBuilder{_BACnetLiftCarModeTagged: new(_BACnetLiftCarModeTagged)}
+}
+
+type _BACnetLiftCarModeTaggedBuilder struct {
+	*_BACnetLiftCarModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLiftCarModeTaggedBuilder) = (*_BACnetLiftCarModeTaggedBuilder)(nil)
+
+func (m *_BACnetLiftCarModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarMode, proprietaryValue uint32) BACnetLiftCarModeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarModeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarModeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) WithValue(value BACnetLiftCarMode) BACnetLiftCarModeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarModeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) Build() (BACnetLiftCarModeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLiftCarModeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) MustBuild() BACnetLiftCarModeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLiftCarModeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLiftCarModeTaggedBuilder()
+}
+
+// CreateBACnetLiftCarModeTaggedBuilder creates a BACnetLiftCarModeTaggedBuilder
+func (m *_BACnetLiftCarModeTagged) CreateBACnetLiftCarModeTaggedBuilder() BACnetLiftCarModeTaggedBuilder {
+	if m == nil {
+		return NewBACnetLiftCarModeTaggedBuilder()
+	}
+	return &_BACnetLiftCarModeTaggedBuilder{_BACnetLiftCarModeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

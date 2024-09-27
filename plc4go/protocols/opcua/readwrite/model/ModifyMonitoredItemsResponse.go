@@ -52,6 +52,8 @@ type ModifyMonitoredItemsResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsModifyMonitoredItemsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModifyMonitoredItemsResponse()
+	// CreateBuilder creates a ModifyMonitoredItemsResponseBuilder
+	CreateModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilder
 }
 
 // _ModifyMonitoredItemsResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewModifyMonitoredItemsResponse(responseHeader ExtensionObjectDefinition, n
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModifyMonitoredItemsResponseBuilder is a builder for ModifyMonitoredItemsResponse
+type ModifyMonitoredItemsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ModifyMonitoredItemsResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) ModifyMonitoredItemsResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) ModifyMonitoredItemsResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) ModifyMonitoredItemsResponseBuilder
+	// Build builds the ModifyMonitoredItemsResponse or returns an error if something is wrong
+	Build() (ModifyMonitoredItemsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModifyMonitoredItemsResponse
+}
+
+// NewModifyMonitoredItemsResponseBuilder() creates a ModifyMonitoredItemsResponseBuilder
+func NewModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilder {
+	return &_ModifyMonitoredItemsResponseBuilder{_ModifyMonitoredItemsResponse: new(_ModifyMonitoredItemsResponse)}
+}
+
+type _ModifyMonitoredItemsResponseBuilder struct {
+	*_ModifyMonitoredItemsResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModifyMonitoredItemsResponseBuilder) = (*_ModifyMonitoredItemsResponseBuilder)(nil)
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithNoOfResults(noOfResults int32) ModifyMonitoredItemsResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) ModifyMonitoredItemsResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ModifyMonitoredItemsResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ModifyMonitoredItemsResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) Build() (ModifyMonitoredItemsResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModifyMonitoredItemsResponse.deepCopy(), nil
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) MustBuild() ModifyMonitoredItemsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModifyMonitoredItemsResponseBuilder) DeepCopy() any {
+	return m.CreateModifyMonitoredItemsResponseBuilder()
+}
+
+// CreateModifyMonitoredItemsResponseBuilder creates a ModifyMonitoredItemsResponseBuilder
+func (m *_ModifyMonitoredItemsResponse) CreateModifyMonitoredItemsResponseBuilder() ModifyMonitoredItemsResponseBuilder {
+	if m == nil {
+		return NewModifyMonitoredItemsResponseBuilder()
+	}
+	return &_ModifyMonitoredItemsResponseBuilder{_ModifyMonitoredItemsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

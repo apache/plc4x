@@ -40,6 +40,8 @@ type SALDataFreeUsage interface {
 	SALData
 	// IsSALDataFreeUsage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataFreeUsage()
+	// CreateBuilder creates a SALDataFreeUsageBuilder
+	CreateSALDataFreeUsageBuilder() SALDataFreeUsageBuilder
 }
 
 // _SALDataFreeUsage is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataFreeUsageBuilder is a builder for SALDataFreeUsage
+type SALDataFreeUsageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataFreeUsageBuilder
+	// Build builds the SALDataFreeUsage or returns an error if something is wrong
+	Build() (SALDataFreeUsage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataFreeUsage
+}
+
+// NewSALDataFreeUsageBuilder() creates a SALDataFreeUsageBuilder
+func NewSALDataFreeUsageBuilder() SALDataFreeUsageBuilder {
+	return &_SALDataFreeUsageBuilder{_SALDataFreeUsage: new(_SALDataFreeUsage)}
+}
+
+type _SALDataFreeUsageBuilder struct {
+	*_SALDataFreeUsage
+
+	err *utils.MultiError
+}
+
+var _ (SALDataFreeUsageBuilder) = (*_SALDataFreeUsageBuilder)(nil)
+
+func (m *_SALDataFreeUsageBuilder) WithMandatoryFields() SALDataFreeUsageBuilder {
+	return m
+}
+
+func (m *_SALDataFreeUsageBuilder) Build() (SALDataFreeUsage, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataFreeUsage.deepCopy(), nil
+}
+
+func (m *_SALDataFreeUsageBuilder) MustBuild() SALDataFreeUsage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataFreeUsageBuilder) DeepCopy() any {
+	return m.CreateSALDataFreeUsageBuilder()
+}
+
+// CreateSALDataFreeUsageBuilder creates a SALDataFreeUsageBuilder
+func (m *_SALDataFreeUsage) CreateSALDataFreeUsageBuilder() SALDataFreeUsageBuilder {
+	if m == nil {
+		return NewSALDataFreeUsageBuilder()
+	}
+	return &_SALDataFreeUsageBuilder{_SALDataFreeUsage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

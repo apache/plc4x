@@ -44,6 +44,8 @@ type ApduDataContainer interface {
 	GetDataApdu() ApduData
 	// IsApduDataContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataContainer()
+	// CreateBuilder creates a ApduDataContainerBuilder
+	CreateApduDataContainerBuilder() ApduDataContainerBuilder
 }
 
 // _ApduDataContainer is the data-structure of this message
@@ -67,6 +69,84 @@ func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataL
 	_result.ApduContract.(*_Apdu)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataContainerBuilder is a builder for ApduDataContainer
+type ApduDataContainerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder
+	// WithDataApdu adds DataApdu (property field)
+	WithDataApdu(ApduData) ApduDataContainerBuilder
+	// Build builds the ApduDataContainer or returns an error if something is wrong
+	Build() (ApduDataContainer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataContainer
+}
+
+// NewApduDataContainerBuilder() creates a ApduDataContainerBuilder
+func NewApduDataContainerBuilder() ApduDataContainerBuilder {
+	return &_ApduDataContainerBuilder{_ApduDataContainer: new(_ApduDataContainer)}
+}
+
+type _ApduDataContainerBuilder struct {
+	*_ApduDataContainer
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataContainerBuilder) = (*_ApduDataContainerBuilder)(nil)
+
+func (m *_ApduDataContainerBuilder) WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder {
+	return m.WithDataApdu(dataApdu)
+}
+
+func (m *_ApduDataContainerBuilder) WithDataApdu(dataApdu ApduData) ApduDataContainerBuilder {
+	m.DataApdu = dataApdu
+	return m
+}
+
+func (m *_ApduDataContainerBuilder) Build() (ApduDataContainer, error) {
+	if m.DataApdu == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataApdu' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataContainer.deepCopy(), nil
+}
+
+func (m *_ApduDataContainerBuilder) MustBuild() ApduDataContainer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataContainerBuilder) DeepCopy() any {
+	return m.CreateApduDataContainerBuilder()
+}
+
+// CreateApduDataContainerBuilder creates a ApduDataContainerBuilder
+func (m *_ApduDataContainer) CreateApduDataContainerBuilder() ApduDataContainerBuilder {
+	if m == nil {
+		return NewApduDataContainerBuilder()
+	}
+	return &_ApduDataContainerBuilder{_ApduDataContainer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

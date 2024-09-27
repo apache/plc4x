@@ -40,6 +40,8 @@ type ApduDataExtDomainAddressSerialNumberResponse interface {
 	ApduDataExt
 	// IsApduDataExtDomainAddressSerialNumberResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSerialNumberResponse()
+	// CreateBuilder creates a ApduDataExtDomainAddressSerialNumberResponseBuilder
+	CreateApduDataExtDomainAddressSerialNumberResponseBuilder() ApduDataExtDomainAddressSerialNumberResponseBuilder
 }
 
 // _ApduDataExtDomainAddressSerialNumberResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtDomainAddressSerialNumberResponse(length uint8) *_ApduDataExt
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtDomainAddressSerialNumberResponseBuilder is a builder for ApduDataExtDomainAddressSerialNumberResponse
+type ApduDataExtDomainAddressSerialNumberResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtDomainAddressSerialNumberResponseBuilder
+	// Build builds the ApduDataExtDomainAddressSerialNumberResponse or returns an error if something is wrong
+	Build() (ApduDataExtDomainAddressSerialNumberResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtDomainAddressSerialNumberResponse
+}
+
+// NewApduDataExtDomainAddressSerialNumberResponseBuilder() creates a ApduDataExtDomainAddressSerialNumberResponseBuilder
+func NewApduDataExtDomainAddressSerialNumberResponseBuilder() ApduDataExtDomainAddressSerialNumberResponseBuilder {
+	return &_ApduDataExtDomainAddressSerialNumberResponseBuilder{_ApduDataExtDomainAddressSerialNumberResponse: new(_ApduDataExtDomainAddressSerialNumberResponse)}
+}
+
+type _ApduDataExtDomainAddressSerialNumberResponseBuilder struct {
+	*_ApduDataExtDomainAddressSerialNumberResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtDomainAddressSerialNumberResponseBuilder) = (*_ApduDataExtDomainAddressSerialNumberResponseBuilder)(nil)
+
+func (m *_ApduDataExtDomainAddressSerialNumberResponseBuilder) WithMandatoryFields() ApduDataExtDomainAddressSerialNumberResponseBuilder {
+	return m
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberResponseBuilder) Build() (ApduDataExtDomainAddressSerialNumberResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtDomainAddressSerialNumberResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberResponseBuilder) MustBuild() ApduDataExtDomainAddressSerialNumberResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtDomainAddressSerialNumberResponseBuilder()
+}
+
+// CreateApduDataExtDomainAddressSerialNumberResponseBuilder creates a ApduDataExtDomainAddressSerialNumberResponseBuilder
+func (m *_ApduDataExtDomainAddressSerialNumberResponse) CreateApduDataExtDomainAddressSerialNumberResponseBuilder() ApduDataExtDomainAddressSerialNumberResponseBuilder {
+	if m == nil {
+		return NewApduDataExtDomainAddressSerialNumberResponseBuilder()
+	}
+	return &_ApduDataExtDomainAddressSerialNumberResponseBuilder{_ApduDataExtDomainAddressSerialNumberResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

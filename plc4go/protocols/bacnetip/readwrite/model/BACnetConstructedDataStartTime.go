@@ -46,6 +46,8 @@ type BACnetConstructedDataStartTime interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataStartTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStartTime()
+	// CreateBuilder creates a BACnetConstructedDataStartTimeBuilder
+	CreateBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBuilder
 }
 
 // _BACnetConstructedDataStartTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataStartTime(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataStartTimeBuilder is a builder for BACnetConstructedDataStartTime
+type BACnetConstructedDataStartTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(BACnetDateTime) BACnetConstructedDataStartTimeBuilder
+	// WithStartTimeBuilder adds StartTime (property field) which is build by the builder
+	WithStartTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStartTimeBuilder
+	// Build builds the BACnetConstructedDataStartTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataStartTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataStartTime
+}
+
+// NewBACnetConstructedDataStartTimeBuilder() creates a BACnetConstructedDataStartTimeBuilder
+func NewBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBuilder {
+	return &_BACnetConstructedDataStartTimeBuilder{_BACnetConstructedDataStartTime: new(_BACnetConstructedDataStartTime)}
+}
+
+type _BACnetConstructedDataStartTimeBuilder struct {
+	*_BACnetConstructedDataStartTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataStartTimeBuilder) = (*_BACnetConstructedDataStartTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataStartTimeBuilder) WithMandatoryFields(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
+	return m.WithStartTime(startTime)
+}
+
+func (m *_BACnetConstructedDataStartTimeBuilder) WithStartTime(startTime BACnetDateTime) BACnetConstructedDataStartTimeBuilder {
+	m.StartTime = startTime
+	return m
+}
+
+func (m *_BACnetConstructedDataStartTimeBuilder) WithStartTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataStartTimeBuilder {
+	builder := builderSupplier(m.StartTime.CreateBACnetDateTimeBuilder())
+	var err error
+	m.StartTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataStartTimeBuilder) Build() (BACnetConstructedDataStartTime, error) {
+	if m.StartTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'startTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataStartTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataStartTimeBuilder) MustBuild() BACnetConstructedDataStartTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataStartTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataStartTimeBuilder()
+}
+
+// CreateBACnetConstructedDataStartTimeBuilder creates a BACnetConstructedDataStartTimeBuilder
+func (m *_BACnetConstructedDataStartTime) CreateBACnetConstructedDataStartTimeBuilder() BACnetConstructedDataStartTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataStartTimeBuilder()
+	}
+	return &_BACnetConstructedDataStartTimeBuilder{_BACnetConstructedDataStartTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

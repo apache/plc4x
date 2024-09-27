@@ -46,6 +46,8 @@ type COTPPacketData interface {
 	GetTpduRef() uint8
 	// IsCOTPPacketData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketData()
+	// CreateBuilder creates a COTPPacketDataBuilder
+	CreateCOTPPacketDataBuilder() COTPPacketDataBuilder
 }
 
 // _COTPPacketData is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCOTPPacketData(parameters []COTPParameter, payload S7Message, eot bool, 
 	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketDataBuilder is a builder for COTPPacketData
+type COTPPacketDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eot bool, tpduRef uint8) COTPPacketDataBuilder
+	// WithEot adds Eot (property field)
+	WithEot(bool) COTPPacketDataBuilder
+	// WithTpduRef adds TpduRef (property field)
+	WithTpduRef(uint8) COTPPacketDataBuilder
+	// Build builds the COTPPacketData or returns an error if something is wrong
+	Build() (COTPPacketData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketData
+}
+
+// NewCOTPPacketDataBuilder() creates a COTPPacketDataBuilder
+func NewCOTPPacketDataBuilder() COTPPacketDataBuilder {
+	return &_COTPPacketDataBuilder{_COTPPacketData: new(_COTPPacketData)}
+}
+
+type _COTPPacketDataBuilder struct {
+	*_COTPPacketData
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketDataBuilder) = (*_COTPPacketDataBuilder)(nil)
+
+func (m *_COTPPacketDataBuilder) WithMandatoryFields(eot bool, tpduRef uint8) COTPPacketDataBuilder {
+	return m.WithEot(eot).WithTpduRef(tpduRef)
+}
+
+func (m *_COTPPacketDataBuilder) WithEot(eot bool) COTPPacketDataBuilder {
+	m.Eot = eot
+	return m
+}
+
+func (m *_COTPPacketDataBuilder) WithTpduRef(tpduRef uint8) COTPPacketDataBuilder {
+	m.TpduRef = tpduRef
+	return m
+}
+
+func (m *_COTPPacketDataBuilder) Build() (COTPPacketData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacketData.deepCopy(), nil
+}
+
+func (m *_COTPPacketDataBuilder) MustBuild() COTPPacketData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketDataBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketDataBuilder()
+}
+
+// CreateCOTPPacketDataBuilder creates a COTPPacketDataBuilder
+func (m *_COTPPacketData) CreateCOTPPacketDataBuilder() COTPPacketDataBuilder {
+	if m == nil {
+		return NewCOTPPacketDataBuilder()
+	}
+	return &_COTPPacketDataBuilder{_COTPPacketData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

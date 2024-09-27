@@ -46,6 +46,8 @@ type BACnetConstructedDataLightingOutputPresentValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataLightingOutputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLightingOutputPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataLightingOutputPresentValueBuilder
+	CreateBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstructedDataLightingOutputPresentValueBuilder
 }
 
 // _BACnetConstructedDataLightingOutputPresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLightingOutputPresentValue(openingTag BACnetOpening
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLightingOutputPresentValueBuilder is a builder for BACnetConstructedDataLightingOutputPresentValue
+type BACnetConstructedDataLightingOutputPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputPresentValueBuilder
+	// Build builds the BACnetConstructedDataLightingOutputPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLightingOutputPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLightingOutputPresentValue
+}
+
+// NewBACnetConstructedDataLightingOutputPresentValueBuilder() creates a BACnetConstructedDataLightingOutputPresentValueBuilder
+func NewBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstructedDataLightingOutputPresentValueBuilder {
+	return &_BACnetConstructedDataLightingOutputPresentValueBuilder{_BACnetConstructedDataLightingOutputPresentValue: new(_BACnetConstructedDataLightingOutputPresentValue)}
+}
+
+type _BACnetConstructedDataLightingOutputPresentValueBuilder struct {
+	*_BACnetConstructedDataLightingOutputPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLightingOutputPresentValueBuilder) = (*_BACnetConstructedDataLightingOutputPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputPresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) Build() (BACnetConstructedDataLightingOutputPresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLightingOutputPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) MustBuild() BACnetConstructedDataLightingOutputPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLightingOutputPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLightingOutputPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataLightingOutputPresentValueBuilder creates a BACnetConstructedDataLightingOutputPresentValueBuilder
+func (m *_BACnetConstructedDataLightingOutputPresentValue) CreateBACnetConstructedDataLightingOutputPresentValueBuilder() BACnetConstructedDataLightingOutputPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLightingOutputPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataLightingOutputPresentValueBuilder{_BACnetConstructedDataLightingOutputPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

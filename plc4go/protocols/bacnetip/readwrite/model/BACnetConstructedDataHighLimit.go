@@ -46,6 +46,8 @@ type BACnetConstructedDataHighLimit interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataHighLimit()
+	// CreateBuilder creates a BACnetConstructedDataHighLimitBuilder
+	CreateBACnetConstructedDataHighLimitBuilder() BACnetConstructedDataHighLimitBuilder
 }
 
 // _BACnetConstructedDataHighLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataHighLimit(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataHighLimitBuilder is a builder for BACnetConstructedDataHighLimit
+type BACnetConstructedDataHighLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(highLimit BACnetApplicationTagReal) BACnetConstructedDataHighLimitBuilder
+	// WithHighLimit adds HighLimit (property field)
+	WithHighLimit(BACnetApplicationTagReal) BACnetConstructedDataHighLimitBuilder
+	// WithHighLimitBuilder adds HighLimit (property field) which is build by the builder
+	WithHighLimitBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataHighLimitBuilder
+	// Build builds the BACnetConstructedDataHighLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataHighLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataHighLimit
+}
+
+// NewBACnetConstructedDataHighLimitBuilder() creates a BACnetConstructedDataHighLimitBuilder
+func NewBACnetConstructedDataHighLimitBuilder() BACnetConstructedDataHighLimitBuilder {
+	return &_BACnetConstructedDataHighLimitBuilder{_BACnetConstructedDataHighLimit: new(_BACnetConstructedDataHighLimit)}
+}
+
+type _BACnetConstructedDataHighLimitBuilder struct {
+	*_BACnetConstructedDataHighLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataHighLimitBuilder) = (*_BACnetConstructedDataHighLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagReal) BACnetConstructedDataHighLimitBuilder {
+	return m.WithHighLimit(highLimit)
+}
+
+func (m *_BACnetConstructedDataHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagReal) BACnetConstructedDataHighLimitBuilder {
+	m.HighLimit = highLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataHighLimitBuilder {
+	builder := builderSupplier(m.HighLimit.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.HighLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataHighLimitBuilder) Build() (BACnetConstructedDataHighLimit, error) {
+	if m.HighLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataHighLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataHighLimitBuilder) MustBuild() BACnetConstructedDataHighLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataHighLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataHighLimitBuilder()
+}
+
+// CreateBACnetConstructedDataHighLimitBuilder creates a BACnetConstructedDataHighLimitBuilder
+func (m *_BACnetConstructedDataHighLimit) CreateBACnetConstructedDataHighLimitBuilder() BACnetConstructedDataHighLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataHighLimitBuilder()
+	}
+	return &_BACnetConstructedDataHighLimitBuilder{_BACnetConstructedDataHighLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

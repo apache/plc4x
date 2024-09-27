@@ -46,6 +46,8 @@ type BACnetConstructedDataPrescale interface {
 	GetActualValue() BACnetPrescale
 	// IsBACnetConstructedDataPrescale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPrescale()
+	// CreateBuilder creates a BACnetConstructedDataPrescaleBuilder
+	CreateBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuilder
 }
 
 // _BACnetConstructedDataPrescale is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPrescale(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPrescaleBuilder is a builder for BACnetConstructedDataPrescale
+type BACnetConstructedDataPrescaleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder
+	// WithPrescale adds Prescale (property field)
+	WithPrescale(BACnetPrescale) BACnetConstructedDataPrescaleBuilder
+	// WithPrescaleBuilder adds Prescale (property field) which is build by the builder
+	WithPrescaleBuilder(func(BACnetPrescaleBuilder) BACnetPrescaleBuilder) BACnetConstructedDataPrescaleBuilder
+	// Build builds the BACnetConstructedDataPrescale or returns an error if something is wrong
+	Build() (BACnetConstructedDataPrescale, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPrescale
+}
+
+// NewBACnetConstructedDataPrescaleBuilder() creates a BACnetConstructedDataPrescaleBuilder
+func NewBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuilder {
+	return &_BACnetConstructedDataPrescaleBuilder{_BACnetConstructedDataPrescale: new(_BACnetConstructedDataPrescale)}
+}
+
+type _BACnetConstructedDataPrescaleBuilder struct {
+	*_BACnetConstructedDataPrescale
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPrescaleBuilder) = (*_BACnetConstructedDataPrescaleBuilder)(nil)
+
+func (m *_BACnetConstructedDataPrescaleBuilder) WithMandatoryFields(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
+	return m.WithPrescale(prescale)
+}
+
+func (m *_BACnetConstructedDataPrescaleBuilder) WithPrescale(prescale BACnetPrescale) BACnetConstructedDataPrescaleBuilder {
+	m.Prescale = prescale
+	return m
+}
+
+func (m *_BACnetConstructedDataPrescaleBuilder) WithPrescaleBuilder(builderSupplier func(BACnetPrescaleBuilder) BACnetPrescaleBuilder) BACnetConstructedDataPrescaleBuilder {
+	builder := builderSupplier(m.Prescale.CreateBACnetPrescaleBuilder())
+	var err error
+	m.Prescale, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetPrescaleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPrescaleBuilder) Build() (BACnetConstructedDataPrescale, error) {
+	if m.Prescale == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'prescale' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPrescale.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPrescaleBuilder) MustBuild() BACnetConstructedDataPrescale {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPrescaleBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPrescaleBuilder()
+}
+
+// CreateBACnetConstructedDataPrescaleBuilder creates a BACnetConstructedDataPrescaleBuilder
+func (m *_BACnetConstructedDataPrescale) CreateBACnetConstructedDataPrescaleBuilder() BACnetConstructedDataPrescaleBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPrescaleBuilder()
+	}
+	return &_BACnetConstructedDataPrescaleBuilder{_BACnetConstructedDataPrescale: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@ type ApplicationAddress2 interface {
 	GetIsWildcard() bool
 	// IsApplicationAddress2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationAddress2()
+	// CreateBuilder creates a ApplicationAddress2Builder
+	CreateApplicationAddress2Builder() ApplicationAddress2Builder
 }
 
 // _ApplicationAddress2 is the data-structure of this message
@@ -58,6 +60,78 @@ var _ ApplicationAddress2 = (*_ApplicationAddress2)(nil)
 func NewApplicationAddress2(address byte) *_ApplicationAddress2 {
 	return &_ApplicationAddress2{Address: address}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApplicationAddress2Builder is a builder for ApplicationAddress2
+type ApplicationAddress2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address byte) ApplicationAddress2Builder
+	// WithAddress adds Address (property field)
+	WithAddress(byte) ApplicationAddress2Builder
+	// Build builds the ApplicationAddress2 or returns an error if something is wrong
+	Build() (ApplicationAddress2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApplicationAddress2
+}
+
+// NewApplicationAddress2Builder() creates a ApplicationAddress2Builder
+func NewApplicationAddress2Builder() ApplicationAddress2Builder {
+	return &_ApplicationAddress2Builder{_ApplicationAddress2: new(_ApplicationAddress2)}
+}
+
+type _ApplicationAddress2Builder struct {
+	*_ApplicationAddress2
+
+	err *utils.MultiError
+}
+
+var _ (ApplicationAddress2Builder) = (*_ApplicationAddress2Builder)(nil)
+
+func (m *_ApplicationAddress2Builder) WithMandatoryFields(address byte) ApplicationAddress2Builder {
+	return m.WithAddress(address)
+}
+
+func (m *_ApplicationAddress2Builder) WithAddress(address byte) ApplicationAddress2Builder {
+	m.Address = address
+	return m
+}
+
+func (m *_ApplicationAddress2Builder) Build() (ApplicationAddress2, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApplicationAddress2.deepCopy(), nil
+}
+
+func (m *_ApplicationAddress2Builder) MustBuild() ApplicationAddress2 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApplicationAddress2Builder) DeepCopy() any {
+	return m.CreateApplicationAddress2Builder()
+}
+
+// CreateApplicationAddress2Builder creates a ApplicationAddress2Builder
+func (m *_ApplicationAddress2) CreateApplicationAddress2Builder() ApplicationAddress2Builder {
+	if m == nil {
+		return NewApplicationAddress2Builder()
+	}
+	return &_ApplicationAddress2Builder{_ApplicationAddress2: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

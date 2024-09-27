@@ -45,6 +45,8 @@ type CIPDataConnected interface {
 	GetTagStatus() uint16
 	// IsCIPDataConnected is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPDataConnected()
+	// CreateBuilder creates a CIPDataConnectedBuilder
+	CreateCIPDataConnectedBuilder() CIPDataConnectedBuilder
 }
 
 // _CIPDataConnected is the data-structure of this message
@@ -59,6 +61,85 @@ var _ CIPDataConnected = (*_CIPDataConnected)(nil)
 func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
 	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPDataConnectedBuilder is a builder for CIPDataConnected
+type CIPDataConnectedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value uint32, tagStatus uint16) CIPDataConnectedBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint32) CIPDataConnectedBuilder
+	// WithTagStatus adds TagStatus (property field)
+	WithTagStatus(uint16) CIPDataConnectedBuilder
+	// Build builds the CIPDataConnected or returns an error if something is wrong
+	Build() (CIPDataConnected, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPDataConnected
+}
+
+// NewCIPDataConnectedBuilder() creates a CIPDataConnectedBuilder
+func NewCIPDataConnectedBuilder() CIPDataConnectedBuilder {
+	return &_CIPDataConnectedBuilder{_CIPDataConnected: new(_CIPDataConnected)}
+}
+
+type _CIPDataConnectedBuilder struct {
+	*_CIPDataConnected
+
+	err *utils.MultiError
+}
+
+var _ (CIPDataConnectedBuilder) = (*_CIPDataConnectedBuilder)(nil)
+
+func (m *_CIPDataConnectedBuilder) WithMandatoryFields(value uint32, tagStatus uint16) CIPDataConnectedBuilder {
+	return m.WithValue(value).WithTagStatus(tagStatus)
+}
+
+func (m *_CIPDataConnectedBuilder) WithValue(value uint32) CIPDataConnectedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_CIPDataConnectedBuilder) WithTagStatus(tagStatus uint16) CIPDataConnectedBuilder {
+	m.TagStatus = tagStatus
+	return m
+}
+
+func (m *_CIPDataConnectedBuilder) Build() (CIPDataConnected, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPDataConnected.deepCopy(), nil
+}
+
+func (m *_CIPDataConnectedBuilder) MustBuild() CIPDataConnected {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPDataConnectedBuilder) DeepCopy() any {
+	return m.CreateCIPDataConnectedBuilder()
+}
+
+// CreateCIPDataConnectedBuilder creates a CIPDataConnectedBuilder
+func (m *_CIPDataConnected) CreateCIPDataConnectedBuilder() CIPDataConnectedBuilder {
+	if m == nil {
+		return NewCIPDataConnectedBuilder()
+	}
+	return &_CIPDataConnectedBuilder{_CIPDataConnected: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

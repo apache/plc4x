@@ -46,6 +46,8 @@ type BACnetConstructedDataSetting interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataSetting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSetting()
+	// CreateBuilder creates a BACnetConstructedDataSettingBuilder
+	CreateBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilder
 }
 
 // _BACnetConstructedDataSetting is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataSetting(openingTag BACnetOpeningTag, peekedTagHeade
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSettingBuilder is a builder for BACnetConstructedDataSetting
+type BACnetConstructedDataSettingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder
+	// WithSetting adds Setting (property field)
+	WithSetting(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder
+	// WithSettingBuilder adds Setting (property field) which is build by the builder
+	WithSettingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSettingBuilder
+	// Build builds the BACnetConstructedDataSetting or returns an error if something is wrong
+	Build() (BACnetConstructedDataSetting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSetting
+}
+
+// NewBACnetConstructedDataSettingBuilder() creates a BACnetConstructedDataSettingBuilder
+func NewBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilder {
+	return &_BACnetConstructedDataSettingBuilder{_BACnetConstructedDataSetting: new(_BACnetConstructedDataSetting)}
+}
+
+type _BACnetConstructedDataSettingBuilder struct {
+	*_BACnetConstructedDataSetting
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSettingBuilder) = (*_BACnetConstructedDataSettingBuilder)(nil)
+
+func (m *_BACnetConstructedDataSettingBuilder) WithMandatoryFields(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
+	return m.WithSetting(setting)
+}
+
+func (m *_BACnetConstructedDataSettingBuilder) WithSetting(setting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSettingBuilder {
+	m.Setting = setting
+	return m
+}
+
+func (m *_BACnetConstructedDataSettingBuilder) WithSettingBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSettingBuilder {
+	builder := builderSupplier(m.Setting.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.Setting, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSettingBuilder) Build() (BACnetConstructedDataSetting, error) {
+	if m.Setting == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'setting' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSetting.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSettingBuilder) MustBuild() BACnetConstructedDataSetting {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSettingBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSettingBuilder()
+}
+
+// CreateBACnetConstructedDataSettingBuilder creates a BACnetConstructedDataSettingBuilder
+func (m *_BACnetConstructedDataSetting) CreateBACnetConstructedDataSettingBuilder() BACnetConstructedDataSettingBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSettingBuilder()
+	}
+	return &_BACnetConstructedDataSettingBuilder{_BACnetConstructedDataSetting: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type SALDataClockAndTimekeeping interface {
 	GetClockAndTimekeepingData() ClockAndTimekeepingData
 	// IsSALDataClockAndTimekeeping is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataClockAndTimekeeping()
+	// CreateBuilder creates a SALDataClockAndTimekeepingBuilder
+	CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder
 }
 
 // _SALDataClockAndTimekeeping is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData Cloc
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataClockAndTimekeepingBuilder is a builder for SALDataClockAndTimekeeping
+type SALDataClockAndTimekeepingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
+	// WithClockAndTimekeepingData adds ClockAndTimekeepingData (property field)
+	WithClockAndTimekeepingData(ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
+	// Build builds the SALDataClockAndTimekeeping or returns an error if something is wrong
+	Build() (SALDataClockAndTimekeeping, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataClockAndTimekeeping
+}
+
+// NewSALDataClockAndTimekeepingBuilder() creates a SALDataClockAndTimekeepingBuilder
+func NewSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
+	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: new(_SALDataClockAndTimekeeping)}
+}
+
+type _SALDataClockAndTimekeepingBuilder struct {
+	*_SALDataClockAndTimekeeping
+
+	err *utils.MultiError
+}
+
+var _ (SALDataClockAndTimekeepingBuilder) = (*_SALDataClockAndTimekeepingBuilder)(nil)
+
+func (m *_SALDataClockAndTimekeepingBuilder) WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	return m.WithClockAndTimekeepingData(clockAndTimekeepingData)
+}
+
+func (m *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingData(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	m.ClockAndTimekeepingData = clockAndTimekeepingData
+	return m
+}
+
+func (m *_SALDataClockAndTimekeepingBuilder) Build() (SALDataClockAndTimekeeping, error) {
+	if m.ClockAndTimekeepingData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'clockAndTimekeepingData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataClockAndTimekeeping.deepCopy(), nil
+}
+
+func (m *_SALDataClockAndTimekeepingBuilder) MustBuild() SALDataClockAndTimekeeping {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataClockAndTimekeepingBuilder) DeepCopy() any {
+	return m.CreateSALDataClockAndTimekeepingBuilder()
+}
+
+// CreateSALDataClockAndTimekeepingBuilder creates a SALDataClockAndTimekeepingBuilder
+func (m *_SALDataClockAndTimekeeping) CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
+	if m == nil {
+		return NewSALDataClockAndTimekeepingBuilder()
+	}
+	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

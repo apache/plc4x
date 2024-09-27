@@ -58,6 +58,8 @@ type MeasurementDataChannelMeasurementData interface {
 	GetValue() float64
 	// IsMeasurementDataChannelMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementDataChannelMeasurementData()
+	// CreateBuilder creates a MeasurementDataChannelMeasurementDataBuilder
+	CreateMeasurementDataChannelMeasurementDataBuilder() MeasurementDataChannelMeasurementDataBuilder
 }
 
 // _MeasurementDataChannelMeasurementData is the data-structure of this message
@@ -88,6 +90,113 @@ func NewMeasurementDataChannelMeasurementData(commandTypeContainer MeasurementCo
 	_result.MeasurementDataContract.(*_MeasurementData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeasurementDataChannelMeasurementDataBuilder is a builder for MeasurementDataChannelMeasurementData
+type MeasurementDataChannelMeasurementDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) MeasurementDataChannelMeasurementDataBuilder
+	// WithDeviceId adds DeviceId (property field)
+	WithDeviceId(uint8) MeasurementDataChannelMeasurementDataBuilder
+	// WithChannel adds Channel (property field)
+	WithChannel(uint8) MeasurementDataChannelMeasurementDataBuilder
+	// WithUnits adds Units (property field)
+	WithUnits(MeasurementUnits) MeasurementDataChannelMeasurementDataBuilder
+	// WithMultiplier adds Multiplier (property field)
+	WithMultiplier(int8) MeasurementDataChannelMeasurementDataBuilder
+	// WithMsb adds Msb (property field)
+	WithMsb(uint8) MeasurementDataChannelMeasurementDataBuilder
+	// WithLsb adds Lsb (property field)
+	WithLsb(uint8) MeasurementDataChannelMeasurementDataBuilder
+	// Build builds the MeasurementDataChannelMeasurementData or returns an error if something is wrong
+	Build() (MeasurementDataChannelMeasurementData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeasurementDataChannelMeasurementData
+}
+
+// NewMeasurementDataChannelMeasurementDataBuilder() creates a MeasurementDataChannelMeasurementDataBuilder
+func NewMeasurementDataChannelMeasurementDataBuilder() MeasurementDataChannelMeasurementDataBuilder {
+	return &_MeasurementDataChannelMeasurementDataBuilder{_MeasurementDataChannelMeasurementData: new(_MeasurementDataChannelMeasurementData)}
+}
+
+type _MeasurementDataChannelMeasurementDataBuilder struct {
+	*_MeasurementDataChannelMeasurementData
+
+	err *utils.MultiError
+}
+
+var _ (MeasurementDataChannelMeasurementDataBuilder) = (*_MeasurementDataChannelMeasurementDataBuilder)(nil)
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithMandatoryFields(deviceId uint8, channel uint8, units MeasurementUnits, multiplier int8, msb uint8, lsb uint8) MeasurementDataChannelMeasurementDataBuilder {
+	return m.WithDeviceId(deviceId).WithChannel(channel).WithUnits(units).WithMultiplier(multiplier).WithMsb(msb).WithLsb(lsb)
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithDeviceId(deviceId uint8) MeasurementDataChannelMeasurementDataBuilder {
+	m.DeviceId = deviceId
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithChannel(channel uint8) MeasurementDataChannelMeasurementDataBuilder {
+	m.Channel = channel
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithUnits(units MeasurementUnits) MeasurementDataChannelMeasurementDataBuilder {
+	m.Units = units
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithMultiplier(multiplier int8) MeasurementDataChannelMeasurementDataBuilder {
+	m.Multiplier = multiplier
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithMsb(msb uint8) MeasurementDataChannelMeasurementDataBuilder {
+	m.Msb = msb
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) WithLsb(lsb uint8) MeasurementDataChannelMeasurementDataBuilder {
+	m.Lsb = lsb
+	return m
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) Build() (MeasurementDataChannelMeasurementData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeasurementDataChannelMeasurementData.deepCopy(), nil
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) MustBuild() MeasurementDataChannelMeasurementData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeasurementDataChannelMeasurementDataBuilder) DeepCopy() any {
+	return m.CreateMeasurementDataChannelMeasurementDataBuilder()
+}
+
+// CreateMeasurementDataChannelMeasurementDataBuilder creates a MeasurementDataChannelMeasurementDataBuilder
+func (m *_MeasurementDataChannelMeasurementData) CreateMeasurementDataChannelMeasurementDataBuilder() MeasurementDataChannelMeasurementDataBuilder {
+	if m == nil {
+		return NewMeasurementDataChannelMeasurementDataBuilder()
+	}
+	return &_MeasurementDataChannelMeasurementDataBuilder{_MeasurementDataChannelMeasurementData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

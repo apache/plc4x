@@ -44,6 +44,8 @@ type CBusPointToPointToMultiPointCommandStatus interface {
 	GetStatusRequest() StatusRequest
 	// IsCBusPointToPointToMultiPointCommandStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointToMultiPointCommandStatus()
+	// CreateBuilder creates a CBusPointToPointToMultiPointCommandStatusBuilder
+	CreateCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMultiPointCommandStatusBuilder
 }
 
 // _CBusPointToPointToMultiPointCommandStatus is the data-structure of this message
@@ -69,6 +71,84 @@ func NewCBusPointToPointToMultiPointCommandStatus(bridgeAddress BridgeAddress, n
 	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToPointToMultiPointCommandStatusBuilder is a builder for CBusPointToPointToMultiPointCommandStatus
+type CBusPointToPointToMultiPointCommandStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder
+	// WithStatusRequest adds StatusRequest (property field)
+	WithStatusRequest(StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder
+	// Build builds the CBusPointToPointToMultiPointCommandStatus or returns an error if something is wrong
+	Build() (CBusPointToPointToMultiPointCommandStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToPointToMultiPointCommandStatus
+}
+
+// NewCBusPointToPointToMultiPointCommandStatusBuilder() creates a CBusPointToPointToMultiPointCommandStatusBuilder
+func NewCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMultiPointCommandStatusBuilder {
+	return &_CBusPointToPointToMultiPointCommandStatusBuilder{_CBusPointToPointToMultiPointCommandStatus: new(_CBusPointToPointToMultiPointCommandStatus)}
+}
+
+type _CBusPointToPointToMultiPointCommandStatusBuilder struct {
+	*_CBusPointToPointToMultiPointCommandStatus
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToPointToMultiPointCommandStatusBuilder) = (*_CBusPointToPointToMultiPointCommandStatusBuilder)(nil)
+
+func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
+	return m.WithStatusRequest(statusRequest)
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToPointToMultiPointCommandStatusBuilder {
+	m.StatusRequest = statusRequest
+	return m
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) Build() (CBusPointToPointToMultiPointCommandStatus, error) {
+	if m.StatusRequest == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusPointToPointToMultiPointCommandStatus.deepCopy(), nil
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToPointToMultiPointCommandStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusPointToPointToMultiPointCommandStatusBuilder) DeepCopy() any {
+	return m.CreateCBusPointToPointToMultiPointCommandStatusBuilder()
+}
+
+// CreateCBusPointToPointToMultiPointCommandStatusBuilder creates a CBusPointToPointToMultiPointCommandStatusBuilder
+func (m *_CBusPointToPointToMultiPointCommandStatus) CreateCBusPointToPointToMultiPointCommandStatusBuilder() CBusPointToPointToMultiPointCommandStatusBuilder {
+	if m == nil {
+		return NewCBusPointToPointToMultiPointCommandStatusBuilder()
+	}
+	return &_CBusPointToPointToMultiPointCommandStatusBuilder{_CBusPointToPointToMultiPointCommandStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

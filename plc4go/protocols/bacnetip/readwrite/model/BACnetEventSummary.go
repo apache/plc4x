@@ -55,6 +55,8 @@ type BACnetEventSummary interface {
 	GetEventPriorities() BACnetEventPriorities
 	// IsBACnetEventSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventSummary()
+	// CreateBuilder creates a BACnetEventSummaryBuilder
+	CreateBACnetEventSummaryBuilder() BACnetEventSummaryBuilder
 }
 
 // _BACnetEventSummary is the data-structure of this message
@@ -95,6 +97,267 @@ func NewBACnetEventSummary(objectIdentifier BACnetContextTagObjectIdentifier, ev
 	}
 	return &_BACnetEventSummary{ObjectIdentifier: objectIdentifier, EventState: eventState, AcknowledgedTransitions: acknowledgedTransitions, EventTimestamps: eventTimestamps, NotifyType: notifyType, EventEnable: eventEnable, EventPriorities: eventPriorities}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventSummaryBuilder is a builder for BACnetEventSummary
+type BACnetEventSummaryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, eventTimestamps BACnetEventTimestampsEnclosed, notifyType BACnetNotifyTypeTagged, eventEnable BACnetEventTransitionBitsTagged, eventPriorities BACnetEventPriorities) BACnetEventSummaryBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetEventSummaryBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetEventSummaryBuilder
+	// WithEventState adds EventState (property field)
+	WithEventState(BACnetEventStateTagged) BACnetEventSummaryBuilder
+	// WithEventStateBuilder adds EventState (property field) which is build by the builder
+	WithEventStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetEventSummaryBuilder
+	// WithAcknowledgedTransitions adds AcknowledgedTransitions (property field)
+	WithAcknowledgedTransitions(BACnetEventTransitionBitsTagged) BACnetEventSummaryBuilder
+	// WithAcknowledgedTransitionsBuilder adds AcknowledgedTransitions (property field) which is build by the builder
+	WithAcknowledgedTransitionsBuilder(func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetEventSummaryBuilder
+	// WithEventTimestamps adds EventTimestamps (property field)
+	WithEventTimestamps(BACnetEventTimestampsEnclosed) BACnetEventSummaryBuilder
+	// WithEventTimestampsBuilder adds EventTimestamps (property field) which is build by the builder
+	WithEventTimestampsBuilder(func(BACnetEventTimestampsEnclosedBuilder) BACnetEventTimestampsEnclosedBuilder) BACnetEventSummaryBuilder
+	// WithNotifyType adds NotifyType (property field)
+	WithNotifyType(BACnetNotifyTypeTagged) BACnetEventSummaryBuilder
+	// WithNotifyTypeBuilder adds NotifyType (property field) which is build by the builder
+	WithNotifyTypeBuilder(func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetEventSummaryBuilder
+	// WithEventEnable adds EventEnable (property field)
+	WithEventEnable(BACnetEventTransitionBitsTagged) BACnetEventSummaryBuilder
+	// WithEventEnableBuilder adds EventEnable (property field) which is build by the builder
+	WithEventEnableBuilder(func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetEventSummaryBuilder
+	// WithEventPriorities adds EventPriorities (property field)
+	WithEventPriorities(BACnetEventPriorities) BACnetEventSummaryBuilder
+	// WithEventPrioritiesBuilder adds EventPriorities (property field) which is build by the builder
+	WithEventPrioritiesBuilder(func(BACnetEventPrioritiesBuilder) BACnetEventPrioritiesBuilder) BACnetEventSummaryBuilder
+	// Build builds the BACnetEventSummary or returns an error if something is wrong
+	Build() (BACnetEventSummary, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventSummary
+}
+
+// NewBACnetEventSummaryBuilder() creates a BACnetEventSummaryBuilder
+func NewBACnetEventSummaryBuilder() BACnetEventSummaryBuilder {
+	return &_BACnetEventSummaryBuilder{_BACnetEventSummary: new(_BACnetEventSummary)}
+}
+
+type _BACnetEventSummaryBuilder struct {
+	*_BACnetEventSummary
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventSummaryBuilder) = (*_BACnetEventSummaryBuilder)(nil)
+
+func (m *_BACnetEventSummaryBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, eventState BACnetEventStateTagged, acknowledgedTransitions BACnetEventTransitionBitsTagged, eventTimestamps BACnetEventTimestampsEnclosed, notifyType BACnetNotifyTypeTagged, eventEnable BACnetEventTransitionBitsTagged, eventPriorities BACnetEventPriorities) BACnetEventSummaryBuilder {
+	return m.WithObjectIdentifier(objectIdentifier).WithEventState(eventState).WithAcknowledgedTransitions(acknowledgedTransitions).WithEventTimestamps(eventTimestamps).WithNotifyType(notifyType).WithEventEnable(eventEnable).WithEventPriorities(eventPriorities)
+}
+
+func (m *_BACnetEventSummaryBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetEventSummaryBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetEventSummaryBuilder {
+	m.EventState = eventState
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.EventState.CreateBACnetEventStateTaggedBuilder())
+	var err error
+	m.EventState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithAcknowledgedTransitions(acknowledgedTransitions BACnetEventTransitionBitsTagged) BACnetEventSummaryBuilder {
+	m.AcknowledgedTransitions = acknowledgedTransitions
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithAcknowledgedTransitionsBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.AcknowledgedTransitions.CreateBACnetEventTransitionBitsTaggedBuilder())
+	var err error
+	m.AcknowledgedTransitions, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventTimestamps(eventTimestamps BACnetEventTimestampsEnclosed) BACnetEventSummaryBuilder {
+	m.EventTimestamps = eventTimestamps
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventTimestampsBuilder(builderSupplier func(BACnetEventTimestampsEnclosedBuilder) BACnetEventTimestampsEnclosedBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.EventTimestamps.CreateBACnetEventTimestampsEnclosedBuilder())
+	var err error
+	m.EventTimestamps, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventTimestampsEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithNotifyType(notifyType BACnetNotifyTypeTagged) BACnetEventSummaryBuilder {
+	m.NotifyType = notifyType
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithNotifyTypeBuilder(builderSupplier func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.NotifyType.CreateBACnetNotifyTypeTaggedBuilder())
+	var err error
+	m.NotifyType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventEnable(eventEnable BACnetEventTransitionBitsTagged) BACnetEventSummaryBuilder {
+	m.EventEnable = eventEnable
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventEnableBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.EventEnable.CreateBACnetEventTransitionBitsTaggedBuilder())
+	var err error
+	m.EventEnable, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventPriorities(eventPriorities BACnetEventPriorities) BACnetEventSummaryBuilder {
+	m.EventPriorities = eventPriorities
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) WithEventPrioritiesBuilder(builderSupplier func(BACnetEventPrioritiesBuilder) BACnetEventPrioritiesBuilder) BACnetEventSummaryBuilder {
+	builder := builderSupplier(m.EventPriorities.CreateBACnetEventPrioritiesBuilder())
+	var err error
+	m.EventPriorities, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventPrioritiesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventSummaryBuilder) Build() (BACnetEventSummary, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.EventState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+	}
+	if m.AcknowledgedTransitions == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'acknowledgedTransitions' not set"))
+	}
+	if m.EventTimestamps == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventTimestamps' not set"))
+	}
+	if m.NotifyType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notifyType' not set"))
+	}
+	if m.EventEnable == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventEnable' not set"))
+	}
+	if m.EventPriorities == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventPriorities' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventSummary.deepCopy(), nil
+}
+
+func (m *_BACnetEventSummaryBuilder) MustBuild() BACnetEventSummary {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventSummaryBuilder) DeepCopy() any {
+	return m.CreateBACnetEventSummaryBuilder()
+}
+
+// CreateBACnetEventSummaryBuilder creates a BACnetEventSummaryBuilder
+func (m *_BACnetEventSummary) CreateBACnetEventSummaryBuilder() BACnetEventSummaryBuilder {
+	if m == nil {
+		return NewBACnetEventSummaryBuilder()
+	}
+	return &_BACnetEventSummaryBuilder{_BACnetEventSummary: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

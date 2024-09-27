@@ -46,6 +46,8 @@ type BACnetContextTagUnsignedInteger interface {
 	GetActualValue() uint64
 	// IsBACnetContextTagUnsignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagUnsignedInteger()
+	// CreateBuilder creates a BACnetContextTagUnsignedIntegerBuilder
+	CreateBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder
 }
 
 // _BACnetContextTagUnsignedInteger is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetContextTagUnsignedInteger(header BACnetTagHeader, payload BACnetTa
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagUnsignedIntegerBuilder is a builder for BACnetContextTagUnsignedInteger
+type BACnetContextTagUnsignedIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadUnsignedIntegerBuilder) BACnetTagPayloadUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder
+	// Build builds the BACnetContextTagUnsignedInteger or returns an error if something is wrong
+	Build() (BACnetContextTagUnsignedInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagUnsignedInteger
+}
+
+// NewBACnetContextTagUnsignedIntegerBuilder() creates a BACnetContextTagUnsignedIntegerBuilder
+func NewBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder {
+	return &_BACnetContextTagUnsignedIntegerBuilder{_BACnetContextTagUnsignedInteger: new(_BACnetContextTagUnsignedInteger)}
+}
+
+type _BACnetContextTagUnsignedIntegerBuilder struct {
+	*_BACnetContextTagUnsignedInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagUnsignedIntegerBuilder) = (*_BACnetContextTagUnsignedIntegerBuilder)(nil)
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) WithPayload(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadUnsignedIntegerBuilder) BACnetTagPayloadUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadUnsignedIntegerBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) Build() (BACnetContextTagUnsignedInteger, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagUnsignedInteger.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) MustBuild() BACnetContextTagUnsignedInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagUnsignedIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagUnsignedIntegerBuilder()
+}
+
+// CreateBACnetContextTagUnsignedIntegerBuilder creates a BACnetContextTagUnsignedIntegerBuilder
+func (m *_BACnetContextTagUnsignedInteger) CreateBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder {
+	if m == nil {
+		return NewBACnetContextTagUnsignedIntegerBuilder()
+	}
+	return &_BACnetContextTagUnsignedIntegerBuilder{_BACnetContextTagUnsignedInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

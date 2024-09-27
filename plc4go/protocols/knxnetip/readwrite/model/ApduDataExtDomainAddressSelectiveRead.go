@@ -40,6 +40,8 @@ type ApduDataExtDomainAddressSelectiveRead interface {
 	ApduDataExt
 	// IsApduDataExtDomainAddressSelectiveRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSelectiveRead()
+	// CreateBuilder creates a ApduDataExtDomainAddressSelectiveReadBuilder
+	CreateApduDataExtDomainAddressSelectiveReadBuilder() ApduDataExtDomainAddressSelectiveReadBuilder
 }
 
 // _ApduDataExtDomainAddressSelectiveRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtDomainAddressSelectiveRead(length uint8) *_ApduDataExtDomainA
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtDomainAddressSelectiveReadBuilder is a builder for ApduDataExtDomainAddressSelectiveRead
+type ApduDataExtDomainAddressSelectiveReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtDomainAddressSelectiveReadBuilder
+	// Build builds the ApduDataExtDomainAddressSelectiveRead or returns an error if something is wrong
+	Build() (ApduDataExtDomainAddressSelectiveRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtDomainAddressSelectiveRead
+}
+
+// NewApduDataExtDomainAddressSelectiveReadBuilder() creates a ApduDataExtDomainAddressSelectiveReadBuilder
+func NewApduDataExtDomainAddressSelectiveReadBuilder() ApduDataExtDomainAddressSelectiveReadBuilder {
+	return &_ApduDataExtDomainAddressSelectiveReadBuilder{_ApduDataExtDomainAddressSelectiveRead: new(_ApduDataExtDomainAddressSelectiveRead)}
+}
+
+type _ApduDataExtDomainAddressSelectiveReadBuilder struct {
+	*_ApduDataExtDomainAddressSelectiveRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtDomainAddressSelectiveReadBuilder) = (*_ApduDataExtDomainAddressSelectiveReadBuilder)(nil)
+
+func (m *_ApduDataExtDomainAddressSelectiveReadBuilder) WithMandatoryFields() ApduDataExtDomainAddressSelectiveReadBuilder {
+	return m
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveReadBuilder) Build() (ApduDataExtDomainAddressSelectiveRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtDomainAddressSelectiveRead.deepCopy(), nil
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveReadBuilder) MustBuild() ApduDataExtDomainAddressSelectiveRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtDomainAddressSelectiveReadBuilder) DeepCopy() any {
+	return m.CreateApduDataExtDomainAddressSelectiveReadBuilder()
+}
+
+// CreateApduDataExtDomainAddressSelectiveReadBuilder creates a ApduDataExtDomainAddressSelectiveReadBuilder
+func (m *_ApduDataExtDomainAddressSelectiveRead) CreateApduDataExtDomainAddressSelectiveReadBuilder() ApduDataExtDomainAddressSelectiveReadBuilder {
+	if m == nil {
+		return NewApduDataExtDomainAddressSelectiveReadBuilder()
+	}
+	return &_ApduDataExtDomainAddressSelectiveReadBuilder{_ApduDataExtDomainAddressSelectiveRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

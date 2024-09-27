@@ -44,6 +44,8 @@ type BACnetChannelValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetChannelValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueInteger()
+	// CreateBuilder creates a BACnetChannelValueIntegerBuilder
+	CreateBACnetChannelValueIntegerBuilder() BACnetChannelValueIntegerBuilder
 }
 
 // _BACnetChannelValueInteger is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueInteger(peekedTagHeader BACnetTagHeader, integerValue 
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueIntegerBuilder is a builder for BACnetChannelValueInteger
+type BACnetChannelValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetChannelValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetChannelValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetChannelValueIntegerBuilder
+	// Build builds the BACnetChannelValueInteger or returns an error if something is wrong
+	Build() (BACnetChannelValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueInteger
+}
+
+// NewBACnetChannelValueIntegerBuilder() creates a BACnetChannelValueIntegerBuilder
+func NewBACnetChannelValueIntegerBuilder() BACnetChannelValueIntegerBuilder {
+	return &_BACnetChannelValueIntegerBuilder{_BACnetChannelValueInteger: new(_BACnetChannelValueInteger)}
+}
+
+type _BACnetChannelValueIntegerBuilder struct {
+	*_BACnetChannelValueInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueIntegerBuilder) = (*_BACnetChannelValueIntegerBuilder)(nil)
+
+func (m *_BACnetChannelValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetChannelValueIntegerBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetChannelValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetChannelValueIntegerBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetChannelValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetChannelValueIntegerBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueIntegerBuilder) Build() (BACnetChannelValueInteger, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueInteger.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueIntegerBuilder) MustBuild() BACnetChannelValueInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueIntegerBuilder()
+}
+
+// CreateBACnetChannelValueIntegerBuilder creates a BACnetChannelValueIntegerBuilder
+func (m *_BACnetChannelValueInteger) CreateBACnetChannelValueIntegerBuilder() BACnetChannelValueIntegerBuilder {
+	if m == nil {
+		return NewBACnetChannelValueIntegerBuilder()
+	}
+	return &_BACnetChannelValueIntegerBuilder{_BACnetChannelValueInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

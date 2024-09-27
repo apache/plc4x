@@ -39,6 +39,8 @@ type UriString interface {
 	utils.Copyable
 	// IsUriString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUriString()
+	// CreateBuilder creates a UriStringBuilder
+	CreateUriStringBuilder() UriStringBuilder
 }
 
 // _UriString is the data-structure of this message
@@ -51,6 +53,71 @@ var _ UriString = (*_UriString)(nil)
 func NewUriString() *_UriString {
 	return &_UriString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UriStringBuilder is a builder for UriString
+type UriStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() UriStringBuilder
+	// Build builds the UriString or returns an error if something is wrong
+	Build() (UriString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UriString
+}
+
+// NewUriStringBuilder() creates a UriStringBuilder
+func NewUriStringBuilder() UriStringBuilder {
+	return &_UriStringBuilder{_UriString: new(_UriString)}
+}
+
+type _UriStringBuilder struct {
+	*_UriString
+
+	err *utils.MultiError
+}
+
+var _ (UriStringBuilder) = (*_UriStringBuilder)(nil)
+
+func (m *_UriStringBuilder) WithMandatoryFields() UriStringBuilder {
+	return m
+}
+
+func (m *_UriStringBuilder) Build() (UriString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UriString.deepCopy(), nil
+}
+
+func (m *_UriStringBuilder) MustBuild() UriString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UriStringBuilder) DeepCopy() any {
+	return m.CreateUriStringBuilder()
+}
+
+// CreateUriStringBuilder creates a UriStringBuilder
+func (m *_UriString) CreateUriStringBuilder() UriStringBuilder {
+	if m == nil {
+		return NewUriStringBuilder()
+	}
+	return &_UriStringBuilder{_UriString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastUriString(structType any) UriString {

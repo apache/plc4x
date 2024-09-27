@@ -44,6 +44,8 @@ type BACnetPropertyStatesIntegerValue interface {
 	GetIntegerValue() BACnetContextTagSignedInteger
 	// IsBACnetPropertyStatesIntegerValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesIntegerValue()
+	// CreateBuilder creates a BACnetPropertyStatesIntegerValueBuilder
+	CreateBACnetPropertyStatesIntegerValueBuilder() BACnetPropertyStatesIntegerValueBuilder
 }
 
 // _BACnetPropertyStatesIntegerValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesIntegerValue(peekedTagHeader BACnetTagHeader, intege
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesIntegerValueBuilder is a builder for BACnetPropertyStatesIntegerValue
+type BACnetPropertyStatesIntegerValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetPropertyStatesIntegerValueBuilder
+	// Build builds the BACnetPropertyStatesIntegerValue or returns an error if something is wrong
+	Build() (BACnetPropertyStatesIntegerValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesIntegerValue
+}
+
+// NewBACnetPropertyStatesIntegerValueBuilder() creates a BACnetPropertyStatesIntegerValueBuilder
+func NewBACnetPropertyStatesIntegerValueBuilder() BACnetPropertyStatesIntegerValueBuilder {
+	return &_BACnetPropertyStatesIntegerValueBuilder{_BACnetPropertyStatesIntegerValue: new(_BACnetPropertyStatesIntegerValue)}
+}
+
+type _BACnetPropertyStatesIntegerValueBuilder struct {
+	*_BACnetPropertyStatesIntegerValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesIntegerValueBuilder) = (*_BACnetPropertyStatesIntegerValueBuilder)(nil)
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) WithIntegerValue(integerValue BACnetContextTagSignedInteger) BACnetPropertyStatesIntegerValueBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetPropertyStatesIntegerValueBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) Build() (BACnetPropertyStatesIntegerValue, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesIntegerValue.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) MustBuild() BACnetPropertyStatesIntegerValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesIntegerValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesIntegerValueBuilder()
+}
+
+// CreateBACnetPropertyStatesIntegerValueBuilder creates a BACnetPropertyStatesIntegerValueBuilder
+func (m *_BACnetPropertyStatesIntegerValue) CreateBACnetPropertyStatesIntegerValueBuilder() BACnetPropertyStatesIntegerValueBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesIntegerValueBuilder()
+	}
+	return &_BACnetPropertyStatesIntegerValueBuilder{_BACnetPropertyStatesIntegerValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

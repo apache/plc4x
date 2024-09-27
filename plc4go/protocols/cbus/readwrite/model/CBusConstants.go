@@ -44,6 +44,8 @@ type CBusConstants interface {
 	utils.Copyable
 	// IsCBusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusConstants()
+	// CreateBuilder creates a CBusConstantsBuilder
+	CreateCBusConstantsBuilder() CBusConstantsBuilder
 }
 
 // _CBusConstants is the data-structure of this message
@@ -56,6 +58,71 @@ var _ CBusConstants = (*_CBusConstants)(nil)
 func NewCBusConstants() *_CBusConstants {
 	return &_CBusConstants{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusConstantsBuilder is a builder for CBusConstants
+type CBusConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CBusConstantsBuilder
+	// Build builds the CBusConstants or returns an error if something is wrong
+	Build() (CBusConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusConstants
+}
+
+// NewCBusConstantsBuilder() creates a CBusConstantsBuilder
+func NewCBusConstantsBuilder() CBusConstantsBuilder {
+	return &_CBusConstantsBuilder{_CBusConstants: new(_CBusConstants)}
+}
+
+type _CBusConstantsBuilder struct {
+	*_CBusConstants
+
+	err *utils.MultiError
+}
+
+var _ (CBusConstantsBuilder) = (*_CBusConstantsBuilder)(nil)
+
+func (m *_CBusConstantsBuilder) WithMandatoryFields() CBusConstantsBuilder {
+	return m
+}
+
+func (m *_CBusConstantsBuilder) Build() (CBusConstants, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusConstants.deepCopy(), nil
+}
+
+func (m *_CBusConstantsBuilder) MustBuild() CBusConstants {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusConstantsBuilder) DeepCopy() any {
+	return m.CreateCBusConstantsBuilder()
+}
+
+// CreateCBusConstantsBuilder creates a CBusConstantsBuilder
+func (m *_CBusConstants) CreateCBusConstantsBuilder() CBusConstantsBuilder {
+	if m == nil {
+		return NewCBusConstantsBuilder()
+	}
+	return &_CBusConstantsBuilder{_CBusConstants: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

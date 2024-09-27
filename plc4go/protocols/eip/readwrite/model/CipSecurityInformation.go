@@ -44,6 +44,8 @@ type CipSecurityInformation interface {
 	GetTodoImplement() []uint8
 	// IsCipSecurityInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipSecurityInformation()
+	// CreateBuilder creates a CipSecurityInformationBuilder
+	CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder
 }
 
 // _CipSecurityInformation is the data-structure of this message
@@ -64,6 +66,78 @@ func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
 	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipSecurityInformationBuilder is a builder for CipSecurityInformation
+type CipSecurityInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder
+	// WithTodoImplement adds TodoImplement (property field)
+	WithTodoImplement(...uint8) CipSecurityInformationBuilder
+	// Build builds the CipSecurityInformation or returns an error if something is wrong
+	Build() (CipSecurityInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipSecurityInformation
+}
+
+// NewCipSecurityInformationBuilder() creates a CipSecurityInformationBuilder
+func NewCipSecurityInformationBuilder() CipSecurityInformationBuilder {
+	return &_CipSecurityInformationBuilder{_CipSecurityInformation: new(_CipSecurityInformation)}
+}
+
+type _CipSecurityInformationBuilder struct {
+	*_CipSecurityInformation
+
+	err *utils.MultiError
+}
+
+var _ (CipSecurityInformationBuilder) = (*_CipSecurityInformationBuilder)(nil)
+
+func (m *_CipSecurityInformationBuilder) WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder {
+	return m.WithTodoImplement(todoImplement...)
+}
+
+func (m *_CipSecurityInformationBuilder) WithTodoImplement(todoImplement ...uint8) CipSecurityInformationBuilder {
+	m.TodoImplement = todoImplement
+	return m
+}
+
+func (m *_CipSecurityInformationBuilder) Build() (CipSecurityInformation, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipSecurityInformation.deepCopy(), nil
+}
+
+func (m *_CipSecurityInformationBuilder) MustBuild() CipSecurityInformation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipSecurityInformationBuilder) DeepCopy() any {
+	return m.CreateCipSecurityInformationBuilder()
+}
+
+// CreateCipSecurityInformationBuilder creates a CipSecurityInformationBuilder
+func (m *_CipSecurityInformation) CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder {
+	if m == nil {
+		return NewCipSecurityInformationBuilder()
+	}
+	return &_CipSecurityInformationBuilder{_CipSecurityInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

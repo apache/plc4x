@@ -49,6 +49,8 @@ type AssociatedQueryValueType interface {
 	GetData() []uint8
 	// IsAssociatedQueryValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAssociatedQueryValueType()
+	// CreateBuilder creates a AssociatedQueryValueTypeBuilder
+	CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder
 }
 
 // _AssociatedQueryValueType is the data-structure of this message
@@ -65,6 +67,99 @@ var _ AssociatedQueryValueType = (*_AssociatedQueryValueType)(nil)
 func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
 	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AssociatedQueryValueTypeBuilder is a builder for AssociatedQueryValueType
+type AssociatedQueryValueTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) AssociatedQueryValueTypeBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) AssociatedQueryValueTypeBuilder
+	// WithValueLength adds ValueLength (property field)
+	WithValueLength(uint16) AssociatedQueryValueTypeBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) AssociatedQueryValueTypeBuilder
+	// Build builds the AssociatedQueryValueType or returns an error if something is wrong
+	Build() (AssociatedQueryValueType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AssociatedQueryValueType
+}
+
+// NewAssociatedQueryValueTypeBuilder() creates a AssociatedQueryValueTypeBuilder
+func NewAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
+	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: new(_AssociatedQueryValueType)}
+}
+
+type _AssociatedQueryValueTypeBuilder struct {
+	*_AssociatedQueryValueType
+
+	err *utils.MultiError
+}
+
+var _ (AssociatedQueryValueTypeBuilder) = (*_AssociatedQueryValueTypeBuilder)(nil)
+
+func (m *_AssociatedQueryValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder {
+	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedQueryValueTypeBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedQueryValueTypeBuilder {
+	m.TransportSize = transportSize
+	return m
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedQueryValueTypeBuilder {
+	m.ValueLength = valueLength
+	return m
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQueryValueTypeBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AssociatedQueryValueType.deepCopy(), nil
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) MustBuild() AssociatedQueryValueType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AssociatedQueryValueTypeBuilder) DeepCopy() any {
+	return m.CreateAssociatedQueryValueTypeBuilder()
+}
+
+// CreateAssociatedQueryValueTypeBuilder creates a AssociatedQueryValueTypeBuilder
+func (m *_AssociatedQueryValueType) CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
+	if m == nil {
+		return NewAssociatedQueryValueTypeBuilder()
+	}
+	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

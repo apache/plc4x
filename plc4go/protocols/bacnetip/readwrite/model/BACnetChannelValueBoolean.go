@@ -44,6 +44,8 @@ type BACnetChannelValueBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 	// IsBACnetChannelValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueBoolean()
+	// CreateBuilder creates a BACnetChannelValueBooleanBuilder
+	CreateBACnetChannelValueBooleanBuilder() BACnetChannelValueBooleanBuilder
 }
 
 // _BACnetChannelValueBoolean is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueBoolean(peekedTagHeader BACnetTagHeader, booleanValue 
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueBooleanBuilder is a builder for BACnetChannelValueBoolean
+type BACnetChannelValueBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder
+	// WithBooleanValue adds BooleanValue (property field)
+	WithBooleanValue(BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder
+	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
+	WithBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetChannelValueBooleanBuilder
+	// Build builds the BACnetChannelValueBoolean or returns an error if something is wrong
+	Build() (BACnetChannelValueBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueBoolean
+}
+
+// NewBACnetChannelValueBooleanBuilder() creates a BACnetChannelValueBooleanBuilder
+func NewBACnetChannelValueBooleanBuilder() BACnetChannelValueBooleanBuilder {
+	return &_BACnetChannelValueBooleanBuilder{_BACnetChannelValueBoolean: new(_BACnetChannelValueBoolean)}
+}
+
+type _BACnetChannelValueBooleanBuilder struct {
+	*_BACnetChannelValueBoolean
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueBooleanBuilder) = (*_BACnetChannelValueBooleanBuilder)(nil)
+
+func (m *_BACnetChannelValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder {
+	return m.WithBooleanValue(booleanValue)
+}
+
+func (m *_BACnetChannelValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetChannelValueBooleanBuilder {
+	m.BooleanValue = booleanValue
+	return m
+}
+
+func (m *_BACnetChannelValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetChannelValueBooleanBuilder {
+	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.BooleanValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueBooleanBuilder) Build() (BACnetChannelValueBoolean, error) {
+	if m.BooleanValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueBoolean.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueBooleanBuilder) MustBuild() BACnetChannelValueBoolean {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueBooleanBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueBooleanBuilder()
+}
+
+// CreateBACnetChannelValueBooleanBuilder creates a BACnetChannelValueBooleanBuilder
+func (m *_BACnetChannelValueBoolean) CreateBACnetChannelValueBooleanBuilder() BACnetChannelValueBooleanBuilder {
+	if m == nil {
+		return NewBACnetChannelValueBooleanBuilder()
+	}
+	return &_BACnetChannelValueBooleanBuilder{_BACnetChannelValueBoolean: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type VariantBoolean interface {
 	GetValue() []byte
 	// IsVariantBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantBoolean()
+	// CreateBuilder creates a VariantBooleanBuilder
+	CreateVariantBooleanBuilder() VariantBooleanBuilder
 }
 
 // _VariantBoolean is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantBoolean(arrayLengthSpecified bool, arrayDimensionsSpecified bool,
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantBooleanBuilder is a builder for VariantBoolean
+type VariantBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []byte) VariantBooleanBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantBooleanBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) VariantBooleanBuilder
+	// Build builds the VariantBoolean or returns an error if something is wrong
+	Build() (VariantBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantBoolean
+}
+
+// NewVariantBooleanBuilder() creates a VariantBooleanBuilder
+func NewVariantBooleanBuilder() VariantBooleanBuilder {
+	return &_VariantBooleanBuilder{_VariantBoolean: new(_VariantBoolean)}
+}
+
+type _VariantBooleanBuilder struct {
+	*_VariantBoolean
+
+	err *utils.MultiError
+}
+
+var _ (VariantBooleanBuilder) = (*_VariantBooleanBuilder)(nil)
+
+func (m *_VariantBooleanBuilder) WithMandatoryFields(value []byte) VariantBooleanBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantBooleanBuilder) WithOptionalArrayLength(arrayLength int32) VariantBooleanBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantBooleanBuilder) WithValue(value ...byte) VariantBooleanBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantBooleanBuilder) Build() (VariantBoolean, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantBoolean.deepCopy(), nil
+}
+
+func (m *_VariantBooleanBuilder) MustBuild() VariantBoolean {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantBooleanBuilder) DeepCopy() any {
+	return m.CreateVariantBooleanBuilder()
+}
+
+// CreateVariantBooleanBuilder creates a VariantBooleanBuilder
+func (m *_VariantBoolean) CreateVariantBooleanBuilder() VariantBooleanBuilder {
+	if m == nil {
+		return NewVariantBooleanBuilder()
+	}
+	return &_VariantBooleanBuilder{_VariantBoolean: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

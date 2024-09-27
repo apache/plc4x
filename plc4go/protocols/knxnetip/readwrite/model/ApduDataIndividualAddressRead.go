@@ -40,6 +40,8 @@ type ApduDataIndividualAddressRead interface {
 	ApduData
 	// IsApduDataIndividualAddressRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressRead()
+	// CreateBuilder creates a ApduDataIndividualAddressReadBuilder
+	CreateApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuilder
 }
 
 // _ApduDataIndividualAddressRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddr
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataIndividualAddressReadBuilder is a builder for ApduDataIndividualAddressRead
+type ApduDataIndividualAddressReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataIndividualAddressReadBuilder
+	// Build builds the ApduDataIndividualAddressRead or returns an error if something is wrong
+	Build() (ApduDataIndividualAddressRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataIndividualAddressRead
+}
+
+// NewApduDataIndividualAddressReadBuilder() creates a ApduDataIndividualAddressReadBuilder
+func NewApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuilder {
+	return &_ApduDataIndividualAddressReadBuilder{_ApduDataIndividualAddressRead: new(_ApduDataIndividualAddressRead)}
+}
+
+type _ApduDataIndividualAddressReadBuilder struct {
+	*_ApduDataIndividualAddressRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataIndividualAddressReadBuilder) = (*_ApduDataIndividualAddressReadBuilder)(nil)
+
+func (m *_ApduDataIndividualAddressReadBuilder) WithMandatoryFields() ApduDataIndividualAddressReadBuilder {
+	return m
+}
+
+func (m *_ApduDataIndividualAddressReadBuilder) Build() (ApduDataIndividualAddressRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataIndividualAddressRead.deepCopy(), nil
+}
+
+func (m *_ApduDataIndividualAddressReadBuilder) MustBuild() ApduDataIndividualAddressRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataIndividualAddressReadBuilder) DeepCopy() any {
+	return m.CreateApduDataIndividualAddressReadBuilder()
+}
+
+// CreateApduDataIndividualAddressReadBuilder creates a ApduDataIndividualAddressReadBuilder
+func (m *_ApduDataIndividualAddressRead) CreateApduDataIndividualAddressReadBuilder() ApduDataIndividualAddressReadBuilder {
+	if m == nil {
+		return NewApduDataIndividualAddressReadBuilder()
+	}
+	return &_ApduDataIndividualAddressReadBuilder{_ApduDataIndividualAddressRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

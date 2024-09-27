@@ -50,6 +50,8 @@ type MediaTransportControlDataRepeatOnOff interface {
 	GetIsRepeatTracks() bool
 	// IsMediaTransportControlDataRepeatOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataRepeatOnOff()
+	// CreateBuilder creates a MediaTransportControlDataRepeatOnOffBuilder
+	CreateMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataRepeatOnOffBuilder
 }
 
 // _MediaTransportControlDataRepeatOnOff is the data-structure of this message
@@ -70,6 +72,78 @@ func NewMediaTransportControlDataRepeatOnOff(commandTypeContainer MediaTransport
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataRepeatOnOffBuilder is a builder for MediaTransportControlDataRepeatOnOff
+type MediaTransportControlDataRepeatOnOffBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder
+	// WithRepeatType adds RepeatType (property field)
+	WithRepeatType(byte) MediaTransportControlDataRepeatOnOffBuilder
+	// Build builds the MediaTransportControlDataRepeatOnOff or returns an error if something is wrong
+	Build() (MediaTransportControlDataRepeatOnOff, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataRepeatOnOff
+}
+
+// NewMediaTransportControlDataRepeatOnOffBuilder() creates a MediaTransportControlDataRepeatOnOffBuilder
+func NewMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataRepeatOnOffBuilder {
+	return &_MediaTransportControlDataRepeatOnOffBuilder{_MediaTransportControlDataRepeatOnOff: new(_MediaTransportControlDataRepeatOnOff)}
+}
+
+type _MediaTransportControlDataRepeatOnOffBuilder struct {
+	*_MediaTransportControlDataRepeatOnOff
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataRepeatOnOffBuilder) = (*_MediaTransportControlDataRepeatOnOffBuilder)(nil)
+
+func (m *_MediaTransportControlDataRepeatOnOffBuilder) WithMandatoryFields(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
+	return m.WithRepeatType(repeatType)
+}
+
+func (m *_MediaTransportControlDataRepeatOnOffBuilder) WithRepeatType(repeatType byte) MediaTransportControlDataRepeatOnOffBuilder {
+	m.RepeatType = repeatType
+	return m
+}
+
+func (m *_MediaTransportControlDataRepeatOnOffBuilder) Build() (MediaTransportControlDataRepeatOnOff, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataRepeatOnOff.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataRepeatOnOffBuilder) MustBuild() MediaTransportControlDataRepeatOnOff {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataRepeatOnOffBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataRepeatOnOffBuilder()
+}
+
+// CreateMediaTransportControlDataRepeatOnOffBuilder creates a MediaTransportControlDataRepeatOnOffBuilder
+func (m *_MediaTransportControlDataRepeatOnOff) CreateMediaTransportControlDataRepeatOnOffBuilder() MediaTransportControlDataRepeatOnOffBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataRepeatOnOffBuilder()
+	}
+	return &_MediaTransportControlDataRepeatOnOffBuilder{_MediaTransportControlDataRepeatOnOff: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

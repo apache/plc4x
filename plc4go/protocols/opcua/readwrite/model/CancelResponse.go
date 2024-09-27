@@ -46,6 +46,8 @@ type CancelResponse interface {
 	GetCancelCount() uint32
 	// IsCancelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCancelResponse()
+	// CreateBuilder creates a CancelResponseBuilder
+	CreateCancelResponseBuilder() CancelResponseBuilder
 }
 
 // _CancelResponse is the data-structure of this message
@@ -71,6 +73,91 @@ func NewCancelResponse(responseHeader ExtensionObjectDefinition, cancelCount uin
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CancelResponseBuilder is a builder for CancelResponse
+type CancelResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, cancelCount uint32) CancelResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CancelResponseBuilder
+	// WithCancelCount adds CancelCount (property field)
+	WithCancelCount(uint32) CancelResponseBuilder
+	// Build builds the CancelResponse or returns an error if something is wrong
+	Build() (CancelResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CancelResponse
+}
+
+// NewCancelResponseBuilder() creates a CancelResponseBuilder
+func NewCancelResponseBuilder() CancelResponseBuilder {
+	return &_CancelResponseBuilder{_CancelResponse: new(_CancelResponse)}
+}
+
+type _CancelResponseBuilder struct {
+	*_CancelResponse
+
+	err *utils.MultiError
+}
+
+var _ (CancelResponseBuilder) = (*_CancelResponseBuilder)(nil)
+
+func (m *_CancelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, cancelCount uint32) CancelResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithCancelCount(cancelCount)
+}
+
+func (m *_CancelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CancelResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_CancelResponseBuilder) WithCancelCount(cancelCount uint32) CancelResponseBuilder {
+	m.CancelCount = cancelCount
+	return m
+}
+
+func (m *_CancelResponseBuilder) Build() (CancelResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CancelResponse.deepCopy(), nil
+}
+
+func (m *_CancelResponseBuilder) MustBuild() CancelResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CancelResponseBuilder) DeepCopy() any {
+	return m.CreateCancelResponseBuilder()
+}
+
+// CreateCancelResponseBuilder creates a CancelResponseBuilder
+func (m *_CancelResponse) CreateCancelResponseBuilder() CancelResponseBuilder {
+	if m == nil {
+		return NewCancelResponseBuilder()
+	}
+	return &_CancelResponseBuilder{_CancelResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

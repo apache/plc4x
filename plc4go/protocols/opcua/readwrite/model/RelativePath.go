@@ -46,6 +46,8 @@ type RelativePath interface {
 	GetElements() []ExtensionObjectDefinition
 	// IsRelativePath is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRelativePath()
+	// CreateBuilder creates a RelativePathBuilder
+	CreateRelativePathBuilder() RelativePathBuilder
 }
 
 // _RelativePath is the data-structure of this message
@@ -68,6 +70,85 @@ func NewRelativePath(noOfElements int32, elements []ExtensionObjectDefinition) *
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RelativePathBuilder is a builder for RelativePath
+type RelativePathBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder
+	// WithNoOfElements adds NoOfElements (property field)
+	WithNoOfElements(int32) RelativePathBuilder
+	// WithElements adds Elements (property field)
+	WithElements(...ExtensionObjectDefinition) RelativePathBuilder
+	// Build builds the RelativePath or returns an error if something is wrong
+	Build() (RelativePath, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RelativePath
+}
+
+// NewRelativePathBuilder() creates a RelativePathBuilder
+func NewRelativePathBuilder() RelativePathBuilder {
+	return &_RelativePathBuilder{_RelativePath: new(_RelativePath)}
+}
+
+type _RelativePathBuilder struct {
+	*_RelativePath
+
+	err *utils.MultiError
+}
+
+var _ (RelativePathBuilder) = (*_RelativePathBuilder)(nil)
+
+func (m *_RelativePathBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) RelativePathBuilder {
+	return m.WithNoOfElements(noOfElements).WithElements(elements...)
+}
+
+func (m *_RelativePathBuilder) WithNoOfElements(noOfElements int32) RelativePathBuilder {
+	m.NoOfElements = noOfElements
+	return m
+}
+
+func (m *_RelativePathBuilder) WithElements(elements ...ExtensionObjectDefinition) RelativePathBuilder {
+	m.Elements = elements
+	return m
+}
+
+func (m *_RelativePathBuilder) Build() (RelativePath, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RelativePath.deepCopy(), nil
+}
+
+func (m *_RelativePathBuilder) MustBuild() RelativePath {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RelativePathBuilder) DeepCopy() any {
+	return m.CreateRelativePathBuilder()
+}
+
+// CreateRelativePathBuilder creates a RelativePathBuilder
+func (m *_RelativePath) CreateRelativePathBuilder() RelativePathBuilder {
+	if m == nil {
+		return NewRelativePathBuilder()
+	}
+	return &_RelativePathBuilder{_RelativePath: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

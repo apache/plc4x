@@ -47,6 +47,8 @@ type BACnetAuthenticationFactor interface {
 	GetValue() BACnetContextTagOctetString
 	// IsBACnetAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthenticationFactor()
+	// CreateBuilder creates a BACnetAuthenticationFactorBuilder
+	CreateBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder
 }
 
 // _BACnetAuthenticationFactor is the data-structure of this message
@@ -71,6 +73,155 @@ func NewBACnetAuthenticationFactor(formatType BACnetAuthenticationFactorTypeTagg
 	}
 	return &_BACnetAuthenticationFactor{FormatType: formatType, FormatClass: formatClass, Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthenticationFactorBuilder is a builder for BACnetAuthenticationFactor
+type BACnetAuthenticationFactorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder
+	// WithFormatType adds FormatType (property field)
+	WithFormatType(BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorBuilder
+	// WithFormatTypeBuilder adds FormatType (property field) which is build by the builder
+	WithFormatTypeBuilder(func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorBuilder
+	// WithFormatClass adds FormatClass (property field)
+	WithFormatClass(BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorBuilder
+	// WithFormatClassBuilder adds FormatClass (property field) which is build by the builder
+	WithFormatClassBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetAuthenticationFactorBuilder
+	// Build builds the BACnetAuthenticationFactor or returns an error if something is wrong
+	Build() (BACnetAuthenticationFactor, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthenticationFactor
+}
+
+// NewBACnetAuthenticationFactorBuilder() creates a BACnetAuthenticationFactorBuilder
+func NewBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder {
+	return &_BACnetAuthenticationFactorBuilder{_BACnetAuthenticationFactor: new(_BACnetAuthenticationFactor)}
+}
+
+type _BACnetAuthenticationFactorBuilder struct {
+	*_BACnetAuthenticationFactor
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthenticationFactorBuilder) = (*_BACnetAuthenticationFactorBuilder)(nil)
+
+func (m *_BACnetAuthenticationFactorBuilder) WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged, formatClass BACnetContextTagUnsignedInteger, value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
+	return m.WithFormatType(formatType).WithFormatClass(formatClass).WithValue(value)
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithFormatType(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorBuilder {
+	m.FormatType = formatType
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithFormatTypeBuilder(builderSupplier func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(m.FormatType.CreateBACnetAuthenticationFactorTypeTaggedBuilder())
+	var err error
+	m.FormatType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithFormatClass(formatClass BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorBuilder {
+	m.FormatClass = formatClass
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithFormatClassBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(m.FormatClass.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.FormatClass, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithValue(value BACnetContextTagOctetString) BACnetAuthenticationFactorBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) WithValueBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetAuthenticationFactorBuilder {
+	builder := builderSupplier(m.Value.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) Build() (BACnetAuthenticationFactor, error) {
+	if m.FormatType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'formatType' not set"))
+	}
+	if m.FormatClass == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'formatClass' not set"))
+	}
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAuthenticationFactor.deepCopy(), nil
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) MustBuild() BACnetAuthenticationFactor {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAuthenticationFactorBuilder) DeepCopy() any {
+	return m.CreateBACnetAuthenticationFactorBuilder()
+}
+
+// CreateBACnetAuthenticationFactorBuilder creates a BACnetAuthenticationFactorBuilder
+func (m *_BACnetAuthenticationFactor) CreateBACnetAuthenticationFactorBuilder() BACnetAuthenticationFactorBuilder {
+	if m == nil {
+		return NewBACnetAuthenticationFactorBuilder()
+	}
+	return &_BACnetAuthenticationFactorBuilder{_BACnetAuthenticationFactor: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

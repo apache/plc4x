@@ -39,6 +39,8 @@ type ImageGIF interface {
 	utils.Copyable
 	// IsImageGIF is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageGIF()
+	// CreateBuilder creates a ImageGIFBuilder
+	CreateImageGIFBuilder() ImageGIFBuilder
 }
 
 // _ImageGIF is the data-structure of this message
@@ -51,6 +53,71 @@ var _ ImageGIF = (*_ImageGIF)(nil)
 func NewImageGIF() *_ImageGIF {
 	return &_ImageGIF{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ImageGIFBuilder is a builder for ImageGIF
+type ImageGIFBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ImageGIFBuilder
+	// Build builds the ImageGIF or returns an error if something is wrong
+	Build() (ImageGIF, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ImageGIF
+}
+
+// NewImageGIFBuilder() creates a ImageGIFBuilder
+func NewImageGIFBuilder() ImageGIFBuilder {
+	return &_ImageGIFBuilder{_ImageGIF: new(_ImageGIF)}
+}
+
+type _ImageGIFBuilder struct {
+	*_ImageGIF
+
+	err *utils.MultiError
+}
+
+var _ (ImageGIFBuilder) = (*_ImageGIFBuilder)(nil)
+
+func (m *_ImageGIFBuilder) WithMandatoryFields() ImageGIFBuilder {
+	return m
+}
+
+func (m *_ImageGIFBuilder) Build() (ImageGIF, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ImageGIF.deepCopy(), nil
+}
+
+func (m *_ImageGIFBuilder) MustBuild() ImageGIF {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ImageGIFBuilder) DeepCopy() any {
+	return m.CreateImageGIFBuilder()
+}
+
+// CreateImageGIFBuilder creates a ImageGIFBuilder
+func (m *_ImageGIF) CreateImageGIFBuilder() ImageGIFBuilder {
+	if m == nil {
+		return NewImageGIFBuilder()
+	}
+	return &_ImageGIFBuilder{_ImageGIF: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastImageGIF(structType any) ImageGIF {

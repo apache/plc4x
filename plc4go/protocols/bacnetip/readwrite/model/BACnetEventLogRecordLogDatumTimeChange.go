@@ -44,6 +44,8 @@ type BACnetEventLogRecordLogDatumTimeChange interface {
 	GetTimeChange() BACnetContextTagReal
 	// IsBACnetEventLogRecordLogDatumTimeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatumTimeChange()
+	// CreateBuilder creates a BACnetEventLogRecordLogDatumTimeChangeBuilder
+	CreateBACnetEventLogRecordLogDatumTimeChangeBuilder() BACnetEventLogRecordLogDatumTimeChangeBuilder
 }
 
 // _BACnetEventLogRecordLogDatumTimeChange is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetEventLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peek
 	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventLogRecordLogDatumTimeChangeBuilder is a builder for BACnetEventLogRecordLogDatumTimeChange
+type BACnetEventLogRecordLogDatumTimeChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeChange BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder
+	// WithTimeChange adds TimeChange (property field)
+	WithTimeChange(BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder
+	// WithTimeChangeBuilder adds TimeChange (property field) which is build by the builder
+	WithTimeChangeBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventLogRecordLogDatumTimeChangeBuilder
+	// Build builds the BACnetEventLogRecordLogDatumTimeChange or returns an error if something is wrong
+	Build() (BACnetEventLogRecordLogDatumTimeChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventLogRecordLogDatumTimeChange
+}
+
+// NewBACnetEventLogRecordLogDatumTimeChangeBuilder() creates a BACnetEventLogRecordLogDatumTimeChangeBuilder
+func NewBACnetEventLogRecordLogDatumTimeChangeBuilder() BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	return &_BACnetEventLogRecordLogDatumTimeChangeBuilder{_BACnetEventLogRecordLogDatumTimeChange: new(_BACnetEventLogRecordLogDatumTimeChange)}
+}
+
+type _BACnetEventLogRecordLogDatumTimeChangeBuilder struct {
+	*_BACnetEventLogRecordLogDatumTimeChange
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventLogRecordLogDatumTimeChangeBuilder) = (*_BACnetEventLogRecordLogDatumTimeChangeBuilder)(nil)
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) WithMandatoryFields(timeChange BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	return m.WithTimeChange(timeChange)
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) WithTimeChange(timeChange BACnetContextTagReal) BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	m.TimeChange = timeChange
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) WithTimeChangeBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	builder := builderSupplier(m.TimeChange.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.TimeChange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) Build() (BACnetEventLogRecordLogDatumTimeChange, error) {
+	if m.TimeChange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeChange' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventLogRecordLogDatumTimeChange.deepCopy(), nil
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) MustBuild() BACnetEventLogRecordLogDatumTimeChange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventLogRecordLogDatumTimeChangeBuilder) DeepCopy() any {
+	return m.CreateBACnetEventLogRecordLogDatumTimeChangeBuilder()
+}
+
+// CreateBACnetEventLogRecordLogDatumTimeChangeBuilder creates a BACnetEventLogRecordLogDatumTimeChangeBuilder
+func (m *_BACnetEventLogRecordLogDatumTimeChange) CreateBACnetEventLogRecordLogDatumTimeChangeBuilder() BACnetEventLogRecordLogDatumTimeChangeBuilder {
+	if m == nil {
+		return NewBACnetEventLogRecordLogDatumTimeChangeBuilder()
+	}
+	return &_BACnetEventLogRecordLogDatumTimeChangeBuilder{_BACnetEventLogRecordLogDatumTimeChange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

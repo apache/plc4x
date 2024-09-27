@@ -43,6 +43,8 @@ type ReplyOrConfirmation interface {
 	utils.Copyable
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
+	// CreateBuilder creates a ReplyOrConfirmationBuilder
+	CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder
 }
 
 // ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type ReplyOrConfirmationContract interface {
 	GetRequestContext() RequestContext
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
+	// CreateBuilder creates a ReplyOrConfirmationBuilder
+	CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder
 }
 
 // ReplyOrConfirmationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -85,6 +89,78 @@ var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
 func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
 	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyOrConfirmationBuilder is a builder for ReplyOrConfirmation
+type ReplyOrConfirmationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(byte) ReplyOrConfirmationBuilder
+	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
+	Build() (ReplyOrConfirmationContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyOrConfirmationContract
+}
+
+// NewReplyOrConfirmationBuilder() creates a ReplyOrConfirmationBuilder
+func NewReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
+	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: new(_ReplyOrConfirmation)}
+}
+
+type _ReplyOrConfirmationBuilder struct {
+	*_ReplyOrConfirmation
+
+	err *utils.MultiError
+}
+
+var _ (ReplyOrConfirmationBuilder) = (*_ReplyOrConfirmationBuilder)(nil)
+
+func (m *_ReplyOrConfirmationBuilder) WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder {
+	return m.WithPeekedByte(peekedByte)
+}
+
+func (m *_ReplyOrConfirmationBuilder) WithPeekedByte(peekedByte byte) ReplyOrConfirmationBuilder {
+	m.PeekedByte = peekedByte
+	return m
+}
+
+func (m *_ReplyOrConfirmationBuilder) Build() (ReplyOrConfirmationContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReplyOrConfirmation.deepCopy(), nil
+}
+
+func (m *_ReplyOrConfirmationBuilder) MustBuild() ReplyOrConfirmationContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReplyOrConfirmationBuilder) DeepCopy() any {
+	return m.CreateReplyOrConfirmationBuilder()
+}
+
+// CreateReplyOrConfirmationBuilder creates a ReplyOrConfirmationBuilder
+func (m *_ReplyOrConfirmation) CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
+	if m == nil {
+		return NewReplyOrConfirmationBuilder()
+	}
+	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -51,6 +51,8 @@ type BACnetAddress interface {
 	GetIsBroadcast() bool
 	// IsBACnetAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAddress()
+	// CreateBuilder creates a BACnetAddressBuilder
+	CreateBACnetAddressBuilder() BACnetAddressBuilder
 }
 
 // _BACnetAddress is the data-structure of this message
@@ -71,6 +73,127 @@ func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddr
 	}
 	return &_BACnetAddress{NetworkNumber: networkNumber, MacAddress: macAddress}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAddressBuilder is a builder for BACnetAddress
+type BACnetAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) BACnetAddressBuilder
+	// WithNetworkNumber adds NetworkNumber (property field)
+	WithNetworkNumber(BACnetApplicationTagUnsignedInteger) BACnetAddressBuilder
+	// WithNetworkNumberBuilder adds NetworkNumber (property field) which is build by the builder
+	WithNetworkNumberBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetAddressBuilder
+	// WithMacAddress adds MacAddress (property field)
+	WithMacAddress(BACnetApplicationTagOctetString) BACnetAddressBuilder
+	// WithMacAddressBuilder adds MacAddress (property field) which is build by the builder
+	WithMacAddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetAddressBuilder
+	// Build builds the BACnetAddress or returns an error if something is wrong
+	Build() (BACnetAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAddress
+}
+
+// NewBACnetAddressBuilder() creates a BACnetAddressBuilder
+func NewBACnetAddressBuilder() BACnetAddressBuilder {
+	return &_BACnetAddressBuilder{_BACnetAddress: new(_BACnetAddress)}
+}
+
+type _BACnetAddressBuilder struct {
+	*_BACnetAddress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAddressBuilder) = (*_BACnetAddressBuilder)(nil)
+
+func (m *_BACnetAddressBuilder) WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger, macAddress BACnetApplicationTagOctetString) BACnetAddressBuilder {
+	return m.WithNetworkNumber(networkNumber).WithMacAddress(macAddress)
+}
+
+func (m *_BACnetAddressBuilder) WithNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger) BACnetAddressBuilder {
+	m.NetworkNumber = networkNumber
+	return m
+}
+
+func (m *_BACnetAddressBuilder) WithNetworkNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetAddressBuilder {
+	builder := builderSupplier(m.NetworkNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NetworkNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAddressBuilder) WithMacAddress(macAddress BACnetApplicationTagOctetString) BACnetAddressBuilder {
+	m.MacAddress = macAddress
+	return m
+}
+
+func (m *_BACnetAddressBuilder) WithMacAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetAddressBuilder {
+	builder := builderSupplier(m.MacAddress.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.MacAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAddressBuilder) Build() (BACnetAddress, error) {
+	if m.NetworkNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkNumber' not set"))
+	}
+	if m.MacAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'macAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAddress.deepCopy(), nil
+}
+
+func (m *_BACnetAddressBuilder) MustBuild() BACnetAddress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAddressBuilder) DeepCopy() any {
+	return m.CreateBACnetAddressBuilder()
+}
+
+// CreateBACnetAddressBuilder creates a BACnetAddressBuilder
+func (m *_BACnetAddress) CreateBACnetAddressBuilder() BACnetAddressBuilder {
+	if m == nil {
+		return NewBACnetAddressBuilder()
+	}
+	return &_BACnetAddressBuilder{_BACnetAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

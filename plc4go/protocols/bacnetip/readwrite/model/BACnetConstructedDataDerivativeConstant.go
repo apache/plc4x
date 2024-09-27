@@ -46,6 +46,8 @@ type BACnetConstructedDataDerivativeConstant interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataDerivativeConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDerivativeConstant()
+	// CreateBuilder creates a BACnetConstructedDataDerivativeConstantBuilder
+	CreateBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDerivativeConstantBuilder
 }
 
 // _BACnetConstructedDataDerivativeConstant is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDerivativeConstant(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDerivativeConstantBuilder is a builder for BACnetConstructedDataDerivativeConstant
+type BACnetConstructedDataDerivativeConstantBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder
+	// WithDerivativeConstant adds DerivativeConstant (property field)
+	WithDerivativeConstant(BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder
+	// WithDerivativeConstantBuilder adds DerivativeConstant (property field) which is build by the builder
+	WithDerivativeConstantBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDerivativeConstantBuilder
+	// Build builds the BACnetConstructedDataDerivativeConstant or returns an error if something is wrong
+	Build() (BACnetConstructedDataDerivativeConstant, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDerivativeConstant
+}
+
+// NewBACnetConstructedDataDerivativeConstantBuilder() creates a BACnetConstructedDataDerivativeConstantBuilder
+func NewBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDerivativeConstantBuilder {
+	return &_BACnetConstructedDataDerivativeConstantBuilder{_BACnetConstructedDataDerivativeConstant: new(_BACnetConstructedDataDerivativeConstant)}
+}
+
+type _BACnetConstructedDataDerivativeConstantBuilder struct {
+	*_BACnetConstructedDataDerivativeConstant
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDerivativeConstantBuilder) = (*_BACnetConstructedDataDerivativeConstantBuilder)(nil)
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithMandatoryFields(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
+	return m.WithDerivativeConstant(derivativeConstant)
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstant(derivativeConstant BACnetApplicationTagReal) BACnetConstructedDataDerivativeConstantBuilder {
+	m.DerivativeConstant = derivativeConstant
+	return m
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) WithDerivativeConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDerivativeConstantBuilder {
+	builder := builderSupplier(m.DerivativeConstant.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.DerivativeConstant, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) Build() (BACnetConstructedDataDerivativeConstant, error) {
+	if m.DerivativeConstant == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'derivativeConstant' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDerivativeConstant.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) MustBuild() BACnetConstructedDataDerivativeConstant {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDerivativeConstantBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDerivativeConstantBuilder()
+}
+
+// CreateBACnetConstructedDataDerivativeConstantBuilder creates a BACnetConstructedDataDerivativeConstantBuilder
+func (m *_BACnetConstructedDataDerivativeConstant) CreateBACnetConstructedDataDerivativeConstantBuilder() BACnetConstructedDataDerivativeConstantBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDerivativeConstantBuilder()
+	}
+	return &_BACnetConstructedDataDerivativeConstantBuilder{_BACnetConstructedDataDerivativeConstant: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

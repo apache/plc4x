@@ -49,6 +49,8 @@ type BACnetLoggingTypeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLoggingTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLoggingTypeTagged()
+	// CreateBuilder creates a BACnetLoggingTypeTaggedBuilder
+	CreateBACnetLoggingTypeTaggedBuilder() BACnetLoggingTypeTaggedBuilder
 }
 
 // _BACnetLoggingTypeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetLoggingTypeTagged(header BACnetTagHeader, value BACnetLoggingType,
 	}
 	return &_BACnetLoggingTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLoggingTypeTaggedBuilder is a builder for BACnetLoggingTypeTagged
+type BACnetLoggingTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLoggingTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLoggingTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLoggingType) BACnetLoggingTypeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLoggingTypeTaggedBuilder
+	// Build builds the BACnetLoggingTypeTagged or returns an error if something is wrong
+	Build() (BACnetLoggingTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLoggingTypeTagged
+}
+
+// NewBACnetLoggingTypeTaggedBuilder() creates a BACnetLoggingTypeTaggedBuilder
+func NewBACnetLoggingTypeTaggedBuilder() BACnetLoggingTypeTaggedBuilder {
+	return &_BACnetLoggingTypeTaggedBuilder{_BACnetLoggingTypeTagged: new(_BACnetLoggingTypeTagged)}
+}
+
+type _BACnetLoggingTypeTaggedBuilder struct {
+	*_BACnetLoggingTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLoggingTypeTaggedBuilder) = (*_BACnetLoggingTypeTaggedBuilder)(nil)
+
+func (m *_BACnetLoggingTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLoggingType, proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLoggingTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLoggingTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) WithValue(value BACnetLoggingType) BACnetLoggingTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLoggingTypeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) Build() (BACnetLoggingTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLoggingTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) MustBuild() BACnetLoggingTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLoggingTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLoggingTypeTaggedBuilder()
+}
+
+// CreateBACnetLoggingTypeTaggedBuilder creates a BACnetLoggingTypeTaggedBuilder
+func (m *_BACnetLoggingTypeTagged) CreateBACnetLoggingTypeTaggedBuilder() BACnetLoggingTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetLoggingTypeTaggedBuilder()
+	}
+	return &_BACnetLoggingTypeTaggedBuilder{_BACnetLoggingTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

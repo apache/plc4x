@@ -53,6 +53,8 @@ type Alarm8MessageQueryType interface {
 	GetMessageObjects() []AlarmMessageObjectQueryType
 	// IsAlarm8MessageQueryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlarm8MessageQueryType()
+	// CreateBuilder creates a Alarm8MessageQueryTypeBuilder
+	CreateAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder
 }
 
 // _Alarm8MessageQueryType is the data-structure of this message
@@ -71,6 +73,113 @@ var _ Alarm8MessageQueryType = (*_Alarm8MessageQueryType)(nil)
 func NewAlarm8MessageQueryType(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) *_Alarm8MessageQueryType {
 	return &_Alarm8MessageQueryType{FunctionId: functionId, NumberOfObjects: numberOfObjects, ReturnCode: returnCode, TransportSize: transportSize, ByteCount: byteCount, MessageObjects: messageObjects}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// Alarm8MessageQueryTypeBuilder is a builder for Alarm8MessageQueryType
+type Alarm8MessageQueryTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder
+	// WithFunctionId adds FunctionId (property field)
+	WithFunctionId(uint8) Alarm8MessageQueryTypeBuilder
+	// WithNumberOfObjects adds NumberOfObjects (property field)
+	WithNumberOfObjects(uint8) Alarm8MessageQueryTypeBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) Alarm8MessageQueryTypeBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) Alarm8MessageQueryTypeBuilder
+	// WithByteCount adds ByteCount (property field)
+	WithByteCount(uint16) Alarm8MessageQueryTypeBuilder
+	// WithMessageObjects adds MessageObjects (property field)
+	WithMessageObjects(...AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder
+	// Build builds the Alarm8MessageQueryType or returns an error if something is wrong
+	Build() (Alarm8MessageQueryType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Alarm8MessageQueryType
+}
+
+// NewAlarm8MessageQueryTypeBuilder() creates a Alarm8MessageQueryTypeBuilder
+func NewAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder {
+	return &_Alarm8MessageQueryTypeBuilder{_Alarm8MessageQueryType: new(_Alarm8MessageQueryType)}
+}
+
+type _Alarm8MessageQueryTypeBuilder struct {
+	*_Alarm8MessageQueryType
+
+	err *utils.MultiError
+}
+
+var _ (Alarm8MessageQueryTypeBuilder) = (*_Alarm8MessageQueryTypeBuilder)(nil)
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, byteCount uint16, messageObjects []AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
+	return m.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithReturnCode(returnCode).WithTransportSize(transportSize).WithByteCount(byteCount).WithMessageObjects(messageObjects...)
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithFunctionId(functionId uint8) Alarm8MessageQueryTypeBuilder {
+	m.FunctionId = functionId
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) Alarm8MessageQueryTypeBuilder {
+	m.NumberOfObjects = numberOfObjects
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) Alarm8MessageQueryTypeBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithTransportSize(transportSize DataTransportSize) Alarm8MessageQueryTypeBuilder {
+	m.TransportSize = transportSize
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithByteCount(byteCount uint16) Alarm8MessageQueryTypeBuilder {
+	m.ByteCount = byteCount
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectQueryType) Alarm8MessageQueryTypeBuilder {
+	m.MessageObjects = messageObjects
+	return m
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) Build() (Alarm8MessageQueryType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Alarm8MessageQueryType.deepCopy(), nil
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) MustBuild() Alarm8MessageQueryType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_Alarm8MessageQueryTypeBuilder) DeepCopy() any {
+	return m.CreateAlarm8MessageQueryTypeBuilder()
+}
+
+// CreateAlarm8MessageQueryTypeBuilder creates a Alarm8MessageQueryTypeBuilder
+func (m *_Alarm8MessageQueryType) CreateAlarm8MessageQueryTypeBuilder() Alarm8MessageQueryTypeBuilder {
+	if m == nil {
+		return NewAlarm8MessageQueryTypeBuilder()
+	}
+	return &_Alarm8MessageQueryTypeBuilder{_Alarm8MessageQueryType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

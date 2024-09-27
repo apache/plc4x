@@ -52,6 +52,8 @@ type DeleteNodesResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteNodesResponse()
+	// CreateBuilder creates a DeleteNodesResponseBuilder
+	CreateDeleteNodesResponseBuilder() DeleteNodesResponseBuilder
 }
 
 // _DeleteNodesResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResult
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteNodesResponseBuilder is a builder for DeleteNodesResponse
+type DeleteNodesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteNodesResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) DeleteNodesResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) DeleteNodesResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) DeleteNodesResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) DeleteNodesResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) DeleteNodesResponseBuilder
+	// Build builds the DeleteNodesResponse or returns an error if something is wrong
+	Build() (DeleteNodesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteNodesResponse
+}
+
+// NewDeleteNodesResponseBuilder() creates a DeleteNodesResponseBuilder
+func NewDeleteNodesResponseBuilder() DeleteNodesResponseBuilder {
+	return &_DeleteNodesResponseBuilder{_DeleteNodesResponse: new(_DeleteNodesResponse)}
+}
+
+type _DeleteNodesResponseBuilder struct {
+	*_DeleteNodesResponse
+
+	err *utils.MultiError
+}
+
+var _ (DeleteNodesResponseBuilder) = (*_DeleteNodesResponseBuilder)(nil)
+
+func (m *_DeleteNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteNodesResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_DeleteNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteNodesResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_DeleteNodesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteNodesResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_DeleteNodesResponseBuilder) WithResults(results ...StatusCode) DeleteNodesResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_DeleteNodesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteNodesResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_DeleteNodesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteNodesResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_DeleteNodesResponseBuilder) Build() (DeleteNodesResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeleteNodesResponse.deepCopy(), nil
+}
+
+func (m *_DeleteNodesResponseBuilder) MustBuild() DeleteNodesResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeleteNodesResponseBuilder) DeepCopy() any {
+	return m.CreateDeleteNodesResponseBuilder()
+}
+
+// CreateDeleteNodesResponseBuilder creates a DeleteNodesResponseBuilder
+func (m *_DeleteNodesResponse) CreateDeleteNodesResponseBuilder() DeleteNodesResponseBuilder {
+	if m == nil {
+		return NewDeleteNodesResponseBuilder()
+	}
+	return &_DeleteNodesResponseBuilder{_DeleteNodesResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

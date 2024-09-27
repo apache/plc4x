@@ -45,6 +45,8 @@ type BACnetDeviceObjectReference interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// IsBACnetDeviceObjectReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDeviceObjectReference()
+	// CreateBuilder creates a BACnetDeviceObjectReferenceBuilder
+	CreateBACnetDeviceObjectReferenceBuilder() BACnetDeviceObjectReferenceBuilder
 }
 
 // _BACnetDeviceObjectReference is the data-structure of this message
@@ -62,6 +64,121 @@ func NewBACnetDeviceObjectReference(deviceIdentifier BACnetContextTagObjectIdent
 	}
 	return &_BACnetDeviceObjectReference{DeviceIdentifier: deviceIdentifier, ObjectIdentifier: objectIdentifier}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDeviceObjectReferenceBuilder is a builder for BACnetDeviceObjectReference
+type BACnetDeviceObjectReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder
+	// WithDeviceIdentifier adds DeviceIdentifier (property field)
+	WithOptionalDeviceIdentifier(BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder
+	// WithOptionalDeviceIdentifierBuilder adds DeviceIdentifier (property field) which is build by the builder
+	WithOptionalDeviceIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetDeviceObjectReferenceBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetDeviceObjectReferenceBuilder
+	// Build builds the BACnetDeviceObjectReference or returns an error if something is wrong
+	Build() (BACnetDeviceObjectReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDeviceObjectReference
+}
+
+// NewBACnetDeviceObjectReferenceBuilder() creates a BACnetDeviceObjectReferenceBuilder
+func NewBACnetDeviceObjectReferenceBuilder() BACnetDeviceObjectReferenceBuilder {
+	return &_BACnetDeviceObjectReferenceBuilder{_BACnetDeviceObjectReference: new(_BACnetDeviceObjectReference)}
+}
+
+type _BACnetDeviceObjectReferenceBuilder struct {
+	*_BACnetDeviceObjectReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDeviceObjectReferenceBuilder) = (*_BACnetDeviceObjectReferenceBuilder)(nil)
+
+func (m *_BACnetDeviceObjectReferenceBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder {
+	return m.WithObjectIdentifier(objectIdentifier)
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) WithOptionalDeviceIdentifier(deviceIdentifier BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder {
+	m.DeviceIdentifier = deviceIdentifier
+	return m
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) WithOptionalDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetDeviceObjectReferenceBuilder {
+	builder := builderSupplier(m.DeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.DeviceIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetDeviceObjectReferenceBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetDeviceObjectReferenceBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) Build() (BACnetDeviceObjectReference, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetDeviceObjectReference.deepCopy(), nil
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) MustBuild() BACnetDeviceObjectReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetDeviceObjectReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetDeviceObjectReferenceBuilder()
+}
+
+// CreateBACnetDeviceObjectReferenceBuilder creates a BACnetDeviceObjectReferenceBuilder
+func (m *_BACnetDeviceObjectReference) CreateBACnetDeviceObjectReferenceBuilder() BACnetDeviceObjectReferenceBuilder {
+	if m == nil {
+		return NewBACnetDeviceObjectReferenceBuilder()
+	}
+	return &_BACnetDeviceObjectReferenceBuilder{_BACnetDeviceObjectReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

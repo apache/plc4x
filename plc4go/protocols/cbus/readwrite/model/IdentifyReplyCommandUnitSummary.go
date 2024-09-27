@@ -57,6 +57,8 @@ type IdentifyReplyCommandUnitSummary interface {
 	GetUnitGeneratingClock() bool
 	// IsIdentifyReplyCommandUnitSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandUnitSummary()
+	// CreateBuilder creates a IdentifyReplyCommandUnitSummaryBuilder
+	CreateIdentifyReplyCommandUnitSummaryBuilder() IdentifyReplyCommandUnitSummaryBuilder
 }
 
 // _IdentifyReplyCommandUnitSummary is the data-structure of this message
@@ -77,6 +79,127 @@ var _ IdentifyReplyCommandUnitSummary = (*_IdentifyReplyCommandUnitSummary)(nil)
 func NewIdentifyReplyCommandUnitSummary(assertingNetworkBurden bool, restrikeTimingActive bool, remoteOFFInputAsserted bool, remoteONInputAsserted bool, localToggleEnabled bool, localToggleActiveState bool, clockGenerationEnabled bool, unitGeneratingClock bool) *_IdentifyReplyCommandUnitSummary {
 	return &_IdentifyReplyCommandUnitSummary{AssertingNetworkBurden: assertingNetworkBurden, RestrikeTimingActive: restrikeTimingActive, RemoteOFFInputAsserted: remoteOFFInputAsserted, RemoteONInputAsserted: remoteONInputAsserted, LocalToggleEnabled: localToggleEnabled, LocalToggleActiveState: localToggleActiveState, ClockGenerationEnabled: clockGenerationEnabled, UnitGeneratingClock: unitGeneratingClock}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandUnitSummaryBuilder is a builder for IdentifyReplyCommandUnitSummary
+type IdentifyReplyCommandUnitSummaryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(assertingNetworkBurden bool, restrikeTimingActive bool, remoteOFFInputAsserted bool, remoteONInputAsserted bool, localToggleEnabled bool, localToggleActiveState bool, clockGenerationEnabled bool, unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithAssertingNetworkBurden adds AssertingNetworkBurden (property field)
+	WithAssertingNetworkBurden(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithRestrikeTimingActive adds RestrikeTimingActive (property field)
+	WithRestrikeTimingActive(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithRemoteOFFInputAsserted adds RemoteOFFInputAsserted (property field)
+	WithRemoteOFFInputAsserted(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithRemoteONInputAsserted adds RemoteONInputAsserted (property field)
+	WithRemoteONInputAsserted(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithLocalToggleEnabled adds LocalToggleEnabled (property field)
+	WithLocalToggleEnabled(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithLocalToggleActiveState adds LocalToggleActiveState (property field)
+	WithLocalToggleActiveState(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithClockGenerationEnabled adds ClockGenerationEnabled (property field)
+	WithClockGenerationEnabled(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// WithUnitGeneratingClock adds UnitGeneratingClock (property field)
+	WithUnitGeneratingClock(bool) IdentifyReplyCommandUnitSummaryBuilder
+	// Build builds the IdentifyReplyCommandUnitSummary or returns an error if something is wrong
+	Build() (IdentifyReplyCommandUnitSummary, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandUnitSummary
+}
+
+// NewIdentifyReplyCommandUnitSummaryBuilder() creates a IdentifyReplyCommandUnitSummaryBuilder
+func NewIdentifyReplyCommandUnitSummaryBuilder() IdentifyReplyCommandUnitSummaryBuilder {
+	return &_IdentifyReplyCommandUnitSummaryBuilder{_IdentifyReplyCommandUnitSummary: new(_IdentifyReplyCommandUnitSummary)}
+}
+
+type _IdentifyReplyCommandUnitSummaryBuilder struct {
+	*_IdentifyReplyCommandUnitSummary
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandUnitSummaryBuilder) = (*_IdentifyReplyCommandUnitSummaryBuilder)(nil)
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithMandatoryFields(assertingNetworkBurden bool, restrikeTimingActive bool, remoteOFFInputAsserted bool, remoteONInputAsserted bool, localToggleEnabled bool, localToggleActiveState bool, clockGenerationEnabled bool, unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
+	return m.WithAssertingNetworkBurden(assertingNetworkBurden).WithRestrikeTimingActive(restrikeTimingActive).WithRemoteOFFInputAsserted(remoteOFFInputAsserted).WithRemoteONInputAsserted(remoteONInputAsserted).WithLocalToggleEnabled(localToggleEnabled).WithLocalToggleActiveState(localToggleActiveState).WithClockGenerationEnabled(clockGenerationEnabled).WithUnitGeneratingClock(unitGeneratingClock)
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithAssertingNetworkBurden(assertingNetworkBurden bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.AssertingNetworkBurden = assertingNetworkBurden
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRestrikeTimingActive(restrikeTimingActive bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.RestrikeTimingActive = restrikeTimingActive
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteOFFInputAsserted(remoteOFFInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.RemoteOFFInputAsserted = remoteOFFInputAsserted
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithRemoteONInputAsserted(remoteONInputAsserted bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.RemoteONInputAsserted = remoteONInputAsserted
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleEnabled(localToggleEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.LocalToggleEnabled = localToggleEnabled
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithLocalToggleActiveState(localToggleActiveState bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.LocalToggleActiveState = localToggleActiveState
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithClockGenerationEnabled(clockGenerationEnabled bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.ClockGenerationEnabled = clockGenerationEnabled
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) WithUnitGeneratingClock(unitGeneratingClock bool) IdentifyReplyCommandUnitSummaryBuilder {
+	m.UnitGeneratingClock = unitGeneratingClock
+	return m
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) Build() (IdentifyReplyCommandUnitSummary, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandUnitSummary.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) MustBuild() IdentifyReplyCommandUnitSummary {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandUnitSummaryBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandUnitSummaryBuilder()
+}
+
+// CreateIdentifyReplyCommandUnitSummaryBuilder creates a IdentifyReplyCommandUnitSummaryBuilder
+func (m *_IdentifyReplyCommandUnitSummary) CreateIdentifyReplyCommandUnitSummaryBuilder() IdentifyReplyCommandUnitSummaryBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandUnitSummaryBuilder()
+	}
+	return &_IdentifyReplyCommandUnitSummaryBuilder{_IdentifyReplyCommandUnitSummary: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

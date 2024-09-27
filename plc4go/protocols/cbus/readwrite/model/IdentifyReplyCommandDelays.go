@@ -46,6 +46,8 @@ type IdentifyReplyCommandDelays interface {
 	GetReStrikeDelay() byte
 	// IsIdentifyReplyCommandDelays is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandDelays()
+	// CreateBuilder creates a IdentifyReplyCommandDelaysBuilder
+	CreateIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder
 }
 
 // _IdentifyReplyCommandDelays is the data-structure of this message
@@ -68,6 +70,85 @@ func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, nu
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandDelaysBuilder is a builder for IdentifyReplyCommandDelays
+type IdentifyReplyCommandDelaysBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(terminalLevels []byte, reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder
+	// WithTerminalLevels adds TerminalLevels (property field)
+	WithTerminalLevels(...byte) IdentifyReplyCommandDelaysBuilder
+	// WithReStrikeDelay adds ReStrikeDelay (property field)
+	WithReStrikeDelay(byte) IdentifyReplyCommandDelaysBuilder
+	// Build builds the IdentifyReplyCommandDelays or returns an error if something is wrong
+	Build() (IdentifyReplyCommandDelays, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandDelays
+}
+
+// NewIdentifyReplyCommandDelaysBuilder() creates a IdentifyReplyCommandDelaysBuilder
+func NewIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder {
+	return &_IdentifyReplyCommandDelaysBuilder{_IdentifyReplyCommandDelays: new(_IdentifyReplyCommandDelays)}
+}
+
+type _IdentifyReplyCommandDelaysBuilder struct {
+	*_IdentifyReplyCommandDelays
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandDelaysBuilder) = (*_IdentifyReplyCommandDelaysBuilder)(nil)
+
+func (m *_IdentifyReplyCommandDelaysBuilder) WithMandatoryFields(terminalLevels []byte, reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
+	return m.WithTerminalLevels(terminalLevels...).WithReStrikeDelay(reStrikeDelay)
+}
+
+func (m *_IdentifyReplyCommandDelaysBuilder) WithTerminalLevels(terminalLevels ...byte) IdentifyReplyCommandDelaysBuilder {
+	m.TerminalLevels = terminalLevels
+	return m
+}
+
+func (m *_IdentifyReplyCommandDelaysBuilder) WithReStrikeDelay(reStrikeDelay byte) IdentifyReplyCommandDelaysBuilder {
+	m.ReStrikeDelay = reStrikeDelay
+	return m
+}
+
+func (m *_IdentifyReplyCommandDelaysBuilder) Build() (IdentifyReplyCommandDelays, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandDelays.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandDelaysBuilder) MustBuild() IdentifyReplyCommandDelays {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandDelaysBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandDelaysBuilder()
+}
+
+// CreateIdentifyReplyCommandDelaysBuilder creates a IdentifyReplyCommandDelaysBuilder
+func (m *_IdentifyReplyCommandDelays) CreateIdentifyReplyCommandDelaysBuilder() IdentifyReplyCommandDelaysBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandDelaysBuilder()
+	}
+	return &_IdentifyReplyCommandDelaysBuilder{_IdentifyReplyCommandDelays: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

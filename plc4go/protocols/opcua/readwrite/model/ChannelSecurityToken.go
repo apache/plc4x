@@ -50,6 +50,8 @@ type ChannelSecurityToken interface {
 	GetRevisedLifetime() uint32
 	// IsChannelSecurityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsChannelSecurityToken()
+	// CreateBuilder creates a ChannelSecurityTokenBuilder
+	CreateChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder
 }
 
 // _ChannelSecurityToken is the data-structure of this message
@@ -76,6 +78,99 @@ func NewChannelSecurityToken(channelId uint32, tokenId uint32, createdAt int64, 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ChannelSecurityTokenBuilder is a builder for ChannelSecurityToken
+type ChannelSecurityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) ChannelSecurityTokenBuilder
+	// WithChannelId adds ChannelId (property field)
+	WithChannelId(uint32) ChannelSecurityTokenBuilder
+	// WithTokenId adds TokenId (property field)
+	WithTokenId(uint32) ChannelSecurityTokenBuilder
+	// WithCreatedAt adds CreatedAt (property field)
+	WithCreatedAt(int64) ChannelSecurityTokenBuilder
+	// WithRevisedLifetime adds RevisedLifetime (property field)
+	WithRevisedLifetime(uint32) ChannelSecurityTokenBuilder
+	// Build builds the ChannelSecurityToken or returns an error if something is wrong
+	Build() (ChannelSecurityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ChannelSecurityToken
+}
+
+// NewChannelSecurityTokenBuilder() creates a ChannelSecurityTokenBuilder
+func NewChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder {
+	return &_ChannelSecurityTokenBuilder{_ChannelSecurityToken: new(_ChannelSecurityToken)}
+}
+
+type _ChannelSecurityTokenBuilder struct {
+	*_ChannelSecurityToken
+
+	err *utils.MultiError
+}
+
+var _ (ChannelSecurityTokenBuilder) = (*_ChannelSecurityTokenBuilder)(nil)
+
+func (m *_ChannelSecurityTokenBuilder) WithMandatoryFields(channelId uint32, tokenId uint32, createdAt int64, revisedLifetime uint32) ChannelSecurityTokenBuilder {
+	return m.WithChannelId(channelId).WithTokenId(tokenId).WithCreatedAt(createdAt).WithRevisedLifetime(revisedLifetime)
+}
+
+func (m *_ChannelSecurityTokenBuilder) WithChannelId(channelId uint32) ChannelSecurityTokenBuilder {
+	m.ChannelId = channelId
+	return m
+}
+
+func (m *_ChannelSecurityTokenBuilder) WithTokenId(tokenId uint32) ChannelSecurityTokenBuilder {
+	m.TokenId = tokenId
+	return m
+}
+
+func (m *_ChannelSecurityTokenBuilder) WithCreatedAt(createdAt int64) ChannelSecurityTokenBuilder {
+	m.CreatedAt = createdAt
+	return m
+}
+
+func (m *_ChannelSecurityTokenBuilder) WithRevisedLifetime(revisedLifetime uint32) ChannelSecurityTokenBuilder {
+	m.RevisedLifetime = revisedLifetime
+	return m
+}
+
+func (m *_ChannelSecurityTokenBuilder) Build() (ChannelSecurityToken, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ChannelSecurityToken.deepCopy(), nil
+}
+
+func (m *_ChannelSecurityTokenBuilder) MustBuild() ChannelSecurityToken {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ChannelSecurityTokenBuilder) DeepCopy() any {
+	return m.CreateChannelSecurityTokenBuilder()
+}
+
+// CreateChannelSecurityTokenBuilder creates a ChannelSecurityTokenBuilder
+func (m *_ChannelSecurityToken) CreateChannelSecurityTokenBuilder() ChannelSecurityTokenBuilder {
+	if m == nil {
+		return NewChannelSecurityTokenBuilder()
+	}
+	return &_ChannelSecurityTokenBuilder{_ChannelSecurityToken: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type BACnetOptionalUnsigned interface {
 	utils.Copyable
 	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
+	// CreateBuilder creates a BACnetOptionalUnsignedBuilder
+	CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder
 }
 
 // BACnetOptionalUnsignedContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetOptionalUnsignedContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
+	// CreateBuilder creates a BACnetOptionalUnsignedBuilder
+	CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder
 }
 
 // BACnetOptionalUnsignedRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptional
 	}
 	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOptionalUnsignedBuilder is a builder for BACnetOptionalUnsigned
+type BACnetOptionalUnsignedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetOptionalUnsignedBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalUnsignedBuilder
+	// Build builds the BACnetOptionalUnsigned or returns an error if something is wrong
+	Build() (BACnetOptionalUnsignedContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalUnsignedContract
+}
+
+// NewBACnetOptionalUnsignedBuilder() creates a BACnetOptionalUnsignedBuilder
+func NewBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder {
+	return &_BACnetOptionalUnsignedBuilder{_BACnetOptionalUnsigned: new(_BACnetOptionalUnsigned)}
+}
+
+type _BACnetOptionalUnsignedBuilder struct {
+	*_BACnetOptionalUnsigned
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOptionalUnsignedBuilder) = (*_BACnetOptionalUnsignedBuilder)(nil)
+
+func (m *_BACnetOptionalUnsignedBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetOptionalUnsignedBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetOptionalUnsignedBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalUnsignedBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetOptionalUnsignedBuilder) Build() (BACnetOptionalUnsignedContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetOptionalUnsigned.deepCopy(), nil
+}
+
+func (m *_BACnetOptionalUnsignedBuilder) MustBuild() BACnetOptionalUnsignedContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetOptionalUnsignedBuilder) DeepCopy() any {
+	return m.CreateBACnetOptionalUnsignedBuilder()
+}
+
+// CreateBACnetOptionalUnsignedBuilder creates a BACnetOptionalUnsignedBuilder
+func (m *_BACnetOptionalUnsigned) CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder {
+	if m == nil {
+		return NewBACnetOptionalUnsignedBuilder()
+	}
+	return &_BACnetOptionalUnsignedBuilder{_BACnetOptionalUnsigned: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

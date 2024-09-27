@@ -50,6 +50,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
 	GetMessage() BACnetContextTagCharacterString
 	// IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	CreateBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder() BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the data-structure of this message
@@ -85,6 +87,162 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceD
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder is a builder for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+type BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(textMessageSourceDevice BACnetContextTagObjectIdentifier, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithTextMessageSourceDevice adds TextMessageSourceDevice (property field)
+	WithTextMessageSourceDevice(BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithTextMessageSourceDeviceBuilder adds TextMessageSourceDevice (property field) which is build by the builder
+	WithTextMessageSourceDeviceBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithMessageClass adds MessageClass (property field)
+	WithOptionalMessageClass(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithMessagePriority adds MessagePriority (property field)
+	WithMessagePriority(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithMessagePriorityBuilder adds MessagePriority (property field) which is build by the builder
+	WithMessagePriorityBuilder(func(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedTextMessage or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+}
+
+// NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder() creates a BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder() BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage: new(_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage)}
+}
+
+type _BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder struct {
+	*_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) = (*_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithMandatoryFields(textMessageSourceDevice BACnetContextTagObjectIdentifier, messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, message BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	return m.WithTextMessageSourceDevice(textMessageSourceDevice).WithMessagePriority(messagePriority).WithMessage(message)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithTextMessageSourceDevice(textMessageSourceDevice BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	m.TextMessageSourceDevice = textMessageSourceDevice
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithTextMessageSourceDeviceBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	builder := builderSupplier(m.TextMessageSourceDevice.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.TextMessageSourceDevice, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithOptionalMessageClass(messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	m.MessageClass = messageClass
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithMessagePriority(messagePriority BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	m.MessagePriority = messagePriority
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithMessagePriorityBuilder(builderSupplier func(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	builder := builderSupplier(m.MessagePriority.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder())
+	var err error
+	m.MessagePriority, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithMessage(message BACnetContextTagCharacterString) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) WithMessageBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	builder := builderSupplier(m.Message.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	m.Message, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+	if m.TextMessageSourceDevice == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'textMessageSourceDevice' not set"))
+	}
+	if m.MessagePriority == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'messagePriority' not set"))
+	}
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceRequestUnconfirmedTextMessage.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) CreateBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder() BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

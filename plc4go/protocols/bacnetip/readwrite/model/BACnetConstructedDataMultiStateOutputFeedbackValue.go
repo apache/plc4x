@@ -46,6 +46,8 @@ type BACnetConstructedDataMultiStateOutputFeedbackValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMultiStateOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateOutputFeedbackValue()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
 }
 
 // _BACnetConstructedDataMultiStateOutputFeedbackValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMultiStateOutputFeedbackValue(openingTag BACnetOpen
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateOutputFeedbackValueBuilder is a builder for BACnetConstructedDataMultiStateOutputFeedbackValue
+type BACnetConstructedDataMultiStateOutputFeedbackValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	// WithFeedbackValue adds FeedbackValue (property field)
+	WithFeedbackValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
+	WithFeedbackValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+	// Build builds the BACnetConstructedDataMultiStateOutputFeedbackValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateOutputFeedbackValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateOutputFeedbackValue
+}
+
+// NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() creates a BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+func NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	return &_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder{_BACnetConstructedDataMultiStateOutputFeedbackValue: new(_BACnetConstructedDataMultiStateOutputFeedbackValue)}
+}
+
+type _BACnetConstructedDataMultiStateOutputFeedbackValueBuilder struct {
+	*_BACnetConstructedDataMultiStateOutputFeedbackValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) = (*_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	return m.WithFeedbackValue(feedbackValue)
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	m.FeedbackValue = feedbackValue
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	builder := builderSupplier(m.FeedbackValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.FeedbackValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) Build() (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
+	if m.FeedbackValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMultiStateOutputFeedbackValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataMultiStateOutputFeedbackValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder()
+}
+
+// CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder creates a BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+func (m *_BACnetConstructedDataMultiStateOutputFeedbackValue) CreateBACnetConstructedDataMultiStateOutputFeedbackValueBuilder() BACnetConstructedDataMultiStateOutputFeedbackValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMultiStateOutputFeedbackValueBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateOutputFeedbackValueBuilder{_BACnetConstructedDataMultiStateOutputFeedbackValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

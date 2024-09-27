@@ -102,6 +102,14 @@ func (n *_NPDU) getNPDUModel() (readWriteModel.NPDU, bool) {
 	return npdu, ok
 }
 
+func (n *_NPDU) CreateNPDUBuilder() readWriteModel.NPDUBuilder {
+	npdu, ok := n.getNPDUModel()
+	if !ok {
+		return readWriteModel.NewNPDUBuilder()
+	}
+	return npdu.CreateNPDUBuilder()
+}
+
 func (n *_NPDU) GetProtocolVersionNumber() uint8 {
 	npdu, ok := n.getNPDUModel()
 	if !ok {

@@ -46,6 +46,8 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	GetSzlIndex() uint16
 	// IsS7PayloadUserDataItemCpuFunctionReadSzlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionReadSzlRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+	CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlRequest is the data-structure of this message
@@ -71,6 +73,106 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(returnCode DataTransportE
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder is a builder for S7PayloadUserDataItemCpuFunctionReadSzlRequest
+type S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(szlId SzlId, szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+	// WithSzlId adds SzlId (property field)
+	WithSzlId(SzlId) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+	// WithSzlIdBuilder adds SzlId (property field) which is build by the builder
+	WithSzlIdBuilder(func(SzlIdBuilder) SzlIdBuilder) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+	// WithSzlIndex adds SzlIndex (property field)
+	WithSzlIndex(uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionReadSzlRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlRequest
+}
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() creates a S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+func NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlRequest: new(_S7PayloadUserDataItemCpuFunctionReadSzlRequest)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionReadSzlRequest
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithMandatoryFields(szlId SzlId, szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	return m.WithSzlId(szlId).WithSzlIndex(szlIndex)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlId(szlId SzlId) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	m.SzlId = szlId
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIdBuilder(builderSupplier func(SzlIdBuilder) SzlIdBuilder) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	builder := builderSupplier(m.SzlId.CreateSzlIdBuilder())
+	var err error
+	m.SzlId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SzlIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) WithSzlIndex(szlIndex uint16) S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	m.SzlIndex = szlIndex
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+	if m.SzlId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'szlId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCpuFunctionReadSzlRequest.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder()
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) CreateS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

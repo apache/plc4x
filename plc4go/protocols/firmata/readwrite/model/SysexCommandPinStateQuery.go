@@ -44,6 +44,8 @@ type SysexCommandPinStateQuery interface {
 	GetPin() uint8
 	// IsSysexCommandPinStateQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandPinStateQuery()
+	// CreateBuilder creates a SysexCommandPinStateQueryBuilder
+	CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder
 }
 
 // _SysexCommandPinStateQuery is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandPinStateQueryBuilder is a builder for SysexCommandPinStateQuery
+type SysexCommandPinStateQueryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) SysexCommandPinStateQueryBuilder
+	// Build builds the SysexCommandPinStateQuery or returns an error if something is wrong
+	Build() (SysexCommandPinStateQuery, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandPinStateQuery
+}
+
+// NewSysexCommandPinStateQueryBuilder() creates a SysexCommandPinStateQueryBuilder
+func NewSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
+	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: new(_SysexCommandPinStateQuery)}
+}
+
+type _SysexCommandPinStateQueryBuilder struct {
+	*_SysexCommandPinStateQuery
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandPinStateQueryBuilder) = (*_SysexCommandPinStateQueryBuilder)(nil)
+
+func (m *_SysexCommandPinStateQueryBuilder) WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder {
+	return m.WithPin(pin)
+}
+
+func (m *_SysexCommandPinStateQueryBuilder) WithPin(pin uint8) SysexCommandPinStateQueryBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_SysexCommandPinStateQueryBuilder) Build() (SysexCommandPinStateQuery, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandPinStateQuery.deepCopy(), nil
+}
+
+func (m *_SysexCommandPinStateQueryBuilder) MustBuild() SysexCommandPinStateQuery {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandPinStateQueryBuilder) DeepCopy() any {
+	return m.CreateSysexCommandPinStateQueryBuilder()
+}
+
+// CreateSysexCommandPinStateQueryBuilder creates a SysexCommandPinStateQueryBuilder
+func (m *_SysexCommandPinStateQuery) CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
+	if m == nil {
+		return NewSysexCommandPinStateQueryBuilder()
+	}
+	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

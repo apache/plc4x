@@ -44,6 +44,8 @@ type BACnetLandingCallStatusCommandDirection interface {
 	GetDirection() BACnetLiftCarDirectionTagged
 	// IsBACnetLandingCallStatusCommandDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingCallStatusCommandDirection()
+	// CreateBuilder creates a BACnetLandingCallStatusCommandDirectionBuilder
+	CreateBACnetLandingCallStatusCommandDirectionBuilder() BACnetLandingCallStatusCommandDirectionBuilder
 }
 
 // _BACnetLandingCallStatusCommandDirection is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLandingCallStatusCommandDirection(peekedTagHeader BACnetTagHeader,
 	_result.BACnetLandingCallStatusCommandContract.(*_BACnetLandingCallStatusCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLandingCallStatusCommandDirectionBuilder is a builder for BACnetLandingCallStatusCommandDirection
+type BACnetLandingCallStatusCommandDirectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(direction BACnetLiftCarDirectionTagged) BACnetLandingCallStatusCommandDirectionBuilder
+	// WithDirection adds Direction (property field)
+	WithDirection(BACnetLiftCarDirectionTagged) BACnetLandingCallStatusCommandDirectionBuilder
+	// WithDirectionBuilder adds Direction (property field) which is build by the builder
+	WithDirectionBuilder(func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetLandingCallStatusCommandDirectionBuilder
+	// Build builds the BACnetLandingCallStatusCommandDirection or returns an error if something is wrong
+	Build() (BACnetLandingCallStatusCommandDirection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLandingCallStatusCommandDirection
+}
+
+// NewBACnetLandingCallStatusCommandDirectionBuilder() creates a BACnetLandingCallStatusCommandDirectionBuilder
+func NewBACnetLandingCallStatusCommandDirectionBuilder() BACnetLandingCallStatusCommandDirectionBuilder {
+	return &_BACnetLandingCallStatusCommandDirectionBuilder{_BACnetLandingCallStatusCommandDirection: new(_BACnetLandingCallStatusCommandDirection)}
+}
+
+type _BACnetLandingCallStatusCommandDirectionBuilder struct {
+	*_BACnetLandingCallStatusCommandDirection
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLandingCallStatusCommandDirectionBuilder) = (*_BACnetLandingCallStatusCommandDirectionBuilder)(nil)
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) WithMandatoryFields(direction BACnetLiftCarDirectionTagged) BACnetLandingCallStatusCommandDirectionBuilder {
+	return m.WithDirection(direction)
+}
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) WithDirection(direction BACnetLiftCarDirectionTagged) BACnetLandingCallStatusCommandDirectionBuilder {
+	m.Direction = direction
+	return m
+}
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) WithDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetLandingCallStatusCommandDirectionBuilder {
+	builder := builderSupplier(m.Direction.CreateBACnetLiftCarDirectionTaggedBuilder())
+	var err error
+	m.Direction, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) Build() (BACnetLandingCallStatusCommandDirection, error) {
+	if m.Direction == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'direction' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLandingCallStatusCommandDirection.deepCopy(), nil
+}
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) MustBuild() BACnetLandingCallStatusCommandDirection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLandingCallStatusCommandDirectionBuilder) DeepCopy() any {
+	return m.CreateBACnetLandingCallStatusCommandDirectionBuilder()
+}
+
+// CreateBACnetLandingCallStatusCommandDirectionBuilder creates a BACnetLandingCallStatusCommandDirectionBuilder
+func (m *_BACnetLandingCallStatusCommandDirection) CreateBACnetLandingCallStatusCommandDirectionBuilder() BACnetLandingCallStatusCommandDirectionBuilder {
+	if m == nil {
+		return NewBACnetLandingCallStatusCommandDirectionBuilder()
+	}
+	return &_BACnetLandingCallStatusCommandDirectionBuilder{_BACnetLandingCallStatusCommandDirection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

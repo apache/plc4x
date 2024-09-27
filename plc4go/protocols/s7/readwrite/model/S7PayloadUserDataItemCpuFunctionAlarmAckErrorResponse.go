@@ -40,6 +40,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse interface {
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(returnCode DataTra
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: new(_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

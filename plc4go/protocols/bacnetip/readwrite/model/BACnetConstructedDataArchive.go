@@ -46,6 +46,8 @@ type BACnetConstructedDataArchive interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataArchive is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataArchive()
+	// CreateBuilder creates a BACnetConstructedDataArchiveBuilder
+	CreateBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilder
 }
 
 // _BACnetConstructedDataArchive is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataArchive(openingTag BACnetOpeningTag, peekedTagHeade
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataArchiveBuilder is a builder for BACnetConstructedDataArchive
+type BACnetConstructedDataArchiveBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder
+	// WithArchive adds Archive (property field)
+	WithArchive(BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder
+	// WithArchiveBuilder adds Archive (property field) which is build by the builder
+	WithArchiveBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataArchiveBuilder
+	// Build builds the BACnetConstructedDataArchive or returns an error if something is wrong
+	Build() (BACnetConstructedDataArchive, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataArchive
+}
+
+// NewBACnetConstructedDataArchiveBuilder() creates a BACnetConstructedDataArchiveBuilder
+func NewBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilder {
+	return &_BACnetConstructedDataArchiveBuilder{_BACnetConstructedDataArchive: new(_BACnetConstructedDataArchive)}
+}
+
+type _BACnetConstructedDataArchiveBuilder struct {
+	*_BACnetConstructedDataArchive
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataArchiveBuilder) = (*_BACnetConstructedDataArchiveBuilder)(nil)
+
+func (m *_BACnetConstructedDataArchiveBuilder) WithMandatoryFields(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
+	return m.WithArchive(archive)
+}
+
+func (m *_BACnetConstructedDataArchiveBuilder) WithArchive(archive BACnetApplicationTagBoolean) BACnetConstructedDataArchiveBuilder {
+	m.Archive = archive
+	return m
+}
+
+func (m *_BACnetConstructedDataArchiveBuilder) WithArchiveBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataArchiveBuilder {
+	builder := builderSupplier(m.Archive.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.Archive, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataArchiveBuilder) Build() (BACnetConstructedDataArchive, error) {
+	if m.Archive == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'archive' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataArchive.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataArchiveBuilder) MustBuild() BACnetConstructedDataArchive {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataArchiveBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataArchiveBuilder()
+}
+
+// CreateBACnetConstructedDataArchiveBuilder creates a BACnetConstructedDataArchiveBuilder
+func (m *_BACnetConstructedDataArchive) CreateBACnetConstructedDataArchiveBuilder() BACnetConstructedDataArchiveBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataArchiveBuilder()
+	}
+	return &_BACnetConstructedDataArchiveBuilder{_BACnetConstructedDataArchive: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

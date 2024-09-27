@@ -42,6 +42,8 @@ type LevelInformationAbsent interface {
 	LevelInformation
 	// IsLevelInformationAbsent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformationAbsent()
+	// CreateBuilder creates a LevelInformationAbsentBuilder
+	CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder
 }
 
 // _LevelInformationAbsent is the data-structure of this message
@@ -62,6 +64,71 @@ func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
 	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LevelInformationAbsentBuilder is a builder for LevelInformationAbsent
+type LevelInformationAbsentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LevelInformationAbsentBuilder
+	// Build builds the LevelInformationAbsent or returns an error if something is wrong
+	Build() (LevelInformationAbsent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LevelInformationAbsent
+}
+
+// NewLevelInformationAbsentBuilder() creates a LevelInformationAbsentBuilder
+func NewLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
+	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: new(_LevelInformationAbsent)}
+}
+
+type _LevelInformationAbsentBuilder struct {
+	*_LevelInformationAbsent
+
+	err *utils.MultiError
+}
+
+var _ (LevelInformationAbsentBuilder) = (*_LevelInformationAbsentBuilder)(nil)
+
+func (m *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationAbsentBuilder {
+	return m
+}
+
+func (m *_LevelInformationAbsentBuilder) Build() (LevelInformationAbsent, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LevelInformationAbsent.deepCopy(), nil
+}
+
+func (m *_LevelInformationAbsentBuilder) MustBuild() LevelInformationAbsent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LevelInformationAbsentBuilder) DeepCopy() any {
+	return m.CreateLevelInformationAbsentBuilder()
+}
+
+// CreateLevelInformationAbsentBuilder creates a LevelInformationAbsentBuilder
+func (m *_LevelInformationAbsent) CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
+	if m == nil {
+		return NewLevelInformationAbsentBuilder()
+	}
+	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeResponse interface {
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesUnsubscribeResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
+	CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesUnsubscribeResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponse(returnCode DataTr
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder is a builder for S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
+type S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesUnsubscribeResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
+}
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() creates a S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse: new(_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesUnsubscribeResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) CreateS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeResponseBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

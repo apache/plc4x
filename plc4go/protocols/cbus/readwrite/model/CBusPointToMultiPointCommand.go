@@ -43,6 +43,8 @@ type CBusPointToMultiPointCommand interface {
 	utils.Copyable
 	// IsCBusPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommand()
+	// CreateBuilder creates a CBusPointToMultiPointCommandBuilder
+	CreateCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder
 }
 
 // CBusPointToMultiPointCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type CBusPointToMultiPointCommandContract interface {
 	GetCBusOptions() CBusOptions
 	// IsCBusPointToMultiPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommand()
+	// CreateBuilder creates a CBusPointToMultiPointCommandBuilder
+	CreateCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder
 }
 
 // CBusPointToMultiPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,78 @@ var _ CBusPointToMultiPointCommandContract = (*_CBusPointToMultiPointCommand)(ni
 func NewCBusPointToMultiPointCommand(peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommand {
 	return &_CBusPointToMultiPointCommand{PeekedApplication: peekedApplication, CBusOptions: cBusOptions}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToMultiPointCommandBuilder is a builder for CBusPointToMultiPointCommand
+type CBusPointToMultiPointCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder
+	// WithPeekedApplication adds PeekedApplication (property field)
+	WithPeekedApplication(byte) CBusPointToMultiPointCommandBuilder
+	// Build builds the CBusPointToMultiPointCommand or returns an error if something is wrong
+	Build() (CBusPointToMultiPointCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToMultiPointCommandContract
+}
+
+// NewCBusPointToMultiPointCommandBuilder() creates a CBusPointToMultiPointCommandBuilder
+func NewCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder {
+	return &_CBusPointToMultiPointCommandBuilder{_CBusPointToMultiPointCommand: new(_CBusPointToMultiPointCommand)}
+}
+
+type _CBusPointToMultiPointCommandBuilder struct {
+	*_CBusPointToMultiPointCommand
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToMultiPointCommandBuilder) = (*_CBusPointToMultiPointCommandBuilder)(nil)
+
+func (m *_CBusPointToMultiPointCommandBuilder) WithMandatoryFields(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
+	return m.WithPeekedApplication(peekedApplication)
+}
+
+func (m *_CBusPointToMultiPointCommandBuilder) WithPeekedApplication(peekedApplication byte) CBusPointToMultiPointCommandBuilder {
+	m.PeekedApplication = peekedApplication
+	return m
+}
+
+func (m *_CBusPointToMultiPointCommandBuilder) Build() (CBusPointToMultiPointCommandContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusPointToMultiPointCommand.deepCopy(), nil
+}
+
+func (m *_CBusPointToMultiPointCommandBuilder) MustBuild() CBusPointToMultiPointCommandContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusPointToMultiPointCommandBuilder) DeepCopy() any {
+	return m.CreateCBusPointToMultiPointCommandBuilder()
+}
+
+// CreateCBusPointToMultiPointCommandBuilder creates a CBusPointToMultiPointCommandBuilder
+func (m *_CBusPointToMultiPointCommand) CreateCBusPointToMultiPointCommandBuilder() CBusPointToMultiPointCommandBuilder {
+	if m == nil {
+		return NewCBusPointToMultiPointCommandBuilder()
+	}
+	return &_CBusPointToMultiPointCommandBuilder{_CBusPointToMultiPointCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

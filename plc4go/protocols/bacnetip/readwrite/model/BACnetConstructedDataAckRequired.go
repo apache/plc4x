@@ -46,6 +46,8 @@ type BACnetConstructedDataAckRequired interface {
 	GetActualValue() BACnetEventTransitionBitsTagged
 	// IsBACnetConstructedDataAckRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAckRequired()
+	// CreateBuilder creates a BACnetConstructedDataAckRequiredBuilder
+	CreateBACnetConstructedDataAckRequiredBuilder() BACnetConstructedDataAckRequiredBuilder
 }
 
 // _BACnetConstructedDataAckRequired is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAckRequired(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAckRequiredBuilder is a builder for BACnetConstructedDataAckRequired
+type BACnetConstructedDataAckRequiredBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ackRequired BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder
+	// WithAckRequired adds AckRequired (property field)
+	WithAckRequired(BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder
+	// WithAckRequiredBuilder adds AckRequired (property field) which is build by the builder
+	WithAckRequiredBuilder(func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataAckRequiredBuilder
+	// Build builds the BACnetConstructedDataAckRequired or returns an error if something is wrong
+	Build() (BACnetConstructedDataAckRequired, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAckRequired
+}
+
+// NewBACnetConstructedDataAckRequiredBuilder() creates a BACnetConstructedDataAckRequiredBuilder
+func NewBACnetConstructedDataAckRequiredBuilder() BACnetConstructedDataAckRequiredBuilder {
+	return &_BACnetConstructedDataAckRequiredBuilder{_BACnetConstructedDataAckRequired: new(_BACnetConstructedDataAckRequired)}
+}
+
+type _BACnetConstructedDataAckRequiredBuilder struct {
+	*_BACnetConstructedDataAckRequired
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAckRequiredBuilder) = (*_BACnetConstructedDataAckRequiredBuilder)(nil)
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) WithMandatoryFields(ackRequired BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder {
+	return m.WithAckRequired(ackRequired)
+}
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) WithAckRequired(ackRequired BACnetEventTransitionBitsTagged) BACnetConstructedDataAckRequiredBuilder {
+	m.AckRequired = ackRequired
+	return m
+}
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) WithAckRequiredBuilder(builderSupplier func(BACnetEventTransitionBitsTaggedBuilder) BACnetEventTransitionBitsTaggedBuilder) BACnetConstructedDataAckRequiredBuilder {
+	builder := builderSupplier(m.AckRequired.CreateBACnetEventTransitionBitsTaggedBuilder())
+	var err error
+	m.AckRequired, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventTransitionBitsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) Build() (BACnetConstructedDataAckRequired, error) {
+	if m.AckRequired == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'ackRequired' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAckRequired.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) MustBuild() BACnetConstructedDataAckRequired {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAckRequiredBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAckRequiredBuilder()
+}
+
+// CreateBACnetConstructedDataAckRequiredBuilder creates a BACnetConstructedDataAckRequiredBuilder
+func (m *_BACnetConstructedDataAckRequired) CreateBACnetConstructedDataAckRequiredBuilder() BACnetConstructedDataAckRequiredBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAckRequiredBuilder()
+	}
+	return &_BACnetConstructedDataAckRequiredBuilder{_BACnetConstructedDataAckRequired: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

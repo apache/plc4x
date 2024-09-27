@@ -48,6 +48,8 @@ type MediaTransportControlDataShuffleOnOff interface {
 	GetIsOn() bool
 	// IsMediaTransportControlDataShuffleOnOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataShuffleOnOff()
+	// CreateBuilder creates a MediaTransportControlDataShuffleOnOffBuilder
+	CreateMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlDataShuffleOnOffBuilder
 }
 
 // _MediaTransportControlDataShuffleOnOff is the data-structure of this message
@@ -68,6 +70,78 @@ func NewMediaTransportControlDataShuffleOnOff(commandTypeContainer MediaTranspor
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataShuffleOnOffBuilder is a builder for MediaTransportControlDataShuffleOnOff
+type MediaTransportControlDataShuffleOnOffBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder
+	// WithState adds State (property field)
+	WithState(byte) MediaTransportControlDataShuffleOnOffBuilder
+	// Build builds the MediaTransportControlDataShuffleOnOff or returns an error if something is wrong
+	Build() (MediaTransportControlDataShuffleOnOff, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataShuffleOnOff
+}
+
+// NewMediaTransportControlDataShuffleOnOffBuilder() creates a MediaTransportControlDataShuffleOnOffBuilder
+func NewMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlDataShuffleOnOffBuilder {
+	return &_MediaTransportControlDataShuffleOnOffBuilder{_MediaTransportControlDataShuffleOnOff: new(_MediaTransportControlDataShuffleOnOff)}
+}
+
+type _MediaTransportControlDataShuffleOnOffBuilder struct {
+	*_MediaTransportControlDataShuffleOnOff
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataShuffleOnOffBuilder) = (*_MediaTransportControlDataShuffleOnOffBuilder)(nil)
+
+func (m *_MediaTransportControlDataShuffleOnOffBuilder) WithMandatoryFields(state byte) MediaTransportControlDataShuffleOnOffBuilder {
+	return m.WithState(state)
+}
+
+func (m *_MediaTransportControlDataShuffleOnOffBuilder) WithState(state byte) MediaTransportControlDataShuffleOnOffBuilder {
+	m.State = state
+	return m
+}
+
+func (m *_MediaTransportControlDataShuffleOnOffBuilder) Build() (MediaTransportControlDataShuffleOnOff, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataShuffleOnOff.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataShuffleOnOffBuilder) MustBuild() MediaTransportControlDataShuffleOnOff {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataShuffleOnOffBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataShuffleOnOffBuilder()
+}
+
+// CreateMediaTransportControlDataShuffleOnOffBuilder creates a MediaTransportControlDataShuffleOnOffBuilder
+func (m *_MediaTransportControlDataShuffleOnOff) CreateMediaTransportControlDataShuffleOnOffBuilder() MediaTransportControlDataShuffleOnOffBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataShuffleOnOffBuilder()
+	}
+	return &_MediaTransportControlDataShuffleOnOffBuilder{_MediaTransportControlDataShuffleOnOff: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

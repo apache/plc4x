@@ -50,6 +50,8 @@ type LinearConversionDataType interface {
 	GetFinalAddend() float32
 	// IsLinearConversionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLinearConversionDataType()
+	// CreateBuilder creates a LinearConversionDataTypeBuilder
+	CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder
 }
 
 // _LinearConversionDataType is the data-structure of this message
@@ -76,6 +78,99 @@ func NewLinearConversionDataType(initialAddend float32, multiplicand float32, di
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LinearConversionDataTypeBuilder is a builder for LinearConversionDataType
+type LinearConversionDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder
+	// WithInitialAddend adds InitialAddend (property field)
+	WithInitialAddend(float32) LinearConversionDataTypeBuilder
+	// WithMultiplicand adds Multiplicand (property field)
+	WithMultiplicand(float32) LinearConversionDataTypeBuilder
+	// WithDivisor adds Divisor (property field)
+	WithDivisor(float32) LinearConversionDataTypeBuilder
+	// WithFinalAddend adds FinalAddend (property field)
+	WithFinalAddend(float32) LinearConversionDataTypeBuilder
+	// Build builds the LinearConversionDataType or returns an error if something is wrong
+	Build() (LinearConversionDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LinearConversionDataType
+}
+
+// NewLinearConversionDataTypeBuilder() creates a LinearConversionDataTypeBuilder
+func NewLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
+	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: new(_LinearConversionDataType)}
+}
+
+type _LinearConversionDataTypeBuilder struct {
+	*_LinearConversionDataType
+
+	err *utils.MultiError
+}
+
+var _ (LinearConversionDataTypeBuilder) = (*_LinearConversionDataTypeBuilder)(nil)
+
+func (m *_LinearConversionDataTypeBuilder) WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder {
+	return m.WithInitialAddend(initialAddend).WithMultiplicand(multiplicand).WithDivisor(divisor).WithFinalAddend(finalAddend)
+}
+
+func (m *_LinearConversionDataTypeBuilder) WithInitialAddend(initialAddend float32) LinearConversionDataTypeBuilder {
+	m.InitialAddend = initialAddend
+	return m
+}
+
+func (m *_LinearConversionDataTypeBuilder) WithMultiplicand(multiplicand float32) LinearConversionDataTypeBuilder {
+	m.Multiplicand = multiplicand
+	return m
+}
+
+func (m *_LinearConversionDataTypeBuilder) WithDivisor(divisor float32) LinearConversionDataTypeBuilder {
+	m.Divisor = divisor
+	return m
+}
+
+func (m *_LinearConversionDataTypeBuilder) WithFinalAddend(finalAddend float32) LinearConversionDataTypeBuilder {
+	m.FinalAddend = finalAddend
+	return m
+}
+
+func (m *_LinearConversionDataTypeBuilder) Build() (LinearConversionDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LinearConversionDataType.deepCopy(), nil
+}
+
+func (m *_LinearConversionDataTypeBuilder) MustBuild() LinearConversionDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LinearConversionDataTypeBuilder) DeepCopy() any {
+	return m.CreateLinearConversionDataTypeBuilder()
+}
+
+// CreateLinearConversionDataTypeBuilder creates a LinearConversionDataTypeBuilder
+func (m *_LinearConversionDataType) CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
+	if m == nil {
+		return NewLinearConversionDataTypeBuilder()
+	}
+	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type SetAttributeAllRequest interface {
 	CipService
 	// IsSetAttributeAllRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllRequest()
+	// CreateBuilder creates a SetAttributeAllRequestBuilder
+	CreateSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder
 }
 
 // _SetAttributeAllRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSetAttributeAllRequest(serviceLen uint16) *_SetAttributeAllRequest {
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetAttributeAllRequestBuilder is a builder for SetAttributeAllRequest
+type SetAttributeAllRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SetAttributeAllRequestBuilder
+	// Build builds the SetAttributeAllRequest or returns an error if something is wrong
+	Build() (SetAttributeAllRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetAttributeAllRequest
+}
+
+// NewSetAttributeAllRequestBuilder() creates a SetAttributeAllRequestBuilder
+func NewSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder {
+	return &_SetAttributeAllRequestBuilder{_SetAttributeAllRequest: new(_SetAttributeAllRequest)}
+}
+
+type _SetAttributeAllRequestBuilder struct {
+	*_SetAttributeAllRequest
+
+	err *utils.MultiError
+}
+
+var _ (SetAttributeAllRequestBuilder) = (*_SetAttributeAllRequestBuilder)(nil)
+
+func (m *_SetAttributeAllRequestBuilder) WithMandatoryFields() SetAttributeAllRequestBuilder {
+	return m
+}
+
+func (m *_SetAttributeAllRequestBuilder) Build() (SetAttributeAllRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SetAttributeAllRequest.deepCopy(), nil
+}
+
+func (m *_SetAttributeAllRequestBuilder) MustBuild() SetAttributeAllRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SetAttributeAllRequestBuilder) DeepCopy() any {
+	return m.CreateSetAttributeAllRequestBuilder()
+}
+
+// CreateSetAttributeAllRequestBuilder creates a SetAttributeAllRequestBuilder
+func (m *_SetAttributeAllRequest) CreateSetAttributeAllRequestBuilder() SetAttributeAllRequestBuilder {
+	if m == nil {
+		return NewSetAttributeAllRequestBuilder()
+	}
+	return &_SetAttributeAllRequestBuilder{_SetAttributeAllRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

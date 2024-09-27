@@ -46,6 +46,8 @@ type BACnetTagPayloadBoolean interface {
 	GetIsFalse() bool
 	// IsBACnetTagPayloadBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadBoolean()
+	// CreateBuilder creates a BACnetTagPayloadBooleanBuilder
+	CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder
 }
 
 // _BACnetTagPayloadBoolean is the data-structure of this message
@@ -61,6 +63,71 @@ var _ BACnetTagPayloadBoolean = (*_BACnetTagPayloadBoolean)(nil)
 func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
 	return &_BACnetTagPayloadBoolean{ActualLength: actualLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadBooleanBuilder is a builder for BACnetTagPayloadBoolean
+type BACnetTagPayloadBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetTagPayloadBooleanBuilder
+	// Build builds the BACnetTagPayloadBoolean or returns an error if something is wrong
+	Build() (BACnetTagPayloadBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadBoolean
+}
+
+// NewBACnetTagPayloadBooleanBuilder() creates a BACnetTagPayloadBooleanBuilder
+func NewBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
+	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: new(_BACnetTagPayloadBoolean)}
+}
+
+type _BACnetTagPayloadBooleanBuilder struct {
+	*_BACnetTagPayloadBoolean
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadBooleanBuilder) = (*_BACnetTagPayloadBooleanBuilder)(nil)
+
+func (m *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
+	return m
+}
+
+func (m *_BACnetTagPayloadBooleanBuilder) Build() (BACnetTagPayloadBoolean, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTagPayloadBoolean.deepCopy(), nil
+}
+
+func (m *_BACnetTagPayloadBooleanBuilder) MustBuild() BACnetTagPayloadBoolean {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTagPayloadBooleanBuilder) DeepCopy() any {
+	return m.CreateBACnetTagPayloadBooleanBuilder()
+}
+
+// CreateBACnetTagPayloadBooleanBuilder creates a BACnetTagPayloadBooleanBuilder
+func (m *_BACnetTagPayloadBoolean) CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
+	if m == nil {
+		return NewBACnetTagPayloadBooleanBuilder()
+	}
+	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

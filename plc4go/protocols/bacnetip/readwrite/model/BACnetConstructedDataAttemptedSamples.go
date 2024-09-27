@@ -46,6 +46,8 @@ type BACnetConstructedDataAttemptedSamples interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAttemptedSamples is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAttemptedSamples()
+	// CreateBuilder creates a BACnetConstructedDataAttemptedSamplesBuilder
+	CreateBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAttemptedSamplesBuilder
 }
 
 // _BACnetConstructedDataAttemptedSamples is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAttemptedSamples(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAttemptedSamplesBuilder is a builder for BACnetConstructedDataAttemptedSamples
+type BACnetConstructedDataAttemptedSamplesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder
+	// WithAttemptedSamples adds AttemptedSamples (property field)
+	WithAttemptedSamples(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder
+	// WithAttemptedSamplesBuilder adds AttemptedSamples (property field) which is build by the builder
+	WithAttemptedSamplesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAttemptedSamplesBuilder
+	// Build builds the BACnetConstructedDataAttemptedSamples or returns an error if something is wrong
+	Build() (BACnetConstructedDataAttemptedSamples, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAttemptedSamples
+}
+
+// NewBACnetConstructedDataAttemptedSamplesBuilder() creates a BACnetConstructedDataAttemptedSamplesBuilder
+func NewBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAttemptedSamplesBuilder {
+	return &_BACnetConstructedDataAttemptedSamplesBuilder{_BACnetConstructedDataAttemptedSamples: new(_BACnetConstructedDataAttemptedSamples)}
+}
+
+type _BACnetConstructedDataAttemptedSamplesBuilder struct {
+	*_BACnetConstructedDataAttemptedSamples
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAttemptedSamplesBuilder) = (*_BACnetConstructedDataAttemptedSamplesBuilder)(nil)
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithMandatoryFields(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
+	return m.WithAttemptedSamples(attemptedSamples)
+}
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamples(attemptedSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAttemptedSamplesBuilder {
+	m.AttemptedSamples = attemptedSamples
+	return m
+}
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) WithAttemptedSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAttemptedSamplesBuilder {
+	builder := builderSupplier(m.AttemptedSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.AttemptedSamples, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) Build() (BACnetConstructedDataAttemptedSamples, error) {
+	if m.AttemptedSamples == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'attemptedSamples' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAttemptedSamples.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) MustBuild() BACnetConstructedDataAttemptedSamples {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAttemptedSamplesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAttemptedSamplesBuilder()
+}
+
+// CreateBACnetConstructedDataAttemptedSamplesBuilder creates a BACnetConstructedDataAttemptedSamplesBuilder
+func (m *_BACnetConstructedDataAttemptedSamples) CreateBACnetConstructedDataAttemptedSamplesBuilder() BACnetConstructedDataAttemptedSamplesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAttemptedSamplesBuilder()
+	}
+	return &_BACnetConstructedDataAttemptedSamplesBuilder{_BACnetConstructedDataAttemptedSamples: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

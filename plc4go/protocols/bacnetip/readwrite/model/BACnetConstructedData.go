@@ -43,6 +43,8 @@ type BACnetConstructedData interface {
 	utils.Copyable
 	// IsBACnetConstructedData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedData()
+	// CreateBuilder creates a BACnetConstructedDataBuilder
+	CreateBACnetConstructedDataBuilder() BACnetConstructedDataBuilder
 }
 
 // BACnetConstructedDataContract provides a set of functions which can be overwritten by a sub struct
@@ -61,6 +63,8 @@ type BACnetConstructedDataContract interface {
 	GetArrayIndexArgument() BACnetTagPayloadUnsignedInteger
 	// IsBACnetConstructedData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedData()
+	// CreateBuilder creates a BACnetConstructedDataBuilder
+	CreateBACnetConstructedDataBuilder() BACnetConstructedDataBuilder
 }
 
 // BACnetConstructedDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -102,6 +106,155 @@ func NewBACnetConstructedData(openingTag BACnetOpeningTag, peekedTagHeader BACne
 	}
 	return &_BACnetConstructedData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBuilder is a builder for BACnetConstructedData
+type BACnetConstructedDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConstructedDataBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetConstructedDataBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConstructedDataBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetConstructedDataBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetConstructedDataBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder
+	// Build builds the BACnetConstructedData or returns an error if something is wrong
+	Build() (BACnetConstructedDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataContract
+}
+
+// NewBACnetConstructedDataBuilder() creates a BACnetConstructedDataBuilder
+func NewBACnetConstructedDataBuilder() BACnetConstructedDataBuilder {
+	return &_BACnetConstructedDataBuilder{_BACnetConstructedData: new(_BACnetConstructedData)}
+}
+
+type _BACnetConstructedDataBuilder struct {
+	*_BACnetConstructedData
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBuilder) = (*_BACnetConstructedDataBuilder)(nil)
+
+func (m *_BACnetConstructedDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
+	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetConstructedDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConstructedDataBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConstructedDataBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConstructedDataBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConstructedDataBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBuilder) Build() (BACnetConstructedDataContract, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedData.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBuilder) MustBuild() BACnetConstructedDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBuilder()
+}
+
+// CreateBACnetConstructedDataBuilder creates a BACnetConstructedDataBuilder
+func (m *_BACnetConstructedData) CreateBACnetConstructedDataBuilder() BACnetConstructedDataBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBuilder()
+	}
+	return &_BACnetConstructedDataBuilder{_BACnetConstructedData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type LightingDataRampToLevel interface {
 	GetLevel() byte
 	// IsLightingDataRampToLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingDataRampToLevel()
+	// CreateBuilder creates a LightingDataRampToLevelBuilder
+	CreateLightingDataRampToLevelBuilder() LightingDataRampToLevelBuilder
 }
 
 // _LightingDataRampToLevel is the data-structure of this message
@@ -68,6 +70,85 @@ func NewLightingDataRampToLevel(commandTypeContainer LightingCommandTypeContaine
 	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingDataRampToLevelBuilder is a builder for LightingDataRampToLevel
+type LightingDataRampToLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(group byte, level byte) LightingDataRampToLevelBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(byte) LightingDataRampToLevelBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(byte) LightingDataRampToLevelBuilder
+	// Build builds the LightingDataRampToLevel or returns an error if something is wrong
+	Build() (LightingDataRampToLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingDataRampToLevel
+}
+
+// NewLightingDataRampToLevelBuilder() creates a LightingDataRampToLevelBuilder
+func NewLightingDataRampToLevelBuilder() LightingDataRampToLevelBuilder {
+	return &_LightingDataRampToLevelBuilder{_LightingDataRampToLevel: new(_LightingDataRampToLevel)}
+}
+
+type _LightingDataRampToLevelBuilder struct {
+	*_LightingDataRampToLevel
+
+	err *utils.MultiError
+}
+
+var _ (LightingDataRampToLevelBuilder) = (*_LightingDataRampToLevelBuilder)(nil)
+
+func (m *_LightingDataRampToLevelBuilder) WithMandatoryFields(group byte, level byte) LightingDataRampToLevelBuilder {
+	return m.WithGroup(group).WithLevel(level)
+}
+
+func (m *_LightingDataRampToLevelBuilder) WithGroup(group byte) LightingDataRampToLevelBuilder {
+	m.Group = group
+	return m
+}
+
+func (m *_LightingDataRampToLevelBuilder) WithLevel(level byte) LightingDataRampToLevelBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_LightingDataRampToLevelBuilder) Build() (LightingDataRampToLevel, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LightingDataRampToLevel.deepCopy(), nil
+}
+
+func (m *_LightingDataRampToLevelBuilder) MustBuild() LightingDataRampToLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LightingDataRampToLevelBuilder) DeepCopy() any {
+	return m.CreateLightingDataRampToLevelBuilder()
+}
+
+// CreateLightingDataRampToLevelBuilder creates a LightingDataRampToLevelBuilder
+func (m *_LightingDataRampToLevel) CreateLightingDataRampToLevelBuilder() LightingDataRampToLevelBuilder {
+	if m == nil {
+		return NewLightingDataRampToLevelBuilder()
+	}
+	return &_LightingDataRampToLevelBuilder{_LightingDataRampToLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

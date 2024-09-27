@@ -58,6 +58,8 @@ type QuantityDimension interface {
 	GetDimensionlessExponent() int8
 	// IsQuantityDimension is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQuantityDimension()
+	// CreateBuilder creates a QuantityDimensionBuilder
+	CreateQuantityDimensionBuilder() QuantityDimensionBuilder
 }
 
 // _QuantityDimension is the data-structure of this message
@@ -92,6 +94,127 @@ func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QuantityDimensionBuilder is a builder for QuantityDimension
+type QuantityDimensionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) QuantityDimensionBuilder
+	// WithMassExponent adds MassExponent (property field)
+	WithMassExponent(int8) QuantityDimensionBuilder
+	// WithLengthExponent adds LengthExponent (property field)
+	WithLengthExponent(int8) QuantityDimensionBuilder
+	// WithTimeExponent adds TimeExponent (property field)
+	WithTimeExponent(int8) QuantityDimensionBuilder
+	// WithElectricCurrentExponent adds ElectricCurrentExponent (property field)
+	WithElectricCurrentExponent(int8) QuantityDimensionBuilder
+	// WithAmountOfSubstanceExponent adds AmountOfSubstanceExponent (property field)
+	WithAmountOfSubstanceExponent(int8) QuantityDimensionBuilder
+	// WithLuminousIntensityExponent adds LuminousIntensityExponent (property field)
+	WithLuminousIntensityExponent(int8) QuantityDimensionBuilder
+	// WithAbsoluteTemperatureExponent adds AbsoluteTemperatureExponent (property field)
+	WithAbsoluteTemperatureExponent(int8) QuantityDimensionBuilder
+	// WithDimensionlessExponent adds DimensionlessExponent (property field)
+	WithDimensionlessExponent(int8) QuantityDimensionBuilder
+	// Build builds the QuantityDimension or returns an error if something is wrong
+	Build() (QuantityDimension, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QuantityDimension
+}
+
+// NewQuantityDimensionBuilder() creates a QuantityDimensionBuilder
+func NewQuantityDimensionBuilder() QuantityDimensionBuilder {
+	return &_QuantityDimensionBuilder{_QuantityDimension: new(_QuantityDimension)}
+}
+
+type _QuantityDimensionBuilder struct {
+	*_QuantityDimension
+
+	err *utils.MultiError
+}
+
+var _ (QuantityDimensionBuilder) = (*_QuantityDimensionBuilder)(nil)
+
+func (m *_QuantityDimensionBuilder) WithMandatoryFields(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) QuantityDimensionBuilder {
+	return m.WithMassExponent(massExponent).WithLengthExponent(lengthExponent).WithTimeExponent(timeExponent).WithElectricCurrentExponent(electricCurrentExponent).WithAmountOfSubstanceExponent(amountOfSubstanceExponent).WithLuminousIntensityExponent(luminousIntensityExponent).WithAbsoluteTemperatureExponent(absoluteTemperatureExponent).WithDimensionlessExponent(dimensionlessExponent)
+}
+
+func (m *_QuantityDimensionBuilder) WithMassExponent(massExponent int8) QuantityDimensionBuilder {
+	m.MassExponent = massExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithLengthExponent(lengthExponent int8) QuantityDimensionBuilder {
+	m.LengthExponent = lengthExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithTimeExponent(timeExponent int8) QuantityDimensionBuilder {
+	m.TimeExponent = timeExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithElectricCurrentExponent(electricCurrentExponent int8) QuantityDimensionBuilder {
+	m.ElectricCurrentExponent = electricCurrentExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithAmountOfSubstanceExponent(amountOfSubstanceExponent int8) QuantityDimensionBuilder {
+	m.AmountOfSubstanceExponent = amountOfSubstanceExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithLuminousIntensityExponent(luminousIntensityExponent int8) QuantityDimensionBuilder {
+	m.LuminousIntensityExponent = luminousIntensityExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithAbsoluteTemperatureExponent(absoluteTemperatureExponent int8) QuantityDimensionBuilder {
+	m.AbsoluteTemperatureExponent = absoluteTemperatureExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) WithDimensionlessExponent(dimensionlessExponent int8) QuantityDimensionBuilder {
+	m.DimensionlessExponent = dimensionlessExponent
+	return m
+}
+
+func (m *_QuantityDimensionBuilder) Build() (QuantityDimension, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._QuantityDimension.deepCopy(), nil
+}
+
+func (m *_QuantityDimensionBuilder) MustBuild() QuantityDimension {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_QuantityDimensionBuilder) DeepCopy() any {
+	return m.CreateQuantityDimensionBuilder()
+}
+
+// CreateQuantityDimensionBuilder creates a QuantityDimensionBuilder
+func (m *_QuantityDimension) CreateQuantityDimensionBuilder() QuantityDimensionBuilder {
+	if m == nil {
+		return NewQuantityDimensionBuilder()
+	}
+	return &_QuantityDimensionBuilder{_QuantityDimension: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

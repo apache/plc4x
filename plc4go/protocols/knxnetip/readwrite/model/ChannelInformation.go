@@ -45,6 +45,8 @@ type ChannelInformation interface {
 	GetChannelCode() uint16
 	// IsChannelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsChannelInformation()
+	// CreateBuilder creates a ChannelInformationBuilder
+	CreateChannelInformationBuilder() ChannelInformationBuilder
 }
 
 // _ChannelInformation is the data-structure of this message
@@ -59,6 +61,85 @@ var _ ChannelInformation = (*_ChannelInformation)(nil)
 func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
 	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ChannelInformationBuilder is a builder for ChannelInformation
+type ChannelInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder
+	// WithNumChannels adds NumChannels (property field)
+	WithNumChannels(uint8) ChannelInformationBuilder
+	// WithChannelCode adds ChannelCode (property field)
+	WithChannelCode(uint16) ChannelInformationBuilder
+	// Build builds the ChannelInformation or returns an error if something is wrong
+	Build() (ChannelInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ChannelInformation
+}
+
+// NewChannelInformationBuilder() creates a ChannelInformationBuilder
+func NewChannelInformationBuilder() ChannelInformationBuilder {
+	return &_ChannelInformationBuilder{_ChannelInformation: new(_ChannelInformation)}
+}
+
+type _ChannelInformationBuilder struct {
+	*_ChannelInformation
+
+	err *utils.MultiError
+}
+
+var _ (ChannelInformationBuilder) = (*_ChannelInformationBuilder)(nil)
+
+func (m *_ChannelInformationBuilder) WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder {
+	return m.WithNumChannels(numChannels).WithChannelCode(channelCode)
+}
+
+func (m *_ChannelInformationBuilder) WithNumChannels(numChannels uint8) ChannelInformationBuilder {
+	m.NumChannels = numChannels
+	return m
+}
+
+func (m *_ChannelInformationBuilder) WithChannelCode(channelCode uint16) ChannelInformationBuilder {
+	m.ChannelCode = channelCode
+	return m
+}
+
+func (m *_ChannelInformationBuilder) Build() (ChannelInformation, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ChannelInformation.deepCopy(), nil
+}
+
+func (m *_ChannelInformationBuilder) MustBuild() ChannelInformation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ChannelInformationBuilder) DeepCopy() any {
+	return m.CreateChannelInformationBuilder()
+}
+
+// CreateChannelInformationBuilder creates a ChannelInformationBuilder
+func (m *_ChannelInformation) CreateChannelInformationBuilder() ChannelInformationBuilder {
+	if m == nil {
+		return NewChannelInformationBuilder()
+	}
+	return &_ChannelInformationBuilder{_ChannelInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

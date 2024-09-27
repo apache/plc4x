@@ -44,6 +44,8 @@ type CloseSessionResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsCloseSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSessionResponse()
+	// CreateBuilder creates a CloseSessionResponseBuilder
+	CreateCloseSessionResponseBuilder() CloseSessionResponseBuilder
 }
 
 // _CloseSessionResponse is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCloseSessionResponse(responseHeader ExtensionObjectDefinition) *_CloseSe
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CloseSessionResponseBuilder is a builder for CloseSessionResponse
+type CloseSessionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CloseSessionResponseBuilder
+	// Build builds the CloseSessionResponse or returns an error if something is wrong
+	Build() (CloseSessionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CloseSessionResponse
+}
+
+// NewCloseSessionResponseBuilder() creates a CloseSessionResponseBuilder
+func NewCloseSessionResponseBuilder() CloseSessionResponseBuilder {
+	return &_CloseSessionResponseBuilder{_CloseSessionResponse: new(_CloseSessionResponse)}
+}
+
+type _CloseSessionResponseBuilder struct {
+	*_CloseSessionResponse
+
+	err *utils.MultiError
+}
+
+var _ (CloseSessionResponseBuilder) = (*_CloseSessionResponseBuilder)(nil)
+
+func (m *_CloseSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+	return m.WithResponseHeader(responseHeader)
+}
+
+func (m *_CloseSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSessionResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_CloseSessionResponseBuilder) Build() (CloseSessionResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CloseSessionResponse.deepCopy(), nil
+}
+
+func (m *_CloseSessionResponseBuilder) MustBuild() CloseSessionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CloseSessionResponseBuilder) DeepCopy() any {
+	return m.CreateCloseSessionResponseBuilder()
+}
+
+// CreateCloseSessionResponseBuilder creates a CloseSessionResponseBuilder
+func (m *_CloseSessionResponse) CreateCloseSessionResponseBuilder() CloseSessionResponseBuilder {
+	if m == nil {
+		return NewCloseSessionResponseBuilder()
+	}
+	return &_CloseSessionResponseBuilder{_CloseSessionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

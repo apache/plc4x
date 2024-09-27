@@ -40,6 +40,8 @@ type SysexCommandCapabilityResponse interface {
 	SysexCommand
 	// IsSysexCommandCapabilityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandCapabilityResponse()
+	// CreateBuilder creates a SysexCommandCapabilityResponseBuilder
+	CreateSysexCommandCapabilityResponseBuilder() SysexCommandCapabilityResponseBuilder
 }
 
 // _SysexCommandCapabilityResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandCapabilityResponse() *_SysexCommandCapabilityResponse {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandCapabilityResponseBuilder is a builder for SysexCommandCapabilityResponse
+type SysexCommandCapabilityResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandCapabilityResponseBuilder
+	// Build builds the SysexCommandCapabilityResponse or returns an error if something is wrong
+	Build() (SysexCommandCapabilityResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandCapabilityResponse
+}
+
+// NewSysexCommandCapabilityResponseBuilder() creates a SysexCommandCapabilityResponseBuilder
+func NewSysexCommandCapabilityResponseBuilder() SysexCommandCapabilityResponseBuilder {
+	return &_SysexCommandCapabilityResponseBuilder{_SysexCommandCapabilityResponse: new(_SysexCommandCapabilityResponse)}
+}
+
+type _SysexCommandCapabilityResponseBuilder struct {
+	*_SysexCommandCapabilityResponse
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandCapabilityResponseBuilder) = (*_SysexCommandCapabilityResponseBuilder)(nil)
+
+func (m *_SysexCommandCapabilityResponseBuilder) WithMandatoryFields() SysexCommandCapabilityResponseBuilder {
+	return m
+}
+
+func (m *_SysexCommandCapabilityResponseBuilder) Build() (SysexCommandCapabilityResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandCapabilityResponse.deepCopy(), nil
+}
+
+func (m *_SysexCommandCapabilityResponseBuilder) MustBuild() SysexCommandCapabilityResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandCapabilityResponseBuilder) DeepCopy() any {
+	return m.CreateSysexCommandCapabilityResponseBuilder()
+}
+
+// CreateSysexCommandCapabilityResponseBuilder creates a SysexCommandCapabilityResponseBuilder
+func (m *_SysexCommandCapabilityResponse) CreateSysexCommandCapabilityResponseBuilder() SysexCommandCapabilityResponseBuilder {
+	if m == nil {
+		return NewSysexCommandCapabilityResponseBuilder()
+	}
+	return &_SysexCommandCapabilityResponseBuilder{_SysexCommandCapabilityResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -56,6 +56,8 @@ type S7PayloadDiagnosticMessage interface {
 	GetTimeStamp() DateAndTime
 	// IsS7PayloadDiagnosticMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadDiagnosticMessage()
+	// CreateBuilder creates a S7PayloadDiagnosticMessageBuilder
+	CreateS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder
 }
 
 // _S7PayloadDiagnosticMessage is the data-structure of this message
@@ -91,6 +93,141 @@ func NewS7PayloadDiagnosticMessage(returnCode DataTransportErrorCode, transportS
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadDiagnosticMessageBuilder is a builder for S7PayloadDiagnosticMessage
+type S7PayloadDiagnosticMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder
+	// WithEventId adds EventId (property field)
+	WithEventId(uint16) S7PayloadDiagnosticMessageBuilder
+	// WithPriorityClass adds PriorityClass (property field)
+	WithPriorityClass(uint8) S7PayloadDiagnosticMessageBuilder
+	// WithObNumber adds ObNumber (property field)
+	WithObNumber(uint8) S7PayloadDiagnosticMessageBuilder
+	// WithDatId adds DatId (property field)
+	WithDatId(uint16) S7PayloadDiagnosticMessageBuilder
+	// WithInfo1 adds Info1 (property field)
+	WithInfo1(uint16) S7PayloadDiagnosticMessageBuilder
+	// WithInfo2 adds Info2 (property field)
+	WithInfo2(uint32) S7PayloadDiagnosticMessageBuilder
+	// WithTimeStamp adds TimeStamp (property field)
+	WithTimeStamp(DateAndTime) S7PayloadDiagnosticMessageBuilder
+	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
+	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadDiagnosticMessageBuilder
+	// Build builds the S7PayloadDiagnosticMessage or returns an error if something is wrong
+	Build() (S7PayloadDiagnosticMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadDiagnosticMessage
+}
+
+// NewS7PayloadDiagnosticMessageBuilder() creates a S7PayloadDiagnosticMessageBuilder
+func NewS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder {
+	return &_S7PayloadDiagnosticMessageBuilder{_S7PayloadDiagnosticMessage: new(_S7PayloadDiagnosticMessage)}
+}
+
+type _S7PayloadDiagnosticMessageBuilder struct {
+	*_S7PayloadDiagnosticMessage
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadDiagnosticMessageBuilder) = (*_S7PayloadDiagnosticMessageBuilder)(nil)
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithMandatoryFields(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
+	return m.WithEventId(eventId).WithPriorityClass(priorityClass).WithObNumber(obNumber).WithDatId(datId).WithInfo1(info1).WithInfo2(info2).WithTimeStamp(timeStamp)
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithEventId(eventId uint16) S7PayloadDiagnosticMessageBuilder {
+	m.EventId = eventId
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithPriorityClass(priorityClass uint8) S7PayloadDiagnosticMessageBuilder {
+	m.PriorityClass = priorityClass
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithObNumber(obNumber uint8) S7PayloadDiagnosticMessageBuilder {
+	m.ObNumber = obNumber
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithDatId(datId uint16) S7PayloadDiagnosticMessageBuilder {
+	m.DatId = datId
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithInfo1(info1 uint16) S7PayloadDiagnosticMessageBuilder {
+	m.Info1 = info1
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithInfo2(info2 uint32) S7PayloadDiagnosticMessageBuilder {
+	m.Info2 = info2
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadDiagnosticMessageBuilder {
+	m.TimeStamp = timeStamp
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadDiagnosticMessageBuilder {
+	builder := builderSupplier(m.TimeStamp.CreateDateAndTimeBuilder())
+	var err error
+	m.TimeStamp, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) Build() (S7PayloadDiagnosticMessage, error) {
+	if m.TimeStamp == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadDiagnosticMessage.deepCopy(), nil
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) MustBuild() S7PayloadDiagnosticMessage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadDiagnosticMessageBuilder) DeepCopy() any {
+	return m.CreateS7PayloadDiagnosticMessageBuilder()
+}
+
+// CreateS7PayloadDiagnosticMessageBuilder creates a S7PayloadDiagnosticMessageBuilder
+func (m *_S7PayloadDiagnosticMessage) CreateS7PayloadDiagnosticMessageBuilder() S7PayloadDiagnosticMessageBuilder {
+	if m == nil {
+		return NewS7PayloadDiagnosticMessageBuilder()
+	}
+	return &_S7PayloadDiagnosticMessageBuilder{_S7PayloadDiagnosticMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

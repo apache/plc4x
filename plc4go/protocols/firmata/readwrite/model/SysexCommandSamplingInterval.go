@@ -40,6 +40,8 @@ type SysexCommandSamplingInterval interface {
 	SysexCommand
 	// IsSysexCommandSamplingInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSamplingInterval()
+	// CreateBuilder creates a SysexCommandSamplingIntervalBuilder
+	CreateSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilder
 }
 
 // _SysexCommandSamplingInterval is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandSamplingIntervalBuilder is a builder for SysexCommandSamplingInterval
+type SysexCommandSamplingIntervalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandSamplingIntervalBuilder
+	// Build builds the SysexCommandSamplingInterval or returns an error if something is wrong
+	Build() (SysexCommandSamplingInterval, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandSamplingInterval
+}
+
+// NewSysexCommandSamplingIntervalBuilder() creates a SysexCommandSamplingIntervalBuilder
+func NewSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilder {
+	return &_SysexCommandSamplingIntervalBuilder{_SysexCommandSamplingInterval: new(_SysexCommandSamplingInterval)}
+}
+
+type _SysexCommandSamplingIntervalBuilder struct {
+	*_SysexCommandSamplingInterval
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandSamplingIntervalBuilder) = (*_SysexCommandSamplingIntervalBuilder)(nil)
+
+func (m *_SysexCommandSamplingIntervalBuilder) WithMandatoryFields() SysexCommandSamplingIntervalBuilder {
+	return m
+}
+
+func (m *_SysexCommandSamplingIntervalBuilder) Build() (SysexCommandSamplingInterval, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandSamplingInterval.deepCopy(), nil
+}
+
+func (m *_SysexCommandSamplingIntervalBuilder) MustBuild() SysexCommandSamplingInterval {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandSamplingIntervalBuilder) DeepCopy() any {
+	return m.CreateSysexCommandSamplingIntervalBuilder()
+}
+
+// CreateSysexCommandSamplingIntervalBuilder creates a SysexCommandSamplingIntervalBuilder
+func (m *_SysexCommandSamplingInterval) CreateSysexCommandSamplingIntervalBuilder() SysexCommandSamplingIntervalBuilder {
+	if m == nil {
+		return NewSysexCommandSamplingIntervalBuilder()
+	}
+	return &_SysexCommandSamplingIntervalBuilder{_SysexCommandSamplingInterval: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

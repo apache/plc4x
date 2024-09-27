@@ -44,6 +44,8 @@ type BACnetSpecialEventPeriodCalendarEntry interface {
 	GetCalendarEntry() BACnetCalendarEntryEnclosed
 	// IsBACnetSpecialEventPeriodCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventPeriodCalendarEntry()
+	// CreateBuilder creates a BACnetSpecialEventPeriodCalendarEntryBuilder
+	CreateBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodCalendarEntryBuilder
 }
 
 // _BACnetSpecialEventPeriodCalendarEntry is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetSpecialEventPeriodCalendarEntry(peekedTagHeader BACnetTagHeader, c
 	_result.BACnetSpecialEventPeriodContract.(*_BACnetSpecialEventPeriod)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSpecialEventPeriodCalendarEntryBuilder is a builder for BACnetSpecialEventPeriodCalendarEntry
+type BACnetSpecialEventPeriodCalendarEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder
+	// WithCalendarEntry adds CalendarEntry (property field)
+	WithCalendarEntry(BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder
+	// WithCalendarEntryBuilder adds CalendarEntry (property field) which is build by the builder
+	WithCalendarEntryBuilder(func(BACnetCalendarEntryEnclosedBuilder) BACnetCalendarEntryEnclosedBuilder) BACnetSpecialEventPeriodCalendarEntryBuilder
+	// Build builds the BACnetSpecialEventPeriodCalendarEntry or returns an error if something is wrong
+	Build() (BACnetSpecialEventPeriodCalendarEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSpecialEventPeriodCalendarEntry
+}
+
+// NewBACnetSpecialEventPeriodCalendarEntryBuilder() creates a BACnetSpecialEventPeriodCalendarEntryBuilder
+func NewBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodCalendarEntryBuilder {
+	return &_BACnetSpecialEventPeriodCalendarEntryBuilder{_BACnetSpecialEventPeriodCalendarEntry: new(_BACnetSpecialEventPeriodCalendarEntry)}
+}
+
+type _BACnetSpecialEventPeriodCalendarEntryBuilder struct {
+	*_BACnetSpecialEventPeriodCalendarEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSpecialEventPeriodCalendarEntryBuilder) = (*_BACnetSpecialEventPeriodCalendarEntryBuilder)(nil)
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithMandatoryFields(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	return m.WithCalendarEntry(calendarEntry)
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntry(calendarEntry BACnetCalendarEntryEnclosed) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	m.CalendarEntry = calendarEntry
+	return m
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) WithCalendarEntryBuilder(builderSupplier func(BACnetCalendarEntryEnclosedBuilder) BACnetCalendarEntryEnclosedBuilder) BACnetSpecialEventPeriodCalendarEntryBuilder {
+	builder := builderSupplier(m.CalendarEntry.CreateBACnetCalendarEntryEnclosedBuilder())
+	var err error
+	m.CalendarEntry, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetCalendarEntryEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) Build() (BACnetSpecialEventPeriodCalendarEntry, error) {
+	if m.CalendarEntry == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'calendarEntry' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetSpecialEventPeriodCalendarEntry.deepCopy(), nil
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) MustBuild() BACnetSpecialEventPeriodCalendarEntry {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetSpecialEventPeriodCalendarEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetSpecialEventPeriodCalendarEntryBuilder()
+}
+
+// CreateBACnetSpecialEventPeriodCalendarEntryBuilder creates a BACnetSpecialEventPeriodCalendarEntryBuilder
+func (m *_BACnetSpecialEventPeriodCalendarEntry) CreateBACnetSpecialEventPeriodCalendarEntryBuilder() BACnetSpecialEventPeriodCalendarEntryBuilder {
+	if m == nil {
+		return NewBACnetSpecialEventPeriodCalendarEntryBuilder()
+	}
+	return &_BACnetSpecialEventPeriodCalendarEntryBuilder{_BACnetSpecialEventPeriodCalendarEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

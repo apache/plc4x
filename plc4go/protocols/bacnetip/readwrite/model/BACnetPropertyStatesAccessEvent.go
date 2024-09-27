@@ -44,6 +44,8 @@ type BACnetPropertyStatesAccessEvent interface {
 	GetAccessEvent() BACnetAccessEventTagged
 	// IsBACnetPropertyStatesAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesAccessEvent()
+	// CreateBuilder creates a BACnetPropertyStatesAccessEventBuilder
+	CreateBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEventBuilder
 }
 
 // _BACnetPropertyStatesAccessEvent is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesAccessEvent(peekedTagHeader BACnetTagHeader, accessE
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesAccessEventBuilder is a builder for BACnetPropertyStatesAccessEvent
+type BACnetPropertyStatesAccessEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder
+	// WithAccessEvent adds AccessEvent (property field)
+	WithAccessEvent(BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder
+	// WithAccessEventBuilder adds AccessEvent (property field) which is build by the builder
+	WithAccessEventBuilder(func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetPropertyStatesAccessEventBuilder
+	// Build builds the BACnetPropertyStatesAccessEvent or returns an error if something is wrong
+	Build() (BACnetPropertyStatesAccessEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesAccessEvent
+}
+
+// NewBACnetPropertyStatesAccessEventBuilder() creates a BACnetPropertyStatesAccessEventBuilder
+func NewBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEventBuilder {
+	return &_BACnetPropertyStatesAccessEventBuilder{_BACnetPropertyStatesAccessEvent: new(_BACnetPropertyStatesAccessEvent)}
+}
+
+type _BACnetPropertyStatesAccessEventBuilder struct {
+	*_BACnetPropertyStatesAccessEvent
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesAccessEventBuilder) = (*_BACnetPropertyStatesAccessEventBuilder)(nil)
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) WithMandatoryFields(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
+	return m.WithAccessEvent(accessEvent)
+}
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) WithAccessEvent(accessEvent BACnetAccessEventTagged) BACnetPropertyStatesAccessEventBuilder {
+	m.AccessEvent = accessEvent
+	return m
+}
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) WithAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetPropertyStatesAccessEventBuilder {
+	builder := builderSupplier(m.AccessEvent.CreateBACnetAccessEventTaggedBuilder())
+	var err error
+	m.AccessEvent, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) Build() (BACnetPropertyStatesAccessEvent, error) {
+	if m.AccessEvent == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accessEvent' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesAccessEvent.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) MustBuild() BACnetPropertyStatesAccessEvent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesAccessEventBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesAccessEventBuilder()
+}
+
+// CreateBACnetPropertyStatesAccessEventBuilder creates a BACnetPropertyStatesAccessEventBuilder
+func (m *_BACnetPropertyStatesAccessEvent) CreateBACnetPropertyStatesAccessEventBuilder() BACnetPropertyStatesAccessEventBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesAccessEventBuilder()
+	}
+	return &_BACnetPropertyStatesAccessEventBuilder{_BACnetPropertyStatesAccessEvent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

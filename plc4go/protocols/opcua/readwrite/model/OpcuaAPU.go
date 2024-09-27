@@ -45,6 +45,8 @@ type OpcuaAPU interface {
 	GetMessage() MessagePDU
 	// IsOpcuaAPU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaAPU()
+	// CreateBuilder creates a OpcuaAPUBuilder
+	CreateOpcuaAPUBuilder() OpcuaAPUBuilder
 }
 
 // _OpcuaAPU is the data-structure of this message
@@ -64,6 +66,84 @@ func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
 	}
 	return &_OpcuaAPU{Message: message, Response: response}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaAPUBuilder is a builder for OpcuaAPU
+type OpcuaAPUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(MessagePDU) OpcuaAPUBuilder
+	// Build builds the OpcuaAPU or returns an error if something is wrong
+	Build() (OpcuaAPU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaAPU
+}
+
+// NewOpcuaAPUBuilder() creates a OpcuaAPUBuilder
+func NewOpcuaAPUBuilder() OpcuaAPUBuilder {
+	return &_OpcuaAPUBuilder{_OpcuaAPU: new(_OpcuaAPU)}
+}
+
+type _OpcuaAPUBuilder struct {
+	*_OpcuaAPU
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaAPUBuilder) = (*_OpcuaAPUBuilder)(nil)
+
+func (m *_OpcuaAPUBuilder) WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder {
+	return m.WithMessage(message)
+}
+
+func (m *_OpcuaAPUBuilder) WithMessage(message MessagePDU) OpcuaAPUBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_OpcuaAPUBuilder) Build() (OpcuaAPU, error) {
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpcuaAPU.deepCopy(), nil
+}
+
+func (m *_OpcuaAPUBuilder) MustBuild() OpcuaAPU {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpcuaAPUBuilder) DeepCopy() any {
+	return m.CreateOpcuaAPUBuilder()
+}
+
+// CreateOpcuaAPUBuilder creates a OpcuaAPUBuilder
+func (m *_OpcuaAPU) CreateOpcuaAPUBuilder() OpcuaAPUBuilder {
+	if m == nil {
+		return NewOpcuaAPUBuilder()
+	}
+	return &_OpcuaAPUBuilder{_OpcuaAPU: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

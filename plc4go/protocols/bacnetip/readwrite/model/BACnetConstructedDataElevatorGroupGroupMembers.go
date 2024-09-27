@@ -48,6 +48,8 @@ type BACnetConstructedDataElevatorGroupGroupMembers interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataElevatorGroupGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataElevatorGroupGroupMembers()
+	// CreateBuilder creates a BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	CreateBACnetConstructedDataElevatorGroupGroupMembersBuilder() BACnetConstructedDataElevatorGroupGroupMembersBuilder
 }
 
 // _BACnetConstructedDataElevatorGroupGroupMembers is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataElevatorGroupGroupMembers(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataElevatorGroupGroupMembersBuilder is a builder for BACnetConstructedDataElevatorGroupGroupMembers
+type BACnetConstructedDataElevatorGroupGroupMembersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupMembers []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	// WithGroupMembers adds GroupMembers (property field)
+	WithGroupMembers(...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder
+	// Build builds the BACnetConstructedDataElevatorGroupGroupMembers or returns an error if something is wrong
+	Build() (BACnetConstructedDataElevatorGroupGroupMembers, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataElevatorGroupGroupMembers
+}
+
+// NewBACnetConstructedDataElevatorGroupGroupMembersBuilder() creates a BACnetConstructedDataElevatorGroupGroupMembersBuilder
+func NewBACnetConstructedDataElevatorGroupGroupMembersBuilder() BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	return &_BACnetConstructedDataElevatorGroupGroupMembersBuilder{_BACnetConstructedDataElevatorGroupGroupMembers: new(_BACnetConstructedDataElevatorGroupGroupMembers)}
+}
+
+type _BACnetConstructedDataElevatorGroupGroupMembersBuilder struct {
+	*_BACnetConstructedDataElevatorGroupGroupMembers
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataElevatorGroupGroupMembersBuilder) = (*_BACnetConstructedDataElevatorGroupGroupMembersBuilder)(nil)
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) WithMandatoryFields(groupMembers []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	return m.WithGroupMembers(groupMembers...)
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) WithGroupMembers(groupMembers ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	m.GroupMembers = groupMembers
+	return m
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) Build() (BACnetConstructedDataElevatorGroupGroupMembers, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataElevatorGroupGroupMembers.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) MustBuild() BACnetConstructedDataElevatorGroupGroupMembers {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataElevatorGroupGroupMembersBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataElevatorGroupGroupMembersBuilder()
+}
+
+// CreateBACnetConstructedDataElevatorGroupGroupMembersBuilder creates a BACnetConstructedDataElevatorGroupGroupMembersBuilder
+func (m *_BACnetConstructedDataElevatorGroupGroupMembers) CreateBACnetConstructedDataElevatorGroupGroupMembersBuilder() BACnetConstructedDataElevatorGroupGroupMembersBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataElevatorGroupGroupMembersBuilder()
+	}
+	return &_BACnetConstructedDataElevatorGroupGroupMembersBuilder{_BACnetConstructedDataElevatorGroupGroupMembers: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type MediaTransportControlDataCategoryName interface {
 	GetCategoryName() string
 	// IsMediaTransportControlDataCategoryName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataCategoryName()
+	// CreateBuilder creates a MediaTransportControlDataCategoryNameBuilder
+	CreateMediaTransportControlDataCategoryNameBuilder() MediaTransportControlDataCategoryNameBuilder
 }
 
 // _MediaTransportControlDataCategoryName is the data-structure of this message
@@ -64,6 +66,78 @@ func NewMediaTransportControlDataCategoryName(commandTypeContainer MediaTranspor
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataCategoryNameBuilder is a builder for MediaTransportControlDataCategoryName
+type MediaTransportControlDataCategoryNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder
+	// WithCategoryName adds CategoryName (property field)
+	WithCategoryName(string) MediaTransportControlDataCategoryNameBuilder
+	// Build builds the MediaTransportControlDataCategoryName or returns an error if something is wrong
+	Build() (MediaTransportControlDataCategoryName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataCategoryName
+}
+
+// NewMediaTransportControlDataCategoryNameBuilder() creates a MediaTransportControlDataCategoryNameBuilder
+func NewMediaTransportControlDataCategoryNameBuilder() MediaTransportControlDataCategoryNameBuilder {
+	return &_MediaTransportControlDataCategoryNameBuilder{_MediaTransportControlDataCategoryName: new(_MediaTransportControlDataCategoryName)}
+}
+
+type _MediaTransportControlDataCategoryNameBuilder struct {
+	*_MediaTransportControlDataCategoryName
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataCategoryNameBuilder) = (*_MediaTransportControlDataCategoryNameBuilder)(nil)
+
+func (m *_MediaTransportControlDataCategoryNameBuilder) WithMandatoryFields(categoryName string) MediaTransportControlDataCategoryNameBuilder {
+	return m.WithCategoryName(categoryName)
+}
+
+func (m *_MediaTransportControlDataCategoryNameBuilder) WithCategoryName(categoryName string) MediaTransportControlDataCategoryNameBuilder {
+	m.CategoryName = categoryName
+	return m
+}
+
+func (m *_MediaTransportControlDataCategoryNameBuilder) Build() (MediaTransportControlDataCategoryName, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataCategoryName.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataCategoryNameBuilder) MustBuild() MediaTransportControlDataCategoryName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataCategoryNameBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataCategoryNameBuilder()
+}
+
+// CreateMediaTransportControlDataCategoryNameBuilder creates a MediaTransportControlDataCategoryNameBuilder
+func (m *_MediaTransportControlDataCategoryName) CreateMediaTransportControlDataCategoryNameBuilder() MediaTransportControlDataCategoryNameBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataCategoryNameBuilder()
+	}
+	return &_MediaTransportControlDataCategoryNameBuilder{_MediaTransportControlDataCategoryName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

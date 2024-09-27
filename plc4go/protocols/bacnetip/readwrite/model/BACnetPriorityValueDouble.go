@@ -44,6 +44,8 @@ type BACnetPriorityValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetPriorityValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueDouble()
+	// CreateBuilder creates a BACnetPriorityValueDoubleBuilder
+	CreateBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder
 }
 
 // _BACnetPriorityValueDouble is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueDouble(peekedTagHeader BACnetTagHeader, doubleValue B
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueDoubleBuilder is a builder for BACnetPriorityValueDouble
+type BACnetPriorityValueDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetPriorityValueDoubleBuilder
+	// Build builds the BACnetPriorityValueDouble or returns an error if something is wrong
+	Build() (BACnetPriorityValueDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueDouble
+}
+
+// NewBACnetPriorityValueDoubleBuilder() creates a BACnetPriorityValueDoubleBuilder
+func NewBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder {
+	return &_BACnetPriorityValueDoubleBuilder{_BACnetPriorityValueDouble: new(_BACnetPriorityValueDouble)}
+}
+
+type _BACnetPriorityValueDoubleBuilder struct {
+	*_BACnetPriorityValueDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueDoubleBuilder) = (*_BACnetPriorityValueDoubleBuilder)(nil)
+
+func (m *_BACnetPriorityValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder {
+	return m.WithDoubleValue(doubleValue)
+}
+
+func (m *_BACnetPriorityValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder {
+	m.DoubleValue = doubleValue
+	return m
+}
+
+func (m *_BACnetPriorityValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetPriorityValueDoubleBuilder {
+	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.DoubleValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueDoubleBuilder) Build() (BACnetPriorityValueDouble, error) {
+	if m.DoubleValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueDouble.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueDoubleBuilder) MustBuild() BACnetPriorityValueDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueDoubleBuilder()
+}
+
+// CreateBACnetPriorityValueDoubleBuilder creates a BACnetPriorityValueDoubleBuilder
+func (m *_BACnetPriorityValueDouble) CreateBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueDoubleBuilder()
+	}
+	return &_BACnetPriorityValueDoubleBuilder{_BACnetPriorityValueDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

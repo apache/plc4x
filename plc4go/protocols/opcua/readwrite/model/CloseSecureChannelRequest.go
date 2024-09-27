@@ -44,6 +44,8 @@ type CloseSecureChannelRequest interface {
 	GetRequestHeader() ExtensionObjectDefinition
 	// IsCloseSecureChannelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSecureChannelRequest()
+	// CreateBuilder creates a CloseSecureChannelRequestBuilder
+	CreateCloseSecureChannelRequestBuilder() CloseSecureChannelRequestBuilder
 }
 
 // _CloseSecureChannelRequest is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCloseSecureChannelRequest(requestHeader ExtensionObjectDefinition) *_Clo
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CloseSecureChannelRequestBuilder is a builder for CloseSecureChannelRequest
+type CloseSecureChannelRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CloseSecureChannelRequestBuilder
+	// Build builds the CloseSecureChannelRequest or returns an error if something is wrong
+	Build() (CloseSecureChannelRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CloseSecureChannelRequest
+}
+
+// NewCloseSecureChannelRequestBuilder() creates a CloseSecureChannelRequestBuilder
+func NewCloseSecureChannelRequestBuilder() CloseSecureChannelRequestBuilder {
+	return &_CloseSecureChannelRequestBuilder{_CloseSecureChannelRequest: new(_CloseSecureChannelRequest)}
+}
+
+type _CloseSecureChannelRequestBuilder struct {
+	*_CloseSecureChannelRequest
+
+	err *utils.MultiError
+}
+
+var _ (CloseSecureChannelRequestBuilder) = (*_CloseSecureChannelRequestBuilder)(nil)
+
+func (m *_CloseSecureChannelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder {
+	return m.WithRequestHeader(requestHeader)
+}
+
+func (m *_CloseSecureChannelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CloseSecureChannelRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_CloseSecureChannelRequestBuilder) Build() (CloseSecureChannelRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CloseSecureChannelRequest.deepCopy(), nil
+}
+
+func (m *_CloseSecureChannelRequestBuilder) MustBuild() CloseSecureChannelRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CloseSecureChannelRequestBuilder) DeepCopy() any {
+	return m.CreateCloseSecureChannelRequestBuilder()
+}
+
+// CreateCloseSecureChannelRequestBuilder creates a CloseSecureChannelRequestBuilder
+func (m *_CloseSecureChannelRequest) CreateCloseSecureChannelRequestBuilder() CloseSecureChannelRequestBuilder {
+	if m == nil {
+		return NewCloseSecureChannelRequestBuilder()
+	}
+	return &_CloseSecureChannelRequestBuilder{_CloseSecureChannelRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type MFuncPropStateReadReq interface {
 	CEMI
 	// IsMFuncPropStateReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropStateReadReq()
+	// CreateBuilder creates a MFuncPropStateReadReqBuilder
+	CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder
 }
 
 // _MFuncPropStateReadReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MFuncPropStateReadReqBuilder is a builder for MFuncPropStateReadReq
+type MFuncPropStateReadReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MFuncPropStateReadReqBuilder
+	// Build builds the MFuncPropStateReadReq or returns an error if something is wrong
+	Build() (MFuncPropStateReadReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MFuncPropStateReadReq
+}
+
+// NewMFuncPropStateReadReqBuilder() creates a MFuncPropStateReadReqBuilder
+func NewMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
+	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: new(_MFuncPropStateReadReq)}
+}
+
+type _MFuncPropStateReadReqBuilder struct {
+	*_MFuncPropStateReadReq
+
+	err *utils.MultiError
+}
+
+var _ (MFuncPropStateReadReqBuilder) = (*_MFuncPropStateReadReqBuilder)(nil)
+
+func (m *_MFuncPropStateReadReqBuilder) WithMandatoryFields() MFuncPropStateReadReqBuilder {
+	return m
+}
+
+func (m *_MFuncPropStateReadReqBuilder) Build() (MFuncPropStateReadReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MFuncPropStateReadReq.deepCopy(), nil
+}
+
+func (m *_MFuncPropStateReadReqBuilder) MustBuild() MFuncPropStateReadReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MFuncPropStateReadReqBuilder) DeepCopy() any {
+	return m.CreateMFuncPropStateReadReqBuilder()
+}
+
+// CreateMFuncPropStateReadReqBuilder creates a MFuncPropStateReadReqBuilder
+func (m *_MFuncPropStateReadReq) CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
+	if m == nil {
+		return NewMFuncPropStateReadReqBuilder()
+	}
+	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

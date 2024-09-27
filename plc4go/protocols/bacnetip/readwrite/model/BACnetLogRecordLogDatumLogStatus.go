@@ -44,6 +44,8 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	GetLogStatus() BACnetLogStatusTagged
 	// IsBACnetLogRecordLogDatumLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumLogStatus()
+	// CreateBuilder creates a BACnetLogRecordLogDatumLogStatusBuilder
+	CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder
 }
 
 // _BACnetLogRecordLogDatumLogStatus is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumLogStatusBuilder is a builder for BACnetLogRecordLogDatumLogStatus
+type BACnetLogRecordLogDatumLogStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder
+	// WithLogStatus adds LogStatus (property field)
+	WithLogStatus(BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder
+	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
+	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder
+	// Build builds the BACnetLogRecordLogDatumLogStatus or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumLogStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumLogStatus
+}
+
+// NewBACnetLogRecordLogDatumLogStatusBuilder() creates a BACnetLogRecordLogDatumLogStatusBuilder
+func NewBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
+	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: new(_BACnetLogRecordLogDatumLogStatus)}
+}
+
+type _BACnetLogRecordLogDatumLogStatusBuilder struct {
+	*_BACnetLogRecordLogDatumLogStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumLogStatusBuilder) = (*_BACnetLogRecordLogDatumLogStatusBuilder)(nil)
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	return m.WithLogStatus(logStatus)
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	m.LogStatus = logStatus
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder {
+	builder := builderSupplier(m.LogStatus.CreateBACnetLogStatusTaggedBuilder())
+	var err error
+	m.LogStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) Build() (BACnetLogRecordLogDatumLogStatus, error) {
+	if m.LogStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogRecordLogDatumLogStatus.deepCopy(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) MustBuild() BACnetLogRecordLogDatumLogStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetLogRecordLogDatumLogStatusBuilder()
+}
+
+// CreateBACnetLogRecordLogDatumLogStatusBuilder creates a BACnetLogRecordLogDatumLogStatusBuilder
+func (m *_BACnetLogRecordLogDatumLogStatus) CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
+	if m == nil {
+		return NewBACnetLogRecordLogDatumLogStatusBuilder()
+	}
+	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

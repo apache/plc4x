@@ -40,6 +40,8 @@ type ApduDataExtReadRouterStatusRequest interface {
 	ApduDataExt
 	// IsApduDataExtReadRouterStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRouterStatusRequest()
+	// CreateBuilder creates a ApduDataExtReadRouterStatusRequestBuilder
+	CreateApduDataExtReadRouterStatusRequestBuilder() ApduDataExtReadRouterStatusRequestBuilder
 }
 
 // _ApduDataExtReadRouterStatusRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouter
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtReadRouterStatusRequestBuilder is a builder for ApduDataExtReadRouterStatusRequest
+type ApduDataExtReadRouterStatusRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtReadRouterStatusRequestBuilder
+	// Build builds the ApduDataExtReadRouterStatusRequest or returns an error if something is wrong
+	Build() (ApduDataExtReadRouterStatusRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtReadRouterStatusRequest
+}
+
+// NewApduDataExtReadRouterStatusRequestBuilder() creates a ApduDataExtReadRouterStatusRequestBuilder
+func NewApduDataExtReadRouterStatusRequestBuilder() ApduDataExtReadRouterStatusRequestBuilder {
+	return &_ApduDataExtReadRouterStatusRequestBuilder{_ApduDataExtReadRouterStatusRequest: new(_ApduDataExtReadRouterStatusRequest)}
+}
+
+type _ApduDataExtReadRouterStatusRequestBuilder struct {
+	*_ApduDataExtReadRouterStatusRequest
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtReadRouterStatusRequestBuilder) = (*_ApduDataExtReadRouterStatusRequestBuilder)(nil)
+
+func (m *_ApduDataExtReadRouterStatusRequestBuilder) WithMandatoryFields() ApduDataExtReadRouterStatusRequestBuilder {
+	return m
+}
+
+func (m *_ApduDataExtReadRouterStatusRequestBuilder) Build() (ApduDataExtReadRouterStatusRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtReadRouterStatusRequest.deepCopy(), nil
+}
+
+func (m *_ApduDataExtReadRouterStatusRequestBuilder) MustBuild() ApduDataExtReadRouterStatusRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtReadRouterStatusRequestBuilder) DeepCopy() any {
+	return m.CreateApduDataExtReadRouterStatusRequestBuilder()
+}
+
+// CreateApduDataExtReadRouterStatusRequestBuilder creates a ApduDataExtReadRouterStatusRequestBuilder
+func (m *_ApduDataExtReadRouterStatusRequest) CreateApduDataExtReadRouterStatusRequestBuilder() ApduDataExtReadRouterStatusRequestBuilder {
+	if m == nil {
+		return NewApduDataExtReadRouterStatusRequestBuilder()
+	}
+	return &_ApduDataExtReadRouterStatusRequestBuilder{_ApduDataExtReadRouterStatusRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

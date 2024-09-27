@@ -46,6 +46,8 @@ type BACnetConstructedDataAPDULength interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAPDULength is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAPDULength()
+	// CreateBuilder creates a BACnetConstructedDataAPDULengthBuilder
+	CreateBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULengthBuilder
 }
 
 // _BACnetConstructedDataAPDULength is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAPDULength(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAPDULengthBuilder is a builder for BACnetConstructedDataAPDULength
+type BACnetConstructedDataAPDULengthBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder
+	// WithApduLength adds ApduLength (property field)
+	WithApduLength(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder
+	// WithApduLengthBuilder adds ApduLength (property field) which is build by the builder
+	WithApduLengthBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDULengthBuilder
+	// Build builds the BACnetConstructedDataAPDULength or returns an error if something is wrong
+	Build() (BACnetConstructedDataAPDULength, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAPDULength
+}
+
+// NewBACnetConstructedDataAPDULengthBuilder() creates a BACnetConstructedDataAPDULengthBuilder
+func NewBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULengthBuilder {
+	return &_BACnetConstructedDataAPDULengthBuilder{_BACnetConstructedDataAPDULength: new(_BACnetConstructedDataAPDULength)}
+}
+
+type _BACnetConstructedDataAPDULengthBuilder struct {
+	*_BACnetConstructedDataAPDULength
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAPDULengthBuilder) = (*_BACnetConstructedDataAPDULengthBuilder)(nil)
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) WithMandatoryFields(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
+	return m.WithApduLength(apduLength)
+}
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) WithApduLength(apduLength BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAPDULengthBuilder {
+	m.ApduLength = apduLength
+	return m
+}
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) WithApduLengthBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAPDULengthBuilder {
+	builder := builderSupplier(m.ApduLength.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ApduLength, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) Build() (BACnetConstructedDataAPDULength, error) {
+	if m.ApduLength == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'apduLength' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAPDULength.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) MustBuild() BACnetConstructedDataAPDULength {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAPDULengthBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAPDULengthBuilder()
+}
+
+// CreateBACnetConstructedDataAPDULengthBuilder creates a BACnetConstructedDataAPDULengthBuilder
+func (m *_BACnetConstructedDataAPDULength) CreateBACnetConstructedDataAPDULengthBuilder() BACnetConstructedDataAPDULengthBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAPDULengthBuilder()
+	}
+	return &_BACnetConstructedDataAPDULengthBuilder{_BACnetConstructedDataAPDULength: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataObjectType interface {
 	GetActualValue() BACnetObjectTypeTagged
 	// IsBACnetConstructedDataObjectType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectType()
+	// CreateBuilder creates a BACnetConstructedDataObjectTypeBuilder
+	CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder
 }
 
 // _BACnetConstructedDataObjectType is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataObjectType(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectTypeBuilder is a builder for BACnetConstructedDataObjectType
+type BACnetConstructedDataObjectTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder
+	// WithObjectType adds ObjectType (property field)
+	WithObjectType(BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder
+	// WithObjectTypeBuilder adds ObjectType (property field) which is build by the builder
+	WithObjectTypeBuilder(func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder
+	// Build builds the BACnetConstructedDataObjectType or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectType
+}
+
+// NewBACnetConstructedDataObjectTypeBuilder() creates a BACnetConstructedDataObjectTypeBuilder
+func NewBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
+	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: new(_BACnetConstructedDataObjectType)}
+}
+
+type _BACnetConstructedDataObjectTypeBuilder struct {
+	*_BACnetConstructedDataObjectType
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectTypeBuilder) = (*_BACnetConstructedDataObjectTypeBuilder)(nil)
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	return m.WithObjectType(objectType)
+}
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) WithObjectType(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	m.ObjectType = objectType
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) WithObjectTypeBuilder(builderSupplier func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder {
+	builder := builderSupplier(m.ObjectType.CreateBACnetObjectTypeTaggedBuilder())
+	var err error
+	m.ObjectType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetObjectTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) Build() (BACnetConstructedDataObjectType, error) {
+	if m.ObjectType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataObjectType.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) MustBuild() BACnetConstructedDataObjectType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataObjectTypeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataObjectTypeBuilder()
+}
+
+// CreateBACnetConstructedDataObjectTypeBuilder creates a BACnetConstructedDataObjectTypeBuilder
+func (m *_BACnetConstructedDataObjectType) CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataObjectTypeBuilder()
+	}
+	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetConstructedDataZoneMembers interface {
 	GetMembers() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataZoneMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataZoneMembers()
+	// CreateBuilder creates a BACnetConstructedDataZoneMembersBuilder
+	CreateBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembersBuilder
 }
 
 // _BACnetConstructedDataZoneMembers is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataZoneMembers(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataZoneMembersBuilder is a builder for BACnetConstructedDataZoneMembers
+type BACnetConstructedDataZoneMembersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder
+	// WithMembers adds Members (property field)
+	WithMembers(...BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder
+	// Build builds the BACnetConstructedDataZoneMembers or returns an error if something is wrong
+	Build() (BACnetConstructedDataZoneMembers, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataZoneMembers
+}
+
+// NewBACnetConstructedDataZoneMembersBuilder() creates a BACnetConstructedDataZoneMembersBuilder
+func NewBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembersBuilder {
+	return &_BACnetConstructedDataZoneMembersBuilder{_BACnetConstructedDataZoneMembers: new(_BACnetConstructedDataZoneMembers)}
+}
+
+type _BACnetConstructedDataZoneMembersBuilder struct {
+	*_BACnetConstructedDataZoneMembers
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataZoneMembersBuilder) = (*_BACnetConstructedDataZoneMembersBuilder)(nil)
+
+func (m *_BACnetConstructedDataZoneMembersBuilder) WithMandatoryFields(members []BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
+	return m.WithMembers(members...)
+}
+
+func (m *_BACnetConstructedDataZoneMembersBuilder) WithMembers(members ...BACnetDeviceObjectReference) BACnetConstructedDataZoneMembersBuilder {
+	m.Members = members
+	return m
+}
+
+func (m *_BACnetConstructedDataZoneMembersBuilder) Build() (BACnetConstructedDataZoneMembers, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataZoneMembers.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataZoneMembersBuilder) MustBuild() BACnetConstructedDataZoneMembers {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataZoneMembersBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataZoneMembersBuilder()
+}
+
+// CreateBACnetConstructedDataZoneMembersBuilder creates a BACnetConstructedDataZoneMembersBuilder
+func (m *_BACnetConstructedDataZoneMembers) CreateBACnetConstructedDataZoneMembersBuilder() BACnetConstructedDataZoneMembersBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataZoneMembersBuilder()
+	}
+	return &_BACnetConstructedDataZoneMembersBuilder{_BACnetConstructedDataZoneMembers: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

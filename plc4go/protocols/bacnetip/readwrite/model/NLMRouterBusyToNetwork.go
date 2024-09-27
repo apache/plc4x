@@ -44,6 +44,8 @@ type NLMRouterBusyToNetwork interface {
 	GetDestinationNetworkAddresses() []uint16
 	// IsNLMRouterBusyToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMRouterBusyToNetwork()
+	// CreateBuilder creates a NLMRouterBusyToNetworkBuilder
+	CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder
 }
 
 // _NLMRouterBusyToNetwork is the data-structure of this message
@@ -64,6 +66,78 @@ func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength 
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMRouterBusyToNetworkBuilder is a builder for NLMRouterBusyToNetwork
+type NLMRouterBusyToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder
+	// WithDestinationNetworkAddresses adds DestinationNetworkAddresses (property field)
+	WithDestinationNetworkAddresses(...uint16) NLMRouterBusyToNetworkBuilder
+	// Build builds the NLMRouterBusyToNetwork or returns an error if something is wrong
+	Build() (NLMRouterBusyToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMRouterBusyToNetwork
+}
+
+// NewNLMRouterBusyToNetworkBuilder() creates a NLMRouterBusyToNetworkBuilder
+func NewNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
+	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: new(_NLMRouterBusyToNetwork)}
+}
+
+type _NLMRouterBusyToNetworkBuilder struct {
+	*_NLMRouterBusyToNetwork
+
+	err *utils.MultiError
+}
+
+var _ (NLMRouterBusyToNetworkBuilder) = (*_NLMRouterBusyToNetworkBuilder)(nil)
+
+func (m *_NLMRouterBusyToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder {
+	return m.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+}
+
+func (m *_NLMRouterBusyToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMRouterBusyToNetworkBuilder {
+	m.DestinationNetworkAddresses = destinationNetworkAddresses
+	return m
+}
+
+func (m *_NLMRouterBusyToNetworkBuilder) Build() (NLMRouterBusyToNetwork, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMRouterBusyToNetwork.deepCopy(), nil
+}
+
+func (m *_NLMRouterBusyToNetworkBuilder) MustBuild() NLMRouterBusyToNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMRouterBusyToNetworkBuilder) DeepCopy() any {
+	return m.CreateNLMRouterBusyToNetworkBuilder()
+}
+
+// CreateNLMRouterBusyToNetworkBuilder creates a NLMRouterBusyToNetworkBuilder
+func (m *_NLMRouterBusyToNetwork) CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
+	if m == nil {
+		return NewNLMRouterBusyToNetworkBuilder()
+	}
+	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

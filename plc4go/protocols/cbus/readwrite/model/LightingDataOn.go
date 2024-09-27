@@ -44,6 +44,8 @@ type LightingDataOn interface {
 	GetGroup() byte
 	// IsLightingDataOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingDataOn()
+	// CreateBuilder creates a LightingDataOnBuilder
+	CreateLightingDataOnBuilder() LightingDataOnBuilder
 }
 
 // _LightingDataOn is the data-structure of this message
@@ -64,6 +66,78 @@ func NewLightingDataOn(commandTypeContainer LightingCommandTypeContainer, group 
 	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingDataOnBuilder is a builder for LightingDataOn
+type LightingDataOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(group byte) LightingDataOnBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(byte) LightingDataOnBuilder
+	// Build builds the LightingDataOn or returns an error if something is wrong
+	Build() (LightingDataOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingDataOn
+}
+
+// NewLightingDataOnBuilder() creates a LightingDataOnBuilder
+func NewLightingDataOnBuilder() LightingDataOnBuilder {
+	return &_LightingDataOnBuilder{_LightingDataOn: new(_LightingDataOn)}
+}
+
+type _LightingDataOnBuilder struct {
+	*_LightingDataOn
+
+	err *utils.MultiError
+}
+
+var _ (LightingDataOnBuilder) = (*_LightingDataOnBuilder)(nil)
+
+func (m *_LightingDataOnBuilder) WithMandatoryFields(group byte) LightingDataOnBuilder {
+	return m.WithGroup(group)
+}
+
+func (m *_LightingDataOnBuilder) WithGroup(group byte) LightingDataOnBuilder {
+	m.Group = group
+	return m
+}
+
+func (m *_LightingDataOnBuilder) Build() (LightingDataOn, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LightingDataOn.deepCopy(), nil
+}
+
+func (m *_LightingDataOnBuilder) MustBuild() LightingDataOn {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LightingDataOnBuilder) DeepCopy() any {
+	return m.CreateLightingDataOnBuilder()
+}
+
+// CreateLightingDataOnBuilder creates a LightingDataOnBuilder
+func (m *_LightingDataOn) CreateLightingDataOnBuilder() LightingDataOnBuilder {
+	if m == nil {
+		return NewLightingDataOnBuilder()
+	}
+	return &_LightingDataOnBuilder{_LightingDataOn: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

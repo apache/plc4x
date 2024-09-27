@@ -49,6 +49,8 @@ type BACnetEventTypeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetEventTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventTypeTagged()
+	// CreateBuilder creates a BACnetEventTypeTaggedBuilder
+	CreateBACnetEventTypeTaggedBuilder() BACnetEventTypeTaggedBuilder
 }
 
 // _BACnetEventTypeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetEventTypeTagged(header BACnetTagHeader, value BACnetEventType, pro
 	}
 	return &_BACnetEventTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventTypeTaggedBuilder is a builder for BACnetEventTypeTagged
+type BACnetEventTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetEventType, proprietaryValue uint32) BACnetEventTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetEventTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetEventType) BACnetEventTypeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetEventTypeTaggedBuilder
+	// Build builds the BACnetEventTypeTagged or returns an error if something is wrong
+	Build() (BACnetEventTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventTypeTagged
+}
+
+// NewBACnetEventTypeTaggedBuilder() creates a BACnetEventTypeTaggedBuilder
+func NewBACnetEventTypeTaggedBuilder() BACnetEventTypeTaggedBuilder {
+	return &_BACnetEventTypeTaggedBuilder{_BACnetEventTypeTagged: new(_BACnetEventTypeTagged)}
+}
+
+type _BACnetEventTypeTaggedBuilder struct {
+	*_BACnetEventTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventTypeTaggedBuilder) = (*_BACnetEventTypeTaggedBuilder)(nil)
+
+func (m *_BACnetEventTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetEventType, proprietaryValue uint32) BACnetEventTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetEventTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) WithValue(value BACnetEventType) BACnetEventTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEventTypeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) Build() (BACnetEventTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) MustBuild() BACnetEventTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetEventTypeTaggedBuilder()
+}
+
+// CreateBACnetEventTypeTaggedBuilder creates a BACnetEventTypeTaggedBuilder
+func (m *_BACnetEventTypeTagged) CreateBACnetEventTypeTaggedBuilder() BACnetEventTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetEventTypeTaggedBuilder()
+	}
+	return &_BACnetEventTypeTaggedBuilder{_BACnetEventTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

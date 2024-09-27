@@ -41,6 +41,8 @@ type CIPEncapsulationConnectionResponse interface {
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionResponse()
+	// CreateBuilder creates a CIPEncapsulationConnectionResponseBuilder
+	CreateCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder
 }
 
 // _CIPEncapsulationConnectionResponse is the data-structure of this message
@@ -59,6 +61,71 @@ func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, 
 	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationConnectionResponseBuilder is a builder for CIPEncapsulationConnectionResponse
+type CIPEncapsulationConnectionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder
+	// Build builds the CIPEncapsulationConnectionResponse or returns an error if something is wrong
+	Build() (CIPEncapsulationConnectionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationConnectionResponse
+}
+
+// NewCIPEncapsulationConnectionResponseBuilder() creates a CIPEncapsulationConnectionResponseBuilder
+func NewCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder {
+	return &_CIPEncapsulationConnectionResponseBuilder{_CIPEncapsulationConnectionResponse: new(_CIPEncapsulationConnectionResponse)}
+}
+
+type _CIPEncapsulationConnectionResponseBuilder struct {
+	*_CIPEncapsulationConnectionResponse
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationConnectionResponseBuilder) = (*_CIPEncapsulationConnectionResponseBuilder)(nil)
+
+func (m *_CIPEncapsulationConnectionResponseBuilder) WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder {
+	return m
+}
+
+func (m *_CIPEncapsulationConnectionResponseBuilder) Build() (CIPEncapsulationConnectionResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPEncapsulationConnectionResponse.deepCopy(), nil
+}
+
+func (m *_CIPEncapsulationConnectionResponseBuilder) MustBuild() CIPEncapsulationConnectionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPEncapsulationConnectionResponseBuilder) DeepCopy() any {
+	return m.CreateCIPEncapsulationConnectionResponseBuilder()
+}
+
+// CreateCIPEncapsulationConnectionResponseBuilder creates a CIPEncapsulationConnectionResponseBuilder
+func (m *_CIPEncapsulationConnectionResponse) CreateCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder {
+	if m == nil {
+		return NewCIPEncapsulationConnectionResponseBuilder()
+	}
+	return &_CIPEncapsulationConnectionResponseBuilder{_CIPEncapsulationConnectionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

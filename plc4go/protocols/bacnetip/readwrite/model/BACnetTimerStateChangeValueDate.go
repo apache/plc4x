@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueDate interface {
 	GetDateValue() BACnetApplicationTagDate
 	// IsBACnetTimerStateChangeValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueDate()
+	// CreateBuilder creates a BACnetTimerStateChangeValueDateBuilder
+	CreateBACnetTimerStateChangeValueDateBuilder() BACnetTimerStateChangeValueDateBuilder
 }
 
 // _BACnetTimerStateChangeValueDate is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueDate(peekedTagHeader BACnetTagHeader, dateVal
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueDateBuilder is a builder for BACnetTimerStateChangeValueDate
+type BACnetTimerStateChangeValueDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetTimerStateChangeValueDateBuilder
+	// WithDateValue adds DateValue (property field)
+	WithDateValue(BACnetApplicationTagDate) BACnetTimerStateChangeValueDateBuilder
+	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetTimerStateChangeValueDateBuilder
+	// Build builds the BACnetTimerStateChangeValueDate or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueDate
+}
+
+// NewBACnetTimerStateChangeValueDateBuilder() creates a BACnetTimerStateChangeValueDateBuilder
+func NewBACnetTimerStateChangeValueDateBuilder() BACnetTimerStateChangeValueDateBuilder {
+	return &_BACnetTimerStateChangeValueDateBuilder{_BACnetTimerStateChangeValueDate: new(_BACnetTimerStateChangeValueDate)}
+}
+
+type _BACnetTimerStateChangeValueDateBuilder struct {
+	*_BACnetTimerStateChangeValueDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueDateBuilder) = (*_BACnetTimerStateChangeValueDateBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetTimerStateChangeValueDateBuilder {
+	return m.WithDateValue(dateValue)
+}
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetTimerStateChangeValueDateBuilder {
+	m.DateValue = dateValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetTimerStateChangeValueDateBuilder {
+	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	m.DateValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) Build() (BACnetTimerStateChangeValueDate, error) {
+	if m.DateValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueDate.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) MustBuild() BACnetTimerStateChangeValueDate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueDateBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueDateBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueDateBuilder creates a BACnetTimerStateChangeValueDateBuilder
+func (m *_BACnetTimerStateChangeValueDate) CreateBACnetTimerStateChangeValueDateBuilder() BACnetTimerStateChangeValueDateBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueDateBuilder()
+	}
+	return &_BACnetTimerStateChangeValueDateBuilder{_BACnetTimerStateChangeValueDate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

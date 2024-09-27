@@ -51,6 +51,8 @@ type SzlDataTreeItem interface {
 	GetAusbe() uint16
 	// IsSzlDataTreeItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSzlDataTreeItem()
+	// CreateBuilder creates a SzlDataTreeItemBuilder
+	CreateSzlDataTreeItemBuilder() SzlDataTreeItemBuilder
 }
 
 // _SzlDataTreeItem is the data-structure of this message
@@ -68,6 +70,106 @@ var _ SzlDataTreeItem = (*_SzlDataTreeItem)(nil)
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) *_SzlDataTreeItem {
 	return &_SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SzlDataTreeItemBuilder is a builder for SzlDataTreeItem
+type SzlDataTreeItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) SzlDataTreeItemBuilder
+	// WithItemIndex adds ItemIndex (property field)
+	WithItemIndex(uint16) SzlDataTreeItemBuilder
+	// WithMlfb adds Mlfb (property field)
+	WithMlfb(...byte) SzlDataTreeItemBuilder
+	// WithModuleTypeId adds ModuleTypeId (property field)
+	WithModuleTypeId(uint16) SzlDataTreeItemBuilder
+	// WithAusbg adds Ausbg (property field)
+	WithAusbg(uint16) SzlDataTreeItemBuilder
+	// WithAusbe adds Ausbe (property field)
+	WithAusbe(uint16) SzlDataTreeItemBuilder
+	// Build builds the SzlDataTreeItem or returns an error if something is wrong
+	Build() (SzlDataTreeItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SzlDataTreeItem
+}
+
+// NewSzlDataTreeItemBuilder() creates a SzlDataTreeItemBuilder
+func NewSzlDataTreeItemBuilder() SzlDataTreeItemBuilder {
+	return &_SzlDataTreeItemBuilder{_SzlDataTreeItem: new(_SzlDataTreeItem)}
+}
+
+type _SzlDataTreeItemBuilder struct {
+	*_SzlDataTreeItem
+
+	err *utils.MultiError
+}
+
+var _ (SzlDataTreeItemBuilder) = (*_SzlDataTreeItemBuilder)(nil)
+
+func (m *_SzlDataTreeItemBuilder) WithMandatoryFields(itemIndex uint16, mlfb []byte, moduleTypeId uint16, ausbg uint16, ausbe uint16) SzlDataTreeItemBuilder {
+	return m.WithItemIndex(itemIndex).WithMlfb(mlfb...).WithModuleTypeId(moduleTypeId).WithAusbg(ausbg).WithAusbe(ausbe)
+}
+
+func (m *_SzlDataTreeItemBuilder) WithItemIndex(itemIndex uint16) SzlDataTreeItemBuilder {
+	m.ItemIndex = itemIndex
+	return m
+}
+
+func (m *_SzlDataTreeItemBuilder) WithMlfb(mlfb ...byte) SzlDataTreeItemBuilder {
+	m.Mlfb = mlfb
+	return m
+}
+
+func (m *_SzlDataTreeItemBuilder) WithModuleTypeId(moduleTypeId uint16) SzlDataTreeItemBuilder {
+	m.ModuleTypeId = moduleTypeId
+	return m
+}
+
+func (m *_SzlDataTreeItemBuilder) WithAusbg(ausbg uint16) SzlDataTreeItemBuilder {
+	m.Ausbg = ausbg
+	return m
+}
+
+func (m *_SzlDataTreeItemBuilder) WithAusbe(ausbe uint16) SzlDataTreeItemBuilder {
+	m.Ausbe = ausbe
+	return m
+}
+
+func (m *_SzlDataTreeItemBuilder) Build() (SzlDataTreeItem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SzlDataTreeItem.deepCopy(), nil
+}
+
+func (m *_SzlDataTreeItemBuilder) MustBuild() SzlDataTreeItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SzlDataTreeItemBuilder) DeepCopy() any {
+	return m.CreateSzlDataTreeItemBuilder()
+}
+
+// CreateSzlDataTreeItemBuilder creates a SzlDataTreeItemBuilder
+func (m *_SzlDataTreeItem) CreateSzlDataTreeItemBuilder() SzlDataTreeItemBuilder {
+	if m == nil {
+		return NewSzlDataTreeItemBuilder()
+	}
+	return &_SzlDataTreeItemBuilder{_SzlDataTreeItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

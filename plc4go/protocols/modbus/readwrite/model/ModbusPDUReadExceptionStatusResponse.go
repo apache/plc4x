@@ -44,6 +44,8 @@ type ModbusPDUReadExceptionStatusResponse interface {
 	GetValue() uint8
 	// IsModbusPDUReadExceptionStatusResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadExceptionStatusResponse()
+	// CreateBuilder creates a ModbusPDUReadExceptionStatusResponseBuilder
+	CreateModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStatusResponseBuilder
 }
 
 // _ModbusPDUReadExceptionStatusResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewModbusPDUReadExceptionStatusResponse(value uint8) *_ModbusPDUReadExcepti
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadExceptionStatusResponseBuilder is a builder for ModbusPDUReadExceptionStatusResponse
+type ModbusPDUReadExceptionStatusResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint8) ModbusPDUReadExceptionStatusResponseBuilder
+	// Build builds the ModbusPDUReadExceptionStatusResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadExceptionStatusResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadExceptionStatusResponse
+}
+
+// NewModbusPDUReadExceptionStatusResponseBuilder() creates a ModbusPDUReadExceptionStatusResponseBuilder
+func NewModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStatusResponseBuilder {
+	return &_ModbusPDUReadExceptionStatusResponseBuilder{_ModbusPDUReadExceptionStatusResponse: new(_ModbusPDUReadExceptionStatusResponse)}
+}
+
+type _ModbusPDUReadExceptionStatusResponseBuilder struct {
+	*_ModbusPDUReadExceptionStatusResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadExceptionStatusResponseBuilder) = (*_ModbusPDUReadExceptionStatusResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadExceptionStatusResponseBuilder) WithMandatoryFields(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
+	return m.WithValue(value)
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponseBuilder) WithValue(value uint8) ModbusPDUReadExceptionStatusResponseBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponseBuilder) Build() (ModbusPDUReadExceptionStatusResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadExceptionStatusResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponseBuilder) MustBuild() ModbusPDUReadExceptionStatusResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadExceptionStatusResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadExceptionStatusResponseBuilder()
+}
+
+// CreateModbusPDUReadExceptionStatusResponseBuilder creates a ModbusPDUReadExceptionStatusResponseBuilder
+func (m *_ModbusPDUReadExceptionStatusResponse) CreateModbusPDUReadExceptionStatusResponseBuilder() ModbusPDUReadExceptionStatusResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadExceptionStatusResponseBuilder()
+	}
+	return &_ModbusPDUReadExceptionStatusResponseBuilder{_ModbusPDUReadExceptionStatusResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

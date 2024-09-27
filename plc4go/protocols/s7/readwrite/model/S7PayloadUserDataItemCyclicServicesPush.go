@@ -46,6 +46,8 @@ type S7PayloadUserDataItemCyclicServicesPush interface {
 	GetItems() []AssociatedValueType
 	// IsS7PayloadUserDataItemCyclicServicesPush is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesPush()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesPushBuilder
+	CreateS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCyclicServicesPushBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesPush is the data-structure of this message
@@ -68,6 +70,85 @@ func NewS7PayloadUserDataItemCyclicServicesPush(returnCode DataTransportErrorCod
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesPushBuilder is a builder for S7PayloadUserDataItemCyclicServicesPush
+type S7PayloadUserDataItemCyclicServicesPushBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemsCount uint16, items []AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder
+	// WithItemsCount adds ItemsCount (property field)
+	WithItemsCount(uint16) S7PayloadUserDataItemCyclicServicesPushBuilder
+	// WithItems adds Items (property field)
+	WithItems(...AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesPush or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesPush, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesPush
+}
+
+// NewS7PayloadUserDataItemCyclicServicesPushBuilder() creates a S7PayloadUserDataItemCyclicServicesPushBuilder
+func NewS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCyclicServicesPushBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesPushBuilder{_S7PayloadUserDataItemCyclicServicesPush: new(_S7PayloadUserDataItemCyclicServicesPush)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesPushBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesPush
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesPushBuilder) = (*_S7PayloadUserDataItemCyclicServicesPushBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	return m.WithItemsCount(itemsCount).WithItems(items...)
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	m.ItemsCount = itemsCount
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) WithItems(items ...AssociatedValueType) S7PayloadUserDataItemCyclicServicesPushBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesPush, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesPush.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesPush {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesPushBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesPushBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesPushBuilder creates a S7PayloadUserDataItemCyclicServicesPushBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesPush) CreateS7PayloadUserDataItemCyclicServicesPushBuilder() S7PayloadUserDataItemCyclicServicesPushBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesPushBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesPushBuilder{_S7PayloadUserDataItemCyclicServicesPush: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

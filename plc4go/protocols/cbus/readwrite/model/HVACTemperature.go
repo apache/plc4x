@@ -45,6 +45,8 @@ type HVACTemperature interface {
 	GetTemperatureInCelcius() float32
 	// IsHVACTemperature is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACTemperature()
+	// CreateBuilder creates a HVACTemperatureBuilder
+	CreateHVACTemperatureBuilder() HVACTemperatureBuilder
 }
 
 // _HVACTemperature is the data-structure of this message
@@ -58,6 +60,78 @@ var _ HVACTemperature = (*_HVACTemperature)(nil)
 func NewHVACTemperature(temperatureValue int16) *_HVACTemperature {
 	return &_HVACTemperature{TemperatureValue: temperatureValue}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACTemperatureBuilder is a builder for HVACTemperature
+type HVACTemperatureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(temperatureValue int16) HVACTemperatureBuilder
+	// WithTemperatureValue adds TemperatureValue (property field)
+	WithTemperatureValue(int16) HVACTemperatureBuilder
+	// Build builds the HVACTemperature or returns an error if something is wrong
+	Build() (HVACTemperature, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACTemperature
+}
+
+// NewHVACTemperatureBuilder() creates a HVACTemperatureBuilder
+func NewHVACTemperatureBuilder() HVACTemperatureBuilder {
+	return &_HVACTemperatureBuilder{_HVACTemperature: new(_HVACTemperature)}
+}
+
+type _HVACTemperatureBuilder struct {
+	*_HVACTemperature
+
+	err *utils.MultiError
+}
+
+var _ (HVACTemperatureBuilder) = (*_HVACTemperatureBuilder)(nil)
+
+func (m *_HVACTemperatureBuilder) WithMandatoryFields(temperatureValue int16) HVACTemperatureBuilder {
+	return m.WithTemperatureValue(temperatureValue)
+}
+
+func (m *_HVACTemperatureBuilder) WithTemperatureValue(temperatureValue int16) HVACTemperatureBuilder {
+	m.TemperatureValue = temperatureValue
+	return m
+}
+
+func (m *_HVACTemperatureBuilder) Build() (HVACTemperature, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HVACTemperature.deepCopy(), nil
+}
+
+func (m *_HVACTemperatureBuilder) MustBuild() HVACTemperature {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HVACTemperatureBuilder) DeepCopy() any {
+	return m.CreateHVACTemperatureBuilder()
+}
+
+// CreateHVACTemperatureBuilder creates a HVACTemperatureBuilder
+func (m *_HVACTemperature) CreateHVACTemperatureBuilder() HVACTemperatureBuilder {
+	if m == nil {
+		return NewHVACTemperatureBuilder()
+	}
+	return &_HVACTemperatureBuilder{_HVACTemperature: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

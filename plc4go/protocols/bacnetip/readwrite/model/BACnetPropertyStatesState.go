@@ -44,6 +44,8 @@ type BACnetPropertyStatesState interface {
 	GetState() BACnetEventStateTagged
 	// IsBACnetPropertyStatesState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesState()
+	// CreateBuilder creates a BACnetPropertyStatesStateBuilder
+	CreateBACnetPropertyStatesStateBuilder() BACnetPropertyStatesStateBuilder
 }
 
 // _BACnetPropertyStatesState is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesState(peekedTagHeader BACnetTagHeader, state BACnetE
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesStateBuilder is a builder for BACnetPropertyStatesState
+type BACnetPropertyStatesStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(state BACnetEventStateTagged) BACnetPropertyStatesStateBuilder
+	// WithState adds State (property field)
+	WithState(BACnetEventStateTagged) BACnetPropertyStatesStateBuilder
+	// WithStateBuilder adds State (property field) which is build by the builder
+	WithStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetPropertyStatesStateBuilder
+	// Build builds the BACnetPropertyStatesState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesState
+}
+
+// NewBACnetPropertyStatesStateBuilder() creates a BACnetPropertyStatesStateBuilder
+func NewBACnetPropertyStatesStateBuilder() BACnetPropertyStatesStateBuilder {
+	return &_BACnetPropertyStatesStateBuilder{_BACnetPropertyStatesState: new(_BACnetPropertyStatesState)}
+}
+
+type _BACnetPropertyStatesStateBuilder struct {
+	*_BACnetPropertyStatesState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesStateBuilder) = (*_BACnetPropertyStatesStateBuilder)(nil)
+
+func (m *_BACnetPropertyStatesStateBuilder) WithMandatoryFields(state BACnetEventStateTagged) BACnetPropertyStatesStateBuilder {
+	return m.WithState(state)
+}
+
+func (m *_BACnetPropertyStatesStateBuilder) WithState(state BACnetEventStateTagged) BACnetPropertyStatesStateBuilder {
+	m.State = state
+	return m
+}
+
+func (m *_BACnetPropertyStatesStateBuilder) WithStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetPropertyStatesStateBuilder {
+	builder := builderSupplier(m.State.CreateBACnetEventStateTaggedBuilder())
+	var err error
+	m.State, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesStateBuilder) Build() (BACnetPropertyStatesState, error) {
+	if m.State == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'state' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesState.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesStateBuilder) MustBuild() BACnetPropertyStatesState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesStateBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesStateBuilder()
+}
+
+// CreateBACnetPropertyStatesStateBuilder creates a BACnetPropertyStatesStateBuilder
+func (m *_BACnetPropertyStatesState) CreateBACnetPropertyStatesStateBuilder() BACnetPropertyStatesStateBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesStateBuilder()
+	}
+	return &_BACnetPropertyStatesStateBuilder{_BACnetPropertyStatesState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

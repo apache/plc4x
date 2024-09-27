@@ -44,6 +44,8 @@ type BACnetChannelValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetChannelValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueDouble()
+	// CreateBuilder creates a BACnetChannelValueDoubleBuilder
+	CreateBACnetChannelValueDoubleBuilder() BACnetChannelValueDoubleBuilder
 }
 
 // _BACnetChannelValueDouble is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BA
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueDoubleBuilder is a builder for BACnetChannelValueDouble
+type BACnetChannelValueDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetChannelValueDoubleBuilder
+	// Build builds the BACnetChannelValueDouble or returns an error if something is wrong
+	Build() (BACnetChannelValueDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueDouble
+}
+
+// NewBACnetChannelValueDoubleBuilder() creates a BACnetChannelValueDoubleBuilder
+func NewBACnetChannelValueDoubleBuilder() BACnetChannelValueDoubleBuilder {
+	return &_BACnetChannelValueDoubleBuilder{_BACnetChannelValueDouble: new(_BACnetChannelValueDouble)}
+}
+
+type _BACnetChannelValueDoubleBuilder struct {
+	*_BACnetChannelValueDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueDoubleBuilder) = (*_BACnetChannelValueDoubleBuilder)(nil)
+
+func (m *_BACnetChannelValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder {
+	return m.WithDoubleValue(doubleValue)
+}
+
+func (m *_BACnetChannelValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetChannelValueDoubleBuilder {
+	m.DoubleValue = doubleValue
+	return m
+}
+
+func (m *_BACnetChannelValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetChannelValueDoubleBuilder {
+	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.DoubleValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueDoubleBuilder) Build() (BACnetChannelValueDouble, error) {
+	if m.DoubleValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueDouble.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueDoubleBuilder) MustBuild() BACnetChannelValueDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueDoubleBuilder()
+}
+
+// CreateBACnetChannelValueDoubleBuilder creates a BACnetChannelValueDoubleBuilder
+func (m *_BACnetChannelValueDouble) CreateBACnetChannelValueDoubleBuilder() BACnetChannelValueDoubleBuilder {
+	if m == nil {
+		return NewBACnetChannelValueDoubleBuilder()
+	}
+	return &_BACnetChannelValueDoubleBuilder{_BACnetChannelValueDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

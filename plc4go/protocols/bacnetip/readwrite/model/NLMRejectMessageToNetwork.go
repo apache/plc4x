@@ -46,6 +46,8 @@ type NLMRejectMessageToNetwork interface {
 	GetDestinationNetworkAddress() uint16
 	// IsNLMRejectMessageToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMRejectMessageToNetwork()
+	// CreateBuilder creates a NLMRejectMessageToNetworkBuilder
+	CreateNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder
 }
 
 // _NLMRejectMessageToNetwork is the data-structure of this message
@@ -68,6 +70,85 @@ func NewNLMRejectMessageToNetwork(rejectReason NLMRejectMessageToNetworkRejectRe
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMRejectMessageToNetworkBuilder is a builder for NLMRejectMessageToNetwork
+type NLMRejectMessageToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder
+	// WithRejectReason adds RejectReason (property field)
+	WithRejectReason(NLMRejectMessageToNetworkRejectReason) NLMRejectMessageToNetworkBuilder
+	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
+	WithDestinationNetworkAddress(uint16) NLMRejectMessageToNetworkBuilder
+	// Build builds the NLMRejectMessageToNetwork or returns an error if something is wrong
+	Build() (NLMRejectMessageToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMRejectMessageToNetwork
+}
+
+// NewNLMRejectMessageToNetworkBuilder() creates a NLMRejectMessageToNetworkBuilder
+func NewNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder {
+	return &_NLMRejectMessageToNetworkBuilder{_NLMRejectMessageToNetwork: new(_NLMRejectMessageToNetwork)}
+}
+
+type _NLMRejectMessageToNetworkBuilder struct {
+	*_NLMRejectMessageToNetwork
+
+	err *utils.MultiError
+}
+
+var _ (NLMRejectMessageToNetworkBuilder) = (*_NLMRejectMessageToNetworkBuilder)(nil)
+
+func (m *_NLMRejectMessageToNetworkBuilder) WithMandatoryFields(rejectReason NLMRejectMessageToNetworkRejectReason, destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
+	return m.WithRejectReason(rejectReason).WithDestinationNetworkAddress(destinationNetworkAddress)
+}
+
+func (m *_NLMRejectMessageToNetworkBuilder) WithRejectReason(rejectReason NLMRejectMessageToNetworkRejectReason) NLMRejectMessageToNetworkBuilder {
+	m.RejectReason = rejectReason
+	return m
+}
+
+func (m *_NLMRejectMessageToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMRejectMessageToNetworkBuilder {
+	m.DestinationNetworkAddress = destinationNetworkAddress
+	return m
+}
+
+func (m *_NLMRejectMessageToNetworkBuilder) Build() (NLMRejectMessageToNetwork, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMRejectMessageToNetwork.deepCopy(), nil
+}
+
+func (m *_NLMRejectMessageToNetworkBuilder) MustBuild() NLMRejectMessageToNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMRejectMessageToNetworkBuilder) DeepCopy() any {
+	return m.CreateNLMRejectMessageToNetworkBuilder()
+}
+
+// CreateNLMRejectMessageToNetworkBuilder creates a NLMRejectMessageToNetworkBuilder
+func (m *_NLMRejectMessageToNetwork) CreateNLMRejectMessageToNetworkBuilder() NLMRejectMessageToNetworkBuilder {
+	if m == nil {
+		return NewNLMRejectMessageToNetworkBuilder()
+	}
+	return &_NLMRejectMessageToNetworkBuilder{_NLMRejectMessageToNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

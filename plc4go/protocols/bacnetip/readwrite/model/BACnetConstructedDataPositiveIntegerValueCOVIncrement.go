@@ -46,6 +46,8 @@ type BACnetConstructedDataPositiveIntegerValueCOVIncrement interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPositiveIntegerValueCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPositiveIntegerValueCOVIncrement()
+	// CreateBuilder creates a BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+	CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
 }
 
 // _BACnetConstructedDataPositiveIntegerValueCOVIncrement is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPositiveIntegerValueCOVIncrement(openingTag BACnetO
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder is a builder for BACnetConstructedDataPositiveIntegerValueCOVIncrement
+type BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithCovIncrement(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+	// WithCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
+	WithCovIncrementBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+	// Build builds the BACnetConstructedDataPositiveIntegerValueCOVIncrement or returns an error if something is wrong
+	Build() (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPositiveIntegerValueCOVIncrement
+}
+
+// NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() creates a BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+func NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	return &_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder{_BACnetConstructedDataPositiveIntegerValueCOVIncrement: new(_BACnetConstructedDataPositiveIntegerValueCOVIncrement)}
+}
+
+type _BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder struct {
+	*_BACnetConstructedDataPositiveIntegerValueCOVIncrement
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) = (*_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder)(nil)
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	return m.WithCovIncrement(covIncrement)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	m.CovIncrement = covIncrement
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	builder := builderSupplier(m.CovIncrement.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.CovIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) Build() (BACnetConstructedDataPositiveIntegerValueCOVIncrement, error) {
+	if m.CovIncrement == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPositiveIntegerValueCOVIncrement.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueCOVIncrement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder()
+}
+
+// CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder creates a BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder
+func (m *_BACnetConstructedDataPositiveIntegerValueCOVIncrement) CreateBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder() BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder()
+	}
+	return &_BACnetConstructedDataPositiveIntegerValueCOVIncrementBuilder{_BACnetConstructedDataPositiveIntegerValueCOVIncrement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetShedLevelLevel interface {
 	GetLevel() BACnetContextTagUnsignedInteger
 	// IsBACnetShedLevelLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetShedLevelLevel()
+	// CreateBuilder creates a BACnetShedLevelLevelBuilder
+	CreateBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder
 }
 
 // _BACnetShedLevelLevel is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetShedLevelLevel(peekedTagHeader BACnetTagHeader, level BACnetContex
 	_result.BACnetShedLevelContract.(*_BACnetShedLevel)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetShedLevelLevelBuilder is a builder for BACnetShedLevelLevel
+type BACnetShedLevelLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder
+	// WithLevelBuilder adds Level (property field) which is build by the builder
+	WithLevelBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelLevelBuilder
+	// Build builds the BACnetShedLevelLevel or returns an error if something is wrong
+	Build() (BACnetShedLevelLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetShedLevelLevel
+}
+
+// NewBACnetShedLevelLevelBuilder() creates a BACnetShedLevelLevelBuilder
+func NewBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder {
+	return &_BACnetShedLevelLevelBuilder{_BACnetShedLevelLevel: new(_BACnetShedLevelLevel)}
+}
+
+type _BACnetShedLevelLevelBuilder struct {
+	*_BACnetShedLevelLevel
+
+	err *utils.MultiError
+}
+
+var _ (BACnetShedLevelLevelBuilder) = (*_BACnetShedLevelLevelBuilder)(nil)
+
+func (m *_BACnetShedLevelLevelBuilder) WithMandatoryFields(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
+	return m.WithLevel(level)
+}
+
+func (m *_BACnetShedLevelLevelBuilder) WithLevel(level BACnetContextTagUnsignedInteger) BACnetShedLevelLevelBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_BACnetShedLevelLevelBuilder) WithLevelBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetShedLevelLevelBuilder {
+	builder := builderSupplier(m.Level.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.Level, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetShedLevelLevelBuilder) Build() (BACnetShedLevelLevel, error) {
+	if m.Level == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'level' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetShedLevelLevel.deepCopy(), nil
+}
+
+func (m *_BACnetShedLevelLevelBuilder) MustBuild() BACnetShedLevelLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetShedLevelLevelBuilder) DeepCopy() any {
+	return m.CreateBACnetShedLevelLevelBuilder()
+}
+
+// CreateBACnetShedLevelLevelBuilder creates a BACnetShedLevelLevelBuilder
+func (m *_BACnetShedLevelLevel) CreateBACnetShedLevelLevelBuilder() BACnetShedLevelLevelBuilder {
+	if m == nil {
+		return NewBACnetShedLevelLevelBuilder()
+	}
+	return &_BACnetShedLevelLevelBuilder{_BACnetShedLevelLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

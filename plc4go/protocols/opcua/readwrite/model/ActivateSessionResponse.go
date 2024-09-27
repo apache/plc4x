@@ -54,6 +54,8 @@ type ActivateSessionResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsActivateSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsActivateSessionResponse()
+	// CreateBuilder creates a ActivateSessionResponseBuilder
+	CreateActivateSessionResponseBuilder() ActivateSessionResponseBuilder
 }
 
 // _ActivateSessionResponse is the data-structure of this message
@@ -90,6 +92,140 @@ func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, server
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ActivateSessionResponseBuilder is a builder for ActivateSessionResponse
+type ActivateSessionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ActivateSessionResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) ActivateSessionResponseBuilder
+	// WithServerNonce adds ServerNonce (property field)
+	WithServerNonce(PascalByteString) ActivateSessionResponseBuilder
+	// WithServerNonceBuilder adds ServerNonce (property field) which is build by the builder
+	WithServerNonceBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) ActivateSessionResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) ActivateSessionResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) ActivateSessionResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) ActivateSessionResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) ActivateSessionResponseBuilder
+	// Build builds the ActivateSessionResponse or returns an error if something is wrong
+	Build() (ActivateSessionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ActivateSessionResponse
+}
+
+// NewActivateSessionResponseBuilder() creates a ActivateSessionResponseBuilder
+func NewActivateSessionResponseBuilder() ActivateSessionResponseBuilder {
+	return &_ActivateSessionResponseBuilder{_ActivateSessionResponse: new(_ActivateSessionResponse)}
+}
+
+type _ActivateSessionResponseBuilder struct {
+	*_ActivateSessionResponse
+
+	err *utils.MultiError
+}
+
+var _ (ActivateSessionResponseBuilder) = (*_ActivateSessionResponseBuilder)(nil)
+
+func (m *_ActivateSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ActivateSessionResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithServerNonce(serverNonce).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_ActivateSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ActivateSessionResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithServerNonce(serverNonce PascalByteString) ActivateSessionResponseBuilder {
+	m.ServerNonce = serverNonce
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithServerNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) ActivateSessionResponseBuilder {
+	builder := builderSupplier(m.ServerNonce.CreatePascalByteStringBuilder())
+	var err error
+	m.ServerNonce, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithNoOfResults(noOfResults int32) ActivateSessionResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithResults(results ...StatusCode) ActivateSessionResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ActivateSessionResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ActivateSessionResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_ActivateSessionResponseBuilder) Build() (ActivateSessionResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.ServerNonce == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'serverNonce' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ActivateSessionResponse.deepCopy(), nil
+}
+
+func (m *_ActivateSessionResponseBuilder) MustBuild() ActivateSessionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ActivateSessionResponseBuilder) DeepCopy() any {
+	return m.CreateActivateSessionResponseBuilder()
+}
+
+// CreateActivateSessionResponseBuilder creates a ActivateSessionResponseBuilder
+func (m *_ActivateSessionResponse) CreateActivateSessionResponseBuilder() ActivateSessionResponseBuilder {
+	if m == nil {
+		return NewActivateSessionResponseBuilder()
+	}
+	return &_ActivateSessionResponseBuilder{_ActivateSessionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

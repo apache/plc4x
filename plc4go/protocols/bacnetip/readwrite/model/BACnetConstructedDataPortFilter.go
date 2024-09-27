@@ -48,6 +48,8 @@ type BACnetConstructedDataPortFilter interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataPortFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPortFilter()
+	// CreateBuilder creates a BACnetConstructedDataPortFilterBuilder
+	CreateBACnetConstructedDataPortFilterBuilder() BACnetConstructedDataPortFilterBuilder
 }
 
 // _BACnetConstructedDataPortFilter is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataPortFilter(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPortFilterBuilder is a builder for BACnetConstructedDataPortFilter
+type BACnetConstructedDataPortFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(portFilter []BACnetPortPermission) BACnetConstructedDataPortFilterBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPortFilterBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPortFilterBuilder
+	// WithPortFilter adds PortFilter (property field)
+	WithPortFilter(...BACnetPortPermission) BACnetConstructedDataPortFilterBuilder
+	// Build builds the BACnetConstructedDataPortFilter or returns an error if something is wrong
+	Build() (BACnetConstructedDataPortFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPortFilter
+}
+
+// NewBACnetConstructedDataPortFilterBuilder() creates a BACnetConstructedDataPortFilterBuilder
+func NewBACnetConstructedDataPortFilterBuilder() BACnetConstructedDataPortFilterBuilder {
+	return &_BACnetConstructedDataPortFilterBuilder{_BACnetConstructedDataPortFilter: new(_BACnetConstructedDataPortFilter)}
+}
+
+type _BACnetConstructedDataPortFilterBuilder struct {
+	*_BACnetConstructedDataPortFilter
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPortFilterBuilder) = (*_BACnetConstructedDataPortFilterBuilder)(nil)
+
+func (m *_BACnetConstructedDataPortFilterBuilder) WithMandatoryFields(portFilter []BACnetPortPermission) BACnetConstructedDataPortFilterBuilder {
+	return m.WithPortFilter(portFilter...)
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPortFilterBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPortFilterBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) WithPortFilter(portFilter ...BACnetPortPermission) BACnetConstructedDataPortFilterBuilder {
+	m.PortFilter = portFilter
+	return m
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) Build() (BACnetConstructedDataPortFilter, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPortFilter.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) MustBuild() BACnetConstructedDataPortFilter {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPortFilterBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPortFilterBuilder()
+}
+
+// CreateBACnetConstructedDataPortFilterBuilder creates a BACnetConstructedDataPortFilterBuilder
+func (m *_BACnetConstructedDataPortFilter) CreateBACnetConstructedDataPortFilterBuilder() BACnetConstructedDataPortFilterBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPortFilterBuilder()
+	}
+	return &_BACnetConstructedDataPortFilterBuilder{_BACnetConstructedDataPortFilter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

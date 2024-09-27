@@ -48,6 +48,8 @@ type RepublishRequest interface {
 	GetRetransmitSequenceNumber() uint32
 	// IsRepublishRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRepublishRequest()
+	// CreateBuilder creates a RepublishRequestBuilder
+	CreateRepublishRequestBuilder() RepublishRequestBuilder
 }
 
 // _RepublishRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewRepublishRequest(requestHeader ExtensionObjectDefinition, subscriptionId
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RepublishRequestBuilder is a builder for RepublishRequest
+type RepublishRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) RepublishRequestBuilder
+	// WithSubscriptionId adds SubscriptionId (property field)
+	WithSubscriptionId(uint32) RepublishRequestBuilder
+	// WithRetransmitSequenceNumber adds RetransmitSequenceNumber (property field)
+	WithRetransmitSequenceNumber(uint32) RepublishRequestBuilder
+	// Build builds the RepublishRequest or returns an error if something is wrong
+	Build() (RepublishRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RepublishRequest
+}
+
+// NewRepublishRequestBuilder() creates a RepublishRequestBuilder
+func NewRepublishRequestBuilder() RepublishRequestBuilder {
+	return &_RepublishRequestBuilder{_RepublishRequest: new(_RepublishRequest)}
+}
+
+type _RepublishRequestBuilder struct {
+	*_RepublishRequest
+
+	err *utils.MultiError
+}
+
+var _ (RepublishRequestBuilder) = (*_RepublishRequestBuilder)(nil)
+
+func (m *_RepublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, retransmitSequenceNumber uint32) RepublishRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithRetransmitSequenceNumber(retransmitSequenceNumber)
+}
+
+func (m *_RepublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RepublishRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_RepublishRequestBuilder) WithSubscriptionId(subscriptionId uint32) RepublishRequestBuilder {
+	m.SubscriptionId = subscriptionId
+	return m
+}
+
+func (m *_RepublishRequestBuilder) WithRetransmitSequenceNumber(retransmitSequenceNumber uint32) RepublishRequestBuilder {
+	m.RetransmitSequenceNumber = retransmitSequenceNumber
+	return m
+}
+
+func (m *_RepublishRequestBuilder) Build() (RepublishRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RepublishRequest.deepCopy(), nil
+}
+
+func (m *_RepublishRequestBuilder) MustBuild() RepublishRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RepublishRequestBuilder) DeepCopy() any {
+	return m.CreateRepublishRequestBuilder()
+}
+
+// CreateRepublishRequestBuilder creates a RepublishRequestBuilder
+func (m *_RepublishRequest) CreateRepublishRequestBuilder() RepublishRequestBuilder {
+	if m == nil {
+		return NewRepublishRequestBuilder()
+	}
+	return &_RepublishRequestBuilder{_RepublishRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

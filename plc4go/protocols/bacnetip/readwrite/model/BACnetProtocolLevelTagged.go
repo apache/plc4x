@@ -45,6 +45,8 @@ type BACnetProtocolLevelTagged interface {
 	GetValue() BACnetProtocolLevel
 	// IsBACnetProtocolLevelTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProtocolLevelTagged()
+	// CreateBuilder creates a BACnetProtocolLevelTaggedBuilder
+	CreateBACnetProtocolLevelTaggedBuilder() BACnetProtocolLevelTaggedBuilder
 }
 
 // _BACnetProtocolLevelTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetProtocolLevelTagged(header BACnetTagHeader, value BACnetProtocolLe
 	}
 	return &_BACnetProtocolLevelTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProtocolLevelTaggedBuilder is a builder for BACnetProtocolLevelTagged
+type BACnetProtocolLevelTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetProtocolLevelTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProtocolLevelTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder
+	// Build builds the BACnetProtocolLevelTagged or returns an error if something is wrong
+	Build() (BACnetProtocolLevelTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProtocolLevelTagged
+}
+
+// NewBACnetProtocolLevelTaggedBuilder() creates a BACnetProtocolLevelTaggedBuilder
+func NewBACnetProtocolLevelTaggedBuilder() BACnetProtocolLevelTaggedBuilder {
+	return &_BACnetProtocolLevelTaggedBuilder{_BACnetProtocolLevelTagged: new(_BACnetProtocolLevelTagged)}
+}
+
+type _BACnetProtocolLevelTaggedBuilder struct {
+	*_BACnetProtocolLevelTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProtocolLevelTaggedBuilder) = (*_BACnetProtocolLevelTaggedBuilder)(nil)
+
+func (m *_BACnetProtocolLevelTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetProtocolLevelTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProtocolLevelTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) WithValue(value BACnetProtocolLevel) BACnetProtocolLevelTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) Build() (BACnetProtocolLevelTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetProtocolLevelTagged.deepCopy(), nil
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) MustBuild() BACnetProtocolLevelTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetProtocolLevelTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetProtocolLevelTaggedBuilder()
+}
+
+// CreateBACnetProtocolLevelTaggedBuilder creates a BACnetProtocolLevelTaggedBuilder
+func (m *_BACnetProtocolLevelTagged) CreateBACnetProtocolLevelTaggedBuilder() BACnetProtocolLevelTaggedBuilder {
+	if m == nil {
+		return NewBACnetProtocolLevelTaggedBuilder()
+	}
+	return &_BACnetProtocolLevelTaggedBuilder{_BACnetProtocolLevelTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

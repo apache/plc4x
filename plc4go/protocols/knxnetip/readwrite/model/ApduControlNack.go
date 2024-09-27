@@ -40,6 +40,8 @@ type ApduControlNack interface {
 	ApduControl
 	// IsApduControlNack is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlNack()
+	// CreateBuilder creates a ApduControlNackBuilder
+	CreateApduControlNackBuilder() ApduControlNackBuilder
 }
 
 // _ApduControlNack is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduControlNack() *_ApduControlNack {
 	_result.ApduControlContract.(*_ApduControl)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduControlNackBuilder is a builder for ApduControlNack
+type ApduControlNackBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduControlNackBuilder
+	// Build builds the ApduControlNack or returns an error if something is wrong
+	Build() (ApduControlNack, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduControlNack
+}
+
+// NewApduControlNackBuilder() creates a ApduControlNackBuilder
+func NewApduControlNackBuilder() ApduControlNackBuilder {
+	return &_ApduControlNackBuilder{_ApduControlNack: new(_ApduControlNack)}
+}
+
+type _ApduControlNackBuilder struct {
+	*_ApduControlNack
+
+	err *utils.MultiError
+}
+
+var _ (ApduControlNackBuilder) = (*_ApduControlNackBuilder)(nil)
+
+func (m *_ApduControlNackBuilder) WithMandatoryFields() ApduControlNackBuilder {
+	return m
+}
+
+func (m *_ApduControlNackBuilder) Build() (ApduControlNack, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduControlNack.deepCopy(), nil
+}
+
+func (m *_ApduControlNackBuilder) MustBuild() ApduControlNack {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduControlNackBuilder) DeepCopy() any {
+	return m.CreateApduControlNackBuilder()
+}
+
+// CreateApduControlNackBuilder creates a ApduControlNackBuilder
+func (m *_ApduControlNack) CreateApduControlNackBuilder() ApduControlNackBuilder {
+	if m == nil {
+		return NewApduControlNackBuilder()
+	}
+	return &_ApduControlNackBuilder{_ApduControlNack: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

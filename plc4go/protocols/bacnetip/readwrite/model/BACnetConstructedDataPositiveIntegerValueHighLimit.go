@@ -46,6 +46,8 @@ type BACnetConstructedDataPositiveIntegerValueHighLimit interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPositiveIntegerValueHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPositiveIntegerValueHighLimit()
+	// CreateBuilder creates a BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+	CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
 }
 
 // _BACnetConstructedDataPositiveIntegerValueHighLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPositiveIntegerValueHighLimit(openingTag BACnetOpen
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPositiveIntegerValueHighLimitBuilder is a builder for BACnetConstructedDataPositiveIntegerValueHighLimit
+type BACnetConstructedDataPositiveIntegerValueHighLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+	// WithHighLimit adds HighLimit (property field)
+	WithHighLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+	// WithHighLimitBuilder adds HighLimit (property field) which is build by the builder
+	WithHighLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+	// Build builds the BACnetConstructedDataPositiveIntegerValueHighLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataPositiveIntegerValueHighLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPositiveIntegerValueHighLimit
+}
+
+// NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() creates a BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+func NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	return &_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder{_BACnetConstructedDataPositiveIntegerValueHighLimit: new(_BACnetConstructedDataPositiveIntegerValueHighLimit)}
+}
+
+type _BACnetConstructedDataPositiveIntegerValueHighLimitBuilder struct {
+	*_BACnetConstructedDataPositiveIntegerValueHighLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) = (*_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithMandatoryFields(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	return m.WithHighLimit(highLimit)
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimit(highLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	m.HighLimit = highLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) WithHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	builder := builderSupplier(m.HighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.HighLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) Build() (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+	if m.HighLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'highLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPositiveIntegerValueHighLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueHighLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder()
+}
+
+// CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder creates a BACnetConstructedDataPositiveIntegerValueHighLimitBuilder
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) CreateBACnetConstructedDataPositiveIntegerValueHighLimitBuilder() BACnetConstructedDataPositiveIntegerValueHighLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPositiveIntegerValueHighLimitBuilder()
+	}
+	return &_BACnetConstructedDataPositiveIntegerValueHighLimitBuilder{_BACnetConstructedDataPositiveIntegerValueHighLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

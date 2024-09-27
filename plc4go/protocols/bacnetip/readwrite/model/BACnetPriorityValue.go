@@ -43,6 +43,8 @@ type BACnetPriorityValue interface {
 	utils.Copyable
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
+	// CreateBuilder creates a BACnetPriorityValueBuilder
+	CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder
 }
 
 // BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type BACnetPriorityValueContract interface {
 	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
+	// CreateBuilder creates a BACnetPriorityValueBuilder
+	CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder
 }
 
 // BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -87,6 +91,99 @@ func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument 
 	}
 	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueBuilder is a builder for BACnetPriorityValue
+type BACnetPriorityValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetPriorityValueBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder
+	// Build builds the BACnetPriorityValue or returns an error if something is wrong
+	Build() (BACnetPriorityValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueContract
+}
+
+// NewBACnetPriorityValueBuilder() creates a BACnetPriorityValueBuilder
+func NewBACnetPriorityValueBuilder() BACnetPriorityValueBuilder {
+	return &_BACnetPriorityValueBuilder{_BACnetPriorityValue: new(_BACnetPriorityValue)}
+}
+
+type _BACnetPriorityValueBuilder struct {
+	*_BACnetPriorityValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueBuilder) = (*_BACnetPriorityValueBuilder)(nil)
+
+func (m *_BACnetPriorityValueBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetPriorityValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetPriorityValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueBuilder) Build() (BACnetPriorityValueContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValue.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueBuilder) MustBuild() BACnetPriorityValueContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueBuilder()
+}
+
+// CreateBACnetPriorityValueBuilder creates a BACnetPriorityValueBuilder
+func (m *_BACnetPriorityValue) CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueBuilder()
+	}
+	return &_BACnetPriorityValueBuilder{_BACnetPriorityValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

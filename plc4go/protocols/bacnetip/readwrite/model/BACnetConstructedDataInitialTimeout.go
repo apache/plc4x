@@ -46,6 +46,8 @@ type BACnetConstructedDataInitialTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataInitialTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataInitialTimeout()
+	// CreateBuilder creates a BACnetConstructedDataInitialTimeoutBuilder
+	CreateBACnetConstructedDataInitialTimeoutBuilder() BACnetConstructedDataInitialTimeoutBuilder
 }
 
 // _BACnetConstructedDataInitialTimeout is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataInitialTimeout(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataInitialTimeoutBuilder is a builder for BACnetConstructedDataInitialTimeout
+type BACnetConstructedDataInitialTimeoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(initialTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder
+	// WithInitialTimeout adds InitialTimeout (property field)
+	WithInitialTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder
+	// WithInitialTimeoutBuilder adds InitialTimeout (property field) which is build by the builder
+	WithInitialTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataInitialTimeoutBuilder
+	// Build builds the BACnetConstructedDataInitialTimeout or returns an error if something is wrong
+	Build() (BACnetConstructedDataInitialTimeout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataInitialTimeout
+}
+
+// NewBACnetConstructedDataInitialTimeoutBuilder() creates a BACnetConstructedDataInitialTimeoutBuilder
+func NewBACnetConstructedDataInitialTimeoutBuilder() BACnetConstructedDataInitialTimeoutBuilder {
+	return &_BACnetConstructedDataInitialTimeoutBuilder{_BACnetConstructedDataInitialTimeout: new(_BACnetConstructedDataInitialTimeout)}
+}
+
+type _BACnetConstructedDataInitialTimeoutBuilder struct {
+	*_BACnetConstructedDataInitialTimeout
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataInitialTimeoutBuilder) = (*_BACnetConstructedDataInitialTimeoutBuilder)(nil)
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) WithMandatoryFields(initialTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder {
+	return m.WithInitialTimeout(initialTimeout)
+}
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) WithInitialTimeout(initialTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataInitialTimeoutBuilder {
+	m.InitialTimeout = initialTimeout
+	return m
+}
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) WithInitialTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataInitialTimeoutBuilder {
+	builder := builderSupplier(m.InitialTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.InitialTimeout, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) Build() (BACnetConstructedDataInitialTimeout, error) {
+	if m.InitialTimeout == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'initialTimeout' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataInitialTimeout.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) MustBuild() BACnetConstructedDataInitialTimeout {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataInitialTimeoutBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataInitialTimeoutBuilder()
+}
+
+// CreateBACnetConstructedDataInitialTimeoutBuilder creates a BACnetConstructedDataInitialTimeoutBuilder
+func (m *_BACnetConstructedDataInitialTimeout) CreateBACnetConstructedDataInitialTimeoutBuilder() BACnetConstructedDataInitialTimeoutBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataInitialTimeoutBuilder()
+	}
+	return &_BACnetConstructedDataInitialTimeoutBuilder{_BACnetConstructedDataInitialTimeout: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataSilenced interface {
 	GetActualValue() BACnetSilencedStateTagged
 	// IsBACnetConstructedDataSilenced is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSilenced()
+	// CreateBuilder creates a BACnetConstructedDataSilencedBuilder
+	CreateBACnetConstructedDataSilencedBuilder() BACnetConstructedDataSilencedBuilder
 }
 
 // _BACnetConstructedDataSilenced is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataSilenced(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSilencedBuilder is a builder for BACnetConstructedDataSilenced
+type BACnetConstructedDataSilencedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(silenced BACnetSilencedStateTagged) BACnetConstructedDataSilencedBuilder
+	// WithSilenced adds Silenced (property field)
+	WithSilenced(BACnetSilencedStateTagged) BACnetConstructedDataSilencedBuilder
+	// WithSilencedBuilder adds Silenced (property field) which is build by the builder
+	WithSilencedBuilder(func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetConstructedDataSilencedBuilder
+	// Build builds the BACnetConstructedDataSilenced or returns an error if something is wrong
+	Build() (BACnetConstructedDataSilenced, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSilenced
+}
+
+// NewBACnetConstructedDataSilencedBuilder() creates a BACnetConstructedDataSilencedBuilder
+func NewBACnetConstructedDataSilencedBuilder() BACnetConstructedDataSilencedBuilder {
+	return &_BACnetConstructedDataSilencedBuilder{_BACnetConstructedDataSilenced: new(_BACnetConstructedDataSilenced)}
+}
+
+type _BACnetConstructedDataSilencedBuilder struct {
+	*_BACnetConstructedDataSilenced
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSilencedBuilder) = (*_BACnetConstructedDataSilencedBuilder)(nil)
+
+func (m *_BACnetConstructedDataSilencedBuilder) WithMandatoryFields(silenced BACnetSilencedStateTagged) BACnetConstructedDataSilencedBuilder {
+	return m.WithSilenced(silenced)
+}
+
+func (m *_BACnetConstructedDataSilencedBuilder) WithSilenced(silenced BACnetSilencedStateTagged) BACnetConstructedDataSilencedBuilder {
+	m.Silenced = silenced
+	return m
+}
+
+func (m *_BACnetConstructedDataSilencedBuilder) WithSilencedBuilder(builderSupplier func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetConstructedDataSilencedBuilder {
+	builder := builderSupplier(m.Silenced.CreateBACnetSilencedStateTaggedBuilder())
+	var err error
+	m.Silenced, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSilencedStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSilencedBuilder) Build() (BACnetConstructedDataSilenced, error) {
+	if m.Silenced == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'silenced' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSilenced.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSilencedBuilder) MustBuild() BACnetConstructedDataSilenced {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSilencedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSilencedBuilder()
+}
+
+// CreateBACnetConstructedDataSilencedBuilder creates a BACnetConstructedDataSilencedBuilder
+func (m *_BACnetConstructedDataSilenced) CreateBACnetConstructedDataSilencedBuilder() BACnetConstructedDataSilencedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSilencedBuilder()
+	}
+	return &_BACnetConstructedDataSilencedBuilder{_BACnetConstructedDataSilenced: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

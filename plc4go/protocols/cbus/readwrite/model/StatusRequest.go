@@ -43,6 +43,8 @@ type StatusRequest interface {
 	utils.Copyable
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequest()
+	// CreateBuilder creates a StatusRequestBuilder
+	CreateStatusRequestBuilder() StatusRequestBuilder
 }
 
 // StatusRequestContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type StatusRequestContract interface {
 	GetStatusType() byte
 	// IsStatusRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequest()
+	// CreateBuilder creates a StatusRequestBuilder
+	CreateStatusRequestBuilder() StatusRequestBuilder
 }
 
 // StatusRequestRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +77,78 @@ var _ StatusRequestContract = (*_StatusRequest)(nil)
 func NewStatusRequest(statusType byte) *_StatusRequest {
 	return &_StatusRequest{StatusType: statusType}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StatusRequestBuilder is a builder for StatusRequest
+type StatusRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusType byte) StatusRequestBuilder
+	// WithStatusType adds StatusType (property field)
+	WithStatusType(byte) StatusRequestBuilder
+	// Build builds the StatusRequest or returns an error if something is wrong
+	Build() (StatusRequestContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusRequestContract
+}
+
+// NewStatusRequestBuilder() creates a StatusRequestBuilder
+func NewStatusRequestBuilder() StatusRequestBuilder {
+	return &_StatusRequestBuilder{_StatusRequest: new(_StatusRequest)}
+}
+
+type _StatusRequestBuilder struct {
+	*_StatusRequest
+
+	err *utils.MultiError
+}
+
+var _ (StatusRequestBuilder) = (*_StatusRequestBuilder)(nil)
+
+func (m *_StatusRequestBuilder) WithMandatoryFields(statusType byte) StatusRequestBuilder {
+	return m.WithStatusType(statusType)
+}
+
+func (m *_StatusRequestBuilder) WithStatusType(statusType byte) StatusRequestBuilder {
+	m.StatusType = statusType
+	return m
+}
+
+func (m *_StatusRequestBuilder) Build() (StatusRequestContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._StatusRequest.deepCopy(), nil
+}
+
+func (m *_StatusRequestBuilder) MustBuild() StatusRequestContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_StatusRequestBuilder) DeepCopy() any {
+	return m.CreateStatusRequestBuilder()
+}
+
+// CreateStatusRequestBuilder creates a StatusRequestBuilder
+func (m *_StatusRequest) CreateStatusRequestBuilder() StatusRequestBuilder {
+	if m == nil {
+		return NewStatusRequestBuilder()
+	}
+	return &_StatusRequestBuilder{_StatusRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

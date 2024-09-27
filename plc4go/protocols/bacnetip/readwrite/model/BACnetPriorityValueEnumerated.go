@@ -44,6 +44,8 @@ type BACnetPriorityValueEnumerated interface {
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 	// IsBACnetPriorityValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueEnumerated()
+	// CreateBuilder creates a BACnetPriorityValueEnumeratedBuilder
+	CreateBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuilder
 }
 
 // _BACnetPriorityValueEnumerated is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueEnumerated(peekedTagHeader BACnetTagHeader, enumerate
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueEnumeratedBuilder is a builder for BACnetPriorityValueEnumerated
+type BACnetPriorityValueEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetPriorityValueEnumeratedBuilder
+	// Build builds the BACnetPriorityValueEnumerated or returns an error if something is wrong
+	Build() (BACnetPriorityValueEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueEnumerated
+}
+
+// NewBACnetPriorityValueEnumeratedBuilder() creates a BACnetPriorityValueEnumeratedBuilder
+func NewBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuilder {
+	return &_BACnetPriorityValueEnumeratedBuilder{_BACnetPriorityValueEnumerated: new(_BACnetPriorityValueEnumerated)}
+}
+
+type _BACnetPriorityValueEnumeratedBuilder struct {
+	*_BACnetPriorityValueEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueEnumeratedBuilder) = (*_BACnetPriorityValueEnumeratedBuilder)(nil)
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
+	return m.WithEnumeratedValue(enumeratedValue)
+}
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetPriorityValueEnumeratedBuilder {
+	m.EnumeratedValue = enumeratedValue
+	return m
+}
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetPriorityValueEnumeratedBuilder {
+	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	m.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) Build() (BACnetPriorityValueEnumerated, error) {
+	if m.EnumeratedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueEnumerated.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) MustBuild() BACnetPriorityValueEnumerated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueEnumeratedBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueEnumeratedBuilder()
+}
+
+// CreateBACnetPriorityValueEnumeratedBuilder creates a BACnetPriorityValueEnumeratedBuilder
+func (m *_BACnetPriorityValueEnumerated) CreateBACnetPriorityValueEnumeratedBuilder() BACnetPriorityValueEnumeratedBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueEnumeratedBuilder()
+	}
+	return &_BACnetPriorityValueEnumeratedBuilder{_BACnetPriorityValueEnumerated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

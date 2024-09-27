@@ -44,6 +44,8 @@ type SecurityDataOn interface {
 	GetData() []byte
 	// IsSecurityDataOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataOn()
+	// CreateBuilder creates a SecurityDataOnBuilder
+	CreateSecurityDataOnBuilder() SecurityDataOnBuilder
 }
 
 // _SecurityDataOn is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataOn(commandTypeContainer SecurityCommandTypeContainer, argume
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataOnBuilder is a builder for SecurityDataOn
+type SecurityDataOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) SecurityDataOnBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) SecurityDataOnBuilder
+	// Build builds the SecurityDataOn or returns an error if something is wrong
+	Build() (SecurityDataOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataOn
+}
+
+// NewSecurityDataOnBuilder() creates a SecurityDataOnBuilder
+func NewSecurityDataOnBuilder() SecurityDataOnBuilder {
+	return &_SecurityDataOnBuilder{_SecurityDataOn: new(_SecurityDataOn)}
+}
+
+type _SecurityDataOnBuilder struct {
+	*_SecurityDataOn
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataOnBuilder) = (*_SecurityDataOnBuilder)(nil)
+
+func (m *_SecurityDataOnBuilder) WithMandatoryFields(data []byte) SecurityDataOnBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_SecurityDataOnBuilder) WithData(data ...byte) SecurityDataOnBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_SecurityDataOnBuilder) Build() (SecurityDataOn, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataOn.deepCopy(), nil
+}
+
+func (m *_SecurityDataOnBuilder) MustBuild() SecurityDataOn {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataOnBuilder) DeepCopy() any {
+	return m.CreateSecurityDataOnBuilder()
+}
+
+// CreateSecurityDataOnBuilder creates a SecurityDataOnBuilder
+func (m *_SecurityDataOn) CreateSecurityDataOnBuilder() SecurityDataOnBuilder {
+	if m == nil {
+		return NewSecurityDataOnBuilder()
+	}
+	return &_SecurityDataOnBuilder{_SecurityDataOn: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

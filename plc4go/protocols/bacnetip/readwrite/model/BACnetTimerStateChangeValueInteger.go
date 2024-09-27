@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetTimerStateChangeValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueInteger()
+	// CreateBuilder creates a BACnetTimerStateChangeValueIntegerBuilder
+	CreateBACnetTimerStateChangeValueIntegerBuilder() BACnetTimerStateChangeValueIntegerBuilder
 }
 
 // _BACnetTimerStateChangeValueInteger is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueInteger(peekedTagHeader BACnetTagHeader, inte
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueIntegerBuilder is a builder for BACnetTimerStateChangeValueInteger
+type BACnetTimerStateChangeValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetTimerStateChangeValueIntegerBuilder
+	// Build builds the BACnetTimerStateChangeValueInteger or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueInteger
+}
+
+// NewBACnetTimerStateChangeValueIntegerBuilder() creates a BACnetTimerStateChangeValueIntegerBuilder
+func NewBACnetTimerStateChangeValueIntegerBuilder() BACnetTimerStateChangeValueIntegerBuilder {
+	return &_BACnetTimerStateChangeValueIntegerBuilder{_BACnetTimerStateChangeValueInteger: new(_BACnetTimerStateChangeValueInteger)}
+}
+
+type _BACnetTimerStateChangeValueIntegerBuilder struct {
+	*_BACnetTimerStateChangeValueInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueIntegerBuilder) = (*_BACnetTimerStateChangeValueIntegerBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetTimerStateChangeValueIntegerBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetTimerStateChangeValueIntegerBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) Build() (BACnetTimerStateChangeValueInteger, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueInteger.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) MustBuild() BACnetTimerStateChangeValueInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueIntegerBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueIntegerBuilder creates a BACnetTimerStateChangeValueIntegerBuilder
+func (m *_BACnetTimerStateChangeValueInteger) CreateBACnetTimerStateChangeValueIntegerBuilder() BACnetTimerStateChangeValueIntegerBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueIntegerBuilder()
+	}
+	return &_BACnetTimerStateChangeValueIntegerBuilder{_BACnetTimerStateChangeValueInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

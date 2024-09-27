@@ -50,6 +50,8 @@ type MonitoredItemModifyResult interface {
 	GetFilterResult() ExtensionObject
 	// IsMonitoredItemModifyResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemModifyResult()
+	// CreateBuilder creates a MonitoredItemModifyResultBuilder
+	CreateMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder
 }
 
 // _MonitoredItemModifyResult is the data-structure of this message
@@ -82,6 +84,141 @@ func NewMonitoredItemModifyResult(statusCode StatusCode, revisedSamplingInterval
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredItemModifyResultBuilder is a builder for MonitoredItemModifyResult
+type MonitoredItemModifyResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemModifyResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) MonitoredItemModifyResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemModifyResultBuilder
+	// WithRevisedSamplingInterval adds RevisedSamplingInterval (property field)
+	WithRevisedSamplingInterval(float64) MonitoredItemModifyResultBuilder
+	// WithRevisedQueueSize adds RevisedQueueSize (property field)
+	WithRevisedQueueSize(uint32) MonitoredItemModifyResultBuilder
+	// WithFilterResult adds FilterResult (property field)
+	WithFilterResult(ExtensionObject) MonitoredItemModifyResultBuilder
+	// WithFilterResultBuilder adds FilterResult (property field) which is build by the builder
+	WithFilterResultBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemModifyResultBuilder
+	// Build builds the MonitoredItemModifyResult or returns an error if something is wrong
+	Build() (MonitoredItemModifyResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredItemModifyResult
+}
+
+// NewMonitoredItemModifyResultBuilder() creates a MonitoredItemModifyResultBuilder
+func NewMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder {
+	return &_MonitoredItemModifyResultBuilder{_MonitoredItemModifyResult: new(_MonitoredItemModifyResult)}
+}
+
+type _MonitoredItemModifyResultBuilder struct {
+	*_MonitoredItemModifyResult
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredItemModifyResultBuilder) = (*_MonitoredItemModifyResultBuilder)(nil)
+
+func (m *_MonitoredItemModifyResultBuilder) WithMandatoryFields(statusCode StatusCode, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
+	return m.WithStatusCode(statusCode).WithRevisedSamplingInterval(revisedSamplingInterval).WithRevisedQueueSize(revisedQueueSize).WithFilterResult(filterResult)
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithStatusCode(statusCode StatusCode) MonitoredItemModifyResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemModifyResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithRevisedSamplingInterval(revisedSamplingInterval float64) MonitoredItemModifyResultBuilder {
+	m.RevisedSamplingInterval = revisedSamplingInterval
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithRevisedQueueSize(revisedQueueSize uint32) MonitoredItemModifyResultBuilder {
+	m.RevisedQueueSize = revisedQueueSize
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithFilterResult(filterResult ExtensionObject) MonitoredItemModifyResultBuilder {
+	m.FilterResult = filterResult
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) WithFilterResultBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemModifyResultBuilder {
+	builder := builderSupplier(m.FilterResult.CreateExtensionObjectBuilder())
+	var err error
+	m.FilterResult, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return m
+}
+
+func (m *_MonitoredItemModifyResultBuilder) Build() (MonitoredItemModifyResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.FilterResult == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'filterResult' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MonitoredItemModifyResult.deepCopy(), nil
+}
+
+func (m *_MonitoredItemModifyResultBuilder) MustBuild() MonitoredItemModifyResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MonitoredItemModifyResultBuilder) DeepCopy() any {
+	return m.CreateMonitoredItemModifyResultBuilder()
+}
+
+// CreateMonitoredItemModifyResultBuilder creates a MonitoredItemModifyResultBuilder
+func (m *_MonitoredItemModifyResult) CreateMonitoredItemModifyResultBuilder() MonitoredItemModifyResultBuilder {
+	if m == nil {
+		return NewMonitoredItemModifyResultBuilder()
+	}
+	return &_MonitoredItemModifyResultBuilder{_MonitoredItemModifyResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataPulseRate interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPulseRate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPulseRate()
+	// CreateBuilder creates a BACnetConstructedDataPulseRateBuilder
+	CreateBACnetConstructedDataPulseRateBuilder() BACnetConstructedDataPulseRateBuilder
 }
 
 // _BACnetConstructedDataPulseRate is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPulseRate(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPulseRateBuilder is a builder for BACnetConstructedDataPulseRate
+type BACnetConstructedDataPulseRateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pulseRate BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder
+	// WithPulseRate adds PulseRate (property field)
+	WithPulseRate(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder
+	// WithPulseRateBuilder adds PulseRate (property field) which is build by the builder
+	WithPulseRateBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPulseRateBuilder
+	// Build builds the BACnetConstructedDataPulseRate or returns an error if something is wrong
+	Build() (BACnetConstructedDataPulseRate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPulseRate
+}
+
+// NewBACnetConstructedDataPulseRateBuilder() creates a BACnetConstructedDataPulseRateBuilder
+func NewBACnetConstructedDataPulseRateBuilder() BACnetConstructedDataPulseRateBuilder {
+	return &_BACnetConstructedDataPulseRateBuilder{_BACnetConstructedDataPulseRate: new(_BACnetConstructedDataPulseRate)}
+}
+
+type _BACnetConstructedDataPulseRateBuilder struct {
+	*_BACnetConstructedDataPulseRate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPulseRateBuilder) = (*_BACnetConstructedDataPulseRateBuilder)(nil)
+
+func (m *_BACnetConstructedDataPulseRateBuilder) WithMandatoryFields(pulseRate BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder {
+	return m.WithPulseRate(pulseRate)
+}
+
+func (m *_BACnetConstructedDataPulseRateBuilder) WithPulseRate(pulseRate BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPulseRateBuilder {
+	m.PulseRate = pulseRate
+	return m
+}
+
+func (m *_BACnetConstructedDataPulseRateBuilder) WithPulseRateBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPulseRateBuilder {
+	builder := builderSupplier(m.PulseRate.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.PulseRate, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPulseRateBuilder) Build() (BACnetConstructedDataPulseRate, error) {
+	if m.PulseRate == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'pulseRate' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPulseRate.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPulseRateBuilder) MustBuild() BACnetConstructedDataPulseRate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPulseRateBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPulseRateBuilder()
+}
+
+// CreateBACnetConstructedDataPulseRateBuilder creates a BACnetConstructedDataPulseRateBuilder
+func (m *_BACnetConstructedDataPulseRate) CreateBACnetConstructedDataPulseRateBuilder() BACnetConstructedDataPulseRateBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPulseRateBuilder()
+	}
+	return &_BACnetConstructedDataPulseRateBuilder{_BACnetConstructedDataPulseRate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

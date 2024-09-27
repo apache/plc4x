@@ -48,6 +48,8 @@ type AdsReadStateResponse interface {
 	GetDeviceState() uint16
 	// IsAdsReadStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadStateResponse()
+	// CreateBuilder creates a AdsReadStateResponseBuilder
+	CreateAdsReadStateResponseBuilder() AdsReadStateResponseBuilder
 }
 
 // _AdsReadStateResponse is the data-structure of this message
@@ -72,6 +74,92 @@ func NewAdsReadStateResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sour
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadStateResponseBuilder is a builder for AdsReadStateResponse
+type AdsReadStateResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, adsState uint16, deviceState uint16) AdsReadStateResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsReadStateResponseBuilder
+	// WithAdsState adds AdsState (property field)
+	WithAdsState(uint16) AdsReadStateResponseBuilder
+	// WithDeviceState adds DeviceState (property field)
+	WithDeviceState(uint16) AdsReadStateResponseBuilder
+	// Build builds the AdsReadStateResponse or returns an error if something is wrong
+	Build() (AdsReadStateResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadStateResponse
+}
+
+// NewAdsReadStateResponseBuilder() creates a AdsReadStateResponseBuilder
+func NewAdsReadStateResponseBuilder() AdsReadStateResponseBuilder {
+	return &_AdsReadStateResponseBuilder{_AdsReadStateResponse: new(_AdsReadStateResponse)}
+}
+
+type _AdsReadStateResponseBuilder struct {
+	*_AdsReadStateResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadStateResponseBuilder) = (*_AdsReadStateResponseBuilder)(nil)
+
+func (m *_AdsReadStateResponseBuilder) WithMandatoryFields(result ReturnCode, adsState uint16, deviceState uint16) AdsReadStateResponseBuilder {
+	return m.WithResult(result).WithAdsState(adsState).WithDeviceState(deviceState)
+}
+
+func (m *_AdsReadStateResponseBuilder) WithResult(result ReturnCode) AdsReadStateResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_AdsReadStateResponseBuilder) WithAdsState(adsState uint16) AdsReadStateResponseBuilder {
+	m.AdsState = adsState
+	return m
+}
+
+func (m *_AdsReadStateResponseBuilder) WithDeviceState(deviceState uint16) AdsReadStateResponseBuilder {
+	m.DeviceState = deviceState
+	return m
+}
+
+func (m *_AdsReadStateResponseBuilder) Build() (AdsReadStateResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsReadStateResponse.deepCopy(), nil
+}
+
+func (m *_AdsReadStateResponseBuilder) MustBuild() AdsReadStateResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsReadStateResponseBuilder) DeepCopy() any {
+	return m.CreateAdsReadStateResponseBuilder()
+}
+
+// CreateAdsReadStateResponseBuilder creates a AdsReadStateResponseBuilder
+func (m *_AdsReadStateResponse) CreateAdsReadStateResponseBuilder() AdsReadStateResponseBuilder {
+	if m == nil {
+		return NewAdsReadStateResponseBuilder()
+	}
+	return &_AdsReadStateResponseBuilder{_AdsReadStateResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

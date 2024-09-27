@@ -46,6 +46,8 @@ type BACnetConstructedDataDirectReading interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataDirectReading is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDirectReading()
+	// CreateBuilder creates a BACnetConstructedDataDirectReadingBuilder
+	CreateBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectReadingBuilder
 }
 
 // _BACnetConstructedDataDirectReading is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDirectReading(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDirectReadingBuilder is a builder for BACnetConstructedDataDirectReading
+type BACnetConstructedDataDirectReadingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder
+	// WithDirectReading adds DirectReading (property field)
+	WithDirectReading(BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder
+	// WithDirectReadingBuilder adds DirectReading (property field) which is build by the builder
+	WithDirectReadingBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDirectReadingBuilder
+	// Build builds the BACnetConstructedDataDirectReading or returns an error if something is wrong
+	Build() (BACnetConstructedDataDirectReading, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDirectReading
+}
+
+// NewBACnetConstructedDataDirectReadingBuilder() creates a BACnetConstructedDataDirectReadingBuilder
+func NewBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectReadingBuilder {
+	return &_BACnetConstructedDataDirectReadingBuilder{_BACnetConstructedDataDirectReading: new(_BACnetConstructedDataDirectReading)}
+}
+
+type _BACnetConstructedDataDirectReadingBuilder struct {
+	*_BACnetConstructedDataDirectReading
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDirectReadingBuilder) = (*_BACnetConstructedDataDirectReadingBuilder)(nil)
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) WithMandatoryFields(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
+	return m.WithDirectReading(directReading)
+}
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) WithDirectReading(directReading BACnetApplicationTagReal) BACnetConstructedDataDirectReadingBuilder {
+	m.DirectReading = directReading
+	return m
+}
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) WithDirectReadingBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDirectReadingBuilder {
+	builder := builderSupplier(m.DirectReading.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.DirectReading, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) Build() (BACnetConstructedDataDirectReading, error) {
+	if m.DirectReading == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'directReading' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDirectReading.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) MustBuild() BACnetConstructedDataDirectReading {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDirectReadingBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDirectReadingBuilder()
+}
+
+// CreateBACnetConstructedDataDirectReadingBuilder creates a BACnetConstructedDataDirectReadingBuilder
+func (m *_BACnetConstructedDataDirectReading) CreateBACnetConstructedDataDirectReadingBuilder() BACnetConstructedDataDirectReadingBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDirectReadingBuilder()
+	}
+	return &_BACnetConstructedDataDirectReadingBuilder{_BACnetConstructedDataDirectReading: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

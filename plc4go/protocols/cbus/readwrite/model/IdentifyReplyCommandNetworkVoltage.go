@@ -50,6 +50,8 @@ type IdentifyReplyCommandNetworkVoltage interface {
 	GetVoltsDecimalPlace() string
 	// IsIdentifyReplyCommandNetworkVoltage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandNetworkVoltage()
+	// CreateBuilder creates a IdentifyReplyCommandNetworkVoltageBuilder
+	CreateIdentifyReplyCommandNetworkVoltageBuilder() IdentifyReplyCommandNetworkVoltageBuilder
 }
 
 // _IdentifyReplyCommandNetworkVoltage is the data-structure of this message
@@ -72,6 +74,85 @@ func NewIdentifyReplyCommandNetworkVoltage(volts string, voltsDecimalPlace strin
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandNetworkVoltageBuilder is a builder for IdentifyReplyCommandNetworkVoltage
+type IdentifyReplyCommandNetworkVoltageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(volts string, voltsDecimalPlace string) IdentifyReplyCommandNetworkVoltageBuilder
+	// WithVolts adds Volts (property field)
+	WithVolts(string) IdentifyReplyCommandNetworkVoltageBuilder
+	// WithVoltsDecimalPlace adds VoltsDecimalPlace (property field)
+	WithVoltsDecimalPlace(string) IdentifyReplyCommandNetworkVoltageBuilder
+	// Build builds the IdentifyReplyCommandNetworkVoltage or returns an error if something is wrong
+	Build() (IdentifyReplyCommandNetworkVoltage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandNetworkVoltage
+}
+
+// NewIdentifyReplyCommandNetworkVoltageBuilder() creates a IdentifyReplyCommandNetworkVoltageBuilder
+func NewIdentifyReplyCommandNetworkVoltageBuilder() IdentifyReplyCommandNetworkVoltageBuilder {
+	return &_IdentifyReplyCommandNetworkVoltageBuilder{_IdentifyReplyCommandNetworkVoltage: new(_IdentifyReplyCommandNetworkVoltage)}
+}
+
+type _IdentifyReplyCommandNetworkVoltageBuilder struct {
+	*_IdentifyReplyCommandNetworkVoltage
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandNetworkVoltageBuilder) = (*_IdentifyReplyCommandNetworkVoltageBuilder)(nil)
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) WithMandatoryFields(volts string, voltsDecimalPlace string) IdentifyReplyCommandNetworkVoltageBuilder {
+	return m.WithVolts(volts).WithVoltsDecimalPlace(voltsDecimalPlace)
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) WithVolts(volts string) IdentifyReplyCommandNetworkVoltageBuilder {
+	m.Volts = volts
+	return m
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) WithVoltsDecimalPlace(voltsDecimalPlace string) IdentifyReplyCommandNetworkVoltageBuilder {
+	m.VoltsDecimalPlace = voltsDecimalPlace
+	return m
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) Build() (IdentifyReplyCommandNetworkVoltage, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandNetworkVoltage.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) MustBuild() IdentifyReplyCommandNetworkVoltage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandNetworkVoltageBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandNetworkVoltageBuilder()
+}
+
+// CreateIdentifyReplyCommandNetworkVoltageBuilder creates a IdentifyReplyCommandNetworkVoltageBuilder
+func (m *_IdentifyReplyCommandNetworkVoltage) CreateIdentifyReplyCommandNetworkVoltageBuilder() IdentifyReplyCommandNetworkVoltageBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandNetworkVoltageBuilder()
+	}
+	return &_IdentifyReplyCommandNetworkVoltageBuilder{_IdentifyReplyCommandNetworkVoltage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

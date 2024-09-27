@@ -44,6 +44,8 @@ type BacnetConstants interface {
 	utils.Copyable
 	// IsBacnetConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBacnetConstants()
+	// CreateBuilder creates a BacnetConstantsBuilder
+	CreateBacnetConstantsBuilder() BacnetConstantsBuilder
 }
 
 // _BacnetConstants is the data-structure of this message
@@ -56,6 +58,71 @@ var _ BacnetConstants = (*_BacnetConstants)(nil)
 func NewBacnetConstants() *_BacnetConstants {
 	return &_BacnetConstants{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BacnetConstantsBuilder is a builder for BacnetConstants
+type BacnetConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BacnetConstantsBuilder
+	// Build builds the BacnetConstants or returns an error if something is wrong
+	Build() (BacnetConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BacnetConstants
+}
+
+// NewBacnetConstantsBuilder() creates a BacnetConstantsBuilder
+func NewBacnetConstantsBuilder() BacnetConstantsBuilder {
+	return &_BacnetConstantsBuilder{_BacnetConstants: new(_BacnetConstants)}
+}
+
+type _BacnetConstantsBuilder struct {
+	*_BacnetConstants
+
+	err *utils.MultiError
+}
+
+var _ (BacnetConstantsBuilder) = (*_BacnetConstantsBuilder)(nil)
+
+func (m *_BacnetConstantsBuilder) WithMandatoryFields() BacnetConstantsBuilder {
+	return m
+}
+
+func (m *_BacnetConstantsBuilder) Build() (BacnetConstants, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BacnetConstants.deepCopy(), nil
+}
+
+func (m *_BacnetConstantsBuilder) MustBuild() BacnetConstants {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BacnetConstantsBuilder) DeepCopy() any {
+	return m.CreateBacnetConstantsBuilder()
+}
+
+// CreateBacnetConstantsBuilder creates a BacnetConstantsBuilder
+func (m *_BacnetConstants) CreateBacnetConstantsBuilder() BacnetConstantsBuilder {
+	if m == nil {
+		return NewBacnetConstantsBuilder()
+	}
+	return &_BacnetConstantsBuilder{_BacnetConstants: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

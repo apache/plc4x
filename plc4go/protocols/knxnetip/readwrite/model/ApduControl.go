@@ -43,12 +43,16 @@ type ApduControl interface {
 	utils.Copyable
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
+	// CreateBuilder creates a ApduControlBuilder
+	CreateApduControlBuilder() ApduControlBuilder
 }
 
 // ApduControlContract provides a set of functions which can be overwritten by a sub struct
 type ApduControlContract interface {
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
+	// CreateBuilder creates a ApduControlBuilder
+	CreateApduControlBuilder() ApduControlBuilder
 }
 
 // ApduControlRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ ApduControlContract = (*_ApduControl)(nil)
 func NewApduControl() *_ApduControl {
 	return &_ApduControl{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduControlBuilder is a builder for ApduControl
+type ApduControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduControlBuilder
+	// Build builds the ApduControl or returns an error if something is wrong
+	Build() (ApduControlContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduControlContract
+}
+
+// NewApduControlBuilder() creates a ApduControlBuilder
+func NewApduControlBuilder() ApduControlBuilder {
+	return &_ApduControlBuilder{_ApduControl: new(_ApduControl)}
+}
+
+type _ApduControlBuilder struct {
+	*_ApduControl
+
+	err *utils.MultiError
+}
+
+var _ (ApduControlBuilder) = (*_ApduControlBuilder)(nil)
+
+func (m *_ApduControlBuilder) WithMandatoryFields() ApduControlBuilder {
+	return m
+}
+
+func (m *_ApduControlBuilder) Build() (ApduControlContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduControl.deepCopy(), nil
+}
+
+func (m *_ApduControlBuilder) MustBuild() ApduControlContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduControlBuilder) DeepCopy() any {
+	return m.CreateApduControlBuilder()
+}
+
+// CreateApduControlBuilder creates a ApduControlBuilder
+func (m *_ApduControl) CreateApduControlBuilder() ApduControlBuilder {
+	if m == nil {
+		return NewApduControlBuilder()
+	}
+	return &_ApduControlBuilder{_ApduControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApduControl(structType any) ApduControl {

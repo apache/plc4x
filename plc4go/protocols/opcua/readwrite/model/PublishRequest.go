@@ -48,6 +48,8 @@ type PublishRequest interface {
 	GetSubscriptionAcknowledgements() []ExtensionObjectDefinition
 	// IsPublishRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishRequest()
+	// CreateBuilder creates a PublishRequestBuilder
+	CreatePublishRequestBuilder() PublishRequestBuilder
 }
 
 // _PublishRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscription
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishRequestBuilder is a builder for PublishRequest
+type PublishRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) PublishRequestBuilder
+	// WithNoOfSubscriptionAcknowledgements adds NoOfSubscriptionAcknowledgements (property field)
+	WithNoOfSubscriptionAcknowledgements(int32) PublishRequestBuilder
+	// WithSubscriptionAcknowledgements adds SubscriptionAcknowledgements (property field)
+	WithSubscriptionAcknowledgements(...ExtensionObjectDefinition) PublishRequestBuilder
+	// Build builds the PublishRequest or returns an error if something is wrong
+	Build() (PublishRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishRequest
+}
+
+// NewPublishRequestBuilder() creates a PublishRequestBuilder
+func NewPublishRequestBuilder() PublishRequestBuilder {
+	return &_PublishRequestBuilder{_PublishRequest: new(_PublishRequest)}
+}
+
+type _PublishRequestBuilder struct {
+	*_PublishRequest
+
+	err *utils.MultiError
+}
+
+var _ (PublishRequestBuilder) = (*_PublishRequestBuilder)(nil)
+
+func (m *_PublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements).WithSubscriptionAcknowledgements(subscriptionAcknowledgements...)
+}
+
+func (m *_PublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) PublishRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_PublishRequestBuilder) WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements int32) PublishRequestBuilder {
+	m.NoOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements
+	return m
+}
+
+func (m *_PublishRequestBuilder) WithSubscriptionAcknowledgements(subscriptionAcknowledgements ...ExtensionObjectDefinition) PublishRequestBuilder {
+	m.SubscriptionAcknowledgements = subscriptionAcknowledgements
+	return m
+}
+
+func (m *_PublishRequestBuilder) Build() (PublishRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PublishRequest.deepCopy(), nil
+}
+
+func (m *_PublishRequestBuilder) MustBuild() PublishRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PublishRequestBuilder) DeepCopy() any {
+	return m.CreatePublishRequestBuilder()
+}
+
+// CreatePublishRequestBuilder creates a PublishRequestBuilder
+func (m *_PublishRequest) CreatePublishRequestBuilder() PublishRequestBuilder {
+	if m == nil {
+		return NewPublishRequestBuilder()
+	}
+	return &_PublishRequestBuilder{_PublishRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

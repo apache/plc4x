@@ -48,6 +48,8 @@ type CALDataWrite interface {
 	GetParameterValue() ParameterValue
 	// IsCALDataWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataWrite()
+	// CreateBuilder creates a CALDataWriteBuilder
+	CreateCALDataWriteBuilder() CALDataWriteBuilder
 }
 
 // _CALDataWrite is the data-structure of this message
@@ -75,6 +77,98 @@ func NewCALDataWrite(commandTypeContainer CALCommandTypeContainer, additionalDat
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataWriteBuilder is a builder for CALDataWrite
+type CALDataWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, code byte, parameterValue ParameterValue) CALDataWriteBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CALDataWriteBuilder
+	// WithCode adds Code (property field)
+	WithCode(byte) CALDataWriteBuilder
+	// WithParameterValue adds ParameterValue (property field)
+	WithParameterValue(ParameterValue) CALDataWriteBuilder
+	// Build builds the CALDataWrite or returns an error if something is wrong
+	Build() (CALDataWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataWrite
+}
+
+// NewCALDataWriteBuilder() creates a CALDataWriteBuilder
+func NewCALDataWriteBuilder() CALDataWriteBuilder {
+	return &_CALDataWriteBuilder{_CALDataWrite: new(_CALDataWrite)}
+}
+
+type _CALDataWriteBuilder struct {
+	*_CALDataWrite
+
+	err *utils.MultiError
+}
+
+var _ (CALDataWriteBuilder) = (*_CALDataWriteBuilder)(nil)
+
+func (m *_CALDataWriteBuilder) WithMandatoryFields(paramNo Parameter, code byte, parameterValue ParameterValue) CALDataWriteBuilder {
+	return m.WithParamNo(paramNo).WithCode(code).WithParameterValue(parameterValue)
+}
+
+func (m *_CALDataWriteBuilder) WithParamNo(paramNo Parameter) CALDataWriteBuilder {
+	m.ParamNo = paramNo
+	return m
+}
+
+func (m *_CALDataWriteBuilder) WithCode(code byte) CALDataWriteBuilder {
+	m.Code = code
+	return m
+}
+
+func (m *_CALDataWriteBuilder) WithParameterValue(parameterValue ParameterValue) CALDataWriteBuilder {
+	m.ParameterValue = parameterValue
+	return m
+}
+
+func (m *_CALDataWriteBuilder) Build() (CALDataWrite, error) {
+	if m.ParameterValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataWrite.deepCopy(), nil
+}
+
+func (m *_CALDataWriteBuilder) MustBuild() CALDataWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataWriteBuilder) DeepCopy() any {
+	return m.CreateCALDataWriteBuilder()
+}
+
+// CreateCALDataWriteBuilder creates a CALDataWriteBuilder
+func (m *_CALDataWrite) CreateCALDataWriteBuilder() CALDataWriteBuilder {
+	if m == nil {
+		return NewCALDataWriteBuilder()
+	}
+	return &_CALDataWriteBuilder{_CALDataWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

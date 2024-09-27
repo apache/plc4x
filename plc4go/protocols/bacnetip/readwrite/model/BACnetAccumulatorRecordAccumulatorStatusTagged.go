@@ -45,6 +45,8 @@ type BACnetAccumulatorRecordAccumulatorStatusTagged interface {
 	GetValue() BACnetAccumulatorRecordAccumulatorStatus
 	// IsBACnetAccumulatorRecordAccumulatorStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccumulatorRecordAccumulatorStatusTagged()
+	// CreateBuilder creates a BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
 }
 
 // _BACnetAccumulatorRecordAccumulatorStatusTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, v
 	}
 	return &_BACnetAccumulatorRecordAccumulatorStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder is a builder for BACnetAccumulatorRecordAccumulatorStatusTagged
+type BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+	// Build builds the BACnetAccumulatorRecordAccumulatorStatusTagged or returns an error if something is wrong
+	Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccumulatorRecordAccumulatorStatusTagged
+}
+
+// NewBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() creates a BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+func NewBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	return &_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder{_BACnetAccumulatorRecordAccumulatorStatusTagged: new(_BACnetAccumulatorRecordAccumulatorStatusTagged)}
+}
+
+type _BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder struct {
+	*_BACnetAccumulatorRecordAccumulatorStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) = (*_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder)(nil)
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) WithValue(value BACnetAccumulatorRecordAccumulatorStatus) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) Build() (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccumulatorRecordAccumulatorStatusTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) MustBuild() BACnetAccumulatorRecordAccumulatorStatusTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder()
+}
+
+// CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder creates a BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder
+func (m *_BACnetAccumulatorRecordAccumulatorStatusTagged) CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder() BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder()
+	}
+	return &_BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder{_BACnetAccumulatorRecordAccumulatorStatusTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

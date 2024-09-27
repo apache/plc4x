@@ -45,6 +45,8 @@ type BACnetRecipientProcess interface {
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 	// IsBACnetRecipientProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipientProcess()
+	// CreateBuilder creates a BACnetRecipientProcessBuilder
+	CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder
 }
 
 // _BACnetRecipientProcess is the data-structure of this message
@@ -62,6 +64,121 @@ func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentif
 	}
 	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientProcessBuilder is a builder for BACnetRecipientProcess
+type BACnetRecipientProcessBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder
+	// WithRecipient adds Recipient (property field)
+	WithRecipient(BACnetRecipientEnclosed) BACnetRecipientProcessBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder
+	// WithProcessIdentifier adds ProcessIdentifier (property field)
+	WithOptionalProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder
+	// WithOptionalProcessIdentifierBuilder adds ProcessIdentifier (property field) which is build by the builder
+	WithOptionalProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder
+	// Build builds the BACnetRecipientProcess or returns an error if something is wrong
+	Build() (BACnetRecipientProcess, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientProcess
+}
+
+// NewBACnetRecipientProcessBuilder() creates a BACnetRecipientProcessBuilder
+func NewBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
+	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: new(_BACnetRecipientProcess)}
+}
+
+type _BACnetRecipientProcessBuilder struct {
+	*_BACnetRecipientProcess
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientProcessBuilder) = (*_BACnetRecipientProcessBuilder)(nil)
+
+func (m *_BACnetRecipientProcessBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	return m.WithRecipient(recipient)
+}
+
+func (m *_BACnetRecipientProcessBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	m.Recipient = recipient
+	return m
+}
+
+func (m *_BACnetRecipientProcessBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(m.Recipient.CreateBACnetRecipientEnclosedBuilder())
+	var err error
+	m.Recipient, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder {
+	m.ProcessIdentifier = processIdentifier
+	return m
+}
+
+func (m *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(m.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.ProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRecipientProcessBuilder) Build() (BACnetRecipientProcess, error) {
+	if m.Recipient == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRecipientProcess.deepCopy(), nil
+}
+
+func (m *_BACnetRecipientProcessBuilder) MustBuild() BACnetRecipientProcess {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRecipientProcessBuilder) DeepCopy() any {
+	return m.CreateBACnetRecipientProcessBuilder()
+}
+
+// CreateBACnetRecipientProcessBuilder creates a BACnetRecipientProcessBuilder
+func (m *_BACnetRecipientProcess) CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
+	if m == nil {
+		return NewBACnetRecipientProcessBuilder()
+	}
+	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

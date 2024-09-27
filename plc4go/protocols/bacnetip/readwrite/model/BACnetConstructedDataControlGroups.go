@@ -48,6 +48,8 @@ type BACnetConstructedDataControlGroups interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataControlGroups is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataControlGroups()
+	// CreateBuilder creates a BACnetConstructedDataControlGroupsBuilder
+	CreateBACnetConstructedDataControlGroupsBuilder() BACnetConstructedDataControlGroupsBuilder
 }
 
 // _BACnetConstructedDataControlGroups is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataControlGroups(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataControlGroupsBuilder is a builder for BACnetConstructedDataControlGroups
+type BACnetConstructedDataControlGroupsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(controlGroups []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataControlGroupsBuilder
+	// WithControlGroups adds ControlGroups (property field)
+	WithControlGroups(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder
+	// Build builds the BACnetConstructedDataControlGroups or returns an error if something is wrong
+	Build() (BACnetConstructedDataControlGroups, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataControlGroups
+}
+
+// NewBACnetConstructedDataControlGroupsBuilder() creates a BACnetConstructedDataControlGroupsBuilder
+func NewBACnetConstructedDataControlGroupsBuilder() BACnetConstructedDataControlGroupsBuilder {
+	return &_BACnetConstructedDataControlGroupsBuilder{_BACnetConstructedDataControlGroups: new(_BACnetConstructedDataControlGroups)}
+}
+
+type _BACnetConstructedDataControlGroupsBuilder struct {
+	*_BACnetConstructedDataControlGroups
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataControlGroupsBuilder) = (*_BACnetConstructedDataControlGroupsBuilder)(nil)
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) WithMandatoryFields(controlGroups []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder {
+	return m.WithControlGroups(controlGroups...)
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataControlGroupsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) WithControlGroups(controlGroups ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataControlGroupsBuilder {
+	m.ControlGroups = controlGroups
+	return m
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) Build() (BACnetConstructedDataControlGroups, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataControlGroups.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) MustBuild() BACnetConstructedDataControlGroups {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataControlGroupsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataControlGroupsBuilder()
+}
+
+// CreateBACnetConstructedDataControlGroupsBuilder creates a BACnetConstructedDataControlGroupsBuilder
+func (m *_BACnetConstructedDataControlGroups) CreateBACnetConstructedDataControlGroupsBuilder() BACnetConstructedDataControlGroupsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataControlGroupsBuilder()
+	}
+	return &_BACnetConstructedDataControlGroupsBuilder{_BACnetConstructedDataControlGroups: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

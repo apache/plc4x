@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 	// IsBACnetTimerStateChangeValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueCharacterString()
+	// CreateBuilder creates a BACnetTimerStateChangeValueCharacterStringBuilder
+	CreateBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChangeValueCharacterStringBuilder
 }
 
 // _BACnetTimerStateChangeValueCharacterString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueCharacterString(peekedTagHeader BACnetTagHead
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueCharacterStringBuilder is a builder for BACnetTimerStateChangeValueCharacterString
+type BACnetTimerStateChangeValueCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder
+	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetTimerStateChangeValueCharacterStringBuilder
+	// Build builds the BACnetTimerStateChangeValueCharacterString or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueCharacterString
+}
+
+// NewBACnetTimerStateChangeValueCharacterStringBuilder() creates a BACnetTimerStateChangeValueCharacterStringBuilder
+func NewBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChangeValueCharacterStringBuilder {
+	return &_BACnetTimerStateChangeValueCharacterStringBuilder{_BACnetTimerStateChangeValueCharacterString: new(_BACnetTimerStateChangeValueCharacterString)}
+}
+
+type _BACnetTimerStateChangeValueCharacterStringBuilder struct {
+	*_BACnetTimerStateChangeValueCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueCharacterStringBuilder) = (*_BACnetTimerStateChangeValueCharacterStringBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
+	return m.WithCharacterStringValue(characterStringValue)
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetTimerStateChangeValueCharacterStringBuilder {
+	m.CharacterStringValue = characterStringValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetTimerStateChangeValueCharacterStringBuilder {
+	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) Build() (BACnetTimerStateChangeValueCharacterString, error) {
+	if m.CharacterStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) MustBuild() BACnetTimerStateChangeValueCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueCharacterStringBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueCharacterStringBuilder creates a BACnetTimerStateChangeValueCharacterStringBuilder
+func (m *_BACnetTimerStateChangeValueCharacterString) CreateBACnetTimerStateChangeValueCharacterStringBuilder() BACnetTimerStateChangeValueCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueCharacterStringBuilder()
+	}
+	return &_BACnetTimerStateChangeValueCharacterStringBuilder{_BACnetTimerStateChangeValueCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

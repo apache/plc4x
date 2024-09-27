@@ -46,6 +46,8 @@ type BACnetConstructedDataAccessEventTag interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAccessEventTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessEventTag()
+	// CreateBuilder creates a BACnetConstructedDataAccessEventTagBuilder
+	CreateBACnetConstructedDataAccessEventTagBuilder() BACnetConstructedDataAccessEventTagBuilder
 }
 
 // _BACnetConstructedDataAccessEventTag is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAccessEventTag(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessEventTagBuilder is a builder for BACnetConstructedDataAccessEventTag
+type BACnetConstructedDataAccessEventTagBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessEventTag BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessEventTagBuilder
+	// WithAccessEventTag adds AccessEventTag (property field)
+	WithAccessEventTag(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessEventTagBuilder
+	// WithAccessEventTagBuilder adds AccessEventTag (property field) which is build by the builder
+	WithAccessEventTagBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessEventTagBuilder
+	// Build builds the BACnetConstructedDataAccessEventTag or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessEventTag, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessEventTag
+}
+
+// NewBACnetConstructedDataAccessEventTagBuilder() creates a BACnetConstructedDataAccessEventTagBuilder
+func NewBACnetConstructedDataAccessEventTagBuilder() BACnetConstructedDataAccessEventTagBuilder {
+	return &_BACnetConstructedDataAccessEventTagBuilder{_BACnetConstructedDataAccessEventTag: new(_BACnetConstructedDataAccessEventTag)}
+}
+
+type _BACnetConstructedDataAccessEventTagBuilder struct {
+	*_BACnetConstructedDataAccessEventTag
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessEventTagBuilder) = (*_BACnetConstructedDataAccessEventTagBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) WithMandatoryFields(accessEventTag BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessEventTagBuilder {
+	return m.WithAccessEventTag(accessEventTag)
+}
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) WithAccessEventTag(accessEventTag BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessEventTagBuilder {
+	m.AccessEventTag = accessEventTag
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) WithAccessEventTagBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessEventTagBuilder {
+	builder := builderSupplier(m.AccessEventTag.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.AccessEventTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) Build() (BACnetConstructedDataAccessEventTag, error) {
+	if m.AccessEventTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accessEventTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessEventTag.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) MustBuild() BACnetConstructedDataAccessEventTag {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessEventTagBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessEventTagBuilder()
+}
+
+// CreateBACnetConstructedDataAccessEventTagBuilder creates a BACnetConstructedDataAccessEventTagBuilder
+func (m *_BACnetConstructedDataAccessEventTag) CreateBACnetConstructedDataAccessEventTagBuilder() BACnetConstructedDataAccessEventTagBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessEventTagBuilder()
+	}
+	return &_BACnetConstructedDataAccessEventTagBuilder{_BACnetConstructedDataAccessEventTag: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

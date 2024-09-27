@@ -46,6 +46,8 @@ type BACnetConstructedDataWindowSamples interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataWindowSamples is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWindowSamples()
+	// CreateBuilder creates a BACnetConstructedDataWindowSamplesBuilder
+	CreateBACnetConstructedDataWindowSamplesBuilder() BACnetConstructedDataWindowSamplesBuilder
 }
 
 // _BACnetConstructedDataWindowSamples is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataWindowSamples(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataWindowSamplesBuilder is a builder for BACnetConstructedDataWindowSamples
+type BACnetConstructedDataWindowSamplesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(windowSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowSamplesBuilder
+	// WithWindowSamples adds WindowSamples (property field)
+	WithWindowSamples(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowSamplesBuilder
+	// WithWindowSamplesBuilder adds WindowSamples (property field) which is build by the builder
+	WithWindowSamplesBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowSamplesBuilder
+	// Build builds the BACnetConstructedDataWindowSamples or returns an error if something is wrong
+	Build() (BACnetConstructedDataWindowSamples, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataWindowSamples
+}
+
+// NewBACnetConstructedDataWindowSamplesBuilder() creates a BACnetConstructedDataWindowSamplesBuilder
+func NewBACnetConstructedDataWindowSamplesBuilder() BACnetConstructedDataWindowSamplesBuilder {
+	return &_BACnetConstructedDataWindowSamplesBuilder{_BACnetConstructedDataWindowSamples: new(_BACnetConstructedDataWindowSamples)}
+}
+
+type _BACnetConstructedDataWindowSamplesBuilder struct {
+	*_BACnetConstructedDataWindowSamples
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataWindowSamplesBuilder) = (*_BACnetConstructedDataWindowSamplesBuilder)(nil)
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) WithMandatoryFields(windowSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowSamplesBuilder {
+	return m.WithWindowSamples(windowSamples)
+}
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) WithWindowSamples(windowSamples BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowSamplesBuilder {
+	m.WindowSamples = windowSamples
+	return m
+}
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) WithWindowSamplesBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowSamplesBuilder {
+	builder := builderSupplier(m.WindowSamples.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.WindowSamples, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) Build() (BACnetConstructedDataWindowSamples, error) {
+	if m.WindowSamples == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'windowSamples' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataWindowSamples.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) MustBuild() BACnetConstructedDataWindowSamples {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataWindowSamplesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataWindowSamplesBuilder()
+}
+
+// CreateBACnetConstructedDataWindowSamplesBuilder creates a BACnetConstructedDataWindowSamplesBuilder
+func (m *_BACnetConstructedDataWindowSamples) CreateBACnetConstructedDataWindowSamplesBuilder() BACnetConstructedDataWindowSamplesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataWindowSamplesBuilder()
+	}
+	return &_BACnetConstructedDataWindowSamplesBuilder{_BACnetConstructedDataWindowSamples: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

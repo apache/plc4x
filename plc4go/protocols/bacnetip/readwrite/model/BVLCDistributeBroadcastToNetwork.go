@@ -46,6 +46,8 @@ type BVLCDistributeBroadcastToNetwork interface {
 	GetNpdu() NPDU
 	// IsBVLCDistributeBroadcastToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCDistributeBroadcastToNetwork()
+	// CreateBuilder creates a BVLCDistributeBroadcastToNetworkBuilder
+	CreateBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetworkBuilder
 }
 
 // _BVLCDistributeBroadcastToNetwork is the data-structure of this message
@@ -72,6 +74,99 @@ func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_
 	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCDistributeBroadcastToNetworkBuilder is a builder for BVLCDistributeBroadcastToNetwork
+type BVLCDistributeBroadcastToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder
+	// WithNpdu adds Npdu (property field)
+	WithNpdu(NPDU) BVLCDistributeBroadcastToNetworkBuilder
+	// WithNpduBuilder adds Npdu (property field) which is build by the builder
+	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCDistributeBroadcastToNetworkBuilder
+	// Build builds the BVLCDistributeBroadcastToNetwork or returns an error if something is wrong
+	Build() (BVLCDistributeBroadcastToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCDistributeBroadcastToNetwork
+}
+
+// NewBVLCDistributeBroadcastToNetworkBuilder() creates a BVLCDistributeBroadcastToNetworkBuilder
+func NewBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetworkBuilder {
+	return &_BVLCDistributeBroadcastToNetworkBuilder{_BVLCDistributeBroadcastToNetwork: new(_BVLCDistributeBroadcastToNetwork)}
+}
+
+type _BVLCDistributeBroadcastToNetworkBuilder struct {
+	*_BVLCDistributeBroadcastToNetwork
+
+	err *utils.MultiError
+}
+
+var _ (BVLCDistributeBroadcastToNetworkBuilder) = (*_BVLCDistributeBroadcastToNetworkBuilder)(nil)
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithMandatoryFields(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
+	return m.WithNpdu(npdu)
+}
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithNpdu(npdu NPDU) BVLCDistributeBroadcastToNetworkBuilder {
+	m.Npdu = npdu
+	return m
+}
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCDistributeBroadcastToNetworkBuilder {
+	builder := builderSupplier(m.Npdu.CreateNPDUBuilder())
+	var err error
+	m.Npdu, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) Build() (BVLCDistributeBroadcastToNetwork, error) {
+	if m.Npdu == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'npdu' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BVLCDistributeBroadcastToNetwork.deepCopy(), nil
+}
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) MustBuild() BVLCDistributeBroadcastToNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BVLCDistributeBroadcastToNetworkBuilder) DeepCopy() any {
+	return m.CreateBVLCDistributeBroadcastToNetworkBuilder()
+}
+
+// CreateBVLCDistributeBroadcastToNetworkBuilder creates a BVLCDistributeBroadcastToNetworkBuilder
+func (m *_BVLCDistributeBroadcastToNetwork) CreateBVLCDistributeBroadcastToNetworkBuilder() BVLCDistributeBroadcastToNetworkBuilder {
+	if m == nil {
+		return NewBVLCDistributeBroadcastToNetworkBuilder()
+	}
+	return &_BVLCDistributeBroadcastToNetworkBuilder{_BVLCDistributeBroadcastToNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

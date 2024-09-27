@@ -43,12 +43,16 @@ type TypeId interface {
 	utils.Copyable
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
+	// CreateBuilder creates a TypeIdBuilder
+	CreateTypeIdBuilder() TypeIdBuilder
 }
 
 // TypeIdContract provides a set of functions which can be overwritten by a sub struct
 type TypeIdContract interface {
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
+	// CreateBuilder creates a TypeIdBuilder
+	CreateTypeIdBuilder() TypeIdBuilder
 }
 
 // TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ TypeIdContract = (*_TypeId)(nil)
 func NewTypeId() *_TypeId {
 	return &_TypeId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TypeIdBuilder is a builder for TypeId
+type TypeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TypeIdBuilder
+	// Build builds the TypeId or returns an error if something is wrong
+	Build() (TypeIdContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TypeIdContract
+}
+
+// NewTypeIdBuilder() creates a TypeIdBuilder
+func NewTypeIdBuilder() TypeIdBuilder {
+	return &_TypeIdBuilder{_TypeId: new(_TypeId)}
+}
+
+type _TypeIdBuilder struct {
+	*_TypeId
+
+	err *utils.MultiError
+}
+
+var _ (TypeIdBuilder) = (*_TypeIdBuilder)(nil)
+
+func (m *_TypeIdBuilder) WithMandatoryFields() TypeIdBuilder {
+	return m
+}
+
+func (m *_TypeIdBuilder) Build() (TypeIdContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TypeId.deepCopy(), nil
+}
+
+func (m *_TypeIdBuilder) MustBuild() TypeIdContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TypeIdBuilder) DeepCopy() any {
+	return m.CreateTypeIdBuilder()
+}
+
+// CreateTypeIdBuilder creates a TypeIdBuilder
+func (m *_TypeId) CreateTypeIdBuilder() TypeIdBuilder {
+	if m == nil {
+		return NewTypeIdBuilder()
+	}
+	return &_TypeIdBuilder{_TypeId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastTypeId(structType any) TypeId {

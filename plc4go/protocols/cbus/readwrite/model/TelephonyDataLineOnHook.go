@@ -40,6 +40,8 @@ type TelephonyDataLineOnHook interface {
 	TelephonyData
 	// IsTelephonyDataLineOnHook is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataLineOnHook()
+	// CreateBuilder creates a TelephonyDataLineOnHookBuilder
+	CreateTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder
 }
 
 // _TelephonyDataLineOnHook is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTelephonyDataLineOnHook(commandTypeContainer TelephonyCommandTypeContain
 	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataLineOnHookBuilder is a builder for TelephonyDataLineOnHook
+type TelephonyDataLineOnHookBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TelephonyDataLineOnHookBuilder
+	// Build builds the TelephonyDataLineOnHook or returns an error if something is wrong
+	Build() (TelephonyDataLineOnHook, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataLineOnHook
+}
+
+// NewTelephonyDataLineOnHookBuilder() creates a TelephonyDataLineOnHookBuilder
+func NewTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder {
+	return &_TelephonyDataLineOnHookBuilder{_TelephonyDataLineOnHook: new(_TelephonyDataLineOnHook)}
+}
+
+type _TelephonyDataLineOnHookBuilder struct {
+	*_TelephonyDataLineOnHook
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataLineOnHookBuilder) = (*_TelephonyDataLineOnHookBuilder)(nil)
+
+func (m *_TelephonyDataLineOnHookBuilder) WithMandatoryFields() TelephonyDataLineOnHookBuilder {
+	return m
+}
+
+func (m *_TelephonyDataLineOnHookBuilder) Build() (TelephonyDataLineOnHook, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyDataLineOnHook.deepCopy(), nil
+}
+
+func (m *_TelephonyDataLineOnHookBuilder) MustBuild() TelephonyDataLineOnHook {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataLineOnHookBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataLineOnHookBuilder()
+}
+
+// CreateTelephonyDataLineOnHookBuilder creates a TelephonyDataLineOnHookBuilder
+func (m *_TelephonyDataLineOnHook) CreateTelephonyDataLineOnHookBuilder() TelephonyDataLineOnHookBuilder {
+	if m == nil {
+		return NewTelephonyDataLineOnHookBuilder()
+	}
+	return &_TelephonyDataLineOnHookBuilder{_TelephonyDataLineOnHook: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

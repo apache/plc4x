@@ -48,6 +48,8 @@ type Annotation interface {
 	GetAnnotationTime() int64
 	// IsAnnotation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnnotation()
+	// CreateBuilder creates a AnnotationBuilder
+	CreateAnnotationBuilder() AnnotationBuilder
 }
 
 // _Annotation is the data-structure of this message
@@ -78,6 +80,134 @@ func NewAnnotation(message PascalString, userName PascalString, annotationTime i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AnnotationBuilder is a builder for Annotation
+type AnnotationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(message PascalString, userName PascalString, annotationTime int64) AnnotationBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(PascalString) AnnotationBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationBuilder
+	// WithUserName adds UserName (property field)
+	WithUserName(PascalString) AnnotationBuilder
+	// WithUserNameBuilder adds UserName (property field) which is build by the builder
+	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationBuilder
+	// WithAnnotationTime adds AnnotationTime (property field)
+	WithAnnotationTime(int64) AnnotationBuilder
+	// Build builds the Annotation or returns an error if something is wrong
+	Build() (Annotation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Annotation
+}
+
+// NewAnnotationBuilder() creates a AnnotationBuilder
+func NewAnnotationBuilder() AnnotationBuilder {
+	return &_AnnotationBuilder{_Annotation: new(_Annotation)}
+}
+
+type _AnnotationBuilder struct {
+	*_Annotation
+
+	err *utils.MultiError
+}
+
+var _ (AnnotationBuilder) = (*_AnnotationBuilder)(nil)
+
+func (m *_AnnotationBuilder) WithMandatoryFields(message PascalString, userName PascalString, annotationTime int64) AnnotationBuilder {
+	return m.WithMessage(message).WithUserName(userName).WithAnnotationTime(annotationTime)
+}
+
+func (m *_AnnotationBuilder) WithMessage(message PascalString) AnnotationBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_AnnotationBuilder) WithMessageBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationBuilder {
+	builder := builderSupplier(m.Message.CreatePascalStringBuilder())
+	var err error
+	m.Message, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AnnotationBuilder) WithUserName(userName PascalString) AnnotationBuilder {
+	m.UserName = userName
+	return m
+}
+
+func (m *_AnnotationBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationBuilder {
+	builder := builderSupplier(m.UserName.CreatePascalStringBuilder())
+	var err error
+	m.UserName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AnnotationBuilder) WithAnnotationTime(annotationTime int64) AnnotationBuilder {
+	m.AnnotationTime = annotationTime
+	return m
+}
+
+func (m *_AnnotationBuilder) Build() (Annotation, error) {
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.UserName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'userName' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Annotation.deepCopy(), nil
+}
+
+func (m *_AnnotationBuilder) MustBuild() Annotation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AnnotationBuilder) DeepCopy() any {
+	return m.CreateAnnotationBuilder()
+}
+
+// CreateAnnotationBuilder creates a AnnotationBuilder
+func (m *_Annotation) CreateAnnotationBuilder() AnnotationBuilder {
+	if m == nil {
+		return NewAnnotationBuilder()
+	}
+	return &_AnnotationBuilder{_Annotation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetConstructedDataTrendLogMultipleLogBuffer interface {
 	GetFloorText() []BACnetLogMultipleRecord
 	// IsBACnetConstructedDataTrendLogMultipleLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogMultipleLogBuffer()
+	// CreateBuilder creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder
 }
 
 // _BACnetConstructedDataTrendLogMultipleLogBuffer is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTrendLogMultipleLogBufferBuilder is a builder for BACnetConstructedDataTrendLogMultipleLogBuffer
+type BACnetConstructedDataTrendLogMultipleLogBufferBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	// WithFloorText adds FloorText (property field)
+	WithFloorText(...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	// Build builds the BACnetConstructedDataTrendLogMultipleLogBuffer or returns an error if something is wrong
+	Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer
+}
+
+// NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder() creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+func NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: new(_BACnetConstructedDataTrendLogMultipleLogBuffer)}
+}
+
+type _BACnetConstructedDataTrendLogMultipleLogBufferBuilder struct {
+	*_BACnetConstructedDataTrendLogMultipleLogBuffer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTrendLogMultipleLogBufferBuilder) = (*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)(nil)
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	return m.WithFloorText(floorText...)
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithFloorText(floorText ...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	m.FloorText = floorText
+	return m
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTrendLogMultipleLogBuffer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder()
+}
+
+// CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder()
+	}
+	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

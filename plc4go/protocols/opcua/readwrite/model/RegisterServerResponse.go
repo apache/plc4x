@@ -44,6 +44,8 @@ type RegisterServerResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsRegisterServerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerResponse()
+	// CreateBuilder creates a RegisterServerResponseBuilder
+	CreateRegisterServerResponseBuilder() RegisterServerResponseBuilder
 }
 
 // _RegisterServerResponse is the data-structure of this message
@@ -67,6 +69,84 @@ func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_Regis
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterServerResponseBuilder is a builder for RegisterServerResponse
+type RegisterServerResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) RegisterServerResponseBuilder
+	// Build builds the RegisterServerResponse or returns an error if something is wrong
+	Build() (RegisterServerResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterServerResponse
+}
+
+// NewRegisterServerResponseBuilder() creates a RegisterServerResponseBuilder
+func NewRegisterServerResponseBuilder() RegisterServerResponseBuilder {
+	return &_RegisterServerResponseBuilder{_RegisterServerResponse: new(_RegisterServerResponse)}
+}
+
+type _RegisterServerResponseBuilder struct {
+	*_RegisterServerResponse
+
+	err *utils.MultiError
+}
+
+var _ (RegisterServerResponseBuilder) = (*_RegisterServerResponseBuilder)(nil)
+
+func (m *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+	return m.WithResponseHeader(responseHeader)
+}
+
+func (m *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_RegisterServerResponseBuilder) Build() (RegisterServerResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RegisterServerResponse.deepCopy(), nil
+}
+
+func (m *_RegisterServerResponseBuilder) MustBuild() RegisterServerResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RegisterServerResponseBuilder) DeepCopy() any {
+	return m.CreateRegisterServerResponseBuilder()
+}
+
+// CreateRegisterServerResponseBuilder creates a RegisterServerResponseBuilder
+func (m *_RegisterServerResponse) CreateRegisterServerResponseBuilder() RegisterServerResponseBuilder {
+	if m == nil {
+		return NewRegisterServerResponseBuilder()
+	}
+	return &_RegisterServerResponseBuilder{_RegisterServerResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataNetworkType interface {
 	GetActualValue() BACnetNetworkTypeTagged
 	// IsBACnetConstructedDataNetworkType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkType()
+	// CreateBuilder creates a BACnetConstructedDataNetworkTypeBuilder
+	CreateBACnetConstructedDataNetworkTypeBuilder() BACnetConstructedDataNetworkTypeBuilder
 }
 
 // _BACnetConstructedDataNetworkType is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataNetworkType(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNetworkTypeBuilder is a builder for BACnetConstructedDataNetworkType
+type BACnetConstructedDataNetworkTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetConstructedDataNetworkTypeBuilder
+	// WithNetworkType adds NetworkType (property field)
+	WithNetworkType(BACnetNetworkTypeTagged) BACnetConstructedDataNetworkTypeBuilder
+	// WithNetworkTypeBuilder adds NetworkType (property field) which is build by the builder
+	WithNetworkTypeBuilder(func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetConstructedDataNetworkTypeBuilder
+	// Build builds the BACnetConstructedDataNetworkType or returns an error if something is wrong
+	Build() (BACnetConstructedDataNetworkType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNetworkType
+}
+
+// NewBACnetConstructedDataNetworkTypeBuilder() creates a BACnetConstructedDataNetworkTypeBuilder
+func NewBACnetConstructedDataNetworkTypeBuilder() BACnetConstructedDataNetworkTypeBuilder {
+	return &_BACnetConstructedDataNetworkTypeBuilder{_BACnetConstructedDataNetworkType: new(_BACnetConstructedDataNetworkType)}
+}
+
+type _BACnetConstructedDataNetworkTypeBuilder struct {
+	*_BACnetConstructedDataNetworkType
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNetworkTypeBuilder) = (*_BACnetConstructedDataNetworkTypeBuilder)(nil)
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetConstructedDataNetworkTypeBuilder {
+	return m.WithNetworkType(networkType)
+}
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) WithNetworkType(networkType BACnetNetworkTypeTagged) BACnetConstructedDataNetworkTypeBuilder {
+	m.NetworkType = networkType
+	return m
+}
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) WithNetworkTypeBuilder(builderSupplier func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetConstructedDataNetworkTypeBuilder {
+	builder := builderSupplier(m.NetworkType.CreateBACnetNetworkTypeTaggedBuilder())
+	var err error
+	m.NetworkType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) Build() (BACnetConstructedDataNetworkType, error) {
+	if m.NetworkType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataNetworkType.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) MustBuild() BACnetConstructedDataNetworkType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataNetworkTypeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataNetworkTypeBuilder()
+}
+
+// CreateBACnetConstructedDataNetworkTypeBuilder creates a BACnetConstructedDataNetworkTypeBuilder
+func (m *_BACnetConstructedDataNetworkType) CreateBACnetConstructedDataNetworkTypeBuilder() BACnetConstructedDataNetworkTypeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataNetworkTypeBuilder()
+	}
+	return &_BACnetConstructedDataNetworkTypeBuilder{_BACnetConstructedDataNetworkType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

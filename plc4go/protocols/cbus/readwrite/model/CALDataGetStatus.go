@@ -46,6 +46,8 @@ type CALDataGetStatus interface {
 	GetCount() uint8
 	// IsCALDataGetStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataGetStatus()
+	// CreateBuilder creates a CALDataGetStatusBuilder
+	CreateCALDataGetStatusBuilder() CALDataGetStatusBuilder
 }
 
 // _CALDataGetStatus is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCALDataGetStatus(commandTypeContainer CALCommandTypeContainer, additiona
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataGetStatusBuilder is a builder for CALDataGetStatus
+type CALDataGetStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, count uint8) CALDataGetStatusBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CALDataGetStatusBuilder
+	// WithCount adds Count (property field)
+	WithCount(uint8) CALDataGetStatusBuilder
+	// Build builds the CALDataGetStatus or returns an error if something is wrong
+	Build() (CALDataGetStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataGetStatus
+}
+
+// NewCALDataGetStatusBuilder() creates a CALDataGetStatusBuilder
+func NewCALDataGetStatusBuilder() CALDataGetStatusBuilder {
+	return &_CALDataGetStatusBuilder{_CALDataGetStatus: new(_CALDataGetStatus)}
+}
+
+type _CALDataGetStatusBuilder struct {
+	*_CALDataGetStatus
+
+	err *utils.MultiError
+}
+
+var _ (CALDataGetStatusBuilder) = (*_CALDataGetStatusBuilder)(nil)
+
+func (m *_CALDataGetStatusBuilder) WithMandatoryFields(paramNo Parameter, count uint8) CALDataGetStatusBuilder {
+	return m.WithParamNo(paramNo).WithCount(count)
+}
+
+func (m *_CALDataGetStatusBuilder) WithParamNo(paramNo Parameter) CALDataGetStatusBuilder {
+	m.ParamNo = paramNo
+	return m
+}
+
+func (m *_CALDataGetStatusBuilder) WithCount(count uint8) CALDataGetStatusBuilder {
+	m.Count = count
+	return m
+}
+
+func (m *_CALDataGetStatusBuilder) Build() (CALDataGetStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataGetStatus.deepCopy(), nil
+}
+
+func (m *_CALDataGetStatusBuilder) MustBuild() CALDataGetStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataGetStatusBuilder) DeepCopy() any {
+	return m.CreateCALDataGetStatusBuilder()
+}
+
+// CreateCALDataGetStatusBuilder creates a CALDataGetStatusBuilder
+func (m *_CALDataGetStatus) CreateCALDataGetStatusBuilder() CALDataGetStatusBuilder {
+	if m == nil {
+		return NewCALDataGetStatusBuilder()
+	}
+	return &_CALDataGetStatusBuilder{_CALDataGetStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

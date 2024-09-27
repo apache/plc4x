@@ -43,6 +43,8 @@ type Variant interface {
 	utils.Copyable
 	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariant()
+	// CreateBuilder creates a VariantBuilder
+	CreateVariantBuilder() VariantBuilder
 }
 
 // VariantContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type VariantContract interface {
 	GetArrayDimensions() []bool
 	// IsVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariant()
+	// CreateBuilder creates a VariantBuilder
+	CreateVariantBuilder() VariantBuilder
 }
 
 // VariantRequirements provides a set of functions which need to be implemented by a sub struct
@@ -84,6 +88,99 @@ var _ VariantContract = (*_Variant)(nil)
 func NewVariant(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_Variant {
 	return &_Variant{ArrayLengthSpecified: arrayLengthSpecified, ArrayDimensionsSpecified: arrayDimensionsSpecified, NoOfArrayDimensions: noOfArrayDimensions, ArrayDimensions: arrayDimensions}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantBuilder is a builder for Variant
+type VariantBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(arrayLengthSpecified bool, arrayDimensionsSpecified bool, arrayDimensions []bool) VariantBuilder
+	// WithArrayLengthSpecified adds ArrayLengthSpecified (property field)
+	WithArrayLengthSpecified(bool) VariantBuilder
+	// WithArrayDimensionsSpecified adds ArrayDimensionsSpecified (property field)
+	WithArrayDimensionsSpecified(bool) VariantBuilder
+	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
+	WithOptionalNoOfArrayDimensions(int32) VariantBuilder
+	// WithArrayDimensions adds ArrayDimensions (property field)
+	WithArrayDimensions(...bool) VariantBuilder
+	// Build builds the Variant or returns an error if something is wrong
+	Build() (VariantContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantContract
+}
+
+// NewVariantBuilder() creates a VariantBuilder
+func NewVariantBuilder() VariantBuilder {
+	return &_VariantBuilder{_Variant: new(_Variant)}
+}
+
+type _VariantBuilder struct {
+	*_Variant
+
+	err *utils.MultiError
+}
+
+var _ (VariantBuilder) = (*_VariantBuilder)(nil)
+
+func (m *_VariantBuilder) WithMandatoryFields(arrayLengthSpecified bool, arrayDimensionsSpecified bool, arrayDimensions []bool) VariantBuilder {
+	return m.WithArrayLengthSpecified(arrayLengthSpecified).WithArrayDimensionsSpecified(arrayDimensionsSpecified).WithArrayDimensions(arrayDimensions...)
+}
+
+func (m *_VariantBuilder) WithArrayLengthSpecified(arrayLengthSpecified bool) VariantBuilder {
+	m.ArrayLengthSpecified = arrayLengthSpecified
+	return m
+}
+
+func (m *_VariantBuilder) WithArrayDimensionsSpecified(arrayDimensionsSpecified bool) VariantBuilder {
+	m.ArrayDimensionsSpecified = arrayDimensionsSpecified
+	return m
+}
+
+func (m *_VariantBuilder) WithOptionalNoOfArrayDimensions(noOfArrayDimensions int32) VariantBuilder {
+	m.NoOfArrayDimensions = &noOfArrayDimensions
+	return m
+}
+
+func (m *_VariantBuilder) WithArrayDimensions(arrayDimensions ...bool) VariantBuilder {
+	m.ArrayDimensions = arrayDimensions
+	return m
+}
+
+func (m *_VariantBuilder) Build() (VariantContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Variant.deepCopy(), nil
+}
+
+func (m *_VariantBuilder) MustBuild() VariantContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantBuilder) DeepCopy() any {
+	return m.CreateVariantBuilder()
+}
+
+// CreateVariantBuilder creates a VariantBuilder
+func (m *_Variant) CreateVariantBuilder() VariantBuilder {
+	if m == nil {
+		return NewVariantBuilder()
+	}
+	return &_VariantBuilder{_Variant: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

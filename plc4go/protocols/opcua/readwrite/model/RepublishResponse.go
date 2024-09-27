@@ -46,6 +46,8 @@ type RepublishResponse interface {
 	GetNotificationMessage() ExtensionObjectDefinition
 	// IsRepublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRepublishResponse()
+	// CreateBuilder creates a RepublishResponseBuilder
+	CreateRepublishResponseBuilder() RepublishResponseBuilder
 }
 
 // _RepublishResponse is the data-structure of this message
@@ -74,6 +76,97 @@ func NewRepublishResponse(responseHeader ExtensionObjectDefinition, notification
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RepublishResponseBuilder is a builder for RepublishResponse
+type RepublishResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) RepublishResponseBuilder
+	// WithNotificationMessage adds NotificationMessage (property field)
+	WithNotificationMessage(ExtensionObjectDefinition) RepublishResponseBuilder
+	// Build builds the RepublishResponse or returns an error if something is wrong
+	Build() (RepublishResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RepublishResponse
+}
+
+// NewRepublishResponseBuilder() creates a RepublishResponseBuilder
+func NewRepublishResponseBuilder() RepublishResponseBuilder {
+	return &_RepublishResponseBuilder{_RepublishResponse: new(_RepublishResponse)}
+}
+
+type _RepublishResponseBuilder struct {
+	*_RepublishResponse
+
+	err *utils.MultiError
+}
+
+var _ (RepublishResponseBuilder) = (*_RepublishResponseBuilder)(nil)
+
+func (m *_RepublishResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNotificationMessage(notificationMessage)
+}
+
+func (m *_RepublishResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RepublishResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_RepublishResponseBuilder) WithNotificationMessage(notificationMessage ExtensionObjectDefinition) RepublishResponseBuilder {
+	m.NotificationMessage = notificationMessage
+	return m
+}
+
+func (m *_RepublishResponseBuilder) Build() (RepublishResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.NotificationMessage == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notificationMessage' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RepublishResponse.deepCopy(), nil
+}
+
+func (m *_RepublishResponseBuilder) MustBuild() RepublishResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RepublishResponseBuilder) DeepCopy() any {
+	return m.CreateRepublishResponseBuilder()
+}
+
+// CreateRepublishResponseBuilder creates a RepublishResponseBuilder
+func (m *_RepublishResponse) CreateRepublishResponseBuilder() RepublishResponseBuilder {
+	if m == nil {
+		return NewRepublishResponseBuilder()
+	}
+	return &_RepublishResponseBuilder{_RepublishResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

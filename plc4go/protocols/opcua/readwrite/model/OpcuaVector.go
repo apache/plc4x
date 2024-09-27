@@ -40,6 +40,8 @@ type OpcuaVector interface {
 	ExtensionObjectDefinition
 	// IsOpcuaVector is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaVector()
+	// CreateBuilder creates a OpcuaVectorBuilder
+	CreateOpcuaVectorBuilder() OpcuaVectorBuilder
 }
 
 // _OpcuaVector is the data-structure of this message
@@ -58,6 +60,71 @@ func NewOpcuaVector() *_OpcuaVector {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaVectorBuilder is a builder for OpcuaVector
+type OpcuaVectorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() OpcuaVectorBuilder
+	// Build builds the OpcuaVector or returns an error if something is wrong
+	Build() (OpcuaVector, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaVector
+}
+
+// NewOpcuaVectorBuilder() creates a OpcuaVectorBuilder
+func NewOpcuaVectorBuilder() OpcuaVectorBuilder {
+	return &_OpcuaVectorBuilder{_OpcuaVector: new(_OpcuaVector)}
+}
+
+type _OpcuaVectorBuilder struct {
+	*_OpcuaVector
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaVectorBuilder) = (*_OpcuaVectorBuilder)(nil)
+
+func (m *_OpcuaVectorBuilder) WithMandatoryFields() OpcuaVectorBuilder {
+	return m
+}
+
+func (m *_OpcuaVectorBuilder) Build() (OpcuaVector, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpcuaVector.deepCopy(), nil
+}
+
+func (m *_OpcuaVectorBuilder) MustBuild() OpcuaVector {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpcuaVectorBuilder) DeepCopy() any {
+	return m.CreateOpcuaVectorBuilder()
+}
+
+// CreateOpcuaVectorBuilder creates a OpcuaVectorBuilder
+func (m *_OpcuaVector) CreateOpcuaVectorBuilder() OpcuaVectorBuilder {
+	if m == nil {
+		return NewOpcuaVectorBuilder()
+	}
+	return &_OpcuaVectorBuilder{_OpcuaVector: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

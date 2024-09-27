@@ -44,6 +44,8 @@ type BACnetConfirmedServiceRequestReadPropertyConditional interface {
 	GetBytesOfRemovedService() []byte
 	// IsBACnetConfirmedServiceRequestReadPropertyConditional is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadPropertyConditional()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+	CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
 }
 
 // _BACnetConfirmedServiceRequestReadPropertyConditional is the data-structure of this message
@@ -67,6 +69,78 @@ func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedServi
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReadPropertyConditionalBuilder is a builder for BACnetConfirmedServiceRequestReadPropertyConditional
+type BACnetConfirmedServiceRequestReadPropertyConditionalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
+	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+	// Build builds the BACnetConfirmedServiceRequestReadPropertyConditional or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReadPropertyConditional, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReadPropertyConditional
+}
+
+// NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() creates a BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+func NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	return &_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder{_BACnetConfirmedServiceRequestReadPropertyConditional: new(_BACnetConfirmedServiceRequestReadPropertyConditional)}
+}
+
+type _BACnetConfirmedServiceRequestReadPropertyConditionalBuilder struct {
+	*_BACnetConfirmedServiceRequestReadPropertyConditional
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) = (*_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	return m.WithBytesOfRemovedService(bytesOfRemovedService...)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	m.BytesOfRemovedService = bytesOfRemovedService
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) Build() (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestReadPropertyConditional.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) MustBuild() BACnetConfirmedServiceRequestReadPropertyConditional {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder creates a BACnetConfirmedServiceRequestReadPropertyConditionalBuilder
+func (m *_BACnetConfirmedServiceRequestReadPropertyConditional) CreateBACnetConfirmedServiceRequestReadPropertyConditionalBuilder() BACnetConfirmedServiceRequestReadPropertyConditionalBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestReadPropertyConditionalBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReadPropertyConditionalBuilder{_BACnetConfirmedServiceRequestReadPropertyConditional: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

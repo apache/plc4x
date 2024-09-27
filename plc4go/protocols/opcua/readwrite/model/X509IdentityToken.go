@@ -44,6 +44,8 @@ type X509IdentityToken interface {
 	GetCertificateData() PascalByteString
 	// IsX509IdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsX509IdentityToken()
+	// CreateBuilder creates a X509IdentityTokenBuilder
+	CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder
 }
 
 // _X509IdentityToken is the data-structure of this message
@@ -67,6 +69,99 @@ func NewX509IdentityToken(certificateData PascalByteString) *_X509IdentityToken 
 	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// X509IdentityTokenBuilder is a builder for X509IdentityToken
+type X509IdentityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(certificateData PascalByteString) X509IdentityTokenBuilder
+	// WithCertificateData adds CertificateData (property field)
+	WithCertificateData(PascalByteString) X509IdentityTokenBuilder
+	// WithCertificateDataBuilder adds CertificateData (property field) which is build by the builder
+	WithCertificateDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder
+	// Build builds the X509IdentityToken or returns an error if something is wrong
+	Build() (X509IdentityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() X509IdentityToken
+}
+
+// NewX509IdentityTokenBuilder() creates a X509IdentityTokenBuilder
+func NewX509IdentityTokenBuilder() X509IdentityTokenBuilder {
+	return &_X509IdentityTokenBuilder{_X509IdentityToken: new(_X509IdentityToken)}
+}
+
+type _X509IdentityTokenBuilder struct {
+	*_X509IdentityToken
+
+	err *utils.MultiError
+}
+
+var _ (X509IdentityTokenBuilder) = (*_X509IdentityTokenBuilder)(nil)
+
+func (m *_X509IdentityTokenBuilder) WithMandatoryFields(certificateData PascalByteString) X509IdentityTokenBuilder {
+	return m.WithCertificateData(certificateData)
+}
+
+func (m *_X509IdentityTokenBuilder) WithCertificateData(certificateData PascalByteString) X509IdentityTokenBuilder {
+	m.CertificateData = certificateData
+	return m
+}
+
+func (m *_X509IdentityTokenBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder {
+	builder := builderSupplier(m.CertificateData.CreatePascalByteStringBuilder())
+	var err error
+	m.CertificateData, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_X509IdentityTokenBuilder) Build() (X509IdentityToken, error) {
+	if m.CertificateData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'certificateData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._X509IdentityToken.deepCopy(), nil
+}
+
+func (m *_X509IdentityTokenBuilder) MustBuild() X509IdentityToken {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_X509IdentityTokenBuilder) DeepCopy() any {
+	return m.CreateX509IdentityTokenBuilder()
+}
+
+// CreateX509IdentityTokenBuilder creates a X509IdentityTokenBuilder
+func (m *_X509IdentityToken) CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder {
+	if m == nil {
+		return NewX509IdentityTokenBuilder()
+	}
+	return &_X509IdentityTokenBuilder{_X509IdentityToken: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

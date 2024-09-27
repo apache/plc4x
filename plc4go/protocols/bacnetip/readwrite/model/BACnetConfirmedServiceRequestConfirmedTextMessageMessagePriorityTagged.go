@@ -45,6 +45,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged inte
 	GetValue() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
 	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
 }
 
 // _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged(h
 	}
 	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder is a builder for BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
+}
+
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged: new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)}
+}
+
+type _BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder struct {
+	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority) BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

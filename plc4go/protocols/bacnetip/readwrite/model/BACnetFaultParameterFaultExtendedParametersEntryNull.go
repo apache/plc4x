@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryNull interface {
 	GetNullValue() BACnetApplicationTagNull
 	// IsBACnetFaultParameterFaultExtendedParametersEntryNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryNull()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryNull is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryNull(peekedTagHeader BAC
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryNullBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryNull
+type BACnetFaultParameterFaultExtendedParametersEntryNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryNull or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryNull
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder{_BACnetFaultParameterFaultExtendedParametersEntryNull: new(_BACnetFaultParameterFaultExtendedParametersEntryNull)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryNullBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryNull
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	return m.WithNullValue(nullValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	m.NullValue = nullValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	m.NullValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryNull, error) {
+	if m.NullValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryNull.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryNull) CreateBACnetFaultParameterFaultExtendedParametersEntryNullBuilder() BACnetFaultParameterFaultExtendedParametersEntryNullBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder{_BACnetFaultParameterFaultExtendedParametersEntryNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

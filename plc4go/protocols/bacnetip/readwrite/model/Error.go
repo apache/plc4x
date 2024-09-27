@@ -45,6 +45,8 @@ type Error interface {
 	GetErrorCode() ErrorCodeTagged
 	// IsError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsError()
+	// CreateBuilder creates a ErrorBuilder
+	CreateErrorBuilder() ErrorBuilder
 }
 
 // _Error is the data-structure of this message
@@ -65,6 +67,127 @@ func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
 	}
 	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorBuilder is a builder for Error
+type ErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder
+	// WithErrorClass adds ErrorClass (property field)
+	WithErrorClass(ErrorClassTagged) ErrorBuilder
+	// WithErrorClassBuilder adds ErrorClass (property field) which is build by the builder
+	WithErrorClassBuilder(func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder
+	// WithErrorCode adds ErrorCode (property field)
+	WithErrorCode(ErrorCodeTagged) ErrorBuilder
+	// WithErrorCodeBuilder adds ErrorCode (property field) which is build by the builder
+	WithErrorCodeBuilder(func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder
+	// Build builds the Error or returns an error if something is wrong
+	Build() (Error, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Error
+}
+
+// NewErrorBuilder() creates a ErrorBuilder
+func NewErrorBuilder() ErrorBuilder {
+	return &_ErrorBuilder{_Error: new(_Error)}
+}
+
+type _ErrorBuilder struct {
+	*_Error
+
+	err *utils.MultiError
+}
+
+var _ (ErrorBuilder) = (*_ErrorBuilder)(nil)
+
+func (m *_ErrorBuilder) WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder {
+	return m.WithErrorClass(errorClass).WithErrorCode(errorCode)
+}
+
+func (m *_ErrorBuilder) WithErrorClass(errorClass ErrorClassTagged) ErrorBuilder {
+	m.ErrorClass = errorClass
+	return m
+}
+
+func (m *_ErrorBuilder) WithErrorClassBuilder(builderSupplier func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(m.ErrorClass.CreateErrorClassTaggedBuilder())
+	var err error
+	m.ErrorClass, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorClassTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ErrorBuilder) WithErrorCode(errorCode ErrorCodeTagged) ErrorBuilder {
+	m.ErrorCode = errorCode
+	return m
+}
+
+func (m *_ErrorBuilder) WithErrorCodeBuilder(builderSupplier func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(m.ErrorCode.CreateErrorCodeTaggedBuilder())
+	var err error
+	m.ErrorCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorCodeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ErrorBuilder) Build() (Error, error) {
+	if m.ErrorClass == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorClass' not set"))
+	}
+	if m.ErrorCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorCode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Error.deepCopy(), nil
+}
+
+func (m *_ErrorBuilder) MustBuild() Error {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorBuilder) DeepCopy() any {
+	return m.CreateErrorBuilder()
+}
+
+// CreateErrorBuilder creates a ErrorBuilder
+func (m *_Error) CreateErrorBuilder() ErrorBuilder {
+	if m == nil {
+		return NewErrorBuilder()
+	}
+	return &_ErrorBuilder{_Error: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

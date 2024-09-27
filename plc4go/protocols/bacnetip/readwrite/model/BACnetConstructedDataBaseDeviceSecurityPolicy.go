@@ -46,6 +46,8 @@ type BACnetConstructedDataBaseDeviceSecurityPolicy interface {
 	GetActualValue() BACnetSecurityLevelTagged
 	// IsBACnetConstructedDataBaseDeviceSecurityPolicy is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBaseDeviceSecurityPolicy()
+	// CreateBuilder creates a BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+	CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
 }
 
 // _BACnetConstructedDataBaseDeviceSecurityPolicy is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBaseDeviceSecurityPolicy(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBaseDeviceSecurityPolicyBuilder is a builder for BACnetConstructedDataBaseDeviceSecurityPolicy
+type BACnetConstructedDataBaseDeviceSecurityPolicyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+	// WithBaseDeviceSecurityPolicy adds BaseDeviceSecurityPolicy (property field)
+	WithBaseDeviceSecurityPolicy(BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+	// WithBaseDeviceSecurityPolicyBuilder adds BaseDeviceSecurityPolicy (property field) which is build by the builder
+	WithBaseDeviceSecurityPolicyBuilder(func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+	// Build builds the BACnetConstructedDataBaseDeviceSecurityPolicy or returns an error if something is wrong
+	Build() (BACnetConstructedDataBaseDeviceSecurityPolicy, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBaseDeviceSecurityPolicy
+}
+
+// NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() creates a BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+func NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	return &_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder{_BACnetConstructedDataBaseDeviceSecurityPolicy: new(_BACnetConstructedDataBaseDeviceSecurityPolicy)}
+}
+
+type _BACnetConstructedDataBaseDeviceSecurityPolicyBuilder struct {
+	*_BACnetConstructedDataBaseDeviceSecurityPolicy
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) = (*_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder)(nil)
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithMandatoryFields(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	return m.WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy)
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy BACnetSecurityLevelTagged) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	m.BaseDeviceSecurityPolicy = baseDeviceSecurityPolicy
+	return m
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) WithBaseDeviceSecurityPolicyBuilder(builderSupplier func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	builder := builderSupplier(m.BaseDeviceSecurityPolicy.CreateBACnetSecurityLevelTaggedBuilder())
+	var err error
+	m.BaseDeviceSecurityPolicy, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) Build() (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+	if m.BaseDeviceSecurityPolicy == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'baseDeviceSecurityPolicy' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBaseDeviceSecurityPolicy.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) MustBuild() BACnetConstructedDataBaseDeviceSecurityPolicy {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder()
+}
+
+// CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder creates a BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+func (m *_BACnetConstructedDataBaseDeviceSecurityPolicy) CreateBACnetConstructedDataBaseDeviceSecurityPolicyBuilder() BACnetConstructedDataBaseDeviceSecurityPolicyBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBaseDeviceSecurityPolicyBuilder()
+	}
+	return &_BACnetConstructedDataBaseDeviceSecurityPolicyBuilder{_BACnetConstructedDataBaseDeviceSecurityPolicy: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

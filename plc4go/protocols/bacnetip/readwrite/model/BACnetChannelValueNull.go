@@ -44,6 +44,8 @@ type BACnetChannelValueNull interface {
 	GetNullValue() BACnetApplicationTagNull
 	// IsBACnetChannelValueNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueNull()
+	// CreateBuilder creates a BACnetChannelValueNullBuilder
+	CreateBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder
 }
 
 // _BACnetChannelValueNull is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueNull(peekedTagHeader BACnetTagHeader, nullValue BACnet
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueNullBuilder is a builder for BACnetChannelValueNull
+type BACnetChannelValueNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetApplicationTagNull) BACnetChannelValueNullBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetChannelValueNullBuilder
+	// Build builds the BACnetChannelValueNull or returns an error if something is wrong
+	Build() (BACnetChannelValueNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueNull
+}
+
+// NewBACnetChannelValueNullBuilder() creates a BACnetChannelValueNullBuilder
+func NewBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder {
+	return &_BACnetChannelValueNullBuilder{_BACnetChannelValueNull: new(_BACnetChannelValueNull)}
+}
+
+type _BACnetChannelValueNullBuilder struct {
+	*_BACnetChannelValueNull
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueNullBuilder) = (*_BACnetChannelValueNullBuilder)(nil)
+
+func (m *_BACnetChannelValueNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
+	return m.WithNullValue(nullValue)
+}
+
+func (m *_BACnetChannelValueNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetChannelValueNullBuilder {
+	m.NullValue = nullValue
+	return m
+}
+
+func (m *_BACnetChannelValueNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetChannelValueNullBuilder {
+	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	m.NullValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueNullBuilder) Build() (BACnetChannelValueNull, error) {
+	if m.NullValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueNull.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueNullBuilder) MustBuild() BACnetChannelValueNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueNullBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueNullBuilder()
+}
+
+// CreateBACnetChannelValueNullBuilder creates a BACnetChannelValueNullBuilder
+func (m *_BACnetChannelValueNull) CreateBACnetChannelValueNullBuilder() BACnetChannelValueNullBuilder {
+	if m == nil {
+		return NewBACnetChannelValueNullBuilder()
+	}
+	return &_BACnetChannelValueNullBuilder{_BACnetChannelValueNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

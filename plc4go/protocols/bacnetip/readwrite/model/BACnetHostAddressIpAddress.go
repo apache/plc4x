@@ -44,6 +44,8 @@ type BACnetHostAddressIpAddress interface {
 	GetIpAddress() BACnetContextTagOctetString
 	// IsBACnetHostAddressIpAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddressIpAddress()
+	// CreateBuilder creates a BACnetHostAddressIpAddressBuilder
+	CreateBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder
 }
 
 // _BACnetHostAddressIpAddress is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetHostAddressIpAddress(peekedTagHeader BACnetTagHeader, ipAddress BA
 	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostAddressIpAddressBuilder is a builder for BACnetHostAddressIpAddress
+type BACnetHostAddressIpAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder
+	// WithIpAddress adds IpAddress (property field)
+	WithIpAddress(BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder
+	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
+	WithIpAddressBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetHostAddressIpAddressBuilder
+	// Build builds the BACnetHostAddressIpAddress or returns an error if something is wrong
+	Build() (BACnetHostAddressIpAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostAddressIpAddress
+}
+
+// NewBACnetHostAddressIpAddressBuilder() creates a BACnetHostAddressIpAddressBuilder
+func NewBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder {
+	return &_BACnetHostAddressIpAddressBuilder{_BACnetHostAddressIpAddress: new(_BACnetHostAddressIpAddress)}
+}
+
+type _BACnetHostAddressIpAddressBuilder struct {
+	*_BACnetHostAddressIpAddress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostAddressIpAddressBuilder) = (*_BACnetHostAddressIpAddressBuilder)(nil)
+
+func (m *_BACnetHostAddressIpAddressBuilder) WithMandatoryFields(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
+	return m.WithIpAddress(ipAddress)
+}
+
+func (m *_BACnetHostAddressIpAddressBuilder) WithIpAddress(ipAddress BACnetContextTagOctetString) BACnetHostAddressIpAddressBuilder {
+	m.IpAddress = ipAddress
+	return m
+}
+
+func (m *_BACnetHostAddressIpAddressBuilder) WithIpAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetHostAddressIpAddressBuilder {
+	builder := builderSupplier(m.IpAddress.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	m.IpAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetHostAddressIpAddressBuilder) Build() (BACnetHostAddressIpAddress, error) {
+	if m.IpAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetHostAddressIpAddress.deepCopy(), nil
+}
+
+func (m *_BACnetHostAddressIpAddressBuilder) MustBuild() BACnetHostAddressIpAddress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetHostAddressIpAddressBuilder) DeepCopy() any {
+	return m.CreateBACnetHostAddressIpAddressBuilder()
+}
+
+// CreateBACnetHostAddressIpAddressBuilder creates a BACnetHostAddressIpAddressBuilder
+func (m *_BACnetHostAddressIpAddress) CreateBACnetHostAddressIpAddressBuilder() BACnetHostAddressIpAddressBuilder {
+	if m == nil {
+		return NewBACnetHostAddressIpAddressBuilder()
+	}
+	return &_BACnetHostAddressIpAddressBuilder{_BACnetHostAddressIpAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

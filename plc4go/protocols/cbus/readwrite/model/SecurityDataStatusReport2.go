@@ -44,6 +44,8 @@ type SecurityDataStatusReport2 interface {
 	GetZoneStatus() []ZoneStatus
 	// IsSecurityDataStatusReport2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatusReport2()
+	// CreateBuilder creates a SecurityDataStatusReport2Builder
+	CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder
 }
 
 // _SecurityDataStatusReport2 is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContai
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataStatusReport2Builder is a builder for SecurityDataStatusReport2
+type SecurityDataStatusReport2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder
+	// WithZoneStatus adds ZoneStatus (property field)
+	WithZoneStatus(...ZoneStatus) SecurityDataStatusReport2Builder
+	// Build builds the SecurityDataStatusReport2 or returns an error if something is wrong
+	Build() (SecurityDataStatusReport2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataStatusReport2
+}
+
+// NewSecurityDataStatusReport2Builder() creates a SecurityDataStatusReport2Builder
+func NewSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
+	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: new(_SecurityDataStatusReport2)}
+}
+
+type _SecurityDataStatusReport2Builder struct {
+	*_SecurityDataStatusReport2
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataStatusReport2Builder) = (*_SecurityDataStatusReport2Builder)(nil)
+
+func (m *_SecurityDataStatusReport2Builder) WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder {
+	return m.WithZoneStatus(zoneStatus...)
+}
+
+func (m *_SecurityDataStatusReport2Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport2Builder {
+	m.ZoneStatus = zoneStatus
+	return m
+}
+
+func (m *_SecurityDataStatusReport2Builder) Build() (SecurityDataStatusReport2, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataStatusReport2.deepCopy(), nil
+}
+
+func (m *_SecurityDataStatusReport2Builder) MustBuild() SecurityDataStatusReport2 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataStatusReport2Builder) DeepCopy() any {
+	return m.CreateSecurityDataStatusReport2Builder()
+}
+
+// CreateSecurityDataStatusReport2Builder creates a SecurityDataStatusReport2Builder
+func (m *_SecurityDataStatusReport2) CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
+	if m == nil {
+		return NewSecurityDataStatusReport2Builder()
+	}
+	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

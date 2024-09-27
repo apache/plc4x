@@ -46,6 +46,8 @@ type BACnetConstructedDataFirmwareRevision interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataFirmwareRevision is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFirmwareRevision()
+	// CreateBuilder creates a BACnetConstructedDataFirmwareRevisionBuilder
+	CreateBACnetConstructedDataFirmwareRevisionBuilder() BACnetConstructedDataFirmwareRevisionBuilder
 }
 
 // _BACnetConstructedDataFirmwareRevision is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataFirmwareRevision(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFirmwareRevisionBuilder is a builder for BACnetConstructedDataFirmwareRevision
+type BACnetConstructedDataFirmwareRevisionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(firmwareRevision BACnetApplicationTagCharacterString) BACnetConstructedDataFirmwareRevisionBuilder
+	// WithFirmwareRevision adds FirmwareRevision (property field)
+	WithFirmwareRevision(BACnetApplicationTagCharacterString) BACnetConstructedDataFirmwareRevisionBuilder
+	// WithFirmwareRevisionBuilder adds FirmwareRevision (property field) which is build by the builder
+	WithFirmwareRevisionBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFirmwareRevisionBuilder
+	// Build builds the BACnetConstructedDataFirmwareRevision or returns an error if something is wrong
+	Build() (BACnetConstructedDataFirmwareRevision, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFirmwareRevision
+}
+
+// NewBACnetConstructedDataFirmwareRevisionBuilder() creates a BACnetConstructedDataFirmwareRevisionBuilder
+func NewBACnetConstructedDataFirmwareRevisionBuilder() BACnetConstructedDataFirmwareRevisionBuilder {
+	return &_BACnetConstructedDataFirmwareRevisionBuilder{_BACnetConstructedDataFirmwareRevision: new(_BACnetConstructedDataFirmwareRevision)}
+}
+
+type _BACnetConstructedDataFirmwareRevisionBuilder struct {
+	*_BACnetConstructedDataFirmwareRevision
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFirmwareRevisionBuilder) = (*_BACnetConstructedDataFirmwareRevisionBuilder)(nil)
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) WithMandatoryFields(firmwareRevision BACnetApplicationTagCharacterString) BACnetConstructedDataFirmwareRevisionBuilder {
+	return m.WithFirmwareRevision(firmwareRevision)
+}
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) WithFirmwareRevision(firmwareRevision BACnetApplicationTagCharacterString) BACnetConstructedDataFirmwareRevisionBuilder {
+	m.FirmwareRevision = firmwareRevision
+	return m
+}
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) WithFirmwareRevisionBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFirmwareRevisionBuilder {
+	builder := builderSupplier(m.FirmwareRevision.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.FirmwareRevision, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) Build() (BACnetConstructedDataFirmwareRevision, error) {
+	if m.FirmwareRevision == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'firmwareRevision' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataFirmwareRevision.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) MustBuild() BACnetConstructedDataFirmwareRevision {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataFirmwareRevisionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataFirmwareRevisionBuilder()
+}
+
+// CreateBACnetConstructedDataFirmwareRevisionBuilder creates a BACnetConstructedDataFirmwareRevisionBuilder
+func (m *_BACnetConstructedDataFirmwareRevision) CreateBACnetConstructedDataFirmwareRevisionBuilder() BACnetConstructedDataFirmwareRevisionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataFirmwareRevisionBuilder()
+	}
+	return &_BACnetConstructedDataFirmwareRevisionBuilder{_BACnetConstructedDataFirmwareRevision: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -52,6 +52,8 @@ type BrowseNextResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsBrowseNextResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseNextResponse()
+	// CreateBuilder creates a BrowseNextResponseBuilder
+	CreateBrowseNextResponseBuilder() BrowseNextResponseBuilder
 }
 
 // _BrowseNextResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewBrowseNextResponse(responseHeader ExtensionObjectDefinition, noOfResults
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowseNextResponseBuilder is a builder for BrowseNextResponse
+type BrowseNextResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) BrowseNextResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) BrowseNextResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) BrowseNextResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) BrowseNextResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) BrowseNextResponseBuilder
+	// Build builds the BrowseNextResponse or returns an error if something is wrong
+	Build() (BrowseNextResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowseNextResponse
+}
+
+// NewBrowseNextResponseBuilder() creates a BrowseNextResponseBuilder
+func NewBrowseNextResponseBuilder() BrowseNextResponseBuilder {
+	return &_BrowseNextResponseBuilder{_BrowseNextResponse: new(_BrowseNextResponse)}
+}
+
+type _BrowseNextResponseBuilder struct {
+	*_BrowseNextResponse
+
+	err *utils.MultiError
+}
+
+var _ (BrowseNextResponseBuilder) = (*_BrowseNextResponseBuilder)(nil)
+
+func (m *_BrowseNextResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseNextResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_BrowseNextResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) BrowseNextResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_BrowseNextResponseBuilder) WithNoOfResults(noOfResults int32) BrowseNextResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_BrowseNextResponseBuilder) WithResults(results ...ExtensionObjectDefinition) BrowseNextResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_BrowseNextResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) BrowseNextResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_BrowseNextResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) BrowseNextResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_BrowseNextResponseBuilder) Build() (BrowseNextResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BrowseNextResponse.deepCopy(), nil
+}
+
+func (m *_BrowseNextResponseBuilder) MustBuild() BrowseNextResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BrowseNextResponseBuilder) DeepCopy() any {
+	return m.CreateBrowseNextResponseBuilder()
+}
+
+// CreateBrowseNextResponseBuilder creates a BrowseNextResponseBuilder
+func (m *_BrowseNextResponse) CreateBrowseNextResponseBuilder() BrowseNextResponseBuilder {
+	if m == nil {
+		return NewBrowseNextResponseBuilder()
+	}
+	return &_BrowseNextResponseBuilder{_BrowseNextResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

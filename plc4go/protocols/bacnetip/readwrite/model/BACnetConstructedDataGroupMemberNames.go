@@ -48,6 +48,8 @@ type BACnetConstructedDataGroupMemberNames interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataGroupMemberNames is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGroupMemberNames()
+	// CreateBuilder creates a BACnetConstructedDataGroupMemberNamesBuilder
+	CreateBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder
 }
 
 // _BACnetConstructedDataGroupMemberNames is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataGroupMemberNames(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGroupMemberNamesBuilder is a builder for BACnetConstructedDataGroupMemberNames
+type BACnetConstructedDataGroupMemberNamesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupMemberNames []BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithGroupMemberNames adds GroupMemberNames (property field)
+	WithGroupMemberNames(...BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder
+	// Build builds the BACnetConstructedDataGroupMemberNames or returns an error if something is wrong
+	Build() (BACnetConstructedDataGroupMemberNames, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGroupMemberNames
+}
+
+// NewBACnetConstructedDataGroupMemberNamesBuilder() creates a BACnetConstructedDataGroupMemberNamesBuilder
+func NewBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder {
+	return &_BACnetConstructedDataGroupMemberNamesBuilder{_BACnetConstructedDataGroupMemberNames: new(_BACnetConstructedDataGroupMemberNames)}
+}
+
+type _BACnetConstructedDataGroupMemberNamesBuilder struct {
+	*_BACnetConstructedDataGroupMemberNames
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGroupMemberNamesBuilder) = (*_BACnetConstructedDataGroupMemberNamesBuilder)(nil)
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) WithMandatoryFields(groupMemberNames []BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder {
+	return m.WithGroupMemberNames(groupMemberNames...)
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupMemberNamesBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupMemberNamesBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) WithGroupMemberNames(groupMemberNames ...BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder {
+	m.GroupMemberNames = groupMemberNames
+	return m
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) Build() (BACnetConstructedDataGroupMemberNames, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataGroupMemberNames.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) MustBuild() BACnetConstructedDataGroupMemberNames {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataGroupMemberNamesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataGroupMemberNamesBuilder()
+}
+
+// CreateBACnetConstructedDataGroupMemberNamesBuilder creates a BACnetConstructedDataGroupMemberNamesBuilder
+func (m *_BACnetConstructedDataGroupMemberNames) CreateBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataGroupMemberNamesBuilder()
+	}
+	return &_BACnetConstructedDataGroupMemberNamesBuilder{_BACnetConstructedDataGroupMemberNames: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

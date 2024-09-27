@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueConstructedValue interface {
 	GetConstructedValue() BACnetConstructedData
 	// IsBACnetTimerStateChangeValueConstructedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueConstructedValue()
+	// CreateBuilder creates a BACnetTimerStateChangeValueConstructedValueBuilder
+	CreateBACnetTimerStateChangeValueConstructedValueBuilder() BACnetTimerStateChangeValueConstructedValueBuilder
 }
 
 // _BACnetTimerStateChangeValueConstructedValue is the data-structure of this message
@@ -67,6 +69,84 @@ func NewBACnetTimerStateChangeValueConstructedValue(peekedTagHeader BACnetTagHea
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueConstructedValueBuilder is a builder for BACnetTimerStateChangeValueConstructedValue
+type BACnetTimerStateChangeValueConstructedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(constructedValue BACnetConstructedData) BACnetTimerStateChangeValueConstructedValueBuilder
+	// WithConstructedValue adds ConstructedValue (property field)
+	WithConstructedValue(BACnetConstructedData) BACnetTimerStateChangeValueConstructedValueBuilder
+	// Build builds the BACnetTimerStateChangeValueConstructedValue or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueConstructedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueConstructedValue
+}
+
+// NewBACnetTimerStateChangeValueConstructedValueBuilder() creates a BACnetTimerStateChangeValueConstructedValueBuilder
+func NewBACnetTimerStateChangeValueConstructedValueBuilder() BACnetTimerStateChangeValueConstructedValueBuilder {
+	return &_BACnetTimerStateChangeValueConstructedValueBuilder{_BACnetTimerStateChangeValueConstructedValue: new(_BACnetTimerStateChangeValueConstructedValue)}
+}
+
+type _BACnetTimerStateChangeValueConstructedValueBuilder struct {
+	*_BACnetTimerStateChangeValueConstructedValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueConstructedValueBuilder) = (*_BACnetTimerStateChangeValueConstructedValueBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueConstructedValueBuilder) WithMandatoryFields(constructedValue BACnetConstructedData) BACnetTimerStateChangeValueConstructedValueBuilder {
+	return m.WithConstructedValue(constructedValue)
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValueBuilder) WithConstructedValue(constructedValue BACnetConstructedData) BACnetTimerStateChangeValueConstructedValueBuilder {
+	m.ConstructedValue = constructedValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValueBuilder) Build() (BACnetTimerStateChangeValueConstructedValue, error) {
+	if m.ConstructedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'constructedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueConstructedValue.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValueBuilder) MustBuild() BACnetTimerStateChangeValueConstructedValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueConstructedValueBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueConstructedValueBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueConstructedValueBuilder creates a BACnetTimerStateChangeValueConstructedValueBuilder
+func (m *_BACnetTimerStateChangeValueConstructedValue) CreateBACnetTimerStateChangeValueConstructedValueBuilder() BACnetTimerStateChangeValueConstructedValueBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueConstructedValueBuilder()
+	}
+	return &_BACnetTimerStateChangeValueConstructedValueBuilder{_BACnetTimerStateChangeValueConstructedValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

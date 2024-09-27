@@ -49,6 +49,8 @@ type EnableControlData interface {
 	GetCommandType() EnableControlCommandType
 	// IsEnableControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEnableControlData()
+	// CreateBuilder creates a EnableControlDataBuilder
+	CreateEnableControlDataBuilder() EnableControlDataBuilder
 }
 
 // _EnableControlData is the data-structure of this message
@@ -64,6 +66,92 @@ var _ EnableControlData = (*_EnableControlData)(nil)
 func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
 	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EnableControlDataBuilder is a builder for EnableControlData
+type EnableControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(EnableControlCommandTypeContainer) EnableControlDataBuilder
+	// WithEnableNetworkVariable adds EnableNetworkVariable (property field)
+	WithEnableNetworkVariable(byte) EnableControlDataBuilder
+	// WithValue adds Value (property field)
+	WithValue(byte) EnableControlDataBuilder
+	// Build builds the EnableControlData or returns an error if something is wrong
+	Build() (EnableControlData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EnableControlData
+}
+
+// NewEnableControlDataBuilder() creates a EnableControlDataBuilder
+func NewEnableControlDataBuilder() EnableControlDataBuilder {
+	return &_EnableControlDataBuilder{_EnableControlData: new(_EnableControlData)}
+}
+
+type _EnableControlDataBuilder struct {
+	*_EnableControlData
+
+	err *utils.MultiError
+}
+
+var _ (EnableControlDataBuilder) = (*_EnableControlDataBuilder)(nil)
+
+func (m *_EnableControlDataBuilder) WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithEnableNetworkVariable(enableNetworkVariable).WithValue(value)
+}
+
+func (m *_EnableControlDataBuilder) WithCommandTypeContainer(commandTypeContainer EnableControlCommandTypeContainer) EnableControlDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_EnableControlDataBuilder) WithEnableNetworkVariable(enableNetworkVariable byte) EnableControlDataBuilder {
+	m.EnableNetworkVariable = enableNetworkVariable
+	return m
+}
+
+func (m *_EnableControlDataBuilder) WithValue(value byte) EnableControlDataBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_EnableControlDataBuilder) Build() (EnableControlData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EnableControlData.deepCopy(), nil
+}
+
+func (m *_EnableControlDataBuilder) MustBuild() EnableControlData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EnableControlDataBuilder) DeepCopy() any {
+	return m.CreateEnableControlDataBuilder()
+}
+
+// CreateEnableControlDataBuilder creates a EnableControlDataBuilder
+func (m *_EnableControlData) CreateEnableControlDataBuilder() EnableControlDataBuilder {
+	if m == nil {
+		return NewEnableControlDataBuilder()
+	}
+	return &_EnableControlDataBuilder{_EnableControlData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type BACnetLandingDoorStatus interface {
 	GetLandingDoors() BACnetLandingDoorStatusLandingDoorsList
 	// IsBACnetLandingDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingDoorStatus()
+	// CreateBuilder creates a BACnetLandingDoorStatusBuilder
+	CreateBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder
 }
 
 // _BACnetLandingDoorStatus is the data-structure of this message
@@ -59,6 +61,99 @@ func NewBACnetLandingDoorStatus(landingDoors BACnetLandingDoorStatusLandingDoors
 	}
 	return &_BACnetLandingDoorStatus{LandingDoors: landingDoors}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLandingDoorStatusBuilder is a builder for BACnetLandingDoorStatus
+type BACnetLandingDoorStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder
+	// WithLandingDoors adds LandingDoors (property field)
+	WithLandingDoors(BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder
+	// WithLandingDoorsBuilder adds LandingDoors (property field) which is build by the builder
+	WithLandingDoorsBuilder(func(BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusBuilder
+	// Build builds the BACnetLandingDoorStatus or returns an error if something is wrong
+	Build() (BACnetLandingDoorStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLandingDoorStatus
+}
+
+// NewBACnetLandingDoorStatusBuilder() creates a BACnetLandingDoorStatusBuilder
+func NewBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder {
+	return &_BACnetLandingDoorStatusBuilder{_BACnetLandingDoorStatus: new(_BACnetLandingDoorStatus)}
+}
+
+type _BACnetLandingDoorStatusBuilder struct {
+	*_BACnetLandingDoorStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLandingDoorStatusBuilder) = (*_BACnetLandingDoorStatusBuilder)(nil)
+
+func (m *_BACnetLandingDoorStatusBuilder) WithMandatoryFields(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
+	return m.WithLandingDoors(landingDoors)
+}
+
+func (m *_BACnetLandingDoorStatusBuilder) WithLandingDoors(landingDoors BACnetLandingDoorStatusLandingDoorsList) BACnetLandingDoorStatusBuilder {
+	m.LandingDoors = landingDoors
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusBuilder) WithLandingDoorsBuilder(builderSupplier func(BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusLandingDoorsListBuilder) BACnetLandingDoorStatusBuilder {
+	builder := builderSupplier(m.LandingDoors.CreateBACnetLandingDoorStatusLandingDoorsListBuilder())
+	var err error
+	m.LandingDoors, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLandingDoorStatusLandingDoorsListBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusBuilder) Build() (BACnetLandingDoorStatus, error) {
+	if m.LandingDoors == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'landingDoors' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLandingDoorStatus.deepCopy(), nil
+}
+
+func (m *_BACnetLandingDoorStatusBuilder) MustBuild() BACnetLandingDoorStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLandingDoorStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetLandingDoorStatusBuilder()
+}
+
+// CreateBACnetLandingDoorStatusBuilder creates a BACnetLandingDoorStatusBuilder
+func (m *_BACnetLandingDoorStatus) CreateBACnetLandingDoorStatusBuilder() BACnetLandingDoorStatusBuilder {
+	if m == nil {
+		return NewBACnetLandingDoorStatusBuilder()
+	}
+	return &_BACnetLandingDoorStatusBuilder{_BACnetLandingDoorStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

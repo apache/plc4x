@@ -40,6 +40,8 @@ type SecurityDataTamperOn interface {
 	SecurityData
 	// IsSecurityDataTamperOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataTamperOn()
+	// CreateBuilder creates a SecurityDataTamperOnBuilder
+	CreateSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder
 }
 
 // _SecurityDataTamperOn is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataTamperOn(commandTypeContainer SecurityCommandTypeContainer, 
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataTamperOnBuilder is a builder for SecurityDataTamperOn
+type SecurityDataTamperOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataTamperOnBuilder
+	// Build builds the SecurityDataTamperOn or returns an error if something is wrong
+	Build() (SecurityDataTamperOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataTamperOn
+}
+
+// NewSecurityDataTamperOnBuilder() creates a SecurityDataTamperOnBuilder
+func NewSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder {
+	return &_SecurityDataTamperOnBuilder{_SecurityDataTamperOn: new(_SecurityDataTamperOn)}
+}
+
+type _SecurityDataTamperOnBuilder struct {
+	*_SecurityDataTamperOn
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataTamperOnBuilder) = (*_SecurityDataTamperOnBuilder)(nil)
+
+func (m *_SecurityDataTamperOnBuilder) WithMandatoryFields() SecurityDataTamperOnBuilder {
+	return m
+}
+
+func (m *_SecurityDataTamperOnBuilder) Build() (SecurityDataTamperOn, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataTamperOn.deepCopy(), nil
+}
+
+func (m *_SecurityDataTamperOnBuilder) MustBuild() SecurityDataTamperOn {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataTamperOnBuilder) DeepCopy() any {
+	return m.CreateSecurityDataTamperOnBuilder()
+}
+
+// CreateSecurityDataTamperOnBuilder creates a SecurityDataTamperOnBuilder
+func (m *_SecurityDataTamperOn) CreateSecurityDataTamperOnBuilder() SecurityDataTamperOnBuilder {
+	if m == nil {
+		return NewSecurityDataTamperOnBuilder()
+	}
+	return &_SecurityDataTamperOnBuilder{_SecurityDataTamperOn: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

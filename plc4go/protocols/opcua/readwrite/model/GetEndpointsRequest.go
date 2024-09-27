@@ -54,6 +54,8 @@ type GetEndpointsRequest interface {
 	GetProfileUris() []PascalString
 	// IsGetEndpointsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetEndpointsRequest()
+	// CreateBuilder creates a GetEndpointsRequestBuilder
+	CreateGetEndpointsRequestBuilder() GetEndpointsRequestBuilder
 }
 
 // _GetEndpointsRequest is the data-structure of this message
@@ -90,6 +92,140 @@ func NewGetEndpointsRequest(requestHeader ExtensionObjectDefinition, endpointUrl
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetEndpointsRequestBuilder is a builder for GetEndpointsRequest
+type GetEndpointsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) GetEndpointsRequestBuilder
+	// WithEndpointUrl adds EndpointUrl (property field)
+	WithEndpointUrl(PascalString) GetEndpointsRequestBuilder
+	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
+	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) GetEndpointsRequestBuilder
+	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
+	WithNoOfLocaleIds(int32) GetEndpointsRequestBuilder
+	// WithLocaleIds adds LocaleIds (property field)
+	WithLocaleIds(...PascalString) GetEndpointsRequestBuilder
+	// WithNoOfProfileUris adds NoOfProfileUris (property field)
+	WithNoOfProfileUris(int32) GetEndpointsRequestBuilder
+	// WithProfileUris adds ProfileUris (property field)
+	WithProfileUris(...PascalString) GetEndpointsRequestBuilder
+	// Build builds the GetEndpointsRequest or returns an error if something is wrong
+	Build() (GetEndpointsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetEndpointsRequest
+}
+
+// NewGetEndpointsRequestBuilder() creates a GetEndpointsRequestBuilder
+func NewGetEndpointsRequestBuilder() GetEndpointsRequestBuilder {
+	return &_GetEndpointsRequestBuilder{_GetEndpointsRequest: new(_GetEndpointsRequest)}
+}
+
+type _GetEndpointsRequestBuilder struct {
+	*_GetEndpointsRequest
+
+	err *utils.MultiError
+}
+
+var _ (GetEndpointsRequestBuilder) = (*_GetEndpointsRequestBuilder)(nil)
+
+func (m *_GetEndpointsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, endpointUrl PascalString, noOfLocaleIds int32, localeIds []PascalString, noOfProfileUris int32, profileUris []PascalString) GetEndpointsRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithEndpointUrl(endpointUrl).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithNoOfProfileUris(noOfProfileUris).WithProfileUris(profileUris...)
+}
+
+func (m *_GetEndpointsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) GetEndpointsRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithEndpointUrl(endpointUrl PascalString) GetEndpointsRequestBuilder {
+	m.EndpointUrl = endpointUrl
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) GetEndpointsRequestBuilder {
+	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+	var err error
+	m.EndpointUrl, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) GetEndpointsRequestBuilder {
+	m.NoOfLocaleIds = noOfLocaleIds
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithLocaleIds(localeIds ...PascalString) GetEndpointsRequestBuilder {
+	m.LocaleIds = localeIds
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithNoOfProfileUris(noOfProfileUris int32) GetEndpointsRequestBuilder {
+	m.NoOfProfileUris = noOfProfileUris
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) WithProfileUris(profileUris ...PascalString) GetEndpointsRequestBuilder {
+	m.ProfileUris = profileUris
+	return m
+}
+
+func (m *_GetEndpointsRequestBuilder) Build() (GetEndpointsRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.EndpointUrl == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetEndpointsRequest.deepCopy(), nil
+}
+
+func (m *_GetEndpointsRequestBuilder) MustBuild() GetEndpointsRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetEndpointsRequestBuilder) DeepCopy() any {
+	return m.CreateGetEndpointsRequestBuilder()
+}
+
+// CreateGetEndpointsRequestBuilder creates a GetEndpointsRequestBuilder
+func (m *_GetEndpointsRequest) CreateGetEndpointsRequestBuilder() GetEndpointsRequestBuilder {
+	if m == nil {
+		return NewGetEndpointsRequestBuilder()
+	}
+	return &_GetEndpointsRequestBuilder{_GetEndpointsRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

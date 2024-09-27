@@ -48,6 +48,8 @@ type LDataCon interface {
 	GetDataFrame() LDataFrame
 	// IsLDataCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataCon()
+	// CreateBuilder creates a LDataConBuilder
+	CreateLDataConBuilder() LDataConBuilder
 }
 
 // _LDataCon is the data-structure of this message
@@ -75,6 +77,98 @@ func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMI
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataConBuilder is a builder for LDataCon
+type LDataConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataConBuilder
+	// WithAdditionalInformationLength adds AdditionalInformationLength (property field)
+	WithAdditionalInformationLength(uint8) LDataConBuilder
+	// WithAdditionalInformation adds AdditionalInformation (property field)
+	WithAdditionalInformation(...CEMIAdditionalInformation) LDataConBuilder
+	// WithDataFrame adds DataFrame (property field)
+	WithDataFrame(LDataFrame) LDataConBuilder
+	// Build builds the LDataCon or returns an error if something is wrong
+	Build() (LDataCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataCon
+}
+
+// NewLDataConBuilder() creates a LDataConBuilder
+func NewLDataConBuilder() LDataConBuilder {
+	return &_LDataConBuilder{_LDataCon: new(_LDataCon)}
+}
+
+type _LDataConBuilder struct {
+	*_LDataCon
+
+	err *utils.MultiError
+}
+
+var _ (LDataConBuilder) = (*_LDataConBuilder)(nil)
+
+func (m *_LDataConBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataConBuilder {
+	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+}
+
+func (m *_LDataConBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataConBuilder {
+	m.AdditionalInformationLength = additionalInformationLength
+	return m
+}
+
+func (m *_LDataConBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataConBuilder {
+	m.AdditionalInformation = additionalInformation
+	return m
+}
+
+func (m *_LDataConBuilder) WithDataFrame(dataFrame LDataFrame) LDataConBuilder {
+	m.DataFrame = dataFrame
+	return m
+}
+
+func (m *_LDataConBuilder) Build() (LDataCon, error) {
+	if m.DataFrame == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LDataCon.deepCopy(), nil
+}
+
+func (m *_LDataConBuilder) MustBuild() LDataCon {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LDataConBuilder) DeepCopy() any {
+	return m.CreateLDataConBuilder()
+}
+
+// CreateLDataConBuilder creates a LDataConBuilder
+func (m *_LDataCon) CreateLDataConBuilder() LDataConBuilder {
+	if m == nil {
+		return NewLDataConBuilder()
+	}
+	return &_LDataConBuilder{_LDataCon: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

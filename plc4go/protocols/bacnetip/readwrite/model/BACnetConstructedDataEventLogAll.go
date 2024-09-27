@@ -40,6 +40,8 @@ type BACnetConstructedDataEventLogAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataEventLogAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventLogAll()
+	// CreateBuilder creates a BACnetConstructedDataEventLogAllBuilder
+	CreateBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogAllBuilder
 }
 
 // _BACnetConstructedDataEventLogAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataEventLogAll(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventLogAllBuilder is a builder for BACnetConstructedDataEventLogAll
+type BACnetConstructedDataEventLogAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataEventLogAllBuilder
+	// Build builds the BACnetConstructedDataEventLogAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventLogAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventLogAll
+}
+
+// NewBACnetConstructedDataEventLogAllBuilder() creates a BACnetConstructedDataEventLogAllBuilder
+func NewBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogAllBuilder {
+	return &_BACnetConstructedDataEventLogAllBuilder{_BACnetConstructedDataEventLogAll: new(_BACnetConstructedDataEventLogAll)}
+}
+
+type _BACnetConstructedDataEventLogAllBuilder struct {
+	*_BACnetConstructedDataEventLogAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventLogAllBuilder) = (*_BACnetConstructedDataEventLogAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventLogAllBuilder) WithMandatoryFields() BACnetConstructedDataEventLogAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataEventLogAllBuilder) Build() (BACnetConstructedDataEventLogAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventLogAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventLogAllBuilder) MustBuild() BACnetConstructedDataEventLogAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventLogAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventLogAllBuilder()
+}
+
+// CreateBACnetConstructedDataEventLogAllBuilder creates a BACnetConstructedDataEventLogAllBuilder
+func (m *_BACnetConstructedDataEventLogAll) CreateBACnetConstructedDataEventLogAllBuilder() BACnetConstructedDataEventLogAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventLogAllBuilder()
+	}
+	return &_BACnetConstructedDataEventLogAllBuilder{_BACnetConstructedDataEventLogAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

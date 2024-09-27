@@ -62,6 +62,8 @@ type PublishResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsPublishResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishResponse()
+	// CreateBuilder creates a PublishResponseBuilder
+	CreatePublishResponseBuilder() PublishResponseBuilder
 }
 
 // _PublishResponse is the data-structure of this message
@@ -108,6 +110,153 @@ func NewPublishResponse(responseHeader ExtensionObjectDefinition, subscriptionId
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishResponseBuilder is a builder for PublishResponse
+type PublishResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) PublishResponseBuilder
+	// WithSubscriptionId adds SubscriptionId (property field)
+	WithSubscriptionId(uint32) PublishResponseBuilder
+	// WithNoOfAvailableSequenceNumbers adds NoOfAvailableSequenceNumbers (property field)
+	WithNoOfAvailableSequenceNumbers(int32) PublishResponseBuilder
+	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
+	WithAvailableSequenceNumbers(...uint32) PublishResponseBuilder
+	// WithMoreNotifications adds MoreNotifications (property field)
+	WithMoreNotifications(bool) PublishResponseBuilder
+	// WithNotificationMessage adds NotificationMessage (property field)
+	WithNotificationMessage(ExtensionObjectDefinition) PublishResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) PublishResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) PublishResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) PublishResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) PublishResponseBuilder
+	// Build builds the PublishResponse or returns an error if something is wrong
+	Build() (PublishResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishResponse
+}
+
+// NewPublishResponseBuilder() creates a PublishResponseBuilder
+func NewPublishResponseBuilder() PublishResponseBuilder {
+	return &_PublishResponseBuilder{_PublishResponse: new(_PublishResponse)}
+}
+
+type _PublishResponseBuilder struct {
+	*_PublishResponse
+
+	err *utils.MultiError
+}
+
+var _ (PublishResponseBuilder) = (*_PublishResponseBuilder)(nil)
+
+func (m *_PublishResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, subscriptionId uint32, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32, moreNotifications bool, notificationMessage ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) PublishResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithSubscriptionId(subscriptionId).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...).WithMoreNotifications(moreNotifications).WithNotificationMessage(notificationMessage).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_PublishResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) PublishResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithSubscriptionId(subscriptionId uint32) PublishResponseBuilder {
+	m.SubscriptionId = subscriptionId
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) PublishResponseBuilder {
+	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithAvailableSequenceNumbers(availableSequenceNumbers ...uint32) PublishResponseBuilder {
+	m.AvailableSequenceNumbers = availableSequenceNumbers
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithMoreNotifications(moreNotifications bool) PublishResponseBuilder {
+	m.MoreNotifications = moreNotifications
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithNotificationMessage(notificationMessage ExtensionObjectDefinition) PublishResponseBuilder {
+	m.NotificationMessage = notificationMessage
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithNoOfResults(noOfResults int32) PublishResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithResults(results ...StatusCode) PublishResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) PublishResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_PublishResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) PublishResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_PublishResponseBuilder) Build() (PublishResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.NotificationMessage == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notificationMessage' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PublishResponse.deepCopy(), nil
+}
+
+func (m *_PublishResponseBuilder) MustBuild() PublishResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PublishResponseBuilder) DeepCopy() any {
+	return m.CreatePublishResponseBuilder()
+}
+
+// CreatePublishResponseBuilder creates a PublishResponseBuilder
+func (m *_PublishResponse) CreatePublishResponseBuilder() PublishResponseBuilder {
+	if m == nil {
+		return NewPublishResponseBuilder()
+	}
+	return &_PublishResponseBuilder{_PublishResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

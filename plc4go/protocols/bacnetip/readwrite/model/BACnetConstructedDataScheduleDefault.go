@@ -46,6 +46,8 @@ type BACnetConstructedDataScheduleDefault interface {
 	GetActualValue() BACnetConstructedDataElement
 	// IsBACnetConstructedDataScheduleDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataScheduleDefault()
+	// CreateBuilder creates a BACnetConstructedDataScheduleDefaultBuilder
+	CreateBACnetConstructedDataScheduleDefaultBuilder() BACnetConstructedDataScheduleDefaultBuilder
 }
 
 // _BACnetConstructedDataScheduleDefault is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataScheduleDefault(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataScheduleDefaultBuilder is a builder for BACnetConstructedDataScheduleDefault
+type BACnetConstructedDataScheduleDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(scheduleDefault BACnetConstructedDataElement) BACnetConstructedDataScheduleDefaultBuilder
+	// WithScheduleDefault adds ScheduleDefault (property field)
+	WithScheduleDefault(BACnetConstructedDataElement) BACnetConstructedDataScheduleDefaultBuilder
+	// WithScheduleDefaultBuilder adds ScheduleDefault (property field) which is build by the builder
+	WithScheduleDefaultBuilder(func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetConstructedDataScheduleDefaultBuilder
+	// Build builds the BACnetConstructedDataScheduleDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataScheduleDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataScheduleDefault
+}
+
+// NewBACnetConstructedDataScheduleDefaultBuilder() creates a BACnetConstructedDataScheduleDefaultBuilder
+func NewBACnetConstructedDataScheduleDefaultBuilder() BACnetConstructedDataScheduleDefaultBuilder {
+	return &_BACnetConstructedDataScheduleDefaultBuilder{_BACnetConstructedDataScheduleDefault: new(_BACnetConstructedDataScheduleDefault)}
+}
+
+type _BACnetConstructedDataScheduleDefaultBuilder struct {
+	*_BACnetConstructedDataScheduleDefault
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataScheduleDefaultBuilder) = (*_BACnetConstructedDataScheduleDefaultBuilder)(nil)
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) WithMandatoryFields(scheduleDefault BACnetConstructedDataElement) BACnetConstructedDataScheduleDefaultBuilder {
+	return m.WithScheduleDefault(scheduleDefault)
+}
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) WithScheduleDefault(scheduleDefault BACnetConstructedDataElement) BACnetConstructedDataScheduleDefaultBuilder {
+	m.ScheduleDefault = scheduleDefault
+	return m
+}
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) WithScheduleDefaultBuilder(builderSupplier func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetConstructedDataScheduleDefaultBuilder {
+	builder := builderSupplier(m.ScheduleDefault.CreateBACnetConstructedDataElementBuilder())
+	var err error
+	m.ScheduleDefault, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) Build() (BACnetConstructedDataScheduleDefault, error) {
+	if m.ScheduleDefault == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'scheduleDefault' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataScheduleDefault.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) MustBuild() BACnetConstructedDataScheduleDefault {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataScheduleDefaultBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataScheduleDefaultBuilder()
+}
+
+// CreateBACnetConstructedDataScheduleDefaultBuilder creates a BACnetConstructedDataScheduleDefaultBuilder
+func (m *_BACnetConstructedDataScheduleDefault) CreateBACnetConstructedDataScheduleDefaultBuilder() BACnetConstructedDataScheduleDefaultBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataScheduleDefaultBuilder()
+	}
+	return &_BACnetConstructedDataScheduleDefaultBuilder{_BACnetConstructedDataScheduleDefault: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

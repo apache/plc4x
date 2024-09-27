@@ -40,6 +40,8 @@ type BACnetConstructedDataCharacterstringValueAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataCharacterstringValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCharacterstringValueAll()
+	// CreateBuilder creates a BACnetConstructedDataCharacterstringValueAllBuilder
+	CreateBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedDataCharacterstringValueAllBuilder
 }
 
 // _BACnetConstructedDataCharacterstringValueAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataCharacterstringValueAll(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCharacterstringValueAllBuilder is a builder for BACnetConstructedDataCharacterstringValueAll
+type BACnetConstructedDataCharacterstringValueAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder
+	// Build builds the BACnetConstructedDataCharacterstringValueAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataCharacterstringValueAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCharacterstringValueAll
+}
+
+// NewBACnetConstructedDataCharacterstringValueAllBuilder() creates a BACnetConstructedDataCharacterstringValueAllBuilder
+func NewBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedDataCharacterstringValueAllBuilder {
+	return &_BACnetConstructedDataCharacterstringValueAllBuilder{_BACnetConstructedDataCharacterstringValueAll: new(_BACnetConstructedDataCharacterstringValueAll)}
+}
+
+type _BACnetConstructedDataCharacterstringValueAllBuilder struct {
+	*_BACnetConstructedDataCharacterstringValueAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCharacterstringValueAllBuilder) = (*_BACnetConstructedDataCharacterstringValueAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataCharacterstringValueAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) Build() (BACnetConstructedDataCharacterstringValueAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCharacterstringValueAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) MustBuild() BACnetConstructedDataCharacterstringValueAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCharacterstringValueAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCharacterstringValueAllBuilder()
+}
+
+// CreateBACnetConstructedDataCharacterstringValueAllBuilder creates a BACnetConstructedDataCharacterstringValueAllBuilder
+func (m *_BACnetConstructedDataCharacterstringValueAll) CreateBACnetConstructedDataCharacterstringValueAllBuilder() BACnetConstructedDataCharacterstringValueAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCharacterstringValueAllBuilder()
+	}
+	return &_BACnetConstructedDataCharacterstringValueAllBuilder{_BACnetConstructedDataCharacterstringValueAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

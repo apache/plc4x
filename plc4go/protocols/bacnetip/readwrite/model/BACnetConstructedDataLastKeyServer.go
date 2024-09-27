@@ -46,6 +46,8 @@ type BACnetConstructedDataLastKeyServer interface {
 	GetActualValue() BACnetAddressBinding
 	// IsBACnetConstructedDataLastKeyServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastKeyServer()
+	// CreateBuilder creates a BACnetConstructedDataLastKeyServerBuilder
+	CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder
 }
 
 // _BACnetConstructedDataLastKeyServer is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastKeyServerBuilder is a builder for BACnetConstructedDataLastKeyServer
+type BACnetConstructedDataLastKeyServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder
+	// WithLastKeyServer adds LastKeyServer (property field)
+	WithLastKeyServer(BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder
+	// WithLastKeyServerBuilder adds LastKeyServer (property field) which is build by the builder
+	WithLastKeyServerBuilder(func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder
+	// Build builds the BACnetConstructedDataLastKeyServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastKeyServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastKeyServer
+}
+
+// NewBACnetConstructedDataLastKeyServerBuilder() creates a BACnetConstructedDataLastKeyServerBuilder
+func NewBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
+	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: new(_BACnetConstructedDataLastKeyServer)}
+}
+
+type _BACnetConstructedDataLastKeyServerBuilder struct {
+	*_BACnetConstructedDataLastKeyServer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastKeyServerBuilder) = (*_BACnetConstructedDataLastKeyServerBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	return m.WithLastKeyServer(lastKeyServer)
+}
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServer(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	m.LastKeyServer = lastKeyServer
+	return m
+}
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServerBuilder(builderSupplier func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder {
+	builder := builderSupplier(m.LastKeyServer.CreateBACnetAddressBindingBuilder())
+	var err error
+	m.LastKeyServer, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAddressBindingBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) Build() (BACnetConstructedDataLastKeyServer, error) {
+	if m.LastKeyServer == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastKeyServer' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastKeyServer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) MustBuild() BACnetConstructedDataLastKeyServer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastKeyServerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastKeyServerBuilder()
+}
+
+// CreateBACnetConstructedDataLastKeyServerBuilder creates a BACnetConstructedDataLastKeyServerBuilder
+func (m *_BACnetConstructedDataLastKeyServer) CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastKeyServerBuilder()
+	}
+	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

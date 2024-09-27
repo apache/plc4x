@@ -46,6 +46,8 @@ type BACnetConfirmedServiceRequestAtomicReadFileStream interface {
 	GetRequestOctetCount() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConfirmedServiceRequestAtomicReadFileStream is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestAtomicReadFileStream()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	CreateBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder() BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
 }
 
 // _BACnetConfirmedServiceRequestAtomicReadFileStream is the data-structure of this message
@@ -74,6 +76,127 @@ func NewBACnetConfirmedServiceRequestAtomicReadFileStream(peekedTagHeader BACnet
 	_result.BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordContract.(*_BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder is a builder for BACnetConfirmedServiceRequestAtomicReadFileStream
+type BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileStartPosition BACnetApplicationTagSignedInteger, requestOctetCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	// WithFileStartPosition adds FileStartPosition (property field)
+	WithFileStartPosition(BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	// WithFileStartPositionBuilder adds FileStartPosition (property field) which is build by the builder
+	WithFileStartPositionBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	// WithRequestOctetCount adds RequestOctetCount (property field)
+	WithRequestOctetCount(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	// WithRequestOctetCountBuilder adds RequestOctetCount (property field) which is build by the builder
+	WithRequestOctetCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+	// Build builds the BACnetConfirmedServiceRequestAtomicReadFileStream or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestAtomicReadFileStream, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestAtomicReadFileStream
+}
+
+// NewBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder() creates a BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+func NewBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder() BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	return &_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder{_BACnetConfirmedServiceRequestAtomicReadFileStream: new(_BACnetConfirmedServiceRequestAtomicReadFileStream)}
+}
+
+type _BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder struct {
+	*_BACnetConfirmedServiceRequestAtomicReadFileStream
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) = (*_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) WithMandatoryFields(fileStartPosition BACnetApplicationTagSignedInteger, requestOctetCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	return m.WithFileStartPosition(fileStartPosition).WithRequestOctetCount(requestOctetCount)
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) WithFileStartPosition(fileStartPosition BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	m.FileStartPosition = fileStartPosition
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) WithFileStartPositionBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	builder := builderSupplier(m.FileStartPosition.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.FileStartPosition, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) WithRequestOctetCount(requestOctetCount BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	m.RequestOctetCount = requestOctetCount
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) WithRequestOctetCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	builder := builderSupplier(m.RequestOctetCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.RequestOctetCount, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) Build() (BACnetConfirmedServiceRequestAtomicReadFileStream, error) {
+	if m.FileStartPosition == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fileStartPosition' not set"))
+	}
+	if m.RequestOctetCount == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestOctetCount' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestAtomicReadFileStream.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) MustBuild() BACnetConfirmedServiceRequestAtomicReadFileStream {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder creates a BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+func (m *_BACnetConfirmedServiceRequestAtomicReadFileStream) CreateBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder() BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestAtomicReadFileStreamBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder{_BACnetConfirmedServiceRequestAtomicReadFileStream: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

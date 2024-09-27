@@ -43,6 +43,8 @@ type Reply interface {
 	utils.Copyable
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
+	// CreateBuilder creates a ReplyBuilder
+	CreateReplyBuilder() ReplyBuilder
 }
 
 // ReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type ReplyContract interface {
 	GetRequestContext() RequestContext
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
+	// CreateBuilder creates a ReplyBuilder
+	CreateReplyBuilder() ReplyBuilder
 }
 
 // ReplyRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +85,78 @@ var _ ReplyContract = (*_Reply)(nil)
 func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
 	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyBuilder is a builder for Reply
+type ReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte byte) ReplyBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(byte) ReplyBuilder
+	// Build builds the Reply or returns an error if something is wrong
+	Build() (ReplyContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyContract
+}
+
+// NewReplyBuilder() creates a ReplyBuilder
+func NewReplyBuilder() ReplyBuilder {
+	return &_ReplyBuilder{_Reply: new(_Reply)}
+}
+
+type _ReplyBuilder struct {
+	*_Reply
+
+	err *utils.MultiError
+}
+
+var _ (ReplyBuilder) = (*_ReplyBuilder)(nil)
+
+func (m *_ReplyBuilder) WithMandatoryFields(peekedByte byte) ReplyBuilder {
+	return m.WithPeekedByte(peekedByte)
+}
+
+func (m *_ReplyBuilder) WithPeekedByte(peekedByte byte) ReplyBuilder {
+	m.PeekedByte = peekedByte
+	return m
+}
+
+func (m *_ReplyBuilder) Build() (ReplyContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Reply.deepCopy(), nil
+}
+
+func (m *_ReplyBuilder) MustBuild() ReplyContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReplyBuilder) DeepCopy() any {
+	return m.CreateReplyBuilder()
+}
+
+// CreateReplyBuilder creates a ReplyBuilder
+func (m *_Reply) CreateReplyBuilder() ReplyBuilder {
+	if m == nil {
+		return NewReplyBuilder()
+	}
+	return &_ReplyBuilder{_Reply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

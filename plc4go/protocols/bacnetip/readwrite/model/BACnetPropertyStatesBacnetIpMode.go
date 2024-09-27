@@ -44,6 +44,8 @@ type BACnetPropertyStatesBacnetIpMode interface {
 	GetBacnetIpMode() BACnetIPModeTagged
 	// IsBACnetPropertyStatesBacnetIpMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesBacnetIpMode()
+	// CreateBuilder creates a BACnetPropertyStatesBacnetIpModeBuilder
+	CreateBACnetPropertyStatesBacnetIpModeBuilder() BACnetPropertyStatesBacnetIpModeBuilder
 }
 
 // _BACnetPropertyStatesBacnetIpMode is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesBacnetIpMode(peekedTagHeader BACnetTagHeader, bacnet
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesBacnetIpModeBuilder is a builder for BACnetPropertyStatesBacnetIpMode
+type BACnetPropertyStatesBacnetIpModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder
+	// WithBacnetIpMode adds BacnetIpMode (property field)
+	WithBacnetIpMode(BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder
+	// WithBacnetIpModeBuilder adds BacnetIpMode (property field) which is build by the builder
+	WithBacnetIpModeBuilder(func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetPropertyStatesBacnetIpModeBuilder
+	// Build builds the BACnetPropertyStatesBacnetIpMode or returns an error if something is wrong
+	Build() (BACnetPropertyStatesBacnetIpMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesBacnetIpMode
+}
+
+// NewBACnetPropertyStatesBacnetIpModeBuilder() creates a BACnetPropertyStatesBacnetIpModeBuilder
+func NewBACnetPropertyStatesBacnetIpModeBuilder() BACnetPropertyStatesBacnetIpModeBuilder {
+	return &_BACnetPropertyStatesBacnetIpModeBuilder{_BACnetPropertyStatesBacnetIpMode: new(_BACnetPropertyStatesBacnetIpMode)}
+}
+
+type _BACnetPropertyStatesBacnetIpModeBuilder struct {
+	*_BACnetPropertyStatesBacnetIpMode
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesBacnetIpModeBuilder) = (*_BACnetPropertyStatesBacnetIpModeBuilder)(nil)
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) WithMandatoryFields(bacnetIpMode BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder {
+	return m.WithBacnetIpMode(bacnetIpMode)
+}
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) WithBacnetIpMode(bacnetIpMode BACnetIPModeTagged) BACnetPropertyStatesBacnetIpModeBuilder {
+	m.BacnetIpMode = bacnetIpMode
+	return m
+}
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) WithBacnetIpModeBuilder(builderSupplier func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetPropertyStatesBacnetIpModeBuilder {
+	builder := builderSupplier(m.BacnetIpMode.CreateBACnetIPModeTaggedBuilder())
+	var err error
+	m.BacnetIpMode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) Build() (BACnetPropertyStatesBacnetIpMode, error) {
+	if m.BacnetIpMode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bacnetIpMode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesBacnetIpMode.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) MustBuild() BACnetPropertyStatesBacnetIpMode {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesBacnetIpModeBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesBacnetIpModeBuilder()
+}
+
+// CreateBACnetPropertyStatesBacnetIpModeBuilder creates a BACnetPropertyStatesBacnetIpModeBuilder
+func (m *_BACnetPropertyStatesBacnetIpMode) CreateBACnetPropertyStatesBacnetIpModeBuilder() BACnetPropertyStatesBacnetIpModeBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesBacnetIpModeBuilder()
+	}
+	return &_BACnetPropertyStatesBacnetIpModeBuilder{_BACnetPropertyStatesBacnetIpMode: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@ type AmsTCPPacket interface {
 	GetUserdata() AmsPacket
 	// IsAmsTCPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsTCPPacket()
+	// CreateBuilder creates a AmsTCPPacketBuilder
+	CreateAmsTCPPacketBuilder() AmsTCPPacketBuilder
 }
 
 // _AmsTCPPacket is the data-structure of this message
@@ -63,6 +65,84 @@ func NewAmsTCPPacket(userdata AmsPacket) *_AmsTCPPacket {
 	}
 	return &_AmsTCPPacket{Userdata: userdata}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsTCPPacketBuilder is a builder for AmsTCPPacket
+type AmsTCPPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(userdata AmsPacket) AmsTCPPacketBuilder
+	// WithUserdata adds Userdata (property field)
+	WithUserdata(AmsPacket) AmsTCPPacketBuilder
+	// Build builds the AmsTCPPacket or returns an error if something is wrong
+	Build() (AmsTCPPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsTCPPacket
+}
+
+// NewAmsTCPPacketBuilder() creates a AmsTCPPacketBuilder
+func NewAmsTCPPacketBuilder() AmsTCPPacketBuilder {
+	return &_AmsTCPPacketBuilder{_AmsTCPPacket: new(_AmsTCPPacket)}
+}
+
+type _AmsTCPPacketBuilder struct {
+	*_AmsTCPPacket
+
+	err *utils.MultiError
+}
+
+var _ (AmsTCPPacketBuilder) = (*_AmsTCPPacketBuilder)(nil)
+
+func (m *_AmsTCPPacketBuilder) WithMandatoryFields(userdata AmsPacket) AmsTCPPacketBuilder {
+	return m.WithUserdata(userdata)
+}
+
+func (m *_AmsTCPPacketBuilder) WithUserdata(userdata AmsPacket) AmsTCPPacketBuilder {
+	m.Userdata = userdata
+	return m
+}
+
+func (m *_AmsTCPPacketBuilder) Build() (AmsTCPPacket, error) {
+	if m.Userdata == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'userdata' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AmsTCPPacket.deepCopy(), nil
+}
+
+func (m *_AmsTCPPacketBuilder) MustBuild() AmsTCPPacket {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AmsTCPPacketBuilder) DeepCopy() any {
+	return m.CreateAmsTCPPacketBuilder()
+}
+
+// CreateAmsTCPPacketBuilder creates a AmsTCPPacketBuilder
+func (m *_AmsTCPPacket) CreateAmsTCPPacketBuilder() AmsTCPPacketBuilder {
+	if m == nil {
+		return NewAmsTCPPacketBuilder()
+	}
+	return &_AmsTCPPacketBuilder{_AmsTCPPacket: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

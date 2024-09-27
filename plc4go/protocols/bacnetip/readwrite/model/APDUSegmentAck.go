@@ -52,6 +52,8 @@ type APDUSegmentAck interface {
 	GetActualWindowSize() uint8
 	// IsAPDUSegmentAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUSegmentAck()
+	// CreateBuilder creates a APDUSegmentAckBuilder
+	CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder
 }
 
 // _APDUSegmentAck is the data-structure of this message
@@ -82,6 +84,106 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDUSegmentAckBuilder is a builder for APDUSegmentAck
+type APDUSegmentAckBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder
+	// WithNegativeAck adds NegativeAck (property field)
+	WithNegativeAck(bool) APDUSegmentAckBuilder
+	// WithServer adds Server (property field)
+	WithServer(bool) APDUSegmentAckBuilder
+	// WithOriginalInvokeId adds OriginalInvokeId (property field)
+	WithOriginalInvokeId(uint8) APDUSegmentAckBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint8) APDUSegmentAckBuilder
+	// WithActualWindowSize adds ActualWindowSize (property field)
+	WithActualWindowSize(uint8) APDUSegmentAckBuilder
+	// Build builds the APDUSegmentAck or returns an error if something is wrong
+	Build() (APDUSegmentAck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUSegmentAck
+}
+
+// NewAPDUSegmentAckBuilder() creates a APDUSegmentAckBuilder
+func NewAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
+	return &_APDUSegmentAckBuilder{_APDUSegmentAck: new(_APDUSegmentAck)}
+}
+
+type _APDUSegmentAckBuilder struct {
+	*_APDUSegmentAck
+
+	err *utils.MultiError
+}
+
+var _ (APDUSegmentAckBuilder) = (*_APDUSegmentAckBuilder)(nil)
+
+func (m *_APDUSegmentAckBuilder) WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder {
+	return m.WithNegativeAck(negativeAck).WithServer(server).WithOriginalInvokeId(originalInvokeId).WithSequenceNumber(sequenceNumber).WithActualWindowSize(actualWindowSize)
+}
+
+func (m *_APDUSegmentAckBuilder) WithNegativeAck(negativeAck bool) APDUSegmentAckBuilder {
+	m.NegativeAck = negativeAck
+	return m
+}
+
+func (m *_APDUSegmentAckBuilder) WithServer(server bool) APDUSegmentAckBuilder {
+	m.Server = server
+	return m
+}
+
+func (m *_APDUSegmentAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSegmentAckBuilder {
+	m.OriginalInvokeId = originalInvokeId
+	return m
+}
+
+func (m *_APDUSegmentAckBuilder) WithSequenceNumber(sequenceNumber uint8) APDUSegmentAckBuilder {
+	m.SequenceNumber = sequenceNumber
+	return m
+}
+
+func (m *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) APDUSegmentAckBuilder {
+	m.ActualWindowSize = actualWindowSize
+	return m
+}
+
+func (m *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._APDUSegmentAck.deepCopy(), nil
+}
+
+func (m *_APDUSegmentAckBuilder) MustBuild() APDUSegmentAck {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_APDUSegmentAckBuilder) DeepCopy() any {
+	return m.CreateAPDUSegmentAckBuilder()
+}
+
+// CreateAPDUSegmentAckBuilder creates a APDUSegmentAckBuilder
+func (m *_APDUSegmentAck) CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
+	if m == nil {
+		return NewAPDUSegmentAckBuilder()
+	}
+	return &_APDUSegmentAckBuilder{_APDUSegmentAck: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

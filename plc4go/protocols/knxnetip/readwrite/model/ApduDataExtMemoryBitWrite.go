@@ -40,6 +40,8 @@ type ApduDataExtMemoryBitWrite interface {
 	ApduDataExt
 	// IsApduDataExtMemoryBitWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtMemoryBitWrite()
+	// CreateBuilder creates a ApduDataExtMemoryBitWriteBuilder
+	CreateApduDataExtMemoryBitWriteBuilder() ApduDataExtMemoryBitWriteBuilder
 }
 
 // _ApduDataExtMemoryBitWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtMemoryBitWriteBuilder is a builder for ApduDataExtMemoryBitWrite
+type ApduDataExtMemoryBitWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtMemoryBitWriteBuilder
+	// Build builds the ApduDataExtMemoryBitWrite or returns an error if something is wrong
+	Build() (ApduDataExtMemoryBitWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtMemoryBitWrite
+}
+
+// NewApduDataExtMemoryBitWriteBuilder() creates a ApduDataExtMemoryBitWriteBuilder
+func NewApduDataExtMemoryBitWriteBuilder() ApduDataExtMemoryBitWriteBuilder {
+	return &_ApduDataExtMemoryBitWriteBuilder{_ApduDataExtMemoryBitWrite: new(_ApduDataExtMemoryBitWrite)}
+}
+
+type _ApduDataExtMemoryBitWriteBuilder struct {
+	*_ApduDataExtMemoryBitWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtMemoryBitWriteBuilder) = (*_ApduDataExtMemoryBitWriteBuilder)(nil)
+
+func (m *_ApduDataExtMemoryBitWriteBuilder) WithMandatoryFields() ApduDataExtMemoryBitWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataExtMemoryBitWriteBuilder) Build() (ApduDataExtMemoryBitWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtMemoryBitWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtMemoryBitWriteBuilder) MustBuild() ApduDataExtMemoryBitWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtMemoryBitWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtMemoryBitWriteBuilder()
+}
+
+// CreateApduDataExtMemoryBitWriteBuilder creates a ApduDataExtMemoryBitWriteBuilder
+func (m *_ApduDataExtMemoryBitWrite) CreateApduDataExtMemoryBitWriteBuilder() ApduDataExtMemoryBitWriteBuilder {
+	if m == nil {
+		return NewApduDataExtMemoryBitWriteBuilder()
+	}
+	return &_ApduDataExtMemoryBitWriteBuilder{_ApduDataExtMemoryBitWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

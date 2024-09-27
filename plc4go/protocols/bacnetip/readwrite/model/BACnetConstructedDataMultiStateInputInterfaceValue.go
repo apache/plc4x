@@ -46,6 +46,8 @@ type BACnetConstructedDataMultiStateInputInterfaceValue interface {
 	GetActualValue() BACnetOptionalBinaryPV
 	// IsBACnetConstructedDataMultiStateInputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateInputInterfaceValue()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstructedDataMultiStateInputInterfaceValueBuilder
 }
 
 // _BACnetConstructedDataMultiStateInputInterfaceValue is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataMultiStateInputInterfaceValue(openingTag BACnetOpen
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateInputInterfaceValueBuilder is a builder for BACnetConstructedDataMultiStateInputInterfaceValue
+type BACnetConstructedDataMultiStateInputInterfaceValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	// WithInterfaceValue adds InterfaceValue (property field)
+	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+	// Build builds the BACnetConstructedDataMultiStateInputInterfaceValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateInputInterfaceValue
+}
+
+// NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder() creates a BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+func NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	return &_BACnetConstructedDataMultiStateInputInterfaceValueBuilder{_BACnetConstructedDataMultiStateInputInterfaceValue: new(_BACnetConstructedDataMultiStateInputInterfaceValue)}
+}
+
+type _BACnetConstructedDataMultiStateInputInterfaceValueBuilder struct {
+	*_BACnetConstructedDataMultiStateInputInterfaceValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateInputInterfaceValueBuilder) = (*_BACnetConstructedDataMultiStateInputInterfaceValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	return m.WithInterfaceValue(interfaceValue)
+}
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	m.InterfaceValue = interfaceValue
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) Build() (BACnetConstructedDataMultiStateInputInterfaceValue, error) {
+	if m.InterfaceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMultiStateInputInterfaceValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) MustBuild() BACnetConstructedDataMultiStateInputInterfaceValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder()
+}
+
+// CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder creates a BACnetConstructedDataMultiStateInputInterfaceValueBuilder
+func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) CreateBACnetConstructedDataMultiStateInputInterfaceValueBuilder() BACnetConstructedDataMultiStateInputInterfaceValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMultiStateInputInterfaceValueBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateInputInterfaceValueBuilder{_BACnetConstructedDataMultiStateInputInterfaceValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

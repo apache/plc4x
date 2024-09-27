@@ -44,6 +44,8 @@ type BACnetConstructedDataFaultSignals interface {
 	GetFaultSignals() []BACnetLiftFaultTagged
 	// IsBACnetConstructedDataFaultSignals is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFaultSignals()
+	// CreateBuilder creates a BACnetConstructedDataFaultSignalsBuilder
+	CreateBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSignalsBuilder
 }
 
 // _BACnetConstructedDataFaultSignals is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataFaultSignals(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFaultSignalsBuilder is a builder for BACnetConstructedDataFaultSignals
+type BACnetConstructedDataFaultSignalsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder
+	// WithFaultSignals adds FaultSignals (property field)
+	WithFaultSignals(...BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder
+	// Build builds the BACnetConstructedDataFaultSignals or returns an error if something is wrong
+	Build() (BACnetConstructedDataFaultSignals, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFaultSignals
+}
+
+// NewBACnetConstructedDataFaultSignalsBuilder() creates a BACnetConstructedDataFaultSignalsBuilder
+func NewBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSignalsBuilder {
+	return &_BACnetConstructedDataFaultSignalsBuilder{_BACnetConstructedDataFaultSignals: new(_BACnetConstructedDataFaultSignals)}
+}
+
+type _BACnetConstructedDataFaultSignalsBuilder struct {
+	*_BACnetConstructedDataFaultSignals
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFaultSignalsBuilder) = (*_BACnetConstructedDataFaultSignalsBuilder)(nil)
+
+func (m *_BACnetConstructedDataFaultSignalsBuilder) WithMandatoryFields(faultSignals []BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
+	return m.WithFaultSignals(faultSignals...)
+}
+
+func (m *_BACnetConstructedDataFaultSignalsBuilder) WithFaultSignals(faultSignals ...BACnetLiftFaultTagged) BACnetConstructedDataFaultSignalsBuilder {
+	m.FaultSignals = faultSignals
+	return m
+}
+
+func (m *_BACnetConstructedDataFaultSignalsBuilder) Build() (BACnetConstructedDataFaultSignals, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataFaultSignals.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataFaultSignalsBuilder) MustBuild() BACnetConstructedDataFaultSignals {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataFaultSignalsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataFaultSignalsBuilder()
+}
+
+// CreateBACnetConstructedDataFaultSignalsBuilder creates a BACnetConstructedDataFaultSignalsBuilder
+func (m *_BACnetConstructedDataFaultSignals) CreateBACnetConstructedDataFaultSignalsBuilder() BACnetConstructedDataFaultSignalsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataFaultSignalsBuilder()
+	}
+	return &_BACnetConstructedDataFaultSignalsBuilder{_BACnetConstructedDataFaultSignals: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

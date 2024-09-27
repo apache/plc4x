@@ -43,6 +43,8 @@ type BACnetNotificationParameters interface {
 	utils.Copyable
 	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
+	// CreateBuilder creates a BACnetNotificationParametersBuilder
+	CreateBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder
 }
 
 // BACnetNotificationParametersContract provides a set of functions which can be overwritten by a sub struct
@@ -61,6 +63,8 @@ type BACnetNotificationParametersContract interface {
 	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetNotificationParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParameters()
+	// CreateBuilder creates a BACnetNotificationParametersBuilder
+	CreateBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder
 }
 
 // BACnetNotificationParametersRequirements provides a set of functions which need to be implemented by a sub struct
@@ -98,6 +102,155 @@ func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeade
 	}
 	return &_BACnetNotificationParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersBuilder is a builder for BACnetNotificationParameters
+type BACnetNotificationParametersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetNotificationParametersBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetNotificationParametersBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder
+	// Build builds the BACnetNotificationParameters or returns an error if something is wrong
+	Build() (BACnetNotificationParametersContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersContract
+}
+
+// NewBACnetNotificationParametersBuilder() creates a BACnetNotificationParametersBuilder
+func NewBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder {
+	return &_BACnetNotificationParametersBuilder{_BACnetNotificationParameters: new(_BACnetNotificationParameters)}
+}
+
+type _BACnetNotificationParametersBuilder struct {
+	*_BACnetNotificationParameters
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersBuilder) = (*_BACnetNotificationParametersBuilder)(nil)
+
+func (m *_BACnetNotificationParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
+	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersBuilder) Build() (BACnetNotificationParametersContract, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParameters.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersBuilder) MustBuild() BACnetNotificationParametersContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersBuilder()
+}
+
+// CreateBACnetNotificationParametersBuilder creates a BACnetNotificationParametersBuilder
+func (m *_BACnetNotificationParameters) CreateBACnetNotificationParametersBuilder() BACnetNotificationParametersBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersBuilder()
+	}
+	return &_BACnetNotificationParametersBuilder{_BACnetNotificationParameters: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

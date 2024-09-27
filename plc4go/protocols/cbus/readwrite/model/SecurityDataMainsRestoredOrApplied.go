@@ -40,6 +40,8 @@ type SecurityDataMainsRestoredOrApplied interface {
 	SecurityData
 	// IsSecurityDataMainsRestoredOrApplied is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataMainsRestoredOrApplied()
+	// CreateBuilder creates a SecurityDataMainsRestoredOrAppliedBuilder
+	CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder
 }
 
 // _SecurityDataMainsRestoredOrApplied is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandT
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataMainsRestoredOrAppliedBuilder is a builder for SecurityDataMainsRestoredOrApplied
+type SecurityDataMainsRestoredOrAppliedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder
+	// Build builds the SecurityDataMainsRestoredOrApplied or returns an error if something is wrong
+	Build() (SecurityDataMainsRestoredOrApplied, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataMainsRestoredOrApplied
+}
+
+// NewSecurityDataMainsRestoredOrAppliedBuilder() creates a SecurityDataMainsRestoredOrAppliedBuilder
+func NewSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
+	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: new(_SecurityDataMainsRestoredOrApplied)}
+}
+
+type _SecurityDataMainsRestoredOrAppliedBuilder struct {
+	*_SecurityDataMainsRestoredOrApplied
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataMainsRestoredOrAppliedBuilder) = (*_SecurityDataMainsRestoredOrAppliedBuilder)(nil)
+
+func (m *_SecurityDataMainsRestoredOrAppliedBuilder) WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder {
+	return m
+}
+
+func (m *_SecurityDataMainsRestoredOrAppliedBuilder) Build() (SecurityDataMainsRestoredOrApplied, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataMainsRestoredOrApplied.deepCopy(), nil
+}
+
+func (m *_SecurityDataMainsRestoredOrAppliedBuilder) MustBuild() SecurityDataMainsRestoredOrApplied {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataMainsRestoredOrAppliedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataMainsRestoredOrAppliedBuilder()
+}
+
+// CreateSecurityDataMainsRestoredOrAppliedBuilder creates a SecurityDataMainsRestoredOrAppliedBuilder
+func (m *_SecurityDataMainsRestoredOrApplied) CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
+	if m == nil {
+		return NewSecurityDataMainsRestoredOrAppliedBuilder()
+	}
+	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

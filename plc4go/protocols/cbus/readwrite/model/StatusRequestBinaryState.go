@@ -44,6 +44,8 @@ type StatusRequestBinaryState interface {
 	GetApplication() ApplicationIdContainer
 	// IsStatusRequestBinaryState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusRequestBinaryState()
+	// CreateBuilder creates a StatusRequestBinaryStateBuilder
+	CreateStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder
 }
 
 // _StatusRequestBinaryState is the data-structure of this message
@@ -67,6 +69,78 @@ func NewStatusRequestBinaryState(statusType byte, application ApplicationIdConta
 	_result.StatusRequestContract.(*_StatusRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StatusRequestBinaryStateBuilder is a builder for StatusRequestBinaryState
+type StatusRequestBinaryStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) StatusRequestBinaryStateBuilder
+	// Build builds the StatusRequestBinaryState or returns an error if something is wrong
+	Build() (StatusRequestBinaryState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusRequestBinaryState
+}
+
+// NewStatusRequestBinaryStateBuilder() creates a StatusRequestBinaryStateBuilder
+func NewStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder {
+	return &_StatusRequestBinaryStateBuilder{_StatusRequestBinaryState: new(_StatusRequestBinaryState)}
+}
+
+type _StatusRequestBinaryStateBuilder struct {
+	*_StatusRequestBinaryState
+
+	err *utils.MultiError
+}
+
+var _ (StatusRequestBinaryStateBuilder) = (*_StatusRequestBinaryStateBuilder)(nil)
+
+func (m *_StatusRequestBinaryStateBuilder) WithMandatoryFields(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
+	return m.WithApplication(application)
+}
+
+func (m *_StatusRequestBinaryStateBuilder) WithApplication(application ApplicationIdContainer) StatusRequestBinaryStateBuilder {
+	m.Application = application
+	return m
+}
+
+func (m *_StatusRequestBinaryStateBuilder) Build() (StatusRequestBinaryState, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._StatusRequestBinaryState.deepCopy(), nil
+}
+
+func (m *_StatusRequestBinaryStateBuilder) MustBuild() StatusRequestBinaryState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_StatusRequestBinaryStateBuilder) DeepCopy() any {
+	return m.CreateStatusRequestBinaryStateBuilder()
+}
+
+// CreateStatusRequestBinaryStateBuilder creates a StatusRequestBinaryStateBuilder
+func (m *_StatusRequestBinaryState) CreateStatusRequestBinaryStateBuilder() StatusRequestBinaryStateBuilder {
+	if m == nil {
+		return NewStatusRequestBinaryStateBuilder()
+	}
+	return &_StatusRequestBinaryStateBuilder{_StatusRequestBinaryState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

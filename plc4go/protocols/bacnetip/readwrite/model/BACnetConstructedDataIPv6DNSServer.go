@@ -48,6 +48,8 @@ type BACnetConstructedDataIPv6DNSServer interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataIPv6DNSServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6DNSServer()
+	// CreateBuilder creates a BACnetConstructedDataIPv6DNSServerBuilder
+	CreateBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNSServerBuilder
 }
 
 // _BACnetConstructedDataIPv6DNSServer is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataIPv6DNSServer(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPv6DNSServerBuilder is a builder for BACnetConstructedDataIPv6DNSServer
+type BACnetConstructedDataIPv6DNSServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipv6DnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DNSServerBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6DNSServerBuilder
+	// WithIpv6DnsServer adds Ipv6DnsServer (property field)
+	WithIpv6DnsServer(...BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder
+	// Build builds the BACnetConstructedDataIPv6DNSServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPv6DNSServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPv6DNSServer
+}
+
+// NewBACnetConstructedDataIPv6DNSServerBuilder() creates a BACnetConstructedDataIPv6DNSServerBuilder
+func NewBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNSServerBuilder {
+	return &_BACnetConstructedDataIPv6DNSServerBuilder{_BACnetConstructedDataIPv6DNSServer: new(_BACnetConstructedDataIPv6DNSServer)}
+}
+
+type _BACnetConstructedDataIPv6DNSServerBuilder struct {
+	*_BACnetConstructedDataIPv6DNSServer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPv6DNSServerBuilder) = (*_BACnetConstructedDataIPv6DNSServerBuilder)(nil)
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithMandatoryFields(ipv6DnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
+	return m.WithIpv6DnsServer(ipv6DnsServer...)
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPv6DNSServerBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPv6DNSServerBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) WithIpv6DnsServer(ipv6DnsServer ...BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DNSServerBuilder {
+	m.Ipv6DnsServer = ipv6DnsServer
+	return m
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) Build() (BACnetConstructedDataIPv6DNSServer, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIPv6DNSServer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) MustBuild() BACnetConstructedDataIPv6DNSServer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIPv6DNSServerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIPv6DNSServerBuilder()
+}
+
+// CreateBACnetConstructedDataIPv6DNSServerBuilder creates a BACnetConstructedDataIPv6DNSServerBuilder
+func (m *_BACnetConstructedDataIPv6DNSServer) CreateBACnetConstructedDataIPv6DNSServerBuilder() BACnetConstructedDataIPv6DNSServerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIPv6DNSServerBuilder()
+	}
+	return &_BACnetConstructedDataIPv6DNSServerBuilder{_BACnetConstructedDataIPv6DNSServer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

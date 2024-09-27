@@ -40,6 +40,8 @@ type ApduDataIndividualAddressResponse interface {
 	ApduData
 	// IsApduDataIndividualAddressResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataIndividualAddressResponse()
+	// CreateBuilder creates a ApduDataIndividualAddressResponseBuilder
+	CreateApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResponseBuilder
 }
 
 // _ApduDataIndividualAddressResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataIndividualAddressResponse(dataLength uint8) *_ApduDataIndividual
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataIndividualAddressResponseBuilder is a builder for ApduDataIndividualAddressResponse
+type ApduDataIndividualAddressResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataIndividualAddressResponseBuilder
+	// Build builds the ApduDataIndividualAddressResponse or returns an error if something is wrong
+	Build() (ApduDataIndividualAddressResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataIndividualAddressResponse
+}
+
+// NewApduDataIndividualAddressResponseBuilder() creates a ApduDataIndividualAddressResponseBuilder
+func NewApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResponseBuilder {
+	return &_ApduDataIndividualAddressResponseBuilder{_ApduDataIndividualAddressResponse: new(_ApduDataIndividualAddressResponse)}
+}
+
+type _ApduDataIndividualAddressResponseBuilder struct {
+	*_ApduDataIndividualAddressResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataIndividualAddressResponseBuilder) = (*_ApduDataIndividualAddressResponseBuilder)(nil)
+
+func (m *_ApduDataIndividualAddressResponseBuilder) WithMandatoryFields() ApduDataIndividualAddressResponseBuilder {
+	return m
+}
+
+func (m *_ApduDataIndividualAddressResponseBuilder) Build() (ApduDataIndividualAddressResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataIndividualAddressResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataIndividualAddressResponseBuilder) MustBuild() ApduDataIndividualAddressResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataIndividualAddressResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataIndividualAddressResponseBuilder()
+}
+
+// CreateApduDataIndividualAddressResponseBuilder creates a ApduDataIndividualAddressResponseBuilder
+func (m *_ApduDataIndividualAddressResponse) CreateApduDataIndividualAddressResponseBuilder() ApduDataIndividualAddressResponseBuilder {
+	if m == nil {
+		return NewApduDataIndividualAddressResponseBuilder()
+	}
+	return &_ApduDataIndividualAddressResponseBuilder{_ApduDataIndividualAddressResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

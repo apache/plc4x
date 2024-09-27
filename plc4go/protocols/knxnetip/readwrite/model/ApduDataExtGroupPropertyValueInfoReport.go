@@ -40,6 +40,8 @@ type ApduDataExtGroupPropertyValueInfoReport interface {
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueInfoReport()
+	// CreateBuilder creates a ApduDataExtGroupPropertyValueInfoReportBuilder
+	CreateApduDataExtGroupPropertyValueInfoReportBuilder() ApduDataExtGroupPropertyValueInfoReportBuilder
 }
 
 // _ApduDataExtGroupPropertyValueInfoReport is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtGroupPropertyValueInfoReport(length uint8) *_ApduDataExtGroup
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtGroupPropertyValueInfoReportBuilder is a builder for ApduDataExtGroupPropertyValueInfoReport
+type ApduDataExtGroupPropertyValueInfoReportBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtGroupPropertyValueInfoReportBuilder
+	// Build builds the ApduDataExtGroupPropertyValueInfoReport or returns an error if something is wrong
+	Build() (ApduDataExtGroupPropertyValueInfoReport, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtGroupPropertyValueInfoReport
+}
+
+// NewApduDataExtGroupPropertyValueInfoReportBuilder() creates a ApduDataExtGroupPropertyValueInfoReportBuilder
+func NewApduDataExtGroupPropertyValueInfoReportBuilder() ApduDataExtGroupPropertyValueInfoReportBuilder {
+	return &_ApduDataExtGroupPropertyValueInfoReportBuilder{_ApduDataExtGroupPropertyValueInfoReport: new(_ApduDataExtGroupPropertyValueInfoReport)}
+}
+
+type _ApduDataExtGroupPropertyValueInfoReportBuilder struct {
+	*_ApduDataExtGroupPropertyValueInfoReport
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtGroupPropertyValueInfoReportBuilder) = (*_ApduDataExtGroupPropertyValueInfoReportBuilder)(nil)
+
+func (m *_ApduDataExtGroupPropertyValueInfoReportBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueInfoReportBuilder {
+	return m
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReportBuilder) Build() (ApduDataExtGroupPropertyValueInfoReport, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtGroupPropertyValueInfoReport.deepCopy(), nil
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReportBuilder) MustBuild() ApduDataExtGroupPropertyValueInfoReport {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtGroupPropertyValueInfoReportBuilder) DeepCopy() any {
+	return m.CreateApduDataExtGroupPropertyValueInfoReportBuilder()
+}
+
+// CreateApduDataExtGroupPropertyValueInfoReportBuilder creates a ApduDataExtGroupPropertyValueInfoReportBuilder
+func (m *_ApduDataExtGroupPropertyValueInfoReport) CreateApduDataExtGroupPropertyValueInfoReportBuilder() ApduDataExtGroupPropertyValueInfoReportBuilder {
+	if m == nil {
+		return NewApduDataExtGroupPropertyValueInfoReportBuilder()
+	}
+	return &_ApduDataExtGroupPropertyValueInfoReportBuilder{_ApduDataExtGroupPropertyValueInfoReport: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

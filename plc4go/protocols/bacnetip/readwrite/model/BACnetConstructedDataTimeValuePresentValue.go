@@ -46,6 +46,8 @@ type BACnetConstructedDataTimeValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagTime
 	// IsBACnetConstructedDataTimeValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimeValuePresentValue()
+	// CreateBuilder creates a BACnetConstructedDataTimeValuePresentValueBuilder
+	CreateBACnetConstructedDataTimeValuePresentValueBuilder() BACnetConstructedDataTimeValuePresentValueBuilder
 }
 
 // _BACnetConstructedDataTimeValuePresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimeValuePresentValue(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimeValuePresentValueBuilder is a builder for BACnetConstructedDataTimeValuePresentValue
+type BACnetConstructedDataTimeValuePresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagTime) BACnetConstructedDataTimeValuePresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagTime) BACnetConstructedDataTimeValuePresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataTimeValuePresentValueBuilder
+	// Build builds the BACnetConstructedDataTimeValuePresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimeValuePresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimeValuePresentValue
+}
+
+// NewBACnetConstructedDataTimeValuePresentValueBuilder() creates a BACnetConstructedDataTimeValuePresentValueBuilder
+func NewBACnetConstructedDataTimeValuePresentValueBuilder() BACnetConstructedDataTimeValuePresentValueBuilder {
+	return &_BACnetConstructedDataTimeValuePresentValueBuilder{_BACnetConstructedDataTimeValuePresentValue: new(_BACnetConstructedDataTimeValuePresentValue)}
+}
+
+type _BACnetConstructedDataTimeValuePresentValueBuilder struct {
+	*_BACnetConstructedDataTimeValuePresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimeValuePresentValueBuilder) = (*_BACnetConstructedDataTimeValuePresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagTime) BACnetConstructedDataTimeValuePresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagTime) BACnetConstructedDataTimeValuePresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataTimeValuePresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) Build() (BACnetConstructedDataTimeValuePresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimeValuePresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) MustBuild() BACnetConstructedDataTimeValuePresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimeValuePresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimeValuePresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataTimeValuePresentValueBuilder creates a BACnetConstructedDataTimeValuePresentValueBuilder
+func (m *_BACnetConstructedDataTimeValuePresentValue) CreateBACnetConstructedDataTimeValuePresentValueBuilder() BACnetConstructedDataTimeValuePresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimeValuePresentValueBuilder()
+	}
+	return &_BACnetConstructedDataTimeValuePresentValueBuilder{_BACnetConstructedDataTimeValuePresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

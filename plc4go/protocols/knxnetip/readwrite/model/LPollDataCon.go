@@ -40,6 +40,8 @@ type LPollDataCon interface {
 	CEMI
 	// IsLPollDataCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollDataCon()
+	// CreateBuilder creates a LPollDataConBuilder
+	CreateLPollDataConBuilder() LPollDataConBuilder
 }
 
 // _LPollDataCon is the data-structure of this message
@@ -58,6 +60,71 @@ func NewLPollDataCon(size uint16) *_LPollDataCon {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LPollDataConBuilder is a builder for LPollDataCon
+type LPollDataConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LPollDataConBuilder
+	// Build builds the LPollDataCon or returns an error if something is wrong
+	Build() (LPollDataCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LPollDataCon
+}
+
+// NewLPollDataConBuilder() creates a LPollDataConBuilder
+func NewLPollDataConBuilder() LPollDataConBuilder {
+	return &_LPollDataConBuilder{_LPollDataCon: new(_LPollDataCon)}
+}
+
+type _LPollDataConBuilder struct {
+	*_LPollDataCon
+
+	err *utils.MultiError
+}
+
+var _ (LPollDataConBuilder) = (*_LPollDataConBuilder)(nil)
+
+func (m *_LPollDataConBuilder) WithMandatoryFields() LPollDataConBuilder {
+	return m
+}
+
+func (m *_LPollDataConBuilder) Build() (LPollDataCon, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LPollDataCon.deepCopy(), nil
+}
+
+func (m *_LPollDataConBuilder) MustBuild() LPollDataCon {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LPollDataConBuilder) DeepCopy() any {
+	return m.CreateLPollDataConBuilder()
+}
+
+// CreateLPollDataConBuilder creates a LPollDataConBuilder
+func (m *_LPollDataCon) CreateLPollDataConBuilder() LPollDataConBuilder {
+	if m == nil {
+		return NewLPollDataConBuilder()
+	}
+	return &_LPollDataConBuilder{_LPollDataCon: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

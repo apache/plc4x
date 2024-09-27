@@ -44,6 +44,8 @@ type NetworkAddressDataType interface {
 	GetNetworkInterface() PascalString
 	// IsNetworkAddressDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkAddressDataType()
+	// CreateBuilder creates a NetworkAddressDataTypeBuilder
+	CreateNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder
 }
 
 // _NetworkAddressDataType is the data-structure of this message
@@ -67,6 +69,99 @@ func NewNetworkAddressDataType(networkInterface PascalString) *_NetworkAddressDa
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NetworkAddressDataTypeBuilder is a builder for NetworkAddressDataType
+type NetworkAddressDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkInterface PascalString) NetworkAddressDataTypeBuilder
+	// WithNetworkInterface adds NetworkInterface (property field)
+	WithNetworkInterface(PascalString) NetworkAddressDataTypeBuilder
+	// WithNetworkInterfaceBuilder adds NetworkInterface (property field) which is build by the builder
+	WithNetworkInterfaceBuilder(func(PascalStringBuilder) PascalStringBuilder) NetworkAddressDataTypeBuilder
+	// Build builds the NetworkAddressDataType or returns an error if something is wrong
+	Build() (NetworkAddressDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NetworkAddressDataType
+}
+
+// NewNetworkAddressDataTypeBuilder() creates a NetworkAddressDataTypeBuilder
+func NewNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder {
+	return &_NetworkAddressDataTypeBuilder{_NetworkAddressDataType: new(_NetworkAddressDataType)}
+}
+
+type _NetworkAddressDataTypeBuilder struct {
+	*_NetworkAddressDataType
+
+	err *utils.MultiError
+}
+
+var _ (NetworkAddressDataTypeBuilder) = (*_NetworkAddressDataTypeBuilder)(nil)
+
+func (m *_NetworkAddressDataTypeBuilder) WithMandatoryFields(networkInterface PascalString) NetworkAddressDataTypeBuilder {
+	return m.WithNetworkInterface(networkInterface)
+}
+
+func (m *_NetworkAddressDataTypeBuilder) WithNetworkInterface(networkInterface PascalString) NetworkAddressDataTypeBuilder {
+	m.NetworkInterface = networkInterface
+	return m
+}
+
+func (m *_NetworkAddressDataTypeBuilder) WithNetworkInterfaceBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NetworkAddressDataTypeBuilder {
+	builder := builderSupplier(m.NetworkInterface.CreatePascalStringBuilder())
+	var err error
+	m.NetworkInterface, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NetworkAddressDataTypeBuilder) Build() (NetworkAddressDataType, error) {
+	if m.NetworkInterface == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkInterface' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NetworkAddressDataType.deepCopy(), nil
+}
+
+func (m *_NetworkAddressDataTypeBuilder) MustBuild() NetworkAddressDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NetworkAddressDataTypeBuilder) DeepCopy() any {
+	return m.CreateNetworkAddressDataTypeBuilder()
+}
+
+// CreateNetworkAddressDataTypeBuilder creates a NetworkAddressDataTypeBuilder
+func (m *_NetworkAddressDataType) CreateNetworkAddressDataTypeBuilder() NetworkAddressDataTypeBuilder {
+	if m == nil {
+		return NewNetworkAddressDataTypeBuilder()
+	}
+	return &_NetworkAddressDataTypeBuilder{_NetworkAddressDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

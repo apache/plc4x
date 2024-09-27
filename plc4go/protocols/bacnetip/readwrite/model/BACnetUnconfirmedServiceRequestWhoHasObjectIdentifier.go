@@ -44,6 +44,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// IsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	CreateBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier(peekedTagHeader BA
 	_result.BACnetUnconfirmedServiceRequestWhoHasObjectContract.(*_BACnetUnconfirmedServiceRequestWhoHasObject)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder is a builder for BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+}
+
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder() creates a BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	return &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder{_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier: new(_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier)}
+}
+
+type _BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder struct {
+	*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) = (*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	return m.WithObjectIdentifier(objectIdentifier)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier) CreateBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder{_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

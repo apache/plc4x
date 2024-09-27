@@ -46,6 +46,8 @@ type BACnetConstructedDataOutOfService interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataOutOfService is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOutOfService()
+	// CreateBuilder creates a BACnetConstructedDataOutOfServiceBuilder
+	CreateBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfServiceBuilder
 }
 
 // _BACnetConstructedDataOutOfService is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataOutOfService(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOutOfServiceBuilder is a builder for BACnetConstructedDataOutOfService
+type BACnetConstructedDataOutOfServiceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder
+	// WithOutOfService adds OutOfService (property field)
+	WithOutOfService(BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder
+	// WithOutOfServiceBuilder adds OutOfService (property field) which is build by the builder
+	WithOutOfServiceBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOutOfServiceBuilder
+	// Build builds the BACnetConstructedDataOutOfService or returns an error if something is wrong
+	Build() (BACnetConstructedDataOutOfService, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOutOfService
+}
+
+// NewBACnetConstructedDataOutOfServiceBuilder() creates a BACnetConstructedDataOutOfServiceBuilder
+func NewBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfServiceBuilder {
+	return &_BACnetConstructedDataOutOfServiceBuilder{_BACnetConstructedDataOutOfService: new(_BACnetConstructedDataOutOfService)}
+}
+
+type _BACnetConstructedDataOutOfServiceBuilder struct {
+	*_BACnetConstructedDataOutOfService
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOutOfServiceBuilder) = (*_BACnetConstructedDataOutOfServiceBuilder)(nil)
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) WithMandatoryFields(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
+	return m.WithOutOfService(outOfService)
+}
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfService(outOfService BACnetApplicationTagBoolean) BACnetConstructedDataOutOfServiceBuilder {
+	m.OutOfService = outOfService
+	return m
+}
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) WithOutOfServiceBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOutOfServiceBuilder {
+	builder := builderSupplier(m.OutOfService.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.OutOfService, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) Build() (BACnetConstructedDataOutOfService, error) {
+	if m.OutOfService == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'outOfService' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOutOfService.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) MustBuild() BACnetConstructedDataOutOfService {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOutOfServiceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOutOfServiceBuilder()
+}
+
+// CreateBACnetConstructedDataOutOfServiceBuilder creates a BACnetConstructedDataOutOfServiceBuilder
+func (m *_BACnetConstructedDataOutOfService) CreateBACnetConstructedDataOutOfServiceBuilder() BACnetConstructedDataOutOfServiceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOutOfServiceBuilder()
+	}
+	return &_BACnetConstructedDataOutOfServiceBuilder{_BACnetConstructedDataOutOfService: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

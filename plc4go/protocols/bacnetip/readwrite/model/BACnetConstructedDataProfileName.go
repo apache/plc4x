@@ -46,6 +46,8 @@ type BACnetConstructedDataProfileName interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataProfileName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProfileName()
+	// CreateBuilder creates a BACnetConstructedDataProfileNameBuilder
+	CreateBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNameBuilder
 }
 
 // _BACnetConstructedDataProfileName is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataProfileName(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProfileNameBuilder is a builder for BACnetConstructedDataProfileName
+type BACnetConstructedDataProfileNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder
+	// WithProfileName adds ProfileName (property field)
+	WithProfileName(BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder
+	// WithProfileNameBuilder adds ProfileName (property field) which is build by the builder
+	WithProfileNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileNameBuilder
+	// Build builds the BACnetConstructedDataProfileName or returns an error if something is wrong
+	Build() (BACnetConstructedDataProfileName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProfileName
+}
+
+// NewBACnetConstructedDataProfileNameBuilder() creates a BACnetConstructedDataProfileNameBuilder
+func NewBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNameBuilder {
+	return &_BACnetConstructedDataProfileNameBuilder{_BACnetConstructedDataProfileName: new(_BACnetConstructedDataProfileName)}
+}
+
+type _BACnetConstructedDataProfileNameBuilder struct {
+	*_BACnetConstructedDataProfileName
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProfileNameBuilder) = (*_BACnetConstructedDataProfileNameBuilder)(nil)
+
+func (m *_BACnetConstructedDataProfileNameBuilder) WithMandatoryFields(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
+	return m.WithProfileName(profileName)
+}
+
+func (m *_BACnetConstructedDataProfileNameBuilder) WithProfileName(profileName BACnetApplicationTagCharacterString) BACnetConstructedDataProfileNameBuilder {
+	m.ProfileName = profileName
+	return m
+}
+
+func (m *_BACnetConstructedDataProfileNameBuilder) WithProfileNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileNameBuilder {
+	builder := builderSupplier(m.ProfileName.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.ProfileName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataProfileNameBuilder) Build() (BACnetConstructedDataProfileName, error) {
+	if m.ProfileName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'profileName' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProfileName.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProfileNameBuilder) MustBuild() BACnetConstructedDataProfileName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProfileNameBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProfileNameBuilder()
+}
+
+// CreateBACnetConstructedDataProfileNameBuilder creates a BACnetConstructedDataProfileNameBuilder
+func (m *_BACnetConstructedDataProfileName) CreateBACnetConstructedDataProfileNameBuilder() BACnetConstructedDataProfileNameBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProfileNameBuilder()
+	}
+	return &_BACnetConstructedDataProfileNameBuilder{_BACnetConstructedDataProfileName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -55,6 +55,8 @@ type CipUnconnectedRequest interface {
 	GetSlot() int8
 	// IsCipUnconnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipUnconnectedRequest()
+	// CreateBuilder creates a CipUnconnectedRequestBuilder
+	CreateCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder
 }
 
 // _CipUnconnectedRequest is the data-structure of this message
@@ -94,6 +96,124 @@ func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegm
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipUnconnectedRequestBuilder is a builder for CipUnconnectedRequest
+type CipUnconnectedRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) CipUnconnectedRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) CipUnconnectedRequestBuilder
+	// WithUnconnectedService adds UnconnectedService (property field)
+	WithUnconnectedService(CipService) CipUnconnectedRequestBuilder
+	// WithBackPlane adds BackPlane (property field)
+	WithBackPlane(int8) CipUnconnectedRequestBuilder
+	// WithSlot adds Slot (property field)
+	WithSlot(int8) CipUnconnectedRequestBuilder
+	// Build builds the CipUnconnectedRequest or returns an error if something is wrong
+	Build() (CipUnconnectedRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipUnconnectedRequest
+}
+
+// NewCipUnconnectedRequestBuilder() creates a CipUnconnectedRequestBuilder
+func NewCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder {
+	return &_CipUnconnectedRequestBuilder{_CipUnconnectedRequest: new(_CipUnconnectedRequest)}
+}
+
+type _CipUnconnectedRequestBuilder struct {
+	*_CipUnconnectedRequest
+
+	err *utils.MultiError
+}
+
+var _ (CipUnconnectedRequestBuilder) = (*_CipUnconnectedRequestBuilder)(nil)
+
+func (m *_CipUnconnectedRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder {
+	return m.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithUnconnectedService(unconnectedService).WithBackPlane(backPlane).WithSlot(slot)
+}
+
+func (m *_CipUnconnectedRequestBuilder) WithClassSegment(classSegment PathSegment) CipUnconnectedRequestBuilder {
+	m.ClassSegment = classSegment
+	return m
+}
+
+func (m *_CipUnconnectedRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipUnconnectedRequestBuilder {
+	m.InstanceSegment = instanceSegment
+	return m
+}
+
+func (m *_CipUnconnectedRequestBuilder) WithUnconnectedService(unconnectedService CipService) CipUnconnectedRequestBuilder {
+	m.UnconnectedService = unconnectedService
+	return m
+}
+
+func (m *_CipUnconnectedRequestBuilder) WithBackPlane(backPlane int8) CipUnconnectedRequestBuilder {
+	m.BackPlane = backPlane
+	return m
+}
+
+func (m *_CipUnconnectedRequestBuilder) WithSlot(slot int8) CipUnconnectedRequestBuilder {
+	m.Slot = slot
+	return m
+}
+
+func (m *_CipUnconnectedRequestBuilder) Build() (CipUnconnectedRequest, error) {
+	if m.ClassSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if m.InstanceSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if m.UnconnectedService == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'unconnectedService' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipUnconnectedRequest.deepCopy(), nil
+}
+
+func (m *_CipUnconnectedRequestBuilder) MustBuild() CipUnconnectedRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipUnconnectedRequestBuilder) DeepCopy() any {
+	return m.CreateCipUnconnectedRequestBuilder()
+}
+
+// CreateCipUnconnectedRequestBuilder creates a CipUnconnectedRequestBuilder
+func (m *_CipUnconnectedRequest) CreateCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder {
+	if m == nil {
+		return NewCipUnconnectedRequestBuilder()
+	}
+	return &_CipUnconnectedRequestBuilder{_CipUnconnectedRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

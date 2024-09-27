@@ -44,6 +44,8 @@ type UnregisterNodesResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsUnregisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnregisterNodesResponse()
+	// CreateBuilder creates a UnregisterNodesResponseBuilder
+	CreateUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder
 }
 
 // _UnregisterNodesResponse is the data-structure of this message
@@ -67,6 +69,84 @@ func NewUnregisterNodesResponse(responseHeader ExtensionObjectDefinition) *_Unre
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnregisterNodesResponseBuilder is a builder for UnregisterNodesResponse
+type UnregisterNodesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) UnregisterNodesResponseBuilder
+	// Build builds the UnregisterNodesResponse or returns an error if something is wrong
+	Build() (UnregisterNodesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnregisterNodesResponse
+}
+
+// NewUnregisterNodesResponseBuilder() creates a UnregisterNodesResponseBuilder
+func NewUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder {
+	return &_UnregisterNodesResponseBuilder{_UnregisterNodesResponse: new(_UnregisterNodesResponse)}
+}
+
+type _UnregisterNodesResponseBuilder struct {
+	*_UnregisterNodesResponse
+
+	err *utils.MultiError
+}
+
+var _ (UnregisterNodesResponseBuilder) = (*_UnregisterNodesResponseBuilder)(nil)
+
+func (m *_UnregisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+	return m.WithResponseHeader(responseHeader)
+}
+
+func (m *_UnregisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) UnregisterNodesResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_UnregisterNodesResponseBuilder) Build() (UnregisterNodesResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UnregisterNodesResponse.deepCopy(), nil
+}
+
+func (m *_UnregisterNodesResponseBuilder) MustBuild() UnregisterNodesResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UnregisterNodesResponseBuilder) DeepCopy() any {
+	return m.CreateUnregisterNodesResponseBuilder()
+}
+
+// CreateUnregisterNodesResponseBuilder creates a UnregisterNodesResponseBuilder
+func (m *_UnregisterNodesResponse) CreateUnregisterNodesResponseBuilder() UnregisterNodesResponseBuilder {
+	if m == nil {
+		return NewUnregisterNodesResponseBuilder()
+	}
+	return &_UnregisterNodesResponseBuilder{_UnregisterNodesResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

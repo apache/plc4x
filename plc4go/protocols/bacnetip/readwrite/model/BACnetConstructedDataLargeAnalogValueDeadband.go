@@ -46,6 +46,8 @@ type BACnetConstructedDataLargeAnalogValueDeadband interface {
 	GetActualValue() BACnetApplicationTagDouble
 	// IsBACnetConstructedDataLargeAnalogValueDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueDeadband()
+	// CreateBuilder creates a BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+	CreateBACnetConstructedDataLargeAnalogValueDeadbandBuilder() BACnetConstructedDataLargeAnalogValueDeadbandBuilder
 }
 
 // _BACnetConstructedDataLargeAnalogValueDeadband is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLargeAnalogValueDeadband(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLargeAnalogValueDeadbandBuilder is a builder for BACnetConstructedDataLargeAnalogValueDeadband
+type BACnetConstructedDataLargeAnalogValueDeadbandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deadband BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+	// WithDeadband adds Deadband (property field)
+	WithDeadband(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
+	WithDeadbandBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+	// Build builds the BACnetConstructedDataLargeAnalogValueDeadband or returns an error if something is wrong
+	Build() (BACnetConstructedDataLargeAnalogValueDeadband, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLargeAnalogValueDeadband
+}
+
+// NewBACnetConstructedDataLargeAnalogValueDeadbandBuilder() creates a BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+func NewBACnetConstructedDataLargeAnalogValueDeadbandBuilder() BACnetConstructedDataLargeAnalogValueDeadbandBuilder {
+	return &_BACnetConstructedDataLargeAnalogValueDeadbandBuilder{_BACnetConstructedDataLargeAnalogValueDeadband: new(_BACnetConstructedDataLargeAnalogValueDeadband)}
+}
+
+type _BACnetConstructedDataLargeAnalogValueDeadbandBuilder struct {
+	*_BACnetConstructedDataLargeAnalogValueDeadband
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLargeAnalogValueDeadbandBuilder) = (*_BACnetConstructedDataLargeAnalogValueDeadbandBuilder)(nil)
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueDeadbandBuilder {
+	return m.WithDeadband(deadband)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueDeadbandBuilder {
+	m.Deadband = deadband
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueDeadbandBuilder {
+	builder := builderSupplier(m.Deadband.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.Deadband, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) Build() (BACnetConstructedDataLargeAnalogValueDeadband, error) {
+	if m.Deadband == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLargeAnalogValueDeadband.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueDeadband {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueDeadbandBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLargeAnalogValueDeadbandBuilder()
+}
+
+// CreateBACnetConstructedDataLargeAnalogValueDeadbandBuilder creates a BACnetConstructedDataLargeAnalogValueDeadbandBuilder
+func (m *_BACnetConstructedDataLargeAnalogValueDeadband) CreateBACnetConstructedDataLargeAnalogValueDeadbandBuilder() BACnetConstructedDataLargeAnalogValueDeadbandBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLargeAnalogValueDeadbandBuilder()
+	}
+	return &_BACnetConstructedDataLargeAnalogValueDeadbandBuilder{_BACnetConstructedDataLargeAnalogValueDeadband: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

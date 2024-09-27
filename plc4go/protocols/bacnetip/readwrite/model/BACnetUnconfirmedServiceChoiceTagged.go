@@ -45,6 +45,8 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 	GetValue() BACnetUnconfirmedServiceChoice
 	// IsBACnetUnconfirmedServiceChoiceTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceChoiceTagged()
+	// CreateBuilder creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+	CreateBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder
 }
 
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACne
 	}
 	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceChoiceTaggedBuilder is a builder for BACnetUnconfirmedServiceChoiceTagged
+type BACnetUnconfirmedServiceChoiceTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// Build builds the BACnetUnconfirmedServiceChoiceTagged or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceChoiceTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceChoiceTagged
+}
+
+// NewBACnetUnconfirmedServiceChoiceTaggedBuilder() creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+func NewBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	return &_BACnetUnconfirmedServiceChoiceTaggedBuilder{_BACnetUnconfirmedServiceChoiceTagged: new(_BACnetUnconfirmedServiceChoiceTagged)}
+}
+
+type _BACnetUnconfirmedServiceChoiceTaggedBuilder struct {
+	*_BACnetUnconfirmedServiceChoiceTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceChoiceTaggedBuilder) = (*_BACnetUnconfirmedServiceChoiceTaggedBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithValue(value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) Build() (BACnetUnconfirmedServiceChoiceTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceChoiceTagged.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) MustBuild() BACnetUnconfirmedServiceChoiceTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceChoiceTaggedBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceChoiceTaggedBuilder creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+func (m *_BACnetUnconfirmedServiceChoiceTagged) CreateBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceChoiceTaggedBuilder()
+	}
+	return &_BACnetUnconfirmedServiceChoiceTaggedBuilder{_BACnetUnconfirmedServiceChoiceTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type BACnetConstructedDataNetworkSecurityAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataNetworkSecurityAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkSecurityAll()
+	// CreateBuilder creates a BACnetConstructedDataNetworkSecurityAllBuilder
+	CreateBACnetConstructedDataNetworkSecurityAllBuilder() BACnetConstructedDataNetworkSecurityAllBuilder
 }
 
 // _BACnetConstructedDataNetworkSecurityAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataNetworkSecurityAll(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNetworkSecurityAllBuilder is a builder for BACnetConstructedDataNetworkSecurityAll
+type BACnetConstructedDataNetworkSecurityAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataNetworkSecurityAllBuilder
+	// Build builds the BACnetConstructedDataNetworkSecurityAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataNetworkSecurityAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNetworkSecurityAll
+}
+
+// NewBACnetConstructedDataNetworkSecurityAllBuilder() creates a BACnetConstructedDataNetworkSecurityAllBuilder
+func NewBACnetConstructedDataNetworkSecurityAllBuilder() BACnetConstructedDataNetworkSecurityAllBuilder {
+	return &_BACnetConstructedDataNetworkSecurityAllBuilder{_BACnetConstructedDataNetworkSecurityAll: new(_BACnetConstructedDataNetworkSecurityAll)}
+}
+
+type _BACnetConstructedDataNetworkSecurityAllBuilder struct {
+	*_BACnetConstructedDataNetworkSecurityAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNetworkSecurityAllBuilder) = (*_BACnetConstructedDataNetworkSecurityAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataNetworkSecurityAllBuilder) WithMandatoryFields() BACnetConstructedDataNetworkSecurityAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataNetworkSecurityAllBuilder) Build() (BACnetConstructedDataNetworkSecurityAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataNetworkSecurityAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkSecurityAllBuilder) MustBuild() BACnetConstructedDataNetworkSecurityAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataNetworkSecurityAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataNetworkSecurityAllBuilder()
+}
+
+// CreateBACnetConstructedDataNetworkSecurityAllBuilder creates a BACnetConstructedDataNetworkSecurityAllBuilder
+func (m *_BACnetConstructedDataNetworkSecurityAll) CreateBACnetConstructedDataNetworkSecurityAllBuilder() BACnetConstructedDataNetworkSecurityAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataNetworkSecurityAllBuilder()
+	}
+	return &_BACnetConstructedDataNetworkSecurityAllBuilder{_BACnetConstructedDataNetworkSecurityAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

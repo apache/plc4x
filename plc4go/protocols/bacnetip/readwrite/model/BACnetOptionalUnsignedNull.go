@@ -44,6 +44,8 @@ type BACnetOptionalUnsignedNull interface {
 	GetNullValue() BACnetApplicationTagNull
 	// IsBACnetOptionalUnsignedNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsignedNull()
+	// CreateBuilder creates a BACnetOptionalUnsignedNullBuilder
+	CreateBACnetOptionalUnsignedNullBuilder() BACnetOptionalUnsignedNullBuilder
 }
 
 // _BACnetOptionalUnsignedNull is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetOptionalUnsignedNull(peekedTagHeader BACnetTagHeader, nullValue BA
 	_result.BACnetOptionalUnsignedContract.(*_BACnetOptionalUnsigned)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOptionalUnsignedNullBuilder is a builder for BACnetOptionalUnsignedNull
+type BACnetOptionalUnsignedNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalUnsignedNullBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetApplicationTagNull) BACnetOptionalUnsignedNullBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalUnsignedNullBuilder
+	// Build builds the BACnetOptionalUnsignedNull or returns an error if something is wrong
+	Build() (BACnetOptionalUnsignedNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalUnsignedNull
+}
+
+// NewBACnetOptionalUnsignedNullBuilder() creates a BACnetOptionalUnsignedNullBuilder
+func NewBACnetOptionalUnsignedNullBuilder() BACnetOptionalUnsignedNullBuilder {
+	return &_BACnetOptionalUnsignedNullBuilder{_BACnetOptionalUnsignedNull: new(_BACnetOptionalUnsignedNull)}
+}
+
+type _BACnetOptionalUnsignedNullBuilder struct {
+	*_BACnetOptionalUnsignedNull
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOptionalUnsignedNullBuilder) = (*_BACnetOptionalUnsignedNullBuilder)(nil)
+
+func (m *_BACnetOptionalUnsignedNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalUnsignedNullBuilder {
+	return m.WithNullValue(nullValue)
+}
+
+func (m *_BACnetOptionalUnsignedNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalUnsignedNullBuilder {
+	m.NullValue = nullValue
+	return m
+}
+
+func (m *_BACnetOptionalUnsignedNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalUnsignedNullBuilder {
+	builder := builderSupplier(m.NullValue.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	m.NullValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetOptionalUnsignedNullBuilder) Build() (BACnetOptionalUnsignedNull, error) {
+	if m.NullValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetOptionalUnsignedNull.deepCopy(), nil
+}
+
+func (m *_BACnetOptionalUnsignedNullBuilder) MustBuild() BACnetOptionalUnsignedNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetOptionalUnsignedNullBuilder) DeepCopy() any {
+	return m.CreateBACnetOptionalUnsignedNullBuilder()
+}
+
+// CreateBACnetOptionalUnsignedNullBuilder creates a BACnetOptionalUnsignedNullBuilder
+func (m *_BACnetOptionalUnsignedNull) CreateBACnetOptionalUnsignedNullBuilder() BACnetOptionalUnsignedNullBuilder {
+	if m == nil {
+		return NewBACnetOptionalUnsignedNullBuilder()
+	}
+	return &_BACnetOptionalUnsignedNullBuilder{_BACnetOptionalUnsignedNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

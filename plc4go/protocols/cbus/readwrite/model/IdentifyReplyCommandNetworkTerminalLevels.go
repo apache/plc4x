@@ -44,6 +44,8 @@ type IdentifyReplyCommandNetworkTerminalLevels interface {
 	GetNetworkTerminalLevels() []byte
 	// IsIdentifyReplyCommandNetworkTerminalLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandNetworkTerminalLevels()
+	// CreateBuilder creates a IdentifyReplyCommandNetworkTerminalLevelsBuilder
+	CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandNetworkTerminalLevelsBuilder
 }
 
 // _IdentifyReplyCommandNetworkTerminalLevels is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandNetworkTerminalLevels(networkTerminalLevels []byte, 
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandNetworkTerminalLevelsBuilder is a builder for IdentifyReplyCommandNetworkTerminalLevels
+type IdentifyReplyCommandNetworkTerminalLevelsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder
+	// WithNetworkTerminalLevels adds NetworkTerminalLevels (property field)
+	WithNetworkTerminalLevels(...byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder
+	// Build builds the IdentifyReplyCommandNetworkTerminalLevels or returns an error if something is wrong
+	Build() (IdentifyReplyCommandNetworkTerminalLevels, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandNetworkTerminalLevels
+}
+
+// NewIdentifyReplyCommandNetworkTerminalLevelsBuilder() creates a IdentifyReplyCommandNetworkTerminalLevelsBuilder
+func NewIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	return &_IdentifyReplyCommandNetworkTerminalLevelsBuilder{_IdentifyReplyCommandNetworkTerminalLevels: new(_IdentifyReplyCommandNetworkTerminalLevels)}
+}
+
+type _IdentifyReplyCommandNetworkTerminalLevelsBuilder struct {
+	*_IdentifyReplyCommandNetworkTerminalLevels
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandNetworkTerminalLevelsBuilder) = (*_IdentifyReplyCommandNetworkTerminalLevelsBuilder)(nil)
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithMandatoryFields(networkTerminalLevels []byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	return m.WithNetworkTerminalLevels(networkTerminalLevels...)
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) WithNetworkTerminalLevels(networkTerminalLevels ...byte) IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	m.NetworkTerminalLevels = networkTerminalLevels
+	return m
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) Build() (IdentifyReplyCommandNetworkTerminalLevels, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandNetworkTerminalLevels.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) MustBuild() IdentifyReplyCommandNetworkTerminalLevels {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandNetworkTerminalLevelsBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder()
+}
+
+// CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder creates a IdentifyReplyCommandNetworkTerminalLevelsBuilder
+func (m *_IdentifyReplyCommandNetworkTerminalLevels) CreateIdentifyReplyCommandNetworkTerminalLevelsBuilder() IdentifyReplyCommandNetworkTerminalLevelsBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandNetworkTerminalLevelsBuilder()
+	}
+	return &_IdentifyReplyCommandNetworkTerminalLevelsBuilder{_IdentifyReplyCommandNetworkTerminalLevels: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

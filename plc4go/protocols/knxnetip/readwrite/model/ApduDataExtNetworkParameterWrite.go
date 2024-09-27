@@ -40,6 +40,8 @@ type ApduDataExtNetworkParameterWrite interface {
 	ApduDataExt
 	// IsApduDataExtNetworkParameterWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterWrite()
+	// CreateBuilder creates a ApduDataExtNetworkParameterWriteBuilder
+	CreateApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWriteBuilder
 }
 
 // _ApduDataExtNetworkParameterWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParam
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtNetworkParameterWriteBuilder is a builder for ApduDataExtNetworkParameterWrite
+type ApduDataExtNetworkParameterWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder
+	// Build builds the ApduDataExtNetworkParameterWrite or returns an error if something is wrong
+	Build() (ApduDataExtNetworkParameterWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtNetworkParameterWrite
+}
+
+// NewApduDataExtNetworkParameterWriteBuilder() creates a ApduDataExtNetworkParameterWriteBuilder
+func NewApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWriteBuilder {
+	return &_ApduDataExtNetworkParameterWriteBuilder{_ApduDataExtNetworkParameterWrite: new(_ApduDataExtNetworkParameterWrite)}
+}
+
+type _ApduDataExtNetworkParameterWriteBuilder struct {
+	*_ApduDataExtNetworkParameterWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtNetworkParameterWriteBuilder) = (*_ApduDataExtNetworkParameterWriteBuilder)(nil)
+
+func (m *_ApduDataExtNetworkParameterWriteBuilder) WithMandatoryFields() ApduDataExtNetworkParameterWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataExtNetworkParameterWriteBuilder) Build() (ApduDataExtNetworkParameterWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtNetworkParameterWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtNetworkParameterWriteBuilder) MustBuild() ApduDataExtNetworkParameterWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtNetworkParameterWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtNetworkParameterWriteBuilder()
+}
+
+// CreateApduDataExtNetworkParameterWriteBuilder creates a ApduDataExtNetworkParameterWriteBuilder
+func (m *_ApduDataExtNetworkParameterWrite) CreateApduDataExtNetworkParameterWriteBuilder() ApduDataExtNetworkParameterWriteBuilder {
+	if m == nil {
+		return NewApduDataExtNetworkParameterWriteBuilder()
+	}
+	return &_ApduDataExtNetworkParameterWriteBuilder{_ApduDataExtNetworkParameterWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

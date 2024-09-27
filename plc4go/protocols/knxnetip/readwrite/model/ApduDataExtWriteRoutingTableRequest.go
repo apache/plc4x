@@ -40,6 +40,8 @@ type ApduDataExtWriteRoutingTableRequest interface {
 	ApduDataExt
 	// IsApduDataExtWriteRoutingTableRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtWriteRoutingTableRequest()
+	// CreateBuilder creates a ApduDataExtWriteRoutingTableRequestBuilder
+	CreateApduDataExtWriteRoutingTableRequestBuilder() ApduDataExtWriteRoutingTableRequestBuilder
 }
 
 // _ApduDataExtWriteRoutingTableRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtWriteRoutingTableRequest(length uint8) *_ApduDataExtWriteRout
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtWriteRoutingTableRequestBuilder is a builder for ApduDataExtWriteRoutingTableRequest
+type ApduDataExtWriteRoutingTableRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtWriteRoutingTableRequestBuilder
+	// Build builds the ApduDataExtWriteRoutingTableRequest or returns an error if something is wrong
+	Build() (ApduDataExtWriteRoutingTableRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtWriteRoutingTableRequest
+}
+
+// NewApduDataExtWriteRoutingTableRequestBuilder() creates a ApduDataExtWriteRoutingTableRequestBuilder
+func NewApduDataExtWriteRoutingTableRequestBuilder() ApduDataExtWriteRoutingTableRequestBuilder {
+	return &_ApduDataExtWriteRoutingTableRequestBuilder{_ApduDataExtWriteRoutingTableRequest: new(_ApduDataExtWriteRoutingTableRequest)}
+}
+
+type _ApduDataExtWriteRoutingTableRequestBuilder struct {
+	*_ApduDataExtWriteRoutingTableRequest
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtWriteRoutingTableRequestBuilder) = (*_ApduDataExtWriteRoutingTableRequestBuilder)(nil)
+
+func (m *_ApduDataExtWriteRoutingTableRequestBuilder) WithMandatoryFields() ApduDataExtWriteRoutingTableRequestBuilder {
+	return m
+}
+
+func (m *_ApduDataExtWriteRoutingTableRequestBuilder) Build() (ApduDataExtWriteRoutingTableRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtWriteRoutingTableRequest.deepCopy(), nil
+}
+
+func (m *_ApduDataExtWriteRoutingTableRequestBuilder) MustBuild() ApduDataExtWriteRoutingTableRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtWriteRoutingTableRequestBuilder) DeepCopy() any {
+	return m.CreateApduDataExtWriteRoutingTableRequestBuilder()
+}
+
+// CreateApduDataExtWriteRoutingTableRequestBuilder creates a ApduDataExtWriteRoutingTableRequestBuilder
+func (m *_ApduDataExtWriteRoutingTableRequest) CreateApduDataExtWriteRoutingTableRequestBuilder() ApduDataExtWriteRoutingTableRequestBuilder {
+	if m == nil {
+		return NewApduDataExtWriteRoutingTableRequestBuilder()
+	}
+	return &_ApduDataExtWriteRoutingTableRequestBuilder{_ApduDataExtWriteRoutingTableRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

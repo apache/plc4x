@@ -46,6 +46,8 @@ type FirmataMessageCommand interface {
 	GetCommand() FirmataCommand
 	// IsFirmataMessageCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessageCommand()
+	// CreateBuilder creates a FirmataMessageCommandBuilder
+	CreateFirmataMessageCommandBuilder() FirmataMessageCommandBuilder
 }
 
 // _FirmataMessageCommand is the data-structure of this message
@@ -69,6 +71,84 @@ func NewFirmataMessageCommand(command FirmataCommand, response bool) *_FirmataMe
 	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataMessageCommandBuilder is a builder for FirmataMessageCommand
+type FirmataMessageCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(FirmataCommand) FirmataMessageCommandBuilder
+	// Build builds the FirmataMessageCommand or returns an error if something is wrong
+	Build() (FirmataMessageCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataMessageCommand
+}
+
+// NewFirmataMessageCommandBuilder() creates a FirmataMessageCommandBuilder
+func NewFirmataMessageCommandBuilder() FirmataMessageCommandBuilder {
+	return &_FirmataMessageCommandBuilder{_FirmataMessageCommand: new(_FirmataMessageCommand)}
+}
+
+type _FirmataMessageCommandBuilder struct {
+	*_FirmataMessageCommand
+
+	err *utils.MultiError
+}
+
+var _ (FirmataMessageCommandBuilder) = (*_FirmataMessageCommandBuilder)(nil)
+
+func (m *_FirmataMessageCommandBuilder) WithMandatoryFields(command FirmataCommand) FirmataMessageCommandBuilder {
+	return m.WithCommand(command)
+}
+
+func (m *_FirmataMessageCommandBuilder) WithCommand(command FirmataCommand) FirmataMessageCommandBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_FirmataMessageCommandBuilder) Build() (FirmataMessageCommand, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataMessageCommand.deepCopy(), nil
+}
+
+func (m *_FirmataMessageCommandBuilder) MustBuild() FirmataMessageCommand {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataMessageCommandBuilder) DeepCopy() any {
+	return m.CreateFirmataMessageCommandBuilder()
+}
+
+// CreateFirmataMessageCommandBuilder creates a FirmataMessageCommandBuilder
+func (m *_FirmataMessageCommand) CreateFirmataMessageCommandBuilder() FirmataMessageCommandBuilder {
+	if m == nil {
+		return NewFirmataMessageCommandBuilder()
+	}
+	return &_FirmataMessageCommandBuilder{_FirmataMessageCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

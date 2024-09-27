@@ -46,6 +46,8 @@ type CIPEncapsulationReadResponse interface {
 	GetResponse() DF1ResponseMessage
 	// IsCIPEncapsulationReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationReadResponse()
+	// CreateBuilder creates a CIPEncapsulationReadResponseBuilder
+	CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder
 }
 
 // _CIPEncapsulationReadResponse is the data-structure of this message
@@ -72,6 +74,84 @@ func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, sender
 	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationReadResponseBuilder is a builder for CIPEncapsulationReadResponse
+type CIPEncapsulationReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
+	// WithResponse adds Response (property field)
+	WithResponse(DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
+	// Build builds the CIPEncapsulationReadResponse or returns an error if something is wrong
+	Build() (CIPEncapsulationReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationReadResponse
+}
+
+// NewCIPEncapsulationReadResponseBuilder() creates a CIPEncapsulationReadResponseBuilder
+func NewCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
+	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: new(_CIPEncapsulationReadResponse)}
+}
+
+type _CIPEncapsulationReadResponseBuilder struct {
+	*_CIPEncapsulationReadResponse
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationReadResponseBuilder) = (*_CIPEncapsulationReadResponseBuilder)(nil)
+
+func (m *_CIPEncapsulationReadResponseBuilder) WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	return m.WithResponse(response)
+}
+
+func (m *_CIPEncapsulationReadResponseBuilder) WithResponse(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	m.Response = response
+	return m
+}
+
+func (m *_CIPEncapsulationReadResponseBuilder) Build() (CIPEncapsulationReadResponse, error) {
+	if m.Response == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'response' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPEncapsulationReadResponse.deepCopy(), nil
+}
+
+func (m *_CIPEncapsulationReadResponseBuilder) MustBuild() CIPEncapsulationReadResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPEncapsulationReadResponseBuilder) DeepCopy() any {
+	return m.CreateCIPEncapsulationReadResponseBuilder()
+}
+
+// CreateCIPEncapsulationReadResponseBuilder creates a CIPEncapsulationReadResponseBuilder
+func (m *_CIPEncapsulationReadResponse) CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
+	if m == nil {
+		return NewCIPEncapsulationReadResponseBuilder()
+	}
+	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

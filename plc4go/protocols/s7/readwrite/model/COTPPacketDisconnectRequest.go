@@ -48,6 +48,8 @@ type COTPPacketDisconnectRequest interface {
 	GetProtocolClass() COTPProtocolClass
 	// IsCOTPPacketDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketDisconnectRequest()
+	// CreateBuilder creates a COTPPacketDisconnectRequestBuilder
+	CreateCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder
 }
 
 // _COTPPacketDisconnectRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewCOTPPacketDisconnectRequest(parameters []COTPParameter, payload S7Messag
 	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketDisconnectRequestBuilder is a builder for COTPPacketDisconnectRequest
+type COTPPacketDisconnectRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder
+	// WithDestinationReference adds DestinationReference (property field)
+	WithDestinationReference(uint16) COTPPacketDisconnectRequestBuilder
+	// WithSourceReference adds SourceReference (property field)
+	WithSourceReference(uint16) COTPPacketDisconnectRequestBuilder
+	// WithProtocolClass adds ProtocolClass (property field)
+	WithProtocolClass(COTPProtocolClass) COTPPacketDisconnectRequestBuilder
+	// Build builds the COTPPacketDisconnectRequest or returns an error if something is wrong
+	Build() (COTPPacketDisconnectRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketDisconnectRequest
+}
+
+// NewCOTPPacketDisconnectRequestBuilder() creates a COTPPacketDisconnectRequestBuilder
+func NewCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder {
+	return &_COTPPacketDisconnectRequestBuilder{_COTPPacketDisconnectRequest: new(_COTPPacketDisconnectRequest)}
+}
+
+type _COTPPacketDisconnectRequestBuilder struct {
+	*_COTPPacketDisconnectRequest
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketDisconnectRequestBuilder) = (*_COTPPacketDisconnectRequestBuilder)(nil)
+
+func (m *_COTPPacketDisconnectRequestBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder {
+	return m.WithDestinationReference(destinationReference).WithSourceReference(sourceReference).WithProtocolClass(protocolClass)
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) WithDestinationReference(destinationReference uint16) COTPPacketDisconnectRequestBuilder {
+	m.DestinationReference = destinationReference
+	return m
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) WithSourceReference(sourceReference uint16) COTPPacketDisconnectRequestBuilder {
+	m.SourceReference = sourceReference
+	return m
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) WithProtocolClass(protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder {
+	m.ProtocolClass = protocolClass
+	return m
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) Build() (COTPPacketDisconnectRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacketDisconnectRequest.deepCopy(), nil
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) MustBuild() COTPPacketDisconnectRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketDisconnectRequestBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketDisconnectRequestBuilder()
+}
+
+// CreateCOTPPacketDisconnectRequestBuilder creates a COTPPacketDisconnectRequestBuilder
+func (m *_COTPPacketDisconnectRequest) CreateCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder {
+	if m == nil {
+		return NewCOTPPacketDisconnectRequestBuilder()
+	}
+	return &_COTPPacketDisconnectRequestBuilder{_COTPPacketDisconnectRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

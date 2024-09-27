@@ -43,12 +43,16 @@ type CEMIAdditionalInformation interface {
 	utils.Copyable
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
+	// CreateBuilder creates a CEMIAdditionalInformationBuilder
+	CreateCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder
 }
 
 // CEMIAdditionalInformationContract provides a set of functions which can be overwritten by a sub struct
 type CEMIAdditionalInformationContract interface {
 	// IsCEMIAdditionalInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformation()
+	// CreateBuilder creates a CEMIAdditionalInformationBuilder
+	CreateCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder
 }
 
 // CEMIAdditionalInformationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ CEMIAdditionalInformationContract = (*_CEMIAdditionalInformation)(nil)
 func NewCEMIAdditionalInformation() *_CEMIAdditionalInformation {
 	return &_CEMIAdditionalInformation{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CEMIAdditionalInformationBuilder is a builder for CEMIAdditionalInformation
+type CEMIAdditionalInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CEMIAdditionalInformationBuilder
+	// Build builds the CEMIAdditionalInformation or returns an error if something is wrong
+	Build() (CEMIAdditionalInformationContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CEMIAdditionalInformationContract
+}
+
+// NewCEMIAdditionalInformationBuilder() creates a CEMIAdditionalInformationBuilder
+func NewCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder {
+	return &_CEMIAdditionalInformationBuilder{_CEMIAdditionalInformation: new(_CEMIAdditionalInformation)}
+}
+
+type _CEMIAdditionalInformationBuilder struct {
+	*_CEMIAdditionalInformation
+
+	err *utils.MultiError
+}
+
+var _ (CEMIAdditionalInformationBuilder) = (*_CEMIAdditionalInformationBuilder)(nil)
+
+func (m *_CEMIAdditionalInformationBuilder) WithMandatoryFields() CEMIAdditionalInformationBuilder {
+	return m
+}
+
+func (m *_CEMIAdditionalInformationBuilder) Build() (CEMIAdditionalInformationContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CEMIAdditionalInformation.deepCopy(), nil
+}
+
+func (m *_CEMIAdditionalInformationBuilder) MustBuild() CEMIAdditionalInformationContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CEMIAdditionalInformationBuilder) DeepCopy() any {
+	return m.CreateCEMIAdditionalInformationBuilder()
+}
+
+// CreateCEMIAdditionalInformationBuilder creates a CEMIAdditionalInformationBuilder
+func (m *_CEMIAdditionalInformation) CreateCEMIAdditionalInformationBuilder() CEMIAdditionalInformationBuilder {
+	if m == nil {
+		return NewCEMIAdditionalInformationBuilder()
+	}
+	return &_CEMIAdditionalInformationBuilder{_CEMIAdditionalInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastCEMIAdditionalInformation(structType any) CEMIAdditionalInformation {

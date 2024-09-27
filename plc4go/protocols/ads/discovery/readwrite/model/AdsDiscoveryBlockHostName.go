@@ -44,6 +44,8 @@ type AdsDiscoveryBlockHostName interface {
 	GetHostName() AmsString
 	// IsAdsDiscoveryBlockHostName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockHostName()
+	// CreateBuilder creates a AdsDiscoveryBlockHostNameBuilder
+	CreateAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder
 }
 
 // _AdsDiscoveryBlockHostName is the data-structure of this message
@@ -67,6 +69,99 @@ func NewAdsDiscoveryBlockHostName(hostName AmsString) *_AdsDiscoveryBlockHostNam
 	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockHostNameBuilder is a builder for AdsDiscoveryBlockHostName
+type AdsDiscoveryBlockHostNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hostName AmsString) AdsDiscoveryBlockHostNameBuilder
+	// WithHostName adds HostName (property field)
+	WithHostName(AmsString) AdsDiscoveryBlockHostNameBuilder
+	// WithHostNameBuilder adds HostName (property field) which is build by the builder
+	WithHostNameBuilder(func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockHostNameBuilder
+	// Build builds the AdsDiscoveryBlockHostName or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockHostName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockHostName
+}
+
+// NewAdsDiscoveryBlockHostNameBuilder() creates a AdsDiscoveryBlockHostNameBuilder
+func NewAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder {
+	return &_AdsDiscoveryBlockHostNameBuilder{_AdsDiscoveryBlockHostName: new(_AdsDiscoveryBlockHostName)}
+}
+
+type _AdsDiscoveryBlockHostNameBuilder struct {
+	*_AdsDiscoveryBlockHostName
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockHostNameBuilder) = (*_AdsDiscoveryBlockHostNameBuilder)(nil)
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) WithMandatoryFields(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
+	return m.WithHostName(hostName)
+}
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) WithHostName(hostName AmsString) AdsDiscoveryBlockHostNameBuilder {
+	m.HostName = hostName
+	return m
+}
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) WithHostNameBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockHostNameBuilder {
+	builder := builderSupplier(m.HostName.CreateAmsStringBuilder())
+	var err error
+	m.HostName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) Build() (AdsDiscoveryBlockHostName, error) {
+	if m.HostName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hostName' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDiscoveryBlockHostName.deepCopy(), nil
+}
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) MustBuild() AdsDiscoveryBlockHostName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDiscoveryBlockHostNameBuilder) DeepCopy() any {
+	return m.CreateAdsDiscoveryBlockHostNameBuilder()
+}
+
+// CreateAdsDiscoveryBlockHostNameBuilder creates a AdsDiscoveryBlockHostNameBuilder
+func (m *_AdsDiscoveryBlockHostName) CreateAdsDiscoveryBlockHostNameBuilder() AdsDiscoveryBlockHostNameBuilder {
+	if m == nil {
+		return NewAdsDiscoveryBlockHostNameBuilder()
+	}
+	return &_AdsDiscoveryBlockHostNameBuilder{_AdsDiscoveryBlockHostName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

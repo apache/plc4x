@@ -50,6 +50,8 @@ type TriggerControlDataLabel interface {
 	GetData() []byte
 	// IsTriggerControlDataLabel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataLabel()
+	// CreateBuilder creates a TriggerControlDataLabelBuilder
+	CreateTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder
 }
 
 // _TriggerControlDataLabel is the data-structure of this message
@@ -79,6 +81,120 @@ func NewTriggerControlDataLabel(commandTypeContainer TriggerControlCommandTypeCo
 	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataLabelBuilder is a builder for TriggerControlDataLabel
+type TriggerControlDataLabelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, data []byte) TriggerControlDataLabelBuilder
+	// WithTriggerControlOptions adds TriggerControlOptions (property field)
+	WithTriggerControlOptions(TriggerControlLabelOptions) TriggerControlDataLabelBuilder
+	// WithTriggerControlOptionsBuilder adds TriggerControlOptions (property field) which is build by the builder
+	WithTriggerControlOptionsBuilder(func(TriggerControlLabelOptionsBuilder) TriggerControlLabelOptionsBuilder) TriggerControlDataLabelBuilder
+	// WithActionSelector adds ActionSelector (property field)
+	WithActionSelector(byte) TriggerControlDataLabelBuilder
+	// WithLanguage adds Language (property field)
+	WithOptionalLanguage(Language) TriggerControlDataLabelBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) TriggerControlDataLabelBuilder
+	// Build builds the TriggerControlDataLabel or returns an error if something is wrong
+	Build() (TriggerControlDataLabel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlDataLabel
+}
+
+// NewTriggerControlDataLabelBuilder() creates a TriggerControlDataLabelBuilder
+func NewTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder {
+	return &_TriggerControlDataLabelBuilder{_TriggerControlDataLabel: new(_TriggerControlDataLabel)}
+}
+
+type _TriggerControlDataLabelBuilder struct {
+	*_TriggerControlDataLabel
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataLabelBuilder) = (*_TriggerControlDataLabelBuilder)(nil)
+
+func (m *_TriggerControlDataLabelBuilder) WithMandatoryFields(triggerControlOptions TriggerControlLabelOptions, actionSelector byte, data []byte) TriggerControlDataLabelBuilder {
+	return m.WithTriggerControlOptions(triggerControlOptions).WithActionSelector(actionSelector).WithData(data...)
+}
+
+func (m *_TriggerControlDataLabelBuilder) WithTriggerControlOptions(triggerControlOptions TriggerControlLabelOptions) TriggerControlDataLabelBuilder {
+	m.TriggerControlOptions = triggerControlOptions
+	return m
+}
+
+func (m *_TriggerControlDataLabelBuilder) WithTriggerControlOptionsBuilder(builderSupplier func(TriggerControlLabelOptionsBuilder) TriggerControlLabelOptionsBuilder) TriggerControlDataLabelBuilder {
+	builder := builderSupplier(m.TriggerControlOptions.CreateTriggerControlLabelOptionsBuilder())
+	var err error
+	m.TriggerControlOptions, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "TriggerControlLabelOptionsBuilder failed"))
+	}
+	return m
+}
+
+func (m *_TriggerControlDataLabelBuilder) WithActionSelector(actionSelector byte) TriggerControlDataLabelBuilder {
+	m.ActionSelector = actionSelector
+	return m
+}
+
+func (m *_TriggerControlDataLabelBuilder) WithOptionalLanguage(language Language) TriggerControlDataLabelBuilder {
+	m.Language = &language
+	return m
+}
+
+func (m *_TriggerControlDataLabelBuilder) WithData(data ...byte) TriggerControlDataLabelBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_TriggerControlDataLabelBuilder) Build() (TriggerControlDataLabel, error) {
+	if m.TriggerControlOptions == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'triggerControlOptions' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TriggerControlDataLabel.deepCopy(), nil
+}
+
+func (m *_TriggerControlDataLabelBuilder) MustBuild() TriggerControlDataLabel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TriggerControlDataLabelBuilder) DeepCopy() any {
+	return m.CreateTriggerControlDataLabelBuilder()
+}
+
+// CreateTriggerControlDataLabelBuilder creates a TriggerControlDataLabelBuilder
+func (m *_TriggerControlDataLabel) CreateTriggerControlDataLabelBuilder() TriggerControlDataLabelBuilder {
+	if m == nil {
+		return NewTriggerControlDataLabelBuilder()
+	}
+	return &_TriggerControlDataLabelBuilder{_TriggerControlDataLabel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

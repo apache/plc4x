@@ -50,6 +50,8 @@ type SecurityDataStatusReport1 interface {
 	GetZoneStatus() []ZoneStatus
 	// IsSecurityDataStatusReport1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatusReport1()
+	// CreateBuilder creates a SecurityDataStatusReport1Builder
+	CreateSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder
 }
 
 // _SecurityDataStatusReport1 is the data-structure of this message
@@ -85,6 +87,162 @@ func NewSecurityDataStatusReport1(commandTypeContainer SecurityCommandTypeContai
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataStatusReport1Builder is a builder for SecurityDataStatusReport1
+type SecurityDataStatusReport1Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) SecurityDataStatusReport1Builder
+	// WithArmCodeType adds ArmCodeType (property field)
+	WithArmCodeType(SecurityArmCode) SecurityDataStatusReport1Builder
+	// WithArmCodeTypeBuilder adds ArmCodeType (property field) which is build by the builder
+	WithArmCodeTypeBuilder(func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataStatusReport1Builder
+	// WithTamperStatus adds TamperStatus (property field)
+	WithTamperStatus(TamperStatus) SecurityDataStatusReport1Builder
+	// WithTamperStatusBuilder adds TamperStatus (property field) which is build by the builder
+	WithTamperStatusBuilder(func(TamperStatusBuilder) TamperStatusBuilder) SecurityDataStatusReport1Builder
+	// WithPanicStatus adds PanicStatus (property field)
+	WithPanicStatus(PanicStatus) SecurityDataStatusReport1Builder
+	// WithPanicStatusBuilder adds PanicStatus (property field) which is build by the builder
+	WithPanicStatusBuilder(func(PanicStatusBuilder) PanicStatusBuilder) SecurityDataStatusReport1Builder
+	// WithZoneStatus adds ZoneStatus (property field)
+	WithZoneStatus(...ZoneStatus) SecurityDataStatusReport1Builder
+	// Build builds the SecurityDataStatusReport1 or returns an error if something is wrong
+	Build() (SecurityDataStatusReport1, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataStatusReport1
+}
+
+// NewSecurityDataStatusReport1Builder() creates a SecurityDataStatusReport1Builder
+func NewSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder {
+	return &_SecurityDataStatusReport1Builder{_SecurityDataStatusReport1: new(_SecurityDataStatusReport1)}
+}
+
+type _SecurityDataStatusReport1Builder struct {
+	*_SecurityDataStatusReport1
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataStatusReport1Builder) = (*_SecurityDataStatusReport1Builder)(nil)
+
+func (m *_SecurityDataStatusReport1Builder) WithMandatoryFields(armCodeType SecurityArmCode, tamperStatus TamperStatus, panicStatus PanicStatus, zoneStatus []ZoneStatus) SecurityDataStatusReport1Builder {
+	return m.WithArmCodeType(armCodeType).WithTamperStatus(tamperStatus).WithPanicStatus(panicStatus).WithZoneStatus(zoneStatus...)
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataStatusReport1Builder {
+	m.ArmCodeType = armCodeType
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(m.ArmCodeType.CreateSecurityArmCodeBuilder())
+	var err error
+	m.ArmCodeType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithTamperStatus(tamperStatus TamperStatus) SecurityDataStatusReport1Builder {
+	m.TamperStatus = tamperStatus
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithTamperStatusBuilder(builderSupplier func(TamperStatusBuilder) TamperStatusBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(m.TamperStatus.CreateTamperStatusBuilder())
+	var err error
+	m.TamperStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "TamperStatusBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithPanicStatus(panicStatus PanicStatus) SecurityDataStatusReport1Builder {
+	m.PanicStatus = panicStatus
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithPanicStatusBuilder(builderSupplier func(PanicStatusBuilder) PanicStatusBuilder) SecurityDataStatusReport1Builder {
+	builder := builderSupplier(m.PanicStatus.CreatePanicStatusBuilder())
+	var err error
+	m.PanicStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PanicStatusBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport1Builder {
+	m.ZoneStatus = zoneStatus
+	return m
+}
+
+func (m *_SecurityDataStatusReport1Builder) Build() (SecurityDataStatusReport1, error) {
+	if m.ArmCodeType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'armCodeType' not set"))
+	}
+	if m.TamperStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'tamperStatus' not set"))
+	}
+	if m.PanicStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'panicStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataStatusReport1.deepCopy(), nil
+}
+
+func (m *_SecurityDataStatusReport1Builder) MustBuild() SecurityDataStatusReport1 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataStatusReport1Builder) DeepCopy() any {
+	return m.CreateSecurityDataStatusReport1Builder()
+}
+
+// CreateSecurityDataStatusReport1Builder creates a SecurityDataStatusReport1Builder
+func (m *_SecurityDataStatusReport1) CreateSecurityDataStatusReport1Builder() SecurityDataStatusReport1Builder {
+	if m == nil {
+		return NewSecurityDataStatusReport1Builder()
+	}
+	return &_SecurityDataStatusReport1Builder{_SecurityDataStatusReport1: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

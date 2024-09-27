@@ -46,6 +46,8 @@ type SecurityDataZoneName interface {
 	GetZoneName() string
 	// IsSecurityDataZoneName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneName()
+	// CreateBuilder creates a SecurityDataZoneNameBuilder
+	CreateSecurityDataZoneNameBuilder() SecurityDataZoneNameBuilder
 }
 
 // _SecurityDataZoneName is the data-structure of this message
@@ -68,6 +70,85 @@ func NewSecurityDataZoneName(commandTypeContainer SecurityCommandTypeContainer, 
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneNameBuilder is a builder for SecurityDataZoneName
+type SecurityDataZoneNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8, zoneName string) SecurityDataZoneNameBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneNameBuilder
+	// WithZoneName adds ZoneName (property field)
+	WithZoneName(string) SecurityDataZoneNameBuilder
+	// Build builds the SecurityDataZoneName or returns an error if something is wrong
+	Build() (SecurityDataZoneName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneName
+}
+
+// NewSecurityDataZoneNameBuilder() creates a SecurityDataZoneNameBuilder
+func NewSecurityDataZoneNameBuilder() SecurityDataZoneNameBuilder {
+	return &_SecurityDataZoneNameBuilder{_SecurityDataZoneName: new(_SecurityDataZoneName)}
+}
+
+type _SecurityDataZoneNameBuilder struct {
+	*_SecurityDataZoneName
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneNameBuilder) = (*_SecurityDataZoneNameBuilder)(nil)
+
+func (m *_SecurityDataZoneNameBuilder) WithMandatoryFields(zoneNumber uint8, zoneName string) SecurityDataZoneNameBuilder {
+	return m.WithZoneNumber(zoneNumber).WithZoneName(zoneName)
+}
+
+func (m *_SecurityDataZoneNameBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneNameBuilder {
+	m.ZoneNumber = zoneNumber
+	return m
+}
+
+func (m *_SecurityDataZoneNameBuilder) WithZoneName(zoneName string) SecurityDataZoneNameBuilder {
+	m.ZoneName = zoneName
+	return m
+}
+
+func (m *_SecurityDataZoneNameBuilder) Build() (SecurityDataZoneName, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataZoneName.deepCopy(), nil
+}
+
+func (m *_SecurityDataZoneNameBuilder) MustBuild() SecurityDataZoneName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataZoneNameBuilder) DeepCopy() any {
+	return m.CreateSecurityDataZoneNameBuilder()
+}
+
+// CreateSecurityDataZoneNameBuilder creates a SecurityDataZoneNameBuilder
+func (m *_SecurityDataZoneName) CreateSecurityDataZoneNameBuilder() SecurityDataZoneNameBuilder {
+	if m == nil {
+		return NewSecurityDataZoneNameBuilder()
+	}
+	return &_SecurityDataZoneNameBuilder{_SecurityDataZoneName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

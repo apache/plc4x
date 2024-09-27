@@ -43,6 +43,8 @@ type COTPPacket interface {
 	utils.Copyable
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
+	// CreateBuilder creates a COTPPacketBuilder
+	CreateCOTPPacketBuilder() COTPPacketBuilder
 }
 
 // COTPPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type COTPPacketContract interface {
 	GetCotpLen() uint16
 	// IsCOTPPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacket()
+	// CreateBuilder creates a COTPPacketBuilder
+	CreateCOTPPacketBuilder() COTPPacketBuilder
 }
 
 // COTPPacketRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +85,85 @@ var _ COTPPacketContract = (*_COTPPacket)(nil)
 func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacket {
 	return &_COTPPacket{Parameters: parameters, Payload: payload, CotpLen: cotpLen}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketBuilder is a builder for COTPPacket
+type COTPPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(parameters []COTPParameter) COTPPacketBuilder
+	// WithParameters adds Parameters (property field)
+	WithParameters(...COTPParameter) COTPPacketBuilder
+	// WithPayload adds Payload (property field)
+	WithOptionalPayload(S7Message) COTPPacketBuilder
+	// Build builds the COTPPacket or returns an error if something is wrong
+	Build() (COTPPacketContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketContract
+}
+
+// NewCOTPPacketBuilder() creates a COTPPacketBuilder
+func NewCOTPPacketBuilder() COTPPacketBuilder {
+	return &_COTPPacketBuilder{_COTPPacket: new(_COTPPacket)}
+}
+
+type _COTPPacketBuilder struct {
+	*_COTPPacket
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketBuilder) = (*_COTPPacketBuilder)(nil)
+
+func (m *_COTPPacketBuilder) WithMandatoryFields(parameters []COTPParameter) COTPPacketBuilder {
+	return m.WithParameters(parameters...)
+}
+
+func (m *_COTPPacketBuilder) WithParameters(parameters ...COTPParameter) COTPPacketBuilder {
+	m.Parameters = parameters
+	return m
+}
+
+func (m *_COTPPacketBuilder) WithOptionalPayload(payload S7Message) COTPPacketBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_COTPPacketBuilder) Build() (COTPPacketContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacket.deepCopy(), nil
+}
+
+func (m *_COTPPacketBuilder) MustBuild() COTPPacketContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketBuilder()
+}
+
+// CreateCOTPPacketBuilder creates a COTPPacketBuilder
+func (m *_COTPPacket) CreateCOTPPacketBuilder() COTPPacketBuilder {
+	if m == nil {
+		return NewCOTPPacketBuilder()
+	}
+	return &_COTPPacketBuilder{_COTPPacket: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

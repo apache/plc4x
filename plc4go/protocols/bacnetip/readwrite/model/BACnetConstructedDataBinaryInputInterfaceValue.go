@@ -46,6 +46,8 @@ type BACnetConstructedDataBinaryInputInterfaceValue interface {
 	GetActualValue() BACnetOptionalBinaryPV
 	// IsBACnetConstructedDataBinaryInputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryInputInterfaceValue()
+	// CreateBuilder creates a BACnetConstructedDataBinaryInputInterfaceValueBuilder
+	CreateBACnetConstructedDataBinaryInputInterfaceValueBuilder() BACnetConstructedDataBinaryInputInterfaceValueBuilder
 }
 
 // _BACnetConstructedDataBinaryInputInterfaceValue is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataBinaryInputInterfaceValue(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryInputInterfaceValueBuilder is a builder for BACnetConstructedDataBinaryInputInterfaceValue
+type BACnetConstructedDataBinaryInputInterfaceValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder
+	// WithInterfaceValue adds InterfaceValue (property field)
+	WithInterfaceValue(BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder
+	// Build builds the BACnetConstructedDataBinaryInputInterfaceValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryInputInterfaceValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryInputInterfaceValue
+}
+
+// NewBACnetConstructedDataBinaryInputInterfaceValueBuilder() creates a BACnetConstructedDataBinaryInputInterfaceValueBuilder
+func NewBACnetConstructedDataBinaryInputInterfaceValueBuilder() BACnetConstructedDataBinaryInputInterfaceValueBuilder {
+	return &_BACnetConstructedDataBinaryInputInterfaceValueBuilder{_BACnetConstructedDataBinaryInputInterfaceValue: new(_BACnetConstructedDataBinaryInputInterfaceValue)}
+}
+
+type _BACnetConstructedDataBinaryInputInterfaceValueBuilder struct {
+	*_BACnetConstructedDataBinaryInputInterfaceValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryInputInterfaceValueBuilder) = (*_BACnetConstructedDataBinaryInputInterfaceValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder {
+	return m.WithInterfaceValue(interfaceValue)
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalBinaryPV) BACnetConstructedDataBinaryInputInterfaceValueBuilder {
+	m.InterfaceValue = interfaceValue
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) Build() (BACnetConstructedDataBinaryInputInterfaceValue, error) {
+	if m.InterfaceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBinaryInputInterfaceValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) MustBuild() BACnetConstructedDataBinaryInputInterfaceValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBinaryInputInterfaceValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBinaryInputInterfaceValueBuilder()
+}
+
+// CreateBACnetConstructedDataBinaryInputInterfaceValueBuilder creates a BACnetConstructedDataBinaryInputInterfaceValueBuilder
+func (m *_BACnetConstructedDataBinaryInputInterfaceValue) CreateBACnetConstructedDataBinaryInputInterfaceValueBuilder() BACnetConstructedDataBinaryInputInterfaceValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBinaryInputInterfaceValueBuilder()
+	}
+	return &_BACnetConstructedDataBinaryInputInterfaceValueBuilder{_BACnetConstructedDataBinaryInputInterfaceValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

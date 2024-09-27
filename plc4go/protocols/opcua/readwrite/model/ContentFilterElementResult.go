@@ -52,6 +52,8 @@ type ContentFilterElementResult interface {
 	GetOperandDiagnosticInfos() []DiagnosticInfo
 	// IsContentFilterElementResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContentFilterElementResult()
+	// CreateBuilder creates a ContentFilterElementResultBuilder
+	CreateContentFilterElementResultBuilder() ContentFilterElementResultBuilder
 }
 
 // _ContentFilterElementResult is the data-structure of this message
@@ -83,6 +85,127 @@ func NewContentFilterElementResult(statusCode StatusCode, noOfOperandStatusCodes
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ContentFilterElementResultBuilder is a builder for ContentFilterElementResult
+type ContentFilterElementResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) ContentFilterElementResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ContentFilterElementResultBuilder
+	// WithNoOfOperandStatusCodes adds NoOfOperandStatusCodes (property field)
+	WithNoOfOperandStatusCodes(int32) ContentFilterElementResultBuilder
+	// WithOperandStatusCodes adds OperandStatusCodes (property field)
+	WithOperandStatusCodes(...StatusCode) ContentFilterElementResultBuilder
+	// WithNoOfOperandDiagnosticInfos adds NoOfOperandDiagnosticInfos (property field)
+	WithNoOfOperandDiagnosticInfos(int32) ContentFilterElementResultBuilder
+	// WithOperandDiagnosticInfos adds OperandDiagnosticInfos (property field)
+	WithOperandDiagnosticInfos(...DiagnosticInfo) ContentFilterElementResultBuilder
+	// Build builds the ContentFilterElementResult or returns an error if something is wrong
+	Build() (ContentFilterElementResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ContentFilterElementResult
+}
+
+// NewContentFilterElementResultBuilder() creates a ContentFilterElementResultBuilder
+func NewContentFilterElementResultBuilder() ContentFilterElementResultBuilder {
+	return &_ContentFilterElementResultBuilder{_ContentFilterElementResult: new(_ContentFilterElementResult)}
+}
+
+type _ContentFilterElementResultBuilder struct {
+	*_ContentFilterElementResult
+
+	err *utils.MultiError
+}
+
+var _ (ContentFilterElementResultBuilder) = (*_ContentFilterElementResultBuilder)(nil)
+
+func (m *_ContentFilterElementResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperandStatusCodes int32, operandStatusCodes []StatusCode, noOfOperandDiagnosticInfos int32, operandDiagnosticInfos []DiagnosticInfo) ContentFilterElementResultBuilder {
+	return m.WithStatusCode(statusCode).WithNoOfOperandStatusCodes(noOfOperandStatusCodes).WithOperandStatusCodes(operandStatusCodes...).WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos).WithOperandDiagnosticInfos(operandDiagnosticInfos...)
+}
+
+func (m *_ContentFilterElementResultBuilder) WithStatusCode(statusCode StatusCode) ContentFilterElementResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ContentFilterElementResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) WithNoOfOperandStatusCodes(noOfOperandStatusCodes int32) ContentFilterElementResultBuilder {
+	m.NoOfOperandStatusCodes = noOfOperandStatusCodes
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) WithOperandStatusCodes(operandStatusCodes ...StatusCode) ContentFilterElementResultBuilder {
+	m.OperandStatusCodes = operandStatusCodes
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) WithNoOfOperandDiagnosticInfos(noOfOperandDiagnosticInfos int32) ContentFilterElementResultBuilder {
+	m.NoOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) WithOperandDiagnosticInfos(operandDiagnosticInfos ...DiagnosticInfo) ContentFilterElementResultBuilder {
+	m.OperandDiagnosticInfos = operandDiagnosticInfos
+	return m
+}
+
+func (m *_ContentFilterElementResultBuilder) Build() (ContentFilterElementResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ContentFilterElementResult.deepCopy(), nil
+}
+
+func (m *_ContentFilterElementResultBuilder) MustBuild() ContentFilterElementResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ContentFilterElementResultBuilder) DeepCopy() any {
+	return m.CreateContentFilterElementResultBuilder()
+}
+
+// CreateContentFilterElementResultBuilder creates a ContentFilterElementResultBuilder
+func (m *_ContentFilterElementResult) CreateContentFilterElementResultBuilder() ContentFilterElementResultBuilder {
+	if m == nil {
+		return NewContentFilterElementResultBuilder()
+	}
+	return &_ContentFilterElementResultBuilder{_ContentFilterElementResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

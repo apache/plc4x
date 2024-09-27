@@ -46,6 +46,8 @@ type BACnetConstructedDataCommand interface {
 	GetActualValue() BACnetNetworkPortCommandTagged
 	// IsBACnetConstructedDataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommand()
+	// CreateBuilder creates a BACnetConstructedDataCommandBuilder
+	CreateBACnetConstructedDataCommandBuilder() BACnetConstructedDataCommandBuilder
 }
 
 // _BACnetConstructedDataCommand is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCommand(openingTag BACnetOpeningTag, peekedTagHeade
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCommandBuilder is a builder for BACnetConstructedDataCommand
+type BACnetConstructedDataCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command BACnetNetworkPortCommandTagged) BACnetConstructedDataCommandBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(BACnetNetworkPortCommandTagged) BACnetConstructedDataCommandBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(BACnetNetworkPortCommandTaggedBuilder) BACnetNetworkPortCommandTaggedBuilder) BACnetConstructedDataCommandBuilder
+	// Build builds the BACnetConstructedDataCommand or returns an error if something is wrong
+	Build() (BACnetConstructedDataCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCommand
+}
+
+// NewBACnetConstructedDataCommandBuilder() creates a BACnetConstructedDataCommandBuilder
+func NewBACnetConstructedDataCommandBuilder() BACnetConstructedDataCommandBuilder {
+	return &_BACnetConstructedDataCommandBuilder{_BACnetConstructedDataCommand: new(_BACnetConstructedDataCommand)}
+}
+
+type _BACnetConstructedDataCommandBuilder struct {
+	*_BACnetConstructedDataCommand
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCommandBuilder) = (*_BACnetConstructedDataCommandBuilder)(nil)
+
+func (m *_BACnetConstructedDataCommandBuilder) WithMandatoryFields(command BACnetNetworkPortCommandTagged) BACnetConstructedDataCommandBuilder {
+	return m.WithCommand(command)
+}
+
+func (m *_BACnetConstructedDataCommandBuilder) WithCommand(command BACnetNetworkPortCommandTagged) BACnetConstructedDataCommandBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandBuilder) WithCommandBuilder(builderSupplier func(BACnetNetworkPortCommandTaggedBuilder) BACnetNetworkPortCommandTaggedBuilder) BACnetConstructedDataCommandBuilder {
+	builder := builderSupplier(m.Command.CreateBACnetNetworkPortCommandTaggedBuilder())
+	var err error
+	m.Command, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNetworkPortCommandTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandBuilder) Build() (BACnetConstructedDataCommand, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCommand.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCommandBuilder) MustBuild() BACnetConstructedDataCommand {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCommandBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCommandBuilder()
+}
+
+// CreateBACnetConstructedDataCommandBuilder creates a BACnetConstructedDataCommandBuilder
+func (m *_BACnetConstructedDataCommand) CreateBACnetConstructedDataCommandBuilder() BACnetConstructedDataCommandBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCommandBuilder()
+	}
+	return &_BACnetConstructedDataCommandBuilder{_BACnetConstructedDataCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

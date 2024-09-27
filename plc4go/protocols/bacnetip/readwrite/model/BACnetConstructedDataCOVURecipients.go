@@ -44,6 +44,8 @@ type BACnetConstructedDataCOVURecipients interface {
 	GetCovuRecipients() []BACnetRecipient
 	// IsBACnetConstructedDataCOVURecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCOVURecipients()
+	// CreateBuilder creates a BACnetConstructedDataCOVURecipientsBuilder
+	CreateBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURecipientsBuilder
 }
 
 // _BACnetConstructedDataCOVURecipients is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataCOVURecipients(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCOVURecipientsBuilder is a builder for BACnetConstructedDataCOVURecipients
+type BACnetConstructedDataCOVURecipientsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(covuRecipients []BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder
+	// WithCovuRecipients adds CovuRecipients (property field)
+	WithCovuRecipients(...BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder
+	// Build builds the BACnetConstructedDataCOVURecipients or returns an error if something is wrong
+	Build() (BACnetConstructedDataCOVURecipients, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCOVURecipients
+}
+
+// NewBACnetConstructedDataCOVURecipientsBuilder() creates a BACnetConstructedDataCOVURecipientsBuilder
+func NewBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURecipientsBuilder {
+	return &_BACnetConstructedDataCOVURecipientsBuilder{_BACnetConstructedDataCOVURecipients: new(_BACnetConstructedDataCOVURecipients)}
+}
+
+type _BACnetConstructedDataCOVURecipientsBuilder struct {
+	*_BACnetConstructedDataCOVURecipients
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCOVURecipientsBuilder) = (*_BACnetConstructedDataCOVURecipientsBuilder)(nil)
+
+func (m *_BACnetConstructedDataCOVURecipientsBuilder) WithMandatoryFields(covuRecipients []BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
+	return m.WithCovuRecipients(covuRecipients...)
+}
+
+func (m *_BACnetConstructedDataCOVURecipientsBuilder) WithCovuRecipients(covuRecipients ...BACnetRecipient) BACnetConstructedDataCOVURecipientsBuilder {
+	m.CovuRecipients = covuRecipients
+	return m
+}
+
+func (m *_BACnetConstructedDataCOVURecipientsBuilder) Build() (BACnetConstructedDataCOVURecipients, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCOVURecipients.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCOVURecipientsBuilder) MustBuild() BACnetConstructedDataCOVURecipients {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCOVURecipientsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCOVURecipientsBuilder()
+}
+
+// CreateBACnetConstructedDataCOVURecipientsBuilder creates a BACnetConstructedDataCOVURecipientsBuilder
+func (m *_BACnetConstructedDataCOVURecipients) CreateBACnetConstructedDataCOVURecipientsBuilder() BACnetConstructedDataCOVURecipientsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCOVURecipientsBuilder()
+	}
+	return &_BACnetConstructedDataCOVURecipientsBuilder{_BACnetConstructedDataCOVURecipients: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

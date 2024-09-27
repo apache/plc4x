@@ -50,6 +50,8 @@ type MediaTransportControlDataSetTrack interface {
 	GetTrackLSB() byte
 	// IsMediaTransportControlDataSetTrack is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataSetTrack()
+	// CreateBuilder creates a MediaTransportControlDataSetTrackBuilder
+	CreateMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetTrackBuilder
 }
 
 // _MediaTransportControlDataSetTrack is the data-structure of this message
@@ -76,6 +78,99 @@ func NewMediaTransportControlDataSetTrack(commandTypeContainer MediaTransportCon
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataSetTrackBuilder is a builder for MediaTransportControlDataSetTrack
+type MediaTransportControlDataSetTrackBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) MediaTransportControlDataSetTrackBuilder
+	// WithTrackMSB adds TrackMSB (property field)
+	WithTrackMSB(byte) MediaTransportControlDataSetTrackBuilder
+	// WithTrackMMSB adds TrackMMSB (property field)
+	WithTrackMMSB(byte) MediaTransportControlDataSetTrackBuilder
+	// WithTrackMLSB adds TrackMLSB (property field)
+	WithTrackMLSB(byte) MediaTransportControlDataSetTrackBuilder
+	// WithTrackLSB adds TrackLSB (property field)
+	WithTrackLSB(byte) MediaTransportControlDataSetTrackBuilder
+	// Build builds the MediaTransportControlDataSetTrack or returns an error if something is wrong
+	Build() (MediaTransportControlDataSetTrack, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataSetTrack
+}
+
+// NewMediaTransportControlDataSetTrackBuilder() creates a MediaTransportControlDataSetTrackBuilder
+func NewMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetTrackBuilder {
+	return &_MediaTransportControlDataSetTrackBuilder{_MediaTransportControlDataSetTrack: new(_MediaTransportControlDataSetTrack)}
+}
+
+type _MediaTransportControlDataSetTrackBuilder struct {
+	*_MediaTransportControlDataSetTrack
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataSetTrackBuilder) = (*_MediaTransportControlDataSetTrackBuilder)(nil)
+
+func (m *_MediaTransportControlDataSetTrackBuilder) WithMandatoryFields(trackMSB byte, trackMMSB byte, trackMLSB byte, trackLSB byte) MediaTransportControlDataSetTrackBuilder {
+	return m.WithTrackMSB(trackMSB).WithTrackMMSB(trackMMSB).WithTrackMLSB(trackMLSB).WithTrackLSB(trackLSB)
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMSB(trackMSB byte) MediaTransportControlDataSetTrackBuilder {
+	m.TrackMSB = trackMSB
+	return m
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMMSB(trackMMSB byte) MediaTransportControlDataSetTrackBuilder {
+	m.TrackMMSB = trackMMSB
+	return m
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackMLSB(trackMLSB byte) MediaTransportControlDataSetTrackBuilder {
+	m.TrackMLSB = trackMLSB
+	return m
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) WithTrackLSB(trackLSB byte) MediaTransportControlDataSetTrackBuilder {
+	m.TrackLSB = trackLSB
+	return m
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) Build() (MediaTransportControlDataSetTrack, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataSetTrack.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) MustBuild() MediaTransportControlDataSetTrack {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataSetTrackBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataSetTrackBuilder()
+}
+
+// CreateMediaTransportControlDataSetTrackBuilder creates a MediaTransportControlDataSetTrackBuilder
+func (m *_MediaTransportControlDataSetTrack) CreateMediaTransportControlDataSetTrackBuilder() MediaTransportControlDataSetTrackBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataSetTrackBuilder()
+	}
+	return &_MediaTransportControlDataSetTrackBuilder{_MediaTransportControlDataSetTrack: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

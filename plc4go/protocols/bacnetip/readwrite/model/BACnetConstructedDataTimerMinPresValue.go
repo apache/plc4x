@@ -46,6 +46,8 @@ type BACnetConstructedDataTimerMinPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTimerMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerMinPresValue()
+	// CreateBuilder creates a BACnetConstructedDataTimerMinPresValueBuilder
+	CreateBACnetConstructedDataTimerMinPresValueBuilder() BACnetConstructedDataTimerMinPresValueBuilder
 }
 
 // _BACnetConstructedDataTimerMinPresValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimerMinPresValue(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerMinPresValueBuilder is a builder for BACnetConstructedDataTimerMinPresValue
+type BACnetConstructedDataTimerMinPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMinPresValueBuilder
+	// WithMinPresValue adds MinPresValue (property field)
+	WithMinPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMinPresValueBuilder
+	// WithMinPresValueBuilder adds MinPresValue (property field) which is build by the builder
+	WithMinPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerMinPresValueBuilder
+	// Build builds the BACnetConstructedDataTimerMinPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerMinPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerMinPresValue
+}
+
+// NewBACnetConstructedDataTimerMinPresValueBuilder() creates a BACnetConstructedDataTimerMinPresValueBuilder
+func NewBACnetConstructedDataTimerMinPresValueBuilder() BACnetConstructedDataTimerMinPresValueBuilder {
+	return &_BACnetConstructedDataTimerMinPresValueBuilder{_BACnetConstructedDataTimerMinPresValue: new(_BACnetConstructedDataTimerMinPresValue)}
+}
+
+type _BACnetConstructedDataTimerMinPresValueBuilder struct {
+	*_BACnetConstructedDataTimerMinPresValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerMinPresValueBuilder) = (*_BACnetConstructedDataTimerMinPresValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMinPresValueBuilder {
+	return m.WithMinPresValue(minPresValue)
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMinPresValueBuilder {
+	m.MinPresValue = minPresValue
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerMinPresValueBuilder {
+	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MinPresValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) Build() (BACnetConstructedDataTimerMinPresValue, error) {
+	if m.MinPresValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimerMinPresValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) MustBuild() BACnetConstructedDataTimerMinPresValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimerMinPresValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimerMinPresValueBuilder()
+}
+
+// CreateBACnetConstructedDataTimerMinPresValueBuilder creates a BACnetConstructedDataTimerMinPresValueBuilder
+func (m *_BACnetConstructedDataTimerMinPresValue) CreateBACnetConstructedDataTimerMinPresValueBuilder() BACnetConstructedDataTimerMinPresValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimerMinPresValueBuilder()
+	}
+	return &_BACnetConstructedDataTimerMinPresValueBuilder{_BACnetConstructedDataTimerMinPresValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataEventState interface {
 	GetActualValue() BACnetEventStateTagged
 	// IsBACnetConstructedDataEventState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventState()
+	// CreateBuilder creates a BACnetConstructedDataEventStateBuilder
+	CreateBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventStateBuilder
 }
 
 // _BACnetConstructedDataEventState is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataEventState(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventStateBuilder is a builder for BACnetConstructedDataEventState
+type BACnetConstructedDataEventStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder
+	// WithEventState adds EventState (property field)
+	WithEventState(BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder
+	// WithEventStateBuilder adds EventState (property field) which is build by the builder
+	WithEventStateBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConstructedDataEventStateBuilder
+	// Build builds the BACnetConstructedDataEventState or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventState
+}
+
+// NewBACnetConstructedDataEventStateBuilder() creates a BACnetConstructedDataEventStateBuilder
+func NewBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventStateBuilder {
+	return &_BACnetConstructedDataEventStateBuilder{_BACnetConstructedDataEventState: new(_BACnetConstructedDataEventState)}
+}
+
+type _BACnetConstructedDataEventStateBuilder struct {
+	*_BACnetConstructedDataEventState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventStateBuilder) = (*_BACnetConstructedDataEventStateBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventStateBuilder) WithMandatoryFields(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
+	return m.WithEventState(eventState)
+}
+
+func (m *_BACnetConstructedDataEventStateBuilder) WithEventState(eventState BACnetEventStateTagged) BACnetConstructedDataEventStateBuilder {
+	m.EventState = eventState
+	return m
+}
+
+func (m *_BACnetConstructedDataEventStateBuilder) WithEventStateBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConstructedDataEventStateBuilder {
+	builder := builderSupplier(m.EventState.CreateBACnetEventStateTaggedBuilder())
+	var err error
+	m.EventState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataEventStateBuilder) Build() (BACnetConstructedDataEventState, error) {
+	if m.EventState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventState' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventState.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventStateBuilder) MustBuild() BACnetConstructedDataEventState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventStateBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventStateBuilder()
+}
+
+// CreateBACnetConstructedDataEventStateBuilder creates a BACnetConstructedDataEventStateBuilder
+func (m *_BACnetConstructedDataEventState) CreateBACnetConstructedDataEventStateBuilder() BACnetConstructedDataEventStateBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventStateBuilder()
+	}
+	return &_BACnetConstructedDataEventStateBuilder{_BACnetConstructedDataEventState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

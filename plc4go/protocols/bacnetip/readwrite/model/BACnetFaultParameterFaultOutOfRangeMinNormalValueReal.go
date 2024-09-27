@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultOutOfRangeMinNormalValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMinNormalValueReal()
+	// CreateBuilder creates a BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+	CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMinNormalValueReal is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueReal(openingTag BACnetO
 	_result.BACnetFaultParameterFaultOutOfRangeMinNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMinNormalValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder is a builder for BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
+type BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+	// Build builds the BACnetFaultParameterFaultOutOfRangeMinNormalValueReal or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultOutOfRangeMinNormalValueReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
+}
+
+// NewBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder() creates a BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	return &_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder{_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal: new(_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal)}
+}
+
+type _BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder struct {
+	*_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) = (*_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	return m.WithRealValue(realValue)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	m.RealValue = realValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.RealValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMinNormalValueReal, error) {
+	if m.RealValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultOutOfRangeMinNormalValueReal.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMinNormalValueReal {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder()
+}
+
+// CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder creates a BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal) CreateBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder() BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder()
+	}
+	return &_BACnetFaultParameterFaultOutOfRangeMinNormalValueRealBuilder{_BACnetFaultParameterFaultOutOfRangeMinNormalValueReal: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -39,6 +39,8 @@ type BitFieldMaskDataType interface {
 	utils.Copyable
 	// IsBitFieldMaskDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBitFieldMaskDataType()
+	// CreateBuilder creates a BitFieldMaskDataTypeBuilder
+	CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder
 }
 
 // _BitFieldMaskDataType is the data-structure of this message
@@ -51,6 +53,71 @@ var _ BitFieldMaskDataType = (*_BitFieldMaskDataType)(nil)
 func NewBitFieldMaskDataType() *_BitFieldMaskDataType {
 	return &_BitFieldMaskDataType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BitFieldMaskDataTypeBuilder is a builder for BitFieldMaskDataType
+type BitFieldMaskDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BitFieldMaskDataTypeBuilder
+	// Build builds the BitFieldMaskDataType or returns an error if something is wrong
+	Build() (BitFieldMaskDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BitFieldMaskDataType
+}
+
+// NewBitFieldMaskDataTypeBuilder() creates a BitFieldMaskDataTypeBuilder
+func NewBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
+	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: new(_BitFieldMaskDataType)}
+}
+
+type _BitFieldMaskDataTypeBuilder struct {
+	*_BitFieldMaskDataType
+
+	err *utils.MultiError
+}
+
+var _ (BitFieldMaskDataTypeBuilder) = (*_BitFieldMaskDataTypeBuilder)(nil)
+
+func (m *_BitFieldMaskDataTypeBuilder) WithMandatoryFields() BitFieldMaskDataTypeBuilder {
+	return m
+}
+
+func (m *_BitFieldMaskDataTypeBuilder) Build() (BitFieldMaskDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BitFieldMaskDataType.deepCopy(), nil
+}
+
+func (m *_BitFieldMaskDataTypeBuilder) MustBuild() BitFieldMaskDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BitFieldMaskDataTypeBuilder) DeepCopy() any {
+	return m.CreateBitFieldMaskDataTypeBuilder()
+}
+
+// CreateBitFieldMaskDataTypeBuilder creates a BitFieldMaskDataTypeBuilder
+func (m *_BitFieldMaskDataType) CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
+	if m == nil {
+		return NewBitFieldMaskDataTypeBuilder()
+	}
+	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBitFieldMaskDataType(structType any) BitFieldMaskDataType {

@@ -43,6 +43,8 @@ type CipService interface {
 	utils.Copyable
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipService()
+	// CreateBuilder creates a CipServiceBuilder
+	CreateCipServiceBuilder() CipServiceBuilder
 }
 
 // CipServiceContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type CipServiceContract interface {
 	GetServiceLen() uint16
 	// IsCipService is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipService()
+	// CreateBuilder creates a CipServiceBuilder
+	CreateCipServiceBuilder() CipServiceBuilder
 }
 
 // CipServiceRequirements provides a set of functions which need to be implemented by a sub struct
@@ -79,6 +83,71 @@ var _ CipServiceContract = (*_CipService)(nil)
 func NewCipService(serviceLen uint16) *_CipService {
 	return &_CipService{ServiceLen: serviceLen}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipServiceBuilder is a builder for CipService
+type CipServiceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CipServiceBuilder
+	// Build builds the CipService or returns an error if something is wrong
+	Build() (CipServiceContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipServiceContract
+}
+
+// NewCipServiceBuilder() creates a CipServiceBuilder
+func NewCipServiceBuilder() CipServiceBuilder {
+	return &_CipServiceBuilder{_CipService: new(_CipService)}
+}
+
+type _CipServiceBuilder struct {
+	*_CipService
+
+	err *utils.MultiError
+}
+
+var _ (CipServiceBuilder) = (*_CipServiceBuilder)(nil)
+
+func (m *_CipServiceBuilder) WithMandatoryFields() CipServiceBuilder {
+	return m
+}
+
+func (m *_CipServiceBuilder) Build() (CipServiceContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipService.deepCopy(), nil
+}
+
+func (m *_CipServiceBuilder) MustBuild() CipServiceContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipServiceBuilder) DeepCopy() any {
+	return m.CreateCipServiceBuilder()
+}
+
+// CreateCipServiceBuilder creates a CipServiceBuilder
+func (m *_CipService) CreateCipServiceBuilder() CipServiceBuilder {
+	if m == nil {
+		return NewCipServiceBuilder()
+	}
+	return &_CipServiceBuilder{_CipService: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastCipService(structType any) CipService {

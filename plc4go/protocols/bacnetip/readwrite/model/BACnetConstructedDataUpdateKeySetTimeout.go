@@ -46,6 +46,8 @@ type BACnetConstructedDataUpdateKeySetTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataUpdateKeySetTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUpdateKeySetTimeout()
+	// CreateBuilder creates a BACnetConstructedDataUpdateKeySetTimeoutBuilder
+	CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataUpdateKeySetTimeoutBuilder
 }
 
 // _BACnetConstructedDataUpdateKeySetTimeout is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataUpdateKeySetTimeout(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUpdateKeySetTimeoutBuilder is a builder for BACnetConstructedDataUpdateKeySetTimeout
+type BACnetConstructedDataUpdateKeySetTimeoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder
+	// WithUpdateKeySetTimeout adds UpdateKeySetTimeout (property field)
+	WithUpdateKeySetTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder
+	// WithUpdateKeySetTimeoutBuilder adds UpdateKeySetTimeout (property field) which is build by the builder
+	WithUpdateKeySetTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateKeySetTimeoutBuilder
+	// Build builds the BACnetConstructedDataUpdateKeySetTimeout or returns an error if something is wrong
+	Build() (BACnetConstructedDataUpdateKeySetTimeout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUpdateKeySetTimeout
+}
+
+// NewBACnetConstructedDataUpdateKeySetTimeoutBuilder() creates a BACnetConstructedDataUpdateKeySetTimeoutBuilder
+func NewBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	return &_BACnetConstructedDataUpdateKeySetTimeoutBuilder{_BACnetConstructedDataUpdateKeySetTimeout: new(_BACnetConstructedDataUpdateKeySetTimeout)}
+}
+
+type _BACnetConstructedDataUpdateKeySetTimeoutBuilder struct {
+	*_BACnetConstructedDataUpdateKeySetTimeout
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUpdateKeySetTimeoutBuilder) = (*_BACnetConstructedDataUpdateKeySetTimeoutBuilder)(nil)
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithMandatoryFields(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	return m.WithUpdateKeySetTimeout(updateKeySetTimeout)
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeout(updateKeySetTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	m.UpdateKeySetTimeout = updateKeySetTimeout
+	return m
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) WithUpdateKeySetTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	builder := builderSupplier(m.UpdateKeySetTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.UpdateKeySetTimeout, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) Build() (BACnetConstructedDataUpdateKeySetTimeout, error) {
+	if m.UpdateKeySetTimeout == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'updateKeySetTimeout' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataUpdateKeySetTimeout.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) MustBuild() BACnetConstructedDataUpdateKeySetTimeout {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataUpdateKeySetTimeoutBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder()
+}
+
+// CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder creates a BACnetConstructedDataUpdateKeySetTimeoutBuilder
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) CreateBACnetConstructedDataUpdateKeySetTimeoutBuilder() BACnetConstructedDataUpdateKeySetTimeoutBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataUpdateKeySetTimeoutBuilder()
+	}
+	return &_BACnetConstructedDataUpdateKeySetTimeoutBuilder{_BACnetConstructedDataUpdateKeySetTimeout: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

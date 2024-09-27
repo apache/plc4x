@@ -48,6 +48,8 @@ type BACnetContextTagObjectIdentifier interface {
 	GetInstanceNumber() uint32
 	// IsBACnetContextTagObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagObjectIdentifier()
+	// CreateBuilder creates a BACnetContextTagObjectIdentifierBuilder
+	CreateBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifierBuilder
 }
 
 // _BACnetContextTagObjectIdentifier is the data-structure of this message
@@ -71,6 +73,99 @@ func NewBACnetContextTagObjectIdentifier(header BACnetTagHeader, payload BACnetT
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagObjectIdentifierBuilder is a builder for BACnetContextTagObjectIdentifier
+type BACnetContextTagObjectIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadObjectIdentifierBuilder) BACnetTagPayloadObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder
+	// Build builds the BACnetContextTagObjectIdentifier or returns an error if something is wrong
+	Build() (BACnetContextTagObjectIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagObjectIdentifier
+}
+
+// NewBACnetContextTagObjectIdentifierBuilder() creates a BACnetContextTagObjectIdentifierBuilder
+func NewBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifierBuilder {
+	return &_BACnetContextTagObjectIdentifierBuilder{_BACnetContextTagObjectIdentifier: new(_BACnetContextTagObjectIdentifier)}
+}
+
+type _BACnetContextTagObjectIdentifierBuilder struct {
+	*_BACnetContextTagObjectIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagObjectIdentifierBuilder) = (*_BACnetContextTagObjectIdentifierBuilder)(nil)
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) WithMandatoryFields(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) WithPayload(payload BACnetTagPayloadObjectIdentifier) BACnetContextTagObjectIdentifierBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadObjectIdentifierBuilder) BACnetTagPayloadObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadObjectIdentifierBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) Build() (BACnetContextTagObjectIdentifier, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagObjectIdentifier.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) MustBuild() BACnetContextTagObjectIdentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagObjectIdentifierBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagObjectIdentifierBuilder()
+}
+
+// CreateBACnetContextTagObjectIdentifierBuilder creates a BACnetContextTagObjectIdentifierBuilder
+func (m *_BACnetContextTagObjectIdentifier) CreateBACnetContextTagObjectIdentifierBuilder() BACnetContextTagObjectIdentifierBuilder {
+	if m == nil {
+		return NewBACnetContextTagObjectIdentifierBuilder()
+	}
+	return &_BACnetContextTagObjectIdentifierBuilder{_BACnetContextTagObjectIdentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataFailedAttempts interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataFailedAttempts is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFailedAttempts()
+	// CreateBuilder creates a BACnetConstructedDataFailedAttemptsBuilder
+	CreateBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailedAttemptsBuilder
 }
 
 // _BACnetConstructedDataFailedAttempts is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataFailedAttempts(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFailedAttemptsBuilder is a builder for BACnetConstructedDataFailedAttempts
+type BACnetConstructedDataFailedAttemptsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder
+	// WithFailedAttempts adds FailedAttempts (property field)
+	WithFailedAttempts(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder
+	// WithFailedAttemptsBuilder adds FailedAttempts (property field) which is build by the builder
+	WithFailedAttemptsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsBuilder
+	// Build builds the BACnetConstructedDataFailedAttempts or returns an error if something is wrong
+	Build() (BACnetConstructedDataFailedAttempts, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFailedAttempts
+}
+
+// NewBACnetConstructedDataFailedAttemptsBuilder() creates a BACnetConstructedDataFailedAttemptsBuilder
+func NewBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailedAttemptsBuilder {
+	return &_BACnetConstructedDataFailedAttemptsBuilder{_BACnetConstructedDataFailedAttempts: new(_BACnetConstructedDataFailedAttempts)}
+}
+
+type _BACnetConstructedDataFailedAttemptsBuilder struct {
+	*_BACnetConstructedDataFailedAttempts
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFailedAttemptsBuilder) = (*_BACnetConstructedDataFailedAttemptsBuilder)(nil)
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithMandatoryFields(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
+	return m.WithFailedAttempts(failedAttempts)
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttempts(failedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFailedAttemptsBuilder {
+	m.FailedAttempts = failedAttempts
+	return m
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) WithFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFailedAttemptsBuilder {
+	builder := builderSupplier(m.FailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.FailedAttempts, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) Build() (BACnetConstructedDataFailedAttempts, error) {
+	if m.FailedAttempts == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'failedAttempts' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataFailedAttempts.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) MustBuild() BACnetConstructedDataFailedAttempts {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataFailedAttemptsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataFailedAttemptsBuilder()
+}
+
+// CreateBACnetConstructedDataFailedAttemptsBuilder creates a BACnetConstructedDataFailedAttemptsBuilder
+func (m *_BACnetConstructedDataFailedAttempts) CreateBACnetConstructedDataFailedAttemptsBuilder() BACnetConstructedDataFailedAttemptsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataFailedAttemptsBuilder()
+	}
+	return &_BACnetConstructedDataFailedAttemptsBuilder{_BACnetConstructedDataFailedAttempts: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

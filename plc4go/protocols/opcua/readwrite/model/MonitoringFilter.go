@@ -40,6 +40,8 @@ type MonitoringFilter interface {
 	ExtensionObjectDefinition
 	// IsMonitoringFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoringFilter()
+	// CreateBuilder creates a MonitoringFilterBuilder
+	CreateMonitoringFilterBuilder() MonitoringFilterBuilder
 }
 
 // _MonitoringFilter is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMonitoringFilter() *_MonitoringFilter {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoringFilterBuilder is a builder for MonitoringFilter
+type MonitoringFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MonitoringFilterBuilder
+	// Build builds the MonitoringFilter or returns an error if something is wrong
+	Build() (MonitoringFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoringFilter
+}
+
+// NewMonitoringFilterBuilder() creates a MonitoringFilterBuilder
+func NewMonitoringFilterBuilder() MonitoringFilterBuilder {
+	return &_MonitoringFilterBuilder{_MonitoringFilter: new(_MonitoringFilter)}
+}
+
+type _MonitoringFilterBuilder struct {
+	*_MonitoringFilter
+
+	err *utils.MultiError
+}
+
+var _ (MonitoringFilterBuilder) = (*_MonitoringFilterBuilder)(nil)
+
+func (m *_MonitoringFilterBuilder) WithMandatoryFields() MonitoringFilterBuilder {
+	return m
+}
+
+func (m *_MonitoringFilterBuilder) Build() (MonitoringFilter, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MonitoringFilter.deepCopy(), nil
+}
+
+func (m *_MonitoringFilterBuilder) MustBuild() MonitoringFilter {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MonitoringFilterBuilder) DeepCopy() any {
+	return m.CreateMonitoringFilterBuilder()
+}
+
+// CreateMonitoringFilterBuilder creates a MonitoringFilterBuilder
+func (m *_MonitoringFilter) CreateMonitoringFilterBuilder() MonitoringFilterBuilder {
+	if m == nil {
+		return NewMonitoringFilterBuilder()
+	}
+	return &_MonitoringFilterBuilder{_MonitoringFilter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

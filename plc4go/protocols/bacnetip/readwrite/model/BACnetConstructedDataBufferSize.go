@@ -46,6 +46,8 @@ type BACnetConstructedDataBufferSize interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataBufferSize is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBufferSize()
+	// CreateBuilder creates a BACnetConstructedDataBufferSizeBuilder
+	CreateBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSizeBuilder
 }
 
 // _BACnetConstructedDataBufferSize is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBufferSize(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBufferSizeBuilder is a builder for BACnetConstructedDataBufferSize
+type BACnetConstructedDataBufferSizeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder
+	// WithBufferSize adds BufferSize (property field)
+	WithBufferSize(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder
+	// WithBufferSizeBuilder adds BufferSize (property field) which is build by the builder
+	WithBufferSizeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBufferSizeBuilder
+	// Build builds the BACnetConstructedDataBufferSize or returns an error if something is wrong
+	Build() (BACnetConstructedDataBufferSize, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBufferSize
+}
+
+// NewBACnetConstructedDataBufferSizeBuilder() creates a BACnetConstructedDataBufferSizeBuilder
+func NewBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSizeBuilder {
+	return &_BACnetConstructedDataBufferSizeBuilder{_BACnetConstructedDataBufferSize: new(_BACnetConstructedDataBufferSize)}
+}
+
+type _BACnetConstructedDataBufferSizeBuilder struct {
+	*_BACnetConstructedDataBufferSize
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBufferSizeBuilder) = (*_BACnetConstructedDataBufferSizeBuilder)(nil)
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) WithMandatoryFields(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
+	return m.WithBufferSize(bufferSize)
+}
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) WithBufferSize(bufferSize BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBufferSizeBuilder {
+	m.BufferSize = bufferSize
+	return m
+}
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) WithBufferSizeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBufferSizeBuilder {
+	builder := builderSupplier(m.BufferSize.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.BufferSize, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) Build() (BACnetConstructedDataBufferSize, error) {
+	if m.BufferSize == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bufferSize' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBufferSize.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) MustBuild() BACnetConstructedDataBufferSize {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBufferSizeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBufferSizeBuilder()
+}
+
+// CreateBACnetConstructedDataBufferSizeBuilder creates a BACnetConstructedDataBufferSizeBuilder
+func (m *_BACnetConstructedDataBufferSize) CreateBACnetConstructedDataBufferSizeBuilder() BACnetConstructedDataBufferSizeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBufferSizeBuilder()
+	}
+	return &_BACnetConstructedDataBufferSizeBuilder{_BACnetConstructedDataBufferSize: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

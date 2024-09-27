@@ -46,6 +46,8 @@ type BACnetApplicationTagCharacterString interface {
 	GetValue() string
 	// IsBACnetApplicationTagCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagCharacterString()
+	// CreateBuilder creates a BACnetApplicationTagCharacterStringBuilder
+	CreateBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharacterStringBuilder
 }
 
 // _BACnetApplicationTagCharacterString is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetApplicationTagCharacterString(header BACnetTagHeader, payload BACn
 	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetApplicationTagCharacterStringBuilder is a builder for BACnetApplicationTagCharacterString
+type BACnetApplicationTagCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder
+	// Build builds the BACnetApplicationTagCharacterString or returns an error if something is wrong
+	Build() (BACnetApplicationTagCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetApplicationTagCharacterString
+}
+
+// NewBACnetApplicationTagCharacterStringBuilder() creates a BACnetApplicationTagCharacterStringBuilder
+func NewBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharacterStringBuilder {
+	return &_BACnetApplicationTagCharacterStringBuilder{_BACnetApplicationTagCharacterString: new(_BACnetApplicationTagCharacterString)}
+}
+
+type _BACnetApplicationTagCharacterStringBuilder struct {
+	*_BACnetApplicationTagCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetApplicationTagCharacterStringBuilder) = (*_BACnetApplicationTagCharacterStringBuilder)(nil)
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) WithMandatoryFields(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) WithPayload(payload BACnetTagPayloadCharacterString) BACnetApplicationTagCharacterStringBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadCharacterStringBuilder) BACnetTagPayloadCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadCharacterStringBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) Build() (BACnetApplicationTagCharacterString, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetApplicationTagCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) MustBuild() BACnetApplicationTagCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetApplicationTagCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetApplicationTagCharacterStringBuilder()
+}
+
+// CreateBACnetApplicationTagCharacterStringBuilder creates a BACnetApplicationTagCharacterStringBuilder
+func (m *_BACnetApplicationTagCharacterString) CreateBACnetApplicationTagCharacterStringBuilder() BACnetApplicationTagCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetApplicationTagCharacterStringBuilder()
+	}
+	return &_BACnetApplicationTagCharacterStringBuilder{_BACnetApplicationTagCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

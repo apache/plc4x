@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString in
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder {
+	return m.WithCharacterStringValue(characterStringValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder {
+	m.CharacterStringValue = characterStringValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder {
+	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
+	if m.CharacterStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

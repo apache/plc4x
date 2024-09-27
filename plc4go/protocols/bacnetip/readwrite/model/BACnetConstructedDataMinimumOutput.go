@@ -46,6 +46,8 @@ type BACnetConstructedDataMinimumOutput interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMinimumOutput is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMinimumOutput()
+	// CreateBuilder creates a BACnetConstructedDataMinimumOutputBuilder
+	CreateBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimumOutputBuilder
 }
 
 // _BACnetConstructedDataMinimumOutput is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMinimumOutput(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMinimumOutputBuilder is a builder for BACnetConstructedDataMinimumOutput
+type BACnetConstructedDataMinimumOutputBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder
+	// WithMinimumOutput adds MinimumOutput (property field)
+	WithMinimumOutput(BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder
+	// WithMinimumOutputBuilder adds MinimumOutput (property field) which is build by the builder
+	WithMinimumOutputBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumOutputBuilder
+	// Build builds the BACnetConstructedDataMinimumOutput or returns an error if something is wrong
+	Build() (BACnetConstructedDataMinimumOutput, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMinimumOutput
+}
+
+// NewBACnetConstructedDataMinimumOutputBuilder() creates a BACnetConstructedDataMinimumOutputBuilder
+func NewBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimumOutputBuilder {
+	return &_BACnetConstructedDataMinimumOutputBuilder{_BACnetConstructedDataMinimumOutput: new(_BACnetConstructedDataMinimumOutput)}
+}
+
+type _BACnetConstructedDataMinimumOutputBuilder struct {
+	*_BACnetConstructedDataMinimumOutput
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMinimumOutputBuilder) = (*_BACnetConstructedDataMinimumOutputBuilder)(nil)
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMandatoryFields(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
+	return m.WithMinimumOutput(minimumOutput)
+}
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutput(minimumOutput BACnetApplicationTagReal) BACnetConstructedDataMinimumOutputBuilder {
+	m.MinimumOutput = minimumOutput
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) WithMinimumOutputBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMinimumOutputBuilder {
+	builder := builderSupplier(m.MinimumOutput.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MinimumOutput, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) Build() (BACnetConstructedDataMinimumOutput, error) {
+	if m.MinimumOutput == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'minimumOutput' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMinimumOutput.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) MustBuild() BACnetConstructedDataMinimumOutput {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMinimumOutputBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMinimumOutputBuilder()
+}
+
+// CreateBACnetConstructedDataMinimumOutputBuilder creates a BACnetConstructedDataMinimumOutputBuilder
+func (m *_BACnetConstructedDataMinimumOutput) CreateBACnetConstructedDataMinimumOutputBuilder() BACnetConstructedDataMinimumOutputBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMinimumOutputBuilder()
+	}
+	return &_BACnetConstructedDataMinimumOutputBuilder{_BACnetConstructedDataMinimumOutput: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

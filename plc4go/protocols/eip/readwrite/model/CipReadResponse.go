@@ -48,6 +48,8 @@ type CipReadResponse interface {
 	GetData() CIPData
 	// IsCipReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipReadResponse()
+	// CreateBuilder creates a CipReadResponseBuilder
+	CreateCipReadResponseBuilder() CipReadResponseBuilder
 }
 
 // _CipReadResponse is the data-structure of this message
@@ -74,6 +76,107 @@ func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen 
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipReadResponseBuilder is a builder for CipReadResponse
+type CipReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) CipReadResponseBuilder
+	// WithExtStatus adds ExtStatus (property field)
+	WithExtStatus(uint8) CipReadResponseBuilder
+	// WithData adds Data (property field)
+	WithOptionalData(CIPData) CipReadResponseBuilder
+	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
+	WithOptionalDataBuilder(func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder
+	// Build builds the CipReadResponse or returns an error if something is wrong
+	Build() (CipReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipReadResponse
+}
+
+// NewCipReadResponseBuilder() creates a CipReadResponseBuilder
+func NewCipReadResponseBuilder() CipReadResponseBuilder {
+	return &_CipReadResponseBuilder{_CipReadResponse: new(_CipReadResponse)}
+}
+
+type _CipReadResponseBuilder struct {
+	*_CipReadResponse
+
+	err *utils.MultiError
+}
+
+var _ (CipReadResponseBuilder) = (*_CipReadResponseBuilder)(nil)
+
+func (m *_CipReadResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder {
+	return m.WithStatus(status).WithExtStatus(extStatus)
+}
+
+func (m *_CipReadResponseBuilder) WithStatus(status uint8) CipReadResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_CipReadResponseBuilder) WithExtStatus(extStatus uint8) CipReadResponseBuilder {
+	m.ExtStatus = extStatus
+	return m
+}
+
+func (m *_CipReadResponseBuilder) WithOptionalData(data CIPData) CipReadResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_CipReadResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder {
+	builder := builderSupplier(m.Data.CreateCIPDataBuilder())
+	var err error
+	m.Data, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "CIPDataBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CipReadResponseBuilder) Build() (CipReadResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipReadResponse.deepCopy(), nil
+}
+
+func (m *_CipReadResponseBuilder) MustBuild() CipReadResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipReadResponseBuilder) DeepCopy() any {
+	return m.CreateCipReadResponseBuilder()
+}
+
+// CreateCipReadResponseBuilder creates a CipReadResponseBuilder
+func (m *_CipReadResponse) CreateCipReadResponseBuilder() CipReadResponseBuilder {
+	if m == nil {
+		return NewCipReadResponseBuilder()
+	}
+	return &_CipReadResponseBuilder{_CipReadResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

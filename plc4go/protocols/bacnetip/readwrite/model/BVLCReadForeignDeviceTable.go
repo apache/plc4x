@@ -41,6 +41,8 @@ type BVLCReadForeignDeviceTable interface {
 	BVLC
 	// IsBVLCReadForeignDeviceTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadForeignDeviceTable()
+	// CreateBuilder creates a BVLCReadForeignDeviceTableBuilder
+	CreateBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder
 }
 
 // _BVLCReadForeignDeviceTable is the data-structure of this message
@@ -59,6 +61,71 @@ func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
 	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCReadForeignDeviceTableBuilder is a builder for BVLCReadForeignDeviceTable
+type BVLCReadForeignDeviceTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BVLCReadForeignDeviceTableBuilder
+	// Build builds the BVLCReadForeignDeviceTable or returns an error if something is wrong
+	Build() (BVLCReadForeignDeviceTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCReadForeignDeviceTable
+}
+
+// NewBVLCReadForeignDeviceTableBuilder() creates a BVLCReadForeignDeviceTableBuilder
+func NewBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder {
+	return &_BVLCReadForeignDeviceTableBuilder{_BVLCReadForeignDeviceTable: new(_BVLCReadForeignDeviceTable)}
+}
+
+type _BVLCReadForeignDeviceTableBuilder struct {
+	*_BVLCReadForeignDeviceTable
+
+	err *utils.MultiError
+}
+
+var _ (BVLCReadForeignDeviceTableBuilder) = (*_BVLCReadForeignDeviceTableBuilder)(nil)
+
+func (m *_BVLCReadForeignDeviceTableBuilder) WithMandatoryFields() BVLCReadForeignDeviceTableBuilder {
+	return m
+}
+
+func (m *_BVLCReadForeignDeviceTableBuilder) Build() (BVLCReadForeignDeviceTable, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BVLCReadForeignDeviceTable.deepCopy(), nil
+}
+
+func (m *_BVLCReadForeignDeviceTableBuilder) MustBuild() BVLCReadForeignDeviceTable {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BVLCReadForeignDeviceTableBuilder) DeepCopy() any {
+	return m.CreateBVLCReadForeignDeviceTableBuilder()
+}
+
+// CreateBVLCReadForeignDeviceTableBuilder creates a BVLCReadForeignDeviceTableBuilder
+func (m *_BVLCReadForeignDeviceTable) CreateBVLCReadForeignDeviceTableBuilder() BVLCReadForeignDeviceTableBuilder {
+	if m == nil {
+		return NewBVLCReadForeignDeviceTableBuilder()
+	}
+	return &_BVLCReadForeignDeviceTableBuilder{_BVLCReadForeignDeviceTable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

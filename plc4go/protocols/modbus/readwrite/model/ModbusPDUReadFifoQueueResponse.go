@@ -44,6 +44,8 @@ type ModbusPDUReadFifoQueueResponse interface {
 	GetFifoValue() []uint16
 	// IsModbusPDUReadFifoQueueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadFifoQueueResponse()
+	// CreateBuilder creates a ModbusPDUReadFifoQueueResponseBuilder
+	CreateModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBuilder
 }
 
 // _ModbusPDUReadFifoQueueResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQu
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadFifoQueueResponseBuilder is a builder for ModbusPDUReadFifoQueueResponse
+type ModbusPDUReadFifoQueueResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fifoValue []uint16) ModbusPDUReadFifoQueueResponseBuilder
+	// WithFifoValue adds FifoValue (property field)
+	WithFifoValue(...uint16) ModbusPDUReadFifoQueueResponseBuilder
+	// Build builds the ModbusPDUReadFifoQueueResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadFifoQueueResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadFifoQueueResponse
+}
+
+// NewModbusPDUReadFifoQueueResponseBuilder() creates a ModbusPDUReadFifoQueueResponseBuilder
+func NewModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBuilder {
+	return &_ModbusPDUReadFifoQueueResponseBuilder{_ModbusPDUReadFifoQueueResponse: new(_ModbusPDUReadFifoQueueResponse)}
+}
+
+type _ModbusPDUReadFifoQueueResponseBuilder struct {
+	*_ModbusPDUReadFifoQueueResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadFifoQueueResponseBuilder) = (*_ModbusPDUReadFifoQueueResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadFifoQueueResponseBuilder) WithMandatoryFields(fifoValue []uint16) ModbusPDUReadFifoQueueResponseBuilder {
+	return m.WithFifoValue(fifoValue...)
+}
+
+func (m *_ModbusPDUReadFifoQueueResponseBuilder) WithFifoValue(fifoValue ...uint16) ModbusPDUReadFifoQueueResponseBuilder {
+	m.FifoValue = fifoValue
+	return m
+}
+
+func (m *_ModbusPDUReadFifoQueueResponseBuilder) Build() (ModbusPDUReadFifoQueueResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadFifoQueueResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadFifoQueueResponseBuilder) MustBuild() ModbusPDUReadFifoQueueResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadFifoQueueResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadFifoQueueResponseBuilder()
+}
+
+// CreateModbusPDUReadFifoQueueResponseBuilder creates a ModbusPDUReadFifoQueueResponseBuilder
+func (m *_ModbusPDUReadFifoQueueResponse) CreateModbusPDUReadFifoQueueResponseBuilder() ModbusPDUReadFifoQueueResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadFifoQueueResponseBuilder()
+	}
+	return &_ModbusPDUReadFifoQueueResponseBuilder{_ModbusPDUReadFifoQueueResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

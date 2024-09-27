@@ -48,6 +48,8 @@ type NodeIdNumeric interface {
 	GetIdentifier() string
 	// IsNodeIdNumeric is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdNumeric()
+	// CreateBuilder creates a NodeIdNumericBuilder
+	CreateNodeIdNumericBuilder() NodeIdNumericBuilder
 }
 
 // _NodeIdNumeric is the data-structure of this message
@@ -70,6 +72,85 @@ func NewNodeIdNumeric(namespaceIndex uint16, id uint32) *_NodeIdNumeric {
 	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdNumericBuilder is a builder for NodeIdNumeric
+type NodeIdNumericBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, id uint32) NodeIdNumericBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) NodeIdNumericBuilder
+	// WithId adds Id (property field)
+	WithId(uint32) NodeIdNumericBuilder
+	// Build builds the NodeIdNumeric or returns an error if something is wrong
+	Build() (NodeIdNumeric, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdNumeric
+}
+
+// NewNodeIdNumericBuilder() creates a NodeIdNumericBuilder
+func NewNodeIdNumericBuilder() NodeIdNumericBuilder {
+	return &_NodeIdNumericBuilder{_NodeIdNumeric: new(_NodeIdNumeric)}
+}
+
+type _NodeIdNumericBuilder struct {
+	*_NodeIdNumeric
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdNumericBuilder) = (*_NodeIdNumericBuilder)(nil)
+
+func (m *_NodeIdNumericBuilder) WithMandatoryFields(namespaceIndex uint16, id uint32) NodeIdNumericBuilder {
+	return m.WithNamespaceIndex(namespaceIndex).WithId(id)
+}
+
+func (m *_NodeIdNumericBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdNumericBuilder {
+	m.NamespaceIndex = namespaceIndex
+	return m
+}
+
+func (m *_NodeIdNumericBuilder) WithId(id uint32) NodeIdNumericBuilder {
+	m.Id = id
+	return m
+}
+
+func (m *_NodeIdNumericBuilder) Build() (NodeIdNumeric, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeIdNumeric.deepCopy(), nil
+}
+
+func (m *_NodeIdNumericBuilder) MustBuild() NodeIdNumeric {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdNumericBuilder) DeepCopy() any {
+	return m.CreateNodeIdNumericBuilder()
+}
+
+// CreateNodeIdNumericBuilder creates a NodeIdNumericBuilder
+func (m *_NodeIdNumeric) CreateNodeIdNumericBuilder() NodeIdNumericBuilder {
+	if m == nil {
+		return NewNodeIdNumericBuilder()
+	}
+	return &_NodeIdNumericBuilder{_NodeIdNumeric: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type S7VarPayloadStatusItem interface {
 	GetReturnCode() DataTransportErrorCode
 	// IsS7VarPayloadStatusItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarPayloadStatusItem()
+	// CreateBuilder creates a S7VarPayloadStatusItemBuilder
+	CreateS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder
 }
 
 // _S7VarPayloadStatusItem is the data-structure of this message
@@ -56,6 +58,78 @@ var _ S7VarPayloadStatusItem = (*_S7VarPayloadStatusItem)(nil)
 func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayloadStatusItem {
 	return &_S7VarPayloadStatusItem{ReturnCode: returnCode}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7VarPayloadStatusItemBuilder is a builder for S7VarPayloadStatusItem
+type S7VarPayloadStatusItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) S7VarPayloadStatusItemBuilder
+	// Build builds the S7VarPayloadStatusItem or returns an error if something is wrong
+	Build() (S7VarPayloadStatusItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7VarPayloadStatusItem
+}
+
+// NewS7VarPayloadStatusItemBuilder() creates a S7VarPayloadStatusItemBuilder
+func NewS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder {
+	return &_S7VarPayloadStatusItemBuilder{_S7VarPayloadStatusItem: new(_S7VarPayloadStatusItem)}
+}
+
+type _S7VarPayloadStatusItemBuilder struct {
+	*_S7VarPayloadStatusItem
+
+	err *utils.MultiError
+}
+
+var _ (S7VarPayloadStatusItemBuilder) = (*_S7VarPayloadStatusItemBuilder)(nil)
+
+func (m *_S7VarPayloadStatusItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
+	return m.WithReturnCode(returnCode)
+}
+
+func (m *_S7VarPayloadStatusItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7VarPayloadStatusItemBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_S7VarPayloadStatusItemBuilder) Build() (S7VarPayloadStatusItem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7VarPayloadStatusItem.deepCopy(), nil
+}
+
+func (m *_S7VarPayloadStatusItemBuilder) MustBuild() S7VarPayloadStatusItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7VarPayloadStatusItemBuilder) DeepCopy() any {
+	return m.CreateS7VarPayloadStatusItemBuilder()
+}
+
+// CreateS7VarPayloadStatusItemBuilder creates a S7VarPayloadStatusItemBuilder
+func (m *_S7VarPayloadStatusItem) CreateS7VarPayloadStatusItemBuilder() S7VarPayloadStatusItemBuilder {
+	if m == nil {
+		return NewS7VarPayloadStatusItemBuilder()
+	}
+	return &_S7VarPayloadStatusItemBuilder{_S7VarPayloadStatusItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

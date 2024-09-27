@@ -48,6 +48,8 @@ type BACnetTagPayloadCharacterString interface {
 	GetActualLengthInBit() uint16
 	// IsBACnetTagPayloadCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadCharacterString()
+	// CreateBuilder creates a BACnetTagPayloadCharacterStringBuilder
+	CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder
 }
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message
@@ -65,6 +67,85 @@ var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
 func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
 	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadCharacterStringBuilder is a builder for BACnetTagPayloadCharacterString
+type BACnetTagPayloadCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder
+	// WithEncoding adds Encoding (property field)
+	WithEncoding(BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder
+	// WithValue adds Value (property field)
+	WithValue(string) BACnetTagPayloadCharacterStringBuilder
+	// Build builds the BACnetTagPayloadCharacterString or returns an error if something is wrong
+	Build() (BACnetTagPayloadCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadCharacterString
+}
+
+// NewBACnetTagPayloadCharacterStringBuilder() creates a BACnetTagPayloadCharacterStringBuilder
+func NewBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
+	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: new(_BACnetTagPayloadCharacterString)}
+}
+
+type _BACnetTagPayloadCharacterStringBuilder struct {
+	*_BACnetTagPayloadCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadCharacterStringBuilder) = (*_BACnetTagPayloadCharacterStringBuilder)(nil)
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
+	return m.WithEncoding(encoding).WithValue(value)
+}
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder {
+	m.Encoding = encoding
+	return m
+}
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) Build() (BACnetTagPayloadCharacterString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTagPayloadCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) MustBuild() BACnetTagPayloadCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTagPayloadCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetTagPayloadCharacterStringBuilder()
+}
+
+// CreateBACnetTagPayloadCharacterStringBuilder creates a BACnetTagPayloadCharacterStringBuilder
+func (m *_BACnetTagPayloadCharacterString) CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetTagPayloadCharacterStringBuilder()
+	}
+	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

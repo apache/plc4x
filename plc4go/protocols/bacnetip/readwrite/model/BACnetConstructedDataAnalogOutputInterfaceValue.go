@@ -46,6 +46,8 @@ type BACnetConstructedDataAnalogOutputInterfaceValue interface {
 	GetActualValue() BACnetOptionalREAL
 	// IsBACnetConstructedDataAnalogOutputInterfaceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAnalogOutputInterfaceValue()
+	// CreateBuilder creates a BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+	CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstructedDataAnalogOutputInterfaceValueBuilder
 }
 
 // _BACnetConstructedDataAnalogOutputInterfaceValue is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataAnalogOutputInterfaceValue(openingTag BACnetOpening
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAnalogOutputInterfaceValueBuilder is a builder for BACnetConstructedDataAnalogOutputInterfaceValue
+type BACnetConstructedDataAnalogOutputInterfaceValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+	// WithInterfaceValue adds InterfaceValue (property field)
+	WithInterfaceValue(BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+	// Build builds the BACnetConstructedDataAnalogOutputInterfaceValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAnalogOutputInterfaceValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAnalogOutputInterfaceValue
+}
+
+// NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder() creates a BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+func NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	return &_BACnetConstructedDataAnalogOutputInterfaceValueBuilder{_BACnetConstructedDataAnalogOutputInterfaceValue: new(_BACnetConstructedDataAnalogOutputInterfaceValue)}
+}
+
+type _BACnetConstructedDataAnalogOutputInterfaceValueBuilder struct {
+	*_BACnetConstructedDataAnalogOutputInterfaceValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAnalogOutputInterfaceValueBuilder) = (*_BACnetConstructedDataAnalogOutputInterfaceValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithMandatoryFields(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	return m.WithInterfaceValue(interfaceValue)
+}
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) WithInterfaceValue(interfaceValue BACnetOptionalREAL) BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	m.InterfaceValue = interfaceValue
+	return m
+}
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) Build() (BACnetConstructedDataAnalogOutputInterfaceValue, error) {
+	if m.InterfaceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'interfaceValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAnalogOutputInterfaceValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputInterfaceValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder()
+}
+
+// CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder creates a BACnetConstructedDataAnalogOutputInterfaceValueBuilder
+func (m *_BACnetConstructedDataAnalogOutputInterfaceValue) CreateBACnetConstructedDataAnalogOutputInterfaceValueBuilder() BACnetConstructedDataAnalogOutputInterfaceValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAnalogOutputInterfaceValueBuilder()
+	}
+	return &_BACnetConstructedDataAnalogOutputInterfaceValueBuilder{_BACnetConstructedDataAnalogOutputInterfaceValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

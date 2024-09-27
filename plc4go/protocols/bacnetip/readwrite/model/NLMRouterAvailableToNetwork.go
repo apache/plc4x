@@ -44,6 +44,8 @@ type NLMRouterAvailableToNetwork interface {
 	GetDestinationNetworkAddresses() []uint16
 	// IsNLMRouterAvailableToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMRouterAvailableToNetwork()
+	// CreateBuilder creates a NLMRouterAvailableToNetworkBuilder
+	CreateNLMRouterAvailableToNetworkBuilder() NLMRouterAvailableToNetworkBuilder
 }
 
 // _NLMRouterAvailableToNetwork is the data-structure of this message
@@ -64,6 +66,78 @@ func NewNLMRouterAvailableToNetwork(destinationNetworkAddresses []uint16, apduLe
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMRouterAvailableToNetworkBuilder is a builder for NLMRouterAvailableToNetwork
+type NLMRouterAvailableToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterAvailableToNetworkBuilder
+	// WithDestinationNetworkAddresses adds DestinationNetworkAddresses (property field)
+	WithDestinationNetworkAddresses(...uint16) NLMRouterAvailableToNetworkBuilder
+	// Build builds the NLMRouterAvailableToNetwork or returns an error if something is wrong
+	Build() (NLMRouterAvailableToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMRouterAvailableToNetwork
+}
+
+// NewNLMRouterAvailableToNetworkBuilder() creates a NLMRouterAvailableToNetworkBuilder
+func NewNLMRouterAvailableToNetworkBuilder() NLMRouterAvailableToNetworkBuilder {
+	return &_NLMRouterAvailableToNetworkBuilder{_NLMRouterAvailableToNetwork: new(_NLMRouterAvailableToNetwork)}
+}
+
+type _NLMRouterAvailableToNetworkBuilder struct {
+	*_NLMRouterAvailableToNetwork
+
+	err *utils.MultiError
+}
+
+var _ (NLMRouterAvailableToNetworkBuilder) = (*_NLMRouterAvailableToNetworkBuilder)(nil)
+
+func (m *_NLMRouterAvailableToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterAvailableToNetworkBuilder {
+	return m.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+}
+
+func (m *_NLMRouterAvailableToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMRouterAvailableToNetworkBuilder {
+	m.DestinationNetworkAddresses = destinationNetworkAddresses
+	return m
+}
+
+func (m *_NLMRouterAvailableToNetworkBuilder) Build() (NLMRouterAvailableToNetwork, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMRouterAvailableToNetwork.deepCopy(), nil
+}
+
+func (m *_NLMRouterAvailableToNetworkBuilder) MustBuild() NLMRouterAvailableToNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMRouterAvailableToNetworkBuilder) DeepCopy() any {
+	return m.CreateNLMRouterAvailableToNetworkBuilder()
+}
+
+// CreateNLMRouterAvailableToNetworkBuilder creates a NLMRouterAvailableToNetworkBuilder
+func (m *_NLMRouterAvailableToNetwork) CreateNLMRouterAvailableToNetworkBuilder() NLMRouterAvailableToNetworkBuilder {
+	if m == nil {
+		return NewNLMRouterAvailableToNetworkBuilder()
+	}
+	return &_NLMRouterAvailableToNetworkBuilder{_NLMRouterAvailableToNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

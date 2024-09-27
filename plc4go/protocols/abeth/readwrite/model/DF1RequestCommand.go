@@ -43,12 +43,16 @@ type DF1RequestCommand interface {
 	utils.Copyable
 	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestCommand()
+	// CreateBuilder creates a DF1RequestCommandBuilder
+	CreateDF1RequestCommandBuilder() DF1RequestCommandBuilder
 }
 
 // DF1RequestCommandContract provides a set of functions which can be overwritten by a sub struct
 type DF1RequestCommandContract interface {
 	// IsDF1RequestCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestCommand()
+	// CreateBuilder creates a DF1RequestCommandBuilder
+	CreateDF1RequestCommandBuilder() DF1RequestCommandBuilder
 }
 
 // DF1RequestCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ DF1RequestCommandContract = (*_DF1RequestCommand)(nil)
 func NewDF1RequestCommand() *_DF1RequestCommand {
 	return &_DF1RequestCommand{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1RequestCommandBuilder is a builder for DF1RequestCommand
+type DF1RequestCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DF1RequestCommandBuilder
+	// Build builds the DF1RequestCommand or returns an error if something is wrong
+	Build() (DF1RequestCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1RequestCommandContract
+}
+
+// NewDF1RequestCommandBuilder() creates a DF1RequestCommandBuilder
+func NewDF1RequestCommandBuilder() DF1RequestCommandBuilder {
+	return &_DF1RequestCommandBuilder{_DF1RequestCommand: new(_DF1RequestCommand)}
+}
+
+type _DF1RequestCommandBuilder struct {
+	*_DF1RequestCommand
+
+	err *utils.MultiError
+}
+
+var _ (DF1RequestCommandBuilder) = (*_DF1RequestCommandBuilder)(nil)
+
+func (m *_DF1RequestCommandBuilder) WithMandatoryFields() DF1RequestCommandBuilder {
+	return m
+}
+
+func (m *_DF1RequestCommandBuilder) Build() (DF1RequestCommandContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1RequestCommand.deepCopy(), nil
+}
+
+func (m *_DF1RequestCommandBuilder) MustBuild() DF1RequestCommandContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1RequestCommandBuilder) DeepCopy() any {
+	return m.CreateDF1RequestCommandBuilder()
+}
+
+// CreateDF1RequestCommandBuilder creates a DF1RequestCommandBuilder
+func (m *_DF1RequestCommand) CreateDF1RequestCommandBuilder() DF1RequestCommandBuilder {
+	if m == nil {
+		return NewDF1RequestCommandBuilder()
+	}
+	return &_DF1RequestCommandBuilder{_DF1RequestCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDF1RequestCommand(structType any) DF1RequestCommand {

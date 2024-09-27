@@ -44,6 +44,8 @@ type BACnetTimeStampSequence interface {
 	GetSequenceNumber() BACnetContextTagUnsignedInteger
 	// IsBACnetTimeStampSequence is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStampSequence()
+	// CreateBuilder creates a BACnetTimeStampSequenceBuilder
+	CreateBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder
 }
 
 // _BACnetTimeStampSequence is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimeStampSequence(peekedTagHeader BACnetTagHeader, sequenceNumber 
 	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimeStampSequenceBuilder is a builder for BACnetTimeStampSequence
+type BACnetTimeStampSequenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder
+	// WithSequenceNumberBuilder adds SequenceNumber (property field) which is build by the builder
+	WithSequenceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetTimeStampSequenceBuilder
+	// Build builds the BACnetTimeStampSequence or returns an error if something is wrong
+	Build() (BACnetTimeStampSequence, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimeStampSequence
+}
+
+// NewBACnetTimeStampSequenceBuilder() creates a BACnetTimeStampSequenceBuilder
+func NewBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder {
+	return &_BACnetTimeStampSequenceBuilder{_BACnetTimeStampSequence: new(_BACnetTimeStampSequence)}
+}
+
+type _BACnetTimeStampSequenceBuilder struct {
+	*_BACnetTimeStampSequence
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimeStampSequenceBuilder) = (*_BACnetTimeStampSequenceBuilder)(nil)
+
+func (m *_BACnetTimeStampSequenceBuilder) WithMandatoryFields(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
+	return m.WithSequenceNumber(sequenceNumber)
+}
+
+func (m *_BACnetTimeStampSequenceBuilder) WithSequenceNumber(sequenceNumber BACnetContextTagUnsignedInteger) BACnetTimeStampSequenceBuilder {
+	m.SequenceNumber = sequenceNumber
+	return m
+}
+
+func (m *_BACnetTimeStampSequenceBuilder) WithSequenceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetTimeStampSequenceBuilder {
+	builder := builderSupplier(m.SequenceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.SequenceNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimeStampSequenceBuilder) Build() (BACnetTimeStampSequence, error) {
+	if m.SequenceNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'sequenceNumber' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimeStampSequence.deepCopy(), nil
+}
+
+func (m *_BACnetTimeStampSequenceBuilder) MustBuild() BACnetTimeStampSequence {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimeStampSequenceBuilder) DeepCopy() any {
+	return m.CreateBACnetTimeStampSequenceBuilder()
+}
+
+// CreateBACnetTimeStampSequenceBuilder creates a BACnetTimeStampSequenceBuilder
+func (m *_BACnetTimeStampSequence) CreateBACnetTimeStampSequenceBuilder() BACnetTimeStampSequenceBuilder {
+	if m == nil {
+		return NewBACnetTimeStampSequenceBuilder()
+	}
+	return &_BACnetTimeStampSequenceBuilder{_BACnetTimeStampSequence: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

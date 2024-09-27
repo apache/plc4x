@@ -45,6 +45,8 @@ type BACnetVMACEntry interface {
 	GetNativeMacAddress() BACnetContextTagOctetString
 	// IsBACnetVMACEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetVMACEntry()
+	// CreateBuilder creates a BACnetVMACEntryBuilder
+	CreateBACnetVMACEntryBuilder() BACnetVMACEntryBuilder
 }
 
 // _BACnetVMACEntry is the data-structure of this message
@@ -59,6 +61,115 @@ var _ BACnetVMACEntry = (*_BACnetVMACEntry)(nil)
 func NewBACnetVMACEntry(virtualMacAddress BACnetContextTagOctetString, nativeMacAddress BACnetContextTagOctetString) *_BACnetVMACEntry {
 	return &_BACnetVMACEntry{VirtualMacAddress: virtualMacAddress, NativeMacAddress: nativeMacAddress}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetVMACEntryBuilder is a builder for BACnetVMACEntry
+type BACnetVMACEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetVMACEntryBuilder
+	// WithVirtualMacAddress adds VirtualMacAddress (property field)
+	WithOptionalVirtualMacAddress(BACnetContextTagOctetString) BACnetVMACEntryBuilder
+	// WithOptionalVirtualMacAddressBuilder adds VirtualMacAddress (property field) which is build by the builder
+	WithOptionalVirtualMacAddressBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetVMACEntryBuilder
+	// WithNativeMacAddress adds NativeMacAddress (property field)
+	WithOptionalNativeMacAddress(BACnetContextTagOctetString) BACnetVMACEntryBuilder
+	// WithOptionalNativeMacAddressBuilder adds NativeMacAddress (property field) which is build by the builder
+	WithOptionalNativeMacAddressBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetVMACEntryBuilder
+	// Build builds the BACnetVMACEntry or returns an error if something is wrong
+	Build() (BACnetVMACEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetVMACEntry
+}
+
+// NewBACnetVMACEntryBuilder() creates a BACnetVMACEntryBuilder
+func NewBACnetVMACEntryBuilder() BACnetVMACEntryBuilder {
+	return &_BACnetVMACEntryBuilder{_BACnetVMACEntry: new(_BACnetVMACEntry)}
+}
+
+type _BACnetVMACEntryBuilder struct {
+	*_BACnetVMACEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetVMACEntryBuilder) = (*_BACnetVMACEntryBuilder)(nil)
+
+func (m *_BACnetVMACEntryBuilder) WithMandatoryFields() BACnetVMACEntryBuilder {
+	return m
+}
+
+func (m *_BACnetVMACEntryBuilder) WithOptionalVirtualMacAddress(virtualMacAddress BACnetContextTagOctetString) BACnetVMACEntryBuilder {
+	m.VirtualMacAddress = virtualMacAddress
+	return m
+}
+
+func (m *_BACnetVMACEntryBuilder) WithOptionalVirtualMacAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetVMACEntryBuilder {
+	builder := builderSupplier(m.VirtualMacAddress.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	m.VirtualMacAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetVMACEntryBuilder) WithOptionalNativeMacAddress(nativeMacAddress BACnetContextTagOctetString) BACnetVMACEntryBuilder {
+	m.NativeMacAddress = nativeMacAddress
+	return m
+}
+
+func (m *_BACnetVMACEntryBuilder) WithOptionalNativeMacAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetVMACEntryBuilder {
+	builder := builderSupplier(m.NativeMacAddress.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	m.NativeMacAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetVMACEntryBuilder) Build() (BACnetVMACEntry, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetVMACEntry.deepCopy(), nil
+}
+
+func (m *_BACnetVMACEntryBuilder) MustBuild() BACnetVMACEntry {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetVMACEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetVMACEntryBuilder()
+}
+
+// CreateBACnetVMACEntryBuilder creates a BACnetVMACEntryBuilder
+func (m *_BACnetVMACEntry) CreateBACnetVMACEntryBuilder() BACnetVMACEntryBuilder {
+	if m == nil {
+		return NewBACnetVMACEntryBuilder()
+	}
+	return &_BACnetVMACEntryBuilder{_BACnetVMACEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

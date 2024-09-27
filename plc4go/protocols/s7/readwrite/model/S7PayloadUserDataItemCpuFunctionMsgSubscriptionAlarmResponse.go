@@ -52,6 +52,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse interface {
 	GetReserved03() uint8
 	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse is the data-structure of this message
@@ -80,6 +82,106 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse(returnCode 
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// WithReserved01 adds Reserved01 (property field)
+	WithReserved01(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// WithAlarmType adds AlarmType (property field)
+	WithAlarmType(AlarmType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// WithReserved02 adds Reserved02 (property field)
+	WithReserved02(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// WithReserved03 adds Reserved03 (property field)
+	WithReserved03(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse: new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8, alarmType AlarmType, reserved02 uint8, reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	return m.WithResult(result).WithReserved01(reserved01).WithAlarmType(alarmType).WithReserved02(reserved02).WithReserved03(reserved03)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithResult(result uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithReserved01(reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	m.Reserved01 = reserved01
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithAlarmType(alarmType AlarmType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	m.AlarmType = alarmType
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithReserved02(reserved02 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	m.Reserved02 = reserved02
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) WithReserved03(reserved03 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	m.Reserved03 = reserved03
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

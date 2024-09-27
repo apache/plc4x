@@ -46,6 +46,8 @@ type VariantGuid interface {
 	GetValue() []GuidValue
 	// IsVariantGuid is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantGuid()
+	// CreateBuilder creates a VariantGuidBuilder
+	CreateVariantGuidBuilder() VariantGuidBuilder
 }
 
 // _VariantGuid is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantGuid(arrayLengthSpecified bool, arrayDimensionsSpecified bool, no
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantGuidBuilder is a builder for VariantGuid
+type VariantGuidBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []GuidValue) VariantGuidBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantGuidBuilder
+	// WithValue adds Value (property field)
+	WithValue(...GuidValue) VariantGuidBuilder
+	// Build builds the VariantGuid or returns an error if something is wrong
+	Build() (VariantGuid, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantGuid
+}
+
+// NewVariantGuidBuilder() creates a VariantGuidBuilder
+func NewVariantGuidBuilder() VariantGuidBuilder {
+	return &_VariantGuidBuilder{_VariantGuid: new(_VariantGuid)}
+}
+
+type _VariantGuidBuilder struct {
+	*_VariantGuid
+
+	err *utils.MultiError
+}
+
+var _ (VariantGuidBuilder) = (*_VariantGuidBuilder)(nil)
+
+func (m *_VariantGuidBuilder) WithMandatoryFields(value []GuidValue) VariantGuidBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantGuidBuilder) WithOptionalArrayLength(arrayLength int32) VariantGuidBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantGuidBuilder) WithValue(value ...GuidValue) VariantGuidBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantGuidBuilder) Build() (VariantGuid, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantGuid.deepCopy(), nil
+}
+
+func (m *_VariantGuidBuilder) MustBuild() VariantGuid {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantGuidBuilder) DeepCopy() any {
+	return m.CreateVariantGuidBuilder()
+}
+
+// CreateVariantGuidBuilder creates a VariantGuidBuilder
+func (m *_VariantGuid) CreateVariantGuidBuilder() VariantGuidBuilder {
+	if m == nil {
+		return NewVariantGuidBuilder()
+	}
+	return &_VariantGuidBuilder{_VariantGuid: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

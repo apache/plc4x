@@ -45,6 +45,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry interf
 	GetListOfCovReferences() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
 	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry()
+	// CreateBuilder creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry is the data-structure of this message
@@ -65,6 +67,127 @@ func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(mon
 	}
 	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry{MonitoredObjectIdentifier: monitoredObjectIdentifier, ListOfCovReferences: listOfCovReferences}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder is a builder for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, listOfCovReferences BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	// WithMonitoredObjectIdentifier adds MonitoredObjectIdentifier (property field)
+	WithMonitoredObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	// WithMonitoredObjectIdentifierBuilder adds MonitoredObjectIdentifier (property field) which is build by the builder
+	WithMonitoredObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	// WithListOfCovReferences adds ListOfCovReferences (property field)
+	WithListOfCovReferences(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	// WithListOfCovReferencesBuilder adds ListOfCovReferences (property field) which is build by the builder
+	WithListOfCovReferencesBuilder(func(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+	// Build builds the BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry or returns an error if something is wrong
+	Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+}
+
+// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder() creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry: new(_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry)}
+}
+
+type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder struct {
+	*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder)(nil)
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) WithMandatoryFields(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, listOfCovReferences BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	return m.WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithListOfCovReferences(listOfCovReferences)
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	m.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return m
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	builder := builderSupplier(m.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.MonitoredObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) WithListOfCovReferences(listOfCovReferences BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	m.ListOfCovReferences = listOfCovReferences
+	return m
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) WithListOfCovReferencesBuilder(builderSupplier func(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	builder := builderSupplier(m.ListOfCovReferences.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder())
+	var err error
+	m.ListOfCovReferences, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+	if m.MonitoredObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+	}
+	if m.ListOfCovReferences == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'listOfCovReferences' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry.deepCopy(), nil
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder()
+}
+
+// CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry) CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder {
+	if m == nil {
+		return NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder()
+	}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

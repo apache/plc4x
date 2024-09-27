@@ -43,6 +43,8 @@ type Apdu interface {
 	utils.Copyable
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
+	// CreateBuilder creates a ApduBuilder
+	CreateApduBuilder() ApduBuilder
 }
 
 // ApduContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type ApduContract interface {
 	GetDataLength() uint8
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
+	// CreateBuilder creates a ApduBuilder
+	CreateApduBuilder() ApduBuilder
 }
 
 // ApduRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +85,85 @@ var _ ApduContract = (*_Apdu)(nil)
 func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
 	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduBuilder is a builder for Apdu
+type ApduBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numbered bool, counter uint8) ApduBuilder
+	// WithNumbered adds Numbered (property field)
+	WithNumbered(bool) ApduBuilder
+	// WithCounter adds Counter (property field)
+	WithCounter(uint8) ApduBuilder
+	// Build builds the Apdu or returns an error if something is wrong
+	Build() (ApduContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduContract
+}
+
+// NewApduBuilder() creates a ApduBuilder
+func NewApduBuilder() ApduBuilder {
+	return &_ApduBuilder{_Apdu: new(_Apdu)}
+}
+
+type _ApduBuilder struct {
+	*_Apdu
+
+	err *utils.MultiError
+}
+
+var _ (ApduBuilder) = (*_ApduBuilder)(nil)
+
+func (m *_ApduBuilder) WithMandatoryFields(numbered bool, counter uint8) ApduBuilder {
+	return m.WithNumbered(numbered).WithCounter(counter)
+}
+
+func (m *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
+	m.Numbered = numbered
+	return m
+}
+
+func (m *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
+	m.Counter = counter
+	return m
+}
+
+func (m *_ApduBuilder) Build() (ApduContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Apdu.deepCopy(), nil
+}
+
+func (m *_ApduBuilder) MustBuild() ApduContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduBuilder) DeepCopy() any {
+	return m.CreateApduBuilder()
+}
+
+// CreateApduBuilder creates a ApduBuilder
+func (m *_Apdu) CreateApduBuilder() ApduBuilder {
+	if m == nil {
+		return NewApduBuilder()
+	}
+	return &_ApduBuilder{_Apdu: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

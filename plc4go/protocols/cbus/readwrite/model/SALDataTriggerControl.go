@@ -44,6 +44,8 @@ type SALDataTriggerControl interface {
 	GetTriggerControlData() TriggerControlData
 	// IsSALDataTriggerControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataTriggerControl()
+	// CreateBuilder creates a SALDataTriggerControlBuilder
+	CreateSALDataTriggerControlBuilder() SALDataTriggerControlBuilder
 }
 
 // _SALDataTriggerControl is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataTriggerControl(salData SALData, triggerControlData TriggerControl
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataTriggerControlBuilder is a builder for SALDataTriggerControl
+type SALDataTriggerControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(triggerControlData TriggerControlData) SALDataTriggerControlBuilder
+	// WithTriggerControlData adds TriggerControlData (property field)
+	WithTriggerControlData(TriggerControlData) SALDataTriggerControlBuilder
+	// Build builds the SALDataTriggerControl or returns an error if something is wrong
+	Build() (SALDataTriggerControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataTriggerControl
+}
+
+// NewSALDataTriggerControlBuilder() creates a SALDataTriggerControlBuilder
+func NewSALDataTriggerControlBuilder() SALDataTriggerControlBuilder {
+	return &_SALDataTriggerControlBuilder{_SALDataTriggerControl: new(_SALDataTriggerControl)}
+}
+
+type _SALDataTriggerControlBuilder struct {
+	*_SALDataTriggerControl
+
+	err *utils.MultiError
+}
+
+var _ (SALDataTriggerControlBuilder) = (*_SALDataTriggerControlBuilder)(nil)
+
+func (m *_SALDataTriggerControlBuilder) WithMandatoryFields(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
+	return m.WithTriggerControlData(triggerControlData)
+}
+
+func (m *_SALDataTriggerControlBuilder) WithTriggerControlData(triggerControlData TriggerControlData) SALDataTriggerControlBuilder {
+	m.TriggerControlData = triggerControlData
+	return m
+}
+
+func (m *_SALDataTriggerControlBuilder) Build() (SALDataTriggerControl, error) {
+	if m.TriggerControlData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'triggerControlData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataTriggerControl.deepCopy(), nil
+}
+
+func (m *_SALDataTriggerControlBuilder) MustBuild() SALDataTriggerControl {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataTriggerControlBuilder) DeepCopy() any {
+	return m.CreateSALDataTriggerControlBuilder()
+}
+
+// CreateSALDataTriggerControlBuilder creates a SALDataTriggerControlBuilder
+func (m *_SALDataTriggerControl) CreateSALDataTriggerControlBuilder() SALDataTriggerControlBuilder {
+	if m == nil {
+		return NewSALDataTriggerControlBuilder()
+	}
+	return &_SALDataTriggerControlBuilder{_SALDataTriggerControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

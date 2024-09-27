@@ -40,6 +40,8 @@ type BACnetConstructedDataRequired interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRequired()
+	// CreateBuilder creates a BACnetConstructedDataRequiredBuilder
+	CreateBACnetConstructedDataRequiredBuilder() BACnetConstructedDataRequiredBuilder
 }
 
 // _BACnetConstructedDataRequired is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataRequired(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRequiredBuilder is a builder for BACnetConstructedDataRequired
+type BACnetConstructedDataRequiredBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataRequiredBuilder
+	// Build builds the BACnetConstructedDataRequired or returns an error if something is wrong
+	Build() (BACnetConstructedDataRequired, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRequired
+}
+
+// NewBACnetConstructedDataRequiredBuilder() creates a BACnetConstructedDataRequiredBuilder
+func NewBACnetConstructedDataRequiredBuilder() BACnetConstructedDataRequiredBuilder {
+	return &_BACnetConstructedDataRequiredBuilder{_BACnetConstructedDataRequired: new(_BACnetConstructedDataRequired)}
+}
+
+type _BACnetConstructedDataRequiredBuilder struct {
+	*_BACnetConstructedDataRequired
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRequiredBuilder) = (*_BACnetConstructedDataRequiredBuilder)(nil)
+
+func (m *_BACnetConstructedDataRequiredBuilder) WithMandatoryFields() BACnetConstructedDataRequiredBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataRequiredBuilder) Build() (BACnetConstructedDataRequired, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRequired.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRequiredBuilder) MustBuild() BACnetConstructedDataRequired {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRequiredBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRequiredBuilder()
+}
+
+// CreateBACnetConstructedDataRequiredBuilder creates a BACnetConstructedDataRequiredBuilder
+func (m *_BACnetConstructedDataRequired) CreateBACnetConstructedDataRequiredBuilder() BACnetConstructedDataRequiredBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRequiredBuilder()
+	}
+	return &_BACnetConstructedDataRequiredBuilder{_BACnetConstructedDataRequired: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

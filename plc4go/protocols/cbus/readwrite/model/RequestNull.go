@@ -45,6 +45,8 @@ type RequestNull interface {
 	Request
 	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestNull()
+	// CreateBuilder creates a RequestNullBuilder
+	CreateRequestNullBuilder() RequestNullBuilder
 }
 
 // _RequestNull is the data-structure of this message
@@ -63,6 +65,71 @@ func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *
 	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestNullBuilder is a builder for RequestNull
+type RequestNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RequestNullBuilder
+	// Build builds the RequestNull or returns an error if something is wrong
+	Build() (RequestNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestNull
+}
+
+// NewRequestNullBuilder() creates a RequestNullBuilder
+func NewRequestNullBuilder() RequestNullBuilder {
+	return &_RequestNullBuilder{_RequestNull: new(_RequestNull)}
+}
+
+type _RequestNullBuilder struct {
+	*_RequestNull
+
+	err *utils.MultiError
+}
+
+var _ (RequestNullBuilder) = (*_RequestNullBuilder)(nil)
+
+func (m *_RequestNullBuilder) WithMandatoryFields() RequestNullBuilder {
+	return m
+}
+
+func (m *_RequestNullBuilder) Build() (RequestNull, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RequestNull.deepCopy(), nil
+}
+
+func (m *_RequestNullBuilder) MustBuild() RequestNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RequestNullBuilder) DeepCopy() any {
+	return m.CreateRequestNullBuilder()
+}
+
+// CreateRequestNullBuilder creates a RequestNullBuilder
+func (m *_RequestNull) CreateRequestNullBuilder() RequestNullBuilder {
+	if m == nil {
+		return NewRequestNullBuilder()
+	}
+	return &_RequestNullBuilder{_RequestNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -41,12 +41,16 @@ type OpenChannelMessage interface {
 	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
+	// CreateBuilder creates a OpenChannelMessageBuilder
+	CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder
 }
 
 // OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
 type OpenChannelMessageContract interface {
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
+	// CreateBuilder creates a OpenChannelMessageBuilder
+	CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder
 }
 
 // OpenChannelMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ OpenChannelMessageContract = (*_OpenChannelMessage)(nil)
 func NewOpenChannelMessage() *_OpenChannelMessage {
 	return &_OpenChannelMessage{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpenChannelMessageBuilder is a builder for OpenChannelMessage
+type OpenChannelMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() OpenChannelMessageBuilder
+	// Build builds the OpenChannelMessage or returns an error if something is wrong
+	Build() (OpenChannelMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpenChannelMessageContract
+}
+
+// NewOpenChannelMessageBuilder() creates a OpenChannelMessageBuilder
+func NewOpenChannelMessageBuilder() OpenChannelMessageBuilder {
+	return &_OpenChannelMessageBuilder{_OpenChannelMessage: new(_OpenChannelMessage)}
+}
+
+type _OpenChannelMessageBuilder struct {
+	*_OpenChannelMessage
+
+	err *utils.MultiError
+}
+
+var _ (OpenChannelMessageBuilder) = (*_OpenChannelMessageBuilder)(nil)
+
+func (m *_OpenChannelMessageBuilder) WithMandatoryFields() OpenChannelMessageBuilder {
+	return m
+}
+
+func (m *_OpenChannelMessageBuilder) Build() (OpenChannelMessageContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpenChannelMessage.deepCopy(), nil
+}
+
+func (m *_OpenChannelMessageBuilder) MustBuild() OpenChannelMessageContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpenChannelMessageBuilder) DeepCopy() any {
+	return m.CreateOpenChannelMessageBuilder()
+}
+
+// CreateOpenChannelMessageBuilder creates a OpenChannelMessageBuilder
+func (m *_OpenChannelMessage) CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder {
+	if m == nil {
+		return NewOpenChannelMessageBuilder()
+	}
+	return &_OpenChannelMessageBuilder{_OpenChannelMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastOpenChannelMessage(structType any) OpenChannelMessage {

@@ -43,6 +43,8 @@ type ApduData interface {
 	utils.Copyable
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
+	// CreateBuilder creates a ApduDataBuilder
+	CreateApduDataBuilder() ApduDataBuilder
 }
 
 // ApduDataContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type ApduDataContract interface {
 	GetDataLength() uint8
 	// IsApduData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduData()
+	// CreateBuilder creates a ApduDataBuilder
+	CreateApduDataBuilder() ApduDataBuilder
 }
 
 // ApduDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +79,71 @@ var _ ApduDataContract = (*_ApduData)(nil)
 func NewApduData(dataLength uint8) *_ApduData {
 	return &_ApduData{DataLength: dataLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataBuilder is a builder for ApduData
+type ApduDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataBuilder
+	// Build builds the ApduData or returns an error if something is wrong
+	Build() (ApduDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataContract
+}
+
+// NewApduDataBuilder() creates a ApduDataBuilder
+func NewApduDataBuilder() ApduDataBuilder {
+	return &_ApduDataBuilder{_ApduData: new(_ApduData)}
+}
+
+type _ApduDataBuilder struct {
+	*_ApduData
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataBuilder) = (*_ApduDataBuilder)(nil)
+
+func (m *_ApduDataBuilder) WithMandatoryFields() ApduDataBuilder {
+	return m
+}
+
+func (m *_ApduDataBuilder) Build() (ApduDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduData.deepCopy(), nil
+}
+
+func (m *_ApduDataBuilder) MustBuild() ApduDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataBuilder) DeepCopy() any {
+	return m.CreateApduDataBuilder()
+}
+
+// CreateApduDataBuilder creates a ApduDataBuilder
+func (m *_ApduData) CreateApduDataBuilder() ApduDataBuilder {
+	if m == nil {
+		return NewApduDataBuilder()
+	}
+	return &_ApduDataBuilder{_ApduData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApduData(structType any) ApduData {

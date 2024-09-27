@@ -46,6 +46,8 @@ type BACnetContextTagEnumerated interface {
 	GetActualValue() uint32
 	// IsBACnetContextTagEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagEnumerated()
+	// CreateBuilder creates a BACnetContextTagEnumeratedBuilder
+	CreateBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder
 }
 
 // _BACnetContextTagEnumerated is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetContextTagEnumerated(header BACnetTagHeader, payload BACnetTagPayl
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagEnumeratedBuilder is a builder for BACnetContextTagEnumerated
+type BACnetContextTagEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetContextTagEnumeratedBuilder
+	// Build builds the BACnetContextTagEnumerated or returns an error if something is wrong
+	Build() (BACnetContextTagEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagEnumerated
+}
+
+// NewBACnetContextTagEnumeratedBuilder() creates a BACnetContextTagEnumeratedBuilder
+func NewBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder {
+	return &_BACnetContextTagEnumeratedBuilder{_BACnetContextTagEnumerated: new(_BACnetContextTagEnumerated)}
+}
+
+type _BACnetContextTagEnumeratedBuilder struct {
+	*_BACnetContextTagEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagEnumeratedBuilder) = (*_BACnetContextTagEnumeratedBuilder)(nil)
+
+func (m *_BACnetContextTagEnumeratedBuilder) WithMandatoryFields(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetContextTagEnumeratedBuilder) WithPayload(payload BACnetTagPayloadEnumerated) BACnetContextTagEnumeratedBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetContextTagEnumeratedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadEnumeratedBuilder) BACnetTagPayloadEnumeratedBuilder) BACnetContextTagEnumeratedBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadEnumeratedBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadEnumeratedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetContextTagEnumeratedBuilder) Build() (BACnetContextTagEnumerated, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagEnumerated.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagEnumeratedBuilder) MustBuild() BACnetContextTagEnumerated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagEnumeratedBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagEnumeratedBuilder()
+}
+
+// CreateBACnetContextTagEnumeratedBuilder creates a BACnetContextTagEnumeratedBuilder
+func (m *_BACnetContextTagEnumerated) CreateBACnetContextTagEnumeratedBuilder() BACnetContextTagEnumeratedBuilder {
+	if m == nil {
+		return NewBACnetContextTagEnumeratedBuilder()
+	}
+	return &_BACnetContextTagEnumeratedBuilder{_BACnetContextTagEnumerated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

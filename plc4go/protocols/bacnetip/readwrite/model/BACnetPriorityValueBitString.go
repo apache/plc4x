@@ -44,6 +44,8 @@ type BACnetPriorityValueBitString interface {
 	GetBitStringValue() BACnetApplicationTagBitString
 	// IsBACnetPriorityValueBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueBitString()
+	// CreateBuilder creates a BACnetPriorityValueBitStringBuilder
+	CreateBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilder
 }
 
 // _BACnetPriorityValueBitString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueBitString(peekedTagHeader BACnetTagHeader, bitStringV
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueBitStringBuilder is a builder for BACnetPriorityValueBitString
+type BACnetPriorityValueBitStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder
+	// WithBitStringValue adds BitStringValue (property field)
+	WithBitStringValue(BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder
+	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
+	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetPriorityValueBitStringBuilder
+	// Build builds the BACnetPriorityValueBitString or returns an error if something is wrong
+	Build() (BACnetPriorityValueBitString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueBitString
+}
+
+// NewBACnetPriorityValueBitStringBuilder() creates a BACnetPriorityValueBitStringBuilder
+func NewBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilder {
+	return &_BACnetPriorityValueBitStringBuilder{_BACnetPriorityValueBitString: new(_BACnetPriorityValueBitString)}
+}
+
+type _BACnetPriorityValueBitStringBuilder struct {
+	*_BACnetPriorityValueBitString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueBitStringBuilder) = (*_BACnetPriorityValueBitStringBuilder)(nil)
+
+func (m *_BACnetPriorityValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
+	return m.WithBitStringValue(bitStringValue)
+}
+
+func (m *_BACnetPriorityValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetPriorityValueBitStringBuilder {
+	m.BitStringValue = bitStringValue
+	return m
+}
+
+func (m *_BACnetPriorityValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetPriorityValueBitStringBuilder {
+	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+	var err error
+	m.BitStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueBitStringBuilder) Build() (BACnetPriorityValueBitString, error) {
+	if m.BitStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueBitString.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueBitStringBuilder) MustBuild() BACnetPriorityValueBitString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueBitStringBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueBitStringBuilder()
+}
+
+// CreateBACnetPriorityValueBitStringBuilder creates a BACnetPriorityValueBitStringBuilder
+func (m *_BACnetPriorityValueBitString) CreateBACnetPriorityValueBitStringBuilder() BACnetPriorityValueBitStringBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueBitStringBuilder()
+	}
+	return &_BACnetPriorityValueBitStringBuilder{_BACnetPriorityValueBitString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

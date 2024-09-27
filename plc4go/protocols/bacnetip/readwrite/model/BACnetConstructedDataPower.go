@@ -46,6 +46,8 @@ type BACnetConstructedDataPower interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataPower is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPower()
+	// CreateBuilder creates a BACnetConstructedDataPowerBuilder
+	CreateBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder
 }
 
 // _BACnetConstructedDataPower is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPower(openingTag BACnetOpeningTag, peekedTagHeader 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPowerBuilder is a builder for BACnetConstructedDataPower
+type BACnetConstructedDataPowerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder
+	// WithPower adds Power (property field)
+	WithPower(BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder
+	// WithPowerBuilder adds Power (property field) which is build by the builder
+	WithPowerBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPowerBuilder
+	// Build builds the BACnetConstructedDataPower or returns an error if something is wrong
+	Build() (BACnetConstructedDataPower, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPower
+}
+
+// NewBACnetConstructedDataPowerBuilder() creates a BACnetConstructedDataPowerBuilder
+func NewBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder {
+	return &_BACnetConstructedDataPowerBuilder{_BACnetConstructedDataPower: new(_BACnetConstructedDataPower)}
+}
+
+type _BACnetConstructedDataPowerBuilder struct {
+	*_BACnetConstructedDataPower
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPowerBuilder) = (*_BACnetConstructedDataPowerBuilder)(nil)
+
+func (m *_BACnetConstructedDataPowerBuilder) WithMandatoryFields(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
+	return m.WithPower(power)
+}
+
+func (m *_BACnetConstructedDataPowerBuilder) WithPower(power BACnetApplicationTagReal) BACnetConstructedDataPowerBuilder {
+	m.Power = power
+	return m
+}
+
+func (m *_BACnetConstructedDataPowerBuilder) WithPowerBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPowerBuilder {
+	builder := builderSupplier(m.Power.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.Power, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPowerBuilder) Build() (BACnetConstructedDataPower, error) {
+	if m.Power == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'power' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPower.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPowerBuilder) MustBuild() BACnetConstructedDataPower {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPowerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPowerBuilder()
+}
+
+// CreateBACnetConstructedDataPowerBuilder creates a BACnetConstructedDataPowerBuilder
+func (m *_BACnetConstructedDataPower) CreateBACnetConstructedDataPowerBuilder() BACnetConstructedDataPowerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPowerBuilder()
+	}
+	return &_BACnetConstructedDataPowerBuilder{_BACnetConstructedDataPower: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

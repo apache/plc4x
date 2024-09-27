@@ -46,6 +46,8 @@ type BACnetConstructedDataIPv6ZoneIndex interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataIPv6ZoneIndex is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6ZoneIndex()
+	// CreateBuilder creates a BACnetConstructedDataIPv6ZoneIndexBuilder
+	CreateBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6ZoneIndexBuilder
 }
 
 // _BACnetConstructedDataIPv6ZoneIndex is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIPv6ZoneIndex(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPv6ZoneIndexBuilder is a builder for BACnetConstructedDataIPv6ZoneIndex
+type BACnetConstructedDataIPv6ZoneIndexBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder
+	// WithIpv6ZoneIndex adds Ipv6ZoneIndex (property field)
+	WithIpv6ZoneIndex(BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder
+	// WithIpv6ZoneIndexBuilder adds Ipv6ZoneIndex (property field) which is build by the builder
+	WithIpv6ZoneIndexBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataIPv6ZoneIndexBuilder
+	// Build builds the BACnetConstructedDataIPv6ZoneIndex or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPv6ZoneIndex, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPv6ZoneIndex
+}
+
+// NewBACnetConstructedDataIPv6ZoneIndexBuilder() creates a BACnetConstructedDataIPv6ZoneIndexBuilder
+func NewBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6ZoneIndexBuilder {
+	return &_BACnetConstructedDataIPv6ZoneIndexBuilder{_BACnetConstructedDataIPv6ZoneIndex: new(_BACnetConstructedDataIPv6ZoneIndex)}
+}
+
+type _BACnetConstructedDataIPv6ZoneIndexBuilder struct {
+	*_BACnetConstructedDataIPv6ZoneIndex
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPv6ZoneIndexBuilder) = (*_BACnetConstructedDataIPv6ZoneIndexBuilder)(nil)
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithMandatoryFields(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	return m.WithIpv6ZoneIndex(ipv6ZoneIndex)
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndex(ipv6ZoneIndex BACnetApplicationTagCharacterString) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	m.Ipv6ZoneIndex = ipv6ZoneIndex
+	return m
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) WithIpv6ZoneIndexBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataIPv6ZoneIndexBuilder {
+	builder := builderSupplier(m.Ipv6ZoneIndex.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.Ipv6ZoneIndex, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) Build() (BACnetConstructedDataIPv6ZoneIndex, error) {
+	if m.Ipv6ZoneIndex == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'ipv6ZoneIndex' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIPv6ZoneIndex.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) MustBuild() BACnetConstructedDataIPv6ZoneIndex {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIPv6ZoneIndexBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIPv6ZoneIndexBuilder()
+}
+
+// CreateBACnetConstructedDataIPv6ZoneIndexBuilder creates a BACnetConstructedDataIPv6ZoneIndexBuilder
+func (m *_BACnetConstructedDataIPv6ZoneIndex) CreateBACnetConstructedDataIPv6ZoneIndexBuilder() BACnetConstructedDataIPv6ZoneIndexBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIPv6ZoneIndexBuilder()
+	}
+	return &_BACnetConstructedDataIPv6ZoneIndexBuilder{_BACnetConstructedDataIPv6ZoneIndex: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

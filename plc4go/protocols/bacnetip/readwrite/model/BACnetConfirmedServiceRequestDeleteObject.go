@@ -44,6 +44,8 @@ type BACnetConfirmedServiceRequestDeleteObject interface {
 	GetObjectIdentifier() BACnetApplicationTagObjectIdentifier
 	// IsBACnetConfirmedServiceRequestDeleteObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestDeleteObject()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestDeleteObjectBuilder
+	CreateBACnetConfirmedServiceRequestDeleteObjectBuilder() BACnetConfirmedServiceRequestDeleteObjectBuilder
 }
 
 // _BACnetConfirmedServiceRequestDeleteObject is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetConfirmedServiceRequestDeleteObject(objectIdentifier BACnetApplica
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestDeleteObjectBuilder is a builder for BACnetConfirmedServiceRequestDeleteObject
+type BACnetConfirmedServiceRequestDeleteObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestDeleteObjectBuilder
+	// Build builds the BACnetConfirmedServiceRequestDeleteObject or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestDeleteObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestDeleteObject
+}
+
+// NewBACnetConfirmedServiceRequestDeleteObjectBuilder() creates a BACnetConfirmedServiceRequestDeleteObjectBuilder
+func NewBACnetConfirmedServiceRequestDeleteObjectBuilder() BACnetConfirmedServiceRequestDeleteObjectBuilder {
+	return &_BACnetConfirmedServiceRequestDeleteObjectBuilder{_BACnetConfirmedServiceRequestDeleteObject: new(_BACnetConfirmedServiceRequestDeleteObject)}
+}
+
+type _BACnetConfirmedServiceRequestDeleteObjectBuilder struct {
+	*_BACnetConfirmedServiceRequestDeleteObject
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestDeleteObjectBuilder) = (*_BACnetConfirmedServiceRequestDeleteObjectBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder {
+	return m.WithObjectIdentifier(objectIdentifier)
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConfirmedServiceRequestDeleteObjectBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestDeleteObjectBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) Build() (BACnetConfirmedServiceRequestDeleteObject, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestDeleteObject.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) MustBuild() BACnetConfirmedServiceRequestDeleteObject {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestDeleteObjectBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestDeleteObjectBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestDeleteObjectBuilder creates a BACnetConfirmedServiceRequestDeleteObjectBuilder
+func (m *_BACnetConfirmedServiceRequestDeleteObject) CreateBACnetConfirmedServiceRequestDeleteObjectBuilder() BACnetConfirmedServiceRequestDeleteObjectBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestDeleteObjectBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestDeleteObjectBuilder{_BACnetConfirmedServiceRequestDeleteObject: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

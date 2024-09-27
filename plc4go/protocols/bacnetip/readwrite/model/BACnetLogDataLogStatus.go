@@ -44,6 +44,8 @@ type BACnetLogDataLogStatus interface {
 	GetLogStatus() BACnetLogStatusTagged
 	// IsBACnetLogDataLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogStatus()
+	// CreateBuilder creates a BACnetLogDataLogStatusBuilder
+	CreateBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder
 }
 
 // _BACnetLogDataLogStatus is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogDataLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACn
 	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogStatusBuilder is a builder for BACnetLogDataLogStatus
+type BACnetLogDataLogStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder
+	// WithLogStatus adds LogStatus (property field)
+	WithLogStatus(BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder
+	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
+	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogDataLogStatusBuilder
+	// Build builds the BACnetLogDataLogStatus or returns an error if something is wrong
+	Build() (BACnetLogDataLogStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogStatus
+}
+
+// NewBACnetLogDataLogStatusBuilder() creates a BACnetLogDataLogStatusBuilder
+func NewBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder {
+	return &_BACnetLogDataLogStatusBuilder{_BACnetLogDataLogStatus: new(_BACnetLogDataLogStatus)}
+}
+
+type _BACnetLogDataLogStatusBuilder struct {
+	*_BACnetLogDataLogStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogStatusBuilder) = (*_BACnetLogDataLogStatusBuilder)(nil)
+
+func (m *_BACnetLogDataLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder {
+	return m.WithLogStatus(logStatus)
+}
+
+func (m *_BACnetLogDataLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder {
+	m.LogStatus = logStatus
+	return m
+}
+
+func (m *_BACnetLogDataLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogDataLogStatusBuilder {
+	builder := builderSupplier(m.LogStatus.CreateBACnetLogStatusTaggedBuilder())
+	var err error
+	m.LogStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogStatusBuilder) Build() (BACnetLogDataLogStatus, error) {
+	if m.LogStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogStatus.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogStatusBuilder) MustBuild() BACnetLogDataLogStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogStatusBuilder()
+}
+
+// CreateBACnetLogDataLogStatusBuilder creates a BACnetLogDataLogStatusBuilder
+func (m *_BACnetLogDataLogStatus) CreateBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogStatusBuilder()
+	}
+	return &_BACnetLogDataLogStatusBuilder{_BACnetLogDataLogStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type CBusPointToMultiPointCommandStatus interface {
 	GetStatusRequest() StatusRequest
 	// IsCBusPointToMultiPointCommandStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommandStatus()
+	// CreateBuilder creates a CBusPointToMultiPointCommandStatusBuilder
+	CreateCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommandStatusBuilder
 }
 
 // _CBusPointToMultiPointCommandStatus is the data-structure of this message
@@ -70,6 +72,84 @@ func NewCBusPointToMultiPointCommandStatus(peekedApplication byte, statusRequest
 	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToMultiPointCommandStatusBuilder is a builder for CBusPointToMultiPointCommandStatus
+type CBusPointToMultiPointCommandStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder
+	// WithStatusRequest adds StatusRequest (property field)
+	WithStatusRequest(StatusRequest) CBusPointToMultiPointCommandStatusBuilder
+	// Build builds the CBusPointToMultiPointCommandStatus or returns an error if something is wrong
+	Build() (CBusPointToMultiPointCommandStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToMultiPointCommandStatus
+}
+
+// NewCBusPointToMultiPointCommandStatusBuilder() creates a CBusPointToMultiPointCommandStatusBuilder
+func NewCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommandStatusBuilder {
+	return &_CBusPointToMultiPointCommandStatusBuilder{_CBusPointToMultiPointCommandStatus: new(_CBusPointToMultiPointCommandStatus)}
+}
+
+type _CBusPointToMultiPointCommandStatusBuilder struct {
+	*_CBusPointToMultiPointCommandStatus
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToMultiPointCommandStatusBuilder) = (*_CBusPointToMultiPointCommandStatusBuilder)(nil)
+
+func (m *_CBusPointToMultiPointCommandStatusBuilder) WithMandatoryFields(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
+	return m.WithStatusRequest(statusRequest)
+}
+
+func (m *_CBusPointToMultiPointCommandStatusBuilder) WithStatusRequest(statusRequest StatusRequest) CBusPointToMultiPointCommandStatusBuilder {
+	m.StatusRequest = statusRequest
+	return m
+}
+
+func (m *_CBusPointToMultiPointCommandStatusBuilder) Build() (CBusPointToMultiPointCommandStatus, error) {
+	if m.StatusRequest == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusRequest' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusPointToMultiPointCommandStatus.deepCopy(), nil
+}
+
+func (m *_CBusPointToMultiPointCommandStatusBuilder) MustBuild() CBusPointToMultiPointCommandStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusPointToMultiPointCommandStatusBuilder) DeepCopy() any {
+	return m.CreateCBusPointToMultiPointCommandStatusBuilder()
+}
+
+// CreateCBusPointToMultiPointCommandStatusBuilder creates a CBusPointToMultiPointCommandStatusBuilder
+func (m *_CBusPointToMultiPointCommandStatus) CreateCBusPointToMultiPointCommandStatusBuilder() CBusPointToMultiPointCommandStatusBuilder {
+	if m == nil {
+		return NewCBusPointToMultiPointCommandStatusBuilder()
+	}
+	return &_CBusPointToMultiPointCommandStatusBuilder{_CBusPointToMultiPointCommandStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

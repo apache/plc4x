@@ -40,6 +40,8 @@ type SysexCommandAnalogMappingQueryRequest interface {
 	SysexCommand
 	// IsSysexCommandAnalogMappingQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingQueryRequest()
+	// CreateBuilder creates a SysexCommandAnalogMappingQueryRequestBuilder
+	CreateSysexCommandAnalogMappingQueryRequestBuilder() SysexCommandAnalogMappingQueryRequestBuilder
 }
 
 // _SysexCommandAnalogMappingQueryRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQuery
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandAnalogMappingQueryRequestBuilder is a builder for SysexCommandAnalogMappingQueryRequest
+type SysexCommandAnalogMappingQueryRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandAnalogMappingQueryRequestBuilder
+	// Build builds the SysexCommandAnalogMappingQueryRequest or returns an error if something is wrong
+	Build() (SysexCommandAnalogMappingQueryRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandAnalogMappingQueryRequest
+}
+
+// NewSysexCommandAnalogMappingQueryRequestBuilder() creates a SysexCommandAnalogMappingQueryRequestBuilder
+func NewSysexCommandAnalogMappingQueryRequestBuilder() SysexCommandAnalogMappingQueryRequestBuilder {
+	return &_SysexCommandAnalogMappingQueryRequestBuilder{_SysexCommandAnalogMappingQueryRequest: new(_SysexCommandAnalogMappingQueryRequest)}
+}
+
+type _SysexCommandAnalogMappingQueryRequestBuilder struct {
+	*_SysexCommandAnalogMappingQueryRequest
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandAnalogMappingQueryRequestBuilder) = (*_SysexCommandAnalogMappingQueryRequestBuilder)(nil)
+
+func (m *_SysexCommandAnalogMappingQueryRequestBuilder) WithMandatoryFields() SysexCommandAnalogMappingQueryRequestBuilder {
+	return m
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequestBuilder) Build() (SysexCommandAnalogMappingQueryRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandAnalogMappingQueryRequest.deepCopy(), nil
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequestBuilder) MustBuild() SysexCommandAnalogMappingQueryRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandAnalogMappingQueryRequestBuilder) DeepCopy() any {
+	return m.CreateSysexCommandAnalogMappingQueryRequestBuilder()
+}
+
+// CreateSysexCommandAnalogMappingQueryRequestBuilder creates a SysexCommandAnalogMappingQueryRequestBuilder
+func (m *_SysexCommandAnalogMappingQueryRequest) CreateSysexCommandAnalogMappingQueryRequestBuilder() SysexCommandAnalogMappingQueryRequestBuilder {
+	if m == nil {
+		return NewSysexCommandAnalogMappingQueryRequestBuilder()
+	}
+	return &_SysexCommandAnalogMappingQueryRequestBuilder{_SysexCommandAnalogMappingQueryRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

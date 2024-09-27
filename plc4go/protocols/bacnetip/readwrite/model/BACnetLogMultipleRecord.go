@@ -45,6 +45,8 @@ type BACnetLogMultipleRecord interface {
 	GetLogData() BACnetLogData
 	// IsBACnetLogMultipleRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogMultipleRecord()
+	// CreateBuilder creates a BACnetLogMultipleRecordBuilder
+	CreateBACnetLogMultipleRecordBuilder() BACnetLogMultipleRecordBuilder
 }
 
 // _BACnetLogMultipleRecord is the data-structure of this message
@@ -65,6 +67,112 @@ func NewBACnetLogMultipleRecord(timestamp BACnetDateTimeEnclosed, logData BACnet
 	}
 	return &_BACnetLogMultipleRecord{Timestamp: timestamp, LogData: logData}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogMultipleRecordBuilder is a builder for BACnetLogMultipleRecord
+type BACnetLogMultipleRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) BACnetLogMultipleRecordBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(BACnetDateTimeEnclosed) BACnetLogMultipleRecordBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogMultipleRecordBuilder
+	// WithLogData adds LogData (property field)
+	WithLogData(BACnetLogData) BACnetLogMultipleRecordBuilder
+	// Build builds the BACnetLogMultipleRecord or returns an error if something is wrong
+	Build() (BACnetLogMultipleRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogMultipleRecord
+}
+
+// NewBACnetLogMultipleRecordBuilder() creates a BACnetLogMultipleRecordBuilder
+func NewBACnetLogMultipleRecordBuilder() BACnetLogMultipleRecordBuilder {
+	return &_BACnetLogMultipleRecordBuilder{_BACnetLogMultipleRecord: new(_BACnetLogMultipleRecord)}
+}
+
+type _BACnetLogMultipleRecordBuilder struct {
+	*_BACnetLogMultipleRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogMultipleRecordBuilder) = (*_BACnetLogMultipleRecordBuilder)(nil)
+
+func (m *_BACnetLogMultipleRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logData BACnetLogData) BACnetLogMultipleRecordBuilder {
+	return m.WithTimestamp(timestamp).WithLogData(logData)
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetLogMultipleRecordBuilder {
+	m.Timestamp = timestamp
+	return m
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogMultipleRecordBuilder {
+	builder := builderSupplier(m.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	m.Timestamp, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) WithLogData(logData BACnetLogData) BACnetLogMultipleRecordBuilder {
+	m.LogData = logData
+	return m
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) Build() (BACnetLogMultipleRecord, error) {
+	if m.Timestamp == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if m.LogData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogMultipleRecord.deepCopy(), nil
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) MustBuild() BACnetLogMultipleRecord {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogMultipleRecordBuilder) DeepCopy() any {
+	return m.CreateBACnetLogMultipleRecordBuilder()
+}
+
+// CreateBACnetLogMultipleRecordBuilder creates a BACnetLogMultipleRecordBuilder
+func (m *_BACnetLogMultipleRecord) CreateBACnetLogMultipleRecordBuilder() BACnetLogMultipleRecordBuilder {
+	if m == nil {
+		return NewBACnetLogMultipleRecordBuilder()
+	}
+	return &_BACnetLogMultipleRecordBuilder{_BACnetLogMultipleRecord: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

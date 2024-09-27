@@ -48,6 +48,8 @@ type BACnetConstructedDataAction interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAction is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAction()
+	// CreateBuilder creates a BACnetConstructedDataActionBuilder
+	CreateBACnetConstructedDataActionBuilder() BACnetConstructedDataActionBuilder
 }
 
 // _BACnetConstructedDataAction is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAction(openingTag BACnetOpeningTag, peekedTagHeader
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActionBuilder is a builder for BACnetConstructedDataAction
+type BACnetConstructedDataActionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(actionLists []BACnetActionList) BACnetConstructedDataActionBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActionBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActionBuilder
+	// WithActionLists adds ActionLists (property field)
+	WithActionLists(...BACnetActionList) BACnetConstructedDataActionBuilder
+	// Build builds the BACnetConstructedDataAction or returns an error if something is wrong
+	Build() (BACnetConstructedDataAction, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAction
+}
+
+// NewBACnetConstructedDataActionBuilder() creates a BACnetConstructedDataActionBuilder
+func NewBACnetConstructedDataActionBuilder() BACnetConstructedDataActionBuilder {
+	return &_BACnetConstructedDataActionBuilder{_BACnetConstructedDataAction: new(_BACnetConstructedDataAction)}
+}
+
+type _BACnetConstructedDataActionBuilder struct {
+	*_BACnetConstructedDataAction
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActionBuilder) = (*_BACnetConstructedDataActionBuilder)(nil)
+
+func (m *_BACnetConstructedDataActionBuilder) WithMandatoryFields(actionLists []BACnetActionList) BACnetConstructedDataActionBuilder {
+	return m.WithActionLists(actionLists...)
+}
+
+func (m *_BACnetConstructedDataActionBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActionBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataActionBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActionBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataActionBuilder) WithActionLists(actionLists ...BACnetActionList) BACnetConstructedDataActionBuilder {
+	m.ActionLists = actionLists
+	return m
+}
+
+func (m *_BACnetConstructedDataActionBuilder) Build() (BACnetConstructedDataAction, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAction.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataActionBuilder) MustBuild() BACnetConstructedDataAction {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataActionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataActionBuilder()
+}
+
+// CreateBACnetConstructedDataActionBuilder creates a BACnetConstructedDataActionBuilder
+func (m *_BACnetConstructedDataAction) CreateBACnetConstructedDataActionBuilder() BACnetConstructedDataActionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataActionBuilder()
+	}
+	return &_BACnetConstructedDataActionBuilder{_BACnetConstructedDataAction: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

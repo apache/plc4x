@@ -44,6 +44,8 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	GetPoolsSpaPondsFountainsData() LightingData
 	// IsSALDataPoolsSpasPondsFountainsControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataPoolsSpasPondsFountainsControl()
+	// CreateBuilder creates a SALDataPoolsSpasPondsFountainsControlBuilder
+	CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder
 }
 
 // _SALDataPoolsSpasPondsFountainsControl is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataPoolsSpasPondsFountainsControl(salData SALData, poolsSpaPondsFoun
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataPoolsSpasPondsFountainsControlBuilder is a builder for SALDataPoolsSpasPondsFountainsControl
+type SALDataPoolsSpasPondsFountainsControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
+	// WithPoolsSpaPondsFountainsData adds PoolsSpaPondsFountainsData (property field)
+	WithPoolsSpaPondsFountainsData(LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
+	// Build builds the SALDataPoolsSpasPondsFountainsControl or returns an error if something is wrong
+	Build() (SALDataPoolsSpasPondsFountainsControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataPoolsSpasPondsFountainsControl
+}
+
+// NewSALDataPoolsSpasPondsFountainsControlBuilder() creates a SALDataPoolsSpasPondsFountainsControlBuilder
+func NewSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
+	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: new(_SALDataPoolsSpasPondsFountainsControl)}
+}
+
+type _SALDataPoolsSpasPondsFountainsControlBuilder struct {
+	*_SALDataPoolsSpasPondsFountainsControl
+
+	err *utils.MultiError
+}
+
+var _ (SALDataPoolsSpasPondsFountainsControlBuilder) = (*_SALDataPoolsSpasPondsFountainsControlBuilder)(nil)
+
+func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	return m.WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData)
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	m.PoolsSpaPondsFountainsData = poolsSpaPondsFountainsData
+	return m
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) Build() (SALDataPoolsSpasPondsFountainsControl, error) {
+	if m.PoolsSpaPondsFountainsData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'poolsSpaPondsFountainsData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataPoolsSpasPondsFountainsControl.deepCopy(), nil
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) MustBuild() SALDataPoolsSpasPondsFountainsControl {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControlBuilder) DeepCopy() any {
+	return m.CreateSALDataPoolsSpasPondsFountainsControlBuilder()
+}
+
+// CreateSALDataPoolsSpasPondsFountainsControlBuilder creates a SALDataPoolsSpasPondsFountainsControlBuilder
+func (m *_SALDataPoolsSpasPondsFountainsControl) CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
+	if m == nil {
+		return NewSALDataPoolsSpasPondsFountainsControlBuilder()
+	}
+	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

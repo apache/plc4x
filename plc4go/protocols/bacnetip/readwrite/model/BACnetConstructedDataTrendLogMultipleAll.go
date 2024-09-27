@@ -40,6 +40,8 @@ type BACnetConstructedDataTrendLogMultipleAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataTrendLogMultipleAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogMultipleAll()
+	// CreateBuilder creates a BACnetConstructedDataTrendLogMultipleAllBuilder
+	CreateBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataTrendLogMultipleAllBuilder
 }
 
 // _BACnetConstructedDataTrendLogMultipleAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTrendLogMultipleAllBuilder is a builder for BACnetConstructedDataTrendLogMultipleAll
+type BACnetConstructedDataTrendLogMultipleAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder
+	// Build builds the BACnetConstructedDataTrendLogMultipleAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataTrendLogMultipleAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTrendLogMultipleAll
+}
+
+// NewBACnetConstructedDataTrendLogMultipleAllBuilder() creates a BACnetConstructedDataTrendLogMultipleAllBuilder
+func NewBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataTrendLogMultipleAllBuilder {
+	return &_BACnetConstructedDataTrendLogMultipleAllBuilder{_BACnetConstructedDataTrendLogMultipleAll: new(_BACnetConstructedDataTrendLogMultipleAll)}
+}
+
+type _BACnetConstructedDataTrendLogMultipleAllBuilder struct {
+	*_BACnetConstructedDataTrendLogMultipleAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTrendLogMultipleAllBuilder) = (*_BACnetConstructedDataTrendLogMultipleAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) WithMandatoryFields() BACnetConstructedDataTrendLogMultipleAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) Build() (BACnetConstructedDataTrendLogMultipleAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTrendLogMultipleAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTrendLogMultipleAllBuilder()
+}
+
+// CreateBACnetConstructedDataTrendLogMultipleAllBuilder creates a BACnetConstructedDataTrendLogMultipleAllBuilder
+func (m *_BACnetConstructedDataTrendLogMultipleAll) CreateBACnetConstructedDataTrendLogMultipleAllBuilder() BACnetConstructedDataTrendLogMultipleAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTrendLogMultipleAllBuilder()
+	}
+	return &_BACnetConstructedDataTrendLogMultipleAllBuilder{_BACnetConstructedDataTrendLogMultipleAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

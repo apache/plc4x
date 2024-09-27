@@ -46,6 +46,8 @@ type BACnetConstructedDataTotalRecordCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTotalRecordCount is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTotalRecordCount()
+	// CreateBuilder creates a BACnetConstructedDataTotalRecordCountBuilder
+	CreateBACnetConstructedDataTotalRecordCountBuilder() BACnetConstructedDataTotalRecordCountBuilder
 }
 
 // _BACnetConstructedDataTotalRecordCount is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTotalRecordCount(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTotalRecordCountBuilder is a builder for BACnetConstructedDataTotalRecordCount
+type BACnetConstructedDataTotalRecordCountBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(totalRecordCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTotalRecordCountBuilder
+	// WithTotalRecordCount adds TotalRecordCount (property field)
+	WithTotalRecordCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTotalRecordCountBuilder
+	// WithTotalRecordCountBuilder adds TotalRecordCount (property field) which is build by the builder
+	WithTotalRecordCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTotalRecordCountBuilder
+	// Build builds the BACnetConstructedDataTotalRecordCount or returns an error if something is wrong
+	Build() (BACnetConstructedDataTotalRecordCount, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTotalRecordCount
+}
+
+// NewBACnetConstructedDataTotalRecordCountBuilder() creates a BACnetConstructedDataTotalRecordCountBuilder
+func NewBACnetConstructedDataTotalRecordCountBuilder() BACnetConstructedDataTotalRecordCountBuilder {
+	return &_BACnetConstructedDataTotalRecordCountBuilder{_BACnetConstructedDataTotalRecordCount: new(_BACnetConstructedDataTotalRecordCount)}
+}
+
+type _BACnetConstructedDataTotalRecordCountBuilder struct {
+	*_BACnetConstructedDataTotalRecordCount
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTotalRecordCountBuilder) = (*_BACnetConstructedDataTotalRecordCountBuilder)(nil)
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) WithMandatoryFields(totalRecordCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTotalRecordCountBuilder {
+	return m.WithTotalRecordCount(totalRecordCount)
+}
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) WithTotalRecordCount(totalRecordCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTotalRecordCountBuilder {
+	m.TotalRecordCount = totalRecordCount
+	return m
+}
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) WithTotalRecordCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTotalRecordCountBuilder {
+	builder := builderSupplier(m.TotalRecordCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.TotalRecordCount, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) Build() (BACnetConstructedDataTotalRecordCount, error) {
+	if m.TotalRecordCount == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'totalRecordCount' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTotalRecordCount.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) MustBuild() BACnetConstructedDataTotalRecordCount {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTotalRecordCountBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTotalRecordCountBuilder()
+}
+
+// CreateBACnetConstructedDataTotalRecordCountBuilder creates a BACnetConstructedDataTotalRecordCountBuilder
+func (m *_BACnetConstructedDataTotalRecordCount) CreateBACnetConstructedDataTotalRecordCountBuilder() BACnetConstructedDataTotalRecordCountBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTotalRecordCountBuilder()
+	}
+	return &_BACnetConstructedDataTotalRecordCountBuilder{_BACnetConstructedDataTotalRecordCount: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

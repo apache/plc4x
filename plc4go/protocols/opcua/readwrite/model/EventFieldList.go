@@ -48,6 +48,8 @@ type EventFieldList interface {
 	GetEventFields() []Variant
 	// IsEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEventFieldList()
+	// CreateBuilder creates a EventFieldListBuilder
+	CreateEventFieldListBuilder() EventFieldListBuilder
 }
 
 // _EventFieldList is the data-structure of this message
@@ -72,6 +74,92 @@ func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields [
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EventFieldListBuilder is a builder for EventFieldList
+type EventFieldListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder
+	// WithClientHandle adds ClientHandle (property field)
+	WithClientHandle(uint32) EventFieldListBuilder
+	// WithNoOfEventFields adds NoOfEventFields (property field)
+	WithNoOfEventFields(int32) EventFieldListBuilder
+	// WithEventFields adds EventFields (property field)
+	WithEventFields(...Variant) EventFieldListBuilder
+	// Build builds the EventFieldList or returns an error if something is wrong
+	Build() (EventFieldList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EventFieldList
+}
+
+// NewEventFieldListBuilder() creates a EventFieldListBuilder
+func NewEventFieldListBuilder() EventFieldListBuilder {
+	return &_EventFieldListBuilder{_EventFieldList: new(_EventFieldList)}
+}
+
+type _EventFieldListBuilder struct {
+	*_EventFieldList
+
+	err *utils.MultiError
+}
+
+var _ (EventFieldListBuilder) = (*_EventFieldListBuilder)(nil)
+
+func (m *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
+	return m.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+}
+
+func (m *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
+	m.ClientHandle = clientHandle
+	return m
+}
+
+func (m *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
+	m.NoOfEventFields = noOfEventFields
+	return m
+}
+
+func (m *_EventFieldListBuilder) WithEventFields(eventFields ...Variant) EventFieldListBuilder {
+	m.EventFields = eventFields
+	return m
+}
+
+func (m *_EventFieldListBuilder) Build() (EventFieldList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EventFieldList.deepCopy(), nil
+}
+
+func (m *_EventFieldListBuilder) MustBuild() EventFieldList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EventFieldListBuilder) DeepCopy() any {
+	return m.CreateEventFieldListBuilder()
+}
+
+// CreateEventFieldListBuilder creates a EventFieldListBuilder
+func (m *_EventFieldList) CreateEventFieldListBuilder() EventFieldListBuilder {
+	if m == nil {
+		return NewEventFieldListBuilder()
+	}
+	return &_EventFieldListBuilder{_EventFieldList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger interface 
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueInteger(opening
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

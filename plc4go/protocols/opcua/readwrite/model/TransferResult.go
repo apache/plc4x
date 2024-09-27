@@ -48,6 +48,8 @@ type TransferResult interface {
 	GetAvailableSequenceNumbers() []uint32
 	// IsTransferResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTransferResult()
+	// CreateBuilder creates a TransferResultBuilder
+	CreateTransferResultBuilder() TransferResultBuilder
 }
 
 // _TransferResult is the data-structure of this message
@@ -75,6 +77,113 @@ func NewTransferResult(statusCode StatusCode, noOfAvailableSequenceNumbers int32
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TransferResultBuilder is a builder for TransferResult
+type TransferResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) TransferResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder
+	// WithNoOfAvailableSequenceNumbers adds NoOfAvailableSequenceNumbers (property field)
+	WithNoOfAvailableSequenceNumbers(int32) TransferResultBuilder
+	// WithAvailableSequenceNumbers adds AvailableSequenceNumbers (property field)
+	WithAvailableSequenceNumbers(...uint32) TransferResultBuilder
+	// Build builds the TransferResult or returns an error if something is wrong
+	Build() (TransferResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TransferResult
+}
+
+// NewTransferResultBuilder() creates a TransferResultBuilder
+func NewTransferResultBuilder() TransferResultBuilder {
+	return &_TransferResultBuilder{_TransferResult: new(_TransferResult)}
+}
+
+type _TransferResultBuilder struct {
+	*_TransferResult
+
+	err *utils.MultiError
+}
+
+var _ (TransferResultBuilder) = (*_TransferResultBuilder)(nil)
+
+func (m *_TransferResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfAvailableSequenceNumbers int32, availableSequenceNumbers []uint32) TransferResultBuilder {
+	return m.WithStatusCode(statusCode).WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers).WithAvailableSequenceNumbers(availableSequenceNumbers...)
+}
+
+func (m *_TransferResultBuilder) WithStatusCode(statusCode StatusCode) TransferResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_TransferResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) TransferResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_TransferResultBuilder) WithNoOfAvailableSequenceNumbers(noOfAvailableSequenceNumbers int32) TransferResultBuilder {
+	m.NoOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers
+	return m
+}
+
+func (m *_TransferResultBuilder) WithAvailableSequenceNumbers(availableSequenceNumbers ...uint32) TransferResultBuilder {
+	m.AvailableSequenceNumbers = availableSequenceNumbers
+	return m
+}
+
+func (m *_TransferResultBuilder) Build() (TransferResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TransferResult.deepCopy(), nil
+}
+
+func (m *_TransferResultBuilder) MustBuild() TransferResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TransferResultBuilder) DeepCopy() any {
+	return m.CreateTransferResultBuilder()
+}
+
+// CreateTransferResultBuilder creates a TransferResultBuilder
+func (m *_TransferResult) CreateTransferResultBuilder() TransferResultBuilder {
+	if m == nil {
+		return NewTransferResultBuilder()
+	}
+	return &_TransferResultBuilder{_TransferResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type MemberID interface {
 	GetInstance() uint8
 	// IsMemberID is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMemberID()
+	// CreateBuilder creates a MemberIDBuilder
+	CreateMemberIDBuilder() MemberIDBuilder
 }
 
 // _MemberID is the data-structure of this message
@@ -68,6 +70,85 @@ func NewMemberID(format uint8, instance uint8) *_MemberID {
 	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MemberIDBuilder is a builder for MemberID
+type MemberIDBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(format uint8, instance uint8) MemberIDBuilder
+	// WithFormat adds Format (property field)
+	WithFormat(uint8) MemberIDBuilder
+	// WithInstance adds Instance (property field)
+	WithInstance(uint8) MemberIDBuilder
+	// Build builds the MemberID or returns an error if something is wrong
+	Build() (MemberID, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MemberID
+}
+
+// NewMemberIDBuilder() creates a MemberIDBuilder
+func NewMemberIDBuilder() MemberIDBuilder {
+	return &_MemberIDBuilder{_MemberID: new(_MemberID)}
+}
+
+type _MemberIDBuilder struct {
+	*_MemberID
+
+	err *utils.MultiError
+}
+
+var _ (MemberIDBuilder) = (*_MemberIDBuilder)(nil)
+
+func (m *_MemberIDBuilder) WithMandatoryFields(format uint8, instance uint8) MemberIDBuilder {
+	return m.WithFormat(format).WithInstance(instance)
+}
+
+func (m *_MemberIDBuilder) WithFormat(format uint8) MemberIDBuilder {
+	m.Format = format
+	return m
+}
+
+func (m *_MemberIDBuilder) WithInstance(instance uint8) MemberIDBuilder {
+	m.Instance = instance
+	return m
+}
+
+func (m *_MemberIDBuilder) Build() (MemberID, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MemberID.deepCopy(), nil
+}
+
+func (m *_MemberIDBuilder) MustBuild() MemberID {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MemberIDBuilder) DeepCopy() any {
+	return m.CreateMemberIDBuilder()
+}
+
+// CreateMemberIDBuilder creates a MemberIDBuilder
+func (m *_MemberID) CreateMemberIDBuilder() MemberIDBuilder {
+	if m == nil {
+		return NewMemberIDBuilder()
+	}
+	return &_MemberIDBuilder{_MemberID: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

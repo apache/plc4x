@@ -50,6 +50,8 @@ type EUInformation interface {
 	GetDescription() LocalizedText
 	// IsEUInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEUInformation()
+	// CreateBuilder creates a EUInformationBuilder
+	CreateEUInformationBuilder() EUInformationBuilder
 }
 
 // _EUInformation is the data-structure of this message
@@ -85,6 +87,162 @@ func NewEUInformation(namespaceUri PascalString, unitId int32, displayName Local
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EUInformationBuilder is a builder for EUInformation
+type EUInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) EUInformationBuilder
+	// WithNamespaceUri adds NamespaceUri (property field)
+	WithNamespaceUri(PascalString) EUInformationBuilder
+	// WithNamespaceUriBuilder adds NamespaceUri (property field) which is build by the builder
+	WithNamespaceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EUInformationBuilder
+	// WithUnitId adds UnitId (property field)
+	WithUnitId(int32) EUInformationBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) EUInformationBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) EUInformationBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder
+	// Build builds the EUInformation or returns an error if something is wrong
+	Build() (EUInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EUInformation
+}
+
+// NewEUInformationBuilder() creates a EUInformationBuilder
+func NewEUInformationBuilder() EUInformationBuilder {
+	return &_EUInformationBuilder{_EUInformation: new(_EUInformation)}
+}
+
+type _EUInformationBuilder struct {
+	*_EUInformation
+
+	err *utils.MultiError
+}
+
+var _ (EUInformationBuilder) = (*_EUInformationBuilder)(nil)
+
+func (m *_EUInformationBuilder) WithMandatoryFields(namespaceUri PascalString, unitId int32, displayName LocalizedText, description LocalizedText) EUInformationBuilder {
+	return m.WithNamespaceUri(namespaceUri).WithUnitId(unitId).WithDisplayName(displayName).WithDescription(description)
+}
+
+func (m *_EUInformationBuilder) WithNamespaceUri(namespaceUri PascalString) EUInformationBuilder {
+	m.NamespaceUri = namespaceUri
+	return m
+}
+
+func (m *_EUInformationBuilder) WithNamespaceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EUInformationBuilder {
+	builder := builderSupplier(m.NamespaceUri.CreatePascalStringBuilder())
+	var err error
+	m.NamespaceUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EUInformationBuilder) WithUnitId(unitId int32) EUInformationBuilder {
+	m.UnitId = unitId
+	return m
+}
+
+func (m *_EUInformationBuilder) WithDisplayName(displayName LocalizedText) EUInformationBuilder {
+	m.DisplayName = displayName
+	return m
+}
+
+func (m *_EUInformationBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
+	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	m.DisplayName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EUInformationBuilder) WithDescription(description LocalizedText) EUInformationBuilder {
+	m.Description = description
+	return m
+}
+
+func (m *_EUInformationBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EUInformationBuilder {
+	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+	var err error
+	m.Description, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EUInformationBuilder) Build() (EUInformation, error) {
+	if m.NamespaceUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'namespaceUri' not set"))
+	}
+	if m.DisplayName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if m.Description == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EUInformation.deepCopy(), nil
+}
+
+func (m *_EUInformationBuilder) MustBuild() EUInformation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EUInformationBuilder) DeepCopy() any {
+	return m.CreateEUInformationBuilder()
+}
+
+// CreateEUInformationBuilder creates a EUInformationBuilder
+func (m *_EUInformation) CreateEUInformationBuilder() EUInformationBuilder {
+	if m == nil {
+		return NewEUInformationBuilder()
+	}
+	return &_EUInformationBuilder{_EUInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

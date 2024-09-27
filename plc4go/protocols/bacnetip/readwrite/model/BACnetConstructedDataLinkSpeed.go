@@ -46,6 +46,8 @@ type BACnetConstructedDataLinkSpeed interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataLinkSpeed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLinkSpeed()
+	// CreateBuilder creates a BACnetConstructedDataLinkSpeedBuilder
+	CreateBACnetConstructedDataLinkSpeedBuilder() BACnetConstructedDataLinkSpeedBuilder
 }
 
 // _BACnetConstructedDataLinkSpeed is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLinkSpeed(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLinkSpeedBuilder is a builder for BACnetConstructedDataLinkSpeed
+type BACnetConstructedDataLinkSpeedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(linkSpeed BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedBuilder
+	// WithLinkSpeed adds LinkSpeed (property field)
+	WithLinkSpeed(BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedBuilder
+	// WithLinkSpeedBuilder adds LinkSpeed (property field) which is build by the builder
+	WithLinkSpeedBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLinkSpeedBuilder
+	// Build builds the BACnetConstructedDataLinkSpeed or returns an error if something is wrong
+	Build() (BACnetConstructedDataLinkSpeed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLinkSpeed
+}
+
+// NewBACnetConstructedDataLinkSpeedBuilder() creates a BACnetConstructedDataLinkSpeedBuilder
+func NewBACnetConstructedDataLinkSpeedBuilder() BACnetConstructedDataLinkSpeedBuilder {
+	return &_BACnetConstructedDataLinkSpeedBuilder{_BACnetConstructedDataLinkSpeed: new(_BACnetConstructedDataLinkSpeed)}
+}
+
+type _BACnetConstructedDataLinkSpeedBuilder struct {
+	*_BACnetConstructedDataLinkSpeed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLinkSpeedBuilder) = (*_BACnetConstructedDataLinkSpeedBuilder)(nil)
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) WithMandatoryFields(linkSpeed BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedBuilder {
+	return m.WithLinkSpeed(linkSpeed)
+}
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) WithLinkSpeed(linkSpeed BACnetApplicationTagReal) BACnetConstructedDataLinkSpeedBuilder {
+	m.LinkSpeed = linkSpeed
+	return m
+}
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) WithLinkSpeedBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLinkSpeedBuilder {
+	builder := builderSupplier(m.LinkSpeed.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.LinkSpeed, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) Build() (BACnetConstructedDataLinkSpeed, error) {
+	if m.LinkSpeed == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'linkSpeed' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLinkSpeed.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) MustBuild() BACnetConstructedDataLinkSpeed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLinkSpeedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLinkSpeedBuilder()
+}
+
+// CreateBACnetConstructedDataLinkSpeedBuilder creates a BACnetConstructedDataLinkSpeedBuilder
+func (m *_BACnetConstructedDataLinkSpeed) CreateBACnetConstructedDataLinkSpeedBuilder() BACnetConstructedDataLinkSpeedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLinkSpeedBuilder()
+	}
+	return &_BACnetConstructedDataLinkSpeedBuilder{_BACnetConstructedDataLinkSpeed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

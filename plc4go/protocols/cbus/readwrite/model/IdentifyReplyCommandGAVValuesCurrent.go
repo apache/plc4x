@@ -44,6 +44,8 @@ type IdentifyReplyCommandGAVValuesCurrent interface {
 	GetValues() []byte
 	// IsIdentifyReplyCommandGAVValuesCurrent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandGAVValuesCurrent()
+	// CreateBuilder creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+	CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder
 }
 
 // _IdentifyReplyCommandGAVValuesCurrent is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_Id
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandGAVValuesCurrentBuilder is a builder for IdentifyReplyCommandGAVValuesCurrent
+type IdentifyReplyCommandGAVValuesCurrentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder
+	// WithValues adds Values (property field)
+	WithValues(...byte) IdentifyReplyCommandGAVValuesCurrentBuilder
+	// Build builds the IdentifyReplyCommandGAVValuesCurrent or returns an error if something is wrong
+	Build() (IdentifyReplyCommandGAVValuesCurrent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandGAVValuesCurrent
+}
+
+// NewIdentifyReplyCommandGAVValuesCurrentBuilder() creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+func NewIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
+	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: new(_IdentifyReplyCommandGAVValuesCurrent)}
+}
+
+type _IdentifyReplyCommandGAVValuesCurrentBuilder struct {
+	*_IdentifyReplyCommandGAVValuesCurrent
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandGAVValuesCurrentBuilder) = (*_IdentifyReplyCommandGAVValuesCurrentBuilder)(nil)
+
+func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	return m.WithValues(values...)
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	m.Values = values
+	return m
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) Build() (IdentifyReplyCommandGAVValuesCurrent, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandGAVValuesCurrent.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) MustBuild() IdentifyReplyCommandGAVValuesCurrent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrentBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandGAVValuesCurrentBuilder()
+}
+
+// CreateIdentifyReplyCommandGAVValuesCurrentBuilder creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+func (m *_IdentifyReplyCommandGAVValuesCurrent) CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandGAVValuesCurrentBuilder()
+	}
+	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

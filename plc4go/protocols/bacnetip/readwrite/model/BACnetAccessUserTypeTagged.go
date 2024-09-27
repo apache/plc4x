@@ -49,6 +49,8 @@ type BACnetAccessUserTypeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessUserTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessUserTypeTagged()
+	// CreateBuilder creates a BACnetAccessUserTypeTaggedBuilder
+	CreateBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder
 }
 
 // _BACnetAccessUserTypeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUse
 	}
 	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessUserTypeTaggedBuilder is a builder for BACnetAccessUserTypeTagged
+type BACnetAccessUserTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessUserTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessUserTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessUserType) BACnetAccessUserTypeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessUserTypeTaggedBuilder
+	// Build builds the BACnetAccessUserTypeTagged or returns an error if something is wrong
+	Build() (BACnetAccessUserTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessUserTypeTagged
+}
+
+// NewBACnetAccessUserTypeTaggedBuilder() creates a BACnetAccessUserTypeTaggedBuilder
+func NewBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder {
+	return &_BACnetAccessUserTypeTaggedBuilder{_BACnetAccessUserTypeTagged: new(_BACnetAccessUserTypeTagged)}
+}
+
+type _BACnetAccessUserTypeTaggedBuilder struct {
+	*_BACnetAccessUserTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessUserTypeTaggedBuilder) = (*_BACnetAccessUserTypeTaggedBuilder)(nil)
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessUserTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessUserTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) WithValue(value BACnetAccessUserType) BACnetAccessUserTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) Build() (BACnetAccessUserTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccessUserTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) MustBuild() BACnetAccessUserTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccessUserTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccessUserTypeTaggedBuilder()
+}
+
+// CreateBACnetAccessUserTypeTaggedBuilder creates a BACnetAccessUserTypeTaggedBuilder
+func (m *_BACnetAccessUserTypeTagged) CreateBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccessUserTypeTaggedBuilder()
+	}
+	return &_BACnetAccessUserTypeTaggedBuilder{_BACnetAccessUserTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

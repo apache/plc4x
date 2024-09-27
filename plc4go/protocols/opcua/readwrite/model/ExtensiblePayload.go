@@ -44,6 +44,8 @@ type ExtensiblePayload interface {
 	GetPayload() ExtensionObject
 	// IsExtensiblePayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensiblePayload()
+	// CreateBuilder creates a ExtensiblePayloadBuilder
+	CreateExtensiblePayloadBuilder() ExtensiblePayloadBuilder
 }
 
 // _ExtensiblePayload is the data-structure of this message
@@ -67,6 +69,99 @@ func NewExtensiblePayload(sequenceHeader SequenceHeader, payload ExtensionObject
 	_result.PayloadContract.(*_Payload)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ExtensiblePayloadBuilder is a builder for ExtensiblePayload
+type ExtensiblePayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(ExtensionObject) ExtensiblePayloadBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder
+	// Build builds the ExtensiblePayload or returns an error if something is wrong
+	Build() (ExtensiblePayload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ExtensiblePayload
+}
+
+// NewExtensiblePayloadBuilder() creates a ExtensiblePayloadBuilder
+func NewExtensiblePayloadBuilder() ExtensiblePayloadBuilder {
+	return &_ExtensiblePayloadBuilder{_ExtensiblePayload: new(_ExtensiblePayload)}
+}
+
+type _ExtensiblePayloadBuilder struct {
+	*_ExtensiblePayload
+
+	err *utils.MultiError
+}
+
+var _ (ExtensiblePayloadBuilder) = (*_ExtensiblePayloadBuilder)(nil)
+
+func (m *_ExtensiblePayloadBuilder) WithMandatoryFields(payload ExtensionObject) ExtensiblePayloadBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_ExtensiblePayloadBuilder) WithPayload(payload ExtensionObject) ExtensiblePayloadBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_ExtensiblePayloadBuilder) WithPayloadBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) ExtensiblePayloadBuilder {
+	builder := builderSupplier(m.Payload.CreateExtensionObjectBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ExtensiblePayloadBuilder) Build() (ExtensiblePayload, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ExtensiblePayload.deepCopy(), nil
+}
+
+func (m *_ExtensiblePayloadBuilder) MustBuild() ExtensiblePayload {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ExtensiblePayloadBuilder) DeepCopy() any {
+	return m.CreateExtensiblePayloadBuilder()
+}
+
+// CreateExtensiblePayloadBuilder creates a ExtensiblePayloadBuilder
+func (m *_ExtensiblePayload) CreateExtensiblePayloadBuilder() ExtensiblePayloadBuilder {
+	if m == nil {
+		return NewExtensiblePayloadBuilder()
+	}
+	return &_ExtensiblePayloadBuilder{_ExtensiblePayload: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

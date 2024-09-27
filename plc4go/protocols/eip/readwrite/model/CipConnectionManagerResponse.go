@@ -56,6 +56,8 @@ type CipConnectionManagerResponse interface {
 	GetToApi() uint32
 	// IsCipConnectionManagerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerResponse()
+	// CreateBuilder creates a CipConnectionManagerResponseBuilder
+	CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder
 }
 
 // _CipConnectionManagerResponse is the data-structure of this message
@@ -91,6 +93,120 @@ func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint3
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectionManagerResponseBuilder is a builder for CipConnectionManagerResponse
+type CipConnectionManagerResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder
+	// WithOtConnectionId adds OtConnectionId (property field)
+	WithOtConnectionId(uint32) CipConnectionManagerResponseBuilder
+	// WithToConnectionId adds ToConnectionId (property field)
+	WithToConnectionId(uint32) CipConnectionManagerResponseBuilder
+	// WithConnectionSerialNumber adds ConnectionSerialNumber (property field)
+	WithConnectionSerialNumber(uint16) CipConnectionManagerResponseBuilder
+	// WithOriginatorVendorId adds OriginatorVendorId (property field)
+	WithOriginatorVendorId(uint16) CipConnectionManagerResponseBuilder
+	// WithOriginatorSerialNumber adds OriginatorSerialNumber (property field)
+	WithOriginatorSerialNumber(uint32) CipConnectionManagerResponseBuilder
+	// WithOtApi adds OtApi (property field)
+	WithOtApi(uint32) CipConnectionManagerResponseBuilder
+	// WithToApi adds ToApi (property field)
+	WithToApi(uint32) CipConnectionManagerResponseBuilder
+	// Build builds the CipConnectionManagerResponse or returns an error if something is wrong
+	Build() (CipConnectionManagerResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectionManagerResponse
+}
+
+// NewCipConnectionManagerResponseBuilder() creates a CipConnectionManagerResponseBuilder
+func NewCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
+	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: new(_CipConnectionManagerResponse)}
+}
+
+type _CipConnectionManagerResponseBuilder struct {
+	*_CipConnectionManagerResponse
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBuilder)(nil)
+
+func (m *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
+	return m.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi)
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerResponseBuilder {
+	m.OtConnectionId = otConnectionId
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithToConnectionId(toConnectionId uint32) CipConnectionManagerResponseBuilder {
+	m.ToConnectionId = toConnectionId
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerResponseBuilder {
+	m.ConnectionSerialNumber = connectionSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerResponseBuilder {
+	m.OriginatorVendorId = originatorVendorId
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerResponseBuilder {
+	m.OriginatorSerialNumber = originatorSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithOtApi(otApi uint32) CipConnectionManagerResponseBuilder {
+	m.OtApi = otApi
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnectionManagerResponseBuilder {
+	m.ToApi = toApi
+	return m
+}
+
+func (m *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipConnectionManagerResponse.deepCopy(), nil
+}
+
+func (m *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipConnectionManagerResponseBuilder) DeepCopy() any {
+	return m.CreateCipConnectionManagerResponseBuilder()
+}
+
+// CreateCipConnectionManagerResponseBuilder creates a CipConnectionManagerResponseBuilder
+func (m *_CipConnectionManagerResponse) CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
+	if m == nil {
+		return NewCipConnectionManagerResponseBuilder()
+	}
+	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

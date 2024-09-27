@@ -46,6 +46,8 @@ type BACnetConstructedDataEventParameters interface {
 	GetActualValue() BACnetEventParameter
 	// IsBACnetConstructedDataEventParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventParameters()
+	// CreateBuilder creates a BACnetConstructedDataEventParametersBuilder
+	CreateBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEventParametersBuilder
 }
 
 // _BACnetConstructedDataEventParameters is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataEventParameters(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventParametersBuilder is a builder for BACnetConstructedDataEventParameters
+type BACnetConstructedDataEventParametersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder
+	// WithEventParameter adds EventParameter (property field)
+	WithEventParameter(BACnetEventParameter) BACnetConstructedDataEventParametersBuilder
+	// Build builds the BACnetConstructedDataEventParameters or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventParameters, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventParameters
+}
+
+// NewBACnetConstructedDataEventParametersBuilder() creates a BACnetConstructedDataEventParametersBuilder
+func NewBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEventParametersBuilder {
+	return &_BACnetConstructedDataEventParametersBuilder{_BACnetConstructedDataEventParameters: new(_BACnetConstructedDataEventParameters)}
+}
+
+type _BACnetConstructedDataEventParametersBuilder struct {
+	*_BACnetConstructedDataEventParameters
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventParametersBuilder) = (*_BACnetConstructedDataEventParametersBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventParametersBuilder) WithMandatoryFields(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
+	return m.WithEventParameter(eventParameter)
+}
+
+func (m *_BACnetConstructedDataEventParametersBuilder) WithEventParameter(eventParameter BACnetEventParameter) BACnetConstructedDataEventParametersBuilder {
+	m.EventParameter = eventParameter
+	return m
+}
+
+func (m *_BACnetConstructedDataEventParametersBuilder) Build() (BACnetConstructedDataEventParameters, error) {
+	if m.EventParameter == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventParameter' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventParameters.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventParametersBuilder) MustBuild() BACnetConstructedDataEventParameters {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventParametersBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventParametersBuilder()
+}
+
+// CreateBACnetConstructedDataEventParametersBuilder creates a BACnetConstructedDataEventParametersBuilder
+func (m *_BACnetConstructedDataEventParameters) CreateBACnetConstructedDataEventParametersBuilder() BACnetConstructedDataEventParametersBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventParametersBuilder()
+	}
+	return &_BACnetConstructedDataEventParametersBuilder{_BACnetConstructedDataEventParameters: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

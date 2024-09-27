@@ -56,6 +56,8 @@ type BACnetEventParameterFloatingLimit interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventParameterFloatingLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterFloatingLimit()
+	// CreateBuilder creates a BACnetEventParameterFloatingLimitBuilder
+	CreateBACnetEventParameterFloatingLimitBuilder() BACnetEventParameterFloatingLimitBuilder
 }
 
 // _BACnetEventParameterFloatingLimit is the data-structure of this message
@@ -109,6 +111,267 @@ func NewBACnetEventParameterFloatingLimit(peekedTagHeader BACnetTagHeader, openi
 	_result.BACnetEventParameterContract.(*_BACnetEventParameter)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterFloatingLimitBuilder is a builder for BACnetEventParameterFloatingLimit
+type BACnetEventParameterFloatingLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterFloatingLimitBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithTimeDelay adds TimeDelay (property field)
+	WithTimeDelay(BACnetContextTagUnsignedInteger) BACnetEventParameterFloatingLimitBuilder
+	// WithTimeDelayBuilder adds TimeDelay (property field) which is build by the builder
+	WithTimeDelayBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithSetpointReference adds SetpointReference (property field)
+	WithSetpointReference(BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterFloatingLimitBuilder
+	// WithSetpointReferenceBuilder adds SetpointReference (property field) which is build by the builder
+	WithSetpointReferenceBuilder(func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithLowDiffLimit adds LowDiffLimit (property field)
+	WithLowDiffLimit(BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder
+	// WithLowDiffLimitBuilder adds LowDiffLimit (property field) which is build by the builder
+	WithLowDiffLimitBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithHighDiffLimit adds HighDiffLimit (property field)
+	WithHighDiffLimit(BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder
+	// WithHighDiffLimitBuilder adds HighDiffLimit (property field) which is build by the builder
+	WithHighDiffLimitBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithDeadband adds Deadband (property field)
+	WithDeadband(BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder
+	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
+	WithDeadbandBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterFloatingLimitBuilder
+	// Build builds the BACnetEventParameterFloatingLimit or returns an error if something is wrong
+	Build() (BACnetEventParameterFloatingLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterFloatingLimit
+}
+
+// NewBACnetEventParameterFloatingLimitBuilder() creates a BACnetEventParameterFloatingLimitBuilder
+func NewBACnetEventParameterFloatingLimitBuilder() BACnetEventParameterFloatingLimitBuilder {
+	return &_BACnetEventParameterFloatingLimitBuilder{_BACnetEventParameterFloatingLimit: new(_BACnetEventParameterFloatingLimit)}
+}
+
+type _BACnetEventParameterFloatingLimitBuilder struct {
+	*_BACnetEventParameterFloatingLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterFloatingLimitBuilder) = (*_BACnetEventParameterFloatingLimitBuilder)(nil)
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, timeDelay BACnetContextTagUnsignedInteger, setpointReference BACnetDeviceObjectPropertyReferenceEnclosed, lowDiffLimit BACnetContextTagReal, highDiffLimit BACnetContextTagReal, deadband BACnetContextTagReal, closingTag BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder {
+	return m.WithOpeningTag(openingTag).WithTimeDelay(timeDelay).WithSetpointReference(setpointReference).WithLowDiffLimit(lowDiffLimit).WithHighDiffLimit(highDiffLimit).WithDeadband(deadband).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterFloatingLimitBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithTimeDelay(timeDelay BACnetContextTagUnsignedInteger) BACnetEventParameterFloatingLimitBuilder {
+	m.TimeDelay = timeDelay
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.TimeDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.TimeDelay, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithSetpointReference(setpointReference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterFloatingLimitBuilder {
+	m.SetpointReference = setpointReference
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithSetpointReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.SetpointReference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	m.SetpointReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithLowDiffLimit(lowDiffLimit BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder {
+	m.LowDiffLimit = lowDiffLimit
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithLowDiffLimitBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.LowDiffLimit.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.LowDiffLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithHighDiffLimit(highDiffLimit BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder {
+	m.HighDiffLimit = highDiffLimit
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithHighDiffLimitBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.HighDiffLimit.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.HighDiffLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithDeadband(deadband BACnetContextTagReal) BACnetEventParameterFloatingLimitBuilder {
+	m.Deadband = deadband
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.Deadband.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.Deadband, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterFloatingLimitBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterFloatingLimitBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) Build() (BACnetEventParameterFloatingLimit, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.TimeDelay == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+	}
+	if m.SetpointReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'setpointReference' not set"))
+	}
+	if m.LowDiffLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lowDiffLimit' not set"))
+	}
+	if m.HighDiffLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'highDiffLimit' not set"))
+	}
+	if m.Deadband == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventParameterFloatingLimit.deepCopy(), nil
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) MustBuild() BACnetEventParameterFloatingLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventParameterFloatingLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetEventParameterFloatingLimitBuilder()
+}
+
+// CreateBACnetEventParameterFloatingLimitBuilder creates a BACnetEventParameterFloatingLimitBuilder
+func (m *_BACnetEventParameterFloatingLimit) CreateBACnetEventParameterFloatingLimitBuilder() BACnetEventParameterFloatingLimitBuilder {
+	if m == nil {
+		return NewBACnetEventParameterFloatingLimitBuilder()
+	}
+	return &_BACnetEventParameterFloatingLimitBuilder{_BACnetEventParameterFloatingLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

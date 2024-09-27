@@ -46,6 +46,8 @@ type BACnetConstructedDataDeployedProfileLocation interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataDeployedProfileLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeployedProfileLocation()
+	// CreateBuilder creates a BACnetConstructedDataDeployedProfileLocationBuilder
+	CreateBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedDataDeployedProfileLocationBuilder
 }
 
 // _BACnetConstructedDataDeployedProfileLocation is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDeployedProfileLocation(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDeployedProfileLocationBuilder is a builder for BACnetConstructedDataDeployedProfileLocation
+type BACnetConstructedDataDeployedProfileLocationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder
+	// WithDeployedProfileLocation adds DeployedProfileLocation (property field)
+	WithDeployedProfileLocation(BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder
+	// WithDeployedProfileLocationBuilder adds DeployedProfileLocation (property field) which is build by the builder
+	WithDeployedProfileLocationBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeployedProfileLocationBuilder
+	// Build builds the BACnetConstructedDataDeployedProfileLocation or returns an error if something is wrong
+	Build() (BACnetConstructedDataDeployedProfileLocation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDeployedProfileLocation
+}
+
+// NewBACnetConstructedDataDeployedProfileLocationBuilder() creates a BACnetConstructedDataDeployedProfileLocationBuilder
+func NewBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedDataDeployedProfileLocationBuilder {
+	return &_BACnetConstructedDataDeployedProfileLocationBuilder{_BACnetConstructedDataDeployedProfileLocation: new(_BACnetConstructedDataDeployedProfileLocation)}
+}
+
+type _BACnetConstructedDataDeployedProfileLocationBuilder struct {
+	*_BACnetConstructedDataDeployedProfileLocation
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDeployedProfileLocationBuilder) = (*_BACnetConstructedDataDeployedProfileLocationBuilder)(nil)
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithMandatoryFields(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
+	return m.WithDeployedProfileLocation(deployedProfileLocation)
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocation(deployedProfileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataDeployedProfileLocationBuilder {
+	m.DeployedProfileLocation = deployedProfileLocation
+	return m
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) WithDeployedProfileLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeployedProfileLocationBuilder {
+	builder := builderSupplier(m.DeployedProfileLocation.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.DeployedProfileLocation, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) Build() (BACnetConstructedDataDeployedProfileLocation, error) {
+	if m.DeployedProfileLocation == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deployedProfileLocation' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDeployedProfileLocation.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) MustBuild() BACnetConstructedDataDeployedProfileLocation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDeployedProfileLocationBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDeployedProfileLocationBuilder()
+}
+
+// CreateBACnetConstructedDataDeployedProfileLocationBuilder creates a BACnetConstructedDataDeployedProfileLocationBuilder
+func (m *_BACnetConstructedDataDeployedProfileLocation) CreateBACnetConstructedDataDeployedProfileLocationBuilder() BACnetConstructedDataDeployedProfileLocationBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDeployedProfileLocationBuilder()
+	}
+	return &_BACnetConstructedDataDeployedProfileLocationBuilder{_BACnetConstructedDataDeployedProfileLocation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataCurrentCommandPriority interface {
 	GetActualValue() BACnetOptionalUnsigned
 	// IsBACnetConstructedDataCurrentCommandPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCurrentCommandPriority()
+	// CreateBuilder creates a BACnetConstructedDataCurrentCommandPriorityBuilder
+	CreateBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDataCurrentCommandPriorityBuilder
 }
 
 // _BACnetConstructedDataCurrentCommandPriority is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataCurrentCommandPriority(openingTag BACnetOpeningTag,
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCurrentCommandPriorityBuilder is a builder for BACnetConstructedDataCurrentCommandPriority
+type BACnetConstructedDataCurrentCommandPriorityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder
+	// WithCurrentCommandPriority adds CurrentCommandPriority (property field)
+	WithCurrentCommandPriority(BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder
+	// Build builds the BACnetConstructedDataCurrentCommandPriority or returns an error if something is wrong
+	Build() (BACnetConstructedDataCurrentCommandPriority, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCurrentCommandPriority
+}
+
+// NewBACnetConstructedDataCurrentCommandPriorityBuilder() creates a BACnetConstructedDataCurrentCommandPriorityBuilder
+func NewBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDataCurrentCommandPriorityBuilder {
+	return &_BACnetConstructedDataCurrentCommandPriorityBuilder{_BACnetConstructedDataCurrentCommandPriority: new(_BACnetConstructedDataCurrentCommandPriority)}
+}
+
+type _BACnetConstructedDataCurrentCommandPriorityBuilder struct {
+	*_BACnetConstructedDataCurrentCommandPriority
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCurrentCommandPriorityBuilder) = (*_BACnetConstructedDataCurrentCommandPriorityBuilder)(nil)
+
+func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithMandatoryFields(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
+	return m.WithCurrentCommandPriority(currentCommandPriority)
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) WithCurrentCommandPriority(currentCommandPriority BACnetOptionalUnsigned) BACnetConstructedDataCurrentCommandPriorityBuilder {
+	m.CurrentCommandPriority = currentCommandPriority
+	return m
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) Build() (BACnetConstructedDataCurrentCommandPriority, error) {
+	if m.CurrentCommandPriority == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'currentCommandPriority' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCurrentCommandPriority.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) MustBuild() BACnetConstructedDataCurrentCommandPriority {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCurrentCommandPriorityBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCurrentCommandPriorityBuilder()
+}
+
+// CreateBACnetConstructedDataCurrentCommandPriorityBuilder creates a BACnetConstructedDataCurrentCommandPriorityBuilder
+func (m *_BACnetConstructedDataCurrentCommandPriority) CreateBACnetConstructedDataCurrentCommandPriorityBuilder() BACnetConstructedDataCurrentCommandPriorityBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCurrentCommandPriorityBuilder()
+	}
+	return &_BACnetConstructedDataCurrentCommandPriorityBuilder{_BACnetConstructedDataCurrentCommandPriority: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

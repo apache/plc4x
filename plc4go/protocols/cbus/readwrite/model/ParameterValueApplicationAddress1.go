@@ -46,6 +46,8 @@ type ParameterValueApplicationAddress1 interface {
 	GetData() []byte
 	// IsParameterValueApplicationAddress1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueApplicationAddress1()
+	// CreateBuilder creates a ParameterValueApplicationAddress1Builder
+	CreateParameterValueApplicationAddress1Builder() ParameterValueApplicationAddress1Builder
 }
 
 // _ParameterValueApplicationAddress1 is the data-structure of this message
@@ -71,6 +73,106 @@ func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueApplicationAddress1Builder is a builder for ParameterValueApplicationAddress1
+type ParameterValueApplicationAddress1Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value ApplicationAddress1, data []byte) ParameterValueApplicationAddress1Builder
+	// WithValue adds Value (property field)
+	WithValue(ApplicationAddress1) ParameterValueApplicationAddress1Builder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(ApplicationAddress1Builder) ApplicationAddress1Builder) ParameterValueApplicationAddress1Builder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueApplicationAddress1Builder
+	// Build builds the ParameterValueApplicationAddress1 or returns an error if something is wrong
+	Build() (ParameterValueApplicationAddress1, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueApplicationAddress1
+}
+
+// NewParameterValueApplicationAddress1Builder() creates a ParameterValueApplicationAddress1Builder
+func NewParameterValueApplicationAddress1Builder() ParameterValueApplicationAddress1Builder {
+	return &_ParameterValueApplicationAddress1Builder{_ParameterValueApplicationAddress1: new(_ParameterValueApplicationAddress1)}
+}
+
+type _ParameterValueApplicationAddress1Builder struct {
+	*_ParameterValueApplicationAddress1
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueApplicationAddress1Builder) = (*_ParameterValueApplicationAddress1Builder)(nil)
+
+func (m *_ParameterValueApplicationAddress1Builder) WithMandatoryFields(value ApplicationAddress1, data []byte) ParameterValueApplicationAddress1Builder {
+	return m.WithValue(value).WithData(data...)
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) WithValue(value ApplicationAddress1) ParameterValueApplicationAddress1Builder {
+	m.Value = value
+	return m
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) WithValueBuilder(builderSupplier func(ApplicationAddress1Builder) ApplicationAddress1Builder) ParameterValueApplicationAddress1Builder {
+	builder := builderSupplier(m.Value.CreateApplicationAddress1Builder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ApplicationAddress1Builder failed"))
+	}
+	return m
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) WithData(data ...byte) ParameterValueApplicationAddress1Builder {
+	m.Data = data
+	return m
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) Build() (ParameterValueApplicationAddress1, error) {
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueApplicationAddress1.deepCopy(), nil
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) MustBuild() ParameterValueApplicationAddress1 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueApplicationAddress1Builder) DeepCopy() any {
+	return m.CreateParameterValueApplicationAddress1Builder()
+}
+
+// CreateParameterValueApplicationAddress1Builder creates a ParameterValueApplicationAddress1Builder
+func (m *_ParameterValueApplicationAddress1) CreateParameterValueApplicationAddress1Builder() ParameterValueApplicationAddress1Builder {
+	if m == nil {
+		return NewParameterValueApplicationAddress1Builder()
+	}
+	return &_ParameterValueApplicationAddress1Builder{_ParameterValueApplicationAddress1: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

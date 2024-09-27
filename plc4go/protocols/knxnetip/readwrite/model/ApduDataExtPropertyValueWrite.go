@@ -52,6 +52,8 @@ type ApduDataExtPropertyValueWrite interface {
 	GetData() []byte
 	// IsApduDataExtPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtPropertyValueWrite()
+	// CreateBuilder creates a ApduDataExtPropertyValueWriteBuilder
+	CreateApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuilder
 }
 
 // _ApduDataExtPropertyValueWrite is the data-structure of this message
@@ -80,6 +82,106 @@ func NewApduDataExtPropertyValueWrite(objectIndex uint8, propertyId uint8, count
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtPropertyValueWriteBuilder is a builder for ApduDataExtPropertyValueWrite
+type ApduDataExtPropertyValueWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueWriteBuilder
+	// WithObjectIndex adds ObjectIndex (property field)
+	WithObjectIndex(uint8) ApduDataExtPropertyValueWriteBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) ApduDataExtPropertyValueWriteBuilder
+	// WithCount adds Count (property field)
+	WithCount(uint8) ApduDataExtPropertyValueWriteBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(uint16) ApduDataExtPropertyValueWriteBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataExtPropertyValueWriteBuilder
+	// Build builds the ApduDataExtPropertyValueWrite or returns an error if something is wrong
+	Build() (ApduDataExtPropertyValueWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtPropertyValueWrite
+}
+
+// NewApduDataExtPropertyValueWriteBuilder() creates a ApduDataExtPropertyValueWriteBuilder
+func NewApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuilder {
+	return &_ApduDataExtPropertyValueWriteBuilder{_ApduDataExtPropertyValueWrite: new(_ApduDataExtPropertyValueWrite)}
+}
+
+type _ApduDataExtPropertyValueWriteBuilder struct {
+	*_ApduDataExtPropertyValueWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtPropertyValueWriteBuilder) = (*_ApduDataExtPropertyValueWriteBuilder)(nil)
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueWriteBuilder {
+	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithCount(count).WithIndex(index).WithData(data...)
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyValueWriteBuilder {
+	m.ObjectIndex = objectIndex
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyValueWriteBuilder {
+	m.PropertyId = propertyId
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithCount(count uint8) ApduDataExtPropertyValueWriteBuilder {
+	m.Count = count
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithIndex(index uint16) ApduDataExtPropertyValueWriteBuilder {
+	m.Index = index
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) WithData(data ...byte) ApduDataExtPropertyValueWriteBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) Build() (ApduDataExtPropertyValueWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtPropertyValueWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) MustBuild() ApduDataExtPropertyValueWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtPropertyValueWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtPropertyValueWriteBuilder()
+}
+
+// CreateApduDataExtPropertyValueWriteBuilder creates a ApduDataExtPropertyValueWriteBuilder
+func (m *_ApduDataExtPropertyValueWrite) CreateApduDataExtPropertyValueWriteBuilder() ApduDataExtPropertyValueWriteBuilder {
+	if m == nil {
+		return NewApduDataExtPropertyValueWriteBuilder()
+	}
+	return &_ApduDataExtPropertyValueWriteBuilder{_ApduDataExtPropertyValueWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

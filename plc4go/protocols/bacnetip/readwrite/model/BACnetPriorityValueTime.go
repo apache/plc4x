@@ -44,6 +44,8 @@ type BACnetPriorityValueTime interface {
 	GetTimeValue() BACnetApplicationTagTime
 	// IsBACnetPriorityValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueTime()
+	// CreateBuilder creates a BACnetPriorityValueTimeBuilder
+	CreateBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder
 }
 
 // _BACnetPriorityValueTime is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueTime(peekedTagHeader BACnetTagHeader, timeValue BACne
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueTimeBuilder is a builder for BACnetPriorityValueTime
+type BACnetPriorityValueTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithTimeValue(BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder
+	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetPriorityValueTimeBuilder
+	// Build builds the BACnetPriorityValueTime or returns an error if something is wrong
+	Build() (BACnetPriorityValueTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueTime
+}
+
+// NewBACnetPriorityValueTimeBuilder() creates a BACnetPriorityValueTimeBuilder
+func NewBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder {
+	return &_BACnetPriorityValueTimeBuilder{_BACnetPriorityValueTime: new(_BACnetPriorityValueTime)}
+}
+
+type _BACnetPriorityValueTimeBuilder struct {
+	*_BACnetPriorityValueTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueTimeBuilder) = (*_BACnetPriorityValueTimeBuilder)(nil)
+
+func (m *_BACnetPriorityValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
+	return m.WithTimeValue(timeValue)
+}
+
+func (m *_BACnetPriorityValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetPriorityValueTimeBuilder {
+	m.TimeValue = timeValue
+	return m
+}
+
+func (m *_BACnetPriorityValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetPriorityValueTimeBuilder {
+	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.TimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueTimeBuilder) Build() (BACnetPriorityValueTime, error) {
+	if m.TimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueTime.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueTimeBuilder) MustBuild() BACnetPriorityValueTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueTimeBuilder()
+}
+
+// CreateBACnetPriorityValueTimeBuilder creates a BACnetPriorityValueTimeBuilder
+func (m *_BACnetPriorityValueTime) CreateBACnetPriorityValueTimeBuilder() BACnetPriorityValueTimeBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueTimeBuilder()
+	}
+	return &_BACnetPriorityValueTimeBuilder{_BACnetPriorityValueTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

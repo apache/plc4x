@@ -40,6 +40,8 @@ type BACnetConstructedDataElevatorGroupAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataElevatorGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataElevatorGroupAll()
+	// CreateBuilder creates a BACnetConstructedDataElevatorGroupAllBuilder
+	CreateBACnetConstructedDataElevatorGroupAllBuilder() BACnetConstructedDataElevatorGroupAllBuilder
 }
 
 // _BACnetConstructedDataElevatorGroupAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataElevatorGroupAll(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataElevatorGroupAllBuilder is a builder for BACnetConstructedDataElevatorGroupAll
+type BACnetConstructedDataElevatorGroupAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataElevatorGroupAllBuilder
+	// Build builds the BACnetConstructedDataElevatorGroupAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataElevatorGroupAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataElevatorGroupAll
+}
+
+// NewBACnetConstructedDataElevatorGroupAllBuilder() creates a BACnetConstructedDataElevatorGroupAllBuilder
+func NewBACnetConstructedDataElevatorGroupAllBuilder() BACnetConstructedDataElevatorGroupAllBuilder {
+	return &_BACnetConstructedDataElevatorGroupAllBuilder{_BACnetConstructedDataElevatorGroupAll: new(_BACnetConstructedDataElevatorGroupAll)}
+}
+
+type _BACnetConstructedDataElevatorGroupAllBuilder struct {
+	*_BACnetConstructedDataElevatorGroupAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataElevatorGroupAllBuilder) = (*_BACnetConstructedDataElevatorGroupAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataElevatorGroupAllBuilder) WithMandatoryFields() BACnetConstructedDataElevatorGroupAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataElevatorGroupAllBuilder) Build() (BACnetConstructedDataElevatorGroupAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataElevatorGroupAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataElevatorGroupAllBuilder) MustBuild() BACnetConstructedDataElevatorGroupAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataElevatorGroupAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataElevatorGroupAllBuilder()
+}
+
+// CreateBACnetConstructedDataElevatorGroupAllBuilder creates a BACnetConstructedDataElevatorGroupAllBuilder
+func (m *_BACnetConstructedDataElevatorGroupAll) CreateBACnetConstructedDataElevatorGroupAllBuilder() BACnetConstructedDataElevatorGroupAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataElevatorGroupAllBuilder()
+	}
+	return &_BACnetConstructedDataElevatorGroupAllBuilder{_BACnetConstructedDataElevatorGroupAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

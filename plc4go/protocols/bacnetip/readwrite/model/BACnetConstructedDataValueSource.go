@@ -46,6 +46,8 @@ type BACnetConstructedDataValueSource interface {
 	GetActualValue() BACnetValueSource
 	// IsBACnetConstructedDataValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueSource()
+	// CreateBuilder creates a BACnetConstructedDataValueSourceBuilder
+	CreateBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataValueSource(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueSourceBuilder is a builder for BACnetConstructedDataValueSource
+type BACnetConstructedDataValueSourceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder
+	// WithValueSource adds ValueSource (property field)
+	WithValueSource(BACnetValueSource) BACnetConstructedDataValueSourceBuilder
+	// Build builds the BACnetConstructedDataValueSource or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueSource, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueSource
+}
+
+// NewBACnetConstructedDataValueSourceBuilder() creates a BACnetConstructedDataValueSourceBuilder
+func NewBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder {
+	return &_BACnetConstructedDataValueSourceBuilder{_BACnetConstructedDataValueSource: new(_BACnetConstructedDataValueSource)}
+}
+
+type _BACnetConstructedDataValueSourceBuilder struct {
+	*_BACnetConstructedDataValueSource
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueSourceBuilder) = (*_BACnetConstructedDataValueSourceBuilder)(nil)
+
+func (m *_BACnetConstructedDataValueSourceBuilder) WithMandatoryFields(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder {
+	return m.WithValueSource(valueSource)
+}
+
+func (m *_BACnetConstructedDataValueSourceBuilder) WithValueSource(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder {
+	m.ValueSource = valueSource
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSourceBuilder) Build() (BACnetConstructedDataValueSource, error) {
+	if m.ValueSource == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'valueSource' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataValueSource.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataValueSourceBuilder) MustBuild() BACnetConstructedDataValueSource {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataValueSourceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataValueSourceBuilder()
+}
+
+// CreateBACnetConstructedDataValueSourceBuilder creates a BACnetConstructedDataValueSourceBuilder
+func (m *_BACnetConstructedDataValueSource) CreateBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataValueSourceBuilder()
+	}
+	return &_BACnetConstructedDataValueSourceBuilder{_BACnetConstructedDataValueSource: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

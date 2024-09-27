@@ -44,6 +44,8 @@ type AdsDiscoveryBlockOsData interface {
 	GetOsData() []byte
 	// IsAdsDiscoveryBlockOsData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockOsData()
+	// CreateBuilder creates a AdsDiscoveryBlockOsDataBuilder
+	CreateAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder
 }
 
 // _AdsDiscoveryBlockOsData is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
 	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockOsDataBuilder is a builder for AdsDiscoveryBlockOsData
+type AdsDiscoveryBlockOsDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder
+	// WithOsData adds OsData (property field)
+	WithOsData(...byte) AdsDiscoveryBlockOsDataBuilder
+	// Build builds the AdsDiscoveryBlockOsData or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockOsData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockOsData
+}
+
+// NewAdsDiscoveryBlockOsDataBuilder() creates a AdsDiscoveryBlockOsDataBuilder
+func NewAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder {
+	return &_AdsDiscoveryBlockOsDataBuilder{_AdsDiscoveryBlockOsData: new(_AdsDiscoveryBlockOsData)}
+}
+
+type _AdsDiscoveryBlockOsDataBuilder struct {
+	*_AdsDiscoveryBlockOsData
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockOsDataBuilder) = (*_AdsDiscoveryBlockOsDataBuilder)(nil)
+
+func (m *_AdsDiscoveryBlockOsDataBuilder) WithMandatoryFields(osData []byte) AdsDiscoveryBlockOsDataBuilder {
+	return m.WithOsData(osData...)
+}
+
+func (m *_AdsDiscoveryBlockOsDataBuilder) WithOsData(osData ...byte) AdsDiscoveryBlockOsDataBuilder {
+	m.OsData = osData
+	return m
+}
+
+func (m *_AdsDiscoveryBlockOsDataBuilder) Build() (AdsDiscoveryBlockOsData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDiscoveryBlockOsData.deepCopy(), nil
+}
+
+func (m *_AdsDiscoveryBlockOsDataBuilder) MustBuild() AdsDiscoveryBlockOsData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDiscoveryBlockOsDataBuilder) DeepCopy() any {
+	return m.CreateAdsDiscoveryBlockOsDataBuilder()
+}
+
+// CreateAdsDiscoveryBlockOsDataBuilder creates a AdsDiscoveryBlockOsDataBuilder
+func (m *_AdsDiscoveryBlockOsData) CreateAdsDiscoveryBlockOsDataBuilder() AdsDiscoveryBlockOsDataBuilder {
+	if m == nil {
+		return NewAdsDiscoveryBlockOsDataBuilder()
+	}
+	return &_AdsDiscoveryBlockOsDataBuilder{_AdsDiscoveryBlockOsData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type KnxNetIpCore interface {
 	GetVersion() uint8
 	// IsKnxNetIpCore is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpCore()
+	// CreateBuilder creates a KnxNetIpCoreBuilder
+	CreateKnxNetIpCoreBuilder() KnxNetIpCoreBuilder
 }
 
 // _KnxNetIpCore is the data-structure of this message
@@ -64,6 +66,78 @@ func NewKnxNetIpCore(version uint8) *_KnxNetIpCore {
 	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpCoreBuilder is a builder for KnxNetIpCore
+type KnxNetIpCoreBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetIpCoreBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetIpCoreBuilder
+	// Build builds the KnxNetIpCore or returns an error if something is wrong
+	Build() (KnxNetIpCore, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpCore
+}
+
+// NewKnxNetIpCoreBuilder() creates a KnxNetIpCoreBuilder
+func NewKnxNetIpCoreBuilder() KnxNetIpCoreBuilder {
+	return &_KnxNetIpCoreBuilder{_KnxNetIpCore: new(_KnxNetIpCore)}
+}
+
+type _KnxNetIpCoreBuilder struct {
+	*_KnxNetIpCore
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpCoreBuilder) = (*_KnxNetIpCoreBuilder)(nil)
+
+func (m *_KnxNetIpCoreBuilder) WithMandatoryFields(version uint8) KnxNetIpCoreBuilder {
+	return m.WithVersion(version)
+}
+
+func (m *_KnxNetIpCoreBuilder) WithVersion(version uint8) KnxNetIpCoreBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_KnxNetIpCoreBuilder) Build() (KnxNetIpCore, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxNetIpCore.deepCopy(), nil
+}
+
+func (m *_KnxNetIpCoreBuilder) MustBuild() KnxNetIpCore {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxNetIpCoreBuilder) DeepCopy() any {
+	return m.CreateKnxNetIpCoreBuilder()
+}
+
+// CreateKnxNetIpCoreBuilder creates a KnxNetIpCoreBuilder
+func (m *_KnxNetIpCore) CreateKnxNetIpCoreBuilder() KnxNetIpCoreBuilder {
+	if m == nil {
+		return NewKnxNetIpCoreBuilder()
+	}
+	return &_KnxNetIpCoreBuilder{_KnxNetIpCore: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

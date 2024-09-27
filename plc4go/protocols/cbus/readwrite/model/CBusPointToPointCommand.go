@@ -43,6 +43,8 @@ type CBusPointToPointCommand interface {
 	utils.Copyable
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
+	// CreateBuilder creates a CBusPointToPointCommandBuilder
+	CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder
 }
 
 // CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type CBusPointToPointCommandContract interface {
 	GetCBusOptions() CBusOptions
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
+	// CreateBuilder creates a CBusPointToPointCommandBuilder
+	CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder
 }
 
 // CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -86,6 +90,91 @@ func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, 
 	}
 	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToPointCommandBuilder is a builder for CBusPointToPointCommand
+type CBusPointToPointCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bridgeAddressCountPeek uint16, calData CALData) CBusPointToPointCommandBuilder
+	// WithBridgeAddressCountPeek adds BridgeAddressCountPeek (property field)
+	WithBridgeAddressCountPeek(uint16) CBusPointToPointCommandBuilder
+	// WithCalData adds CalData (property field)
+	WithCalData(CALData) CBusPointToPointCommandBuilder
+	// Build builds the CBusPointToPointCommand or returns an error if something is wrong
+	Build() (CBusPointToPointCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToPointCommandContract
+}
+
+// NewCBusPointToPointCommandBuilder() creates a CBusPointToPointCommandBuilder
+func NewCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder {
+	return &_CBusPointToPointCommandBuilder{_CBusPointToPointCommand: new(_CBusPointToPointCommand)}
+}
+
+type _CBusPointToPointCommandBuilder struct {
+	*_CBusPointToPointCommand
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToPointCommandBuilder) = (*_CBusPointToPointCommandBuilder)(nil)
+
+func (m *_CBusPointToPointCommandBuilder) WithMandatoryFields(bridgeAddressCountPeek uint16, calData CALData) CBusPointToPointCommandBuilder {
+	return m.WithBridgeAddressCountPeek(bridgeAddressCountPeek).WithCalData(calData)
+}
+
+func (m *_CBusPointToPointCommandBuilder) WithBridgeAddressCountPeek(bridgeAddressCountPeek uint16) CBusPointToPointCommandBuilder {
+	m.BridgeAddressCountPeek = bridgeAddressCountPeek
+	return m
+}
+
+func (m *_CBusPointToPointCommandBuilder) WithCalData(calData CALData) CBusPointToPointCommandBuilder {
+	m.CalData = calData
+	return m
+}
+
+func (m *_CBusPointToPointCommandBuilder) Build() (CBusPointToPointCommandContract, error) {
+	if m.CalData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusPointToPointCommand.deepCopy(), nil
+}
+
+func (m *_CBusPointToPointCommandBuilder) MustBuild() CBusPointToPointCommandContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusPointToPointCommandBuilder) DeepCopy() any {
+	return m.CreateCBusPointToPointCommandBuilder()
+}
+
+// CreateCBusPointToPointCommandBuilder creates a CBusPointToPointCommandBuilder
+func (m *_CBusPointToPointCommand) CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder {
+	if m == nil {
+		return NewCBusPointToPointCommandBuilder()
+	}
+	return &_CBusPointToPointCommandBuilder{_CBusPointToPointCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

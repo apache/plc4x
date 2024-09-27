@@ -48,6 +48,8 @@ type LDataInd interface {
 	GetDataFrame() LDataFrame
 	// IsLDataInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataInd()
+	// CreateBuilder creates a LDataIndBuilder
+	CreateLDataIndBuilder() LDataIndBuilder
 }
 
 // _LDataInd is the data-structure of this message
@@ -75,6 +77,98 @@ func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMI
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataIndBuilder is a builder for LDataInd
+type LDataIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataIndBuilder
+	// WithAdditionalInformationLength adds AdditionalInformationLength (property field)
+	WithAdditionalInformationLength(uint8) LDataIndBuilder
+	// WithAdditionalInformation adds AdditionalInformation (property field)
+	WithAdditionalInformation(...CEMIAdditionalInformation) LDataIndBuilder
+	// WithDataFrame adds DataFrame (property field)
+	WithDataFrame(LDataFrame) LDataIndBuilder
+	// Build builds the LDataInd or returns an error if something is wrong
+	Build() (LDataInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataInd
+}
+
+// NewLDataIndBuilder() creates a LDataIndBuilder
+func NewLDataIndBuilder() LDataIndBuilder {
+	return &_LDataIndBuilder{_LDataInd: new(_LDataInd)}
+}
+
+type _LDataIndBuilder struct {
+	*_LDataInd
+
+	err *utils.MultiError
+}
+
+var _ (LDataIndBuilder) = (*_LDataIndBuilder)(nil)
+
+func (m *_LDataIndBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataIndBuilder {
+	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+}
+
+func (m *_LDataIndBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataIndBuilder {
+	m.AdditionalInformationLength = additionalInformationLength
+	return m
+}
+
+func (m *_LDataIndBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataIndBuilder {
+	m.AdditionalInformation = additionalInformation
+	return m
+}
+
+func (m *_LDataIndBuilder) WithDataFrame(dataFrame LDataFrame) LDataIndBuilder {
+	m.DataFrame = dataFrame
+	return m
+}
+
+func (m *_LDataIndBuilder) Build() (LDataInd, error) {
+	if m.DataFrame == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LDataInd.deepCopy(), nil
+}
+
+func (m *_LDataIndBuilder) MustBuild() LDataInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LDataIndBuilder) DeepCopy() any {
+	return m.CreateLDataIndBuilder()
+}
+
+// CreateLDataIndBuilder creates a LDataIndBuilder
+func (m *_LDataInd) CreateLDataIndBuilder() LDataIndBuilder {
+	if m == nil {
+		return NewLDataIndBuilder()
+	}
+	return &_LDataIndBuilder{_LDataInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

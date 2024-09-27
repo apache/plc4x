@@ -44,6 +44,8 @@ type BACnetChannelValueLightingCommand interface {
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
 	// IsBACnetChannelValueLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueLightingCommand()
+	// CreateBuilder creates a BACnetChannelValueLightingCommandBuilder
+	CreateBACnetChannelValueLightingCommandBuilder() BACnetChannelValueLightingCommandBuilder
 }
 
 // _BACnetChannelValueLightingCommand is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueLightingCommand(peekedTagHeader BACnetTagHeader, ligth
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueLightingCommandBuilder is a builder for BACnetChannelValueLightingCommand
+type BACnetChannelValueLightingCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder
+	// WithLigthingCommandValue adds LigthingCommandValue (property field)
+	WithLigthingCommandValue(BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder
+	// WithLigthingCommandValueBuilder adds LigthingCommandValue (property field) which is build by the builder
+	WithLigthingCommandValueBuilder(func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetChannelValueLightingCommandBuilder
+	// Build builds the BACnetChannelValueLightingCommand or returns an error if something is wrong
+	Build() (BACnetChannelValueLightingCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueLightingCommand
+}
+
+// NewBACnetChannelValueLightingCommandBuilder() creates a BACnetChannelValueLightingCommandBuilder
+func NewBACnetChannelValueLightingCommandBuilder() BACnetChannelValueLightingCommandBuilder {
+	return &_BACnetChannelValueLightingCommandBuilder{_BACnetChannelValueLightingCommand: new(_BACnetChannelValueLightingCommand)}
+}
+
+type _BACnetChannelValueLightingCommandBuilder struct {
+	*_BACnetChannelValueLightingCommand
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueLightingCommandBuilder) = (*_BACnetChannelValueLightingCommandBuilder)(nil)
+
+func (m *_BACnetChannelValueLightingCommandBuilder) WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder {
+	return m.WithLigthingCommandValue(ligthingCommandValue)
+}
+
+func (m *_BACnetChannelValueLightingCommandBuilder) WithLigthingCommandValue(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetChannelValueLightingCommandBuilder {
+	m.LigthingCommandValue = ligthingCommandValue
+	return m
+}
+
+func (m *_BACnetChannelValueLightingCommandBuilder) WithLigthingCommandValueBuilder(builderSupplier func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetChannelValueLightingCommandBuilder {
+	builder := builderSupplier(m.LigthingCommandValue.CreateBACnetLightingCommandEnclosedBuilder())
+	var err error
+	m.LigthingCommandValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLightingCommandEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueLightingCommandBuilder) Build() (BACnetChannelValueLightingCommand, error) {
+	if m.LigthingCommandValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'ligthingCommandValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueLightingCommand.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueLightingCommandBuilder) MustBuild() BACnetChannelValueLightingCommand {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueLightingCommandBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueLightingCommandBuilder()
+}
+
+// CreateBACnetChannelValueLightingCommandBuilder creates a BACnetChannelValueLightingCommandBuilder
+func (m *_BACnetChannelValueLightingCommand) CreateBACnetChannelValueLightingCommandBuilder() BACnetChannelValueLightingCommandBuilder {
+	if m == nil {
+		return NewBACnetChannelValueLightingCommandBuilder()
+	}
+	return &_BACnetChannelValueLightingCommandBuilder{_BACnetChannelValueLightingCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

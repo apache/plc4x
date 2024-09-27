@@ -43,6 +43,8 @@ type MonitoredSAL interface {
 	utils.Copyable
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
+	// CreateBuilder creates a MonitoredSALBuilder
+	CreateMonitoredSALBuilder() MonitoredSALBuilder
 }
 
 // MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type MonitoredSALContract interface {
 	GetCBusOptions() CBusOptions
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
+	// CreateBuilder creates a MonitoredSALBuilder
+	CreateMonitoredSALBuilder() MonitoredSALBuilder
 }
 
 // MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,78 @@ var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
 	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredSALBuilder is a builder for MonitoredSAL
+type MonitoredSALBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(salType byte) MonitoredSALBuilder
+	// WithSalType adds SalType (property field)
+	WithSalType(byte) MonitoredSALBuilder
+	// Build builds the MonitoredSAL or returns an error if something is wrong
+	Build() (MonitoredSALContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredSALContract
+}
+
+// NewMonitoredSALBuilder() creates a MonitoredSALBuilder
+func NewMonitoredSALBuilder() MonitoredSALBuilder {
+	return &_MonitoredSALBuilder{_MonitoredSAL: new(_MonitoredSAL)}
+}
+
+type _MonitoredSALBuilder struct {
+	*_MonitoredSAL
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredSALBuilder) = (*_MonitoredSALBuilder)(nil)
+
+func (m *_MonitoredSALBuilder) WithMandatoryFields(salType byte) MonitoredSALBuilder {
+	return m.WithSalType(salType)
+}
+
+func (m *_MonitoredSALBuilder) WithSalType(salType byte) MonitoredSALBuilder {
+	m.SalType = salType
+	return m
+}
+
+func (m *_MonitoredSALBuilder) Build() (MonitoredSALContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MonitoredSAL.deepCopy(), nil
+}
+
+func (m *_MonitoredSALBuilder) MustBuild() MonitoredSALContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MonitoredSALBuilder) DeepCopy() any {
+	return m.CreateMonitoredSALBuilder()
+}
+
+// CreateMonitoredSALBuilder creates a MonitoredSALBuilder
+func (m *_MonitoredSAL) CreateMonitoredSALBuilder() MonitoredSALBuilder {
+	if m == nil {
+		return NewMonitoredSALBuilder()
+	}
+	return &_MonitoredSALBuilder{_MonitoredSAL: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

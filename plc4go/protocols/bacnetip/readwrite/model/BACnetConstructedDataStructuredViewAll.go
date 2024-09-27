@@ -40,6 +40,8 @@ type BACnetConstructedDataStructuredViewAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataStructuredViewAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStructuredViewAll()
+	// CreateBuilder creates a BACnetConstructedDataStructuredViewAllBuilder
+	CreateBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStructuredViewAllBuilder
 }
 
 // _BACnetConstructedDataStructuredViewAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataStructuredViewAll(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataStructuredViewAllBuilder is a builder for BACnetConstructedDataStructuredViewAll
+type BACnetConstructedDataStructuredViewAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataStructuredViewAllBuilder
+	// Build builds the BACnetConstructedDataStructuredViewAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataStructuredViewAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataStructuredViewAll
+}
+
+// NewBACnetConstructedDataStructuredViewAllBuilder() creates a BACnetConstructedDataStructuredViewAllBuilder
+func NewBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStructuredViewAllBuilder {
+	return &_BACnetConstructedDataStructuredViewAllBuilder{_BACnetConstructedDataStructuredViewAll: new(_BACnetConstructedDataStructuredViewAll)}
+}
+
+type _BACnetConstructedDataStructuredViewAllBuilder struct {
+	*_BACnetConstructedDataStructuredViewAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataStructuredViewAllBuilder) = (*_BACnetConstructedDataStructuredViewAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataStructuredViewAllBuilder) WithMandatoryFields() BACnetConstructedDataStructuredViewAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataStructuredViewAllBuilder) Build() (BACnetConstructedDataStructuredViewAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataStructuredViewAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataStructuredViewAllBuilder) MustBuild() BACnetConstructedDataStructuredViewAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataStructuredViewAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataStructuredViewAllBuilder()
+}
+
+// CreateBACnetConstructedDataStructuredViewAllBuilder creates a BACnetConstructedDataStructuredViewAllBuilder
+func (m *_BACnetConstructedDataStructuredViewAll) CreateBACnetConstructedDataStructuredViewAllBuilder() BACnetConstructedDataStructuredViewAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataStructuredViewAllBuilder()
+	}
+	return &_BACnetConstructedDataStructuredViewAllBuilder{_BACnetConstructedDataStructuredViewAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

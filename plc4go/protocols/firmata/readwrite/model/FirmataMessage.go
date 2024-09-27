@@ -45,6 +45,8 @@ type FirmataMessage interface {
 	utils.Copyable
 	// IsFirmataMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessage()
+	// CreateBuilder creates a FirmataMessageBuilder
+	CreateFirmataMessageBuilder() FirmataMessageBuilder
 }
 
 // FirmataMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type FirmataMessageContract interface {
 	GetResponse() bool
 	// IsFirmataMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessage()
+	// CreateBuilder creates a FirmataMessageBuilder
+	CreateFirmataMessageBuilder() FirmataMessageBuilder
 }
 
 // FirmataMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -77,6 +81,71 @@ var _ FirmataMessageContract = (*_FirmataMessage)(nil)
 func NewFirmataMessage(response bool) *_FirmataMessage {
 	return &_FirmataMessage{Response: response}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataMessageBuilder is a builder for FirmataMessage
+type FirmataMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() FirmataMessageBuilder
+	// Build builds the FirmataMessage or returns an error if something is wrong
+	Build() (FirmataMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataMessageContract
+}
+
+// NewFirmataMessageBuilder() creates a FirmataMessageBuilder
+func NewFirmataMessageBuilder() FirmataMessageBuilder {
+	return &_FirmataMessageBuilder{_FirmataMessage: new(_FirmataMessage)}
+}
+
+type _FirmataMessageBuilder struct {
+	*_FirmataMessage
+
+	err *utils.MultiError
+}
+
+var _ (FirmataMessageBuilder) = (*_FirmataMessageBuilder)(nil)
+
+func (m *_FirmataMessageBuilder) WithMandatoryFields() FirmataMessageBuilder {
+	return m
+}
+
+func (m *_FirmataMessageBuilder) Build() (FirmataMessageContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataMessage.deepCopy(), nil
+}
+
+func (m *_FirmataMessageBuilder) MustBuild() FirmataMessageContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataMessageBuilder) DeepCopy() any {
+	return m.CreateFirmataMessageBuilder()
+}
+
+// CreateFirmataMessageBuilder creates a FirmataMessageBuilder
+func (m *_FirmataMessage) CreateFirmataMessageBuilder() FirmataMessageBuilder {
+	if m == nil {
+		return NewFirmataMessageBuilder()
+	}
+	return &_FirmataMessageBuilder{_FirmataMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessage(structType any) FirmataMessage {

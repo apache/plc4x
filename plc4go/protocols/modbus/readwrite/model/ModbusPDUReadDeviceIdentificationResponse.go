@@ -57,6 +57,8 @@ type ModbusPDUReadDeviceIdentificationResponse interface {
 	GetObjects() []ModbusDeviceInformationObject
 	// IsModbusPDUReadDeviceIdentificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadDeviceIdentificationResponse()
+	// CreateBuilder creates a ModbusPDUReadDeviceIdentificationResponseBuilder
+	CreateModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceIdentificationResponseBuilder
 }
 
 // _ModbusPDUReadDeviceIdentificationResponse is the data-structure of this message
@@ -87,6 +89,113 @@ func NewModbusPDUReadDeviceIdentificationResponse(level ModbusDeviceInformationL
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadDeviceIdentificationResponseBuilder is a builder for ModbusPDUReadDeviceIdentificationResponse
+type ModbusPDUReadDeviceIdentificationResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithIndividualAccess adds IndividualAccess (property field)
+	WithIndividualAccess(bool) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithConformityLevel adds ConformityLevel (property field)
+	WithConformityLevel(ModbusDeviceInformationConformityLevel) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithMoreFollows adds MoreFollows (property field)
+	WithMoreFollows(ModbusDeviceInformationMoreFollows) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithNextObjectId adds NextObjectId (property field)
+	WithNextObjectId(uint8) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// WithObjects adds Objects (property field)
+	WithObjects(...ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder
+	// Build builds the ModbusPDUReadDeviceIdentificationResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadDeviceIdentificationResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadDeviceIdentificationResponse
+}
+
+// NewModbusPDUReadDeviceIdentificationResponseBuilder() creates a ModbusPDUReadDeviceIdentificationResponseBuilder
+func NewModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceIdentificationResponseBuilder {
+	return &_ModbusPDUReadDeviceIdentificationResponseBuilder{_ModbusPDUReadDeviceIdentificationResponse: new(_ModbusPDUReadDeviceIdentificationResponse)}
+}
+
+type _ModbusPDUReadDeviceIdentificationResponseBuilder struct {
+	*_ModbusPDUReadDeviceIdentificationResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadDeviceIdentificationResponseBuilder) = (*_ModbusPDUReadDeviceIdentificationResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMandatoryFields(level ModbusDeviceInformationLevel, individualAccess bool, conformityLevel ModbusDeviceInformationConformityLevel, moreFollows ModbusDeviceInformationMoreFollows, nextObjectId uint8, objects []ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	return m.WithLevel(level).WithIndividualAccess(individualAccess).WithConformityLevel(conformityLevel).WithMoreFollows(moreFollows).WithNextObjectId(nextObjectId).WithObjects(objects...)
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithLevel(level ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithIndividualAccess(individualAccess bool) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.IndividualAccess = individualAccess
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithConformityLevel(conformityLevel ModbusDeviceInformationConformityLevel) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.ConformityLevel = conformityLevel
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithMoreFollows(moreFollows ModbusDeviceInformationMoreFollows) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.MoreFollows = moreFollows
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithNextObjectId(nextObjectId uint8) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.NextObjectId = nextObjectId
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) WithObjects(objects ...ModbusDeviceInformationObject) ModbusPDUReadDeviceIdentificationResponseBuilder {
+	m.Objects = objects
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) Build() (ModbusPDUReadDeviceIdentificationResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadDeviceIdentificationResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) MustBuild() ModbusPDUReadDeviceIdentificationResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadDeviceIdentificationResponseBuilder()
+}
+
+// CreateModbusPDUReadDeviceIdentificationResponseBuilder creates a ModbusPDUReadDeviceIdentificationResponseBuilder
+func (m *_ModbusPDUReadDeviceIdentificationResponse) CreateModbusPDUReadDeviceIdentificationResponseBuilder() ModbusPDUReadDeviceIdentificationResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadDeviceIdentificationResponseBuilder()
+	}
+	return &_ModbusPDUReadDeviceIdentificationResponseBuilder{_ModbusPDUReadDeviceIdentificationResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetErrorGeneral interface {
 	GetError() Error
 	// IsBACnetErrorGeneral is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetErrorGeneral()
+	// CreateBuilder creates a BACnetErrorGeneralBuilder
+	CreateBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder
 }
 
 // _BACnetErrorGeneral is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetErrorGeneral(error Error) *_BACnetErrorGeneral {
 	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetErrorGeneralBuilder is a builder for BACnetErrorGeneral
+type BACnetErrorGeneralBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(error Error) BACnetErrorGeneralBuilder
+	// WithError adds Error (property field)
+	WithError(Error) BACnetErrorGeneralBuilder
+	// WithErrorBuilder adds Error (property field) which is build by the builder
+	WithErrorBuilder(func(ErrorBuilder) ErrorBuilder) BACnetErrorGeneralBuilder
+	// Build builds the BACnetErrorGeneral or returns an error if something is wrong
+	Build() (BACnetErrorGeneral, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetErrorGeneral
+}
+
+// NewBACnetErrorGeneralBuilder() creates a BACnetErrorGeneralBuilder
+func NewBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder {
+	return &_BACnetErrorGeneralBuilder{_BACnetErrorGeneral: new(_BACnetErrorGeneral)}
+}
+
+type _BACnetErrorGeneralBuilder struct {
+	*_BACnetErrorGeneral
+
+	err *utils.MultiError
+}
+
+var _ (BACnetErrorGeneralBuilder) = (*_BACnetErrorGeneralBuilder)(nil)
+
+func (m *_BACnetErrorGeneralBuilder) WithMandatoryFields(error Error) BACnetErrorGeneralBuilder {
+	return m.WithError(error)
+}
+
+func (m *_BACnetErrorGeneralBuilder) WithError(error Error) BACnetErrorGeneralBuilder {
+	m.Error = error
+	return m
+}
+
+func (m *_BACnetErrorGeneralBuilder) WithErrorBuilder(builderSupplier func(ErrorBuilder) ErrorBuilder) BACnetErrorGeneralBuilder {
+	builder := builderSupplier(m.Error.CreateErrorBuilder())
+	var err error
+	m.Error, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetErrorGeneralBuilder) Build() (BACnetErrorGeneral, error) {
+	if m.Error == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'error' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetErrorGeneral.deepCopy(), nil
+}
+
+func (m *_BACnetErrorGeneralBuilder) MustBuild() BACnetErrorGeneral {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetErrorGeneralBuilder) DeepCopy() any {
+	return m.CreateBACnetErrorGeneralBuilder()
+}
+
+// CreateBACnetErrorGeneralBuilder creates a BACnetErrorGeneralBuilder
+func (m *_BACnetErrorGeneral) CreateBACnetErrorGeneralBuilder() BACnetErrorGeneralBuilder {
+	if m == nil {
+		return NewBACnetErrorGeneralBuilder()
+	}
+	return &_BACnetErrorGeneralBuilder{_BACnetErrorGeneral: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type DF1UnprotectedReadResponse interface {
 	GetData() []byte
 	// IsDF1UnprotectedReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1UnprotectedReadResponse()
+	// CreateBuilder creates a DF1UnprotectedReadResponseBuilder
+	CreateDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder
 }
 
 // _DF1UnprotectedReadResponse is the data-structure of this message
@@ -63,6 +65,78 @@ func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data
 	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1UnprotectedReadResponseBuilder is a builder for DF1UnprotectedReadResponse
+type DF1UnprotectedReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) DF1UnprotectedReadResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) DF1UnprotectedReadResponseBuilder
+	// Build builds the DF1UnprotectedReadResponse or returns an error if something is wrong
+	Build() (DF1UnprotectedReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1UnprotectedReadResponse
+}
+
+// NewDF1UnprotectedReadResponseBuilder() creates a DF1UnprotectedReadResponseBuilder
+func NewDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder {
+	return &_DF1UnprotectedReadResponseBuilder{_DF1UnprotectedReadResponse: new(_DF1UnprotectedReadResponse)}
+}
+
+type _DF1UnprotectedReadResponseBuilder struct {
+	*_DF1UnprotectedReadResponse
+
+	err *utils.MultiError
+}
+
+var _ (DF1UnprotectedReadResponseBuilder) = (*_DF1UnprotectedReadResponseBuilder)(nil)
+
+func (m *_DF1UnprotectedReadResponseBuilder) WithMandatoryFields(data []byte) DF1UnprotectedReadResponseBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_DF1UnprotectedReadResponseBuilder) WithData(data ...byte) DF1UnprotectedReadResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_DF1UnprotectedReadResponseBuilder) Build() (DF1UnprotectedReadResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1UnprotectedReadResponse.deepCopy(), nil
+}
+
+func (m *_DF1UnprotectedReadResponseBuilder) MustBuild() DF1UnprotectedReadResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1UnprotectedReadResponseBuilder) DeepCopy() any {
+	return m.CreateDF1UnprotectedReadResponseBuilder()
+}
+
+// CreateDF1UnprotectedReadResponseBuilder creates a DF1UnprotectedReadResponseBuilder
+func (m *_DF1UnprotectedReadResponse) CreateDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder {
+	if m == nil {
+		return NewDF1UnprotectedReadResponseBuilder()
+	}
+	return &_DF1UnprotectedReadResponseBuilder{_DF1UnprotectedReadResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

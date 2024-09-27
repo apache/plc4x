@@ -46,6 +46,8 @@ type BACnetConstructedDataAlertEnrollmentPresentValue interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 	// IsBACnetConstructedDataAlertEnrollmentPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAlertEnrollmentPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+	CreateBACnetConstructedDataAlertEnrollmentPresentValueBuilder() BACnetConstructedDataAlertEnrollmentPresentValueBuilder
 }
 
 // _BACnetConstructedDataAlertEnrollmentPresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAlertEnrollmentPresentValue(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAlertEnrollmentPresentValueBuilder is a builder for BACnetConstructedDataAlertEnrollmentPresentValue
+type BACnetConstructedDataAlertEnrollmentPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagObjectIdentifier) BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+	// Build builds the BACnetConstructedDataAlertEnrollmentPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAlertEnrollmentPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAlertEnrollmentPresentValue
+}
+
+// NewBACnetConstructedDataAlertEnrollmentPresentValueBuilder() creates a BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+func NewBACnetConstructedDataAlertEnrollmentPresentValueBuilder() BACnetConstructedDataAlertEnrollmentPresentValueBuilder {
+	return &_BACnetConstructedDataAlertEnrollmentPresentValueBuilder{_BACnetConstructedDataAlertEnrollmentPresentValue: new(_BACnetConstructedDataAlertEnrollmentPresentValue)}
+}
+
+type _BACnetConstructedDataAlertEnrollmentPresentValueBuilder struct {
+	*_BACnetConstructedDataAlertEnrollmentPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAlertEnrollmentPresentValueBuilder) = (*_BACnetConstructedDataAlertEnrollmentPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagObjectIdentifier) BACnetConstructedDataAlertEnrollmentPresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagObjectIdentifier) BACnetConstructedDataAlertEnrollmentPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataAlertEnrollmentPresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) Build() (BACnetConstructedDataAlertEnrollmentPresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAlertEnrollmentPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) MustBuild() BACnetConstructedDataAlertEnrollmentPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAlertEnrollmentPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataAlertEnrollmentPresentValueBuilder creates a BACnetConstructedDataAlertEnrollmentPresentValueBuilder
+func (m *_BACnetConstructedDataAlertEnrollmentPresentValue) CreateBACnetConstructedDataAlertEnrollmentPresentValueBuilder() BACnetConstructedDataAlertEnrollmentPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAlertEnrollmentPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataAlertEnrollmentPresentValueBuilder{_BACnetConstructedDataAlertEnrollmentPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

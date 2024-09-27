@@ -44,6 +44,8 @@ type BACnetLogDataLogDataEntryAnyValue interface {
 	GetAnyValue() BACnetConstructedData
 	// IsBACnetLogDataLogDataEntryAnyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntryAnyValue()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryAnyValueBuilder
+	CreateBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyValueBuilder
 }
 
 // _BACnetLogDataLogDataEntryAnyValue is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetLogDataLogDataEntryAnyValue(peekedTagHeader BACnetTagHeader, anyVa
 	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryAnyValueBuilder is a builder for BACnetLogDataLogDataEntryAnyValue
+type BACnetLogDataLogDataEntryAnyValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetLogDataLogDataEntryAnyValueBuilder
+	// WithAnyValue adds AnyValue (property field)
+	WithOptionalAnyValue(BACnetConstructedData) BACnetLogDataLogDataEntryAnyValueBuilder
+	// Build builds the BACnetLogDataLogDataEntryAnyValue or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryAnyValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryAnyValue
+}
+
+// NewBACnetLogDataLogDataEntryAnyValueBuilder() creates a BACnetLogDataLogDataEntryAnyValueBuilder
+func NewBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyValueBuilder {
+	return &_BACnetLogDataLogDataEntryAnyValueBuilder{_BACnetLogDataLogDataEntryAnyValue: new(_BACnetLogDataLogDataEntryAnyValue)}
+}
+
+type _BACnetLogDataLogDataEntryAnyValueBuilder struct {
+	*_BACnetLogDataLogDataEntryAnyValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryAnyValueBuilder) = (*_BACnetLogDataLogDataEntryAnyValueBuilder)(nil)
+
+func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) WithMandatoryFields() BACnetLogDataLogDataEntryAnyValueBuilder {
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) WithOptionalAnyValue(anyValue BACnetConstructedData) BACnetLogDataLogDataEntryAnyValueBuilder {
+	m.AnyValue = anyValue
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) Build() (BACnetLogDataLogDataEntryAnyValue, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogDataEntryAnyValue.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) MustBuild() BACnetLogDataLogDataEntryAnyValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogDataEntryAnyValueBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogDataEntryAnyValueBuilder()
+}
+
+// CreateBACnetLogDataLogDataEntryAnyValueBuilder creates a BACnetLogDataLogDataEntryAnyValueBuilder
+func (m *_BACnetLogDataLogDataEntryAnyValue) CreateBACnetLogDataLogDataEntryAnyValueBuilder() BACnetLogDataLogDataEntryAnyValueBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogDataEntryAnyValueBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryAnyValueBuilder{_BACnetLogDataLogDataEntryAnyValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

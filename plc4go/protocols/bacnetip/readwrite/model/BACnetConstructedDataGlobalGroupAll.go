@@ -40,6 +40,8 @@ type BACnetConstructedDataGlobalGroupAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataGlobalGroupAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalGroupAll()
+	// CreateBuilder creates a BACnetConstructedDataGlobalGroupAllBuilder
+	CreateBACnetConstructedDataGlobalGroupAllBuilder() BACnetConstructedDataGlobalGroupAllBuilder
 }
 
 // _BACnetConstructedDataGlobalGroupAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataGlobalGroupAll(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGlobalGroupAllBuilder is a builder for BACnetConstructedDataGlobalGroupAll
+type BACnetConstructedDataGlobalGroupAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataGlobalGroupAllBuilder
+	// Build builds the BACnetConstructedDataGlobalGroupAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataGlobalGroupAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGlobalGroupAll
+}
+
+// NewBACnetConstructedDataGlobalGroupAllBuilder() creates a BACnetConstructedDataGlobalGroupAllBuilder
+func NewBACnetConstructedDataGlobalGroupAllBuilder() BACnetConstructedDataGlobalGroupAllBuilder {
+	return &_BACnetConstructedDataGlobalGroupAllBuilder{_BACnetConstructedDataGlobalGroupAll: new(_BACnetConstructedDataGlobalGroupAll)}
+}
+
+type _BACnetConstructedDataGlobalGroupAllBuilder struct {
+	*_BACnetConstructedDataGlobalGroupAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGlobalGroupAllBuilder) = (*_BACnetConstructedDataGlobalGroupAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataGlobalGroupAllBuilder) WithMandatoryFields() BACnetConstructedDataGlobalGroupAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataGlobalGroupAllBuilder) Build() (BACnetConstructedDataGlobalGroupAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataGlobalGroupAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataGlobalGroupAllBuilder) MustBuild() BACnetConstructedDataGlobalGroupAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataGlobalGroupAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataGlobalGroupAllBuilder()
+}
+
+// CreateBACnetConstructedDataGlobalGroupAllBuilder creates a BACnetConstructedDataGlobalGroupAllBuilder
+func (m *_BACnetConstructedDataGlobalGroupAll) CreateBACnetConstructedDataGlobalGroupAllBuilder() BACnetConstructedDataGlobalGroupAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataGlobalGroupAllBuilder()
+	}
+	return &_BACnetConstructedDataGlobalGroupAllBuilder{_BACnetConstructedDataGlobalGroupAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

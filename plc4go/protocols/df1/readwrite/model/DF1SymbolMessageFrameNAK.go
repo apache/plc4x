@@ -41,6 +41,8 @@ type DF1SymbolMessageFrameNAK interface {
 	DF1Symbol
 	// IsDF1SymbolMessageFrameNAK is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1SymbolMessageFrameNAK()
+	// CreateBuilder creates a DF1SymbolMessageFrameNAKBuilder
+	CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder
 }
 
 // _DF1SymbolMessageFrameNAK is the data-structure of this message
@@ -59,6 +61,71 @@ func NewDF1SymbolMessageFrameNAK() *_DF1SymbolMessageFrameNAK {
 	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1SymbolMessageFrameNAKBuilder is a builder for DF1SymbolMessageFrameNAK
+type DF1SymbolMessageFrameNAKBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder
+	// Build builds the DF1SymbolMessageFrameNAK or returns an error if something is wrong
+	Build() (DF1SymbolMessageFrameNAK, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1SymbolMessageFrameNAK
+}
+
+// NewDF1SymbolMessageFrameNAKBuilder() creates a DF1SymbolMessageFrameNAKBuilder
+func NewDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
+	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: new(_DF1SymbolMessageFrameNAK)}
+}
+
+type _DF1SymbolMessageFrameNAKBuilder struct {
+	*_DF1SymbolMessageFrameNAK
+
+	err *utils.MultiError
+}
+
+var _ (DF1SymbolMessageFrameNAKBuilder) = (*_DF1SymbolMessageFrameNAKBuilder)(nil)
+
+func (m *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder {
+	return m
+}
+
+func (m *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1SymbolMessageFrameNAK.deepCopy(), nil
+}
+
+func (m *_DF1SymbolMessageFrameNAKBuilder) MustBuild() DF1SymbolMessageFrameNAK {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1SymbolMessageFrameNAKBuilder) DeepCopy() any {
+	return m.CreateDF1SymbolMessageFrameNAKBuilder()
+}
+
+// CreateDF1SymbolMessageFrameNAKBuilder creates a DF1SymbolMessageFrameNAKBuilder
+func (m *_DF1SymbolMessageFrameNAK) CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
+	if m == nil {
+		return NewDF1SymbolMessageFrameNAKBuilder()
+	}
+	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

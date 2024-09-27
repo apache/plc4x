@@ -44,6 +44,8 @@ type BACnetCalendarEntryDate interface {
 	GetDateValue() BACnetContextTagDate
 	// IsBACnetCalendarEntryDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntryDate()
+	// CreateBuilder creates a BACnetCalendarEntryDateBuilder
+	CreateBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder
 }
 
 // _BACnetCalendarEntryDate is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetCalendarEntryDate(peekedTagHeader BACnetTagHeader, dateValue BACne
 	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCalendarEntryDateBuilder is a builder for BACnetCalendarEntryDate
+type BACnetCalendarEntryDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder
+	// WithDateValue adds DateValue (property field)
+	WithDateValue(BACnetContextTagDate) BACnetCalendarEntryDateBuilder
+	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithDateValueBuilder(func(BACnetContextTagDateBuilder) BACnetContextTagDateBuilder) BACnetCalendarEntryDateBuilder
+	// Build builds the BACnetCalendarEntryDate or returns an error if something is wrong
+	Build() (BACnetCalendarEntryDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntryDate
+}
+
+// NewBACnetCalendarEntryDateBuilder() creates a BACnetCalendarEntryDateBuilder
+func NewBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder {
+	return &_BACnetCalendarEntryDateBuilder{_BACnetCalendarEntryDate: new(_BACnetCalendarEntryDate)}
+}
+
+type _BACnetCalendarEntryDateBuilder struct {
+	*_BACnetCalendarEntryDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCalendarEntryDateBuilder) = (*_BACnetCalendarEntryDateBuilder)(nil)
+
+func (m *_BACnetCalendarEntryDateBuilder) WithMandatoryFields(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
+	return m.WithDateValue(dateValue)
+}
+
+func (m *_BACnetCalendarEntryDateBuilder) WithDateValue(dateValue BACnetContextTagDate) BACnetCalendarEntryDateBuilder {
+	m.DateValue = dateValue
+	return m
+}
+
+func (m *_BACnetCalendarEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetContextTagDateBuilder) BACnetContextTagDateBuilder) BACnetCalendarEntryDateBuilder {
+	builder := builderSupplier(m.DateValue.CreateBACnetContextTagDateBuilder())
+	var err error
+	m.DateValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCalendarEntryDateBuilder) Build() (BACnetCalendarEntryDate, error) {
+	if m.DateValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCalendarEntryDate.deepCopy(), nil
+}
+
+func (m *_BACnetCalendarEntryDateBuilder) MustBuild() BACnetCalendarEntryDate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCalendarEntryDateBuilder) DeepCopy() any {
+	return m.CreateBACnetCalendarEntryDateBuilder()
+}
+
+// CreateBACnetCalendarEntryDateBuilder creates a BACnetCalendarEntryDateBuilder
+func (m *_BACnetCalendarEntryDate) CreateBACnetCalendarEntryDateBuilder() BACnetCalendarEntryDateBuilder {
+	if m == nil {
+		return NewBACnetCalendarEntryDateBuilder()
+	}
+	return &_BACnetCalendarEntryDateBuilder{_BACnetCalendarEntryDate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

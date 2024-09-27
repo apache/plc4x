@@ -46,6 +46,8 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataOccupancyCountAdjust is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOccupancyCountAdjust()
+	// CreateBuilder creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+	CreateBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder
 }
 
 // _BACnetConstructedDataOccupancyCountAdjust is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataOccupancyCountAdjust(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOccupancyCountAdjustBuilder is a builder for BACnetConstructedDataOccupancyCountAdjust
+type BACnetConstructedDataOccupancyCountAdjustBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// WithOccupancyCountAdjust adds OccupancyCountAdjust (property field)
+	WithOccupancyCountAdjust(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// WithOccupancyCountAdjustBuilder adds OccupancyCountAdjust (property field) which is build by the builder
+	WithOccupancyCountAdjustBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// Build builds the BACnetConstructedDataOccupancyCountAdjust or returns an error if something is wrong
+	Build() (BACnetConstructedDataOccupancyCountAdjust, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOccupancyCountAdjust
+}
+
+// NewBACnetConstructedDataOccupancyCountAdjustBuilder() creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+func NewBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder {
+	return &_BACnetConstructedDataOccupancyCountAdjustBuilder{_BACnetConstructedDataOccupancyCountAdjust: new(_BACnetConstructedDataOccupancyCountAdjust)}
+}
+
+type _BACnetConstructedDataOccupancyCountAdjustBuilder struct {
+	*_BACnetConstructedDataOccupancyCountAdjust
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOccupancyCountAdjustBuilder) = (*_BACnetConstructedDataOccupancyCountAdjustBuilder)(nil)
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithMandatoryFields(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	return m.WithOccupancyCountAdjust(occupancyCountAdjust)
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithOccupancyCountAdjust(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	m.OccupancyCountAdjust = occupancyCountAdjust
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithOccupancyCountAdjustBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	builder := builderSupplier(m.OccupancyCountAdjust.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.OccupancyCountAdjust, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) Build() (BACnetConstructedDataOccupancyCountAdjust, error) {
+	if m.OccupancyCountAdjust == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'occupancyCountAdjust' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOccupancyCountAdjust.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) MustBuild() BACnetConstructedDataOccupancyCountAdjust {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjustBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOccupancyCountAdjustBuilder()
+}
+
+// CreateBACnetConstructedDataOccupancyCountAdjustBuilder creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+func (m *_BACnetConstructedDataOccupancyCountAdjust) CreateBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOccupancyCountAdjustBuilder()
+	}
+	return &_BACnetConstructedDataOccupancyCountAdjustBuilder{_BACnetConstructedDataOccupancyCountAdjust: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

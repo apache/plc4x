@@ -40,6 +40,8 @@ type SecurityDataLineCutAlarmRaised interface {
 	SecurityData
 	// IsSecurityDataLineCutAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmRaised()
+	// CreateBuilder creates a SecurityDataLineCutAlarmRaisedBuilder
+	CreateSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBuilder
 }
 
 // _SecurityDataLineCutAlarmRaised is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataLineCutAlarmRaised(commandTypeContainer SecurityCommandTypeC
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataLineCutAlarmRaisedBuilder is a builder for SecurityDataLineCutAlarmRaised
+type SecurityDataLineCutAlarmRaisedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataLineCutAlarmRaisedBuilder
+	// Build builds the SecurityDataLineCutAlarmRaised or returns an error if something is wrong
+	Build() (SecurityDataLineCutAlarmRaised, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataLineCutAlarmRaised
+}
+
+// NewSecurityDataLineCutAlarmRaisedBuilder() creates a SecurityDataLineCutAlarmRaisedBuilder
+func NewSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBuilder {
+	return &_SecurityDataLineCutAlarmRaisedBuilder{_SecurityDataLineCutAlarmRaised: new(_SecurityDataLineCutAlarmRaised)}
+}
+
+type _SecurityDataLineCutAlarmRaisedBuilder struct {
+	*_SecurityDataLineCutAlarmRaised
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataLineCutAlarmRaisedBuilder) = (*_SecurityDataLineCutAlarmRaisedBuilder)(nil)
+
+func (m *_SecurityDataLineCutAlarmRaisedBuilder) WithMandatoryFields() SecurityDataLineCutAlarmRaisedBuilder {
+	return m
+}
+
+func (m *_SecurityDataLineCutAlarmRaisedBuilder) Build() (SecurityDataLineCutAlarmRaised, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataLineCutAlarmRaised.deepCopy(), nil
+}
+
+func (m *_SecurityDataLineCutAlarmRaisedBuilder) MustBuild() SecurityDataLineCutAlarmRaised {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataLineCutAlarmRaisedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataLineCutAlarmRaisedBuilder()
+}
+
+// CreateSecurityDataLineCutAlarmRaisedBuilder creates a SecurityDataLineCutAlarmRaisedBuilder
+func (m *_SecurityDataLineCutAlarmRaised) CreateSecurityDataLineCutAlarmRaisedBuilder() SecurityDataLineCutAlarmRaisedBuilder {
+	if m == nil {
+		return NewSecurityDataLineCutAlarmRaisedBuilder()
+	}
+	return &_SecurityDataLineCutAlarmRaisedBuilder{_SecurityDataLineCutAlarmRaised: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

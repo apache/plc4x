@@ -44,6 +44,8 @@ type BACnetPropertyStatesLifeSafetyOperations interface {
 	GetLifeSafetyOperations() BACnetLifeSafetyOperationTagged
 	// IsBACnetPropertyStatesLifeSafetyOperations is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLifeSafetyOperations()
+	// CreateBuilder creates a BACnetPropertyStatesLifeSafetyOperationsBuilder
+	CreateBACnetPropertyStatesLifeSafetyOperationsBuilder() BACnetPropertyStatesLifeSafetyOperationsBuilder
 }
 
 // _BACnetPropertyStatesLifeSafetyOperations is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesLifeSafetyOperations(peekedTagHeader BACnetTagHeader
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLifeSafetyOperationsBuilder is a builder for BACnetPropertyStatesLifeSafetyOperations
+type BACnetPropertyStatesLifeSafetyOperationsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetPropertyStatesLifeSafetyOperationsBuilder
+	// WithLifeSafetyOperations adds LifeSafetyOperations (property field)
+	WithLifeSafetyOperations(BACnetLifeSafetyOperationTagged) BACnetPropertyStatesLifeSafetyOperationsBuilder
+	// WithLifeSafetyOperationsBuilder adds LifeSafetyOperations (property field) which is build by the builder
+	WithLifeSafetyOperationsBuilder(func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetPropertyStatesLifeSafetyOperationsBuilder
+	// Build builds the BACnetPropertyStatesLifeSafetyOperations or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLifeSafetyOperations, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLifeSafetyOperations
+}
+
+// NewBACnetPropertyStatesLifeSafetyOperationsBuilder() creates a BACnetPropertyStatesLifeSafetyOperationsBuilder
+func NewBACnetPropertyStatesLifeSafetyOperationsBuilder() BACnetPropertyStatesLifeSafetyOperationsBuilder {
+	return &_BACnetPropertyStatesLifeSafetyOperationsBuilder{_BACnetPropertyStatesLifeSafetyOperations: new(_BACnetPropertyStatesLifeSafetyOperations)}
+}
+
+type _BACnetPropertyStatesLifeSafetyOperationsBuilder struct {
+	*_BACnetPropertyStatesLifeSafetyOperations
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLifeSafetyOperationsBuilder) = (*_BACnetPropertyStatesLifeSafetyOperationsBuilder)(nil)
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) WithMandatoryFields(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetPropertyStatesLifeSafetyOperationsBuilder {
+	return m.WithLifeSafetyOperations(lifeSafetyOperations)
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) WithLifeSafetyOperations(lifeSafetyOperations BACnetLifeSafetyOperationTagged) BACnetPropertyStatesLifeSafetyOperationsBuilder {
+	m.LifeSafetyOperations = lifeSafetyOperations
+	return m
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) WithLifeSafetyOperationsBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetPropertyStatesLifeSafetyOperationsBuilder {
+	builder := builderSupplier(m.LifeSafetyOperations.CreateBACnetLifeSafetyOperationTaggedBuilder())
+	var err error
+	m.LifeSafetyOperations, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) Build() (BACnetPropertyStatesLifeSafetyOperations, error) {
+	if m.LifeSafetyOperations == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lifeSafetyOperations' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesLifeSafetyOperations.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) MustBuild() BACnetPropertyStatesLifeSafetyOperations {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyOperationsBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesLifeSafetyOperationsBuilder()
+}
+
+// CreateBACnetPropertyStatesLifeSafetyOperationsBuilder creates a BACnetPropertyStatesLifeSafetyOperationsBuilder
+func (m *_BACnetPropertyStatesLifeSafetyOperations) CreateBACnetPropertyStatesLifeSafetyOperationsBuilder() BACnetPropertyStatesLifeSafetyOperationsBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesLifeSafetyOperationsBuilder()
+	}
+	return &_BACnetPropertyStatesLifeSafetyOperationsBuilder{_BACnetPropertyStatesLifeSafetyOperations: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

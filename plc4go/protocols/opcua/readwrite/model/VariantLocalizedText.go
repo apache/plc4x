@@ -46,6 +46,8 @@ type VariantLocalizedText interface {
 	GetValue() []LocalizedText
 	// IsVariantLocalizedText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantLocalizedText()
+	// CreateBuilder creates a VariantLocalizedTextBuilder
+	CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder
 }
 
 // _VariantLocalizedText is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantLocalizedTextBuilder is a builder for VariantLocalizedText
+type VariantLocalizedTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantLocalizedTextBuilder
+	// WithValue adds Value (property field)
+	WithValue(...LocalizedText) VariantLocalizedTextBuilder
+	// Build builds the VariantLocalizedText or returns an error if something is wrong
+	Build() (VariantLocalizedText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantLocalizedText
+}
+
+// NewVariantLocalizedTextBuilder() creates a VariantLocalizedTextBuilder
+func NewVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
+	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: new(_VariantLocalizedText)}
+}
+
+type _VariantLocalizedTextBuilder struct {
+	*_VariantLocalizedText
+
+	err *utils.MultiError
+}
+
+var _ (VariantLocalizedTextBuilder) = (*_VariantLocalizedTextBuilder)(nil)
+
+func (m *_VariantLocalizedTextBuilder) WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantLocalizedTextBuilder) WithOptionalArrayLength(arrayLength int32) VariantLocalizedTextBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantLocalizedTextBuilder) WithValue(value ...LocalizedText) VariantLocalizedTextBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantLocalizedTextBuilder) Build() (VariantLocalizedText, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantLocalizedText.deepCopy(), nil
+}
+
+func (m *_VariantLocalizedTextBuilder) MustBuild() VariantLocalizedText {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantLocalizedTextBuilder) DeepCopy() any {
+	return m.CreateVariantLocalizedTextBuilder()
+}
+
+// CreateVariantLocalizedTextBuilder creates a VariantLocalizedTextBuilder
+func (m *_VariantLocalizedText) CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
+	if m == nil {
+		return NewVariantLocalizedTextBuilder()
+	}
+	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

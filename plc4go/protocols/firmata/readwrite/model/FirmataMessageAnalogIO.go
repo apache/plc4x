@@ -48,6 +48,8 @@ type FirmataMessageAnalogIO interface {
 	GetData() []int8
 	// IsFirmataMessageAnalogIO is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessageAnalogIO()
+	// CreateBuilder creates a FirmataMessageAnalogIOBuilder
+	CreateFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder
 }
 
 // _FirmataMessageAnalogIO is the data-structure of this message
@@ -70,6 +72,85 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataM
 	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataMessageAnalogIOBuilder is a builder for FirmataMessageAnalogIO
+type FirmataMessageAnalogIOBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, data []int8) FirmataMessageAnalogIOBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) FirmataMessageAnalogIOBuilder
+	// WithData adds Data (property field)
+	WithData(...int8) FirmataMessageAnalogIOBuilder
+	// Build builds the FirmataMessageAnalogIO or returns an error if something is wrong
+	Build() (FirmataMessageAnalogIO, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataMessageAnalogIO
+}
+
+// NewFirmataMessageAnalogIOBuilder() creates a FirmataMessageAnalogIOBuilder
+func NewFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder {
+	return &_FirmataMessageAnalogIOBuilder{_FirmataMessageAnalogIO: new(_FirmataMessageAnalogIO)}
+}
+
+type _FirmataMessageAnalogIOBuilder struct {
+	*_FirmataMessageAnalogIO
+
+	err *utils.MultiError
+}
+
+var _ (FirmataMessageAnalogIOBuilder) = (*_FirmataMessageAnalogIOBuilder)(nil)
+
+func (m *_FirmataMessageAnalogIOBuilder) WithMandatoryFields(pin uint8, data []int8) FirmataMessageAnalogIOBuilder {
+	return m.WithPin(pin).WithData(data...)
+}
+
+func (m *_FirmataMessageAnalogIOBuilder) WithPin(pin uint8) FirmataMessageAnalogIOBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_FirmataMessageAnalogIOBuilder) WithData(data ...int8) FirmataMessageAnalogIOBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_FirmataMessageAnalogIOBuilder) Build() (FirmataMessageAnalogIO, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataMessageAnalogIO.deepCopy(), nil
+}
+
+func (m *_FirmataMessageAnalogIOBuilder) MustBuild() FirmataMessageAnalogIO {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataMessageAnalogIOBuilder) DeepCopy() any {
+	return m.CreateFirmataMessageAnalogIOBuilder()
+}
+
+// CreateFirmataMessageAnalogIOBuilder creates a FirmataMessageAnalogIOBuilder
+func (m *_FirmataMessageAnalogIO) CreateFirmataMessageAnalogIOBuilder() FirmataMessageAnalogIOBuilder {
+	if m == nil {
+		return NewFirmataMessageAnalogIOBuilder()
+	}
+	return &_FirmataMessageAnalogIOBuilder{_FirmataMessageAnalogIO: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

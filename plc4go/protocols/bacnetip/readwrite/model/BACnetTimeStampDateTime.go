@@ -44,6 +44,8 @@ type BACnetTimeStampDateTime interface {
 	GetDateTimeValue() BACnetDateTimeEnclosed
 	// IsBACnetTimeStampDateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStampDateTime()
+	// CreateBuilder creates a BACnetTimeStampDateTimeBuilder
+	CreateBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder
 }
 
 // _BACnetTimeStampDateTime is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimeStampDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue B
 	_result.BACnetTimeStampContract.(*_BACnetTimeStamp)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimeStampDateTimeBuilder is a builder for BACnetTimeStampDateTime
+type BACnetTimeStampDateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimeStampDateTimeBuilder
+	// Build builds the BACnetTimeStampDateTime or returns an error if something is wrong
+	Build() (BACnetTimeStampDateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimeStampDateTime
+}
+
+// NewBACnetTimeStampDateTimeBuilder() creates a BACnetTimeStampDateTimeBuilder
+func NewBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder {
+	return &_BACnetTimeStampDateTimeBuilder{_BACnetTimeStampDateTime: new(_BACnetTimeStampDateTime)}
+}
+
+type _BACnetTimeStampDateTimeBuilder struct {
+	*_BACnetTimeStampDateTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimeStampDateTimeBuilder) = (*_BACnetTimeStampDateTimeBuilder)(nil)
+
+func (m *_BACnetTimeStampDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
+	return m.WithDateTimeValue(dateTimeValue)
+}
+
+func (m *_BACnetTimeStampDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetTimeStampDateTimeBuilder {
+	m.DateTimeValue = dateTimeValue
+	return m
+}
+
+func (m *_BACnetTimeStampDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetTimeStampDateTimeBuilder {
+	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	m.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimeStampDateTimeBuilder) Build() (BACnetTimeStampDateTime, error) {
+	if m.DateTimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimeStampDateTime.deepCopy(), nil
+}
+
+func (m *_BACnetTimeStampDateTimeBuilder) MustBuild() BACnetTimeStampDateTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimeStampDateTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetTimeStampDateTimeBuilder()
+}
+
+// CreateBACnetTimeStampDateTimeBuilder creates a BACnetTimeStampDateTimeBuilder
+func (m *_BACnetTimeStampDateTime) CreateBACnetTimeStampDateTimeBuilder() BACnetTimeStampDateTimeBuilder {
+	if m == nil {
+		return NewBACnetTimeStampDateTimeBuilder()
+	}
+	return &_BACnetTimeStampDateTimeBuilder{_BACnetTimeStampDateTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

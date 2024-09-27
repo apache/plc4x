@@ -46,6 +46,8 @@ type BACnetConstructedDataRestorePreparationTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataRestorePreparationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRestorePreparationTime()
+	// CreateBuilder creates a BACnetConstructedDataRestorePreparationTimeBuilder
+	CreateBACnetConstructedDataRestorePreparationTimeBuilder() BACnetConstructedDataRestorePreparationTimeBuilder
 }
 
 // _BACnetConstructedDataRestorePreparationTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataRestorePreparationTime(openingTag BACnetOpeningTag,
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRestorePreparationTimeBuilder is a builder for BACnetConstructedDataRestorePreparationTime
+type BACnetConstructedDataRestorePreparationTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(restorePreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestorePreparationTimeBuilder
+	// WithRestorePreparationTime adds RestorePreparationTime (property field)
+	WithRestorePreparationTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestorePreparationTimeBuilder
+	// WithRestorePreparationTimeBuilder adds RestorePreparationTime (property field) which is build by the builder
+	WithRestorePreparationTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRestorePreparationTimeBuilder
+	// Build builds the BACnetConstructedDataRestorePreparationTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataRestorePreparationTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRestorePreparationTime
+}
+
+// NewBACnetConstructedDataRestorePreparationTimeBuilder() creates a BACnetConstructedDataRestorePreparationTimeBuilder
+func NewBACnetConstructedDataRestorePreparationTimeBuilder() BACnetConstructedDataRestorePreparationTimeBuilder {
+	return &_BACnetConstructedDataRestorePreparationTimeBuilder{_BACnetConstructedDataRestorePreparationTime: new(_BACnetConstructedDataRestorePreparationTime)}
+}
+
+type _BACnetConstructedDataRestorePreparationTimeBuilder struct {
+	*_BACnetConstructedDataRestorePreparationTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRestorePreparationTimeBuilder) = (*_BACnetConstructedDataRestorePreparationTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) WithMandatoryFields(restorePreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestorePreparationTimeBuilder {
+	return m.WithRestorePreparationTime(restorePreparationTime)
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) WithRestorePreparationTime(restorePreparationTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestorePreparationTimeBuilder {
+	m.RestorePreparationTime = restorePreparationTime
+	return m
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) WithRestorePreparationTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRestorePreparationTimeBuilder {
+	builder := builderSupplier(m.RestorePreparationTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.RestorePreparationTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) Build() (BACnetConstructedDataRestorePreparationTime, error) {
+	if m.RestorePreparationTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'restorePreparationTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRestorePreparationTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) MustBuild() BACnetConstructedDataRestorePreparationTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRestorePreparationTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRestorePreparationTimeBuilder()
+}
+
+// CreateBACnetConstructedDataRestorePreparationTimeBuilder creates a BACnetConstructedDataRestorePreparationTimeBuilder
+func (m *_BACnetConstructedDataRestorePreparationTime) CreateBACnetConstructedDataRestorePreparationTimeBuilder() BACnetConstructedDataRestorePreparationTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRestorePreparationTimeBuilder()
+	}
+	return &_BACnetConstructedDataRestorePreparationTimeBuilder{_BACnetConstructedDataRestorePreparationTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

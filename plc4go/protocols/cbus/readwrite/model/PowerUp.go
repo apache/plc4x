@@ -45,6 +45,8 @@ type PowerUp interface {
 	utils.Copyable
 	// IsPowerUp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUp()
+	// CreateBuilder creates a PowerUpBuilder
+	CreatePowerUpBuilder() PowerUpBuilder
 }
 
 // _PowerUp is the data-structure of this message
@@ -57,6 +59,71 @@ var _ PowerUp = (*_PowerUp)(nil)
 func NewPowerUp() *_PowerUp {
 	return &_PowerUp{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PowerUpBuilder is a builder for PowerUp
+type PowerUpBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() PowerUpBuilder
+	// Build builds the PowerUp or returns an error if something is wrong
+	Build() (PowerUp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PowerUp
+}
+
+// NewPowerUpBuilder() creates a PowerUpBuilder
+func NewPowerUpBuilder() PowerUpBuilder {
+	return &_PowerUpBuilder{_PowerUp: new(_PowerUp)}
+}
+
+type _PowerUpBuilder struct {
+	*_PowerUp
+
+	err *utils.MultiError
+}
+
+var _ (PowerUpBuilder) = (*_PowerUpBuilder)(nil)
+
+func (m *_PowerUpBuilder) WithMandatoryFields() PowerUpBuilder {
+	return m
+}
+
+func (m *_PowerUpBuilder) Build() (PowerUp, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PowerUp.deepCopy(), nil
+}
+
+func (m *_PowerUpBuilder) MustBuild() PowerUp {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PowerUpBuilder) DeepCopy() any {
+	return m.CreatePowerUpBuilder()
+}
+
+// CreatePowerUpBuilder creates a PowerUpBuilder
+func (m *_PowerUp) CreatePowerUpBuilder() PowerUpBuilder {
+	if m == nil {
+		return NewPowerUpBuilder()
+	}
+	return &_PowerUpBuilder{_PowerUp: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

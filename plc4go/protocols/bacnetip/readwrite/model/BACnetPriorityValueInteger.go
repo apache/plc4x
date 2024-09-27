@@ -44,6 +44,8 @@ type BACnetPriorityValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetPriorityValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueInteger()
+	// CreateBuilder creates a BACnetPriorityValueIntegerBuilder
+	CreateBACnetPriorityValueIntegerBuilder() BACnetPriorityValueIntegerBuilder
 }
 
 // _BACnetPriorityValueInteger is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueInteger(peekedTagHeader BACnetTagHeader, integerValue
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueIntegerBuilder is a builder for BACnetPriorityValueInteger
+type BACnetPriorityValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetPriorityValueIntegerBuilder
+	// Build builds the BACnetPriorityValueInteger or returns an error if something is wrong
+	Build() (BACnetPriorityValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueInteger
+}
+
+// NewBACnetPriorityValueIntegerBuilder() creates a BACnetPriorityValueIntegerBuilder
+func NewBACnetPriorityValueIntegerBuilder() BACnetPriorityValueIntegerBuilder {
+	return &_BACnetPriorityValueIntegerBuilder{_BACnetPriorityValueInteger: new(_BACnetPriorityValueInteger)}
+}
+
+type _BACnetPriorityValueIntegerBuilder struct {
+	*_BACnetPriorityValueInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueIntegerBuilder) = (*_BACnetPriorityValueIntegerBuilder)(nil)
+
+func (m *_BACnetPriorityValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetPriorityValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetPriorityValueIntegerBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetPriorityValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetPriorityValueIntegerBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueIntegerBuilder) Build() (BACnetPriorityValueInteger, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueInteger.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueIntegerBuilder) MustBuild() BACnetPriorityValueInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueIntegerBuilder()
+}
+
+// CreateBACnetPriorityValueIntegerBuilder creates a BACnetPriorityValueIntegerBuilder
+func (m *_BACnetPriorityValueInteger) CreateBACnetPriorityValueIntegerBuilder() BACnetPriorityValueIntegerBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueIntegerBuilder()
+	}
+	return &_BACnetPriorityValueIntegerBuilder{_BACnetPriorityValueInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

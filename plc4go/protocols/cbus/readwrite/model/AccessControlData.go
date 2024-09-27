@@ -43,6 +43,8 @@ type AccessControlData interface {
 	utils.Copyable
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
+	// CreateBuilder creates a AccessControlDataBuilder
+	CreateAccessControlDataBuilder() AccessControlDataBuilder
 }
 
 // AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type AccessControlDataContract interface {
 	GetCommandType() AccessControlCommandType
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
+	// CreateBuilder creates a AccessControlDataBuilder
+	CreateAccessControlDataBuilder() AccessControlDataBuilder
 }
 
 // AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +85,92 @@ var _ AccessControlDataContract = (*_AccessControlData)(nil)
 func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
 	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataBuilder is a builder for AccessControlData
+type AccessControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) AccessControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(AccessControlCommandTypeContainer) AccessControlDataBuilder
+	// WithNetworkId adds NetworkId (property field)
+	WithNetworkId(byte) AccessControlDataBuilder
+	// WithAccessPointId adds AccessPointId (property field)
+	WithAccessPointId(byte) AccessControlDataBuilder
+	// Build builds the AccessControlData or returns an error if something is wrong
+	Build() (AccessControlDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlDataContract
+}
+
+// NewAccessControlDataBuilder() creates a AccessControlDataBuilder
+func NewAccessControlDataBuilder() AccessControlDataBuilder {
+	return &_AccessControlDataBuilder{_AccessControlData: new(_AccessControlData)}
+}
+
+type _AccessControlDataBuilder struct {
+	*_AccessControlData
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataBuilder) = (*_AccessControlDataBuilder)(nil)
+
+func (m *_AccessControlDataBuilder) WithMandatoryFields(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) AccessControlDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithNetworkId(networkId).WithAccessPointId(accessPointId)
+}
+
+func (m *_AccessControlDataBuilder) WithCommandTypeContainer(commandTypeContainer AccessControlCommandTypeContainer) AccessControlDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_AccessControlDataBuilder) WithNetworkId(networkId byte) AccessControlDataBuilder {
+	m.NetworkId = networkId
+	return m
+}
+
+func (m *_AccessControlDataBuilder) WithAccessPointId(accessPointId byte) AccessControlDataBuilder {
+	m.AccessPointId = accessPointId
+	return m
+}
+
+func (m *_AccessControlDataBuilder) Build() (AccessControlDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AccessControlData.deepCopy(), nil
+}
+
+func (m *_AccessControlDataBuilder) MustBuild() AccessControlDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AccessControlDataBuilder) DeepCopy() any {
+	return m.CreateAccessControlDataBuilder()
+}
+
+// CreateAccessControlDataBuilder creates a AccessControlDataBuilder
+func (m *_AccessControlData) CreateAccessControlDataBuilder() AccessControlDataBuilder {
+	if m == nil {
+		return NewAccessControlDataBuilder()
+	}
+	return &_AccessControlDataBuilder{_AccessControlData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

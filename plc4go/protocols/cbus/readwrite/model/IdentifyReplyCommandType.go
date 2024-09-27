@@ -44,6 +44,8 @@ type IdentifyReplyCommandType interface {
 	GetUnitType() string
 	// IsIdentifyReplyCommandType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandType()
+	// CreateBuilder creates a IdentifyReplyCommandTypeBuilder
+	CreateIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder
 }
 
 // _IdentifyReplyCommandType is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandType(unitType string, numBytes uint8) *_IdentifyRepl
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandTypeBuilder is a builder for IdentifyReplyCommandType
+type IdentifyReplyCommandTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unitType string) IdentifyReplyCommandTypeBuilder
+	// WithUnitType adds UnitType (property field)
+	WithUnitType(string) IdentifyReplyCommandTypeBuilder
+	// Build builds the IdentifyReplyCommandType or returns an error if something is wrong
+	Build() (IdentifyReplyCommandType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandType
+}
+
+// NewIdentifyReplyCommandTypeBuilder() creates a IdentifyReplyCommandTypeBuilder
+func NewIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder {
+	return &_IdentifyReplyCommandTypeBuilder{_IdentifyReplyCommandType: new(_IdentifyReplyCommandType)}
+}
+
+type _IdentifyReplyCommandTypeBuilder struct {
+	*_IdentifyReplyCommandType
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandTypeBuilder) = (*_IdentifyReplyCommandTypeBuilder)(nil)
+
+func (m *_IdentifyReplyCommandTypeBuilder) WithMandatoryFields(unitType string) IdentifyReplyCommandTypeBuilder {
+	return m.WithUnitType(unitType)
+}
+
+func (m *_IdentifyReplyCommandTypeBuilder) WithUnitType(unitType string) IdentifyReplyCommandTypeBuilder {
+	m.UnitType = unitType
+	return m
+}
+
+func (m *_IdentifyReplyCommandTypeBuilder) Build() (IdentifyReplyCommandType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandType.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandTypeBuilder) MustBuild() IdentifyReplyCommandType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandTypeBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandTypeBuilder()
+}
+
+// CreateIdentifyReplyCommandTypeBuilder creates a IdentifyReplyCommandTypeBuilder
+func (m *_IdentifyReplyCommandType) CreateIdentifyReplyCommandTypeBuilder() IdentifyReplyCommandTypeBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandTypeBuilder()
+	}
+	return &_IdentifyReplyCommandTypeBuilder{_IdentifyReplyCommandType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

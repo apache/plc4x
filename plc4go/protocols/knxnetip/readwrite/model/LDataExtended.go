@@ -54,6 +54,8 @@ type LDataExtended interface {
 	GetApdu() Apdu
 	// IsLDataExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataExtended()
+	// CreateBuilder creates a LDataExtendedBuilder
+	CreateLDataExtendedBuilder() LDataExtendedBuilder
 }
 
 // _LDataExtended is the data-structure of this message
@@ -90,6 +92,140 @@ func NewLDataExtended(frameType bool, notRepeated bool, priority CEMIPriority, a
 	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataExtendedBuilder is a builder for LDataExtended
+type LDataExtendedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) LDataExtendedBuilder
+	// WithGroupAddress adds GroupAddress (property field)
+	WithGroupAddress(bool) LDataExtendedBuilder
+	// WithHopCount adds HopCount (property field)
+	WithHopCount(uint8) LDataExtendedBuilder
+	// WithExtendedFrameFormat adds ExtendedFrameFormat (property field)
+	WithExtendedFrameFormat(uint8) LDataExtendedBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(KnxAddress) LDataExtendedBuilder
+	// WithSourceAddressBuilder adds SourceAddress (property field) which is build by the builder
+	WithSourceAddressBuilder(func(KnxAddressBuilder) KnxAddressBuilder) LDataExtendedBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(...byte) LDataExtendedBuilder
+	// WithApdu adds Apdu (property field)
+	WithApdu(Apdu) LDataExtendedBuilder
+	// Build builds the LDataExtended or returns an error if something is wrong
+	Build() (LDataExtended, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataExtended
+}
+
+// NewLDataExtendedBuilder() creates a LDataExtendedBuilder
+func NewLDataExtendedBuilder() LDataExtendedBuilder {
+	return &_LDataExtendedBuilder{_LDataExtended: new(_LDataExtended)}
+}
+
+type _LDataExtendedBuilder struct {
+	*_LDataExtended
+
+	err *utils.MultiError
+}
+
+var _ (LDataExtendedBuilder) = (*_LDataExtendedBuilder)(nil)
+
+func (m *_LDataExtendedBuilder) WithMandatoryFields(groupAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress KnxAddress, destinationAddress []byte, apdu Apdu) LDataExtendedBuilder {
+	return m.WithGroupAddress(groupAddress).WithHopCount(hopCount).WithExtendedFrameFormat(extendedFrameFormat).WithSourceAddress(sourceAddress).WithDestinationAddress(destinationAddress...).WithApdu(apdu)
+}
+
+func (m *_LDataExtendedBuilder) WithGroupAddress(groupAddress bool) LDataExtendedBuilder {
+	m.GroupAddress = groupAddress
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithHopCount(hopCount uint8) LDataExtendedBuilder {
+	m.HopCount = hopCount
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithExtendedFrameFormat(extendedFrameFormat uint8) LDataExtendedBuilder {
+	m.ExtendedFrameFormat = extendedFrameFormat
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithSourceAddress(sourceAddress KnxAddress) LDataExtendedBuilder {
+	m.SourceAddress = sourceAddress
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LDataExtendedBuilder {
+	builder := builderSupplier(m.SourceAddress.CreateKnxAddressBuilder())
+	var err error
+	m.SourceAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+	}
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithDestinationAddress(destinationAddress ...byte) LDataExtendedBuilder {
+	m.DestinationAddress = destinationAddress
+	return m
+}
+
+func (m *_LDataExtendedBuilder) WithApdu(apdu Apdu) LDataExtendedBuilder {
+	m.Apdu = apdu
+	return m
+}
+
+func (m *_LDataExtendedBuilder) Build() (LDataExtended, error) {
+	if m.SourceAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+	}
+	if m.Apdu == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'apdu' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LDataExtended.deepCopy(), nil
+}
+
+func (m *_LDataExtendedBuilder) MustBuild() LDataExtended {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LDataExtendedBuilder) DeepCopy() any {
+	return m.CreateLDataExtendedBuilder()
+}
+
+// CreateLDataExtendedBuilder creates a LDataExtendedBuilder
+func (m *_LDataExtended) CreateLDataExtendedBuilder() LDataExtendedBuilder {
+	if m == nil {
+		return NewLDataExtendedBuilder()
+	}
+	return &_LDataExtendedBuilder{_LDataExtended: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

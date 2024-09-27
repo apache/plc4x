@@ -40,6 +40,8 @@ type WriterGroupMessageDataType interface {
 	ExtensionObjectDefinition
 	// IsWriterGroupMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriterGroupMessageDataType()
+	// CreateBuilder creates a WriterGroupMessageDataTypeBuilder
+	CreateWriterGroupMessageDataTypeBuilder() WriterGroupMessageDataTypeBuilder
 }
 
 // _WriterGroupMessageDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewWriterGroupMessageDataType() *_WriterGroupMessageDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WriterGroupMessageDataTypeBuilder is a builder for WriterGroupMessageDataType
+type WriterGroupMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() WriterGroupMessageDataTypeBuilder
+	// Build builds the WriterGroupMessageDataType or returns an error if something is wrong
+	Build() (WriterGroupMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WriterGroupMessageDataType
+}
+
+// NewWriterGroupMessageDataTypeBuilder() creates a WriterGroupMessageDataTypeBuilder
+func NewWriterGroupMessageDataTypeBuilder() WriterGroupMessageDataTypeBuilder {
+	return &_WriterGroupMessageDataTypeBuilder{_WriterGroupMessageDataType: new(_WriterGroupMessageDataType)}
+}
+
+type _WriterGroupMessageDataTypeBuilder struct {
+	*_WriterGroupMessageDataType
+
+	err *utils.MultiError
+}
+
+var _ (WriterGroupMessageDataTypeBuilder) = (*_WriterGroupMessageDataTypeBuilder)(nil)
+
+func (m *_WriterGroupMessageDataTypeBuilder) WithMandatoryFields() WriterGroupMessageDataTypeBuilder {
+	return m
+}
+
+func (m *_WriterGroupMessageDataTypeBuilder) Build() (WriterGroupMessageDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._WriterGroupMessageDataType.deepCopy(), nil
+}
+
+func (m *_WriterGroupMessageDataTypeBuilder) MustBuild() WriterGroupMessageDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_WriterGroupMessageDataTypeBuilder) DeepCopy() any {
+	return m.CreateWriterGroupMessageDataTypeBuilder()
+}
+
+// CreateWriterGroupMessageDataTypeBuilder creates a WriterGroupMessageDataTypeBuilder
+func (m *_WriterGroupMessageDataType) CreateWriterGroupMessageDataTypeBuilder() WriterGroupMessageDataTypeBuilder {
+	if m == nil {
+		return NewWriterGroupMessageDataTypeBuilder()
+	}
+	return &_WriterGroupMessageDataTypeBuilder{_WriterGroupMessageDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

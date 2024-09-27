@@ -44,6 +44,8 @@ type SALDataAccessControl interface {
 	GetAccessControlData() AccessControlData
 	// IsSALDataAccessControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataAccessControl()
+	// CreateBuilder creates a SALDataAccessControlBuilder
+	CreateSALDataAccessControlBuilder() SALDataAccessControlBuilder
 }
 
 // _SALDataAccessControl is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataAccessControl(salData SALData, accessControlData AccessControlDat
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataAccessControlBuilder is a builder for SALDataAccessControl
+type SALDataAccessControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessControlData AccessControlData) SALDataAccessControlBuilder
+	// WithAccessControlData adds AccessControlData (property field)
+	WithAccessControlData(AccessControlData) SALDataAccessControlBuilder
+	// Build builds the SALDataAccessControl or returns an error if something is wrong
+	Build() (SALDataAccessControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataAccessControl
+}
+
+// NewSALDataAccessControlBuilder() creates a SALDataAccessControlBuilder
+func NewSALDataAccessControlBuilder() SALDataAccessControlBuilder {
+	return &_SALDataAccessControlBuilder{_SALDataAccessControl: new(_SALDataAccessControl)}
+}
+
+type _SALDataAccessControlBuilder struct {
+	*_SALDataAccessControl
+
+	err *utils.MultiError
+}
+
+var _ (SALDataAccessControlBuilder) = (*_SALDataAccessControlBuilder)(nil)
+
+func (m *_SALDataAccessControlBuilder) WithMandatoryFields(accessControlData AccessControlData) SALDataAccessControlBuilder {
+	return m.WithAccessControlData(accessControlData)
+}
+
+func (m *_SALDataAccessControlBuilder) WithAccessControlData(accessControlData AccessControlData) SALDataAccessControlBuilder {
+	m.AccessControlData = accessControlData
+	return m
+}
+
+func (m *_SALDataAccessControlBuilder) Build() (SALDataAccessControl, error) {
+	if m.AccessControlData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accessControlData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataAccessControl.deepCopy(), nil
+}
+
+func (m *_SALDataAccessControlBuilder) MustBuild() SALDataAccessControl {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataAccessControlBuilder) DeepCopy() any {
+	return m.CreateSALDataAccessControlBuilder()
+}
+
+// CreateSALDataAccessControlBuilder creates a SALDataAccessControlBuilder
+func (m *_SALDataAccessControl) CreateSALDataAccessControlBuilder() SALDataAccessControlBuilder {
+	if m == nil {
+		return NewSALDataAccessControlBuilder()
+	}
+	return &_SALDataAccessControlBuilder{_SALDataAccessControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

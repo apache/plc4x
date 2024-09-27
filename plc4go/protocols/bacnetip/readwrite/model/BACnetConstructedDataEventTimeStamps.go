@@ -54,6 +54,8 @@ type BACnetConstructedDataEventTimeStamps interface {
 	GetToNormal() BACnetTimeStamp
 	// IsBACnetConstructedDataEventTimeStamps is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventTimeStamps()
+	// CreateBuilder creates a BACnetConstructedDataEventTimeStampsBuilder
+	CreateBACnetConstructedDataEventTimeStampsBuilder() BACnetConstructedDataEventTimeStampsBuilder
 }
 
 // _BACnetConstructedDataEventTimeStamps is the data-structure of this message
@@ -76,6 +78,100 @@ func NewBACnetConstructedDataEventTimeStamps(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventTimeStampsBuilder is a builder for BACnetConstructedDataEventTimeStamps
+type BACnetConstructedDataEventTimeStampsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventTimeStamps []BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataEventTimeStampsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventTimeStampsBuilder
+	// WithEventTimeStamps adds EventTimeStamps (property field)
+	WithEventTimeStamps(...BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder
+	// Build builds the BACnetConstructedDataEventTimeStamps or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventTimeStamps, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventTimeStamps
+}
+
+// NewBACnetConstructedDataEventTimeStampsBuilder() creates a BACnetConstructedDataEventTimeStampsBuilder
+func NewBACnetConstructedDataEventTimeStampsBuilder() BACnetConstructedDataEventTimeStampsBuilder {
+	return &_BACnetConstructedDataEventTimeStampsBuilder{_BACnetConstructedDataEventTimeStamps: new(_BACnetConstructedDataEventTimeStamps)}
+}
+
+type _BACnetConstructedDataEventTimeStampsBuilder struct {
+	*_BACnetConstructedDataEventTimeStamps
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventTimeStampsBuilder) = (*_BACnetConstructedDataEventTimeStampsBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) WithMandatoryFields(eventTimeStamps []BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder {
+	return m.WithEventTimeStamps(eventTimeStamps...)
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataEventTimeStampsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventTimeStampsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) WithEventTimeStamps(eventTimeStamps ...BACnetTimeStamp) BACnetConstructedDataEventTimeStampsBuilder {
+	m.EventTimeStamps = eventTimeStamps
+	return m
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) Build() (BACnetConstructedDataEventTimeStamps, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventTimeStamps.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) MustBuild() BACnetConstructedDataEventTimeStamps {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventTimeStampsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventTimeStampsBuilder()
+}
+
+// CreateBACnetConstructedDataEventTimeStampsBuilder creates a BACnetConstructedDataEventTimeStampsBuilder
+func (m *_BACnetConstructedDataEventTimeStamps) CreateBACnetConstructedDataEventTimeStampsBuilder() BACnetConstructedDataEventTimeStampsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventTimeStampsBuilder()
+	}
+	return &_BACnetConstructedDataEventTimeStampsBuilder{_BACnetConstructedDataEventTimeStamps: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

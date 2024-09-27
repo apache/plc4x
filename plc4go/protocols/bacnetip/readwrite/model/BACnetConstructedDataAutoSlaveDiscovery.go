@@ -46,6 +46,8 @@ type BACnetConstructedDataAutoSlaveDiscovery interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataAutoSlaveDiscovery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAutoSlaveDiscovery()
+	// CreateBuilder creates a BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	CreateBACnetConstructedDataAutoSlaveDiscoveryBuilder() BACnetConstructedDataAutoSlaveDiscoveryBuilder
 }
 
 // _BACnetConstructedDataAutoSlaveDiscovery is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAutoSlaveDiscovery(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAutoSlaveDiscoveryBuilder is a builder for BACnetConstructedDataAutoSlaveDiscovery
+type BACnetConstructedDataAutoSlaveDiscoveryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(autoSlaveDiscovery BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	// WithAutoSlaveDiscovery adds AutoSlaveDiscovery (property field)
+	WithAutoSlaveDiscovery(BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	// WithAutoSlaveDiscoveryBuilder adds AutoSlaveDiscovery (property field) which is build by the builder
+	WithAutoSlaveDiscoveryBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAutoSlaveDiscoveryBuilder
+	// Build builds the BACnetConstructedDataAutoSlaveDiscovery or returns an error if something is wrong
+	Build() (BACnetConstructedDataAutoSlaveDiscovery, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAutoSlaveDiscovery
+}
+
+// NewBACnetConstructedDataAutoSlaveDiscoveryBuilder() creates a BACnetConstructedDataAutoSlaveDiscoveryBuilder
+func NewBACnetConstructedDataAutoSlaveDiscoveryBuilder() BACnetConstructedDataAutoSlaveDiscoveryBuilder {
+	return &_BACnetConstructedDataAutoSlaveDiscoveryBuilder{_BACnetConstructedDataAutoSlaveDiscovery: new(_BACnetConstructedDataAutoSlaveDiscovery)}
+}
+
+type _BACnetConstructedDataAutoSlaveDiscoveryBuilder struct {
+	*_BACnetConstructedDataAutoSlaveDiscovery
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAutoSlaveDiscoveryBuilder) = (*_BACnetConstructedDataAutoSlaveDiscoveryBuilder)(nil)
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) WithMandatoryFields(autoSlaveDiscovery BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder {
+	return m.WithAutoSlaveDiscovery(autoSlaveDiscovery)
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) WithAutoSlaveDiscovery(autoSlaveDiscovery BACnetApplicationTagBoolean) BACnetConstructedDataAutoSlaveDiscoveryBuilder {
+	m.AutoSlaveDiscovery = autoSlaveDiscovery
+	return m
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) WithAutoSlaveDiscoveryBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAutoSlaveDiscoveryBuilder {
+	builder := builderSupplier(m.AutoSlaveDiscovery.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.AutoSlaveDiscovery, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) Build() (BACnetConstructedDataAutoSlaveDiscovery, error) {
+	if m.AutoSlaveDiscovery == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'autoSlaveDiscovery' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAutoSlaveDiscovery.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) MustBuild() BACnetConstructedDataAutoSlaveDiscovery {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAutoSlaveDiscoveryBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAutoSlaveDiscoveryBuilder()
+}
+
+// CreateBACnetConstructedDataAutoSlaveDiscoveryBuilder creates a BACnetConstructedDataAutoSlaveDiscoveryBuilder
+func (m *_BACnetConstructedDataAutoSlaveDiscovery) CreateBACnetConstructedDataAutoSlaveDiscoveryBuilder() BACnetConstructedDataAutoSlaveDiscoveryBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAutoSlaveDiscoveryBuilder()
+	}
+	return &_BACnetConstructedDataAutoSlaveDiscoveryBuilder{_BACnetConstructedDataAutoSlaveDiscovery: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

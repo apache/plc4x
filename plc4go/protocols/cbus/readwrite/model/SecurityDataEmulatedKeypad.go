@@ -66,6 +66,8 @@ type SecurityDataEmulatedKeypad interface {
 	GetIsVacation() bool
 	// IsSecurityDataEmulatedKeypad is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataEmulatedKeypad()
+	// CreateBuilder creates a SecurityDataEmulatedKeypadBuilder
+	CreateSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder
 }
 
 // _SecurityDataEmulatedKeypad is the data-structure of this message
@@ -86,6 +88,78 @@ func NewSecurityDataEmulatedKeypad(commandTypeContainer SecurityCommandTypeConta
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataEmulatedKeypadBuilder is a builder for SecurityDataEmulatedKeypad
+type SecurityDataEmulatedKeypadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(key byte) SecurityDataEmulatedKeypadBuilder
+	// WithKey adds Key (property field)
+	WithKey(byte) SecurityDataEmulatedKeypadBuilder
+	// Build builds the SecurityDataEmulatedKeypad or returns an error if something is wrong
+	Build() (SecurityDataEmulatedKeypad, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataEmulatedKeypad
+}
+
+// NewSecurityDataEmulatedKeypadBuilder() creates a SecurityDataEmulatedKeypadBuilder
+func NewSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder {
+	return &_SecurityDataEmulatedKeypadBuilder{_SecurityDataEmulatedKeypad: new(_SecurityDataEmulatedKeypad)}
+}
+
+type _SecurityDataEmulatedKeypadBuilder struct {
+	*_SecurityDataEmulatedKeypad
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataEmulatedKeypadBuilder) = (*_SecurityDataEmulatedKeypadBuilder)(nil)
+
+func (m *_SecurityDataEmulatedKeypadBuilder) WithMandatoryFields(key byte) SecurityDataEmulatedKeypadBuilder {
+	return m.WithKey(key)
+}
+
+func (m *_SecurityDataEmulatedKeypadBuilder) WithKey(key byte) SecurityDataEmulatedKeypadBuilder {
+	m.Key = key
+	return m
+}
+
+func (m *_SecurityDataEmulatedKeypadBuilder) Build() (SecurityDataEmulatedKeypad, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataEmulatedKeypad.deepCopy(), nil
+}
+
+func (m *_SecurityDataEmulatedKeypadBuilder) MustBuild() SecurityDataEmulatedKeypad {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataEmulatedKeypadBuilder) DeepCopy() any {
+	return m.CreateSecurityDataEmulatedKeypadBuilder()
+}
+
+// CreateSecurityDataEmulatedKeypadBuilder creates a SecurityDataEmulatedKeypadBuilder
+func (m *_SecurityDataEmulatedKeypad) CreateSecurityDataEmulatedKeypadBuilder() SecurityDataEmulatedKeypadBuilder {
+	if m == nil {
+		return NewSecurityDataEmulatedKeypadBuilder()
+	}
+	return &_SecurityDataEmulatedKeypadBuilder{_SecurityDataEmulatedKeypad: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

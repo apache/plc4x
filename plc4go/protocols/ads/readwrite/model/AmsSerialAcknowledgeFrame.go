@@ -53,6 +53,8 @@ type AmsSerialAcknowledgeFrame interface {
 	GetCrc() uint16
 	// IsAmsSerialAcknowledgeFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsSerialAcknowledgeFrame()
+	// CreateBuilder creates a AmsSerialAcknowledgeFrameBuilder
+	CreateAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder
 }
 
 // _AmsSerialAcknowledgeFrame is the data-structure of this message
@@ -71,6 +73,113 @@ var _ AmsSerialAcknowledgeFrame = (*_AmsSerialAcknowledgeFrame)(nil)
 func NewAmsSerialAcknowledgeFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialAcknowledgeFrame {
 	return &_AmsSerialAcknowledgeFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsSerialAcknowledgeFrameBuilder is a builder for AmsSerialAcknowledgeFrame
+type AmsSerialAcknowledgeFrameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialAcknowledgeFrameBuilder
+	// WithMagicCookie adds MagicCookie (property field)
+	WithMagicCookie(uint16) AmsSerialAcknowledgeFrameBuilder
+	// WithTransmitterAddress adds TransmitterAddress (property field)
+	WithTransmitterAddress(int8) AmsSerialAcknowledgeFrameBuilder
+	// WithReceiverAddress adds ReceiverAddress (property field)
+	WithReceiverAddress(int8) AmsSerialAcknowledgeFrameBuilder
+	// WithFragmentNumber adds FragmentNumber (property field)
+	WithFragmentNumber(int8) AmsSerialAcknowledgeFrameBuilder
+	// WithLength adds Length (property field)
+	WithLength(int8) AmsSerialAcknowledgeFrameBuilder
+	// WithCrc adds Crc (property field)
+	WithCrc(uint16) AmsSerialAcknowledgeFrameBuilder
+	// Build builds the AmsSerialAcknowledgeFrame or returns an error if something is wrong
+	Build() (AmsSerialAcknowledgeFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsSerialAcknowledgeFrame
+}
+
+// NewAmsSerialAcknowledgeFrameBuilder() creates a AmsSerialAcknowledgeFrameBuilder
+func NewAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder {
+	return &_AmsSerialAcknowledgeFrameBuilder{_AmsSerialAcknowledgeFrame: new(_AmsSerialAcknowledgeFrame)}
+}
+
+type _AmsSerialAcknowledgeFrameBuilder struct {
+	*_AmsSerialAcknowledgeFrame
+
+	err *utils.MultiError
+}
+
+var _ (AmsSerialAcknowledgeFrameBuilder) = (*_AmsSerialAcknowledgeFrameBuilder)(nil)
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialAcknowledgeFrameBuilder {
+	return m.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialAcknowledgeFrameBuilder {
+	m.MagicCookie = magicCookie
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialAcknowledgeFrameBuilder {
+	m.TransmitterAddress = transmitterAddress
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialAcknowledgeFrameBuilder {
+	m.ReceiverAddress = receiverAddress
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialAcknowledgeFrameBuilder {
+	m.FragmentNumber = fragmentNumber
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithLength(length int8) AmsSerialAcknowledgeFrameBuilder {
+	m.Length = length
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) WithCrc(crc uint16) AmsSerialAcknowledgeFrameBuilder {
+	m.Crc = crc
+	return m
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) Build() (AmsSerialAcknowledgeFrame, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AmsSerialAcknowledgeFrame.deepCopy(), nil
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) MustBuild() AmsSerialAcknowledgeFrame {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AmsSerialAcknowledgeFrameBuilder) DeepCopy() any {
+	return m.CreateAmsSerialAcknowledgeFrameBuilder()
+}
+
+// CreateAmsSerialAcknowledgeFrameBuilder creates a AmsSerialAcknowledgeFrameBuilder
+func (m *_AmsSerialAcknowledgeFrame) CreateAmsSerialAcknowledgeFrameBuilder() AmsSerialAcknowledgeFrameBuilder {
+	if m == nil {
+		return NewAmsSerialAcknowledgeFrameBuilder()
+	}
+	return &_AmsSerialAcknowledgeFrameBuilder{_AmsSerialAcknowledgeFrame: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

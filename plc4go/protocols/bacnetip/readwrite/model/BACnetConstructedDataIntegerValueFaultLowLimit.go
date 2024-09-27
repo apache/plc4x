@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegerValueFaultLowLimit interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataIntegerValueFaultLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueFaultLowLimit()
+	// CreateBuilder creates a BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	CreateBACnetConstructedDataIntegerValueFaultLowLimitBuilder() BACnetConstructedDataIntegerValueFaultLowLimitBuilder
 }
 
 // _BACnetConstructedDataIntegerValueFaultLowLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegerValueFaultLowLimit(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegerValueFaultLowLimitBuilder is a builder for BACnetConstructedDataIntegerValueFaultLowLimit
+type BACnetConstructedDataIntegerValueFaultLowLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultLowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	// WithFaultLowLimit adds FaultLowLimit (property field)
+	WithFaultLowLimit(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	// WithFaultLowLimitBuilder adds FaultLowLimit (property field) which is build by the builder
+	WithFaultLowLimitBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+	// Build builds the BACnetConstructedDataIntegerValueFaultLowLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegerValueFaultLowLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegerValueFaultLowLimit
+}
+
+// NewBACnetConstructedDataIntegerValueFaultLowLimitBuilder() creates a BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+func NewBACnetConstructedDataIntegerValueFaultLowLimitBuilder() BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
+	return &_BACnetConstructedDataIntegerValueFaultLowLimitBuilder{_BACnetConstructedDataIntegerValueFaultLowLimit: new(_BACnetConstructedDataIntegerValueFaultLowLimit)}
+}
+
+type _BACnetConstructedDataIntegerValueFaultLowLimitBuilder struct {
+	*_BACnetConstructedDataIntegerValueFaultLowLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegerValueFaultLowLimitBuilder) = (*_BACnetConstructedDataIntegerValueFaultLowLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
+	return m.WithFaultLowLimit(faultLowLimit)
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
+	m.FaultLowLimit = faultLowLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
+	builder := builderSupplier(m.FaultLowLimit.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.FaultLowLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) Build() (BACnetConstructedDataIntegerValueFaultLowLimit, error) {
+	if m.FaultLowLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegerValueFaultLowLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) MustBuild() BACnetConstructedDataIntegerValueFaultLowLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegerValueFaultLowLimitBuilder()
+}
+
+// CreateBACnetConstructedDataIntegerValueFaultLowLimitBuilder creates a BACnetConstructedDataIntegerValueFaultLowLimitBuilder
+func (m *_BACnetConstructedDataIntegerValueFaultLowLimit) CreateBACnetConstructedDataIntegerValueFaultLowLimitBuilder() BACnetConstructedDataIntegerValueFaultLowLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegerValueFaultLowLimitBuilder()
+	}
+	return &_BACnetConstructedDataIntegerValueFaultLowLimitBuilder{_BACnetConstructedDataIntegerValueFaultLowLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

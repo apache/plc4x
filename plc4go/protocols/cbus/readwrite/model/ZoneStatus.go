@@ -43,6 +43,8 @@ type ZoneStatus interface {
 	GetValue() ZoneStatusTemp
 	// IsZoneStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsZoneStatus()
+	// CreateBuilder creates a ZoneStatusBuilder
+	CreateZoneStatusBuilder() ZoneStatusBuilder
 }
 
 // _ZoneStatus is the data-structure of this message
@@ -56,6 +58,78 @@ var _ ZoneStatus = (*_ZoneStatus)(nil)
 func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
 	return &_ZoneStatus{Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ZoneStatusBuilder is a builder for ZoneStatus
+type ZoneStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder
+	// WithValue adds Value (property field)
+	WithValue(ZoneStatusTemp) ZoneStatusBuilder
+	// Build builds the ZoneStatus or returns an error if something is wrong
+	Build() (ZoneStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ZoneStatus
+}
+
+// NewZoneStatusBuilder() creates a ZoneStatusBuilder
+func NewZoneStatusBuilder() ZoneStatusBuilder {
+	return &_ZoneStatusBuilder{_ZoneStatus: new(_ZoneStatus)}
+}
+
+type _ZoneStatusBuilder struct {
+	*_ZoneStatus
+
+	err *utils.MultiError
+}
+
+var _ (ZoneStatusBuilder) = (*_ZoneStatusBuilder)(nil)
+
+func (m *_ZoneStatusBuilder) WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder {
+	return m.WithValue(value)
+}
+
+func (m *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ZoneStatus.deepCopy(), nil
+}
+
+func (m *_ZoneStatusBuilder) MustBuild() ZoneStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ZoneStatusBuilder) DeepCopy() any {
+	return m.CreateZoneStatusBuilder()
+}
+
+// CreateZoneStatusBuilder creates a ZoneStatusBuilder
+func (m *_ZoneStatus) CreateZoneStatusBuilder() ZoneStatusBuilder {
+	if m == nil {
+		return NewZoneStatusBuilder()
+	}
+	return &_ZoneStatusBuilder{_ZoneStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

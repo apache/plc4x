@@ -46,6 +46,8 @@ type RegisterServerRequest interface {
 	GetServer() ExtensionObjectDefinition
 	// IsRegisterServerRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerRequest()
+	// CreateBuilder creates a RegisterServerRequestBuilder
+	CreateRegisterServerRequestBuilder() RegisterServerRequestBuilder
 }
 
 // _RegisterServerRequest is the data-structure of this message
@@ -74,6 +76,97 @@ func NewRegisterServerRequest(requestHeader ExtensionObjectDefinition, server Ex
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterServerRequestBuilder is a builder for RegisterServerRequest
+type RegisterServerRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	// WithServer adds Server (property field)
+	WithServer(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	// Build builds the RegisterServerRequest or returns an error if something is wrong
+	Build() (RegisterServerRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterServerRequest
+}
+
+// NewRegisterServerRequestBuilder() creates a RegisterServerRequestBuilder
+func NewRegisterServerRequestBuilder() RegisterServerRequestBuilder {
+	return &_RegisterServerRequestBuilder{_RegisterServerRequest: new(_RegisterServerRequest)}
+}
+
+type _RegisterServerRequestBuilder struct {
+	*_RegisterServerRequest
+
+	err *utils.MultiError
+}
+
+var _ (RegisterServerRequestBuilder) = (*_RegisterServerRequestBuilder)(nil)
+
+func (m *_RegisterServerRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithServer(server)
+}
+
+func (m *_RegisterServerRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServerRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_RegisterServerRequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+	m.Server = server
+	return m
+}
+
+func (m *_RegisterServerRequestBuilder) Build() (RegisterServerRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.Server == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'server' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RegisterServerRequest.deepCopy(), nil
+}
+
+func (m *_RegisterServerRequestBuilder) MustBuild() RegisterServerRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RegisterServerRequestBuilder) DeepCopy() any {
+	return m.CreateRegisterServerRequestBuilder()
+}
+
+// CreateRegisterServerRequestBuilder creates a RegisterServerRequestBuilder
+func (m *_RegisterServerRequest) CreateRegisterServerRequestBuilder() RegisterServerRequestBuilder {
+	if m == nil {
+		return NewRegisterServerRequestBuilder()
+	}
+	return &_RegisterServerRequestBuilder{_RegisterServerRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

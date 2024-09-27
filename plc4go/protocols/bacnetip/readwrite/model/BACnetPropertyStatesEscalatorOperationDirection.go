@@ -44,6 +44,8 @@ type BACnetPropertyStatesEscalatorOperationDirection interface {
 	GetEscalatorOperationDirection() BACnetEscalatorOperationDirectionTagged
 	// IsBACnetPropertyStatesEscalatorOperationDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesEscalatorOperationDirection()
+	// CreateBuilder creates a BACnetPropertyStatesEscalatorOperationDirectionBuilder
+	CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyStatesEscalatorOperationDirectionBuilder
 }
 
 // _BACnetPropertyStatesEscalatorOperationDirection is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesEscalatorOperationDirection(peekedTagHeader BACnetTa
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesEscalatorOperationDirectionBuilder is a builder for BACnetPropertyStatesEscalatorOperationDirection
+type BACnetPropertyStatesEscalatorOperationDirectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder
+	// WithEscalatorOperationDirection adds EscalatorOperationDirection (property field)
+	WithEscalatorOperationDirection(BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder
+	// WithEscalatorOperationDirectionBuilder adds EscalatorOperationDirection (property field) which is build by the builder
+	WithEscalatorOperationDirectionBuilder(func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetPropertyStatesEscalatorOperationDirectionBuilder
+	// Build builds the BACnetPropertyStatesEscalatorOperationDirection or returns an error if something is wrong
+	Build() (BACnetPropertyStatesEscalatorOperationDirection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesEscalatorOperationDirection
+}
+
+// NewBACnetPropertyStatesEscalatorOperationDirectionBuilder() creates a BACnetPropertyStatesEscalatorOperationDirectionBuilder
+func NewBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	return &_BACnetPropertyStatesEscalatorOperationDirectionBuilder{_BACnetPropertyStatesEscalatorOperationDirection: new(_BACnetPropertyStatesEscalatorOperationDirection)}
+}
+
+type _BACnetPropertyStatesEscalatorOperationDirectionBuilder struct {
+	*_BACnetPropertyStatesEscalatorOperationDirection
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesEscalatorOperationDirectionBuilder) = (*_BACnetPropertyStatesEscalatorOperationDirectionBuilder)(nil)
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithMandatoryFields(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	return m.WithEscalatorOperationDirection(escalatorOperationDirection)
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirection(escalatorOperationDirection BACnetEscalatorOperationDirectionTagged) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	m.EscalatorOperationDirection = escalatorOperationDirection
+	return m
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) WithEscalatorOperationDirectionBuilder(builderSupplier func(BACnetEscalatorOperationDirectionTaggedBuilder) BACnetEscalatorOperationDirectionTaggedBuilder) BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	builder := builderSupplier(m.EscalatorOperationDirection.CreateBACnetEscalatorOperationDirectionTaggedBuilder())
+	var err error
+	m.EscalatorOperationDirection, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEscalatorOperationDirectionTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) Build() (BACnetPropertyStatesEscalatorOperationDirection, error) {
+	if m.EscalatorOperationDirection == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'escalatorOperationDirection' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesEscalatorOperationDirection.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) MustBuild() BACnetPropertyStatesEscalatorOperationDirection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesEscalatorOperationDirectionBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder()
+}
+
+// CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder creates a BACnetPropertyStatesEscalatorOperationDirectionBuilder
+func (m *_BACnetPropertyStatesEscalatorOperationDirection) CreateBACnetPropertyStatesEscalatorOperationDirectionBuilder() BACnetPropertyStatesEscalatorOperationDirectionBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesEscalatorOperationDirectionBuilder()
+	}
+	return &_BACnetPropertyStatesEscalatorOperationDirectionBuilder{_BACnetPropertyStatesEscalatorOperationDirection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type BACnetLogData interface {
 	utils.Copyable
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
+	// CreateBuilder creates a BACnetLogDataBuilder
+	CreateBACnetLogDataBuilder() BACnetLogDataBuilder
 }
 
 // BACnetLogDataContract provides a set of functions which can be overwritten by a sub struct
@@ -59,6 +61,8 @@ type BACnetLogDataContract interface {
 	GetTagNumber() uint8
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
+	// CreateBuilder creates a BACnetLogDataBuilder
+	CreateBACnetLogDataBuilder() BACnetLogDataBuilder
 }
 
 // BACnetLogDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -95,6 +99,155 @@ func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHead
 	}
 	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataBuilder is a builder for BACnetLogData
+type BACnetLogDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetLogDataBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetLogDataBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetLogDataBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder
+	// Build builds the BACnetLogData or returns an error if something is wrong
+	Build() (BACnetLogDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataContract
+}
+
+// NewBACnetLogDataBuilder() creates a BACnetLogDataBuilder
+func NewBACnetLogDataBuilder() BACnetLogDataBuilder {
+	return &_BACnetLogDataBuilder{_BACnetLogData: new(_BACnetLogData)}
+}
+
+type _BACnetLogDataBuilder struct {
+	*_BACnetLogData
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataBuilder) = (*_BACnetLogDataBuilder)(nil)
+
+func (m *_BACnetLogDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	return m.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetLogDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogDataBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogDataBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataBuilder) Build() (BACnetLogDataContract, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogData.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataBuilder) MustBuild() BACnetLogDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataBuilder()
+}
+
+// CreateBACnetLogDataBuilder creates a BACnetLogDataBuilder
+func (m *_BACnetLogData) CreateBACnetLogDataBuilder() BACnetLogDataBuilder {
+	if m == nil {
+		return NewBACnetLogDataBuilder()
+	}
+	return &_BACnetLogDataBuilder{_BACnetLogData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

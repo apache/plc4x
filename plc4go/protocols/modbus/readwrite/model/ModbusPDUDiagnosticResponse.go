@@ -46,6 +46,8 @@ type ModbusPDUDiagnosticResponse interface {
 	GetData() uint16
 	// IsModbusPDUDiagnosticResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUDiagnosticResponse()
+	// CreateBuilder creates a ModbusPDUDiagnosticResponseBuilder
+	CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder
 }
 
 // _ModbusPDUDiagnosticResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDU
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUDiagnosticResponseBuilder is a builder for ModbusPDUDiagnosticResponse
+type ModbusPDUDiagnosticResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder
+	// WithSubFunction adds SubFunction (property field)
+	WithSubFunction(uint16) ModbusPDUDiagnosticResponseBuilder
+	// WithData adds Data (property field)
+	WithData(uint16) ModbusPDUDiagnosticResponseBuilder
+	// Build builds the ModbusPDUDiagnosticResponse or returns an error if something is wrong
+	Build() (ModbusPDUDiagnosticResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUDiagnosticResponse
+}
+
+// NewModbusPDUDiagnosticResponseBuilder() creates a ModbusPDUDiagnosticResponseBuilder
+func NewModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
+	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: new(_ModbusPDUDiagnosticResponse)}
+}
+
+type _ModbusPDUDiagnosticResponseBuilder struct {
+	*_ModbusPDUDiagnosticResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUDiagnosticResponseBuilder) = (*_ModbusPDUDiagnosticResponseBuilder)(nil)
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder {
+	return m.WithSubFunction(subFunction).WithData(data)
+}
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticResponseBuilder {
+	m.SubFunction = subFunction
+	return m
+}
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) WithData(data uint16) ModbusPDUDiagnosticResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) Build() (ModbusPDUDiagnosticResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUDiagnosticResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) MustBuild() ModbusPDUDiagnosticResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUDiagnosticResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUDiagnosticResponseBuilder()
+}
+
+// CreateModbusPDUDiagnosticResponseBuilder creates a ModbusPDUDiagnosticResponseBuilder
+func (m *_ModbusPDUDiagnosticResponse) CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
+	if m == nil {
+		return NewModbusPDUDiagnosticResponseBuilder()
+	}
+	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

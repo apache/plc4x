@@ -48,6 +48,8 @@ type ModbusPDUMaskWriteHoldingRegisterResponse interface {
 	GetOrMask() uint16
 	// IsModbusPDUMaskWriteHoldingRegisterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUMaskWriteHoldingRegisterResponse()
+	// CreateBuilder creates a ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHoldingRegisterResponseBuilder
 }
 
 // _ModbusPDUMaskWriteHoldingRegisterResponse is the data-structure of this message
@@ -72,6 +74,92 @@ func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMa
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUMaskWriteHoldingRegisterResponseBuilder is a builder for ModbusPDUMaskWriteHoldingRegisterResponse
+type ModbusPDUMaskWriteHoldingRegisterResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	// WithReferenceAddress adds ReferenceAddress (property field)
+	WithReferenceAddress(uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	// WithAndMask adds AndMask (property field)
+	WithAndMask(uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	// WithOrMask adds OrMask (property field)
+	WithOrMask(uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+	// Build builds the ModbusPDUMaskWriteHoldingRegisterResponse or returns an error if something is wrong
+	Build() (ModbusPDUMaskWriteHoldingRegisterResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUMaskWriteHoldingRegisterResponse
+}
+
+// NewModbusPDUMaskWriteHoldingRegisterResponseBuilder() creates a ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+func NewModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	return &_ModbusPDUMaskWriteHoldingRegisterResponseBuilder{_ModbusPDUMaskWriteHoldingRegisterResponse: new(_ModbusPDUMaskWriteHoldingRegisterResponse)}
+}
+
+type _ModbusPDUMaskWriteHoldingRegisterResponseBuilder struct {
+	*_ModbusPDUMaskWriteHoldingRegisterResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUMaskWriteHoldingRegisterResponseBuilder) = (*_ModbusPDUMaskWriteHoldingRegisterResponseBuilder)(nil)
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithMandatoryFields(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	return m.WithReferenceAddress(referenceAddress).WithAndMask(andMask).WithOrMask(orMask)
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithReferenceAddress(referenceAddress uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	m.ReferenceAddress = referenceAddress
+	return m
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithAndMask(andMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	m.AndMask = andMask
+	return m
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) WithOrMask(orMask uint16) ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	m.OrMask = orMask
+	return m
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) Build() (ModbusPDUMaskWriteHoldingRegisterResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUMaskWriteHoldingRegisterResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) MustBuild() ModbusPDUMaskWriteHoldingRegisterResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder()
+}
+
+// CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder creates a ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+func (m *_ModbusPDUMaskWriteHoldingRegisterResponse) CreateModbusPDUMaskWriteHoldingRegisterResponseBuilder() ModbusPDUMaskWriteHoldingRegisterResponseBuilder {
+	if m == nil {
+		return NewModbusPDUMaskWriteHoldingRegisterResponseBuilder()
+	}
+	return &_ModbusPDUMaskWriteHoldingRegisterResponseBuilder{_ModbusPDUMaskWriteHoldingRegisterResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

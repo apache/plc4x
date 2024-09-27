@@ -39,6 +39,8 @@ type SemanticVersionString interface {
 	utils.Copyable
 	// IsSemanticVersionString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSemanticVersionString()
+	// CreateBuilder creates a SemanticVersionStringBuilder
+	CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder
 }
 
 // _SemanticVersionString is the data-structure of this message
@@ -51,6 +53,71 @@ var _ SemanticVersionString = (*_SemanticVersionString)(nil)
 func NewSemanticVersionString() *_SemanticVersionString {
 	return &_SemanticVersionString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SemanticVersionStringBuilder is a builder for SemanticVersionString
+type SemanticVersionStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SemanticVersionStringBuilder
+	// Build builds the SemanticVersionString or returns an error if something is wrong
+	Build() (SemanticVersionString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SemanticVersionString
+}
+
+// NewSemanticVersionStringBuilder() creates a SemanticVersionStringBuilder
+func NewSemanticVersionStringBuilder() SemanticVersionStringBuilder {
+	return &_SemanticVersionStringBuilder{_SemanticVersionString: new(_SemanticVersionString)}
+}
+
+type _SemanticVersionStringBuilder struct {
+	*_SemanticVersionString
+
+	err *utils.MultiError
+}
+
+var _ (SemanticVersionStringBuilder) = (*_SemanticVersionStringBuilder)(nil)
+
+func (m *_SemanticVersionStringBuilder) WithMandatoryFields() SemanticVersionStringBuilder {
+	return m
+}
+
+func (m *_SemanticVersionStringBuilder) Build() (SemanticVersionString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SemanticVersionString.deepCopy(), nil
+}
+
+func (m *_SemanticVersionStringBuilder) MustBuild() SemanticVersionString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SemanticVersionStringBuilder) DeepCopy() any {
+	return m.CreateSemanticVersionStringBuilder()
+}
+
+// CreateSemanticVersionStringBuilder creates a SemanticVersionStringBuilder
+func (m *_SemanticVersionString) CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder {
+	if m == nil {
+		return NewSemanticVersionStringBuilder()
+	}
+	return &_SemanticVersionStringBuilder{_SemanticVersionString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastSemanticVersionString(structType any) SemanticVersionString {

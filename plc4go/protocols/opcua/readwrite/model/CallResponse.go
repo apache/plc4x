@@ -52,6 +52,8 @@ type CallResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsCallResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCallResponse()
+	// CreateBuilder creates a CallResponseBuilder
+	CreateCallResponseBuilder() CallResponseBuilder
 }
 
 // _CallResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CallResponseBuilder is a builder for CallResponse
+type CallResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CallResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) CallResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) CallResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) CallResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) CallResponseBuilder
+	// Build builds the CallResponse or returns an error if something is wrong
+	Build() (CallResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CallResponse
+}
+
+// NewCallResponseBuilder() creates a CallResponseBuilder
+func NewCallResponseBuilder() CallResponseBuilder {
+	return &_CallResponseBuilder{_CallResponse: new(_CallResponse)}
+}
+
+type _CallResponseBuilder struct {
+	*_CallResponse
+
+	err *utils.MultiError
+}
+
+var _ (CallResponseBuilder) = (*_CallResponseBuilder)(nil)
+
+func (m *_CallResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_CallResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CallResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_CallResponseBuilder) WithNoOfResults(noOfResults int32) CallResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_CallResponseBuilder) WithResults(results ...ExtensionObjectDefinition) CallResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_CallResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) CallResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_CallResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) CallResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_CallResponseBuilder) Build() (CallResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CallResponse.deepCopy(), nil
+}
+
+func (m *_CallResponseBuilder) MustBuild() CallResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CallResponseBuilder) DeepCopy() any {
+	return m.CreateCallResponseBuilder()
+}
+
+// CreateCallResponseBuilder creates a CallResponseBuilder
+func (m *_CallResponse) CreateCallResponseBuilder() CallResponseBuilder {
+	if m == nil {
+		return NewCallResponseBuilder()
+	}
+	return &_CallResponseBuilder{_CallResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataInstantaneousPower interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataInstantaneousPower is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataInstantaneousPower()
+	// CreateBuilder creates a BACnetConstructedDataInstantaneousPowerBuilder
+	CreateBACnetConstructedDataInstantaneousPowerBuilder() BACnetConstructedDataInstantaneousPowerBuilder
 }
 
 // _BACnetConstructedDataInstantaneousPower is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataInstantaneousPower(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataInstantaneousPowerBuilder is a builder for BACnetConstructedDataInstantaneousPower
+type BACnetConstructedDataInstantaneousPowerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(instantaneousPower BACnetApplicationTagReal) BACnetConstructedDataInstantaneousPowerBuilder
+	// WithInstantaneousPower adds InstantaneousPower (property field)
+	WithInstantaneousPower(BACnetApplicationTagReal) BACnetConstructedDataInstantaneousPowerBuilder
+	// WithInstantaneousPowerBuilder adds InstantaneousPower (property field) which is build by the builder
+	WithInstantaneousPowerBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataInstantaneousPowerBuilder
+	// Build builds the BACnetConstructedDataInstantaneousPower or returns an error if something is wrong
+	Build() (BACnetConstructedDataInstantaneousPower, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataInstantaneousPower
+}
+
+// NewBACnetConstructedDataInstantaneousPowerBuilder() creates a BACnetConstructedDataInstantaneousPowerBuilder
+func NewBACnetConstructedDataInstantaneousPowerBuilder() BACnetConstructedDataInstantaneousPowerBuilder {
+	return &_BACnetConstructedDataInstantaneousPowerBuilder{_BACnetConstructedDataInstantaneousPower: new(_BACnetConstructedDataInstantaneousPower)}
+}
+
+type _BACnetConstructedDataInstantaneousPowerBuilder struct {
+	*_BACnetConstructedDataInstantaneousPower
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataInstantaneousPowerBuilder) = (*_BACnetConstructedDataInstantaneousPowerBuilder)(nil)
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) WithMandatoryFields(instantaneousPower BACnetApplicationTagReal) BACnetConstructedDataInstantaneousPowerBuilder {
+	return m.WithInstantaneousPower(instantaneousPower)
+}
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) WithInstantaneousPower(instantaneousPower BACnetApplicationTagReal) BACnetConstructedDataInstantaneousPowerBuilder {
+	m.InstantaneousPower = instantaneousPower
+	return m
+}
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) WithInstantaneousPowerBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataInstantaneousPowerBuilder {
+	builder := builderSupplier(m.InstantaneousPower.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.InstantaneousPower, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) Build() (BACnetConstructedDataInstantaneousPower, error) {
+	if m.InstantaneousPower == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'instantaneousPower' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataInstantaneousPower.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) MustBuild() BACnetConstructedDataInstantaneousPower {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataInstantaneousPowerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataInstantaneousPowerBuilder()
+}
+
+// CreateBACnetConstructedDataInstantaneousPowerBuilder creates a BACnetConstructedDataInstantaneousPowerBuilder
+func (m *_BACnetConstructedDataInstantaneousPower) CreateBACnetConstructedDataInstantaneousPowerBuilder() BACnetConstructedDataInstantaneousPowerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataInstantaneousPowerBuilder()
+	}
+	return &_BACnetConstructedDataInstantaneousPowerBuilder{_BACnetConstructedDataInstantaneousPower: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

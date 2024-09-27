@@ -40,6 +40,8 @@ type LPollDataReq interface {
 	CEMI
 	// IsLPollDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollDataReq()
+	// CreateBuilder creates a LPollDataReqBuilder
+	CreateLPollDataReqBuilder() LPollDataReqBuilder
 }
 
 // _LPollDataReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewLPollDataReq(size uint16) *_LPollDataReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LPollDataReqBuilder is a builder for LPollDataReq
+type LPollDataReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LPollDataReqBuilder
+	// Build builds the LPollDataReq or returns an error if something is wrong
+	Build() (LPollDataReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LPollDataReq
+}
+
+// NewLPollDataReqBuilder() creates a LPollDataReqBuilder
+func NewLPollDataReqBuilder() LPollDataReqBuilder {
+	return &_LPollDataReqBuilder{_LPollDataReq: new(_LPollDataReq)}
+}
+
+type _LPollDataReqBuilder struct {
+	*_LPollDataReq
+
+	err *utils.MultiError
+}
+
+var _ (LPollDataReqBuilder) = (*_LPollDataReqBuilder)(nil)
+
+func (m *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
+	return m
+}
+
+func (m *_LPollDataReqBuilder) Build() (LPollDataReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LPollDataReq.deepCopy(), nil
+}
+
+func (m *_LPollDataReqBuilder) MustBuild() LPollDataReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LPollDataReqBuilder) DeepCopy() any {
+	return m.CreateLPollDataReqBuilder()
+}
+
+// CreateLPollDataReqBuilder creates a LPollDataReqBuilder
+func (m *_LPollDataReq) CreateLPollDataReqBuilder() LPollDataReqBuilder {
+	if m == nil {
+		return NewLPollDataReqBuilder()
+	}
+	return &_LPollDataReqBuilder{_LPollDataReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

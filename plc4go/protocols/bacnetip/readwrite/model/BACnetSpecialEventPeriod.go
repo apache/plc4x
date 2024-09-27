@@ -43,6 +43,8 @@ type BACnetSpecialEventPeriod interface {
 	utils.Copyable
 	// IsBACnetSpecialEventPeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventPeriod()
+	// CreateBuilder creates a BACnetSpecialEventPeriodBuilder
+	CreateBACnetSpecialEventPeriodBuilder() BACnetSpecialEventPeriodBuilder
 }
 
 // BACnetSpecialEventPeriodContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetSpecialEventPeriodContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetSpecialEventPeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventPeriod()
+	// CreateBuilder creates a BACnetSpecialEventPeriodBuilder
+	CreateBACnetSpecialEventPeriodBuilder() BACnetSpecialEventPeriodBuilder
 }
 
 // BACnetSpecialEventPeriodRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetSpecialEventPeriod(peekedTagHeader BACnetTagHeader) *_BACnetSpecia
 	}
 	return &_BACnetSpecialEventPeriod{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSpecialEventPeriodBuilder is a builder for BACnetSpecialEventPeriod
+type BACnetSpecialEventPeriodBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetSpecialEventPeriodBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetSpecialEventPeriodBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSpecialEventPeriodBuilder
+	// Build builds the BACnetSpecialEventPeriod or returns an error if something is wrong
+	Build() (BACnetSpecialEventPeriodContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSpecialEventPeriodContract
+}
+
+// NewBACnetSpecialEventPeriodBuilder() creates a BACnetSpecialEventPeriodBuilder
+func NewBACnetSpecialEventPeriodBuilder() BACnetSpecialEventPeriodBuilder {
+	return &_BACnetSpecialEventPeriodBuilder{_BACnetSpecialEventPeriod: new(_BACnetSpecialEventPeriod)}
+}
+
+type _BACnetSpecialEventPeriodBuilder struct {
+	*_BACnetSpecialEventPeriod
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSpecialEventPeriodBuilder) = (*_BACnetSpecialEventPeriodBuilder)(nil)
+
+func (m *_BACnetSpecialEventPeriodBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetSpecialEventPeriodBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetSpecialEventPeriodBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetSpecialEventPeriodBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetSpecialEventPeriodBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSpecialEventPeriodBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetSpecialEventPeriodBuilder) Build() (BACnetSpecialEventPeriodContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetSpecialEventPeriod.deepCopy(), nil
+}
+
+func (m *_BACnetSpecialEventPeriodBuilder) MustBuild() BACnetSpecialEventPeriodContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetSpecialEventPeriodBuilder) DeepCopy() any {
+	return m.CreateBACnetSpecialEventPeriodBuilder()
+}
+
+// CreateBACnetSpecialEventPeriodBuilder creates a BACnetSpecialEventPeriodBuilder
+func (m *_BACnetSpecialEventPeriod) CreateBACnetSpecialEventPeriodBuilder() BACnetSpecialEventPeriodBuilder {
+	if m == nil {
+		return NewBACnetSpecialEventPeriodBuilder()
+	}
+	return &_BACnetSpecialEventPeriodBuilder{_BACnetSpecialEventPeriod: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type COTPPacketDisconnectResponse interface {
 	GetSourceReference() uint16
 	// IsCOTPPacketDisconnectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketDisconnectResponse()
+	// CreateBuilder creates a COTPPacketDisconnectResponseBuilder
+	CreateCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilder
 }
 
 // _COTPPacketDisconnectResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCOTPPacketDisconnectResponse(parameters []COTPParameter, payload S7Messa
 	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketDisconnectResponseBuilder is a builder for COTPPacketDisconnectResponse
+type COTPPacketDisconnectResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationReference uint16, sourceReference uint16) COTPPacketDisconnectResponseBuilder
+	// WithDestinationReference adds DestinationReference (property field)
+	WithDestinationReference(uint16) COTPPacketDisconnectResponseBuilder
+	// WithSourceReference adds SourceReference (property field)
+	WithSourceReference(uint16) COTPPacketDisconnectResponseBuilder
+	// Build builds the COTPPacketDisconnectResponse or returns an error if something is wrong
+	Build() (COTPPacketDisconnectResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketDisconnectResponse
+}
+
+// NewCOTPPacketDisconnectResponseBuilder() creates a COTPPacketDisconnectResponseBuilder
+func NewCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilder {
+	return &_COTPPacketDisconnectResponseBuilder{_COTPPacketDisconnectResponse: new(_COTPPacketDisconnectResponse)}
+}
+
+type _COTPPacketDisconnectResponseBuilder struct {
+	*_COTPPacketDisconnectResponse
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketDisconnectResponseBuilder) = (*_COTPPacketDisconnectResponseBuilder)(nil)
+
+func (m *_COTPPacketDisconnectResponseBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16) COTPPacketDisconnectResponseBuilder {
+	return m.WithDestinationReference(destinationReference).WithSourceReference(sourceReference)
+}
+
+func (m *_COTPPacketDisconnectResponseBuilder) WithDestinationReference(destinationReference uint16) COTPPacketDisconnectResponseBuilder {
+	m.DestinationReference = destinationReference
+	return m
+}
+
+func (m *_COTPPacketDisconnectResponseBuilder) WithSourceReference(sourceReference uint16) COTPPacketDisconnectResponseBuilder {
+	m.SourceReference = sourceReference
+	return m
+}
+
+func (m *_COTPPacketDisconnectResponseBuilder) Build() (COTPPacketDisconnectResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacketDisconnectResponse.deepCopy(), nil
+}
+
+func (m *_COTPPacketDisconnectResponseBuilder) MustBuild() COTPPacketDisconnectResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketDisconnectResponseBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketDisconnectResponseBuilder()
+}
+
+// CreateCOTPPacketDisconnectResponseBuilder creates a COTPPacketDisconnectResponseBuilder
+func (m *_COTPPacketDisconnectResponse) CreateCOTPPacketDisconnectResponseBuilder() COTPPacketDisconnectResponseBuilder {
+	if m == nil {
+		return NewCOTPPacketDisconnectResponseBuilder()
+	}
+	return &_COTPPacketDisconnectResponseBuilder{_COTPPacketDisconnectResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

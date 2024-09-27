@@ -54,6 +54,8 @@ type DF1SymbolMessageFrame interface {
 	GetCommand() DF1Command
 	// IsDF1SymbolMessageFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1SymbolMessageFrame()
+	// CreateBuilder creates a DF1SymbolMessageFrameBuilder
+	CreateDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder
 }
 
 // _DF1SymbolMessageFrame is the data-structure of this message
@@ -81,6 +83,98 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1SymbolMessageFrameBuilder is a builder for DF1SymbolMessageFrame
+type DF1SymbolMessageFrameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, command DF1Command) DF1SymbolMessageFrameBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(uint8) DF1SymbolMessageFrameBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(uint8) DF1SymbolMessageFrameBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(DF1Command) DF1SymbolMessageFrameBuilder
+	// Build builds the DF1SymbolMessageFrame or returns an error if something is wrong
+	Build() (DF1SymbolMessageFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1SymbolMessageFrame
+}
+
+// NewDF1SymbolMessageFrameBuilder() creates a DF1SymbolMessageFrameBuilder
+func NewDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder {
+	return &_DF1SymbolMessageFrameBuilder{_DF1SymbolMessageFrame: new(_DF1SymbolMessageFrame)}
+}
+
+type _DF1SymbolMessageFrameBuilder struct {
+	*_DF1SymbolMessageFrame
+
+	err *utils.MultiError
+}
+
+var _ (DF1SymbolMessageFrameBuilder) = (*_DF1SymbolMessageFrameBuilder)(nil)
+
+func (m *_DF1SymbolMessageFrameBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, command DF1Command) DF1SymbolMessageFrameBuilder {
+	return m.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithCommand(command)
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) WithDestinationAddress(destinationAddress uint8) DF1SymbolMessageFrameBuilder {
+	m.DestinationAddress = destinationAddress
+	return m
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) WithSourceAddress(sourceAddress uint8) DF1SymbolMessageFrameBuilder {
+	m.SourceAddress = sourceAddress
+	return m
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) WithCommand(command DF1Command) DF1SymbolMessageFrameBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) Build() (DF1SymbolMessageFrame, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1SymbolMessageFrame.deepCopy(), nil
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) MustBuild() DF1SymbolMessageFrame {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1SymbolMessageFrameBuilder) DeepCopy() any {
+	return m.CreateDF1SymbolMessageFrameBuilder()
+}
+
+// CreateDF1SymbolMessageFrameBuilder creates a DF1SymbolMessageFrameBuilder
+func (m *_DF1SymbolMessageFrame) CreateDF1SymbolMessageFrameBuilder() DF1SymbolMessageFrameBuilder {
+	if m == nil {
+		return NewDF1SymbolMessageFrameBuilder()
+	}
+	return &_DF1SymbolMessageFrameBuilder{_DF1SymbolMessageFrame: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

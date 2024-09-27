@@ -46,6 +46,8 @@ type SignedSoftwareCertificate interface {
 	GetSignature() PascalByteString
 	// IsSignedSoftwareCertificate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSignedSoftwareCertificate()
+	// CreateBuilder creates a SignedSoftwareCertificateBuilder
+	CreateSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder
 }
 
 // _SignedSoftwareCertificate is the data-structure of this message
@@ -74,6 +76,127 @@ func NewSignedSoftwareCertificate(certificateData PascalByteString, signature Pa
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SignedSoftwareCertificateBuilder is a builder for SignedSoftwareCertificate
+type SignedSoftwareCertificateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(certificateData PascalByteString, signature PascalByteString) SignedSoftwareCertificateBuilder
+	// WithCertificateData adds CertificateData (property field)
+	WithCertificateData(PascalByteString) SignedSoftwareCertificateBuilder
+	// WithCertificateDataBuilder adds CertificateData (property field) which is build by the builder
+	WithCertificateDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder
+	// WithSignature adds Signature (property field)
+	WithSignature(PascalByteString) SignedSoftwareCertificateBuilder
+	// WithSignatureBuilder adds Signature (property field) which is build by the builder
+	WithSignatureBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder
+	// Build builds the SignedSoftwareCertificate or returns an error if something is wrong
+	Build() (SignedSoftwareCertificate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SignedSoftwareCertificate
+}
+
+// NewSignedSoftwareCertificateBuilder() creates a SignedSoftwareCertificateBuilder
+func NewSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder {
+	return &_SignedSoftwareCertificateBuilder{_SignedSoftwareCertificate: new(_SignedSoftwareCertificate)}
+}
+
+type _SignedSoftwareCertificateBuilder struct {
+	*_SignedSoftwareCertificate
+
+	err *utils.MultiError
+}
+
+var _ (SignedSoftwareCertificateBuilder) = (*_SignedSoftwareCertificateBuilder)(nil)
+
+func (m *_SignedSoftwareCertificateBuilder) WithMandatoryFields(certificateData PascalByteString, signature PascalByteString) SignedSoftwareCertificateBuilder {
+	return m.WithCertificateData(certificateData).WithSignature(signature)
+}
+
+func (m *_SignedSoftwareCertificateBuilder) WithCertificateData(certificateData PascalByteString) SignedSoftwareCertificateBuilder {
+	m.CertificateData = certificateData
+	return m
+}
+
+func (m *_SignedSoftwareCertificateBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
+	builder := builderSupplier(m.CertificateData.CreatePascalByteStringBuilder())
+	var err error
+	m.CertificateData, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SignedSoftwareCertificateBuilder) WithSignature(signature PascalByteString) SignedSoftwareCertificateBuilder {
+	m.Signature = signature
+	return m
+}
+
+func (m *_SignedSoftwareCertificateBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignedSoftwareCertificateBuilder {
+	builder := builderSupplier(m.Signature.CreatePascalByteStringBuilder())
+	var err error
+	m.Signature, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SignedSoftwareCertificateBuilder) Build() (SignedSoftwareCertificate, error) {
+	if m.CertificateData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'certificateData' not set"))
+	}
+	if m.Signature == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'signature' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SignedSoftwareCertificate.deepCopy(), nil
+}
+
+func (m *_SignedSoftwareCertificateBuilder) MustBuild() SignedSoftwareCertificate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SignedSoftwareCertificateBuilder) DeepCopy() any {
+	return m.CreateSignedSoftwareCertificateBuilder()
+}
+
+// CreateSignedSoftwareCertificateBuilder creates a SignedSoftwareCertificateBuilder
+func (m *_SignedSoftwareCertificate) CreateSignedSoftwareCertificateBuilder() SignedSoftwareCertificateBuilder {
+	if m == nil {
+		return NewSignedSoftwareCertificateBuilder()
+	}
+	return &_SignedSoftwareCertificateBuilder{_SignedSoftwareCertificate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

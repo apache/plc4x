@@ -46,6 +46,8 @@ type BACnetConstructedDataMACAddress interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataMACAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMACAddress()
+	// CreateBuilder creates a BACnetConstructedDataMACAddressBuilder
+	CreateBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddressBuilder
 }
 
 // _BACnetConstructedDataMACAddress is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMACAddress(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMACAddressBuilder is a builder for BACnetConstructedDataMACAddress
+type BACnetConstructedDataMACAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder
+	// WithMacAddress adds MacAddress (property field)
+	WithMacAddress(BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder
+	// WithMacAddressBuilder adds MacAddress (property field) which is build by the builder
+	WithMacAddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataMACAddressBuilder
+	// Build builds the BACnetConstructedDataMACAddress or returns an error if something is wrong
+	Build() (BACnetConstructedDataMACAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMACAddress
+}
+
+// NewBACnetConstructedDataMACAddressBuilder() creates a BACnetConstructedDataMACAddressBuilder
+func NewBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddressBuilder {
+	return &_BACnetConstructedDataMACAddressBuilder{_BACnetConstructedDataMACAddress: new(_BACnetConstructedDataMACAddress)}
+}
+
+type _BACnetConstructedDataMACAddressBuilder struct {
+	*_BACnetConstructedDataMACAddress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMACAddressBuilder) = (*_BACnetConstructedDataMACAddressBuilder)(nil)
+
+func (m *_BACnetConstructedDataMACAddressBuilder) WithMandatoryFields(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
+	return m.WithMacAddress(macAddress)
+}
+
+func (m *_BACnetConstructedDataMACAddressBuilder) WithMacAddress(macAddress BACnetApplicationTagOctetString) BACnetConstructedDataMACAddressBuilder {
+	m.MacAddress = macAddress
+	return m
+}
+
+func (m *_BACnetConstructedDataMACAddressBuilder) WithMacAddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataMACAddressBuilder {
+	builder := builderSupplier(m.MacAddress.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.MacAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMACAddressBuilder) Build() (BACnetConstructedDataMACAddress, error) {
+	if m.MacAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'macAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMACAddress.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMACAddressBuilder) MustBuild() BACnetConstructedDataMACAddress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMACAddressBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMACAddressBuilder()
+}
+
+// CreateBACnetConstructedDataMACAddressBuilder creates a BACnetConstructedDataMACAddressBuilder
+func (m *_BACnetConstructedDataMACAddress) CreateBACnetConstructedDataMACAddressBuilder() BACnetConstructedDataMACAddressBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMACAddressBuilder()
+	}
+	return &_BACnetConstructedDataMACAddressBuilder{_BACnetConstructedDataMACAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetConstructedDataDeviceAddressBinding interface {
 	GetDeviceAddressBinding() []BACnetAddressBinding
 	// IsBACnetConstructedDataDeviceAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeviceAddressBinding()
+	// CreateBuilder creates a BACnetConstructedDataDeviceAddressBindingBuilder
+	CreateBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedDataDeviceAddressBindingBuilder
 }
 
 // _BACnetConstructedDataDeviceAddressBinding is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataDeviceAddressBinding(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDeviceAddressBindingBuilder is a builder for BACnetConstructedDataDeviceAddressBinding
+type BACnetConstructedDataDeviceAddressBindingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceAddressBinding []BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder
+	// WithDeviceAddressBinding adds DeviceAddressBinding (property field)
+	WithDeviceAddressBinding(...BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder
+	// Build builds the BACnetConstructedDataDeviceAddressBinding or returns an error if something is wrong
+	Build() (BACnetConstructedDataDeviceAddressBinding, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDeviceAddressBinding
+}
+
+// NewBACnetConstructedDataDeviceAddressBindingBuilder() creates a BACnetConstructedDataDeviceAddressBindingBuilder
+func NewBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedDataDeviceAddressBindingBuilder {
+	return &_BACnetConstructedDataDeviceAddressBindingBuilder{_BACnetConstructedDataDeviceAddressBinding: new(_BACnetConstructedDataDeviceAddressBinding)}
+}
+
+type _BACnetConstructedDataDeviceAddressBindingBuilder struct {
+	*_BACnetConstructedDataDeviceAddressBinding
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDeviceAddressBindingBuilder) = (*_BACnetConstructedDataDeviceAddressBindingBuilder)(nil)
+
+func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) WithMandatoryFields(deviceAddressBinding []BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
+	return m.WithDeviceAddressBinding(deviceAddressBinding...)
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) WithDeviceAddressBinding(deviceAddressBinding ...BACnetAddressBinding) BACnetConstructedDataDeviceAddressBindingBuilder {
+	m.DeviceAddressBinding = deviceAddressBinding
+	return m
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) Build() (BACnetConstructedDataDeviceAddressBinding, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDeviceAddressBinding.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) MustBuild() BACnetConstructedDataDeviceAddressBinding {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDeviceAddressBindingBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDeviceAddressBindingBuilder()
+}
+
+// CreateBACnetConstructedDataDeviceAddressBindingBuilder creates a BACnetConstructedDataDeviceAddressBindingBuilder
+func (m *_BACnetConstructedDataDeviceAddressBinding) CreateBACnetConstructedDataDeviceAddressBindingBuilder() BACnetConstructedDataDeviceAddressBindingBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDeviceAddressBindingBuilder()
+	}
+	return &_BACnetConstructedDataDeviceAddressBindingBuilder{_BACnetConstructedDataDeviceAddressBinding: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

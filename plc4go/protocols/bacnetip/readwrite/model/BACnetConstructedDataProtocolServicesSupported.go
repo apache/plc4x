@@ -46,6 +46,8 @@ type BACnetConstructedDataProtocolServicesSupported interface {
 	GetActualValue() BACnetServicesSupportedTagged
 	// IsBACnetConstructedDataProtocolServicesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProtocolServicesSupported()
+	// CreateBuilder creates a BACnetConstructedDataProtocolServicesSupportedBuilder
+	CreateBACnetConstructedDataProtocolServicesSupportedBuilder() BACnetConstructedDataProtocolServicesSupportedBuilder
 }
 
 // _BACnetConstructedDataProtocolServicesSupported is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataProtocolServicesSupported(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProtocolServicesSupportedBuilder is a builder for BACnetConstructedDataProtocolServicesSupported
+type BACnetConstructedDataProtocolServicesSupportedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolServicesSupported BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder
+	// WithProtocolServicesSupported adds ProtocolServicesSupported (property field)
+	WithProtocolServicesSupported(BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder
+	// WithProtocolServicesSupportedBuilder adds ProtocolServicesSupported (property field) which is build by the builder
+	WithProtocolServicesSupportedBuilder(func(BACnetServicesSupportedTaggedBuilder) BACnetServicesSupportedTaggedBuilder) BACnetConstructedDataProtocolServicesSupportedBuilder
+	// Build builds the BACnetConstructedDataProtocolServicesSupported or returns an error if something is wrong
+	Build() (BACnetConstructedDataProtocolServicesSupported, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProtocolServicesSupported
+}
+
+// NewBACnetConstructedDataProtocolServicesSupportedBuilder() creates a BACnetConstructedDataProtocolServicesSupportedBuilder
+func NewBACnetConstructedDataProtocolServicesSupportedBuilder() BACnetConstructedDataProtocolServicesSupportedBuilder {
+	return &_BACnetConstructedDataProtocolServicesSupportedBuilder{_BACnetConstructedDataProtocolServicesSupported: new(_BACnetConstructedDataProtocolServicesSupported)}
+}
+
+type _BACnetConstructedDataProtocolServicesSupportedBuilder struct {
+	*_BACnetConstructedDataProtocolServicesSupported
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProtocolServicesSupportedBuilder) = (*_BACnetConstructedDataProtocolServicesSupportedBuilder)(nil)
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) WithMandatoryFields(protocolServicesSupported BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder {
+	return m.WithProtocolServicesSupported(protocolServicesSupported)
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) WithProtocolServicesSupported(protocolServicesSupported BACnetServicesSupportedTagged) BACnetConstructedDataProtocolServicesSupportedBuilder {
+	m.ProtocolServicesSupported = protocolServicesSupported
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) WithProtocolServicesSupportedBuilder(builderSupplier func(BACnetServicesSupportedTaggedBuilder) BACnetServicesSupportedTaggedBuilder) BACnetConstructedDataProtocolServicesSupportedBuilder {
+	builder := builderSupplier(m.ProtocolServicesSupported.CreateBACnetServicesSupportedTaggedBuilder())
+	var err error
+	m.ProtocolServicesSupported, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetServicesSupportedTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) Build() (BACnetConstructedDataProtocolServicesSupported, error) {
+	if m.ProtocolServicesSupported == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'protocolServicesSupported' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProtocolServicesSupported.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) MustBuild() BACnetConstructedDataProtocolServicesSupported {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProtocolServicesSupportedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProtocolServicesSupportedBuilder()
+}
+
+// CreateBACnetConstructedDataProtocolServicesSupportedBuilder creates a BACnetConstructedDataProtocolServicesSupportedBuilder
+func (m *_BACnetConstructedDataProtocolServicesSupported) CreateBACnetConstructedDataProtocolServicesSupportedBuilder() BACnetConstructedDataProtocolServicesSupportedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProtocolServicesSupportedBuilder()
+	}
+	return &_BACnetConstructedDataProtocolServicesSupportedBuilder{_BACnetConstructedDataProtocolServicesSupported: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

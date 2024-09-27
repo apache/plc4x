@@ -44,6 +44,8 @@ type BACnetPriorityValueOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 	// IsBACnetPriorityValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueOctetString()
+	// CreateBuilder creates a BACnetPriorityValueOctetStringBuilder
+	CreateBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBuilder
 }
 
 // _BACnetPriorityValueOctetString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueOctetString(peekedTagHeader BACnetTagHeader, octetStr
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueOctetStringBuilder is a builder for BACnetPriorityValueOctetString
+type BACnetPriorityValueOctetStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder
+	// WithOctetStringValue adds OctetStringValue (property field)
+	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder
+	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
+	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetPriorityValueOctetStringBuilder
+	// Build builds the BACnetPriorityValueOctetString or returns an error if something is wrong
+	Build() (BACnetPriorityValueOctetString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueOctetString
+}
+
+// NewBACnetPriorityValueOctetStringBuilder() creates a BACnetPriorityValueOctetStringBuilder
+func NewBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBuilder {
+	return &_BACnetPriorityValueOctetStringBuilder{_BACnetPriorityValueOctetString: new(_BACnetPriorityValueOctetString)}
+}
+
+type _BACnetPriorityValueOctetStringBuilder struct {
+	*_BACnetPriorityValueOctetString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueOctetStringBuilder) = (*_BACnetPriorityValueOctetStringBuilder)(nil)
+
+func (m *_BACnetPriorityValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
+	return m.WithOctetStringValue(octetStringValue)
+}
+
+func (m *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetPriorityValueOctetStringBuilder {
+	m.OctetStringValue = octetStringValue
+	return m
+}
+
+func (m *_BACnetPriorityValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetPriorityValueOctetStringBuilder {
+	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.OctetStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueOctetStringBuilder) Build() (BACnetPriorityValueOctetString, error) {
+	if m.OctetStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueOctetString.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueOctetStringBuilder) MustBuild() BACnetPriorityValueOctetString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueOctetStringBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueOctetStringBuilder()
+}
+
+// CreateBACnetPriorityValueOctetStringBuilder creates a BACnetPriorityValueOctetStringBuilder
+func (m *_BACnetPriorityValueOctetString) CreateBACnetPriorityValueOctetStringBuilder() BACnetPriorityValueOctetStringBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueOctetStringBuilder()
+	}
+	return &_BACnetPriorityValueOctetStringBuilder{_BACnetPriorityValueOctetString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

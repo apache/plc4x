@@ -43,6 +43,8 @@ type BACnetCalendarEntry interface {
 	utils.Copyable
 	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntry()
+	// CreateBuilder creates a BACnetCalendarEntryBuilder
+	CreateBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder
 }
 
 // BACnetCalendarEntryContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetCalendarEntryContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetCalendarEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntry()
+	// CreateBuilder creates a BACnetCalendarEntryBuilder
+	CreateBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder
 }
 
 // BACnetCalendarEntryRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetCalendarEntry(peekedTagHeader BACnetTagHeader) *_BACnetCalendarEnt
 	}
 	return &_BACnetCalendarEntry{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCalendarEntryBuilder is a builder for BACnetCalendarEntry
+type BACnetCalendarEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetCalendarEntryBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder
+	// Build builds the BACnetCalendarEntry or returns an error if something is wrong
+	Build() (BACnetCalendarEntryContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntryContract
+}
+
+// NewBACnetCalendarEntryBuilder() creates a BACnetCalendarEntryBuilder
+func NewBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder {
+	return &_BACnetCalendarEntryBuilder{_BACnetCalendarEntry: new(_BACnetCalendarEntry)}
+}
+
+type _BACnetCalendarEntryBuilder struct {
+	*_BACnetCalendarEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCalendarEntryBuilder) = (*_BACnetCalendarEntryBuilder)(nil)
+
+func (m *_BACnetCalendarEntryBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetCalendarEntryBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetCalendarEntryBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetCalendarEntryBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetCalendarEntryBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCalendarEntryBuilder) Build() (BACnetCalendarEntryContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCalendarEntry.deepCopy(), nil
+}
+
+func (m *_BACnetCalendarEntryBuilder) MustBuild() BACnetCalendarEntryContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCalendarEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetCalendarEntryBuilder()
+}
+
+// CreateBACnetCalendarEntryBuilder creates a BACnetCalendarEntryBuilder
+func (m *_BACnetCalendarEntry) CreateBACnetCalendarEntryBuilder() BACnetCalendarEntryBuilder {
+	if m == nil {
+		return NewBACnetCalendarEntryBuilder()
+	}
+	return &_BACnetCalendarEntryBuilder{_BACnetCalendarEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

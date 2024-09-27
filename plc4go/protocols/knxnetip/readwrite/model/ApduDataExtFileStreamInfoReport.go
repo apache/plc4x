@@ -40,6 +40,8 @@ type ApduDataExtFileStreamInfoReport interface {
 	ApduDataExt
 	// IsApduDataExtFileStreamInfoReport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtFileStreamInfoReport()
+	// CreateBuilder creates a ApduDataExtFileStreamInfoReportBuilder
+	CreateApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReportBuilder
 }
 
 // _ApduDataExtFileStreamInfoReport is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInf
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtFileStreamInfoReportBuilder is a builder for ApduDataExtFileStreamInfoReport
+type ApduDataExtFileStreamInfoReportBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder
+	// Build builds the ApduDataExtFileStreamInfoReport or returns an error if something is wrong
+	Build() (ApduDataExtFileStreamInfoReport, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtFileStreamInfoReport
+}
+
+// NewApduDataExtFileStreamInfoReportBuilder() creates a ApduDataExtFileStreamInfoReportBuilder
+func NewApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReportBuilder {
+	return &_ApduDataExtFileStreamInfoReportBuilder{_ApduDataExtFileStreamInfoReport: new(_ApduDataExtFileStreamInfoReport)}
+}
+
+type _ApduDataExtFileStreamInfoReportBuilder struct {
+	*_ApduDataExtFileStreamInfoReport
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtFileStreamInfoReportBuilder) = (*_ApduDataExtFileStreamInfoReportBuilder)(nil)
+
+func (m *_ApduDataExtFileStreamInfoReportBuilder) WithMandatoryFields() ApduDataExtFileStreamInfoReportBuilder {
+	return m
+}
+
+func (m *_ApduDataExtFileStreamInfoReportBuilder) Build() (ApduDataExtFileStreamInfoReport, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtFileStreamInfoReport.deepCopy(), nil
+}
+
+func (m *_ApduDataExtFileStreamInfoReportBuilder) MustBuild() ApduDataExtFileStreamInfoReport {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtFileStreamInfoReportBuilder) DeepCopy() any {
+	return m.CreateApduDataExtFileStreamInfoReportBuilder()
+}
+
+// CreateApduDataExtFileStreamInfoReportBuilder creates a ApduDataExtFileStreamInfoReportBuilder
+func (m *_ApduDataExtFileStreamInfoReport) CreateApduDataExtFileStreamInfoReportBuilder() ApduDataExtFileStreamInfoReportBuilder {
+	if m == nil {
+		return NewApduDataExtFileStreamInfoReportBuilder()
+	}
+	return &_ApduDataExtFileStreamInfoReportBuilder{_ApduDataExtFileStreamInfoReport: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

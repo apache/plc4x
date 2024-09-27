@@ -44,6 +44,8 @@ type S7PayloadAlarmAckInd interface {
 	GetAlarmMessage() AlarmMessageAckPushType
 	// IsS7PayloadAlarmAckInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadAlarmAckInd()
+	// CreateBuilder creates a S7PayloadAlarmAckIndBuilder
+	CreateS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder
 }
 
 // _S7PayloadAlarmAckInd is the data-structure of this message
@@ -67,6 +69,99 @@ func NewS7PayloadAlarmAckInd(returnCode DataTransportErrorCode, transportSize Da
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadAlarmAckIndBuilder is a builder for S7PayloadAlarmAckInd
+type S7PayloadAlarmAckIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder
+	// WithAlarmMessage adds AlarmMessage (property field)
+	WithAlarmMessage(AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder
+	// WithAlarmMessageBuilder adds AlarmMessage (property field) which is build by the builder
+	WithAlarmMessageBuilder(func(AlarmMessageAckPushTypeBuilder) AlarmMessageAckPushTypeBuilder) S7PayloadAlarmAckIndBuilder
+	// Build builds the S7PayloadAlarmAckInd or returns an error if something is wrong
+	Build() (S7PayloadAlarmAckInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadAlarmAckInd
+}
+
+// NewS7PayloadAlarmAckIndBuilder() creates a S7PayloadAlarmAckIndBuilder
+func NewS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder {
+	return &_S7PayloadAlarmAckIndBuilder{_S7PayloadAlarmAckInd: new(_S7PayloadAlarmAckInd)}
+}
+
+type _S7PayloadAlarmAckIndBuilder struct {
+	*_S7PayloadAlarmAckInd
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadAlarmAckIndBuilder) = (*_S7PayloadAlarmAckIndBuilder)(nil)
+
+func (m *_S7PayloadAlarmAckIndBuilder) WithMandatoryFields(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
+	return m.WithAlarmMessage(alarmMessage)
+}
+
+func (m *_S7PayloadAlarmAckIndBuilder) WithAlarmMessage(alarmMessage AlarmMessageAckPushType) S7PayloadAlarmAckIndBuilder {
+	m.AlarmMessage = alarmMessage
+	return m
+}
+
+func (m *_S7PayloadAlarmAckIndBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessageAckPushTypeBuilder) AlarmMessageAckPushTypeBuilder) S7PayloadAlarmAckIndBuilder {
+	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessageAckPushTypeBuilder())
+	var err error
+	m.AlarmMessage, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "AlarmMessageAckPushTypeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_S7PayloadAlarmAckIndBuilder) Build() (S7PayloadAlarmAckInd, error) {
+	if m.AlarmMessage == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadAlarmAckInd.deepCopy(), nil
+}
+
+func (m *_S7PayloadAlarmAckIndBuilder) MustBuild() S7PayloadAlarmAckInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadAlarmAckIndBuilder) DeepCopy() any {
+	return m.CreateS7PayloadAlarmAckIndBuilder()
+}
+
+// CreateS7PayloadAlarmAckIndBuilder creates a S7PayloadAlarmAckIndBuilder
+func (m *_S7PayloadAlarmAckInd) CreateS7PayloadAlarmAckIndBuilder() S7PayloadAlarmAckIndBuilder {
+	if m == nil {
+		return NewS7PayloadAlarmAckIndBuilder()
+	}
+	return &_S7PayloadAlarmAckIndBuilder{_S7PayloadAlarmAckInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

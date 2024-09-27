@@ -46,6 +46,8 @@ type SubscriptionAcknowledgement interface {
 	GetSequenceNumber() uint32
 	// IsSubscriptionAcknowledgement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubscriptionAcknowledgement()
+	// CreateBuilder creates a SubscriptionAcknowledgementBuilder
+	CreateSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder
 }
 
 // _SubscriptionAcknowledgement is the data-structure of this message
@@ -68,6 +70,85 @@ func NewSubscriptionAcknowledgement(subscriptionId uint32, sequenceNumber uint32
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubscriptionAcknowledgementBuilder is a builder for SubscriptionAcknowledgement
+type SubscriptionAcknowledgementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscriptionId uint32, sequenceNumber uint32) SubscriptionAcknowledgementBuilder
+	// WithSubscriptionId adds SubscriptionId (property field)
+	WithSubscriptionId(uint32) SubscriptionAcknowledgementBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint32) SubscriptionAcknowledgementBuilder
+	// Build builds the SubscriptionAcknowledgement or returns an error if something is wrong
+	Build() (SubscriptionAcknowledgement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubscriptionAcknowledgement
+}
+
+// NewSubscriptionAcknowledgementBuilder() creates a SubscriptionAcknowledgementBuilder
+func NewSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder {
+	return &_SubscriptionAcknowledgementBuilder{_SubscriptionAcknowledgement: new(_SubscriptionAcknowledgement)}
+}
+
+type _SubscriptionAcknowledgementBuilder struct {
+	*_SubscriptionAcknowledgement
+
+	err *utils.MultiError
+}
+
+var _ (SubscriptionAcknowledgementBuilder) = (*_SubscriptionAcknowledgementBuilder)(nil)
+
+func (m *_SubscriptionAcknowledgementBuilder) WithMandatoryFields(subscriptionId uint32, sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
+	return m.WithSubscriptionId(subscriptionId).WithSequenceNumber(sequenceNumber)
+}
+
+func (m *_SubscriptionAcknowledgementBuilder) WithSubscriptionId(subscriptionId uint32) SubscriptionAcknowledgementBuilder {
+	m.SubscriptionId = subscriptionId
+	return m
+}
+
+func (m *_SubscriptionAcknowledgementBuilder) WithSequenceNumber(sequenceNumber uint32) SubscriptionAcknowledgementBuilder {
+	m.SequenceNumber = sequenceNumber
+	return m
+}
+
+func (m *_SubscriptionAcknowledgementBuilder) Build() (SubscriptionAcknowledgement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SubscriptionAcknowledgement.deepCopy(), nil
+}
+
+func (m *_SubscriptionAcknowledgementBuilder) MustBuild() SubscriptionAcknowledgement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SubscriptionAcknowledgementBuilder) DeepCopy() any {
+	return m.CreateSubscriptionAcknowledgementBuilder()
+}
+
+// CreateSubscriptionAcknowledgementBuilder creates a SubscriptionAcknowledgementBuilder
+func (m *_SubscriptionAcknowledgement) CreateSubscriptionAcknowledgementBuilder() SubscriptionAcknowledgementBuilder {
+	if m == nil {
+		return NewSubscriptionAcknowledgementBuilder()
+	}
+	return &_SubscriptionAcknowledgementBuilder{_SubscriptionAcknowledgement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

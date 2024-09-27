@@ -48,6 +48,8 @@ type ViewDescription interface {
 	GetViewVersion() uint32
 	// IsViewDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsViewDescription()
+	// CreateBuilder creates a ViewDescriptionBuilder
+	CreateViewDescriptionBuilder() ViewDescriptionBuilder
 }
 
 // _ViewDescription is the data-structure of this message
@@ -75,6 +77,113 @@ func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_Vi
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ViewDescriptionBuilder is a builder for ViewDescription
+type ViewDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder
+	// WithViewId adds ViewId (property field)
+	WithViewId(NodeId) ViewDescriptionBuilder
+	// WithViewIdBuilder adds ViewId (property field) which is build by the builder
+	WithViewIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(int64) ViewDescriptionBuilder
+	// WithViewVersion adds ViewVersion (property field)
+	WithViewVersion(uint32) ViewDescriptionBuilder
+	// Build builds the ViewDescription or returns an error if something is wrong
+	Build() (ViewDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ViewDescription
+}
+
+// NewViewDescriptionBuilder() creates a ViewDescriptionBuilder
+func NewViewDescriptionBuilder() ViewDescriptionBuilder {
+	return &_ViewDescriptionBuilder{_ViewDescription: new(_ViewDescription)}
+}
+
+type _ViewDescriptionBuilder struct {
+	*_ViewDescription
+
+	err *utils.MultiError
+}
+
+var _ (ViewDescriptionBuilder) = (*_ViewDescriptionBuilder)(nil)
+
+func (m *_ViewDescriptionBuilder) WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder {
+	return m.WithViewId(viewId).WithTimestamp(timestamp).WithViewVersion(viewVersion)
+}
+
+func (m *_ViewDescriptionBuilder) WithViewId(viewId NodeId) ViewDescriptionBuilder {
+	m.ViewId = viewId
+	return m
+}
+
+func (m *_ViewDescriptionBuilder) WithViewIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder {
+	builder := builderSupplier(m.ViewId.CreateNodeIdBuilder())
+	var err error
+	m.ViewId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ViewDescriptionBuilder) WithTimestamp(timestamp int64) ViewDescriptionBuilder {
+	m.Timestamp = timestamp
+	return m
+}
+
+func (m *_ViewDescriptionBuilder) WithViewVersion(viewVersion uint32) ViewDescriptionBuilder {
+	m.ViewVersion = viewVersion
+	return m
+}
+
+func (m *_ViewDescriptionBuilder) Build() (ViewDescription, error) {
+	if m.ViewId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'viewId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ViewDescription.deepCopy(), nil
+}
+
+func (m *_ViewDescriptionBuilder) MustBuild() ViewDescription {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ViewDescriptionBuilder) DeepCopy() any {
+	return m.CreateViewDescriptionBuilder()
+}
+
+// CreateViewDescriptionBuilder creates a ViewDescriptionBuilder
+func (m *_ViewDescription) CreateViewDescriptionBuilder() ViewDescriptionBuilder {
+	if m == nil {
+		return NewViewDescriptionBuilder()
+	}
+	return &_ViewDescriptionBuilder{_ViewDescription: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

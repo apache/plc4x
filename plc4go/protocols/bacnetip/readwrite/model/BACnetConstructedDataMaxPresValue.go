@@ -46,6 +46,8 @@ type BACnetConstructedDataMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxPresValue()
+	// CreateBuilder creates a BACnetConstructedDataMaxPresValueBuilder
+	CreateBACnetConstructedDataMaxPresValueBuilder() BACnetConstructedDataMaxPresValueBuilder
 }
 
 // _BACnetConstructedDataMaxPresValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaxPresValue(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxPresValueBuilder is a builder for BACnetConstructedDataMaxPresValue
+type BACnetConstructedDataMaxPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataMaxPresValueBuilder
+	// WithMaxPresValue adds MaxPresValue (property field)
+	WithMaxPresValue(BACnetApplicationTagReal) BACnetConstructedDataMaxPresValueBuilder
+	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
+	WithMaxPresValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaxPresValueBuilder
+	// Build builds the BACnetConstructedDataMaxPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxPresValue
+}
+
+// NewBACnetConstructedDataMaxPresValueBuilder() creates a BACnetConstructedDataMaxPresValueBuilder
+func NewBACnetConstructedDataMaxPresValueBuilder() BACnetConstructedDataMaxPresValueBuilder {
+	return &_BACnetConstructedDataMaxPresValueBuilder{_BACnetConstructedDataMaxPresValue: new(_BACnetConstructedDataMaxPresValue)}
+}
+
+type _BACnetConstructedDataMaxPresValueBuilder struct {
+	*_BACnetConstructedDataMaxPresValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxPresValueBuilder) = (*_BACnetConstructedDataMaxPresValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataMaxPresValueBuilder {
+	return m.WithMaxPresValue(maxPresValue)
+}
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataMaxPresValueBuilder {
+	m.MaxPresValue = maxPresValue
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaxPresValueBuilder {
+	builder := builderSupplier(m.MaxPresValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MaxPresValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) Build() (BACnetConstructedDataMaxPresValue, error) {
+	if m.MaxPresValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaxPresValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) MustBuild() BACnetConstructedDataMaxPresValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaxPresValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaxPresValueBuilder()
+}
+
+// CreateBACnetConstructedDataMaxPresValueBuilder creates a BACnetConstructedDataMaxPresValueBuilder
+func (m *_BACnetConstructedDataMaxPresValue) CreateBACnetConstructedDataMaxPresValueBuilder() BACnetConstructedDataMaxPresValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaxPresValueBuilder()
+	}
+	return &_BACnetConstructedDataMaxPresValueBuilder{_BACnetConstructedDataMaxPresValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

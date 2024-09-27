@@ -46,6 +46,8 @@ type BACnetConstructedDataTimeOfDeviceRestart interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataTimeOfDeviceRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimeOfDeviceRestart()
+	// CreateBuilder creates a BACnetConstructedDataTimeOfDeviceRestartBuilder
+	CreateBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataTimeOfDeviceRestartBuilder
 }
 
 // _BACnetConstructedDataTimeOfDeviceRestart is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataTimeOfDeviceRestart(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimeOfDeviceRestartBuilder is a builder for BACnetConstructedDataTimeOfDeviceRestart
+type BACnetConstructedDataTimeOfDeviceRestartBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder
+	// WithTimeOfDeviceRestart adds TimeOfDeviceRestart (property field)
+	WithTimeOfDeviceRestart(BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder
+	// Build builds the BACnetConstructedDataTimeOfDeviceRestart or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimeOfDeviceRestart, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimeOfDeviceRestart
+}
+
+// NewBACnetConstructedDataTimeOfDeviceRestartBuilder() creates a BACnetConstructedDataTimeOfDeviceRestartBuilder
+func NewBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	return &_BACnetConstructedDataTimeOfDeviceRestartBuilder{_BACnetConstructedDataTimeOfDeviceRestart: new(_BACnetConstructedDataTimeOfDeviceRestart)}
+}
+
+type _BACnetConstructedDataTimeOfDeviceRestartBuilder struct {
+	*_BACnetConstructedDataTimeOfDeviceRestart
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimeOfDeviceRestartBuilder) = (*_BACnetConstructedDataTimeOfDeviceRestartBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithMandatoryFields(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	return m.WithTimeOfDeviceRestart(timeOfDeviceRestart)
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) WithTimeOfDeviceRestart(timeOfDeviceRestart BACnetTimeStamp) BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	m.TimeOfDeviceRestart = timeOfDeviceRestart
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) Build() (BACnetConstructedDataTimeOfDeviceRestart, error) {
+	if m.TimeOfDeviceRestart == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeOfDeviceRestart' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimeOfDeviceRestart.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) MustBuild() BACnetConstructedDataTimeOfDeviceRestart {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimeOfDeviceRestartBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimeOfDeviceRestartBuilder()
+}
+
+// CreateBACnetConstructedDataTimeOfDeviceRestartBuilder creates a BACnetConstructedDataTimeOfDeviceRestartBuilder
+func (m *_BACnetConstructedDataTimeOfDeviceRestart) CreateBACnetConstructedDataTimeOfDeviceRestartBuilder() BACnetConstructedDataTimeOfDeviceRestartBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimeOfDeviceRestartBuilder()
+	}
+	return &_BACnetConstructedDataTimeOfDeviceRestartBuilder{_BACnetConstructedDataTimeOfDeviceRestart: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

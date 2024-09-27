@@ -44,6 +44,8 @@ type CBusMessageToClient interface {
 	GetReply() ReplyOrConfirmation
 	// IsCBusMessageToClient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessageToClient()
+	// CreateBuilder creates a CBusMessageToClientBuilder
+	CreateCBusMessageToClientBuilder() CBusMessageToClientBuilder
 }
 
 // _CBusMessageToClient is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCBusMessageToClient(reply ReplyOrConfirmation, requestContext RequestCon
 	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusMessageToClientBuilder is a builder for CBusMessageToClient
+type CBusMessageToClientBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reply ReplyOrConfirmation) CBusMessageToClientBuilder
+	// WithReply adds Reply (property field)
+	WithReply(ReplyOrConfirmation) CBusMessageToClientBuilder
+	// Build builds the CBusMessageToClient or returns an error if something is wrong
+	Build() (CBusMessageToClient, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusMessageToClient
+}
+
+// NewCBusMessageToClientBuilder() creates a CBusMessageToClientBuilder
+func NewCBusMessageToClientBuilder() CBusMessageToClientBuilder {
+	return &_CBusMessageToClientBuilder{_CBusMessageToClient: new(_CBusMessageToClient)}
+}
+
+type _CBusMessageToClientBuilder struct {
+	*_CBusMessageToClient
+
+	err *utils.MultiError
+}
+
+var _ (CBusMessageToClientBuilder) = (*_CBusMessageToClientBuilder)(nil)
+
+func (m *_CBusMessageToClientBuilder) WithMandatoryFields(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
+	return m.WithReply(reply)
+}
+
+func (m *_CBusMessageToClientBuilder) WithReply(reply ReplyOrConfirmation) CBusMessageToClientBuilder {
+	m.Reply = reply
+	return m
+}
+
+func (m *_CBusMessageToClientBuilder) Build() (CBusMessageToClient, error) {
+	if m.Reply == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'reply' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusMessageToClient.deepCopy(), nil
+}
+
+func (m *_CBusMessageToClientBuilder) MustBuild() CBusMessageToClient {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusMessageToClientBuilder) DeepCopy() any {
+	return m.CreateCBusMessageToClientBuilder()
+}
+
+// CreateCBusMessageToClientBuilder creates a CBusMessageToClientBuilder
+func (m *_CBusMessageToClient) CreateCBusMessageToClientBuilder() CBusMessageToClientBuilder {
+	if m == nil {
+		return NewCBusMessageToClientBuilder()
+	}
+	return &_CBusMessageToClientBuilder{_CBusMessageToClient: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

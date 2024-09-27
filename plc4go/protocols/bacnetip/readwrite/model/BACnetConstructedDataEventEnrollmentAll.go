@@ -40,6 +40,8 @@ type BACnetConstructedDataEventEnrollmentAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataEventEnrollmentAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventEnrollmentAll()
+	// CreateBuilder creates a BACnetConstructedDataEventEnrollmentAllBuilder
+	CreateBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEventEnrollmentAllBuilder
 }
 
 // _BACnetConstructedDataEventEnrollmentAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataEventEnrollmentAll(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventEnrollmentAllBuilder is a builder for BACnetConstructedDataEventEnrollmentAll
+type BACnetConstructedDataEventEnrollmentAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataEventEnrollmentAllBuilder
+	// Build builds the BACnetConstructedDataEventEnrollmentAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventEnrollmentAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventEnrollmentAll
+}
+
+// NewBACnetConstructedDataEventEnrollmentAllBuilder() creates a BACnetConstructedDataEventEnrollmentAllBuilder
+func NewBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEventEnrollmentAllBuilder {
+	return &_BACnetConstructedDataEventEnrollmentAllBuilder{_BACnetConstructedDataEventEnrollmentAll: new(_BACnetConstructedDataEventEnrollmentAll)}
+}
+
+type _BACnetConstructedDataEventEnrollmentAllBuilder struct {
+	*_BACnetConstructedDataEventEnrollmentAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventEnrollmentAllBuilder) = (*_BACnetConstructedDataEventEnrollmentAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) WithMandatoryFields() BACnetConstructedDataEventEnrollmentAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) Build() (BACnetConstructedDataEventEnrollmentAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventEnrollmentAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) MustBuild() BACnetConstructedDataEventEnrollmentAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventEnrollmentAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventEnrollmentAllBuilder()
+}
+
+// CreateBACnetConstructedDataEventEnrollmentAllBuilder creates a BACnetConstructedDataEventEnrollmentAllBuilder
+func (m *_BACnetConstructedDataEventEnrollmentAll) CreateBACnetConstructedDataEventEnrollmentAllBuilder() BACnetConstructedDataEventEnrollmentAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventEnrollmentAllBuilder()
+	}
+	return &_BACnetConstructedDataEventEnrollmentAllBuilder{_BACnetConstructedDataEventEnrollmentAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

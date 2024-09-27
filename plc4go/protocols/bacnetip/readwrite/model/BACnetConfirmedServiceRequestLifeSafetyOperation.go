@@ -50,6 +50,8 @@ type BACnetConfirmedServiceRequestLifeSafetyOperation interface {
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// IsBACnetConfirmedServiceRequestLifeSafetyOperation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestLifeSafetyOperation()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
 }
 
 // _BACnetConfirmedServiceRequestLifeSafetyOperation is the data-structure of this message
@@ -85,6 +87,177 @@ func NewBACnetConfirmedServiceRequestLifeSafetyOperation(requestingProcessIdenti
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestLifeSafetyOperationBuilder is a builder for BACnetConfirmedServiceRequestLifeSafetyOperation
+type BACnetConfirmedServiceRequestLifeSafetyOperationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequestingProcessIdentifier adds RequestingProcessIdentifier (property field)
+	WithRequestingProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequestingProcessIdentifierBuilder adds RequestingProcessIdentifier (property field) which is build by the builder
+	WithRequestingProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequestingSource adds RequestingSource (property field)
+	WithRequestingSource(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequestingSourceBuilder adds RequestingSource (property field) which is build by the builder
+	WithRequestingSourceBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequest adds Request (property field)
+	WithRequest(BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithRequestBuilder adds Request (property field) which is build by the builder
+	WithRequestBuilder(func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithOptionalObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// WithOptionalObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithOptionalObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+	// Build builds the BACnetConfirmedServiceRequestLifeSafetyOperation or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestLifeSafetyOperation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestLifeSafetyOperation
+}
+
+// NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() creates a BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+func NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	return &_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder{_BACnetConfirmedServiceRequestLifeSafetyOperation: new(_BACnetConfirmedServiceRequestLifeSafetyOperation)}
+}
+
+type _BACnetConfirmedServiceRequestLifeSafetyOperationBuilder struct {
+	*_BACnetConfirmedServiceRequestLifeSafetyOperation
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) = (*_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithMandatoryFields(requestingProcessIdentifier BACnetContextTagUnsignedInteger, requestingSource BACnetContextTagCharacterString, request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	return m.WithRequestingProcessIdentifier(requestingProcessIdentifier).WithRequestingSource(requestingSource).WithRequest(request)
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifier(requestingProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	m.RequestingProcessIdentifier = requestingProcessIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(m.RequestingProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.RequestingProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSource(requestingSource BACnetContextTagCharacterString) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	m.RequestingSource = requestingSource
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestingSourceBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(m.RequestingSource.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	m.RequestingSource, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequest(request BACnetLifeSafetyOperationTagged) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	m.Request = request
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithRequestBuilder(builderSupplier func(BACnetLifeSafetyOperationTaggedBuilder) BACnetLifeSafetyOperationTaggedBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(m.Request.CreateBACnetLifeSafetyOperationTaggedBuilder())
+	var err error
+	m.Request, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyOperationTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) Build() (BACnetConfirmedServiceRequestLifeSafetyOperation, error) {
+	if m.RequestingProcessIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestingProcessIdentifier' not set"))
+	}
+	if m.RequestingSource == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestingSource' not set"))
+	}
+	if m.Request == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'request' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestLifeSafetyOperation.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) MustBuild() BACnetConfirmedServiceRequestLifeSafetyOperation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder creates a BACnetConfirmedServiceRequestLifeSafetyOperationBuilder
+func (m *_BACnetConfirmedServiceRequestLifeSafetyOperation) CreateBACnetConfirmedServiceRequestLifeSafetyOperationBuilder() BACnetConfirmedServiceRequestLifeSafetyOperationBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestLifeSafetyOperationBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestLifeSafetyOperationBuilder{_BACnetConfirmedServiceRequestLifeSafetyOperation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataRestoreCompletionTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataRestoreCompletionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRestoreCompletionTime()
+	// CreateBuilder creates a BACnetConstructedDataRestoreCompletionTimeBuilder
+	CreateBACnetConstructedDataRestoreCompletionTimeBuilder() BACnetConstructedDataRestoreCompletionTimeBuilder
 }
 
 // _BACnetConstructedDataRestoreCompletionTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataRestoreCompletionTime(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRestoreCompletionTimeBuilder is a builder for BACnetConstructedDataRestoreCompletionTime
+type BACnetConstructedDataRestoreCompletionTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(completionTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder
+	// WithCompletionTime adds CompletionTime (property field)
+	WithCompletionTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder
+	// WithCompletionTimeBuilder adds CompletionTime (property field) which is build by the builder
+	WithCompletionTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRestoreCompletionTimeBuilder
+	// Build builds the BACnetConstructedDataRestoreCompletionTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataRestoreCompletionTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRestoreCompletionTime
+}
+
+// NewBACnetConstructedDataRestoreCompletionTimeBuilder() creates a BACnetConstructedDataRestoreCompletionTimeBuilder
+func NewBACnetConstructedDataRestoreCompletionTimeBuilder() BACnetConstructedDataRestoreCompletionTimeBuilder {
+	return &_BACnetConstructedDataRestoreCompletionTimeBuilder{_BACnetConstructedDataRestoreCompletionTime: new(_BACnetConstructedDataRestoreCompletionTime)}
+}
+
+type _BACnetConstructedDataRestoreCompletionTimeBuilder struct {
+	*_BACnetConstructedDataRestoreCompletionTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRestoreCompletionTimeBuilder) = (*_BACnetConstructedDataRestoreCompletionTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) WithMandatoryFields(completionTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder {
+	return m.WithCompletionTime(completionTime)
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) WithCompletionTime(completionTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRestoreCompletionTimeBuilder {
+	m.CompletionTime = completionTime
+	return m
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) WithCompletionTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRestoreCompletionTimeBuilder {
+	builder := builderSupplier(m.CompletionTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.CompletionTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) Build() (BACnetConstructedDataRestoreCompletionTime, error) {
+	if m.CompletionTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'completionTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRestoreCompletionTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) MustBuild() BACnetConstructedDataRestoreCompletionTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRestoreCompletionTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRestoreCompletionTimeBuilder()
+}
+
+// CreateBACnetConstructedDataRestoreCompletionTimeBuilder creates a BACnetConstructedDataRestoreCompletionTimeBuilder
+func (m *_BACnetConstructedDataRestoreCompletionTime) CreateBACnetConstructedDataRestoreCompletionTimeBuilder() BACnetConstructedDataRestoreCompletionTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRestoreCompletionTimeBuilder()
+	}
+	return &_BACnetConstructedDataRestoreCompletionTimeBuilder{_BACnetConstructedDataRestoreCompletionTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

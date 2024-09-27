@@ -46,6 +46,8 @@ type BACnetConstructedDataFullDutyBaseline interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataFullDutyBaseline is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFullDutyBaseline()
+	// CreateBuilder creates a BACnetConstructedDataFullDutyBaselineBuilder
+	CreateBACnetConstructedDataFullDutyBaselineBuilder() BACnetConstructedDataFullDutyBaselineBuilder
 }
 
 // _BACnetConstructedDataFullDutyBaseline is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataFullDutyBaseline(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFullDutyBaselineBuilder is a builder for BACnetConstructedDataFullDutyBaseline
+type BACnetConstructedDataFullDutyBaselineBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fullDutyBaseLine BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder
+	// WithFullDutyBaseLine adds FullDutyBaseLine (property field)
+	WithFullDutyBaseLine(BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder
+	// WithFullDutyBaseLineBuilder adds FullDutyBaseLine (property field) which is build by the builder
+	WithFullDutyBaseLineBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFullDutyBaselineBuilder
+	// Build builds the BACnetConstructedDataFullDutyBaseline or returns an error if something is wrong
+	Build() (BACnetConstructedDataFullDutyBaseline, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFullDutyBaseline
+}
+
+// NewBACnetConstructedDataFullDutyBaselineBuilder() creates a BACnetConstructedDataFullDutyBaselineBuilder
+func NewBACnetConstructedDataFullDutyBaselineBuilder() BACnetConstructedDataFullDutyBaselineBuilder {
+	return &_BACnetConstructedDataFullDutyBaselineBuilder{_BACnetConstructedDataFullDutyBaseline: new(_BACnetConstructedDataFullDutyBaseline)}
+}
+
+type _BACnetConstructedDataFullDutyBaselineBuilder struct {
+	*_BACnetConstructedDataFullDutyBaseline
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFullDutyBaselineBuilder) = (*_BACnetConstructedDataFullDutyBaselineBuilder)(nil)
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) WithMandatoryFields(fullDutyBaseLine BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder {
+	return m.WithFullDutyBaseLine(fullDutyBaseLine)
+}
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) WithFullDutyBaseLine(fullDutyBaseLine BACnetApplicationTagReal) BACnetConstructedDataFullDutyBaselineBuilder {
+	m.FullDutyBaseLine = fullDutyBaseLine
+	return m
+}
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) WithFullDutyBaseLineBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFullDutyBaselineBuilder {
+	builder := builderSupplier(m.FullDutyBaseLine.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.FullDutyBaseLine, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) Build() (BACnetConstructedDataFullDutyBaseline, error) {
+	if m.FullDutyBaseLine == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fullDutyBaseLine' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataFullDutyBaseline.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) MustBuild() BACnetConstructedDataFullDutyBaseline {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataFullDutyBaselineBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataFullDutyBaselineBuilder()
+}
+
+// CreateBACnetConstructedDataFullDutyBaselineBuilder creates a BACnetConstructedDataFullDutyBaselineBuilder
+func (m *_BACnetConstructedDataFullDutyBaseline) CreateBACnetConstructedDataFullDutyBaselineBuilder() BACnetConstructedDataFullDutyBaselineBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataFullDutyBaselineBuilder()
+	}
+	return &_BACnetConstructedDataFullDutyBaselineBuilder{_BACnetConstructedDataFullDutyBaseline: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

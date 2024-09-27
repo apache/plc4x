@@ -48,6 +48,8 @@ type ModbusPDUWriteMultipleHoldingRegistersRequest interface {
 	GetValue() []byte
 	// IsModbusPDUWriteMultipleHoldingRegistersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUWriteMultipleHoldingRegistersRequest()
+	// CreateBuilder creates a ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
 }
 
 // _ModbusPDUWriteMultipleHoldingRegistersRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, qu
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUWriteMultipleHoldingRegistersRequestBuilder is a builder for ModbusPDUWriteMultipleHoldingRegistersRequest
+type ModbusPDUWriteMultipleHoldingRegistersRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	// WithStartingAddress adds StartingAddress (property field)
+	WithStartingAddress(uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	// WithQuantity adds Quantity (property field)
+	WithQuantity(uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+	// Build builds the ModbusPDUWriteMultipleHoldingRegistersRequest or returns an error if something is wrong
+	Build() (ModbusPDUWriteMultipleHoldingRegistersRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUWriteMultipleHoldingRegistersRequest
+}
+
+// NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder() creates a ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+func NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	return &_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUWriteMultipleHoldingRegistersRequest: new(_ModbusPDUWriteMultipleHoldingRegistersRequest)}
+}
+
+type _ModbusPDUWriteMultipleHoldingRegistersRequestBuilder struct {
+	*_ModbusPDUWriteMultipleHoldingRegistersRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder)(nil)
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16, value []byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	return m.WithStartingAddress(startingAddress).WithQuantity(quantity).WithValue(value...)
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	m.StartingAddress = startingAddress
+	return m
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	m.Quantity = quantity
+	return m
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUWriteMultipleHoldingRegistersRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUWriteMultipleHoldingRegistersRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder()
+}
+
+// CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder creates a ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) CreateModbusPDUWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUWriteMultipleHoldingRegistersRequestBuilder {
+	if m == nil {
+		return NewModbusPDUWriteMultipleHoldingRegistersRequestBuilder()
+	}
+	return &_ModbusPDUWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUWriteMultipleHoldingRegistersRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

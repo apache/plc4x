@@ -39,6 +39,8 @@ type RsaEncryptedSecret interface {
 	utils.Copyable
 	// IsRsaEncryptedSecret is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRsaEncryptedSecret()
+	// CreateBuilder creates a RsaEncryptedSecretBuilder
+	CreateRsaEncryptedSecretBuilder() RsaEncryptedSecretBuilder
 }
 
 // _RsaEncryptedSecret is the data-structure of this message
@@ -51,6 +53,71 @@ var _ RsaEncryptedSecret = (*_RsaEncryptedSecret)(nil)
 func NewRsaEncryptedSecret() *_RsaEncryptedSecret {
 	return &_RsaEncryptedSecret{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RsaEncryptedSecretBuilder is a builder for RsaEncryptedSecret
+type RsaEncryptedSecretBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RsaEncryptedSecretBuilder
+	// Build builds the RsaEncryptedSecret or returns an error if something is wrong
+	Build() (RsaEncryptedSecret, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RsaEncryptedSecret
+}
+
+// NewRsaEncryptedSecretBuilder() creates a RsaEncryptedSecretBuilder
+func NewRsaEncryptedSecretBuilder() RsaEncryptedSecretBuilder {
+	return &_RsaEncryptedSecretBuilder{_RsaEncryptedSecret: new(_RsaEncryptedSecret)}
+}
+
+type _RsaEncryptedSecretBuilder struct {
+	*_RsaEncryptedSecret
+
+	err *utils.MultiError
+}
+
+var _ (RsaEncryptedSecretBuilder) = (*_RsaEncryptedSecretBuilder)(nil)
+
+func (m *_RsaEncryptedSecretBuilder) WithMandatoryFields() RsaEncryptedSecretBuilder {
+	return m
+}
+
+func (m *_RsaEncryptedSecretBuilder) Build() (RsaEncryptedSecret, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RsaEncryptedSecret.deepCopy(), nil
+}
+
+func (m *_RsaEncryptedSecretBuilder) MustBuild() RsaEncryptedSecret {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RsaEncryptedSecretBuilder) DeepCopy() any {
+	return m.CreateRsaEncryptedSecretBuilder()
+}
+
+// CreateRsaEncryptedSecretBuilder creates a RsaEncryptedSecretBuilder
+func (m *_RsaEncryptedSecret) CreateRsaEncryptedSecretBuilder() RsaEncryptedSecretBuilder {
+	if m == nil {
+		return NewRsaEncryptedSecretBuilder()
+	}
+	return &_RsaEncryptedSecretBuilder{_RsaEncryptedSecret: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastRsaEncryptedSecret(structType any) RsaEncryptedSecret {

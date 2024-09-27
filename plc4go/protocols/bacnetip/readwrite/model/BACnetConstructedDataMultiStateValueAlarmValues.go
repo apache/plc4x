@@ -44,6 +44,8 @@ type BACnetConstructedDataMultiStateValueAlarmValues interface {
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMultiStateValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateValueAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+	CreateBACnetConstructedDataMultiStateValueAlarmValuesBuilder() BACnetConstructedDataMultiStateValueAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataMultiStateValueAlarmValues is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataMultiStateValueAlarmValues(openingTag BACnetOpening
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateValueAlarmValuesBuilder is a builder for BACnetConstructedDataMultiStateValueAlarmValues
+type BACnetConstructedDataMultiStateValueAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataMultiStateValueAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateValueAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateValueAlarmValues
+}
+
+// NewBACnetConstructedDataMultiStateValueAlarmValuesBuilder() creates a BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+func NewBACnetConstructedDataMultiStateValueAlarmValuesBuilder() BACnetConstructedDataMultiStateValueAlarmValuesBuilder {
+	return &_BACnetConstructedDataMultiStateValueAlarmValuesBuilder{_BACnetConstructedDataMultiStateValueAlarmValues: new(_BACnetConstructedDataMultiStateValueAlarmValues)}
+}
+
+type _BACnetConstructedDataMultiStateValueAlarmValuesBuilder struct {
+	*_BACnetConstructedDataMultiStateValueAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateValueAlarmValuesBuilder) = (*_BACnetConstructedDataMultiStateValueAlarmValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueAlarmValuesBuilder {
+	return m.WithAlarmValues(alarmValues...)
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueAlarmValuesBuilder {
+	m.AlarmValues = alarmValues
+	return m
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) Build() (BACnetConstructedDataMultiStateValueAlarmValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMultiStateValueAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) MustBuild() BACnetConstructedDataMultiStateValueAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMultiStateValueAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMultiStateValueAlarmValuesBuilder()
+}
+
+// CreateBACnetConstructedDataMultiStateValueAlarmValuesBuilder creates a BACnetConstructedDataMultiStateValueAlarmValuesBuilder
+func (m *_BACnetConstructedDataMultiStateValueAlarmValues) CreateBACnetConstructedDataMultiStateValueAlarmValuesBuilder() BACnetConstructedDataMultiStateValueAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMultiStateValueAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateValueAlarmValuesBuilder{_BACnetConstructedDataMultiStateValueAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

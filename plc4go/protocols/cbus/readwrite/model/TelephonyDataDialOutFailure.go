@@ -44,6 +44,8 @@ type TelephonyDataDialOutFailure interface {
 	GetReason() DialOutFailureReason
 	// IsTelephonyDataDialOutFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataDialOutFailure()
+	// CreateBuilder creates a TelephonyDataDialOutFailureBuilder
+	CreateTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder
 }
 
 // _TelephonyDataDialOutFailure is the data-structure of this message
@@ -64,6 +66,78 @@ func NewTelephonyDataDialOutFailure(commandTypeContainer TelephonyCommandTypeCon
 	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataDialOutFailureBuilder is a builder for TelephonyDataDialOutFailure
+type TelephonyDataDialOutFailureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder
+	// WithReason adds Reason (property field)
+	WithReason(DialOutFailureReason) TelephonyDataDialOutFailureBuilder
+	// Build builds the TelephonyDataDialOutFailure or returns an error if something is wrong
+	Build() (TelephonyDataDialOutFailure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataDialOutFailure
+}
+
+// NewTelephonyDataDialOutFailureBuilder() creates a TelephonyDataDialOutFailureBuilder
+func NewTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder {
+	return &_TelephonyDataDialOutFailureBuilder{_TelephonyDataDialOutFailure: new(_TelephonyDataDialOutFailure)}
+}
+
+type _TelephonyDataDialOutFailureBuilder struct {
+	*_TelephonyDataDialOutFailure
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataDialOutFailureBuilder) = (*_TelephonyDataDialOutFailureBuilder)(nil)
+
+func (m *_TelephonyDataDialOutFailureBuilder) WithMandatoryFields(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
+	return m.WithReason(reason)
+}
+
+func (m *_TelephonyDataDialOutFailureBuilder) WithReason(reason DialOutFailureReason) TelephonyDataDialOutFailureBuilder {
+	m.Reason = reason
+	return m
+}
+
+func (m *_TelephonyDataDialOutFailureBuilder) Build() (TelephonyDataDialOutFailure, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyDataDialOutFailure.deepCopy(), nil
+}
+
+func (m *_TelephonyDataDialOutFailureBuilder) MustBuild() TelephonyDataDialOutFailure {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataDialOutFailureBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataDialOutFailureBuilder()
+}
+
+// CreateTelephonyDataDialOutFailureBuilder creates a TelephonyDataDialOutFailureBuilder
+func (m *_TelephonyDataDialOutFailure) CreateTelephonyDataDialOutFailureBuilder() TelephonyDataDialOutFailureBuilder {
+	if m == nil {
+		return NewTelephonyDataDialOutFailureBuilder()
+	}
+	return &_TelephonyDataDialOutFailureBuilder{_TelephonyDataDialOutFailure: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

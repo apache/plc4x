@@ -46,6 +46,8 @@ type BrowsePathTarget interface {
 	GetRemainingPathIndex() uint32
 	// IsBrowsePathTarget is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowsePathTarget()
+	// CreateBuilder creates a BrowsePathTargetBuilder
+	CreateBrowsePathTargetBuilder() BrowsePathTargetBuilder
 }
 
 // _BrowsePathTarget is the data-structure of this message
@@ -71,6 +73,106 @@ func NewBrowsePathTarget(targetId ExpandedNodeId, remainingPathIndex uint32) *_B
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowsePathTargetBuilder is a builder for BrowsePathTarget
+type BrowsePathTargetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(targetId ExpandedNodeId, remainingPathIndex uint32) BrowsePathTargetBuilder
+	// WithTargetId adds TargetId (property field)
+	WithTargetId(ExpandedNodeId) BrowsePathTargetBuilder
+	// WithTargetIdBuilder adds TargetId (property field) which is build by the builder
+	WithTargetIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) BrowsePathTargetBuilder
+	// WithRemainingPathIndex adds RemainingPathIndex (property field)
+	WithRemainingPathIndex(uint32) BrowsePathTargetBuilder
+	// Build builds the BrowsePathTarget or returns an error if something is wrong
+	Build() (BrowsePathTarget, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowsePathTarget
+}
+
+// NewBrowsePathTargetBuilder() creates a BrowsePathTargetBuilder
+func NewBrowsePathTargetBuilder() BrowsePathTargetBuilder {
+	return &_BrowsePathTargetBuilder{_BrowsePathTarget: new(_BrowsePathTarget)}
+}
+
+type _BrowsePathTargetBuilder struct {
+	*_BrowsePathTarget
+
+	err *utils.MultiError
+}
+
+var _ (BrowsePathTargetBuilder) = (*_BrowsePathTargetBuilder)(nil)
+
+func (m *_BrowsePathTargetBuilder) WithMandatoryFields(targetId ExpandedNodeId, remainingPathIndex uint32) BrowsePathTargetBuilder {
+	return m.WithTargetId(targetId).WithRemainingPathIndex(remainingPathIndex)
+}
+
+func (m *_BrowsePathTargetBuilder) WithTargetId(targetId ExpandedNodeId) BrowsePathTargetBuilder {
+	m.TargetId = targetId
+	return m
+}
+
+func (m *_BrowsePathTargetBuilder) WithTargetIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) BrowsePathTargetBuilder {
+	builder := builderSupplier(m.TargetId.CreateExpandedNodeIdBuilder())
+	var err error
+	m.TargetId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BrowsePathTargetBuilder) WithRemainingPathIndex(remainingPathIndex uint32) BrowsePathTargetBuilder {
+	m.RemainingPathIndex = remainingPathIndex
+	return m
+}
+
+func (m *_BrowsePathTargetBuilder) Build() (BrowsePathTarget, error) {
+	if m.TargetId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'targetId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BrowsePathTarget.deepCopy(), nil
+}
+
+func (m *_BrowsePathTargetBuilder) MustBuild() BrowsePathTarget {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BrowsePathTargetBuilder) DeepCopy() any {
+	return m.CreateBrowsePathTargetBuilder()
+}
+
+// CreateBrowsePathTargetBuilder creates a BrowsePathTargetBuilder
+func (m *_BrowsePathTarget) CreateBrowsePathTargetBuilder() BrowsePathTargetBuilder {
+	if m == nil {
+		return NewBrowsePathTargetBuilder()
+	}
+	return &_BrowsePathTargetBuilder{_BrowsePathTarget: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type CEMI interface {
 	utils.Copyable
 	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMI()
+	// CreateBuilder creates a CEMIBuilder
+	CreateCEMIBuilder() CEMIBuilder
 }
 
 // CEMIContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type CEMIContract interface {
 	GetSize() uint16
 	// IsCEMI is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMI()
+	// CreateBuilder creates a CEMIBuilder
+	CreateCEMIBuilder() CEMIBuilder
 }
 
 // CEMIRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +79,71 @@ var _ CEMIContract = (*_CEMI)(nil)
 func NewCEMI(size uint16) *_CEMI {
 	return &_CEMI{Size: size}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CEMIBuilder is a builder for CEMI
+type CEMIBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CEMIBuilder
+	// Build builds the CEMI or returns an error if something is wrong
+	Build() (CEMIContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CEMIContract
+}
+
+// NewCEMIBuilder() creates a CEMIBuilder
+func NewCEMIBuilder() CEMIBuilder {
+	return &_CEMIBuilder{_CEMI: new(_CEMI)}
+}
+
+type _CEMIBuilder struct {
+	*_CEMI
+
+	err *utils.MultiError
+}
+
+var _ (CEMIBuilder) = (*_CEMIBuilder)(nil)
+
+func (m *_CEMIBuilder) WithMandatoryFields() CEMIBuilder {
+	return m
+}
+
+func (m *_CEMIBuilder) Build() (CEMIContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CEMI.deepCopy(), nil
+}
+
+func (m *_CEMIBuilder) MustBuild() CEMIContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CEMIBuilder) DeepCopy() any {
+	return m.CreateCEMIBuilder()
+}
+
+// CreateCEMIBuilder creates a CEMIBuilder
+func (m *_CEMI) CreateCEMIBuilder() CEMIBuilder {
+	if m == nil {
+		return NewCEMIBuilder()
+	}
+	return &_CEMIBuilder{_CEMI: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastCEMI(structType any) CEMI {

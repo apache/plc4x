@@ -40,6 +40,8 @@ type MResetReq interface {
 	CEMI
 	// IsMResetReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMResetReq()
+	// CreateBuilder creates a MResetReqBuilder
+	CreateMResetReqBuilder() MResetReqBuilder
 }
 
 // _MResetReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMResetReq(size uint16) *_MResetReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MResetReqBuilder is a builder for MResetReq
+type MResetReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MResetReqBuilder
+	// Build builds the MResetReq or returns an error if something is wrong
+	Build() (MResetReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MResetReq
+}
+
+// NewMResetReqBuilder() creates a MResetReqBuilder
+func NewMResetReqBuilder() MResetReqBuilder {
+	return &_MResetReqBuilder{_MResetReq: new(_MResetReq)}
+}
+
+type _MResetReqBuilder struct {
+	*_MResetReq
+
+	err *utils.MultiError
+}
+
+var _ (MResetReqBuilder) = (*_MResetReqBuilder)(nil)
+
+func (m *_MResetReqBuilder) WithMandatoryFields() MResetReqBuilder {
+	return m
+}
+
+func (m *_MResetReqBuilder) Build() (MResetReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MResetReq.deepCopy(), nil
+}
+
+func (m *_MResetReqBuilder) MustBuild() MResetReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MResetReqBuilder) DeepCopy() any {
+	return m.CreateMResetReqBuilder()
+}
+
+// CreateMResetReqBuilder creates a MResetReqBuilder
+func (m *_MResetReq) CreateMResetReqBuilder() MResetReqBuilder {
+	if m == nil {
+		return NewMResetReqBuilder()
+	}
+	return &_MResetReqBuilder{_MResetReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

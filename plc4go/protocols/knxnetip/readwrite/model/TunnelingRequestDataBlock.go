@@ -45,6 +45,8 @@ type TunnelingRequestDataBlock interface {
 	GetSequenceCounter() uint8
 	// IsTunnelingRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTunnelingRequestDataBlock()
+	// CreateBuilder creates a TunnelingRequestDataBlockBuilder
+	CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder
 }
 
 // _TunnelingRequestDataBlock is the data-structure of this message
@@ -61,6 +63,85 @@ var _ TunnelingRequestDataBlock = (*_TunnelingRequestDataBlock)(nil)
 func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
 	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TunnelingRequestDataBlockBuilder is a builder for TunnelingRequestDataBlock
+type TunnelingRequestDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) TunnelingRequestDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) TunnelingRequestDataBlockBuilder
+	// Build builds the TunnelingRequestDataBlock or returns an error if something is wrong
+	Build() (TunnelingRequestDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TunnelingRequestDataBlock
+}
+
+// NewTunnelingRequestDataBlockBuilder() creates a TunnelingRequestDataBlockBuilder
+func NewTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
+	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: new(_TunnelingRequestDataBlock)}
+}
+
+type _TunnelingRequestDataBlockBuilder struct {
+	*_TunnelingRequestDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (TunnelingRequestDataBlockBuilder) = (*_TunnelingRequestDataBlockBuilder)(nil)
+
+func (m *_TunnelingRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
+}
+
+func (m *_TunnelingRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingRequestDataBlockBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_TunnelingRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	m.SequenceCounter = sequenceCounter
+	return m
+}
+
+func (m *_TunnelingRequestDataBlockBuilder) Build() (TunnelingRequestDataBlock, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TunnelingRequestDataBlock.deepCopy(), nil
+}
+
+func (m *_TunnelingRequestDataBlockBuilder) MustBuild() TunnelingRequestDataBlock {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TunnelingRequestDataBlockBuilder) DeepCopy() any {
+	return m.CreateTunnelingRequestDataBlockBuilder()
+}
+
+// CreateTunnelingRequestDataBlockBuilder creates a TunnelingRequestDataBlockBuilder
+func (m *_TunnelingRequestDataBlock) CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
+	if m == nil {
+		return NewTunnelingRequestDataBlockBuilder()
+	}
+	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

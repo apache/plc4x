@@ -44,6 +44,8 @@ type ListServicesResponse interface {
 	GetTypeIds() []TypeId
 	// IsListServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsListServicesResponse()
+	// CreateBuilder creates a ListServicesResponseBuilder
+	CreateListServicesResponseBuilder() ListServicesResponseBuilder
 }
 
 // _ListServicesResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewListServicesResponse(sessionHandle uint32, status uint32, senderContext 
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ListServicesResponseBuilder is a builder for ListServicesResponse
+type ListServicesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder
+	// WithTypeIds adds TypeIds (property field)
+	WithTypeIds(...TypeId) ListServicesResponseBuilder
+	// Build builds the ListServicesResponse or returns an error if something is wrong
+	Build() (ListServicesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ListServicesResponse
+}
+
+// NewListServicesResponseBuilder() creates a ListServicesResponseBuilder
+func NewListServicesResponseBuilder() ListServicesResponseBuilder {
+	return &_ListServicesResponseBuilder{_ListServicesResponse: new(_ListServicesResponse)}
+}
+
+type _ListServicesResponseBuilder struct {
+	*_ListServicesResponse
+
+	err *utils.MultiError
+}
+
+var _ (ListServicesResponseBuilder) = (*_ListServicesResponseBuilder)(nil)
+
+func (m *_ListServicesResponseBuilder) WithMandatoryFields(typeIds []TypeId) ListServicesResponseBuilder {
+	return m.WithTypeIds(typeIds...)
+}
+
+func (m *_ListServicesResponseBuilder) WithTypeIds(typeIds ...TypeId) ListServicesResponseBuilder {
+	m.TypeIds = typeIds
+	return m
+}
+
+func (m *_ListServicesResponseBuilder) Build() (ListServicesResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ListServicesResponse.deepCopy(), nil
+}
+
+func (m *_ListServicesResponseBuilder) MustBuild() ListServicesResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ListServicesResponseBuilder) DeepCopy() any {
+	return m.CreateListServicesResponseBuilder()
+}
+
+// CreateListServicesResponseBuilder creates a ListServicesResponseBuilder
+func (m *_ListServicesResponse) CreateListServicesResponseBuilder() ListServicesResponseBuilder {
+	if m == nil {
+		return NewListServicesResponseBuilder()
+	}
+	return &_ListServicesResponseBuilder{_ListServicesResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

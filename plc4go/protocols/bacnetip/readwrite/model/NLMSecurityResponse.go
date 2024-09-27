@@ -50,6 +50,8 @@ type NLMSecurityResponse interface {
 	GetVariableParameters() []byte
 	// IsNLMSecurityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMSecurityResponse()
+	// CreateBuilder creates a NLMSecurityResponseBuilder
+	CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder
 }
 
 // _NLMSecurityResponse is the data-structure of this message
@@ -76,6 +78,99 @@ func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMSecurityResponseBuilder is a builder for NLMSecurityResponse
+type NLMSecurityResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder
+	// WithResponseCode adds ResponseCode (property field)
+	WithResponseCode(SecurityResponseCode) NLMSecurityResponseBuilder
+	// WithOriginalMessageId adds OriginalMessageId (property field)
+	WithOriginalMessageId(uint32) NLMSecurityResponseBuilder
+	// WithOriginalTimestamp adds OriginalTimestamp (property field)
+	WithOriginalTimestamp(uint32) NLMSecurityResponseBuilder
+	// WithVariableParameters adds VariableParameters (property field)
+	WithVariableParameters(...byte) NLMSecurityResponseBuilder
+	// Build builds the NLMSecurityResponse or returns an error if something is wrong
+	Build() (NLMSecurityResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMSecurityResponse
+}
+
+// NewNLMSecurityResponseBuilder() creates a NLMSecurityResponseBuilder
+func NewNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
+	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: new(_NLMSecurityResponse)}
+}
+
+type _NLMSecurityResponseBuilder struct {
+	*_NLMSecurityResponse
+
+	err *utils.MultiError
+}
+
+var _ (NLMSecurityResponseBuilder) = (*_NLMSecurityResponseBuilder)(nil)
+
+func (m *_NLMSecurityResponseBuilder) WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder {
+	return m.WithResponseCode(responseCode).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp).WithVariableParameters(variableParameters...)
+}
+
+func (m *_NLMSecurityResponseBuilder) WithResponseCode(responseCode SecurityResponseCode) NLMSecurityResponseBuilder {
+	m.ResponseCode = responseCode
+	return m
+}
+
+func (m *_NLMSecurityResponseBuilder) WithOriginalMessageId(originalMessageId uint32) NLMSecurityResponseBuilder {
+	m.OriginalMessageId = originalMessageId
+	return m
+}
+
+func (m *_NLMSecurityResponseBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMSecurityResponseBuilder {
+	m.OriginalTimestamp = originalTimestamp
+	return m
+}
+
+func (m *_NLMSecurityResponseBuilder) WithVariableParameters(variableParameters ...byte) NLMSecurityResponseBuilder {
+	m.VariableParameters = variableParameters
+	return m
+}
+
+func (m *_NLMSecurityResponseBuilder) Build() (NLMSecurityResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMSecurityResponse.deepCopy(), nil
+}
+
+func (m *_NLMSecurityResponseBuilder) MustBuild() NLMSecurityResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMSecurityResponseBuilder) DeepCopy() any {
+	return m.CreateNLMSecurityResponseBuilder()
+}
+
+// CreateNLMSecurityResponseBuilder creates a NLMSecurityResponseBuilder
+func (m *_NLMSecurityResponse) CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
+	if m == nil {
+		return NewNLMSecurityResponseBuilder()
+	}
+	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetContextTagUnknown interface {
 	GetUnknownData() []byte
 	// IsBACnetContextTagUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagUnknown()
+	// CreateBuilder creates a BACnetContextTagUnknownBuilder
+	CreateBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder
 }
 
 // _BACnetContextTagUnknown is the data-structure of this message
@@ -67,6 +69,78 @@ func NewBACnetContextTagUnknown(header BACnetTagHeader, unknownData []byte, actu
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagUnknownBuilder is a builder for BACnetContextTagUnknown
+type BACnetContextTagUnknownBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unknownData []byte) BACnetContextTagUnknownBuilder
+	// WithUnknownData adds UnknownData (property field)
+	WithUnknownData(...byte) BACnetContextTagUnknownBuilder
+	// Build builds the BACnetContextTagUnknown or returns an error if something is wrong
+	Build() (BACnetContextTagUnknown, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagUnknown
+}
+
+// NewBACnetContextTagUnknownBuilder() creates a BACnetContextTagUnknownBuilder
+func NewBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder {
+	return &_BACnetContextTagUnknownBuilder{_BACnetContextTagUnknown: new(_BACnetContextTagUnknown)}
+}
+
+type _BACnetContextTagUnknownBuilder struct {
+	*_BACnetContextTagUnknown
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagUnknownBuilder) = (*_BACnetContextTagUnknownBuilder)(nil)
+
+func (m *_BACnetContextTagUnknownBuilder) WithMandatoryFields(unknownData []byte) BACnetContextTagUnknownBuilder {
+	return m.WithUnknownData(unknownData...)
+}
+
+func (m *_BACnetContextTagUnknownBuilder) WithUnknownData(unknownData ...byte) BACnetContextTagUnknownBuilder {
+	m.UnknownData = unknownData
+	return m
+}
+
+func (m *_BACnetContextTagUnknownBuilder) Build() (BACnetContextTagUnknown, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagUnknown.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagUnknownBuilder) MustBuild() BACnetContextTagUnknown {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagUnknownBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagUnknownBuilder()
+}
+
+// CreateBACnetContextTagUnknownBuilder creates a BACnetContextTagUnknownBuilder
+func (m *_BACnetContextTagUnknown) CreateBACnetContextTagUnknownBuilder() BACnetContextTagUnknownBuilder {
+	if m == nil {
+		return NewBACnetContextTagUnknownBuilder()
+	}
+	return &_BACnetContextTagUnknownBuilder{_BACnetContextTagUnknown: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

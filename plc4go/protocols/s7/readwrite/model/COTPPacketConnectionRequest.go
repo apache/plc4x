@@ -48,6 +48,8 @@ type COTPPacketConnectionRequest interface {
 	GetProtocolClass() COTPProtocolClass
 	// IsCOTPPacketConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketConnectionRequest()
+	// CreateBuilder creates a COTPPacketConnectionRequestBuilder
+	CreateCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder
 }
 
 // _COTPPacketConnectionRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewCOTPPacketConnectionRequest(parameters []COTPParameter, payload S7Messag
 	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketConnectionRequestBuilder is a builder for COTPPacketConnectionRequest
+type COTPPacketConnectionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder
+	// WithDestinationReference adds DestinationReference (property field)
+	WithDestinationReference(uint16) COTPPacketConnectionRequestBuilder
+	// WithSourceReference adds SourceReference (property field)
+	WithSourceReference(uint16) COTPPacketConnectionRequestBuilder
+	// WithProtocolClass adds ProtocolClass (property field)
+	WithProtocolClass(COTPProtocolClass) COTPPacketConnectionRequestBuilder
+	// Build builds the COTPPacketConnectionRequest or returns an error if something is wrong
+	Build() (COTPPacketConnectionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketConnectionRequest
+}
+
+// NewCOTPPacketConnectionRequestBuilder() creates a COTPPacketConnectionRequestBuilder
+func NewCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder {
+	return &_COTPPacketConnectionRequestBuilder{_COTPPacketConnectionRequest: new(_COTPPacketConnectionRequest)}
+}
+
+type _COTPPacketConnectionRequestBuilder struct {
+	*_COTPPacketConnectionRequest
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketConnectionRequestBuilder) = (*_COTPPacketConnectionRequestBuilder)(nil)
+
+func (m *_COTPPacketConnectionRequestBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
+	return m.WithDestinationReference(destinationReference).WithSourceReference(sourceReference).WithProtocolClass(protocolClass)
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) WithDestinationReference(destinationReference uint16) COTPPacketConnectionRequestBuilder {
+	m.DestinationReference = destinationReference
+	return m
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) WithSourceReference(sourceReference uint16) COTPPacketConnectionRequestBuilder {
+	m.SourceReference = sourceReference
+	return m
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) WithProtocolClass(protocolClass COTPProtocolClass) COTPPacketConnectionRequestBuilder {
+	m.ProtocolClass = protocolClass
+	return m
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) Build() (COTPPacketConnectionRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacketConnectionRequest.deepCopy(), nil
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) MustBuild() COTPPacketConnectionRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketConnectionRequestBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketConnectionRequestBuilder()
+}
+
+// CreateCOTPPacketConnectionRequestBuilder creates a COTPPacketConnectionRequestBuilder
+func (m *_COTPPacketConnectionRequest) CreateCOTPPacketConnectionRequestBuilder() COTPPacketConnectionRequestBuilder {
+	if m == nil {
+		return NewCOTPPacketConnectionRequestBuilder()
+	}
+	return &_COTPPacketConnectionRequestBuilder{_COTPPacketConnectionRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

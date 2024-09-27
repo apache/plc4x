@@ -49,6 +49,8 @@ type Confirmation interface {
 	GetIsSuccess() bool
 	// IsConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConfirmation()
+	// CreateBuilder creates a ConfirmationBuilder
+	CreateConfirmationBuilder() ConfirmationBuilder
 }
 
 // _Confirmation is the data-structure of this message
@@ -67,6 +69,128 @@ func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType Confirmati
 	}
 	return &_Confirmation{Alpha: alpha, SecondAlpha: secondAlpha, ConfirmationType: confirmationType}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConfirmationBuilder is a builder for Confirmation
+type ConfirmationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alpha Alpha, confirmationType ConfirmationType) ConfirmationBuilder
+	// WithAlpha adds Alpha (property field)
+	WithAlpha(Alpha) ConfirmationBuilder
+	// WithAlphaBuilder adds Alpha (property field) which is build by the builder
+	WithAlphaBuilder(func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder
+	// WithSecondAlpha adds SecondAlpha (property field)
+	WithOptionalSecondAlpha(Alpha) ConfirmationBuilder
+	// WithOptionalSecondAlphaBuilder adds SecondAlpha (property field) which is build by the builder
+	WithOptionalSecondAlphaBuilder(func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder
+	// WithConfirmationType adds ConfirmationType (property field)
+	WithConfirmationType(ConfirmationType) ConfirmationBuilder
+	// Build builds the Confirmation or returns an error if something is wrong
+	Build() (Confirmation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Confirmation
+}
+
+// NewConfirmationBuilder() creates a ConfirmationBuilder
+func NewConfirmationBuilder() ConfirmationBuilder {
+	return &_ConfirmationBuilder{_Confirmation: new(_Confirmation)}
+}
+
+type _ConfirmationBuilder struct {
+	*_Confirmation
+
+	err *utils.MultiError
+}
+
+var _ (ConfirmationBuilder) = (*_ConfirmationBuilder)(nil)
+
+func (m *_ConfirmationBuilder) WithMandatoryFields(alpha Alpha, confirmationType ConfirmationType) ConfirmationBuilder {
+	return m.WithAlpha(alpha).WithConfirmationType(confirmationType)
+}
+
+func (m *_ConfirmationBuilder) WithAlpha(alpha Alpha) ConfirmationBuilder {
+	m.Alpha = alpha
+	return m
+}
+
+func (m *_ConfirmationBuilder) WithAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
+	builder := builderSupplier(m.Alpha.CreateAlphaBuilder())
+	var err error
+	m.Alpha, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConfirmationBuilder) WithOptionalSecondAlpha(secondAlpha Alpha) ConfirmationBuilder {
+	m.SecondAlpha = secondAlpha
+	return m
+}
+
+func (m *_ConfirmationBuilder) WithOptionalSecondAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) ConfirmationBuilder {
+	builder := builderSupplier(m.SecondAlpha.CreateAlphaBuilder())
+	var err error
+	m.SecondAlpha, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConfirmationBuilder) WithConfirmationType(confirmationType ConfirmationType) ConfirmationBuilder {
+	m.ConfirmationType = confirmationType
+	return m
+}
+
+func (m *_ConfirmationBuilder) Build() (Confirmation, error) {
+	if m.Alpha == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'alpha' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Confirmation.deepCopy(), nil
+}
+
+func (m *_ConfirmationBuilder) MustBuild() Confirmation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConfirmationBuilder) DeepCopy() any {
+	return m.CreateConfirmationBuilder()
+}
+
+// CreateConfirmationBuilder creates a ConfirmationBuilder
+func (m *_Confirmation) CreateConfirmationBuilder() ConfirmationBuilder {
+	if m == nil {
+		return NewConfirmationBuilder()
+	}
+	return &_ConfirmationBuilder{_Confirmation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type BACnetApplicationTagNull interface {
 	BACnetApplicationTag
 	// IsBACnetApplicationTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagNull()
+	// CreateBuilder creates a BACnetApplicationTagNullBuilder
+	CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder
 }
 
 // _BACnetApplicationTagNull is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagN
 	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetApplicationTagNullBuilder is a builder for BACnetApplicationTagNull
+type BACnetApplicationTagNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetApplicationTagNullBuilder
+	// Build builds the BACnetApplicationTagNull or returns an error if something is wrong
+	Build() (BACnetApplicationTagNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetApplicationTagNull
+}
+
+// NewBACnetApplicationTagNullBuilder() creates a BACnetApplicationTagNullBuilder
+func NewBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
+	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: new(_BACnetApplicationTagNull)}
+}
+
+type _BACnetApplicationTagNullBuilder struct {
+	*_BACnetApplicationTagNull
+
+	err *utils.MultiError
+}
+
+var _ (BACnetApplicationTagNullBuilder) = (*_BACnetApplicationTagNullBuilder)(nil)
+
+func (m *_BACnetApplicationTagNullBuilder) WithMandatoryFields() BACnetApplicationTagNullBuilder {
+	return m
+}
+
+func (m *_BACnetApplicationTagNullBuilder) Build() (BACnetApplicationTagNull, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetApplicationTagNull.deepCopy(), nil
+}
+
+func (m *_BACnetApplicationTagNullBuilder) MustBuild() BACnetApplicationTagNull {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetApplicationTagNullBuilder) DeepCopy() any {
+	return m.CreateBACnetApplicationTagNullBuilder()
+}
+
+// CreateBACnetApplicationTagNullBuilder creates a BACnetApplicationTagNullBuilder
+func (m *_BACnetApplicationTagNull) CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
+	if m == nil {
+		return NewBACnetApplicationTagNullBuilder()
+	}
+	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

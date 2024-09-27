@@ -40,6 +40,8 @@ type SecurityDataStatus1Request interface {
 	SecurityData
 	// IsSecurityDataStatus1Request is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatus1Request()
+	// CreateBuilder creates a SecurityDataStatus1RequestBuilder
+	CreateSecurityDataStatus1RequestBuilder() SecurityDataStatus1RequestBuilder
 }
 
 // _SecurityDataStatus1Request is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataStatus1Request(commandTypeContainer SecurityCommandTypeConta
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataStatus1RequestBuilder is a builder for SecurityDataStatus1Request
+type SecurityDataStatus1RequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataStatus1RequestBuilder
+	// Build builds the SecurityDataStatus1Request or returns an error if something is wrong
+	Build() (SecurityDataStatus1Request, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataStatus1Request
+}
+
+// NewSecurityDataStatus1RequestBuilder() creates a SecurityDataStatus1RequestBuilder
+func NewSecurityDataStatus1RequestBuilder() SecurityDataStatus1RequestBuilder {
+	return &_SecurityDataStatus1RequestBuilder{_SecurityDataStatus1Request: new(_SecurityDataStatus1Request)}
+}
+
+type _SecurityDataStatus1RequestBuilder struct {
+	*_SecurityDataStatus1Request
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataStatus1RequestBuilder) = (*_SecurityDataStatus1RequestBuilder)(nil)
+
+func (m *_SecurityDataStatus1RequestBuilder) WithMandatoryFields() SecurityDataStatus1RequestBuilder {
+	return m
+}
+
+func (m *_SecurityDataStatus1RequestBuilder) Build() (SecurityDataStatus1Request, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataStatus1Request.deepCopy(), nil
+}
+
+func (m *_SecurityDataStatus1RequestBuilder) MustBuild() SecurityDataStatus1Request {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataStatus1RequestBuilder) DeepCopy() any {
+	return m.CreateSecurityDataStatus1RequestBuilder()
+}
+
+// CreateSecurityDataStatus1RequestBuilder creates a SecurityDataStatus1RequestBuilder
+func (m *_SecurityDataStatus1Request) CreateSecurityDataStatus1RequestBuilder() SecurityDataStatus1RequestBuilder {
+	if m == nil {
+		return NewSecurityDataStatus1RequestBuilder()
+	}
+	return &_SecurityDataStatus1RequestBuilder{_SecurityDataStatus1Request: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

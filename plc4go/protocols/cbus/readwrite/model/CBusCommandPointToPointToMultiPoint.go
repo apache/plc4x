@@ -44,6 +44,8 @@ type CBusCommandPointToPointToMultiPoint interface {
 	GetCommand() CBusPointToPointToMultiPointCommand
 	// IsCBusCommandPointToPointToMultiPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommandPointToPointToMultiPoint()
+	// CreateBuilder creates a CBusCommandPointToPointToMultiPointBuilder
+	CreateCBusCommandPointToPointToMultiPointBuilder() CBusCommandPointToPointToMultiPointBuilder
 }
 
 // _CBusCommandPointToPointToMultiPoint is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCBusCommandPointToPointToMultiPoint(header CBusHeader, command CBusPoint
 	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusCommandPointToPointToMultiPointBuilder is a builder for CBusCommandPointToPointToMultiPoint
+type CBusCommandPointToPointToMultiPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder
+	// Build builds the CBusCommandPointToPointToMultiPoint or returns an error if something is wrong
+	Build() (CBusCommandPointToPointToMultiPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusCommandPointToPointToMultiPoint
+}
+
+// NewCBusCommandPointToPointToMultiPointBuilder() creates a CBusCommandPointToPointToMultiPointBuilder
+func NewCBusCommandPointToPointToMultiPointBuilder() CBusCommandPointToPointToMultiPointBuilder {
+	return &_CBusCommandPointToPointToMultiPointBuilder{_CBusCommandPointToPointToMultiPoint: new(_CBusCommandPointToPointToMultiPoint)}
+}
+
+type _CBusCommandPointToPointToMultiPointBuilder struct {
+	*_CBusCommandPointToPointToMultiPoint
+
+	err *utils.MultiError
+}
+
+var _ (CBusCommandPointToPointToMultiPointBuilder) = (*_CBusCommandPointToPointToMultiPointBuilder)(nil)
+
+func (m *_CBusCommandPointToPointToMultiPointBuilder) WithMandatoryFields(command CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder {
+	return m.WithCommand(command)
+}
+
+func (m *_CBusCommandPointToPointToMultiPointBuilder) WithCommand(command CBusPointToPointToMultiPointCommand) CBusCommandPointToPointToMultiPointBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_CBusCommandPointToPointToMultiPointBuilder) Build() (CBusCommandPointToPointToMultiPoint, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusCommandPointToPointToMultiPoint.deepCopy(), nil
+}
+
+func (m *_CBusCommandPointToPointToMultiPointBuilder) MustBuild() CBusCommandPointToPointToMultiPoint {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusCommandPointToPointToMultiPointBuilder) DeepCopy() any {
+	return m.CreateCBusCommandPointToPointToMultiPointBuilder()
+}
+
+// CreateCBusCommandPointToPointToMultiPointBuilder creates a CBusCommandPointToPointToMultiPointBuilder
+func (m *_CBusCommandPointToPointToMultiPoint) CreateCBusCommandPointToPointToMultiPointBuilder() CBusCommandPointToPointToMultiPointBuilder {
+	if m == nil {
+		return NewCBusCommandPointToPointToMultiPointBuilder()
+	}
+	return &_CBusCommandPointToPointToMultiPointBuilder{_CBusCommandPointToPointToMultiPoint: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

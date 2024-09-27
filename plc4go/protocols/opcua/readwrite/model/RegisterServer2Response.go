@@ -52,6 +52,8 @@ type RegisterServer2Response interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsRegisterServer2Response is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServer2Response()
+	// CreateBuilder creates a RegisterServer2ResponseBuilder
+	CreateRegisterServer2ResponseBuilder() RegisterServer2ResponseBuilder
 }
 
 // _RegisterServer2Response is the data-structure of this message
@@ -83,6 +85,112 @@ func NewRegisterServer2Response(responseHeader ExtensionObjectDefinition, noOfCo
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterServer2ResponseBuilder is a builder for RegisterServer2Response
+type RegisterServer2ResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) RegisterServer2ResponseBuilder
+	// WithNoOfConfigurationResults adds NoOfConfigurationResults (property field)
+	WithNoOfConfigurationResults(int32) RegisterServer2ResponseBuilder
+	// WithConfigurationResults adds ConfigurationResults (property field)
+	WithConfigurationResults(...StatusCode) RegisterServer2ResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) RegisterServer2ResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) RegisterServer2ResponseBuilder
+	// Build builds the RegisterServer2Response or returns an error if something is wrong
+	Build() (RegisterServer2Response, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterServer2Response
+}
+
+// NewRegisterServer2ResponseBuilder() creates a RegisterServer2ResponseBuilder
+func NewRegisterServer2ResponseBuilder() RegisterServer2ResponseBuilder {
+	return &_RegisterServer2ResponseBuilder{_RegisterServer2Response: new(_RegisterServer2Response)}
+}
+
+type _RegisterServer2ResponseBuilder struct {
+	*_RegisterServer2Response
+
+	err *utils.MultiError
+}
+
+var _ (RegisterServer2ResponseBuilder) = (*_RegisterServer2ResponseBuilder)(nil)
+
+func (m *_RegisterServer2ResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfConfigurationResults int32, configurationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) RegisterServer2ResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfConfigurationResults(noOfConfigurationResults).WithConfigurationResults(configurationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_RegisterServer2ResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServer2ResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_RegisterServer2ResponseBuilder) WithNoOfConfigurationResults(noOfConfigurationResults int32) RegisterServer2ResponseBuilder {
+	m.NoOfConfigurationResults = noOfConfigurationResults
+	return m
+}
+
+func (m *_RegisterServer2ResponseBuilder) WithConfigurationResults(configurationResults ...StatusCode) RegisterServer2ResponseBuilder {
+	m.ConfigurationResults = configurationResults
+	return m
+}
+
+func (m *_RegisterServer2ResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) RegisterServer2ResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_RegisterServer2ResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) RegisterServer2ResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_RegisterServer2ResponseBuilder) Build() (RegisterServer2Response, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RegisterServer2Response.deepCopy(), nil
+}
+
+func (m *_RegisterServer2ResponseBuilder) MustBuild() RegisterServer2Response {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RegisterServer2ResponseBuilder) DeepCopy() any {
+	return m.CreateRegisterServer2ResponseBuilder()
+}
+
+// CreateRegisterServer2ResponseBuilder creates a RegisterServer2ResponseBuilder
+func (m *_RegisterServer2Response) CreateRegisterServer2ResponseBuilder() RegisterServer2ResponseBuilder {
+	if m == nil {
+		return NewRegisterServer2ResponseBuilder()
+	}
+	return &_RegisterServer2ResponseBuilder{_RegisterServer2Response: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

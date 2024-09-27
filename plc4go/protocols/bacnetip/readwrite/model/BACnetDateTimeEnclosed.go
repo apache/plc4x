@@ -47,6 +47,8 @@ type BACnetDateTimeEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetDateTimeEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDateTimeEnclosed()
+	// CreateBuilder creates a BACnetDateTimeEnclosedBuilder
+	CreateBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder
 }
 
 // _BACnetDateTimeEnclosed is the data-structure of this message
@@ -74,6 +76,155 @@ func NewBACnetDateTimeEnclosed(openingTag BACnetOpeningTag, dateTimeValue BACnet
 	}
 	return &_BACnetDateTimeEnclosed{OpeningTag: openingTag, DateTimeValue: dateTimeValue, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDateTimeEnclosedBuilder is a builder for BACnetDateTimeEnclosed
+type BACnetDateTimeEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetDateTimeEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateTimeEnclosedBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTime) BACnetDateTimeEnclosedBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetDateTimeEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetDateTimeEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateTimeEnclosedBuilder
+	// Build builds the BACnetDateTimeEnclosed or returns an error if something is wrong
+	Build() (BACnetDateTimeEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDateTimeEnclosed
+}
+
+// NewBACnetDateTimeEnclosedBuilder() creates a BACnetDateTimeEnclosedBuilder
+func NewBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder {
+	return &_BACnetDateTimeEnclosedBuilder{_BACnetDateTimeEnclosed: new(_BACnetDateTimeEnclosed)}
+}
+
+type _BACnetDateTimeEnclosedBuilder struct {
+	*_BACnetDateTimeEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDateTimeEnclosedBuilder) = (*_BACnetDateTimeEnclosedBuilder)(nil)
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder {
+	return m.WithOpeningTag(openingTag).WithDateTimeValue(dateTimeValue).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDateTimeEnclosedBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithDateTimeValue(dateTimeValue BACnetDateTime) BACnetDateTimeEnclosedBuilder {
+	m.DateTimeValue = dateTimeValue
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(m.DateTimeValue.CreateBACnetDateTimeBuilder())
+	var err error
+	m.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) Build() (BACnetDateTimeEnclosed, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.DateTimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetDateTimeEnclosed.deepCopy(), nil
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) MustBuild() BACnetDateTimeEnclosed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetDateTimeEnclosedBuilder) DeepCopy() any {
+	return m.CreateBACnetDateTimeEnclosedBuilder()
+}
+
+// CreateBACnetDateTimeEnclosedBuilder creates a BACnetDateTimeEnclosedBuilder
+func (m *_BACnetDateTimeEnclosed) CreateBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder {
+	if m == nil {
+		return NewBACnetDateTimeEnclosedBuilder()
+	}
+	return &_BACnetDateTimeEnclosedBuilder{_BACnetDateTimeEnclosed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

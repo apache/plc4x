@@ -49,6 +49,8 @@ type BACnetRestartReasonTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetRestartReasonTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRestartReasonTagged()
+	// CreateBuilder creates a BACnetRestartReasonTaggedBuilder
+	CreateBACnetRestartReasonTaggedBuilder() BACnetRestartReasonTaggedBuilder
 }
 
 // _BACnetRestartReasonTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetRestartReasonTagged(header BACnetTagHeader, value BACnetRestartRea
 	}
 	return &_BACnetRestartReasonTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRestartReasonTaggedBuilder is a builder for BACnetRestartReasonTagged
+type BACnetRestartReasonTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32) BACnetRestartReasonTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetRestartReasonTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRestartReasonTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetRestartReason) BACnetRestartReasonTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetRestartReasonTaggedBuilder
+	// Build builds the BACnetRestartReasonTagged or returns an error if something is wrong
+	Build() (BACnetRestartReasonTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRestartReasonTagged
+}
+
+// NewBACnetRestartReasonTaggedBuilder() creates a BACnetRestartReasonTaggedBuilder
+func NewBACnetRestartReasonTaggedBuilder() BACnetRestartReasonTaggedBuilder {
+	return &_BACnetRestartReasonTaggedBuilder{_BACnetRestartReasonTagged: new(_BACnetRestartReasonTagged)}
+}
+
+type _BACnetRestartReasonTaggedBuilder struct {
+	*_BACnetRestartReasonTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRestartReasonTaggedBuilder) = (*_BACnetRestartReasonTaggedBuilder)(nil)
+
+func (m *_BACnetRestartReasonTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetRestartReason, proprietaryValue uint32) BACnetRestartReasonTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetRestartReasonTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRestartReasonTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) WithValue(value BACnetRestartReason) BACnetRestartReasonTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRestartReasonTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) Build() (BACnetRestartReasonTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRestartReasonTagged.deepCopy(), nil
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) MustBuild() BACnetRestartReasonTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRestartReasonTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetRestartReasonTaggedBuilder()
+}
+
+// CreateBACnetRestartReasonTaggedBuilder creates a BACnetRestartReasonTaggedBuilder
+func (m *_BACnetRestartReasonTagged) CreateBACnetRestartReasonTaggedBuilder() BACnetRestartReasonTaggedBuilder {
+	if m == nil {
+		return NewBACnetRestartReasonTaggedBuilder()
+	}
+	return &_BACnetRestartReasonTaggedBuilder{_BACnetRestartReasonTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

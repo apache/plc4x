@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier interface 
 	GetObjectidentifierValue() BACnetApplicationTagObjectIdentifier
 	// IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier(peekedT
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+	// WithObjectidentifierValue adds ObjectidentifierValue (property field)
+	WithObjectidentifierValue(BACnetApplicationTagObjectIdentifier) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+	// WithObjectidentifierValueBuilder adds ObjectidentifierValue (property field) which is build by the builder
+	WithObjectidentifierValueBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder{_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier: new(_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) WithMandatoryFields(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	return m.WithObjectidentifierValue(objectidentifierValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) WithObjectidentifierValue(objectidentifierValue BACnetApplicationTagObjectIdentifier) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	m.ObjectidentifierValue = objectidentifierValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) WithObjectidentifierValueBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	builder := builderSupplier(m.ObjectidentifierValue.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectidentifierValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+	if m.ObjectidentifierValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectidentifierValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier) CreateBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder() BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder{_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataAnalogOutputMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataAnalogOutputMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAnalogOutputMaxPresValue()
+	// CreateBuilder creates a BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+	CreateBACnetConstructedDataAnalogOutputMaxPresValueBuilder() BACnetConstructedDataAnalogOutputMaxPresValueBuilder
 }
 
 // _BACnetConstructedDataAnalogOutputMaxPresValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAnalogOutputMaxPresValue(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAnalogOutputMaxPresValueBuilder is a builder for BACnetConstructedDataAnalogOutputMaxPresValue
+type BACnetConstructedDataAnalogOutputMaxPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+	// WithMaxPresValue adds MaxPresValue (property field)
+	WithMaxPresValue(BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
+	WithMaxPresValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+	// Build builds the BACnetConstructedDataAnalogOutputMaxPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAnalogOutputMaxPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAnalogOutputMaxPresValue
+}
+
+// NewBACnetConstructedDataAnalogOutputMaxPresValueBuilder() creates a BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+func NewBACnetConstructedDataAnalogOutputMaxPresValueBuilder() BACnetConstructedDataAnalogOutputMaxPresValueBuilder {
+	return &_BACnetConstructedDataAnalogOutputMaxPresValueBuilder{_BACnetConstructedDataAnalogOutputMaxPresValue: new(_BACnetConstructedDataAnalogOutputMaxPresValue)}
+}
+
+type _BACnetConstructedDataAnalogOutputMaxPresValueBuilder struct {
+	*_BACnetConstructedDataAnalogOutputMaxPresValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAnalogOutputMaxPresValueBuilder) = (*_BACnetConstructedDataAnalogOutputMaxPresValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputMaxPresValueBuilder {
+	return m.WithMaxPresValue(maxPresValue)
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagReal) BACnetConstructedDataAnalogOutputMaxPresValueBuilder {
+	m.MaxPresValue = maxPresValue
+	return m
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogOutputMaxPresValueBuilder {
+	builder := builderSupplier(m.MaxPresValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MaxPresValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) Build() (BACnetConstructedDataAnalogOutputMaxPresValue, error) {
+	if m.MaxPresValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAnalogOutputMaxPresValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) MustBuild() BACnetConstructedDataAnalogOutputMaxPresValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAnalogOutputMaxPresValueBuilder()
+}
+
+// CreateBACnetConstructedDataAnalogOutputMaxPresValueBuilder creates a BACnetConstructedDataAnalogOutputMaxPresValueBuilder
+func (m *_BACnetConstructedDataAnalogOutputMaxPresValue) CreateBACnetConstructedDataAnalogOutputMaxPresValueBuilder() BACnetConstructedDataAnalogOutputMaxPresValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAnalogOutputMaxPresValueBuilder()
+	}
+	return &_BACnetConstructedDataAnalogOutputMaxPresValueBuilder{_BACnetConstructedDataAnalogOutputMaxPresValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

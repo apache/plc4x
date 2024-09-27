@@ -44,6 +44,8 @@ type PortSegment interface {
 	GetSegmentType() PortSegmentType
 	// IsPortSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegment()
+	// CreateBuilder creates a PortSegmentBuilder
+	CreatePortSegmentBuilder() PortSegmentBuilder
 }
 
 // _PortSegment is the data-structure of this message
@@ -67,6 +69,84 @@ func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
 	_result.PathSegmentContract.(*_PathSegment)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PortSegmentBuilder is a builder for PortSegment
+type PortSegmentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder
+	// WithSegmentType adds SegmentType (property field)
+	WithSegmentType(PortSegmentType) PortSegmentBuilder
+	// Build builds the PortSegment or returns an error if something is wrong
+	Build() (PortSegment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PortSegment
+}
+
+// NewPortSegmentBuilder() creates a PortSegmentBuilder
+func NewPortSegmentBuilder() PortSegmentBuilder {
+	return &_PortSegmentBuilder{_PortSegment: new(_PortSegment)}
+}
+
+type _PortSegmentBuilder struct {
+	*_PortSegment
+
+	err *utils.MultiError
+}
+
+var _ (PortSegmentBuilder) = (*_PortSegmentBuilder)(nil)
+
+func (m *_PortSegmentBuilder) WithMandatoryFields(segmentType PortSegmentType) PortSegmentBuilder {
+	return m.WithSegmentType(segmentType)
+}
+
+func (m *_PortSegmentBuilder) WithSegmentType(segmentType PortSegmentType) PortSegmentBuilder {
+	m.SegmentType = segmentType
+	return m
+}
+
+func (m *_PortSegmentBuilder) Build() (PortSegment, error) {
+	if m.SegmentType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'segmentType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PortSegment.deepCopy(), nil
+}
+
+func (m *_PortSegmentBuilder) MustBuild() PortSegment {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PortSegmentBuilder) DeepCopy() any {
+	return m.CreatePortSegmentBuilder()
+}
+
+// CreatePortSegmentBuilder creates a PortSegmentBuilder
+func (m *_PortSegment) CreatePortSegmentBuilder() PortSegmentBuilder {
+	if m == nil {
+		return NewPortSegmentBuilder()
+	}
+	return &_PortSegmentBuilder{_PortSegment: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataClientCOVIncrement interface {
 	GetActualValue() BACnetClientCOV
 	// IsBACnetConstructedDataClientCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataClientCOVIncrement()
+	// CreateBuilder creates a BACnetConstructedDataClientCOVIncrementBuilder
+	CreateBACnetConstructedDataClientCOVIncrementBuilder() BACnetConstructedDataClientCOVIncrementBuilder
 }
 
 // _BACnetConstructedDataClientCOVIncrement is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataClientCOVIncrement(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataClientCOVIncrementBuilder is a builder for BACnetConstructedDataClientCOVIncrement
+type BACnetConstructedDataClientCOVIncrementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(covIncrement BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithCovIncrement(BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder
+	// Build builds the BACnetConstructedDataClientCOVIncrement or returns an error if something is wrong
+	Build() (BACnetConstructedDataClientCOVIncrement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataClientCOVIncrement
+}
+
+// NewBACnetConstructedDataClientCOVIncrementBuilder() creates a BACnetConstructedDataClientCOVIncrementBuilder
+func NewBACnetConstructedDataClientCOVIncrementBuilder() BACnetConstructedDataClientCOVIncrementBuilder {
+	return &_BACnetConstructedDataClientCOVIncrementBuilder{_BACnetConstructedDataClientCOVIncrement: new(_BACnetConstructedDataClientCOVIncrement)}
+}
+
+type _BACnetConstructedDataClientCOVIncrementBuilder struct {
+	*_BACnetConstructedDataClientCOVIncrement
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataClientCOVIncrementBuilder) = (*_BACnetConstructedDataClientCOVIncrementBuilder)(nil)
+
+func (m *_BACnetConstructedDataClientCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder {
+	return m.WithCovIncrement(covIncrement)
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetClientCOV) BACnetConstructedDataClientCOVIncrementBuilder {
+	m.CovIncrement = covIncrement
+	return m
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrementBuilder) Build() (BACnetConstructedDataClientCOVIncrement, error) {
+	if m.CovIncrement == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataClientCOVIncrement.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrementBuilder) MustBuild() BACnetConstructedDataClientCOVIncrement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataClientCOVIncrementBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataClientCOVIncrementBuilder()
+}
+
+// CreateBACnetConstructedDataClientCOVIncrementBuilder creates a BACnetConstructedDataClientCOVIncrementBuilder
+func (m *_BACnetConstructedDataClientCOVIncrement) CreateBACnetConstructedDataClientCOVIncrementBuilder() BACnetConstructedDataClientCOVIncrementBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataClientCOVIncrementBuilder()
+	}
+	return &_BACnetConstructedDataClientCOVIncrementBuilder{_BACnetConstructedDataClientCOVIncrement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

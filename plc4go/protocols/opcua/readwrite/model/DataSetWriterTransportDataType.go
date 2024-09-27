@@ -40,6 +40,8 @@ type DataSetWriterTransportDataType interface {
 	ExtensionObjectDefinition
 	// IsDataSetWriterTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetWriterTransportDataType()
+	// CreateBuilder creates a DataSetWriterTransportDataTypeBuilder
+	CreateDataSetWriterTransportDataTypeBuilder() DataSetWriterTransportDataTypeBuilder
 }
 
 // _DataSetWriterTransportDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewDataSetWriterTransportDataType() *_DataSetWriterTransportDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataSetWriterTransportDataTypeBuilder is a builder for DataSetWriterTransportDataType
+type DataSetWriterTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DataSetWriterTransportDataTypeBuilder
+	// Build builds the DataSetWriterTransportDataType or returns an error if something is wrong
+	Build() (DataSetWriterTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataSetWriterTransportDataType
+}
+
+// NewDataSetWriterTransportDataTypeBuilder() creates a DataSetWriterTransportDataTypeBuilder
+func NewDataSetWriterTransportDataTypeBuilder() DataSetWriterTransportDataTypeBuilder {
+	return &_DataSetWriterTransportDataTypeBuilder{_DataSetWriterTransportDataType: new(_DataSetWriterTransportDataType)}
+}
+
+type _DataSetWriterTransportDataTypeBuilder struct {
+	*_DataSetWriterTransportDataType
+
+	err *utils.MultiError
+}
+
+var _ (DataSetWriterTransportDataTypeBuilder) = (*_DataSetWriterTransportDataTypeBuilder)(nil)
+
+func (m *_DataSetWriterTransportDataTypeBuilder) WithMandatoryFields() DataSetWriterTransportDataTypeBuilder {
+	return m
+}
+
+func (m *_DataSetWriterTransportDataTypeBuilder) Build() (DataSetWriterTransportDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DataSetWriterTransportDataType.deepCopy(), nil
+}
+
+func (m *_DataSetWriterTransportDataTypeBuilder) MustBuild() DataSetWriterTransportDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DataSetWriterTransportDataTypeBuilder) DeepCopy() any {
+	return m.CreateDataSetWriterTransportDataTypeBuilder()
+}
+
+// CreateDataSetWriterTransportDataTypeBuilder creates a DataSetWriterTransportDataTypeBuilder
+func (m *_DataSetWriterTransportDataType) CreateDataSetWriterTransportDataTypeBuilder() DataSetWriterTransportDataTypeBuilder {
+	if m == nil {
+		return NewDataSetWriterTransportDataTypeBuilder()
+	}
+	return &_DataSetWriterTransportDataTypeBuilder{_DataSetWriterTransportDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

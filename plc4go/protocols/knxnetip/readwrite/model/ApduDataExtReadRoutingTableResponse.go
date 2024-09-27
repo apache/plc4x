@@ -40,6 +40,8 @@ type ApduDataExtReadRoutingTableResponse interface {
 	ApduDataExt
 	// IsApduDataExtReadRoutingTableResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRoutingTableResponse()
+	// CreateBuilder creates a ApduDataExtReadRoutingTableResponseBuilder
+	CreateApduDataExtReadRoutingTableResponseBuilder() ApduDataExtReadRoutingTableResponseBuilder
 }
 
 // _ApduDataExtReadRoutingTableResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtReadRoutingTableResponse(length uint8) *_ApduDataExtReadRouti
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtReadRoutingTableResponseBuilder is a builder for ApduDataExtReadRoutingTableResponse
+type ApduDataExtReadRoutingTableResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtReadRoutingTableResponseBuilder
+	// Build builds the ApduDataExtReadRoutingTableResponse or returns an error if something is wrong
+	Build() (ApduDataExtReadRoutingTableResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtReadRoutingTableResponse
+}
+
+// NewApduDataExtReadRoutingTableResponseBuilder() creates a ApduDataExtReadRoutingTableResponseBuilder
+func NewApduDataExtReadRoutingTableResponseBuilder() ApduDataExtReadRoutingTableResponseBuilder {
+	return &_ApduDataExtReadRoutingTableResponseBuilder{_ApduDataExtReadRoutingTableResponse: new(_ApduDataExtReadRoutingTableResponse)}
+}
+
+type _ApduDataExtReadRoutingTableResponseBuilder struct {
+	*_ApduDataExtReadRoutingTableResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtReadRoutingTableResponseBuilder) = (*_ApduDataExtReadRoutingTableResponseBuilder)(nil)
+
+func (m *_ApduDataExtReadRoutingTableResponseBuilder) WithMandatoryFields() ApduDataExtReadRoutingTableResponseBuilder {
+	return m
+}
+
+func (m *_ApduDataExtReadRoutingTableResponseBuilder) Build() (ApduDataExtReadRoutingTableResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtReadRoutingTableResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtReadRoutingTableResponseBuilder) MustBuild() ApduDataExtReadRoutingTableResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtReadRoutingTableResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtReadRoutingTableResponseBuilder()
+}
+
+// CreateApduDataExtReadRoutingTableResponseBuilder creates a ApduDataExtReadRoutingTableResponseBuilder
+func (m *_ApduDataExtReadRoutingTableResponse) CreateApduDataExtReadRoutingTableResponseBuilder() ApduDataExtReadRoutingTableResponseBuilder {
+	if m == nil {
+		return NewApduDataExtReadRoutingTableResponseBuilder()
+	}
+	return &_ApduDataExtReadRoutingTableResponseBuilder{_ApduDataExtReadRoutingTableResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

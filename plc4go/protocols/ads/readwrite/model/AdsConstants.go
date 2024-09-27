@@ -44,6 +44,8 @@ type AdsConstants interface {
 	utils.Copyable
 	// IsAdsConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsConstants()
+	// CreateBuilder creates a AdsConstantsBuilder
+	CreateAdsConstantsBuilder() AdsConstantsBuilder
 }
 
 // _AdsConstants is the data-structure of this message
@@ -56,6 +58,71 @@ var _ AdsConstants = (*_AdsConstants)(nil)
 func NewAdsConstants() *_AdsConstants {
 	return &_AdsConstants{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsConstantsBuilder is a builder for AdsConstants
+type AdsConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsConstantsBuilder
+	// Build builds the AdsConstants or returns an error if something is wrong
+	Build() (AdsConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsConstants
+}
+
+// NewAdsConstantsBuilder() creates a AdsConstantsBuilder
+func NewAdsConstantsBuilder() AdsConstantsBuilder {
+	return &_AdsConstantsBuilder{_AdsConstants: new(_AdsConstants)}
+}
+
+type _AdsConstantsBuilder struct {
+	*_AdsConstants
+
+	err *utils.MultiError
+}
+
+var _ (AdsConstantsBuilder) = (*_AdsConstantsBuilder)(nil)
+
+func (m *_AdsConstantsBuilder) WithMandatoryFields() AdsConstantsBuilder {
+	return m
+}
+
+func (m *_AdsConstantsBuilder) Build() (AdsConstants, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsConstants.deepCopy(), nil
+}
+
+func (m *_AdsConstantsBuilder) MustBuild() AdsConstants {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsConstantsBuilder) DeepCopy() any {
+	return m.CreateAdsConstantsBuilder()
+}
+
+// CreateAdsConstantsBuilder creates a AdsConstantsBuilder
+func (m *_AdsConstants) CreateAdsConstantsBuilder() AdsConstantsBuilder {
+	if m == nil {
+		return NewAdsConstantsBuilder()
+	}
+	return &_AdsConstantsBuilder{_AdsConstants: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

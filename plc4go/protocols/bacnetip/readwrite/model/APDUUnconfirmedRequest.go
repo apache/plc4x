@@ -44,6 +44,8 @@ type APDUUnconfirmedRequest interface {
 	GetServiceRequest() BACnetUnconfirmedServiceRequest
 	// IsAPDUUnconfirmedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUUnconfirmedRequest()
+	// CreateBuilder creates a APDUUnconfirmedRequestBuilder
+	CreateAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder
 }
 
 // _APDUUnconfirmedRequest is the data-structure of this message
@@ -69,6 +71,84 @@ func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest, a
 	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDUUnconfirmedRequestBuilder is a builder for APDUUnconfirmedRequest
+type APDUUnconfirmedRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder
+	// WithServiceRequest adds ServiceRequest (property field)
+	WithServiceRequest(BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder
+	// Build builds the APDUUnconfirmedRequest or returns an error if something is wrong
+	Build() (APDUUnconfirmedRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUUnconfirmedRequest
+}
+
+// NewAPDUUnconfirmedRequestBuilder() creates a APDUUnconfirmedRequestBuilder
+func NewAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder {
+	return &_APDUUnconfirmedRequestBuilder{_APDUUnconfirmedRequest: new(_APDUUnconfirmedRequest)}
+}
+
+type _APDUUnconfirmedRequestBuilder struct {
+	*_APDUUnconfirmedRequest
+
+	err *utils.MultiError
+}
+
+var _ (APDUUnconfirmedRequestBuilder) = (*_APDUUnconfirmedRequestBuilder)(nil)
+
+func (m *_APDUUnconfirmedRequestBuilder) WithMandatoryFields(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
+	return m.WithServiceRequest(serviceRequest)
+}
+
+func (m *_APDUUnconfirmedRequestBuilder) WithServiceRequest(serviceRequest BACnetUnconfirmedServiceRequest) APDUUnconfirmedRequestBuilder {
+	m.ServiceRequest = serviceRequest
+	return m
+}
+
+func (m *_APDUUnconfirmedRequestBuilder) Build() (APDUUnconfirmedRequest, error) {
+	if m.ServiceRequest == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'serviceRequest' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._APDUUnconfirmedRequest.deepCopy(), nil
+}
+
+func (m *_APDUUnconfirmedRequestBuilder) MustBuild() APDUUnconfirmedRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_APDUUnconfirmedRequestBuilder) DeepCopy() any {
+	return m.CreateAPDUUnconfirmedRequestBuilder()
+}
+
+// CreateAPDUUnconfirmedRequestBuilder creates a APDUUnconfirmedRequestBuilder
+func (m *_APDUUnconfirmedRequest) CreateAPDUUnconfirmedRequestBuilder() APDUUnconfirmedRequestBuilder {
+	if m == nil {
+		return NewAPDUUnconfirmedRequestBuilder()
+	}
+	return &_APDUUnconfirmedRequestBuilder{_APDUUnconfirmedRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

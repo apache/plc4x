@@ -40,6 +40,8 @@ type ModbusPDUGetComEventCounterRequest interface {
 	ModbusPDU
 	// IsModbusPDUGetComEventCounterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventCounterRequest()
+	// CreateBuilder creates a ModbusPDUGetComEventCounterRequestBuilder
+	CreateModbusPDUGetComEventCounterRequestBuilder() ModbusPDUGetComEventCounterRequestBuilder
 }
 
 // _ModbusPDUGetComEventCounterRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewModbusPDUGetComEventCounterRequest() *_ModbusPDUGetComEventCounterReques
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUGetComEventCounterRequestBuilder is a builder for ModbusPDUGetComEventCounterRequest
+type ModbusPDUGetComEventCounterRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ModbusPDUGetComEventCounterRequestBuilder
+	// Build builds the ModbusPDUGetComEventCounterRequest or returns an error if something is wrong
+	Build() (ModbusPDUGetComEventCounterRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUGetComEventCounterRequest
+}
+
+// NewModbusPDUGetComEventCounterRequestBuilder() creates a ModbusPDUGetComEventCounterRequestBuilder
+func NewModbusPDUGetComEventCounterRequestBuilder() ModbusPDUGetComEventCounterRequestBuilder {
+	return &_ModbusPDUGetComEventCounterRequestBuilder{_ModbusPDUGetComEventCounterRequest: new(_ModbusPDUGetComEventCounterRequest)}
+}
+
+type _ModbusPDUGetComEventCounterRequestBuilder struct {
+	*_ModbusPDUGetComEventCounterRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUGetComEventCounterRequestBuilder) = (*_ModbusPDUGetComEventCounterRequestBuilder)(nil)
+
+func (m *_ModbusPDUGetComEventCounterRequestBuilder) WithMandatoryFields() ModbusPDUGetComEventCounterRequestBuilder {
+	return m
+}
+
+func (m *_ModbusPDUGetComEventCounterRequestBuilder) Build() (ModbusPDUGetComEventCounterRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUGetComEventCounterRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUGetComEventCounterRequestBuilder) MustBuild() ModbusPDUGetComEventCounterRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUGetComEventCounterRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUGetComEventCounterRequestBuilder()
+}
+
+// CreateModbusPDUGetComEventCounterRequestBuilder creates a ModbusPDUGetComEventCounterRequestBuilder
+func (m *_ModbusPDUGetComEventCounterRequest) CreateModbusPDUGetComEventCounterRequestBuilder() ModbusPDUGetComEventCounterRequestBuilder {
+	if m == nil {
+		return NewModbusPDUGetComEventCounterRequestBuilder()
+	}
+	return &_ModbusPDUGetComEventCounterRequestBuilder{_ModbusPDUGetComEventCounterRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

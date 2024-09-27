@@ -44,6 +44,8 @@ type ConnectionRequestInformationTunnelConnection interface {
 	GetKnxLayer() KnxLayer
 	// IsConnectionRequestInformationTunnelConnection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformationTunnelConnection()
+	// CreateBuilder creates a ConnectionRequestInformationTunnelConnectionBuilder
+	CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder
 }
 
 // _ConnectionRequestInformationTunnelConnection is the data-structure of this message
@@ -66,6 +68,78 @@ func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_Connec
 	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestInformationTunnelConnectionBuilder is a builder for ConnectionRequestInformationTunnelConnection
+type ConnectionRequestInformationTunnelConnectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder
+	// WithKnxLayer adds KnxLayer (property field)
+	WithKnxLayer(KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder
+	// Build builds the ConnectionRequestInformationTunnelConnection or returns an error if something is wrong
+	Build() (ConnectionRequestInformationTunnelConnection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequestInformationTunnelConnection
+}
+
+// NewConnectionRequestInformationTunnelConnectionBuilder() creates a ConnectionRequestInformationTunnelConnectionBuilder
+func NewConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
+	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: new(_ConnectionRequestInformationTunnelConnection)}
+}
+
+type _ConnectionRequestInformationTunnelConnectionBuilder struct {
+	*_ConnectionRequestInformationTunnelConnection
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestInformationTunnelConnectionBuilder) = (*_ConnectionRequestInformationTunnelConnectionBuilder)(nil)
+
+func (m *_ConnectionRequestInformationTunnelConnectionBuilder) WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	return m.WithKnxLayer(knxLayer)
+}
+
+func (m *_ConnectionRequestInformationTunnelConnectionBuilder) WithKnxLayer(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	m.KnxLayer = knxLayer
+	return m
+}
+
+func (m *_ConnectionRequestInformationTunnelConnectionBuilder) Build() (ConnectionRequestInformationTunnelConnection, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionRequestInformationTunnelConnection.deepCopy(), nil
+}
+
+func (m *_ConnectionRequestInformationTunnelConnectionBuilder) MustBuild() ConnectionRequestInformationTunnelConnection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionRequestInformationTunnelConnectionBuilder) DeepCopy() any {
+	return m.CreateConnectionRequestInformationTunnelConnectionBuilder()
+}
+
+// CreateConnectionRequestInformationTunnelConnectionBuilder creates a ConnectionRequestInformationTunnelConnectionBuilder
+func (m *_ConnectionRequestInformationTunnelConnection) CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
+	if m == nil {
+		return NewConnectionRequestInformationTunnelConnectionBuilder()
+	}
+	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

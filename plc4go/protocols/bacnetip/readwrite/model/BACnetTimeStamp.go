@@ -43,6 +43,8 @@ type BACnetTimeStamp interface {
 	utils.Copyable
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
+	// CreateBuilder creates a BACnetTimeStampBuilder
+	CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder
 }
 
 // BACnetTimeStampContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetTimeStampContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
+	// CreateBuilder creates a BACnetTimeStampBuilder
+	CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder
 }
 
 // BACnetTimeStampRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
 	}
 	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimeStampBuilder is a builder for BACnetTimeStamp
+type BACnetTimeStampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetTimeStampBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimeStampBuilder
+	// Build builds the BACnetTimeStamp or returns an error if something is wrong
+	Build() (BACnetTimeStampContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimeStampContract
+}
+
+// NewBACnetTimeStampBuilder() creates a BACnetTimeStampBuilder
+func NewBACnetTimeStampBuilder() BACnetTimeStampBuilder {
+	return &_BACnetTimeStampBuilder{_BACnetTimeStamp: new(_BACnetTimeStamp)}
+}
+
+type _BACnetTimeStampBuilder struct {
+	*_BACnetTimeStamp
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimeStampBuilder) = (*_BACnetTimeStampBuilder)(nil)
+
+func (m *_BACnetTimeStampBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetTimeStampBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetTimeStampBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimeStampBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimeStampBuilder) Build() (BACnetTimeStampContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimeStamp.deepCopy(), nil
+}
+
+func (m *_BACnetTimeStampBuilder) MustBuild() BACnetTimeStampContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimeStampBuilder) DeepCopy() any {
+	return m.CreateBACnetTimeStampBuilder()
+}
+
+// CreateBACnetTimeStampBuilder creates a BACnetTimeStampBuilder
+func (m *_BACnetTimeStamp) CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder {
+	if m == nil {
+		return NewBACnetTimeStampBuilder()
+	}
+	return &_BACnetTimeStampBuilder{_BACnetTimeStamp: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

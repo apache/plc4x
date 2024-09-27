@@ -41,6 +41,8 @@ type CIPEncapsulationConnectionRequest interface {
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionRequest()
+	// CreateBuilder creates a CIPEncapsulationConnectionRequestBuilder
+	CreateCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionRequestBuilder
 }
 
 // _CIPEncapsulationConnectionRequest is the data-structure of this message
@@ -59,6 +61,71 @@ func NewCIPEncapsulationConnectionRequest(sessionHandle uint32, status uint32, s
 	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationConnectionRequestBuilder is a builder for CIPEncapsulationConnectionRequest
+type CIPEncapsulationConnectionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CIPEncapsulationConnectionRequestBuilder
+	// Build builds the CIPEncapsulationConnectionRequest or returns an error if something is wrong
+	Build() (CIPEncapsulationConnectionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationConnectionRequest
+}
+
+// NewCIPEncapsulationConnectionRequestBuilder() creates a CIPEncapsulationConnectionRequestBuilder
+func NewCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionRequestBuilder {
+	return &_CIPEncapsulationConnectionRequestBuilder{_CIPEncapsulationConnectionRequest: new(_CIPEncapsulationConnectionRequest)}
+}
+
+type _CIPEncapsulationConnectionRequestBuilder struct {
+	*_CIPEncapsulationConnectionRequest
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationConnectionRequestBuilder) = (*_CIPEncapsulationConnectionRequestBuilder)(nil)
+
+func (m *_CIPEncapsulationConnectionRequestBuilder) WithMandatoryFields() CIPEncapsulationConnectionRequestBuilder {
+	return m
+}
+
+func (m *_CIPEncapsulationConnectionRequestBuilder) Build() (CIPEncapsulationConnectionRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPEncapsulationConnectionRequest.deepCopy(), nil
+}
+
+func (m *_CIPEncapsulationConnectionRequestBuilder) MustBuild() CIPEncapsulationConnectionRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPEncapsulationConnectionRequestBuilder) DeepCopy() any {
+	return m.CreateCIPEncapsulationConnectionRequestBuilder()
+}
+
+// CreateCIPEncapsulationConnectionRequestBuilder creates a CIPEncapsulationConnectionRequestBuilder
+func (m *_CIPEncapsulationConnectionRequest) CreateCIPEncapsulationConnectionRequestBuilder() CIPEncapsulationConnectionRequestBuilder {
+	if m == nil {
+		return NewCIPEncapsulationConnectionRequestBuilder()
+	}
+	return &_CIPEncapsulationConnectionRequestBuilder{_CIPEncapsulationConnectionRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -49,6 +49,8 @@ type ModbusPDUReadFileRecordRequestItem interface {
 	GetRecordLength() uint16
 	// IsModbusPDUReadFileRecordRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadFileRecordRequestItem()
+	// CreateBuilder creates a ModbusPDUReadFileRecordRequestItemBuilder
+	CreateModbusPDUReadFileRecordRequestItemBuilder() ModbusPDUReadFileRecordRequestItemBuilder
 }
 
 // _ModbusPDUReadFileRecordRequestItem is the data-structure of this message
@@ -65,6 +67,99 @@ var _ ModbusPDUReadFileRecordRequestItem = (*_ModbusPDUReadFileRecordRequestItem
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) *_ModbusPDUReadFileRecordRequestItem {
 	return &_ModbusPDUReadFileRecordRequestItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordLength: recordLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadFileRecordRequestItemBuilder is a builder for ModbusPDUReadFileRecordRequestItem
+type ModbusPDUReadFileRecordRequestItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder
+	// WithReferenceType adds ReferenceType (property field)
+	WithReferenceType(uint8) ModbusPDUReadFileRecordRequestItemBuilder
+	// WithFileNumber adds FileNumber (property field)
+	WithFileNumber(uint16) ModbusPDUReadFileRecordRequestItemBuilder
+	// WithRecordNumber adds RecordNumber (property field)
+	WithRecordNumber(uint16) ModbusPDUReadFileRecordRequestItemBuilder
+	// WithRecordLength adds RecordLength (property field)
+	WithRecordLength(uint16) ModbusPDUReadFileRecordRequestItemBuilder
+	// Build builds the ModbusPDUReadFileRecordRequestItem or returns an error if something is wrong
+	Build() (ModbusPDUReadFileRecordRequestItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadFileRecordRequestItem
+}
+
+// NewModbusPDUReadFileRecordRequestItemBuilder() creates a ModbusPDUReadFileRecordRequestItemBuilder
+func NewModbusPDUReadFileRecordRequestItemBuilder() ModbusPDUReadFileRecordRequestItemBuilder {
+	return &_ModbusPDUReadFileRecordRequestItemBuilder{_ModbusPDUReadFileRecordRequestItem: new(_ModbusPDUReadFileRecordRequestItem)}
+}
+
+type _ModbusPDUReadFileRecordRequestItemBuilder struct {
+	*_ModbusPDUReadFileRecordRequestItem
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadFileRecordRequestItemBuilder) = (*_ModbusPDUReadFileRecordRequestItemBuilder)(nil)
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithMandatoryFields(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	return m.WithReferenceType(referenceType).WithFileNumber(fileNumber).WithRecordNumber(recordNumber).WithRecordLength(recordLength)
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUReadFileRecordRequestItemBuilder {
+	m.ReferenceType = referenceType
+	return m
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithFileNumber(fileNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	m.FileNumber = fileNumber
+	return m
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordNumber(recordNumber uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	m.RecordNumber = recordNumber
+	return m
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) WithRecordLength(recordLength uint16) ModbusPDUReadFileRecordRequestItemBuilder {
+	m.RecordLength = recordLength
+	return m
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) Build() (ModbusPDUReadFileRecordRequestItem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadFileRecordRequestItem.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) MustBuild() ModbusPDUReadFileRecordRequestItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadFileRecordRequestItemBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadFileRecordRequestItemBuilder()
+}
+
+// CreateModbusPDUReadFileRecordRequestItemBuilder creates a ModbusPDUReadFileRecordRequestItemBuilder
+func (m *_ModbusPDUReadFileRecordRequestItem) CreateModbusPDUReadFileRecordRequestItemBuilder() ModbusPDUReadFileRecordRequestItemBuilder {
+	if m == nil {
+		return NewModbusPDUReadFileRecordRequestItemBuilder()
+	}
+	return &_ModbusPDUReadFileRecordRequestItemBuilder{_ModbusPDUReadFileRecordRequestItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

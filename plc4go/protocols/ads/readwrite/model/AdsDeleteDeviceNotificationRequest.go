@@ -44,6 +44,8 @@ type AdsDeleteDeviceNotificationRequest interface {
 	GetNotificationHandle() uint32
 	// IsAdsDeleteDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeleteDeviceNotificationRequest()
+	// CreateBuilder creates a AdsDeleteDeviceNotificationRequestBuilder
+	CreateAdsDeleteDeviceNotificationRequestBuilder() AdsDeleteDeviceNotificationRequestBuilder
 }
 
 // _AdsDeleteDeviceNotificationRequest is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAdsDeleteDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPor
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDeleteDeviceNotificationRequestBuilder is a builder for AdsDeleteDeviceNotificationRequest
+type AdsDeleteDeviceNotificationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(notificationHandle uint32) AdsDeleteDeviceNotificationRequestBuilder
+	// WithNotificationHandle adds NotificationHandle (property field)
+	WithNotificationHandle(uint32) AdsDeleteDeviceNotificationRequestBuilder
+	// Build builds the AdsDeleteDeviceNotificationRequest or returns an error if something is wrong
+	Build() (AdsDeleteDeviceNotificationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDeleteDeviceNotificationRequest
+}
+
+// NewAdsDeleteDeviceNotificationRequestBuilder() creates a AdsDeleteDeviceNotificationRequestBuilder
+func NewAdsDeleteDeviceNotificationRequestBuilder() AdsDeleteDeviceNotificationRequestBuilder {
+	return &_AdsDeleteDeviceNotificationRequestBuilder{_AdsDeleteDeviceNotificationRequest: new(_AdsDeleteDeviceNotificationRequest)}
+}
+
+type _AdsDeleteDeviceNotificationRequestBuilder struct {
+	*_AdsDeleteDeviceNotificationRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsDeleteDeviceNotificationRequestBuilder) = (*_AdsDeleteDeviceNotificationRequestBuilder)(nil)
+
+func (m *_AdsDeleteDeviceNotificationRequestBuilder) WithMandatoryFields(notificationHandle uint32) AdsDeleteDeviceNotificationRequestBuilder {
+	return m.WithNotificationHandle(notificationHandle)
+}
+
+func (m *_AdsDeleteDeviceNotificationRequestBuilder) WithNotificationHandle(notificationHandle uint32) AdsDeleteDeviceNotificationRequestBuilder {
+	m.NotificationHandle = notificationHandle
+	return m
+}
+
+func (m *_AdsDeleteDeviceNotificationRequestBuilder) Build() (AdsDeleteDeviceNotificationRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDeleteDeviceNotificationRequest.deepCopy(), nil
+}
+
+func (m *_AdsDeleteDeviceNotificationRequestBuilder) MustBuild() AdsDeleteDeviceNotificationRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDeleteDeviceNotificationRequestBuilder) DeepCopy() any {
+	return m.CreateAdsDeleteDeviceNotificationRequestBuilder()
+}
+
+// CreateAdsDeleteDeviceNotificationRequestBuilder creates a AdsDeleteDeviceNotificationRequestBuilder
+func (m *_AdsDeleteDeviceNotificationRequest) CreateAdsDeleteDeviceNotificationRequestBuilder() AdsDeleteDeviceNotificationRequestBuilder {
+	if m == nil {
+		return NewAdsDeleteDeviceNotificationRequestBuilder()
+	}
+	return &_AdsDeleteDeviceNotificationRequestBuilder{_AdsDeleteDeviceNotificationRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

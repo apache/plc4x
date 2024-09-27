@@ -46,6 +46,8 @@ type BACnetConstructedDataObjectName interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataObjectName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectName()
+	// CreateBuilder creates a BACnetConstructedDataObjectNameBuilder
+	CreateBACnetConstructedDataObjectNameBuilder() BACnetConstructedDataObjectNameBuilder
 }
 
 // _BACnetConstructedDataObjectName is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataObjectName(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectNameBuilder is a builder for BACnetConstructedDataObjectName
+type BACnetConstructedDataObjectNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectName BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder
+	// WithObjectName adds ObjectName (property field)
+	WithObjectName(BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder
+	// WithObjectNameBuilder adds ObjectName (property field) which is build by the builder
+	WithObjectNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataObjectNameBuilder
+	// Build builds the BACnetConstructedDataObjectName or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectName
+}
+
+// NewBACnetConstructedDataObjectNameBuilder() creates a BACnetConstructedDataObjectNameBuilder
+func NewBACnetConstructedDataObjectNameBuilder() BACnetConstructedDataObjectNameBuilder {
+	return &_BACnetConstructedDataObjectNameBuilder{_BACnetConstructedDataObjectName: new(_BACnetConstructedDataObjectName)}
+}
+
+type _BACnetConstructedDataObjectNameBuilder struct {
+	*_BACnetConstructedDataObjectName
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectNameBuilder) = (*_BACnetConstructedDataObjectNameBuilder)(nil)
+
+func (m *_BACnetConstructedDataObjectNameBuilder) WithMandatoryFields(objectName BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder {
+	return m.WithObjectName(objectName)
+}
+
+func (m *_BACnetConstructedDataObjectNameBuilder) WithObjectName(objectName BACnetApplicationTagCharacterString) BACnetConstructedDataObjectNameBuilder {
+	m.ObjectName = objectName
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectNameBuilder) WithObjectNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataObjectNameBuilder {
+	builder := builderSupplier(m.ObjectName.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.ObjectName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectNameBuilder) Build() (BACnetConstructedDataObjectName, error) {
+	if m.ObjectName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectName' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataObjectName.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataObjectNameBuilder) MustBuild() BACnetConstructedDataObjectName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataObjectNameBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataObjectNameBuilder()
+}
+
+// CreateBACnetConstructedDataObjectNameBuilder creates a BACnetConstructedDataObjectNameBuilder
+func (m *_BACnetConstructedDataObjectName) CreateBACnetConstructedDataObjectNameBuilder() BACnetConstructedDataObjectNameBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataObjectNameBuilder()
+	}
+	return &_BACnetConstructedDataObjectNameBuilder{_BACnetConstructedDataObjectName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

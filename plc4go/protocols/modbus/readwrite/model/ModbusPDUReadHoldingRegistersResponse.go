@@ -44,6 +44,8 @@ type ModbusPDUReadHoldingRegistersResponse interface {
 	GetValue() []byte
 	// IsModbusPDUReadHoldingRegistersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadHoldingRegistersResponse()
+	// CreateBuilder creates a ModbusPDUReadHoldingRegistersResponseBuilder
+	CreateModbusPDUReadHoldingRegistersResponseBuilder() ModbusPDUReadHoldingRegistersResponseBuilder
 }
 
 // _ModbusPDUReadHoldingRegistersResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewModbusPDUReadHoldingRegistersResponse(value []byte) *_ModbusPDUReadHoldi
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadHoldingRegistersResponseBuilder is a builder for ModbusPDUReadHoldingRegistersResponse
+type ModbusPDUReadHoldingRegistersResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []byte) ModbusPDUReadHoldingRegistersResponseBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) ModbusPDUReadHoldingRegistersResponseBuilder
+	// Build builds the ModbusPDUReadHoldingRegistersResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadHoldingRegistersResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadHoldingRegistersResponse
+}
+
+// NewModbusPDUReadHoldingRegistersResponseBuilder() creates a ModbusPDUReadHoldingRegistersResponseBuilder
+func NewModbusPDUReadHoldingRegistersResponseBuilder() ModbusPDUReadHoldingRegistersResponseBuilder {
+	return &_ModbusPDUReadHoldingRegistersResponseBuilder{_ModbusPDUReadHoldingRegistersResponse: new(_ModbusPDUReadHoldingRegistersResponse)}
+}
+
+type _ModbusPDUReadHoldingRegistersResponseBuilder struct {
+	*_ModbusPDUReadHoldingRegistersResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadHoldingRegistersResponseBuilder) = (*_ModbusPDUReadHoldingRegistersResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadHoldingRegistersResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadHoldingRegistersResponseBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_ModbusPDUReadHoldingRegistersResponseBuilder) WithValue(value ...byte) ModbusPDUReadHoldingRegistersResponseBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUReadHoldingRegistersResponseBuilder) Build() (ModbusPDUReadHoldingRegistersResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadHoldingRegistersResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadHoldingRegistersResponseBuilder) MustBuild() ModbusPDUReadHoldingRegistersResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadHoldingRegistersResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadHoldingRegistersResponseBuilder()
+}
+
+// CreateModbusPDUReadHoldingRegistersResponseBuilder creates a ModbusPDUReadHoldingRegistersResponseBuilder
+func (m *_ModbusPDUReadHoldingRegistersResponse) CreateModbusPDUReadHoldingRegistersResponseBuilder() ModbusPDUReadHoldingRegistersResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadHoldingRegistersResponseBuilder()
+	}
+	return &_ModbusPDUReadHoldingRegistersResponseBuilder{_ModbusPDUReadHoldingRegistersResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

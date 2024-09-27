@@ -46,6 +46,8 @@ type BACnetConstructedDataLastRestoreTime interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataLastRestoreTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastRestoreTime()
+	// CreateBuilder creates a BACnetConstructedDataLastRestoreTimeBuilder
+	CreateBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastRestoreTimeBuilder
 }
 
 // _BACnetConstructedDataLastRestoreTime is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataLastRestoreTime(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastRestoreTimeBuilder is a builder for BACnetConstructedDataLastRestoreTime
+type BACnetConstructedDataLastRestoreTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder
+	// WithLastRestoreTime adds LastRestoreTime (property field)
+	WithLastRestoreTime(BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder
+	// Build builds the BACnetConstructedDataLastRestoreTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastRestoreTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastRestoreTime
+}
+
+// NewBACnetConstructedDataLastRestoreTimeBuilder() creates a BACnetConstructedDataLastRestoreTimeBuilder
+func NewBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastRestoreTimeBuilder {
+	return &_BACnetConstructedDataLastRestoreTimeBuilder{_BACnetConstructedDataLastRestoreTime: new(_BACnetConstructedDataLastRestoreTime)}
+}
+
+type _BACnetConstructedDataLastRestoreTimeBuilder struct {
+	*_BACnetConstructedDataLastRestoreTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastRestoreTimeBuilder) = (*_BACnetConstructedDataLastRestoreTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastRestoreTimeBuilder) WithMandatoryFields(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
+	return m.WithLastRestoreTime(lastRestoreTime)
+}
+
+func (m *_BACnetConstructedDataLastRestoreTimeBuilder) WithLastRestoreTime(lastRestoreTime BACnetTimeStamp) BACnetConstructedDataLastRestoreTimeBuilder {
+	m.LastRestoreTime = lastRestoreTime
+	return m
+}
+
+func (m *_BACnetConstructedDataLastRestoreTimeBuilder) Build() (BACnetConstructedDataLastRestoreTime, error) {
+	if m.LastRestoreTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastRestoreTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastRestoreTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastRestoreTimeBuilder) MustBuild() BACnetConstructedDataLastRestoreTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastRestoreTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastRestoreTimeBuilder()
+}
+
+// CreateBACnetConstructedDataLastRestoreTimeBuilder creates a BACnetConstructedDataLastRestoreTimeBuilder
+func (m *_BACnetConstructedDataLastRestoreTime) CreateBACnetConstructedDataLastRestoreTimeBuilder() BACnetConstructedDataLastRestoreTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastRestoreTimeBuilder()
+	}
+	return &_BACnetConstructedDataLastRestoreTimeBuilder{_BACnetConstructedDataLastRestoreTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

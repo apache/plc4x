@@ -47,6 +47,8 @@ type BACnetPropertyReferenceEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetPropertyReferenceEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyReferenceEnclosed()
+	// CreateBuilder creates a BACnetPropertyReferenceEnclosedBuilder
+	CreateBACnetPropertyReferenceEnclosedBuilder() BACnetPropertyReferenceEnclosedBuilder
 }
 
 // _BACnetPropertyReferenceEnclosed is the data-structure of this message
@@ -74,6 +76,155 @@ func NewBACnetPropertyReferenceEnclosed(openingTag BACnetOpeningTag, reference B
 	}
 	return &_BACnetPropertyReferenceEnclosed{OpeningTag: openingTag, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyReferenceEnclosedBuilder is a builder for BACnetPropertyReferenceEnclosed
+type BACnetPropertyReferenceEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, reference BACnetPropertyReference, closingTag BACnetClosingTag) BACnetPropertyReferenceEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetPropertyReferenceEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyReferenceEnclosedBuilder
+	// WithReference adds Reference (property field)
+	WithReference(BACnetPropertyReference) BACnetPropertyReferenceEnclosedBuilder
+	// WithReferenceBuilder adds Reference (property field) which is build by the builder
+	WithReferenceBuilder(func(BACnetPropertyReferenceBuilder) BACnetPropertyReferenceBuilder) BACnetPropertyReferenceEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetPropertyReferenceEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyReferenceEnclosedBuilder
+	// Build builds the BACnetPropertyReferenceEnclosed or returns an error if something is wrong
+	Build() (BACnetPropertyReferenceEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyReferenceEnclosed
+}
+
+// NewBACnetPropertyReferenceEnclosedBuilder() creates a BACnetPropertyReferenceEnclosedBuilder
+func NewBACnetPropertyReferenceEnclosedBuilder() BACnetPropertyReferenceEnclosedBuilder {
+	return &_BACnetPropertyReferenceEnclosedBuilder{_BACnetPropertyReferenceEnclosed: new(_BACnetPropertyReferenceEnclosed)}
+}
+
+type _BACnetPropertyReferenceEnclosedBuilder struct {
+	*_BACnetPropertyReferenceEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyReferenceEnclosedBuilder) = (*_BACnetPropertyReferenceEnclosedBuilder)(nil)
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, reference BACnetPropertyReference, closingTag BACnetClosingTag) BACnetPropertyReferenceEnclosedBuilder {
+	return m.WithOpeningTag(openingTag).WithReference(reference).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetPropertyReferenceEnclosedBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithReference(reference BACnetPropertyReference) BACnetPropertyReferenceEnclosedBuilder {
+	m.Reference = reference
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithReferenceBuilder(builderSupplier func(BACnetPropertyReferenceBuilder) BACnetPropertyReferenceBuilder) BACnetPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(m.Reference.CreateBACnetPropertyReferenceBuilder())
+	var err error
+	m.Reference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetPropertyReferenceEnclosedBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyReferenceEnclosedBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) Build() (BACnetPropertyReferenceEnclosed, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.Reference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'reference' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyReferenceEnclosed.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) MustBuild() BACnetPropertyReferenceEnclosed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyReferenceEnclosedBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyReferenceEnclosedBuilder()
+}
+
+// CreateBACnetPropertyReferenceEnclosedBuilder creates a BACnetPropertyReferenceEnclosedBuilder
+func (m *_BACnetPropertyReferenceEnclosed) CreateBACnetPropertyReferenceEnclosedBuilder() BACnetPropertyReferenceEnclosedBuilder {
+	if m == nil {
+		return NewBACnetPropertyReferenceEnclosedBuilder()
+	}
+	return &_BACnetPropertyReferenceEnclosedBuilder{_BACnetPropertyReferenceEnclosed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

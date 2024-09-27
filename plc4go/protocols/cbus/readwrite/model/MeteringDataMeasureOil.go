@@ -40,6 +40,8 @@ type MeteringDataMeasureOil interface {
 	MeteringData
 	// IsMeteringDataMeasureOil is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureOil()
+	// CreateBuilder creates a MeteringDataMeasureOilBuilder
+	CreateMeteringDataMeasureOilBuilder() MeteringDataMeasureOilBuilder
 }
 
 // _MeteringDataMeasureOil is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMeteringDataMeasureOil(commandTypeContainer MeteringCommandTypeContainer
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataMeasureOilBuilder is a builder for MeteringDataMeasureOil
+type MeteringDataMeasureOilBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MeteringDataMeasureOilBuilder
+	// Build builds the MeteringDataMeasureOil or returns an error if something is wrong
+	Build() (MeteringDataMeasureOil, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataMeasureOil
+}
+
+// NewMeteringDataMeasureOilBuilder() creates a MeteringDataMeasureOilBuilder
+func NewMeteringDataMeasureOilBuilder() MeteringDataMeasureOilBuilder {
+	return &_MeteringDataMeasureOilBuilder{_MeteringDataMeasureOil: new(_MeteringDataMeasureOil)}
+}
+
+type _MeteringDataMeasureOilBuilder struct {
+	*_MeteringDataMeasureOil
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataMeasureOilBuilder) = (*_MeteringDataMeasureOilBuilder)(nil)
+
+func (m *_MeteringDataMeasureOilBuilder) WithMandatoryFields() MeteringDataMeasureOilBuilder {
+	return m
+}
+
+func (m *_MeteringDataMeasureOilBuilder) Build() (MeteringDataMeasureOil, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataMeasureOil.deepCopy(), nil
+}
+
+func (m *_MeteringDataMeasureOilBuilder) MustBuild() MeteringDataMeasureOil {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataMeasureOilBuilder) DeepCopy() any {
+	return m.CreateMeteringDataMeasureOilBuilder()
+}
+
+// CreateMeteringDataMeasureOilBuilder creates a MeteringDataMeasureOilBuilder
+func (m *_MeteringDataMeasureOil) CreateMeteringDataMeasureOilBuilder() MeteringDataMeasureOilBuilder {
+	if m == nil {
+		return NewMeteringDataMeasureOilBuilder()
+	}
+	return &_MeteringDataMeasureOilBuilder{_MeteringDataMeasureOil: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

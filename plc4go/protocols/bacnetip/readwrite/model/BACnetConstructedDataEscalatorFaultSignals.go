@@ -44,6 +44,8 @@ type BACnetConstructedDataEscalatorFaultSignals interface {
 	GetFaultSignals() []BACnetEscalatorFaultTagged
 	// IsBACnetConstructedDataEscalatorFaultSignals is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEscalatorFaultSignals()
+	// CreateBuilder creates a BACnetConstructedDataEscalatorFaultSignalsBuilder
+	CreateBACnetConstructedDataEscalatorFaultSignalsBuilder() BACnetConstructedDataEscalatorFaultSignalsBuilder
 }
 
 // _BACnetConstructedDataEscalatorFaultSignals is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataEscalatorFaultSignals(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEscalatorFaultSignalsBuilder is a builder for BACnetConstructedDataEscalatorFaultSignals
+type BACnetConstructedDataEscalatorFaultSignalsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultSignals []BACnetEscalatorFaultTagged) BACnetConstructedDataEscalatorFaultSignalsBuilder
+	// WithFaultSignals adds FaultSignals (property field)
+	WithFaultSignals(...BACnetEscalatorFaultTagged) BACnetConstructedDataEscalatorFaultSignalsBuilder
+	// Build builds the BACnetConstructedDataEscalatorFaultSignals or returns an error if something is wrong
+	Build() (BACnetConstructedDataEscalatorFaultSignals, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEscalatorFaultSignals
+}
+
+// NewBACnetConstructedDataEscalatorFaultSignalsBuilder() creates a BACnetConstructedDataEscalatorFaultSignalsBuilder
+func NewBACnetConstructedDataEscalatorFaultSignalsBuilder() BACnetConstructedDataEscalatorFaultSignalsBuilder {
+	return &_BACnetConstructedDataEscalatorFaultSignalsBuilder{_BACnetConstructedDataEscalatorFaultSignals: new(_BACnetConstructedDataEscalatorFaultSignals)}
+}
+
+type _BACnetConstructedDataEscalatorFaultSignalsBuilder struct {
+	*_BACnetConstructedDataEscalatorFaultSignals
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEscalatorFaultSignalsBuilder) = (*_BACnetConstructedDataEscalatorFaultSignalsBuilder)(nil)
+
+func (m *_BACnetConstructedDataEscalatorFaultSignalsBuilder) WithMandatoryFields(faultSignals []BACnetEscalatorFaultTagged) BACnetConstructedDataEscalatorFaultSignalsBuilder {
+	return m.WithFaultSignals(faultSignals...)
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignalsBuilder) WithFaultSignals(faultSignals ...BACnetEscalatorFaultTagged) BACnetConstructedDataEscalatorFaultSignalsBuilder {
+	m.FaultSignals = faultSignals
+	return m
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignalsBuilder) Build() (BACnetConstructedDataEscalatorFaultSignals, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEscalatorFaultSignals.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignalsBuilder) MustBuild() BACnetConstructedDataEscalatorFaultSignals {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEscalatorFaultSignalsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEscalatorFaultSignalsBuilder()
+}
+
+// CreateBACnetConstructedDataEscalatorFaultSignalsBuilder creates a BACnetConstructedDataEscalatorFaultSignalsBuilder
+func (m *_BACnetConstructedDataEscalatorFaultSignals) CreateBACnetConstructedDataEscalatorFaultSignalsBuilder() BACnetConstructedDataEscalatorFaultSignalsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEscalatorFaultSignalsBuilder()
+	}
+	return &_BACnetConstructedDataEscalatorFaultSignalsBuilder{_BACnetConstructedDataEscalatorFaultSignals: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

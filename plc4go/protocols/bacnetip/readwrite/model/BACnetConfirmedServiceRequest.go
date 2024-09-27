@@ -43,6 +43,8 @@ type BACnetConfirmedServiceRequest interface {
 	utils.Copyable
 	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequest()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestBuilder
+	CreateBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder
 }
 
 // BACnetConfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetConfirmedServiceRequestContract interface {
 	GetServiceRequestLength() uint32
 	// IsBACnetConfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequest()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestBuilder
+	CreateBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder
 }
 
 // BACnetConfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
@@ -77,6 +81,71 @@ var _ BACnetConfirmedServiceRequestContract = (*_BACnetConfirmedServiceRequest)(
 func NewBACnetConfirmedServiceRequest(serviceRequestLength uint32) *_BACnetConfirmedServiceRequest {
 	return &_BACnetConfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestBuilder is a builder for BACnetConfirmedServiceRequest
+type BACnetConfirmedServiceRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConfirmedServiceRequestBuilder
+	// Build builds the BACnetConfirmedServiceRequest or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestContract
+}
+
+// NewBACnetConfirmedServiceRequestBuilder() creates a BACnetConfirmedServiceRequestBuilder
+func NewBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder {
+	return &_BACnetConfirmedServiceRequestBuilder{_BACnetConfirmedServiceRequest: new(_BACnetConfirmedServiceRequest)}
+}
+
+type _BACnetConfirmedServiceRequestBuilder struct {
+	*_BACnetConfirmedServiceRequest
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestBuilder) = (*_BACnetConfirmedServiceRequestBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestBuilder) WithMandatoryFields() BACnetConfirmedServiceRequestBuilder {
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestBuilder) Build() (BACnetConfirmedServiceRequestContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequest.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestBuilder) MustBuild() BACnetConfirmedServiceRequestContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestBuilder creates a BACnetConfirmedServiceRequestBuilder
+func (m *_BACnetConfirmedServiceRequest) CreateBACnetConfirmedServiceRequestBuilder() BACnetConfirmedServiceRequestBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestBuilder{_BACnetConfirmedServiceRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@ type NetworkRoute interface {
 	GetAdditionalBridgeAddresses() []BridgeAddress
 	// IsNetworkRoute is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkRoute()
+	// CreateBuilder creates a NetworkRouteBuilder
+	CreateNetworkRouteBuilder() NetworkRouteBuilder
 }
 
 // _NetworkRoute is the data-structure of this message
@@ -62,6 +64,106 @@ func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBri
 	}
 	return &_NetworkRoute{NetworkPCI: networkPCI, AdditionalBridgeAddresses: additionalBridgeAddresses}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NetworkRouteBuilder is a builder for NetworkRoute
+type NetworkRouteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder
+	// WithNetworkPCI adds NetworkPCI (property field)
+	WithNetworkPCI(NetworkProtocolControlInformation) NetworkRouteBuilder
+	// WithNetworkPCIBuilder adds NetworkPCI (property field) which is build by the builder
+	WithNetworkPCIBuilder(func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder
+	// WithAdditionalBridgeAddresses adds AdditionalBridgeAddresses (property field)
+	WithAdditionalBridgeAddresses(...BridgeAddress) NetworkRouteBuilder
+	// Build builds the NetworkRoute or returns an error if something is wrong
+	Build() (NetworkRoute, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NetworkRoute
+}
+
+// NewNetworkRouteBuilder() creates a NetworkRouteBuilder
+func NewNetworkRouteBuilder() NetworkRouteBuilder {
+	return &_NetworkRouteBuilder{_NetworkRoute: new(_NetworkRoute)}
+}
+
+type _NetworkRouteBuilder struct {
+	*_NetworkRoute
+
+	err *utils.MultiError
+}
+
+var _ (NetworkRouteBuilder) = (*_NetworkRouteBuilder)(nil)
+
+func (m *_NetworkRouteBuilder) WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder {
+	return m.WithNetworkPCI(networkPCI).WithAdditionalBridgeAddresses(additionalBridgeAddresses...)
+}
+
+func (m *_NetworkRouteBuilder) WithNetworkPCI(networkPCI NetworkProtocolControlInformation) NetworkRouteBuilder {
+	m.NetworkPCI = networkPCI
+	return m
+}
+
+func (m *_NetworkRouteBuilder) WithNetworkPCIBuilder(builderSupplier func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder {
+	builder := builderSupplier(m.NetworkPCI.CreateNetworkProtocolControlInformationBuilder())
+	var err error
+	m.NetworkPCI, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NetworkRouteBuilder) WithAdditionalBridgeAddresses(additionalBridgeAddresses ...BridgeAddress) NetworkRouteBuilder {
+	m.AdditionalBridgeAddresses = additionalBridgeAddresses
+	return m
+}
+
+func (m *_NetworkRouteBuilder) Build() (NetworkRoute, error) {
+	if m.NetworkPCI == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkPCI' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NetworkRoute.deepCopy(), nil
+}
+
+func (m *_NetworkRouteBuilder) MustBuild() NetworkRoute {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NetworkRouteBuilder) DeepCopy() any {
+	return m.CreateNetworkRouteBuilder()
+}
+
+// CreateNetworkRouteBuilder creates a NetworkRouteBuilder
+func (m *_NetworkRoute) CreateNetworkRouteBuilder() NetworkRouteBuilder {
+	if m == nil {
+		return NewNetworkRouteBuilder()
+	}
+	return &_NetworkRouteBuilder{_NetworkRoute: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

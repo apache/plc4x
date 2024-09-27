@@ -47,6 +47,8 @@ type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues interface
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues()
+	// CreateBuilder creates a BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	CreateBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder() BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
 }
 
 // _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues is the data-structure of this message
@@ -71,6 +73,134 @@ func NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues(openin
 	}
 	return &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues{OpeningTag: openingTag, ListOfLifeSavetyAlarmValues: listOfLifeSavetyAlarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder is a builder for BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
+type BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// WithListOfLifeSavetyAlarmValues adds ListOfLifeSavetyAlarmValues (property field)
+	WithListOfLifeSavetyAlarmValues(...BACnetLifeSafetyStateTagged) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+	// Build builds the BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues or returns an error if something is wrong
+	Build() (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
+}
+
+// NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder() creates a BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+func NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder() BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder{_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues: new(_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues)}
+}
+
+type _BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder struct {
+	*_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) = (*_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder)(nil)
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfLifeSavetyAlarmValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	return m.WithOpeningTag(openingTag).WithListOfLifeSavetyAlarmValues(listOfLifeSavetyAlarmValues...).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithListOfLifeSavetyAlarmValues(listOfLifeSavetyAlarmValues ...BACnetLifeSafetyStateTagged) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	m.ListOfLifeSavetyAlarmValues = listOfLifeSavetyAlarmValues
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) Build() (BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) MustBuild() BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder()
+}
+
+// CreateBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder creates a BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder
+func (m *_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues) CreateBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder() BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder()
+	}
+	return &_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValuesBuilder{_BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

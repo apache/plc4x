@@ -40,6 +40,8 @@ type SecurityDataPanicCleared interface {
 	SecurityData
 	// IsSecurityDataPanicCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataPanicCleared()
+	// CreateBuilder creates a SecurityDataPanicClearedBuilder
+	CreateSecurityDataPanicClearedBuilder() SecurityDataPanicClearedBuilder
 }
 
 // _SecurityDataPanicCleared is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataPanicCleared(commandTypeContainer SecurityCommandTypeContain
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataPanicClearedBuilder is a builder for SecurityDataPanicCleared
+type SecurityDataPanicClearedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataPanicClearedBuilder
+	// Build builds the SecurityDataPanicCleared or returns an error if something is wrong
+	Build() (SecurityDataPanicCleared, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataPanicCleared
+}
+
+// NewSecurityDataPanicClearedBuilder() creates a SecurityDataPanicClearedBuilder
+func NewSecurityDataPanicClearedBuilder() SecurityDataPanicClearedBuilder {
+	return &_SecurityDataPanicClearedBuilder{_SecurityDataPanicCleared: new(_SecurityDataPanicCleared)}
+}
+
+type _SecurityDataPanicClearedBuilder struct {
+	*_SecurityDataPanicCleared
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataPanicClearedBuilder) = (*_SecurityDataPanicClearedBuilder)(nil)
+
+func (m *_SecurityDataPanicClearedBuilder) WithMandatoryFields() SecurityDataPanicClearedBuilder {
+	return m
+}
+
+func (m *_SecurityDataPanicClearedBuilder) Build() (SecurityDataPanicCleared, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataPanicCleared.deepCopy(), nil
+}
+
+func (m *_SecurityDataPanicClearedBuilder) MustBuild() SecurityDataPanicCleared {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataPanicClearedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataPanicClearedBuilder()
+}
+
+// CreateSecurityDataPanicClearedBuilder creates a SecurityDataPanicClearedBuilder
+func (m *_SecurityDataPanicCleared) CreateSecurityDataPanicClearedBuilder() SecurityDataPanicClearedBuilder {
+	if m == nil {
+		return NewSecurityDataPanicClearedBuilder()
+	}
+	return &_SecurityDataPanicClearedBuilder{_SecurityDataPanicCleared: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type TimeZoneDataType interface {
 	GetDaylightSavingInOffset() bool
 	// IsTimeZoneDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTimeZoneDataType()
+	// CreateBuilder creates a TimeZoneDataTypeBuilder
+	CreateTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder
 }
 
 // _TimeZoneDataType is the data-structure of this message
@@ -70,6 +72,85 @@ func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDa
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TimeZoneDataTypeBuilder is a builder for TimeZoneDataType
+type TimeZoneDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(offset int16, daylightSavingInOffset bool) TimeZoneDataTypeBuilder
+	// WithOffset adds Offset (property field)
+	WithOffset(int16) TimeZoneDataTypeBuilder
+	// WithDaylightSavingInOffset adds DaylightSavingInOffset (property field)
+	WithDaylightSavingInOffset(bool) TimeZoneDataTypeBuilder
+	// Build builds the TimeZoneDataType or returns an error if something is wrong
+	Build() (TimeZoneDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TimeZoneDataType
+}
+
+// NewTimeZoneDataTypeBuilder() creates a TimeZoneDataTypeBuilder
+func NewTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder {
+	return &_TimeZoneDataTypeBuilder{_TimeZoneDataType: new(_TimeZoneDataType)}
+}
+
+type _TimeZoneDataTypeBuilder struct {
+	*_TimeZoneDataType
+
+	err *utils.MultiError
+}
+
+var _ (TimeZoneDataTypeBuilder) = (*_TimeZoneDataTypeBuilder)(nil)
+
+func (m *_TimeZoneDataTypeBuilder) WithMandatoryFields(offset int16, daylightSavingInOffset bool) TimeZoneDataTypeBuilder {
+	return m.WithOffset(offset).WithDaylightSavingInOffset(daylightSavingInOffset)
+}
+
+func (m *_TimeZoneDataTypeBuilder) WithOffset(offset int16) TimeZoneDataTypeBuilder {
+	m.Offset = offset
+	return m
+}
+
+func (m *_TimeZoneDataTypeBuilder) WithDaylightSavingInOffset(daylightSavingInOffset bool) TimeZoneDataTypeBuilder {
+	m.DaylightSavingInOffset = daylightSavingInOffset
+	return m
+}
+
+func (m *_TimeZoneDataTypeBuilder) Build() (TimeZoneDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TimeZoneDataType.deepCopy(), nil
+}
+
+func (m *_TimeZoneDataTypeBuilder) MustBuild() TimeZoneDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TimeZoneDataTypeBuilder) DeepCopy() any {
+	return m.CreateTimeZoneDataTypeBuilder()
+}
+
+// CreateTimeZoneDataTypeBuilder creates a TimeZoneDataTypeBuilder
+func (m *_TimeZoneDataType) CreateTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder {
+	if m == nil {
+		return NewTimeZoneDataTypeBuilder()
+	}
+	return &_TimeZoneDataTypeBuilder{_TimeZoneDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

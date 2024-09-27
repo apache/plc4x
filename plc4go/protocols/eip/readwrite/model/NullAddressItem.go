@@ -42,6 +42,8 @@ type NullAddressItem interface {
 	TypeId
 	// IsNullAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullAddressItem()
+	// CreateBuilder creates a NullAddressItemBuilder
+	CreateNullAddressItemBuilder() NullAddressItemBuilder
 }
 
 // _NullAddressItem is the data-structure of this message
@@ -62,6 +64,71 @@ func NewNullAddressItem() *_NullAddressItem {
 	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NullAddressItemBuilder is a builder for NullAddressItem
+type NullAddressItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NullAddressItemBuilder
+	// Build builds the NullAddressItem or returns an error if something is wrong
+	Build() (NullAddressItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NullAddressItem
+}
+
+// NewNullAddressItemBuilder() creates a NullAddressItemBuilder
+func NewNullAddressItemBuilder() NullAddressItemBuilder {
+	return &_NullAddressItemBuilder{_NullAddressItem: new(_NullAddressItem)}
+}
+
+type _NullAddressItemBuilder struct {
+	*_NullAddressItem
+
+	err *utils.MultiError
+}
+
+var _ (NullAddressItemBuilder) = (*_NullAddressItemBuilder)(nil)
+
+func (m *_NullAddressItemBuilder) WithMandatoryFields() NullAddressItemBuilder {
+	return m
+}
+
+func (m *_NullAddressItemBuilder) Build() (NullAddressItem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NullAddressItem.deepCopy(), nil
+}
+
+func (m *_NullAddressItemBuilder) MustBuild() NullAddressItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NullAddressItemBuilder) DeepCopy() any {
+	return m.CreateNullAddressItemBuilder()
+}
+
+// CreateNullAddressItemBuilder creates a NullAddressItemBuilder
+func (m *_NullAddressItem) CreateNullAddressItemBuilder() NullAddressItemBuilder {
+	if m == nil {
+		return NewNullAddressItemBuilder()
+	}
+	return &_NullAddressItemBuilder{_NullAddressItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

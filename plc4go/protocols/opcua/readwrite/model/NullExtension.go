@@ -40,6 +40,8 @@ type NullExtension interface {
 	ExtensionObjectDefinition
 	// IsNullExtension is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullExtension()
+	// CreateBuilder creates a NullExtensionBuilder
+	CreateNullExtensionBuilder() NullExtensionBuilder
 }
 
 // _NullExtension is the data-structure of this message
@@ -58,6 +60,71 @@ func NewNullExtension() *_NullExtension {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NullExtensionBuilder is a builder for NullExtension
+type NullExtensionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NullExtensionBuilder
+	// Build builds the NullExtension or returns an error if something is wrong
+	Build() (NullExtension, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NullExtension
+}
+
+// NewNullExtensionBuilder() creates a NullExtensionBuilder
+func NewNullExtensionBuilder() NullExtensionBuilder {
+	return &_NullExtensionBuilder{_NullExtension: new(_NullExtension)}
+}
+
+type _NullExtensionBuilder struct {
+	*_NullExtension
+
+	err *utils.MultiError
+}
+
+var _ (NullExtensionBuilder) = (*_NullExtensionBuilder)(nil)
+
+func (m *_NullExtensionBuilder) WithMandatoryFields() NullExtensionBuilder {
+	return m
+}
+
+func (m *_NullExtensionBuilder) Build() (NullExtension, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NullExtension.deepCopy(), nil
+}
+
+func (m *_NullExtensionBuilder) MustBuild() NullExtension {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NullExtensionBuilder) DeepCopy() any {
+	return m.CreateNullExtensionBuilder()
+}
+
+// CreateNullExtensionBuilder creates a NullExtensionBuilder
+func (m *_NullExtension) CreateNullExtensionBuilder() NullExtensionBuilder {
+	if m == nil {
+		return NewNullExtensionBuilder()
+	}
+	return &_NullExtensionBuilder{_NullExtension: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

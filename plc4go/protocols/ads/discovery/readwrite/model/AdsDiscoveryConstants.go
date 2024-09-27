@@ -44,6 +44,8 @@ type AdsDiscoveryConstants interface {
 	utils.Copyable
 	// IsAdsDiscoveryConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryConstants()
+	// CreateBuilder creates a AdsDiscoveryConstantsBuilder
+	CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder
 }
 
 // _AdsDiscoveryConstants is the data-structure of this message
@@ -56,6 +58,71 @@ var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
 func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
 	return &_AdsDiscoveryConstants{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryConstantsBuilder is a builder for AdsDiscoveryConstants
+type AdsDiscoveryConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsDiscoveryConstantsBuilder
+	// Build builds the AdsDiscoveryConstants or returns an error if something is wrong
+	Build() (AdsDiscoveryConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryConstants
+}
+
+// NewAdsDiscoveryConstantsBuilder() creates a AdsDiscoveryConstantsBuilder
+func NewAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
+	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: new(_AdsDiscoveryConstants)}
+}
+
+type _AdsDiscoveryConstantsBuilder struct {
+	*_AdsDiscoveryConstants
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryConstantsBuilder) = (*_AdsDiscoveryConstantsBuilder)(nil)
+
+func (m *_AdsDiscoveryConstantsBuilder) WithMandatoryFields() AdsDiscoveryConstantsBuilder {
+	return m
+}
+
+func (m *_AdsDiscoveryConstantsBuilder) Build() (AdsDiscoveryConstants, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDiscoveryConstants.deepCopy(), nil
+}
+
+func (m *_AdsDiscoveryConstantsBuilder) MustBuild() AdsDiscoveryConstants {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDiscoveryConstantsBuilder) DeepCopy() any {
+	return m.CreateAdsDiscoveryConstantsBuilder()
+}
+
+// CreateAdsDiscoveryConstantsBuilder creates a AdsDiscoveryConstantsBuilder
+func (m *_AdsDiscoveryConstants) CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
+	if m == nil {
+		return NewAdsDiscoveryConstantsBuilder()
+	}
+	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

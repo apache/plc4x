@@ -46,6 +46,8 @@ type BACnetConfirmedServiceRequestVTOpen interface {
 	GetLocalVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConfirmedServiceRequestVTOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestVTOpen()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestVTOpenBuilder
+	CreateBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceRequestVTOpenBuilder
 }
 
 // _BACnetConfirmedServiceRequestVTOpen is the data-structure of this message
@@ -74,6 +76,127 @@ func NewBACnetConfirmedServiceRequestVTOpen(vtClass BACnetVTClassTagged, localVt
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestVTOpenBuilder is a builder for BACnetConfirmedServiceRequestVTOpen
+type BACnetConfirmedServiceRequestVTOpenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder
+	// WithVtClass adds VtClass (property field)
+	WithVtClass(BACnetVTClassTagged) BACnetConfirmedServiceRequestVTOpenBuilder
+	// WithVtClassBuilder adds VtClass (property field) which is build by the builder
+	WithVtClassBuilder(func(BACnetVTClassTaggedBuilder) BACnetVTClassTaggedBuilder) BACnetConfirmedServiceRequestVTOpenBuilder
+	// WithLocalVtSessionIdentifier adds LocalVtSessionIdentifier (property field)
+	WithLocalVtSessionIdentifier(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder
+	// WithLocalVtSessionIdentifierBuilder adds LocalVtSessionIdentifier (property field) which is build by the builder
+	WithLocalVtSessionIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTOpenBuilder
+	// Build builds the BACnetConfirmedServiceRequestVTOpen or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestVTOpen, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestVTOpen
+}
+
+// NewBACnetConfirmedServiceRequestVTOpenBuilder() creates a BACnetConfirmedServiceRequestVTOpenBuilder
+func NewBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceRequestVTOpenBuilder {
+	return &_BACnetConfirmedServiceRequestVTOpenBuilder{_BACnetConfirmedServiceRequestVTOpen: new(_BACnetConfirmedServiceRequestVTOpen)}
+}
+
+type _BACnetConfirmedServiceRequestVTOpenBuilder struct {
+	*_BACnetConfirmedServiceRequestVTOpen
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestVTOpenBuilder) = (*_BACnetConfirmedServiceRequestVTOpenBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithMandatoryFields(vtClass BACnetVTClassTagged, localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
+	return m.WithVtClass(vtClass).WithLocalVtSessionIdentifier(localVtSessionIdentifier)
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClass(vtClass BACnetVTClassTagged) BACnetConfirmedServiceRequestVTOpenBuilder {
+	m.VtClass = vtClass
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithVtClassBuilder(builderSupplier func(BACnetVTClassTaggedBuilder) BACnetVTClassTaggedBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
+	builder := builderSupplier(m.VtClass.CreateBACnetVTClassTaggedBuilder())
+	var err error
+	m.VtClass, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetVTClassTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifier(localVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTOpenBuilder {
+	m.LocalVtSessionIdentifier = localVtSessionIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) WithLocalVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTOpenBuilder {
+	builder := builderSupplier(m.LocalVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.LocalVtSessionIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) Build() (BACnetConfirmedServiceRequestVTOpen, error) {
+	if m.VtClass == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'vtClass' not set"))
+	}
+	if m.LocalVtSessionIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'localVtSessionIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestVTOpen.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) MustBuild() BACnetConfirmedServiceRequestVTOpen {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestVTOpenBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestVTOpenBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestVTOpenBuilder creates a BACnetConfirmedServiceRequestVTOpenBuilder
+func (m *_BACnetConfirmedServiceRequestVTOpen) CreateBACnetConfirmedServiceRequestVTOpenBuilder() BACnetConfirmedServiceRequestVTOpenBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestVTOpenBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestVTOpenBuilder{_BACnetConfirmedServiceRequestVTOpen: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

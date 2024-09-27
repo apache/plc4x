@@ -46,6 +46,8 @@ type BACnetConstructedDataOccupancyUpperLimit interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataOccupancyUpperLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOccupancyUpperLimit()
+	// CreateBuilder creates a BACnetConstructedDataOccupancyUpperLimitBuilder
+	CreateBACnetConstructedDataOccupancyUpperLimitBuilder() BACnetConstructedDataOccupancyUpperLimitBuilder
 }
 
 // _BACnetConstructedDataOccupancyUpperLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataOccupancyUpperLimit(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOccupancyUpperLimitBuilder is a builder for BACnetConstructedDataOccupancyUpperLimit
+type BACnetConstructedDataOccupancyUpperLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(occupancyUpperLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyUpperLimitBuilder
+	// WithOccupancyUpperLimit adds OccupancyUpperLimit (property field)
+	WithOccupancyUpperLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyUpperLimitBuilder
+	// WithOccupancyUpperLimitBuilder adds OccupancyUpperLimit (property field) which is build by the builder
+	WithOccupancyUpperLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataOccupancyUpperLimitBuilder
+	// Build builds the BACnetConstructedDataOccupancyUpperLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataOccupancyUpperLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOccupancyUpperLimit
+}
+
+// NewBACnetConstructedDataOccupancyUpperLimitBuilder() creates a BACnetConstructedDataOccupancyUpperLimitBuilder
+func NewBACnetConstructedDataOccupancyUpperLimitBuilder() BACnetConstructedDataOccupancyUpperLimitBuilder {
+	return &_BACnetConstructedDataOccupancyUpperLimitBuilder{_BACnetConstructedDataOccupancyUpperLimit: new(_BACnetConstructedDataOccupancyUpperLimit)}
+}
+
+type _BACnetConstructedDataOccupancyUpperLimitBuilder struct {
+	*_BACnetConstructedDataOccupancyUpperLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOccupancyUpperLimitBuilder) = (*_BACnetConstructedDataOccupancyUpperLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) WithMandatoryFields(occupancyUpperLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyUpperLimitBuilder {
+	return m.WithOccupancyUpperLimit(occupancyUpperLimit)
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) WithOccupancyUpperLimit(occupancyUpperLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataOccupancyUpperLimitBuilder {
+	m.OccupancyUpperLimit = occupancyUpperLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) WithOccupancyUpperLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataOccupancyUpperLimitBuilder {
+	builder := builderSupplier(m.OccupancyUpperLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.OccupancyUpperLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) Build() (BACnetConstructedDataOccupancyUpperLimit, error) {
+	if m.OccupancyUpperLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'occupancyUpperLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOccupancyUpperLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) MustBuild() BACnetConstructedDataOccupancyUpperLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOccupancyUpperLimitBuilder()
+}
+
+// CreateBACnetConstructedDataOccupancyUpperLimitBuilder creates a BACnetConstructedDataOccupancyUpperLimitBuilder
+func (m *_BACnetConstructedDataOccupancyUpperLimit) CreateBACnetConstructedDataOccupancyUpperLimitBuilder() BACnetConstructedDataOccupancyUpperLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOccupancyUpperLimitBuilder()
+	}
+	return &_BACnetConstructedDataOccupancyUpperLimitBuilder{_BACnetConstructedDataOccupancyUpperLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

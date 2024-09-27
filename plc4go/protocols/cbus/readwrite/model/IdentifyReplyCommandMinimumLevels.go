@@ -44,6 +44,8 @@ type IdentifyReplyCommandMinimumLevels interface {
 	GetMinimumLevels() []byte
 	// IsIdentifyReplyCommandMinimumLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandMinimumLevels()
+	// CreateBuilder creates a IdentifyReplyCommandMinimumLevelsBuilder
+	CreateIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLevelsBuilder
 }
 
 // _IdentifyReplyCommandMinimumLevels is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) 
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandMinimumLevelsBuilder is a builder for IdentifyReplyCommandMinimumLevels
+type IdentifyReplyCommandMinimumLevelsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumLevels []byte) IdentifyReplyCommandMinimumLevelsBuilder
+	// WithMinimumLevels adds MinimumLevels (property field)
+	WithMinimumLevels(...byte) IdentifyReplyCommandMinimumLevelsBuilder
+	// Build builds the IdentifyReplyCommandMinimumLevels or returns an error if something is wrong
+	Build() (IdentifyReplyCommandMinimumLevels, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandMinimumLevels
+}
+
+// NewIdentifyReplyCommandMinimumLevelsBuilder() creates a IdentifyReplyCommandMinimumLevelsBuilder
+func NewIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLevelsBuilder {
+	return &_IdentifyReplyCommandMinimumLevelsBuilder{_IdentifyReplyCommandMinimumLevels: new(_IdentifyReplyCommandMinimumLevels)}
+}
+
+type _IdentifyReplyCommandMinimumLevelsBuilder struct {
+	*_IdentifyReplyCommandMinimumLevels
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandMinimumLevelsBuilder) = (*_IdentifyReplyCommandMinimumLevelsBuilder)(nil)
+
+func (m *_IdentifyReplyCommandMinimumLevelsBuilder) WithMandatoryFields(minimumLevels []byte) IdentifyReplyCommandMinimumLevelsBuilder {
+	return m.WithMinimumLevels(minimumLevels...)
+}
+
+func (m *_IdentifyReplyCommandMinimumLevelsBuilder) WithMinimumLevels(minimumLevels ...byte) IdentifyReplyCommandMinimumLevelsBuilder {
+	m.MinimumLevels = minimumLevels
+	return m
+}
+
+func (m *_IdentifyReplyCommandMinimumLevelsBuilder) Build() (IdentifyReplyCommandMinimumLevels, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandMinimumLevels.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandMinimumLevelsBuilder) MustBuild() IdentifyReplyCommandMinimumLevels {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandMinimumLevelsBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandMinimumLevelsBuilder()
+}
+
+// CreateIdentifyReplyCommandMinimumLevelsBuilder creates a IdentifyReplyCommandMinimumLevelsBuilder
+func (m *_IdentifyReplyCommandMinimumLevels) CreateIdentifyReplyCommandMinimumLevelsBuilder() IdentifyReplyCommandMinimumLevelsBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandMinimumLevelsBuilder()
+	}
+	return &_IdentifyReplyCommandMinimumLevelsBuilder{_IdentifyReplyCommandMinimumLevels: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

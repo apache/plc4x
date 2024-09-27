@@ -41,6 +41,8 @@ type ParameterValue interface {
 	utils.Copyable
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
+	// CreateBuilder creates a ParameterValueBuilder
+	CreateParameterValueBuilder() ParameterValueBuilder
 }
 
 // ParameterValueContract provides a set of functions which can be overwritten by a sub struct
@@ -49,6 +51,8 @@ type ParameterValueContract interface {
 	GetNumBytes() uint8
 	// IsParameterValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValue()
+	// CreateBuilder creates a ParameterValueBuilder
+	CreateParameterValueBuilder() ParameterValueBuilder
 }
 
 // ParameterValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +77,71 @@ var _ ParameterValueContract = (*_ParameterValue)(nil)
 func NewParameterValue(numBytes uint8) *_ParameterValue {
 	return &_ParameterValue{NumBytes: numBytes}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueBuilder is a builder for ParameterValue
+type ParameterValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ParameterValueBuilder
+	// Build builds the ParameterValue or returns an error if something is wrong
+	Build() (ParameterValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueContract
+}
+
+// NewParameterValueBuilder() creates a ParameterValueBuilder
+func NewParameterValueBuilder() ParameterValueBuilder {
+	return &_ParameterValueBuilder{_ParameterValue: new(_ParameterValue)}
+}
+
+type _ParameterValueBuilder struct {
+	*_ParameterValue
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueBuilder) = (*_ParameterValueBuilder)(nil)
+
+func (m *_ParameterValueBuilder) WithMandatoryFields() ParameterValueBuilder {
+	return m
+}
+
+func (m *_ParameterValueBuilder) Build() (ParameterValueContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValue.deepCopy(), nil
+}
+
+func (m *_ParameterValueBuilder) MustBuild() ParameterValueContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueBuilder) DeepCopy() any {
+	return m.CreateParameterValueBuilder()
+}
+
+// CreateParameterValueBuilder creates a ParameterValueBuilder
+func (m *_ParameterValue) CreateParameterValueBuilder() ParameterValueBuilder {
+	if m == nil {
+		return NewParameterValueBuilder()
+	}
+	return &_ParameterValueBuilder{_ParameterValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastParameterValue(structType any) ParameterValue {

@@ -44,6 +44,8 @@ type BACnetConstructedDataActiveVTSessions interface {
 	GetActiveVTSession() []BACnetVTSession
 	// IsBACnetConstructedDataActiveVTSessions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActiveVTSessions()
+	// CreateBuilder creates a BACnetConstructedDataActiveVTSessionsBuilder
+	CreateBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActiveVTSessionsBuilder
 }
 
 // _BACnetConstructedDataActiveVTSessions is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataActiveVTSessions(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActiveVTSessionsBuilder is a builder for BACnetConstructedDataActiveVTSessions
+type BACnetConstructedDataActiveVTSessionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder
+	// WithActiveVTSession adds ActiveVTSession (property field)
+	WithActiveVTSession(...BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder
+	// Build builds the BACnetConstructedDataActiveVTSessions or returns an error if something is wrong
+	Build() (BACnetConstructedDataActiveVTSessions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActiveVTSessions
+}
+
+// NewBACnetConstructedDataActiveVTSessionsBuilder() creates a BACnetConstructedDataActiveVTSessionsBuilder
+func NewBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActiveVTSessionsBuilder {
+	return &_BACnetConstructedDataActiveVTSessionsBuilder{_BACnetConstructedDataActiveVTSessions: new(_BACnetConstructedDataActiveVTSessions)}
+}
+
+type _BACnetConstructedDataActiveVTSessionsBuilder struct {
+	*_BACnetConstructedDataActiveVTSessions
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActiveVTSessionsBuilder) = (*_BACnetConstructedDataActiveVTSessionsBuilder)(nil)
+
+func (m *_BACnetConstructedDataActiveVTSessionsBuilder) WithMandatoryFields(activeVTSession []BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
+	return m.WithActiveVTSession(activeVTSession...)
+}
+
+func (m *_BACnetConstructedDataActiveVTSessionsBuilder) WithActiveVTSession(activeVTSession ...BACnetVTSession) BACnetConstructedDataActiveVTSessionsBuilder {
+	m.ActiveVTSession = activeVTSession
+	return m
+}
+
+func (m *_BACnetConstructedDataActiveVTSessionsBuilder) Build() (BACnetConstructedDataActiveVTSessions, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataActiveVTSessions.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataActiveVTSessionsBuilder) MustBuild() BACnetConstructedDataActiveVTSessions {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataActiveVTSessionsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataActiveVTSessionsBuilder()
+}
+
+// CreateBACnetConstructedDataActiveVTSessionsBuilder creates a BACnetConstructedDataActiveVTSessionsBuilder
+func (m *_BACnetConstructedDataActiveVTSessions) CreateBACnetConstructedDataActiveVTSessionsBuilder() BACnetConstructedDataActiveVTSessionsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataActiveVTSessionsBuilder()
+	}
+	return &_BACnetConstructedDataActiveVTSessionsBuilder{_BACnetConstructedDataActiveVTSessions: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

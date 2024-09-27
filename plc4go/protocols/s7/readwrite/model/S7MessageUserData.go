@@ -40,6 +40,8 @@ type S7MessageUserData interface {
 	S7Message
 	// IsS7MessageUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageUserData()
+	// CreateBuilder creates a S7MessageUserDataBuilder
+	CreateS7MessageUserDataBuilder() S7MessageUserDataBuilder
 }
 
 // _S7MessageUserData is the data-structure of this message
@@ -58,6 +60,71 @@ func NewS7MessageUserData(tpduReference uint16, parameter S7Parameter, payload S
 	_result.S7MessageContract.(*_S7Message)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageUserDataBuilder is a builder for S7MessageUserData
+type S7MessageUserDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7MessageUserDataBuilder
+	// Build builds the S7MessageUserData or returns an error if something is wrong
+	Build() (S7MessageUserData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7MessageUserData
+}
+
+// NewS7MessageUserDataBuilder() creates a S7MessageUserDataBuilder
+func NewS7MessageUserDataBuilder() S7MessageUserDataBuilder {
+	return &_S7MessageUserDataBuilder{_S7MessageUserData: new(_S7MessageUserData)}
+}
+
+type _S7MessageUserDataBuilder struct {
+	*_S7MessageUserData
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageUserDataBuilder) = (*_S7MessageUserDataBuilder)(nil)
+
+func (m *_S7MessageUserDataBuilder) WithMandatoryFields() S7MessageUserDataBuilder {
+	return m
+}
+
+func (m *_S7MessageUserDataBuilder) Build() (S7MessageUserData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7MessageUserData.deepCopy(), nil
+}
+
+func (m *_S7MessageUserDataBuilder) MustBuild() S7MessageUserData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7MessageUserDataBuilder) DeepCopy() any {
+	return m.CreateS7MessageUserDataBuilder()
+}
+
+// CreateS7MessageUserDataBuilder creates a S7MessageUserDataBuilder
+func (m *_S7MessageUserData) CreateS7MessageUserDataBuilder() S7MessageUserDataBuilder {
+	if m == nil {
+		return NewS7MessageUserDataBuilder()
+	}
+	return &_S7MessageUserDataBuilder{_S7MessageUserData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

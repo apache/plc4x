@@ -39,6 +39,8 @@ type DateString interface {
 	utils.Copyable
 	// IsDateString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDateString()
+	// CreateBuilder creates a DateStringBuilder
+	CreateDateStringBuilder() DateStringBuilder
 }
 
 // _DateString is the data-structure of this message
@@ -51,6 +53,71 @@ var _ DateString = (*_DateString)(nil)
 func NewDateString() *_DateString {
 	return &_DateString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DateStringBuilder is a builder for DateString
+type DateStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DateStringBuilder
+	// Build builds the DateString or returns an error if something is wrong
+	Build() (DateString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DateString
+}
+
+// NewDateStringBuilder() creates a DateStringBuilder
+func NewDateStringBuilder() DateStringBuilder {
+	return &_DateStringBuilder{_DateString: new(_DateString)}
+}
+
+type _DateStringBuilder struct {
+	*_DateString
+
+	err *utils.MultiError
+}
+
+var _ (DateStringBuilder) = (*_DateStringBuilder)(nil)
+
+func (m *_DateStringBuilder) WithMandatoryFields() DateStringBuilder {
+	return m
+}
+
+func (m *_DateStringBuilder) Build() (DateString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DateString.deepCopy(), nil
+}
+
+func (m *_DateStringBuilder) MustBuild() DateString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DateStringBuilder) DeepCopy() any {
+	return m.CreateDateStringBuilder()
+}
+
+// CreateDateStringBuilder creates a DateStringBuilder
+func (m *_DateString) CreateDateStringBuilder() DateStringBuilder {
+	if m == nil {
+		return NewDateStringBuilder()
+	}
+	return &_DateStringBuilder{_DateString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDateString(structType any) DateString {

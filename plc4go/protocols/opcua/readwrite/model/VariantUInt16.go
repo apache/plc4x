@@ -46,6 +46,8 @@ type VariantUInt16 interface {
 	GetValue() []uint16
 	// IsVariantUInt16 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantUInt16()
+	// CreateBuilder creates a VariantUInt16Builder
+	CreateVariantUInt16Builder() VariantUInt16Builder
 }
 
 // _VariantUInt16 is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantUInt16(arrayLengthSpecified bool, arrayDimensionsSpecified bool, 
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantUInt16Builder is a builder for VariantUInt16
+type VariantUInt16Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []uint16) VariantUInt16Builder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantUInt16Builder
+	// WithValue adds Value (property field)
+	WithValue(...uint16) VariantUInt16Builder
+	// Build builds the VariantUInt16 or returns an error if something is wrong
+	Build() (VariantUInt16, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantUInt16
+}
+
+// NewVariantUInt16Builder() creates a VariantUInt16Builder
+func NewVariantUInt16Builder() VariantUInt16Builder {
+	return &_VariantUInt16Builder{_VariantUInt16: new(_VariantUInt16)}
+}
+
+type _VariantUInt16Builder struct {
+	*_VariantUInt16
+
+	err *utils.MultiError
+}
+
+var _ (VariantUInt16Builder) = (*_VariantUInt16Builder)(nil)
+
+func (m *_VariantUInt16Builder) WithMandatoryFields(value []uint16) VariantUInt16Builder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantUInt16Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt16Builder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantUInt16Builder) WithValue(value ...uint16) VariantUInt16Builder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantUInt16Builder) Build() (VariantUInt16, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantUInt16.deepCopy(), nil
+}
+
+func (m *_VariantUInt16Builder) MustBuild() VariantUInt16 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantUInt16Builder) DeepCopy() any {
+	return m.CreateVariantUInt16Builder()
+}
+
+// CreateVariantUInt16Builder creates a VariantUInt16Builder
+func (m *_VariantUInt16) CreateVariantUInt16Builder() VariantUInt16Builder {
+	if m == nil {
+		return NewVariantUInt16Builder()
+	}
+	return &_VariantUInt16Builder{_VariantUInt16: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

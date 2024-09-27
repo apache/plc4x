@@ -44,6 +44,8 @@ type IdentifyReplyCommandGAVValuesStored interface {
 	GetValues() []byte
 	// IsIdentifyReplyCommandGAVValuesStored is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandGAVValuesStored()
+	// CreateBuilder creates a IdentifyReplyCommandGAVValuesStoredBuilder
+	CreateIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValuesStoredBuilder
 }
 
 // _IdentifyReplyCommandGAVValuesStored is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandGAVValuesStored(values []byte, numBytes uint8) *_Ide
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandGAVValuesStoredBuilder is a builder for IdentifyReplyCommandGAVValuesStored
+type IdentifyReplyCommandGAVValuesStoredBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesStoredBuilder
+	// WithValues adds Values (property field)
+	WithValues(...byte) IdentifyReplyCommandGAVValuesStoredBuilder
+	// Build builds the IdentifyReplyCommandGAVValuesStored or returns an error if something is wrong
+	Build() (IdentifyReplyCommandGAVValuesStored, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandGAVValuesStored
+}
+
+// NewIdentifyReplyCommandGAVValuesStoredBuilder() creates a IdentifyReplyCommandGAVValuesStoredBuilder
+func NewIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValuesStoredBuilder {
+	return &_IdentifyReplyCommandGAVValuesStoredBuilder{_IdentifyReplyCommandGAVValuesStored: new(_IdentifyReplyCommandGAVValuesStored)}
+}
+
+type _IdentifyReplyCommandGAVValuesStoredBuilder struct {
+	*_IdentifyReplyCommandGAVValuesStored
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandGAVValuesStoredBuilder) = (*_IdentifyReplyCommandGAVValuesStoredBuilder)(nil)
+
+func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesStoredBuilder {
+	return m.WithValues(values...)
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesStoredBuilder {
+	m.Values = values
+	return m
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) Build() (IdentifyReplyCommandGAVValuesStored, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandGAVValuesStored.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) MustBuild() IdentifyReplyCommandGAVValuesStored {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandGAVValuesStoredBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandGAVValuesStoredBuilder()
+}
+
+// CreateIdentifyReplyCommandGAVValuesStoredBuilder creates a IdentifyReplyCommandGAVValuesStoredBuilder
+func (m *_IdentifyReplyCommandGAVValuesStored) CreateIdentifyReplyCommandGAVValuesStoredBuilder() IdentifyReplyCommandGAVValuesStoredBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandGAVValuesStoredBuilder()
+	}
+	return &_IdentifyReplyCommandGAVValuesStoredBuilder{_IdentifyReplyCommandGAVValuesStored: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

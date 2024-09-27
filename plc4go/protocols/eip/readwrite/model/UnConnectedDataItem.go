@@ -44,6 +44,8 @@ type UnConnectedDataItem interface {
 	GetService() CipService
 	// IsUnConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnConnectedDataItem()
+	// CreateBuilder creates a UnConnectedDataItemBuilder
+	CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder
 }
 
 // _UnConnectedDataItem is the data-structure of this message
@@ -67,6 +69,84 @@ func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
 	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnConnectedDataItemBuilder is a builder for UnConnectedDataItem
+type UnConnectedDataItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(service CipService) UnConnectedDataItemBuilder
+	// WithService adds Service (property field)
+	WithService(CipService) UnConnectedDataItemBuilder
+	// Build builds the UnConnectedDataItem or returns an error if something is wrong
+	Build() (UnConnectedDataItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnConnectedDataItem
+}
+
+// NewUnConnectedDataItemBuilder() creates a UnConnectedDataItemBuilder
+func NewUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
+	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: new(_UnConnectedDataItem)}
+}
+
+type _UnConnectedDataItemBuilder struct {
+	*_UnConnectedDataItem
+
+	err *utils.MultiError
+}
+
+var _ (UnConnectedDataItemBuilder) = (*_UnConnectedDataItemBuilder)(nil)
+
+func (m *_UnConnectedDataItemBuilder) WithMandatoryFields(service CipService) UnConnectedDataItemBuilder {
+	return m.WithService(service)
+}
+
+func (m *_UnConnectedDataItemBuilder) WithService(service CipService) UnConnectedDataItemBuilder {
+	m.Service = service
+	return m
+}
+
+func (m *_UnConnectedDataItemBuilder) Build() (UnConnectedDataItem, error) {
+	if m.Service == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'service' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UnConnectedDataItem.deepCopy(), nil
+}
+
+func (m *_UnConnectedDataItemBuilder) MustBuild() UnConnectedDataItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UnConnectedDataItemBuilder) DeepCopy() any {
+	return m.CreateUnConnectedDataItemBuilder()
+}
+
+// CreateUnConnectedDataItemBuilder creates a UnConnectedDataItemBuilder
+func (m *_UnConnectedDataItem) CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
+	if m == nil {
+		return NewUnConnectedDataItemBuilder()
+	}
+	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

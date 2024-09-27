@@ -46,6 +46,8 @@ type DF1UnprotectedReadRequest interface {
 	GetSize() uint8
 	// IsDF1UnprotectedReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1UnprotectedReadRequest()
+	// CreateBuilder creates a DF1UnprotectedReadRequestBuilder
+	CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder
 }
 
 // _DF1UnprotectedReadRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewDF1UnprotectedReadRequest(status uint8, transactionCounter uint16, addre
 	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1UnprotectedReadRequestBuilder is a builder for DF1UnprotectedReadRequest
+type DF1UnprotectedReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) DF1UnprotectedReadRequestBuilder
+	// WithSize adds Size (property field)
+	WithSize(uint8) DF1UnprotectedReadRequestBuilder
+	// Build builds the DF1UnprotectedReadRequest or returns an error if something is wrong
+	Build() (DF1UnprotectedReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1UnprotectedReadRequest
+}
+
+// NewDF1UnprotectedReadRequestBuilder() creates a DF1UnprotectedReadRequestBuilder
+func NewDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
+	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: new(_DF1UnprotectedReadRequest)}
+}
+
+type _DF1UnprotectedReadRequestBuilder struct {
+	*_DF1UnprotectedReadRequest
+
+	err *utils.MultiError
+}
+
+var _ (DF1UnprotectedReadRequestBuilder) = (*_DF1UnprotectedReadRequestBuilder)(nil)
+
+func (m *_DF1UnprotectedReadRequestBuilder) WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder {
+	return m.WithAddress(address).WithSize(size)
+}
+
+func (m *_DF1UnprotectedReadRequestBuilder) WithAddress(address uint16) DF1UnprotectedReadRequestBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_DF1UnprotectedReadRequestBuilder) WithSize(size uint8) DF1UnprotectedReadRequestBuilder {
+	m.Size = size
+	return m
+}
+
+func (m *_DF1UnprotectedReadRequestBuilder) Build() (DF1UnprotectedReadRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1UnprotectedReadRequest.deepCopy(), nil
+}
+
+func (m *_DF1UnprotectedReadRequestBuilder) MustBuild() DF1UnprotectedReadRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1UnprotectedReadRequestBuilder) DeepCopy() any {
+	return m.CreateDF1UnprotectedReadRequestBuilder()
+}
+
+// CreateDF1UnprotectedReadRequestBuilder creates a DF1UnprotectedReadRequestBuilder
+func (m *_DF1UnprotectedReadRequest) CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
+	if m == nil {
+		return NewDF1UnprotectedReadRequestBuilder()
+	}
+	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

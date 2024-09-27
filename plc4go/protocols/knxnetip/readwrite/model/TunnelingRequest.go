@@ -48,6 +48,8 @@ type TunnelingRequest interface {
 	GetCemi() CEMI
 	// IsTunnelingRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTunnelingRequest()
+	// CreateBuilder creates a TunnelingRequestBuilder
+	CreateTunnelingRequestBuilder() TunnelingRequestBuilder
 }
 
 // _TunnelingRequest is the data-structure of this message
@@ -79,6 +81,112 @@ func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, ce
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TunnelingRequestBuilder is a builder for TunnelingRequest
+type TunnelingRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) TunnelingRequestBuilder
+	// WithTunnelingRequestDataBlock adds TunnelingRequestDataBlock (property field)
+	WithTunnelingRequestDataBlock(TunnelingRequestDataBlock) TunnelingRequestBuilder
+	// WithTunnelingRequestDataBlockBuilder adds TunnelingRequestDataBlock (property field) which is build by the builder
+	WithTunnelingRequestDataBlockBuilder(func(TunnelingRequestDataBlockBuilder) TunnelingRequestDataBlockBuilder) TunnelingRequestBuilder
+	// WithCemi adds Cemi (property field)
+	WithCemi(CEMI) TunnelingRequestBuilder
+	// Build builds the TunnelingRequest or returns an error if something is wrong
+	Build() (TunnelingRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TunnelingRequest
+}
+
+// NewTunnelingRequestBuilder() creates a TunnelingRequestBuilder
+func NewTunnelingRequestBuilder() TunnelingRequestBuilder {
+	return &_TunnelingRequestBuilder{_TunnelingRequest: new(_TunnelingRequest)}
+}
+
+type _TunnelingRequestBuilder struct {
+	*_TunnelingRequest
+
+	err *utils.MultiError
+}
+
+var _ (TunnelingRequestBuilder) = (*_TunnelingRequestBuilder)(nil)
+
+func (m *_TunnelingRequestBuilder) WithMandatoryFields(tunnelingRequestDataBlock TunnelingRequestDataBlock, cemi CEMI) TunnelingRequestBuilder {
+	return m.WithTunnelingRequestDataBlock(tunnelingRequestDataBlock).WithCemi(cemi)
+}
+
+func (m *_TunnelingRequestBuilder) WithTunnelingRequestDataBlock(tunnelingRequestDataBlock TunnelingRequestDataBlock) TunnelingRequestBuilder {
+	m.TunnelingRequestDataBlock = tunnelingRequestDataBlock
+	return m
+}
+
+func (m *_TunnelingRequestBuilder) WithTunnelingRequestDataBlockBuilder(builderSupplier func(TunnelingRequestDataBlockBuilder) TunnelingRequestDataBlockBuilder) TunnelingRequestBuilder {
+	builder := builderSupplier(m.TunnelingRequestDataBlock.CreateTunnelingRequestDataBlockBuilder())
+	var err error
+	m.TunnelingRequestDataBlock, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "TunnelingRequestDataBlockBuilder failed"))
+	}
+	return m
+}
+
+func (m *_TunnelingRequestBuilder) WithCemi(cemi CEMI) TunnelingRequestBuilder {
+	m.Cemi = cemi
+	return m
+}
+
+func (m *_TunnelingRequestBuilder) Build() (TunnelingRequest, error) {
+	if m.TunnelingRequestDataBlock == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'tunnelingRequestDataBlock' not set"))
+	}
+	if m.Cemi == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'cemi' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TunnelingRequest.deepCopy(), nil
+}
+
+func (m *_TunnelingRequestBuilder) MustBuild() TunnelingRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TunnelingRequestBuilder) DeepCopy() any {
+	return m.CreateTunnelingRequestBuilder()
+}
+
+// CreateTunnelingRequestBuilder creates a TunnelingRequestBuilder
+func (m *_TunnelingRequest) CreateTunnelingRequestBuilder() TunnelingRequestBuilder {
+	if m == nil {
+		return NewTunnelingRequestBuilder()
+	}
+	return &_TunnelingRequestBuilder{_TunnelingRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

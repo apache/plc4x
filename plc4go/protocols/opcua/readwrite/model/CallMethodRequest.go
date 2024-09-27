@@ -50,6 +50,8 @@ type CallMethodRequest interface {
 	GetInputArguments() []Variant
 	// IsCallMethodRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCallMethodRequest()
+	// CreateBuilder creates a CallMethodRequestBuilder
+	CreateCallMethodRequestBuilder() CallMethodRequestBuilder
 }
 
 // _CallMethodRequest is the data-structure of this message
@@ -82,6 +84,141 @@ func NewCallMethodRequest(objectId NodeId, methodId NodeId, noOfInputArguments i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CallMethodRequestBuilder is a builder for CallMethodRequest
+type CallMethodRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder
+	// WithObjectId adds ObjectId (property field)
+	WithObjectId(NodeId) CallMethodRequestBuilder
+	// WithObjectIdBuilder adds ObjectId (property field) which is build by the builder
+	WithObjectIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder
+	// WithMethodId adds MethodId (property field)
+	WithMethodId(NodeId) CallMethodRequestBuilder
+	// WithMethodIdBuilder adds MethodId (property field) which is build by the builder
+	WithMethodIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder
+	// WithNoOfInputArguments adds NoOfInputArguments (property field)
+	WithNoOfInputArguments(int32) CallMethodRequestBuilder
+	// WithInputArguments adds InputArguments (property field)
+	WithInputArguments(...Variant) CallMethodRequestBuilder
+	// Build builds the CallMethodRequest or returns an error if something is wrong
+	Build() (CallMethodRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CallMethodRequest
+}
+
+// NewCallMethodRequestBuilder() creates a CallMethodRequestBuilder
+func NewCallMethodRequestBuilder() CallMethodRequestBuilder {
+	return &_CallMethodRequestBuilder{_CallMethodRequest: new(_CallMethodRequest)}
+}
+
+type _CallMethodRequestBuilder struct {
+	*_CallMethodRequest
+
+	err *utils.MultiError
+}
+
+var _ (CallMethodRequestBuilder) = (*_CallMethodRequestBuilder)(nil)
+
+func (m *_CallMethodRequestBuilder) WithMandatoryFields(objectId NodeId, methodId NodeId, noOfInputArguments int32, inputArguments []Variant) CallMethodRequestBuilder {
+	return m.WithObjectId(objectId).WithMethodId(methodId).WithNoOfInputArguments(noOfInputArguments).WithInputArguments(inputArguments...)
+}
+
+func (m *_CallMethodRequestBuilder) WithObjectId(objectId NodeId) CallMethodRequestBuilder {
+	m.ObjectId = objectId
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) WithObjectIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
+	builder := builderSupplier(m.ObjectId.CreateNodeIdBuilder())
+	var err error
+	m.ObjectId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) WithMethodId(methodId NodeId) CallMethodRequestBuilder {
+	m.MethodId = methodId
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) WithMethodIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CallMethodRequestBuilder {
+	builder := builderSupplier(m.MethodId.CreateNodeIdBuilder())
+	var err error
+	m.MethodId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) WithNoOfInputArguments(noOfInputArguments int32) CallMethodRequestBuilder {
+	m.NoOfInputArguments = noOfInputArguments
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) WithInputArguments(inputArguments ...Variant) CallMethodRequestBuilder {
+	m.InputArguments = inputArguments
+	return m
+}
+
+func (m *_CallMethodRequestBuilder) Build() (CallMethodRequest, error) {
+	if m.ObjectId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectId' not set"))
+	}
+	if m.MethodId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'methodId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CallMethodRequest.deepCopy(), nil
+}
+
+func (m *_CallMethodRequestBuilder) MustBuild() CallMethodRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CallMethodRequestBuilder) DeepCopy() any {
+	return m.CreateCallMethodRequestBuilder()
+}
+
+// CreateCallMethodRequestBuilder creates a CallMethodRequestBuilder
+func (m *_CallMethodRequest) CreateCallMethodRequestBuilder() CallMethodRequestBuilder {
+	if m == nil {
+		return NewCallMethodRequestBuilder()
+	}
+	return &_CallMethodRequestBuilder{_CallMethodRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataOctetStringValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataOctetStringValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOctetStringValuePresentValue()
+	// CreateBuilder creates a BACnetConstructedDataOctetStringValuePresentValueBuilder
+	CreateBACnetConstructedDataOctetStringValuePresentValueBuilder() BACnetConstructedDataOctetStringValuePresentValueBuilder
 }
 
 // _BACnetConstructedDataOctetStringValuePresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataOctetStringValuePresentValue(openingTag BACnetOpeni
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOctetStringValuePresentValueBuilder is a builder for BACnetConstructedDataOctetStringValuePresentValue
+type BACnetConstructedDataOctetStringValuePresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagOctetString) BACnetConstructedDataOctetStringValuePresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagOctetString) BACnetConstructedDataOctetStringValuePresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataOctetStringValuePresentValueBuilder
+	// Build builds the BACnetConstructedDataOctetStringValuePresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataOctetStringValuePresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOctetStringValuePresentValue
+}
+
+// NewBACnetConstructedDataOctetStringValuePresentValueBuilder() creates a BACnetConstructedDataOctetStringValuePresentValueBuilder
+func NewBACnetConstructedDataOctetStringValuePresentValueBuilder() BACnetConstructedDataOctetStringValuePresentValueBuilder {
+	return &_BACnetConstructedDataOctetStringValuePresentValueBuilder{_BACnetConstructedDataOctetStringValuePresentValue: new(_BACnetConstructedDataOctetStringValuePresentValue)}
+}
+
+type _BACnetConstructedDataOctetStringValuePresentValueBuilder struct {
+	*_BACnetConstructedDataOctetStringValuePresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOctetStringValuePresentValueBuilder) = (*_BACnetConstructedDataOctetStringValuePresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagOctetString) BACnetConstructedDataOctetStringValuePresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagOctetString) BACnetConstructedDataOctetStringValuePresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataOctetStringValuePresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) Build() (BACnetConstructedDataOctetStringValuePresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOctetStringValuePresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) MustBuild() BACnetConstructedDataOctetStringValuePresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOctetStringValuePresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOctetStringValuePresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataOctetStringValuePresentValueBuilder creates a BACnetConstructedDataOctetStringValuePresentValueBuilder
+func (m *_BACnetConstructedDataOctetStringValuePresentValue) CreateBACnetConstructedDataOctetStringValuePresentValueBuilder() BACnetConstructedDataOctetStringValuePresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOctetStringValuePresentValueBuilder()
+	}
+	return &_BACnetConstructedDataOctetStringValuePresentValueBuilder{_BACnetConstructedDataOctetStringValuePresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

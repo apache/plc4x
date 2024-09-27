@@ -44,6 +44,8 @@ type SALDataHeating interface {
 	GetHeatingData() LightingData
 	// IsSALDataHeating is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataHeating()
+	// CreateBuilder creates a SALDataHeatingBuilder
+	CreateSALDataHeatingBuilder() SALDataHeatingBuilder
 }
 
 // _SALDataHeating is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataHeating(salData SALData, heatingData LightingData) *_SALDataHeati
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataHeatingBuilder is a builder for SALDataHeating
+type SALDataHeatingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(heatingData LightingData) SALDataHeatingBuilder
+	// WithHeatingData adds HeatingData (property field)
+	WithHeatingData(LightingData) SALDataHeatingBuilder
+	// Build builds the SALDataHeating or returns an error if something is wrong
+	Build() (SALDataHeating, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataHeating
+}
+
+// NewSALDataHeatingBuilder() creates a SALDataHeatingBuilder
+func NewSALDataHeatingBuilder() SALDataHeatingBuilder {
+	return &_SALDataHeatingBuilder{_SALDataHeating: new(_SALDataHeating)}
+}
+
+type _SALDataHeatingBuilder struct {
+	*_SALDataHeating
+
+	err *utils.MultiError
+}
+
+var _ (SALDataHeatingBuilder) = (*_SALDataHeatingBuilder)(nil)
+
+func (m *_SALDataHeatingBuilder) WithMandatoryFields(heatingData LightingData) SALDataHeatingBuilder {
+	return m.WithHeatingData(heatingData)
+}
+
+func (m *_SALDataHeatingBuilder) WithHeatingData(heatingData LightingData) SALDataHeatingBuilder {
+	m.HeatingData = heatingData
+	return m
+}
+
+func (m *_SALDataHeatingBuilder) Build() (SALDataHeating, error) {
+	if m.HeatingData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'heatingData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataHeating.deepCopy(), nil
+}
+
+func (m *_SALDataHeatingBuilder) MustBuild() SALDataHeating {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataHeatingBuilder) DeepCopy() any {
+	return m.CreateSALDataHeatingBuilder()
+}
+
+// CreateSALDataHeatingBuilder creates a SALDataHeatingBuilder
+func (m *_SALDataHeating) CreateSALDataHeatingBuilder() SALDataHeatingBuilder {
+	if m == nil {
+		return NewSALDataHeatingBuilder()
+	}
+	return &_SALDataHeatingBuilder{_SALDataHeating: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

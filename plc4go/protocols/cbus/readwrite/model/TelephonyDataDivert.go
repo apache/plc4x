@@ -44,6 +44,8 @@ type TelephonyDataDivert interface {
 	GetNumber() string
 	// IsTelephonyDataDivert is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataDivert()
+	// CreateBuilder creates a TelephonyDataDivertBuilder
+	CreateTelephonyDataDivertBuilder() TelephonyDataDivertBuilder
 }
 
 // _TelephonyDataDivert is the data-structure of this message
@@ -64,6 +66,78 @@ func NewTelephonyDataDivert(commandTypeContainer TelephonyCommandTypeContainer, 
 	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataDivertBuilder is a builder for TelephonyDataDivert
+type TelephonyDataDivertBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(number string) TelephonyDataDivertBuilder
+	// WithNumber adds Number (property field)
+	WithNumber(string) TelephonyDataDivertBuilder
+	// Build builds the TelephonyDataDivert or returns an error if something is wrong
+	Build() (TelephonyDataDivert, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataDivert
+}
+
+// NewTelephonyDataDivertBuilder() creates a TelephonyDataDivertBuilder
+func NewTelephonyDataDivertBuilder() TelephonyDataDivertBuilder {
+	return &_TelephonyDataDivertBuilder{_TelephonyDataDivert: new(_TelephonyDataDivert)}
+}
+
+type _TelephonyDataDivertBuilder struct {
+	*_TelephonyDataDivert
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataDivertBuilder) = (*_TelephonyDataDivertBuilder)(nil)
+
+func (m *_TelephonyDataDivertBuilder) WithMandatoryFields(number string) TelephonyDataDivertBuilder {
+	return m.WithNumber(number)
+}
+
+func (m *_TelephonyDataDivertBuilder) WithNumber(number string) TelephonyDataDivertBuilder {
+	m.Number = number
+	return m
+}
+
+func (m *_TelephonyDataDivertBuilder) Build() (TelephonyDataDivert, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyDataDivert.deepCopy(), nil
+}
+
+func (m *_TelephonyDataDivertBuilder) MustBuild() TelephonyDataDivert {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataDivertBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataDivertBuilder()
+}
+
+// CreateTelephonyDataDivertBuilder creates a TelephonyDataDivertBuilder
+func (m *_TelephonyDataDivert) CreateTelephonyDataDivertBuilder() TelephonyDataDivertBuilder {
+	if m == nil {
+		return NewTelephonyDataDivertBuilder()
+	}
+	return &_TelephonyDataDivertBuilder{_TelephonyDataDivert: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

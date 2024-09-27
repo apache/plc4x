@@ -44,6 +44,8 @@ type SALDataMediaTransport interface {
 	GetMediaTransportControlData() MediaTransportControlData
 	// IsSALDataMediaTransport is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataMediaTransport()
+	// CreateBuilder creates a SALDataMediaTransportBuilder
+	CreateSALDataMediaTransportBuilder() SALDataMediaTransportBuilder
 }
 
 // _SALDataMediaTransport is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataMediaTransport(salData SALData, mediaTransportControlData MediaTr
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataMediaTransportBuilder is a builder for SALDataMediaTransport
+type SALDataMediaTransportBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(mediaTransportControlData MediaTransportControlData) SALDataMediaTransportBuilder
+	// WithMediaTransportControlData adds MediaTransportControlData (property field)
+	WithMediaTransportControlData(MediaTransportControlData) SALDataMediaTransportBuilder
+	// Build builds the SALDataMediaTransport or returns an error if something is wrong
+	Build() (SALDataMediaTransport, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataMediaTransport
+}
+
+// NewSALDataMediaTransportBuilder() creates a SALDataMediaTransportBuilder
+func NewSALDataMediaTransportBuilder() SALDataMediaTransportBuilder {
+	return &_SALDataMediaTransportBuilder{_SALDataMediaTransport: new(_SALDataMediaTransport)}
+}
+
+type _SALDataMediaTransportBuilder struct {
+	*_SALDataMediaTransport
+
+	err *utils.MultiError
+}
+
+var _ (SALDataMediaTransportBuilder) = (*_SALDataMediaTransportBuilder)(nil)
+
+func (m *_SALDataMediaTransportBuilder) WithMandatoryFields(mediaTransportControlData MediaTransportControlData) SALDataMediaTransportBuilder {
+	return m.WithMediaTransportControlData(mediaTransportControlData)
+}
+
+func (m *_SALDataMediaTransportBuilder) WithMediaTransportControlData(mediaTransportControlData MediaTransportControlData) SALDataMediaTransportBuilder {
+	m.MediaTransportControlData = mediaTransportControlData
+	return m
+}
+
+func (m *_SALDataMediaTransportBuilder) Build() (SALDataMediaTransport, error) {
+	if m.MediaTransportControlData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'mediaTransportControlData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataMediaTransport.deepCopy(), nil
+}
+
+func (m *_SALDataMediaTransportBuilder) MustBuild() SALDataMediaTransport {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataMediaTransportBuilder) DeepCopy() any {
+	return m.CreateSALDataMediaTransportBuilder()
+}
+
+// CreateSALDataMediaTransportBuilder creates a SALDataMediaTransportBuilder
+func (m *_SALDataMediaTransport) CreateSALDataMediaTransportBuilder() SALDataMediaTransportBuilder {
+	if m == nil {
+		return NewSALDataMediaTransportBuilder()
+	}
+	return &_SALDataMediaTransportBuilder{_SALDataMediaTransport: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

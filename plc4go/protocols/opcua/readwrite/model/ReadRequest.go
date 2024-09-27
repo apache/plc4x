@@ -52,6 +52,8 @@ type ReadRequest interface {
 	GetNodesToRead() []ExtensionObjectDefinition
 	// IsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReadRequest()
+	// CreateBuilder creates a ReadRequestBuilder
+	CreateReadRequestBuilder() ReadRequestBuilder
 }
 
 // _ReadRequest is the data-structure of this message
@@ -83,6 +85,112 @@ func NewReadRequest(requestHeader ExtensionObjectDefinition, maxAge float64, tim
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReadRequestBuilder is a builder for ReadRequest
+type ReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) ReadRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) ReadRequestBuilder
+	// WithMaxAge adds MaxAge (property field)
+	WithMaxAge(float64) ReadRequestBuilder
+	// WithTimestampsToReturn adds TimestampsToReturn (property field)
+	WithTimestampsToReturn(TimestampsToReturn) ReadRequestBuilder
+	// WithNoOfNodesToRead adds NoOfNodesToRead (property field)
+	WithNoOfNodesToRead(int32) ReadRequestBuilder
+	// WithNodesToRead adds NodesToRead (property field)
+	WithNodesToRead(...ExtensionObjectDefinition) ReadRequestBuilder
+	// Build builds the ReadRequest or returns an error if something is wrong
+	Build() (ReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReadRequest
+}
+
+// NewReadRequestBuilder() creates a ReadRequestBuilder
+func NewReadRequestBuilder() ReadRequestBuilder {
+	return &_ReadRequestBuilder{_ReadRequest: new(_ReadRequest)}
+}
+
+type _ReadRequestBuilder struct {
+	*_ReadRequest
+
+	err *utils.MultiError
+}
+
+var _ (ReadRequestBuilder) = (*_ReadRequestBuilder)(nil)
+
+func (m *_ReadRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) ReadRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithMaxAge(maxAge).WithTimestampsToReturn(timestampsToReturn).WithNoOfNodesToRead(noOfNodesToRead).WithNodesToRead(nodesToRead...)
+}
+
+func (m *_ReadRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ReadRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_ReadRequestBuilder) WithMaxAge(maxAge float64) ReadRequestBuilder {
+	m.MaxAge = maxAge
+	return m
+}
+
+func (m *_ReadRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) ReadRequestBuilder {
+	m.TimestampsToReturn = timestampsToReturn
+	return m
+}
+
+func (m *_ReadRequestBuilder) WithNoOfNodesToRead(noOfNodesToRead int32) ReadRequestBuilder {
+	m.NoOfNodesToRead = noOfNodesToRead
+	return m
+}
+
+func (m *_ReadRequestBuilder) WithNodesToRead(nodesToRead ...ExtensionObjectDefinition) ReadRequestBuilder {
+	m.NodesToRead = nodesToRead
+	return m
+}
+
+func (m *_ReadRequestBuilder) Build() (ReadRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReadRequest.deepCopy(), nil
+}
+
+func (m *_ReadRequestBuilder) MustBuild() ReadRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReadRequestBuilder) DeepCopy() any {
+	return m.CreateReadRequestBuilder()
+}
+
+// CreateReadRequestBuilder creates a ReadRequestBuilder
+func (m *_ReadRequest) CreateReadRequestBuilder() ReadRequestBuilder {
+	if m == nil {
+		return NewReadRequestBuilder()
+	}
+	return &_ReadRequestBuilder{_ReadRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

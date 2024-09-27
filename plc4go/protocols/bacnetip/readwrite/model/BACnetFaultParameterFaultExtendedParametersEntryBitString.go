@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryBitString interface {
 	GetBitStringValue() BACnetApplicationTagBitString
 	// IsBACnetFaultParameterFaultExtendedParametersEntryBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryBitString()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBitString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(peekedTagHeade
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryBitString
+type BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	// WithBitStringValue adds BitStringValue (property field)
+	WithBitStringValue(BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
+	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryBitString or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryBitString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBitString
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBitString: new(_BACnetFaultParameterFaultExtendedParametersEntryBitString)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryBitString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	return m.WithBitStringValue(bitStringValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	m.BitStringValue = bitStringValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+	var err error
+	m.BitStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBitString, error) {
+	if m.BitStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryBitString.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBitString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBitString) CreateBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder() BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBitString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

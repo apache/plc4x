@@ -46,6 +46,8 @@ type BACnetConstructedDataLocalTime interface {
 	GetActualValue() BACnetApplicationTagTime
 	// IsBACnetConstructedDataLocalTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLocalTime()
+	// CreateBuilder creates a BACnetConstructedDataLocalTimeBuilder
+	CreateBACnetConstructedDataLocalTimeBuilder() BACnetConstructedDataLocalTimeBuilder
 }
 
 // _BACnetConstructedDataLocalTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLocalTime(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLocalTimeBuilder is a builder for BACnetConstructedDataLocalTime
+type BACnetConstructedDataLocalTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(localTime BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder
+	// WithLocalTime adds LocalTime (property field)
+	WithLocalTime(BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder
+	// WithLocalTimeBuilder adds LocalTime (property field) which is build by the builder
+	WithLocalTimeBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataLocalTimeBuilder
+	// Build builds the BACnetConstructedDataLocalTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataLocalTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLocalTime
+}
+
+// NewBACnetConstructedDataLocalTimeBuilder() creates a BACnetConstructedDataLocalTimeBuilder
+func NewBACnetConstructedDataLocalTimeBuilder() BACnetConstructedDataLocalTimeBuilder {
+	return &_BACnetConstructedDataLocalTimeBuilder{_BACnetConstructedDataLocalTime: new(_BACnetConstructedDataLocalTime)}
+}
+
+type _BACnetConstructedDataLocalTimeBuilder struct {
+	*_BACnetConstructedDataLocalTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLocalTimeBuilder) = (*_BACnetConstructedDataLocalTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) WithMandatoryFields(localTime BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder {
+	return m.WithLocalTime(localTime)
+}
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) WithLocalTime(localTime BACnetApplicationTagTime) BACnetConstructedDataLocalTimeBuilder {
+	m.LocalTime = localTime
+	return m
+}
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) WithLocalTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetConstructedDataLocalTimeBuilder {
+	builder := builderSupplier(m.LocalTime.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.LocalTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) Build() (BACnetConstructedDataLocalTime, error) {
+	if m.LocalTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'localTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLocalTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) MustBuild() BACnetConstructedDataLocalTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLocalTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLocalTimeBuilder()
+}
+
+// CreateBACnetConstructedDataLocalTimeBuilder creates a BACnetConstructedDataLocalTimeBuilder
+func (m *_BACnetConstructedDataLocalTime) CreateBACnetConstructedDataLocalTimeBuilder() BACnetConstructedDataLocalTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLocalTimeBuilder()
+	}
+	return &_BACnetConstructedDataLocalTimeBuilder{_BACnetConstructedDataLocalTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

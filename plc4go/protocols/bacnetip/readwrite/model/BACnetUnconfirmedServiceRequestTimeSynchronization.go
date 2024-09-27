@@ -46,6 +46,8 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization interface {
 	GetSynchronizedTime() BACnetApplicationTagTime
 	// IsBACnetUnconfirmedServiceRequestTimeSynchronization is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestTimeSynchronization()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	CreateBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder() BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestTimeSynchronization is the data-structure of this message
@@ -74,6 +76,127 @@ func NewBACnetUnconfirmedServiceRequestTimeSynchronization(synchronizedDate BACn
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder is a builder for BACnetUnconfirmedServiceRequestTimeSynchronization
+type BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// WithSynchronizedDate adds SynchronizedDate (property field)
+	WithSynchronizedDate(BACnetApplicationTagDate) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// WithSynchronizedDateBuilder adds SynchronizedDate (property field) which is build by the builder
+	WithSynchronizedDateBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// WithSynchronizedTime adds SynchronizedTime (property field)
+	WithSynchronizedTime(BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// WithSynchronizedTimeBuilder adds SynchronizedTime (property field) which is build by the builder
+	WithSynchronizedTimeBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestTimeSynchronization or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestTimeSynchronization, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestTimeSynchronization
+}
+
+// NewBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder() creates a BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+func NewBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder() BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	return &_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder{_BACnetUnconfirmedServiceRequestTimeSynchronization: new(_BACnetUnconfirmedServiceRequestTimeSynchronization)}
+}
+
+type _BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder struct {
+	*_BACnetUnconfirmedServiceRequestTimeSynchronization
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) = (*_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithMandatoryFields(synchronizedDate BACnetApplicationTagDate, synchronizedTime BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	return m.WithSynchronizedDate(synchronizedDate).WithSynchronizedTime(synchronizedTime)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithSynchronizedDate(synchronizedDate BACnetApplicationTagDate) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	m.SynchronizedDate = synchronizedDate
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithSynchronizedDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	builder := builderSupplier(m.SynchronizedDate.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	m.SynchronizedDate, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithSynchronizedTime(synchronizedTime BACnetApplicationTagTime) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	m.SynchronizedTime = synchronizedTime
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) WithSynchronizedTimeBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	builder := builderSupplier(m.SynchronizedTime.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.SynchronizedTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) Build() (BACnetUnconfirmedServiceRequestTimeSynchronization, error) {
+	if m.SynchronizedDate == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'synchronizedDate' not set"))
+	}
+	if m.SynchronizedTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'synchronizedTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceRequestTimeSynchronization.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) MustBuild() BACnetUnconfirmedServiceRequestTimeSynchronization {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder creates a BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+func (m *_BACnetUnconfirmedServiceRequestTimeSynchronization) CreateBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder() BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder{_BACnetUnconfirmedServiceRequestTimeSynchronization: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

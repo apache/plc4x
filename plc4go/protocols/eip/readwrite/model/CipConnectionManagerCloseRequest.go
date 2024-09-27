@@ -64,6 +64,8 @@ type CipConnectionManagerCloseRequest interface {
 	GetConnectionPaths() []PathSegment
 	// IsCipConnectionManagerCloseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerCloseRequest()
+	// CreateBuilder creates a CipConnectionManagerCloseRequestBuilder
+	CreateCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseRequestBuilder
 }
 
 // _CipConnectionManagerCloseRequest is the data-structure of this message
@@ -112,6 +114,160 @@ func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment Pat
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectionManagerCloseRequestBuilder is a builder for CipConnectionManagerCloseRequest
+type CipConnectionManagerCloseRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerCloseRequestBuilder
+	// WithRequestPathSize adds RequestPathSize (property field)
+	WithRequestPathSize(uint8) CipConnectionManagerCloseRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) CipConnectionManagerCloseRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) CipConnectionManagerCloseRequestBuilder
+	// WithPriority adds Priority (property field)
+	WithPriority(uint8) CipConnectionManagerCloseRequestBuilder
+	// WithTickTime adds TickTime (property field)
+	WithTickTime(uint8) CipConnectionManagerCloseRequestBuilder
+	// WithTimeoutTicks adds TimeoutTicks (property field)
+	WithTimeoutTicks(uint8) CipConnectionManagerCloseRequestBuilder
+	// WithConnectionSerialNumber adds ConnectionSerialNumber (property field)
+	WithConnectionSerialNumber(uint16) CipConnectionManagerCloseRequestBuilder
+	// WithOriginatorVendorId adds OriginatorVendorId (property field)
+	WithOriginatorVendorId(uint16) CipConnectionManagerCloseRequestBuilder
+	// WithOriginatorSerialNumber adds OriginatorSerialNumber (property field)
+	WithOriginatorSerialNumber(uint32) CipConnectionManagerCloseRequestBuilder
+	// WithConnectionPathSize adds ConnectionPathSize (property field)
+	WithConnectionPathSize(uint8) CipConnectionManagerCloseRequestBuilder
+	// WithConnectionPaths adds ConnectionPaths (property field)
+	WithConnectionPaths(...PathSegment) CipConnectionManagerCloseRequestBuilder
+	// Build builds the CipConnectionManagerCloseRequest or returns an error if something is wrong
+	Build() (CipConnectionManagerCloseRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectionManagerCloseRequest
+}
+
+// NewCipConnectionManagerCloseRequestBuilder() creates a CipConnectionManagerCloseRequestBuilder
+func NewCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseRequestBuilder {
+	return &_CipConnectionManagerCloseRequestBuilder{_CipConnectionManagerCloseRequest: new(_CipConnectionManagerCloseRequest)}
+}
+
+type _CipConnectionManagerCloseRequestBuilder struct {
+	*_CipConnectionManagerCloseRequest
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectionManagerCloseRequestBuilder) = (*_CipConnectionManagerCloseRequestBuilder)(nil)
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithMandatoryFields(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerCloseRequestBuilder {
+	return m.WithRequestPathSize(requestPathSize).WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithPriority(priority).WithTickTime(tickTime).WithTimeoutTicks(timeoutTicks).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithConnectionPathSize(connectionPathSize).WithConnectionPaths(connectionPaths...)
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithRequestPathSize(requestPathSize uint8) CipConnectionManagerCloseRequestBuilder {
+	m.RequestPathSize = requestPathSize
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithClassSegment(classSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
+	m.ClassSegment = classSegment
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipConnectionManagerCloseRequestBuilder {
+	m.InstanceSegment = instanceSegment
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithPriority(priority uint8) CipConnectionManagerCloseRequestBuilder {
+	m.Priority = priority
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithTickTime(tickTime uint8) CipConnectionManagerCloseRequestBuilder {
+	m.TickTime = tickTime
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithTimeoutTicks(timeoutTicks uint8) CipConnectionManagerCloseRequestBuilder {
+	m.TimeoutTicks = timeoutTicks
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerCloseRequestBuilder {
+	m.ConnectionSerialNumber = connectionSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerCloseRequestBuilder {
+	m.OriginatorVendorId = originatorVendorId
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerCloseRequestBuilder {
+	m.OriginatorSerialNumber = originatorSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionPathSize(connectionPathSize uint8) CipConnectionManagerCloseRequestBuilder {
+	m.ConnectionPathSize = connectionPathSize
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) WithConnectionPaths(connectionPaths ...PathSegment) CipConnectionManagerCloseRequestBuilder {
+	m.ConnectionPaths = connectionPaths
+	return m
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) Build() (CipConnectionManagerCloseRequest, error) {
+	if m.ClassSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if m.InstanceSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipConnectionManagerCloseRequest.deepCopy(), nil
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) MustBuild() CipConnectionManagerCloseRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipConnectionManagerCloseRequestBuilder) DeepCopy() any {
+	return m.CreateCipConnectionManagerCloseRequestBuilder()
+}
+
+// CreateCipConnectionManagerCloseRequestBuilder creates a CipConnectionManagerCloseRequestBuilder
+func (m *_CipConnectionManagerCloseRequest) CreateCipConnectionManagerCloseRequestBuilder() CipConnectionManagerCloseRequestBuilder {
+	if m == nil {
+		return NewCipConnectionManagerCloseRequestBuilder()
+	}
+	return &_CipConnectionManagerCloseRequestBuilder{_CipConnectionManagerCloseRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

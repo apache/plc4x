@@ -44,6 +44,8 @@ type SysexCommandExtendedId interface {
 	GetId() []int8
 	// IsSysexCommandExtendedId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandExtendedId()
+	// CreateBuilder creates a SysexCommandExtendedIdBuilder
+	CreateSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder
 }
 
 // _SysexCommandExtendedId is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandExtendedIdBuilder is a builder for SysexCommandExtendedId
+type SysexCommandExtendedIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder
+	// WithId adds Id (property field)
+	WithId(...int8) SysexCommandExtendedIdBuilder
+	// Build builds the SysexCommandExtendedId or returns an error if something is wrong
+	Build() (SysexCommandExtendedId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandExtendedId
+}
+
+// NewSysexCommandExtendedIdBuilder() creates a SysexCommandExtendedIdBuilder
+func NewSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder {
+	return &_SysexCommandExtendedIdBuilder{_SysexCommandExtendedId: new(_SysexCommandExtendedId)}
+}
+
+type _SysexCommandExtendedIdBuilder struct {
+	*_SysexCommandExtendedId
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandExtendedIdBuilder) = (*_SysexCommandExtendedIdBuilder)(nil)
+
+func (m *_SysexCommandExtendedIdBuilder) WithMandatoryFields(id []int8) SysexCommandExtendedIdBuilder {
+	return m.WithId(id...)
+}
+
+func (m *_SysexCommandExtendedIdBuilder) WithId(id ...int8) SysexCommandExtendedIdBuilder {
+	m.Id = id
+	return m
+}
+
+func (m *_SysexCommandExtendedIdBuilder) Build() (SysexCommandExtendedId, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandExtendedId.deepCopy(), nil
+}
+
+func (m *_SysexCommandExtendedIdBuilder) MustBuild() SysexCommandExtendedId {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandExtendedIdBuilder) DeepCopy() any {
+	return m.CreateSysexCommandExtendedIdBuilder()
+}
+
+// CreateSysexCommandExtendedIdBuilder creates a SysexCommandExtendedIdBuilder
+func (m *_SysexCommandExtendedId) CreateSysexCommandExtendedIdBuilder() SysexCommandExtendedIdBuilder {
+	if m == nil {
+		return NewSysexCommandExtendedIdBuilder()
+	}
+	return &_SysexCommandExtendedIdBuilder{_SysexCommandExtendedId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

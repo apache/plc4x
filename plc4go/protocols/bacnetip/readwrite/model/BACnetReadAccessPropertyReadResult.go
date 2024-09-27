@@ -49,6 +49,8 @@ type BACnetReadAccessPropertyReadResult interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetReadAccessPropertyReadResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReadAccessPropertyReadResult()
+	// CreateBuilder creates a BACnetReadAccessPropertyReadResultBuilder
+	CreateBACnetReadAccessPropertyReadResultBuilder() BACnetReadAccessPropertyReadResultBuilder
 }
 
 // _BACnetReadAccessPropertyReadResult is the data-structure of this message
@@ -72,6 +74,128 @@ func NewBACnetReadAccessPropertyReadResult(peekedTagHeader BACnetTagHeader, prop
 	}
 	return &_BACnetReadAccessPropertyReadResult{PeekedTagHeader: peekedTagHeader, PropertyValue: propertyValue, PropertyAccessError: propertyAccessError, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReadAccessPropertyReadResultBuilder is a builder for BACnetReadAccessPropertyReadResult
+type BACnetReadAccessPropertyReadResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetReadAccessPropertyReadResultBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetReadAccessPropertyReadResultBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetReadAccessPropertyReadResultBuilder
+	// WithPropertyValue adds PropertyValue (property field)
+	WithOptionalPropertyValue(BACnetConstructedData) BACnetReadAccessPropertyReadResultBuilder
+	// WithPropertyAccessError adds PropertyAccessError (property field)
+	WithOptionalPropertyAccessError(ErrorEnclosed) BACnetReadAccessPropertyReadResultBuilder
+	// WithOptionalPropertyAccessErrorBuilder adds PropertyAccessError (property field) which is build by the builder
+	WithOptionalPropertyAccessErrorBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetReadAccessPropertyReadResultBuilder
+	// Build builds the BACnetReadAccessPropertyReadResult or returns an error if something is wrong
+	Build() (BACnetReadAccessPropertyReadResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReadAccessPropertyReadResult
+}
+
+// NewBACnetReadAccessPropertyReadResultBuilder() creates a BACnetReadAccessPropertyReadResultBuilder
+func NewBACnetReadAccessPropertyReadResultBuilder() BACnetReadAccessPropertyReadResultBuilder {
+	return &_BACnetReadAccessPropertyReadResultBuilder{_BACnetReadAccessPropertyReadResult: new(_BACnetReadAccessPropertyReadResult)}
+}
+
+type _BACnetReadAccessPropertyReadResultBuilder struct {
+	*_BACnetReadAccessPropertyReadResult
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReadAccessPropertyReadResultBuilder) = (*_BACnetReadAccessPropertyReadResultBuilder)(nil)
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetReadAccessPropertyReadResultBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetReadAccessPropertyReadResultBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetReadAccessPropertyReadResultBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyValue(propertyValue BACnetConstructedData) BACnetReadAccessPropertyReadResultBuilder {
+	m.PropertyValue = propertyValue
+	return m
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyAccessError(propertyAccessError ErrorEnclosed) BACnetReadAccessPropertyReadResultBuilder {
+	m.PropertyAccessError = propertyAccessError
+	return m
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) WithOptionalPropertyAccessErrorBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetReadAccessPropertyReadResultBuilder {
+	builder := builderSupplier(m.PropertyAccessError.CreateErrorEnclosedBuilder())
+	var err error
+	m.PropertyAccessError, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) Build() (BACnetReadAccessPropertyReadResult, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetReadAccessPropertyReadResult.deepCopy(), nil
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) MustBuild() BACnetReadAccessPropertyReadResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetReadAccessPropertyReadResultBuilder) DeepCopy() any {
+	return m.CreateBACnetReadAccessPropertyReadResultBuilder()
+}
+
+// CreateBACnetReadAccessPropertyReadResultBuilder creates a BACnetReadAccessPropertyReadResultBuilder
+func (m *_BACnetReadAccessPropertyReadResult) CreateBACnetReadAccessPropertyReadResultBuilder() BACnetReadAccessPropertyReadResultBuilder {
+	if m == nil {
+		return NewBACnetReadAccessPropertyReadResultBuilder()
+	}
+	return &_BACnetReadAccessPropertyReadResultBuilder{_BACnetReadAccessPropertyReadResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

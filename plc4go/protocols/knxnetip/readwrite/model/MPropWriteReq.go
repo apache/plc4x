@@ -40,6 +40,8 @@ type MPropWriteReq interface {
 	CEMI
 	// IsMPropWriteReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteReq()
+	// CreateBuilder creates a MPropWriteReqBuilder
+	CreateMPropWriteReqBuilder() MPropWriteReqBuilder
 }
 
 // _MPropWriteReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMPropWriteReq(size uint16) *_MPropWriteReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MPropWriteReqBuilder is a builder for MPropWriteReq
+type MPropWriteReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MPropWriteReqBuilder
+	// Build builds the MPropWriteReq or returns an error if something is wrong
+	Build() (MPropWriteReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MPropWriteReq
+}
+
+// NewMPropWriteReqBuilder() creates a MPropWriteReqBuilder
+func NewMPropWriteReqBuilder() MPropWriteReqBuilder {
+	return &_MPropWriteReqBuilder{_MPropWriteReq: new(_MPropWriteReq)}
+}
+
+type _MPropWriteReqBuilder struct {
+	*_MPropWriteReq
+
+	err *utils.MultiError
+}
+
+var _ (MPropWriteReqBuilder) = (*_MPropWriteReqBuilder)(nil)
+
+func (m *_MPropWriteReqBuilder) WithMandatoryFields() MPropWriteReqBuilder {
+	return m
+}
+
+func (m *_MPropWriteReqBuilder) Build() (MPropWriteReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MPropWriteReq.deepCopy(), nil
+}
+
+func (m *_MPropWriteReqBuilder) MustBuild() MPropWriteReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MPropWriteReqBuilder) DeepCopy() any {
+	return m.CreateMPropWriteReqBuilder()
+}
+
+// CreateMPropWriteReqBuilder creates a MPropWriteReqBuilder
+func (m *_MPropWriteReq) CreateMPropWriteReqBuilder() MPropWriteReqBuilder {
+	if m == nil {
+		return NewMPropWriteReqBuilder()
+	}
+	return &_MPropWriteReqBuilder{_MPropWriteReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

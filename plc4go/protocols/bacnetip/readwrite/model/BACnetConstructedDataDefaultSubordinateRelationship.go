@@ -46,6 +46,8 @@ type BACnetConstructedDataDefaultSubordinateRelationship interface {
 	GetActualValue() BACnetRelationshipTagged
 	// IsBACnetConstructedDataDefaultSubordinateRelationship is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDefaultSubordinateRelationship()
+	// CreateBuilder creates a BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+	CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConstructedDataDefaultSubordinateRelationshipBuilder
 }
 
 // _BACnetConstructedDataDefaultSubordinateRelationship is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDefaultSubordinateRelationship(openingTag BACnetOpe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDefaultSubordinateRelationshipBuilder is a builder for BACnetConstructedDataDefaultSubordinateRelationship
+type BACnetConstructedDataDefaultSubordinateRelationshipBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+	// WithDefaultSubordinateRelationship adds DefaultSubordinateRelationship (property field)
+	WithDefaultSubordinateRelationship(BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+	// WithDefaultSubordinateRelationshipBuilder adds DefaultSubordinateRelationship (property field) which is build by the builder
+	WithDefaultSubordinateRelationshipBuilder(func(BACnetRelationshipTaggedBuilder) BACnetRelationshipTaggedBuilder) BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+	// Build builds the BACnetConstructedDataDefaultSubordinateRelationship or returns an error if something is wrong
+	Build() (BACnetConstructedDataDefaultSubordinateRelationship, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDefaultSubordinateRelationship
+}
+
+// NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder() creates a BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+func NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	return &_BACnetConstructedDataDefaultSubordinateRelationshipBuilder{_BACnetConstructedDataDefaultSubordinateRelationship: new(_BACnetConstructedDataDefaultSubordinateRelationship)}
+}
+
+type _BACnetConstructedDataDefaultSubordinateRelationshipBuilder struct {
+	*_BACnetConstructedDataDefaultSubordinateRelationship
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDefaultSubordinateRelationshipBuilder) = (*_BACnetConstructedDataDefaultSubordinateRelationshipBuilder)(nil)
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithMandatoryFields(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	return m.WithDefaultSubordinateRelationship(defaultSubordinateRelationship)
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationship(defaultSubordinateRelationship BACnetRelationshipTagged) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	m.DefaultSubordinateRelationship = defaultSubordinateRelationship
+	return m
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) WithDefaultSubordinateRelationshipBuilder(builderSupplier func(BACnetRelationshipTaggedBuilder) BACnetRelationshipTaggedBuilder) BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	builder := builderSupplier(m.DefaultSubordinateRelationship.CreateBACnetRelationshipTaggedBuilder())
+	var err error
+	m.DefaultSubordinateRelationship, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetRelationshipTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) Build() (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+	if m.DefaultSubordinateRelationship == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'defaultSubordinateRelationship' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDefaultSubordinateRelationship.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) MustBuild() BACnetConstructedDataDefaultSubordinateRelationship {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDefaultSubordinateRelationshipBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder()
+}
+
+// CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder creates a BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+func (m *_BACnetConstructedDataDefaultSubordinateRelationship) CreateBACnetConstructedDataDefaultSubordinateRelationshipBuilder() BACnetConstructedDataDefaultSubordinateRelationshipBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDefaultSubordinateRelationshipBuilder()
+	}
+	return &_BACnetConstructedDataDefaultSubordinateRelationshipBuilder{_BACnetConstructedDataDefaultSubordinateRelationship: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

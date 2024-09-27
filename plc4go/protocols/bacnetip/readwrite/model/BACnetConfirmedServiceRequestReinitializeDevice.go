@@ -46,6 +46,8 @@ type BACnetConfirmedServiceRequestReinitializeDevice interface {
 	GetPassword() BACnetContextTagCharacterString
 	// IsBACnetConfirmedServiceRequestReinitializeDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReinitializeDevice()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	CreateBACnetConfirmedServiceRequestReinitializeDeviceBuilder() BACnetConfirmedServiceRequestReinitializeDeviceBuilder
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDevice is the data-structure of this message
@@ -71,6 +73,121 @@ func NewBACnetConfirmedServiceRequestReinitializeDevice(reinitializedStateOfDevi
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReinitializeDeviceBuilder is a builder for BACnetConfirmedServiceRequestReinitializeDevice
+type BACnetConfirmedServiceRequestReinitializeDeviceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// WithReinitializedStateOfDevice adds ReinitializedStateOfDevice (property field)
+	WithReinitializedStateOfDevice(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// WithReinitializedStateOfDeviceBuilder adds ReinitializedStateOfDevice (property field) which is build by the builder
+	WithReinitializedStateOfDeviceBuilder(func(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// WithPassword adds Password (property field)
+	WithOptionalPassword(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// WithOptionalPasswordBuilder adds Password (property field) which is build by the builder
+	WithOptionalPasswordBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+	// Build builds the BACnetConfirmedServiceRequestReinitializeDevice or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReinitializeDevice, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReinitializeDevice
+}
+
+// NewBACnetConfirmedServiceRequestReinitializeDeviceBuilder() creates a BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+func NewBACnetConfirmedServiceRequestReinitializeDeviceBuilder() BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceBuilder{_BACnetConfirmedServiceRequestReinitializeDevice: new(_BACnetConfirmedServiceRequestReinitializeDevice)}
+}
+
+type _BACnetConfirmedServiceRequestReinitializeDeviceBuilder struct {
+	*_BACnetConfirmedServiceRequestReinitializeDevice
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReinitializeDeviceBuilder) = (*_BACnetConfirmedServiceRequestReinitializeDeviceBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithMandatoryFields(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	return m.WithReinitializedStateOfDevice(reinitializedStateOfDevice)
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithReinitializedStateOfDevice(reinitializedStateOfDevice BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	m.ReinitializedStateOfDevice = reinitializedStateOfDevice
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithReinitializedStateOfDeviceBuilder(builderSupplier func(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	builder := builderSupplier(m.ReinitializedStateOfDevice.CreateBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder())
+	var err error
+	m.ReinitializedStateOfDevice, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithOptionalPassword(password BACnetContextTagCharacterString) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	m.Password = password
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) WithOptionalPasswordBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	builder := builderSupplier(m.Password.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	m.Password, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) Build() (BACnetConfirmedServiceRequestReinitializeDevice, error) {
+	if m.ReinitializedStateOfDevice == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'reinitializedStateOfDevice' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestReinitializeDevice.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) MustBuild() BACnetConfirmedServiceRequestReinitializeDevice {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestReinitializeDeviceBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestReinitializeDeviceBuilder creates a BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) CreateBACnetConfirmedServiceRequestReinitializeDeviceBuilder() BACnetConfirmedServiceRequestReinitializeDeviceBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestReinitializeDeviceBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceBuilder{_BACnetConfirmedServiceRequestReinitializeDevice: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataLifeSafetyPointPresentValue interface {
 	GetActualValue() BACnetLifeSafetyStateTagged
 	// IsBACnetConstructedDataLifeSafetyPointPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyPointPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	CreateBACnetConstructedDataLifeSafetyPointPresentValueBuilder() BACnetConstructedDataLifeSafetyPointPresentValueBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyPointPresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLifeSafetyPointPresentValue(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyPointPresentValueBuilder is a builder for BACnetConstructedDataLifeSafetyPointPresentValue
+type BACnetConstructedDataLifeSafetyPointPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyPointPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyPointPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyPointPresentValue
+}
+
+// NewBACnetConstructedDataLifeSafetyPointPresentValueBuilder() creates a BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+func NewBACnetConstructedDataLifeSafetyPointPresentValueBuilder() BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
+	return &_BACnetConstructedDataLifeSafetyPointPresentValueBuilder{_BACnetConstructedDataLifeSafetyPointPresentValue: new(_BACnetConstructedDataLifeSafetyPointPresentValue)}
+}
+
+type _BACnetConstructedDataLifeSafetyPointPresentValueBuilder struct {
+	*_BACnetConstructedDataLifeSafetyPointPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyPointPresentValueBuilder) = (*_BACnetConstructedDataLifeSafetyPointPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) WithMandatoryFields(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) WithPresentValue(presentValue BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetLifeSafetyStateTaggedBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) Build() (BACnetConstructedDataLifeSafetyPointPresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLifeSafetyPointPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) MustBuild() BACnetConstructedDataLifeSafetyPointPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLifeSafetyPointPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataLifeSafetyPointPresentValueBuilder creates a BACnetConstructedDataLifeSafetyPointPresentValueBuilder
+func (m *_BACnetConstructedDataLifeSafetyPointPresentValue) CreateBACnetConstructedDataLifeSafetyPointPresentValueBuilder() BACnetConstructedDataLifeSafetyPointPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLifeSafetyPointPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyPointPresentValueBuilder{_BACnetConstructedDataLifeSafetyPointPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

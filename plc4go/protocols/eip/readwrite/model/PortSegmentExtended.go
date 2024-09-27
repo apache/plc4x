@@ -50,6 +50,8 @@ type PortSegmentExtended interface {
 	GetPaddingByte() uint8
 	// IsPortSegmentExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentExtended()
+	// CreateBuilder creates a PortSegmentExtendedBuilder
+	CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder
 }
 
 // _PortSegmentExtended is the data-structure of this message
@@ -74,6 +76,92 @@ func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *
 	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PortSegmentExtendedBuilder is a builder for PortSegmentExtended
+type PortSegmentExtendedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder
+	// WithPort adds Port (property field)
+	WithPort(uint8) PortSegmentExtendedBuilder
+	// WithLinkAddressSize adds LinkAddressSize (property field)
+	WithLinkAddressSize(uint8) PortSegmentExtendedBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(string) PortSegmentExtendedBuilder
+	// Build builds the PortSegmentExtended or returns an error if something is wrong
+	Build() (PortSegmentExtended, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PortSegmentExtended
+}
+
+// NewPortSegmentExtendedBuilder() creates a PortSegmentExtendedBuilder
+func NewPortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
+	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: new(_PortSegmentExtended)}
+}
+
+type _PortSegmentExtendedBuilder struct {
+	*_PortSegmentExtended
+
+	err *utils.MultiError
+}
+
+var _ (PortSegmentExtendedBuilder) = (*_PortSegmentExtendedBuilder)(nil)
+
+func (m *_PortSegmentExtendedBuilder) WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder {
+	return m.WithPort(port).WithLinkAddressSize(linkAddressSize).WithAddress(address)
+}
+
+func (m *_PortSegmentExtendedBuilder) WithPort(port uint8) PortSegmentExtendedBuilder {
+	m.Port = port
+	return m
+}
+
+func (m *_PortSegmentExtendedBuilder) WithLinkAddressSize(linkAddressSize uint8) PortSegmentExtendedBuilder {
+	m.LinkAddressSize = linkAddressSize
+	return m
+}
+
+func (m *_PortSegmentExtendedBuilder) WithAddress(address string) PortSegmentExtendedBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_PortSegmentExtendedBuilder) Build() (PortSegmentExtended, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PortSegmentExtended.deepCopy(), nil
+}
+
+func (m *_PortSegmentExtendedBuilder) MustBuild() PortSegmentExtended {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PortSegmentExtendedBuilder) DeepCopy() any {
+	return m.CreatePortSegmentExtendedBuilder()
+}
+
+// CreatePortSegmentExtendedBuilder creates a PortSegmentExtendedBuilder
+func (m *_PortSegmentExtended) CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
+	if m == nil {
+		return NewPortSegmentExtendedBuilder()
+	}
+	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

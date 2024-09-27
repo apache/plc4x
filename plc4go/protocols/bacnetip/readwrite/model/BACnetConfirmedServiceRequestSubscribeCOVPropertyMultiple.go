@@ -52,6 +52,8 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
 	GetListOfCovSubscriptionSpecifications() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
 	// IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple is the data-structure of this message
@@ -86,6 +88,193 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(subscriberProc
 	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder is a builder for BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithSubscriberProcessIdentifier adds SubscriberProcessIdentifier (property field)
+	WithSubscriberProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithSubscriberProcessIdentifierBuilder adds SubscriberProcessIdentifier (property field) which is build by the builder
+	WithSubscriberProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithIssueConfirmedNotifications adds IssueConfirmedNotifications (property field)
+	WithOptionalIssueConfirmedNotifications(BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithOptionalIssueConfirmedNotificationsBuilder adds IssueConfirmedNotifications (property field) which is build by the builder
+	WithOptionalIssueConfirmedNotificationsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithLifetime adds Lifetime (property field)
+	WithOptionalLifetime(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithOptionalLifetimeBuilder adds Lifetime (property field) which is build by the builder
+	WithOptionalLifetimeBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithMaxNotificationDelay adds MaxNotificationDelay (property field)
+	WithOptionalMaxNotificationDelay(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithOptionalMaxNotificationDelayBuilder adds MaxNotificationDelay (property field) which is build by the builder
+	WithOptionalMaxNotificationDelayBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithListOfCovSubscriptionSpecifications adds ListOfCovSubscriptionSpecifications (property field)
+	WithListOfCovSubscriptionSpecifications(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// WithListOfCovSubscriptionSpecificationsBuilder adds ListOfCovSubscriptionSpecifications (property field) which is build by the builder
+	WithListOfCovSubscriptionSpecificationsBuilder(func(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+	// Build builds the BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+}
+
+// NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder() creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+func NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder{_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple: new(_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple)}
+}
+
+type _BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder struct {
+	*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) = (*_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	return m.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithListOfCovSubscriptionSpecifications(listOfCovSubscriptionSpecifications)
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	m.SubscriberProcessIdentifier = subscriberProcessIdentifier
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	builder := builderSupplier(m.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.SubscriberProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	m.IssueConfirmedNotifications = issueConfirmedNotifications
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	builder := builderSupplier(m.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	m.IssueConfirmedNotifications, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalLifetime(lifetime BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	m.Lifetime = lifetime
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalLifetimeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	builder := builderSupplier(m.Lifetime.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.Lifetime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalMaxNotificationDelay(maxNotificationDelay BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	m.MaxNotificationDelay = maxNotificationDelay
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithOptionalMaxNotificationDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	builder := builderSupplier(m.MaxNotificationDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.MaxNotificationDelay, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithListOfCovSubscriptionSpecifications(listOfCovSubscriptionSpecifications BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	m.ListOfCovSubscriptionSpecifications = listOfCovSubscriptionSpecifications
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) WithListOfCovSubscriptionSpecificationsBuilder(builderSupplier func(BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder) BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	builder := builderSupplier(m.ListOfCovSubscriptionSpecifications.CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder())
+	var err error
+	m.ListOfCovSubscriptionSpecifications, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsListBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) Build() (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple, error) {
+	if m.SubscriberProcessIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+	}
+	if m.ListOfCovSubscriptionSpecifications == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'listOfCovSubscriptionSpecifications' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) MustBuild() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) CreateBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder() BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleBuilder{_BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

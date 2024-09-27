@@ -49,6 +49,8 @@ type AssociatedValueType interface {
 	GetData() []uint8
 	// IsAssociatedValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAssociatedValueType()
+	// CreateBuilder creates a AssociatedValueTypeBuilder
+	CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder
 }
 
 // _AssociatedValueType is the data-structure of this message
@@ -65,6 +67,99 @@ var _ AssociatedValueType = (*_AssociatedValueType)(nil)
 func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
 	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AssociatedValueTypeBuilder is a builder for AssociatedValueType
+type AssociatedValueTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) AssociatedValueTypeBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) AssociatedValueTypeBuilder
+	// WithValueLength adds ValueLength (property field)
+	WithValueLength(uint16) AssociatedValueTypeBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) AssociatedValueTypeBuilder
+	// Build builds the AssociatedValueType or returns an error if something is wrong
+	Build() (AssociatedValueType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AssociatedValueType
+}
+
+// NewAssociatedValueTypeBuilder() creates a AssociatedValueTypeBuilder
+func NewAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
+	return &_AssociatedValueTypeBuilder{_AssociatedValueType: new(_AssociatedValueType)}
+}
+
+type _AssociatedValueTypeBuilder struct {
+	*_AssociatedValueType
+
+	err *utils.MultiError
+}
+
+var _ (AssociatedValueTypeBuilder) = (*_AssociatedValueTypeBuilder)(nil)
+
+func (m *_AssociatedValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder {
+	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+}
+
+func (m *_AssociatedValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedValueTypeBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_AssociatedValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedValueTypeBuilder {
+	m.TransportSize = transportSize
+	return m
+}
+
+func (m *_AssociatedValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedValueTypeBuilder {
+	m.ValueLength = valueLength
+	return m
+}
+
+func (m *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTypeBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AssociatedValueType.deepCopy(), nil
+}
+
+func (m *_AssociatedValueTypeBuilder) MustBuild() AssociatedValueType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AssociatedValueTypeBuilder) DeepCopy() any {
+	return m.CreateAssociatedValueTypeBuilder()
+}
+
+// CreateAssociatedValueTypeBuilder creates a AssociatedValueTypeBuilder
+func (m *_AssociatedValueType) CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
+	if m == nil {
+		return NewAssociatedValueTypeBuilder()
+	}
+	return &_AssociatedValueTypeBuilder{_AssociatedValueType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

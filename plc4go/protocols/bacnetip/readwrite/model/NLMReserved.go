@@ -44,6 +44,8 @@ type NLMReserved interface {
 	GetUnknownBytes() []byte
 	// IsNLMReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMReserved()
+	// CreateBuilder creates a NLMReservedBuilder
+	CreateNLMReservedBuilder() NLMReservedBuilder
 }
 
 // _NLMReserved is the data-structure of this message
@@ -64,6 +66,78 @@ func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMReservedBuilder is a builder for NLMReserved
+type NLMReservedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder
+	// WithUnknownBytes adds UnknownBytes (property field)
+	WithUnknownBytes(...byte) NLMReservedBuilder
+	// Build builds the NLMReserved or returns an error if something is wrong
+	Build() (NLMReserved, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMReserved
+}
+
+// NewNLMReservedBuilder() creates a NLMReservedBuilder
+func NewNLMReservedBuilder() NLMReservedBuilder {
+	return &_NLMReservedBuilder{_NLMReserved: new(_NLMReserved)}
+}
+
+type _NLMReservedBuilder struct {
+	*_NLMReserved
+
+	err *utils.MultiError
+}
+
+var _ (NLMReservedBuilder) = (*_NLMReservedBuilder)(nil)
+
+func (m *_NLMReservedBuilder) WithMandatoryFields(unknownBytes []byte) NLMReservedBuilder {
+	return m.WithUnknownBytes(unknownBytes...)
+}
+
+func (m *_NLMReservedBuilder) WithUnknownBytes(unknownBytes ...byte) NLMReservedBuilder {
+	m.UnknownBytes = unknownBytes
+	return m
+}
+
+func (m *_NLMReservedBuilder) Build() (NLMReserved, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMReserved.deepCopy(), nil
+}
+
+func (m *_NLMReservedBuilder) MustBuild() NLMReserved {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMReservedBuilder) DeepCopy() any {
+	return m.CreateNLMReservedBuilder()
+}
+
+// CreateNLMReservedBuilder creates a NLMReservedBuilder
+func (m *_NLMReserved) CreateNLMReservedBuilder() NLMReservedBuilder {
+	if m == nil {
+		return NewNLMReservedBuilder()
+	}
+	return &_NLMReservedBuilder{_NLMReserved: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

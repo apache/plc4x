@@ -40,6 +40,8 @@ type BACnetConstructedDataLifeSafetyPointAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataLifeSafetyPointAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyPointAll()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyPointAllBuilder
+	CreateBACnetConstructedDataLifeSafetyPointAllBuilder() BACnetConstructedDataLifeSafetyPointAllBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyPointAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataLifeSafetyPointAll(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyPointAllBuilder is a builder for BACnetConstructedDataLifeSafetyPointAll
+type BACnetConstructedDataLifeSafetyPointAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataLifeSafetyPointAllBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyPointAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyPointAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyPointAll
+}
+
+// NewBACnetConstructedDataLifeSafetyPointAllBuilder() creates a BACnetConstructedDataLifeSafetyPointAllBuilder
+func NewBACnetConstructedDataLifeSafetyPointAllBuilder() BACnetConstructedDataLifeSafetyPointAllBuilder {
+	return &_BACnetConstructedDataLifeSafetyPointAllBuilder{_BACnetConstructedDataLifeSafetyPointAll: new(_BACnetConstructedDataLifeSafetyPointAll)}
+}
+
+type _BACnetConstructedDataLifeSafetyPointAllBuilder struct {
+	*_BACnetConstructedDataLifeSafetyPointAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyPointAllBuilder) = (*_BACnetConstructedDataLifeSafetyPointAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataLifeSafetyPointAllBuilder) WithMandatoryFields() BACnetConstructedDataLifeSafetyPointAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAllBuilder) Build() (BACnetConstructedDataLifeSafetyPointAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLifeSafetyPointAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAllBuilder) MustBuild() BACnetConstructedDataLifeSafetyPointAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLifeSafetyPointAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLifeSafetyPointAllBuilder()
+}
+
+// CreateBACnetConstructedDataLifeSafetyPointAllBuilder creates a BACnetConstructedDataLifeSafetyPointAllBuilder
+func (m *_BACnetConstructedDataLifeSafetyPointAll) CreateBACnetConstructedDataLifeSafetyPointAllBuilder() BACnetConstructedDataLifeSafetyPointAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLifeSafetyPointAllBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyPointAllBuilder{_BACnetConstructedDataLifeSafetyPointAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

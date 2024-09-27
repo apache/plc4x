@@ -50,6 +50,8 @@ type ServicesResponse interface {
 	GetData() []byte
 	// IsServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServicesResponse()
+	// CreateBuilder creates a ServicesResponseBuilder
+	CreateServicesResponseBuilder() ServicesResponseBuilder
 }
 
 // _ServicesResponse is the data-structure of this message
@@ -79,6 +81,99 @@ func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation 
 	_result.TypeIdContract.(*_TypeId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServicesResponseBuilder is a builder for ServicesResponse
+type ServicesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder
+	// WithEncapsulationProtocol adds EncapsulationProtocol (property field)
+	WithEncapsulationProtocol(uint16) ServicesResponseBuilder
+	// WithSupportsCIPEncapsulation adds SupportsCIPEncapsulation (property field)
+	WithSupportsCIPEncapsulation(bool) ServicesResponseBuilder
+	// WithSupportsUDP adds SupportsUDP (property field)
+	WithSupportsUDP(bool) ServicesResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ServicesResponseBuilder
+	// Build builds the ServicesResponse or returns an error if something is wrong
+	Build() (ServicesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServicesResponse
+}
+
+// NewServicesResponseBuilder() creates a ServicesResponseBuilder
+func NewServicesResponseBuilder() ServicesResponseBuilder {
+	return &_ServicesResponseBuilder{_ServicesResponse: new(_ServicesResponse)}
+}
+
+type _ServicesResponseBuilder struct {
+	*_ServicesResponse
+
+	err *utils.MultiError
+}
+
+var _ (ServicesResponseBuilder) = (*_ServicesResponseBuilder)(nil)
+
+func (m *_ServicesResponseBuilder) WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder {
+	return m.WithEncapsulationProtocol(encapsulationProtocol).WithSupportsCIPEncapsulation(supportsCIPEncapsulation).WithSupportsUDP(supportsUDP).WithData(data...)
+}
+
+func (m *_ServicesResponseBuilder) WithEncapsulationProtocol(encapsulationProtocol uint16) ServicesResponseBuilder {
+	m.EncapsulationProtocol = encapsulationProtocol
+	return m
+}
+
+func (m *_ServicesResponseBuilder) WithSupportsCIPEncapsulation(supportsCIPEncapsulation bool) ServicesResponseBuilder {
+	m.SupportsCIPEncapsulation = supportsCIPEncapsulation
+	return m
+}
+
+func (m *_ServicesResponseBuilder) WithSupportsUDP(supportsUDP bool) ServicesResponseBuilder {
+	m.SupportsUDP = supportsUDP
+	return m
+}
+
+func (m *_ServicesResponseBuilder) WithData(data ...byte) ServicesResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ServicesResponseBuilder) Build() (ServicesResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ServicesResponse.deepCopy(), nil
+}
+
+func (m *_ServicesResponseBuilder) MustBuild() ServicesResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServicesResponseBuilder) DeepCopy() any {
+	return m.CreateServicesResponseBuilder()
+}
+
+// CreateServicesResponseBuilder creates a ServicesResponseBuilder
+func (m *_ServicesResponse) CreateServicesResponseBuilder() ServicesResponseBuilder {
+	if m == nil {
+		return NewServicesResponseBuilder()
+	}
+	return &_ServicesResponseBuilder{_ServicesResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

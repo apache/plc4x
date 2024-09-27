@@ -46,6 +46,8 @@ type BACnetConstructedDataUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 	// IsBACnetConstructedDataUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUnits()
+	// CreateBuilder creates a BACnetConstructedDataUnitsBuilder
+	CreateBACnetConstructedDataUnitsBuilder() BACnetConstructedDataUnitsBuilder
 }
 
 // _BACnetConstructedDataUnits is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataUnits(openingTag BACnetOpeningTag, peekedTagHeader 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUnitsBuilder is a builder for BACnetConstructedDataUnits
+type BACnetConstructedDataUnitsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder
+	// WithUnits adds Units (property field)
+	WithUnits(BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder
+	// WithUnitsBuilder adds Units (property field) which is build by the builder
+	WithUnitsBuilder(func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataUnitsBuilder
+	// Build builds the BACnetConstructedDataUnits or returns an error if something is wrong
+	Build() (BACnetConstructedDataUnits, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUnits
+}
+
+// NewBACnetConstructedDataUnitsBuilder() creates a BACnetConstructedDataUnitsBuilder
+func NewBACnetConstructedDataUnitsBuilder() BACnetConstructedDataUnitsBuilder {
+	return &_BACnetConstructedDataUnitsBuilder{_BACnetConstructedDataUnits: new(_BACnetConstructedDataUnits)}
+}
+
+type _BACnetConstructedDataUnitsBuilder struct {
+	*_BACnetConstructedDataUnits
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUnitsBuilder) = (*_BACnetConstructedDataUnitsBuilder)(nil)
+
+func (m *_BACnetConstructedDataUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder {
+	return m.WithUnits(units)
+}
+
+func (m *_BACnetConstructedDataUnitsBuilder) WithUnits(units BACnetEngineeringUnitsTagged) BACnetConstructedDataUnitsBuilder {
+	m.Units = units
+	return m
+}
+
+func (m *_BACnetConstructedDataUnitsBuilder) WithUnitsBuilder(builderSupplier func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataUnitsBuilder {
+	builder := builderSupplier(m.Units.CreateBACnetEngineeringUnitsTaggedBuilder())
+	var err error
+	m.Units, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEngineeringUnitsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataUnitsBuilder) Build() (BACnetConstructedDataUnits, error) {
+	if m.Units == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'units' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataUnits.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataUnitsBuilder) MustBuild() BACnetConstructedDataUnits {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataUnitsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataUnitsBuilder()
+}
+
+// CreateBACnetConstructedDataUnitsBuilder creates a BACnetConstructedDataUnitsBuilder
+func (m *_BACnetConstructedDataUnits) CreateBACnetConstructedDataUnitsBuilder() BACnetConstructedDataUnitsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataUnitsBuilder()
+	}
+	return &_BACnetConstructedDataUnitsBuilder{_BACnetConstructedDataUnits: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

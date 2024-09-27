@@ -40,6 +40,8 @@ type SecurityDataGasAlarmRaised interface {
 	SecurityData
 	// IsSecurityDataGasAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataGasAlarmRaised()
+	// CreateBuilder creates a SecurityDataGasAlarmRaisedBuilder
+	CreateSecurityDataGasAlarmRaisedBuilder() SecurityDataGasAlarmRaisedBuilder
 }
 
 // _SecurityDataGasAlarmRaised is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataGasAlarmRaised(commandTypeContainer SecurityCommandTypeConta
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataGasAlarmRaisedBuilder is a builder for SecurityDataGasAlarmRaised
+type SecurityDataGasAlarmRaisedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataGasAlarmRaisedBuilder
+	// Build builds the SecurityDataGasAlarmRaised or returns an error if something is wrong
+	Build() (SecurityDataGasAlarmRaised, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataGasAlarmRaised
+}
+
+// NewSecurityDataGasAlarmRaisedBuilder() creates a SecurityDataGasAlarmRaisedBuilder
+func NewSecurityDataGasAlarmRaisedBuilder() SecurityDataGasAlarmRaisedBuilder {
+	return &_SecurityDataGasAlarmRaisedBuilder{_SecurityDataGasAlarmRaised: new(_SecurityDataGasAlarmRaised)}
+}
+
+type _SecurityDataGasAlarmRaisedBuilder struct {
+	*_SecurityDataGasAlarmRaised
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataGasAlarmRaisedBuilder) = (*_SecurityDataGasAlarmRaisedBuilder)(nil)
+
+func (m *_SecurityDataGasAlarmRaisedBuilder) WithMandatoryFields() SecurityDataGasAlarmRaisedBuilder {
+	return m
+}
+
+func (m *_SecurityDataGasAlarmRaisedBuilder) Build() (SecurityDataGasAlarmRaised, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataGasAlarmRaised.deepCopy(), nil
+}
+
+func (m *_SecurityDataGasAlarmRaisedBuilder) MustBuild() SecurityDataGasAlarmRaised {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataGasAlarmRaisedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataGasAlarmRaisedBuilder()
+}
+
+// CreateSecurityDataGasAlarmRaisedBuilder creates a SecurityDataGasAlarmRaisedBuilder
+func (m *_SecurityDataGasAlarmRaised) CreateSecurityDataGasAlarmRaisedBuilder() SecurityDataGasAlarmRaisedBuilder {
+	if m == nil {
+		return NewSecurityDataGasAlarmRaisedBuilder()
+	}
+	return &_SecurityDataGasAlarmRaisedBuilder{_SecurityDataGasAlarmRaised: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

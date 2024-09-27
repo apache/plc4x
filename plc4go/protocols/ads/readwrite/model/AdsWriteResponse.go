@@ -44,6 +44,8 @@ type AdsWriteResponse interface {
 	GetResult() ReturnCode
 	// IsAdsWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteResponse()
+	// CreateBuilder creates a AdsWriteResponseBuilder
+	CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder
 }
 
 // _AdsWriteResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAm
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsWriteResponseBuilder is a builder for AdsWriteResponse
+type AdsWriteResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsWriteResponseBuilder
+	// Build builds the AdsWriteResponse or returns an error if something is wrong
+	Build() (AdsWriteResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsWriteResponse
+}
+
+// NewAdsWriteResponseBuilder() creates a AdsWriteResponseBuilder
+func NewAdsWriteResponseBuilder() AdsWriteResponseBuilder {
+	return &_AdsWriteResponseBuilder{_AdsWriteResponse: new(_AdsWriteResponse)}
+}
+
+type _AdsWriteResponseBuilder struct {
+	*_AdsWriteResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsWriteResponseBuilder) = (*_AdsWriteResponseBuilder)(nil)
+
+func (m *_AdsWriteResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder {
+	return m.WithResult(result)
+}
+
+func (m *_AdsWriteResponseBuilder) WithResult(result ReturnCode) AdsWriteResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_AdsWriteResponseBuilder) Build() (AdsWriteResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsWriteResponse.deepCopy(), nil
+}
+
+func (m *_AdsWriteResponseBuilder) MustBuild() AdsWriteResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsWriteResponseBuilder) DeepCopy() any {
+	return m.CreateAdsWriteResponseBuilder()
+}
+
+// CreateAdsWriteResponseBuilder creates a AdsWriteResponseBuilder
+func (m *_AdsWriteResponse) CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder {
+	if m == nil {
+		return NewAdsWriteResponseBuilder()
+	}
+	return &_AdsWriteResponseBuilder{_AdsWriteResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type SysexCommandSysexRealtime interface {
 	SysexCommand
 	// IsSysexCommandSysexRealtime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandSysexRealtime()
+	// CreateBuilder creates a SysexCommandSysexRealtimeBuilder
+	CreateSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder
 }
 
 // _SysexCommandSysexRealtime is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandSysexRealtime() *_SysexCommandSysexRealtime {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandSysexRealtimeBuilder is a builder for SysexCommandSysexRealtime
+type SysexCommandSysexRealtimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandSysexRealtimeBuilder
+	// Build builds the SysexCommandSysexRealtime or returns an error if something is wrong
+	Build() (SysexCommandSysexRealtime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandSysexRealtime
+}
+
+// NewSysexCommandSysexRealtimeBuilder() creates a SysexCommandSysexRealtimeBuilder
+func NewSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder {
+	return &_SysexCommandSysexRealtimeBuilder{_SysexCommandSysexRealtime: new(_SysexCommandSysexRealtime)}
+}
+
+type _SysexCommandSysexRealtimeBuilder struct {
+	*_SysexCommandSysexRealtime
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandSysexRealtimeBuilder) = (*_SysexCommandSysexRealtimeBuilder)(nil)
+
+func (m *_SysexCommandSysexRealtimeBuilder) WithMandatoryFields() SysexCommandSysexRealtimeBuilder {
+	return m
+}
+
+func (m *_SysexCommandSysexRealtimeBuilder) Build() (SysexCommandSysexRealtime, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandSysexRealtime.deepCopy(), nil
+}
+
+func (m *_SysexCommandSysexRealtimeBuilder) MustBuild() SysexCommandSysexRealtime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandSysexRealtimeBuilder) DeepCopy() any {
+	return m.CreateSysexCommandSysexRealtimeBuilder()
+}
+
+// CreateSysexCommandSysexRealtimeBuilder creates a SysexCommandSysexRealtimeBuilder
+func (m *_SysexCommandSysexRealtime) CreateSysexCommandSysexRealtimeBuilder() SysexCommandSysexRealtimeBuilder {
+	if m == nil {
+		return NewSysexCommandSysexRealtimeBuilder()
+	}
+	return &_SysexCommandSysexRealtimeBuilder{_SysexCommandSysexRealtime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

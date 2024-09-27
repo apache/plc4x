@@ -48,6 +48,8 @@ type ModbusRtuADU interface {
 	GetPdu() ModbusPDU
 	// IsModbusRtuADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusRtuADU()
+	// CreateBuilder creates a ModbusRtuADUBuilder
+	CreateModbusRtuADUBuilder() ModbusRtuADUBuilder
 }
 
 // _ModbusRtuADU is the data-structure of this message
@@ -73,6 +75,91 @@ func NewModbusRtuADU(address uint8, pdu ModbusPDU, response bool) *_ModbusRtuADU
 	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusRtuADUBuilder is a builder for ModbusRtuADU
+type ModbusRtuADUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusRtuADUBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint8) ModbusRtuADUBuilder
+	// WithPdu adds Pdu (property field)
+	WithPdu(ModbusPDU) ModbusRtuADUBuilder
+	// Build builds the ModbusRtuADU or returns an error if something is wrong
+	Build() (ModbusRtuADU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusRtuADU
+}
+
+// NewModbusRtuADUBuilder() creates a ModbusRtuADUBuilder
+func NewModbusRtuADUBuilder() ModbusRtuADUBuilder {
+	return &_ModbusRtuADUBuilder{_ModbusRtuADU: new(_ModbusRtuADU)}
+}
+
+type _ModbusRtuADUBuilder struct {
+	*_ModbusRtuADU
+
+	err *utils.MultiError
+}
+
+var _ (ModbusRtuADUBuilder) = (*_ModbusRtuADUBuilder)(nil)
+
+func (m *_ModbusRtuADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusRtuADUBuilder {
+	return m.WithAddress(address).WithPdu(pdu)
+}
+
+func (m *_ModbusRtuADUBuilder) WithAddress(address uint8) ModbusRtuADUBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_ModbusRtuADUBuilder) WithPdu(pdu ModbusPDU) ModbusRtuADUBuilder {
+	m.Pdu = pdu
+	return m
+}
+
+func (m *_ModbusRtuADUBuilder) Build() (ModbusRtuADU, error) {
+	if m.Pdu == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusRtuADU.deepCopy(), nil
+}
+
+func (m *_ModbusRtuADUBuilder) MustBuild() ModbusRtuADU {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusRtuADUBuilder) DeepCopy() any {
+	return m.CreateModbusRtuADUBuilder()
+}
+
+// CreateModbusRtuADUBuilder creates a ModbusRtuADUBuilder
+func (m *_ModbusRtuADU) CreateModbusRtuADUBuilder() ModbusRtuADUBuilder {
+	if m == nil {
+		return NewModbusRtuADUBuilder()
+	}
+	return &_ModbusRtuADUBuilder{_ModbusRtuADU: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

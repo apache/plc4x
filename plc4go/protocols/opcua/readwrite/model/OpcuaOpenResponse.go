@@ -46,6 +46,8 @@ type OpcuaOpenResponse interface {
 	GetMessage() Payload
 	// IsOpcuaOpenResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaOpenResponse()
+	// CreateBuilder creates a OpcuaOpenResponseBuilder
+	CreateOpcuaOpenResponseBuilder() OpcuaOpenResponseBuilder
 }
 
 // _OpcuaOpenResponse is the data-structure of this message
@@ -77,6 +79,97 @@ func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, mess
 	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaOpenResponseBuilder is a builder for OpcuaOpenResponse
+type OpcuaOpenResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openResponse OpenChannelMessage, message Payload) OpcuaOpenResponseBuilder
+	// WithOpenResponse adds OpenResponse (property field)
+	WithOpenResponse(OpenChannelMessage) OpcuaOpenResponseBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(Payload) OpcuaOpenResponseBuilder
+	// Build builds the OpcuaOpenResponse or returns an error if something is wrong
+	Build() (OpcuaOpenResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaOpenResponse
+}
+
+// NewOpcuaOpenResponseBuilder() creates a OpcuaOpenResponseBuilder
+func NewOpcuaOpenResponseBuilder() OpcuaOpenResponseBuilder {
+	return &_OpcuaOpenResponseBuilder{_OpcuaOpenResponse: new(_OpcuaOpenResponse)}
+}
+
+type _OpcuaOpenResponseBuilder struct {
+	*_OpcuaOpenResponse
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaOpenResponseBuilder) = (*_OpcuaOpenResponseBuilder)(nil)
+
+func (m *_OpcuaOpenResponseBuilder) WithMandatoryFields(openResponse OpenChannelMessage, message Payload) OpcuaOpenResponseBuilder {
+	return m.WithOpenResponse(openResponse).WithMessage(message)
+}
+
+func (m *_OpcuaOpenResponseBuilder) WithOpenResponse(openResponse OpenChannelMessage) OpcuaOpenResponseBuilder {
+	m.OpenResponse = openResponse
+	return m
+}
+
+func (m *_OpcuaOpenResponseBuilder) WithMessage(message Payload) OpcuaOpenResponseBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_OpcuaOpenResponseBuilder) Build() (OpcuaOpenResponse, error) {
+	if m.OpenResponse == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openResponse' not set"))
+	}
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpcuaOpenResponse.deepCopy(), nil
+}
+
+func (m *_OpcuaOpenResponseBuilder) MustBuild() OpcuaOpenResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpcuaOpenResponseBuilder) DeepCopy() any {
+	return m.CreateOpcuaOpenResponseBuilder()
+}
+
+// CreateOpcuaOpenResponseBuilder creates a OpcuaOpenResponseBuilder
+func (m *_OpcuaOpenResponse) CreateOpcuaOpenResponseBuilder() OpcuaOpenResponseBuilder {
+	if m == nil {
+		return NewOpcuaOpenResponseBuilder()
+	}
+	return &_OpcuaOpenResponseBuilder{_OpcuaOpenResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

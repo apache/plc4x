@@ -46,6 +46,8 @@ type BACnetConstructedDataMaxFailedAttempts interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMaxFailedAttempts is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxFailedAttempts()
+	// CreateBuilder creates a BACnetConstructedDataMaxFailedAttemptsBuilder
+	CreateBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMaxFailedAttemptsBuilder
 }
 
 // _BACnetConstructedDataMaxFailedAttempts is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaxFailedAttempts(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxFailedAttemptsBuilder is a builder for BACnetConstructedDataMaxFailedAttempts
+type BACnetConstructedDataMaxFailedAttemptsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder
+	// WithMaxFailedAttempts adds MaxFailedAttempts (property field)
+	WithMaxFailedAttempts(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder
+	// WithMaxFailedAttemptsBuilder adds MaxFailedAttempts (property field) which is build by the builder
+	WithMaxFailedAttemptsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxFailedAttemptsBuilder
+	// Build builds the BACnetConstructedDataMaxFailedAttempts or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxFailedAttempts, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxFailedAttempts
+}
+
+// NewBACnetConstructedDataMaxFailedAttemptsBuilder() creates a BACnetConstructedDataMaxFailedAttemptsBuilder
+func NewBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMaxFailedAttemptsBuilder {
+	return &_BACnetConstructedDataMaxFailedAttemptsBuilder{_BACnetConstructedDataMaxFailedAttempts: new(_BACnetConstructedDataMaxFailedAttempts)}
+}
+
+type _BACnetConstructedDataMaxFailedAttemptsBuilder struct {
+	*_BACnetConstructedDataMaxFailedAttempts
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxFailedAttemptsBuilder) = (*_BACnetConstructedDataMaxFailedAttemptsBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMandatoryFields(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	return m.WithMaxFailedAttempts(maxFailedAttempts)
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttempts(maxFailedAttempts BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	m.MaxFailedAttempts = maxFailedAttempts
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) WithMaxFailedAttemptsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxFailedAttemptsBuilder {
+	builder := builderSupplier(m.MaxFailedAttempts.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MaxFailedAttempts, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) Build() (BACnetConstructedDataMaxFailedAttempts, error) {
+	if m.MaxFailedAttempts == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxFailedAttempts' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaxFailedAttempts.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) MustBuild() BACnetConstructedDataMaxFailedAttempts {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaxFailedAttemptsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaxFailedAttemptsBuilder()
+}
+
+// CreateBACnetConstructedDataMaxFailedAttemptsBuilder creates a BACnetConstructedDataMaxFailedAttemptsBuilder
+func (m *_BACnetConstructedDataMaxFailedAttempts) CreateBACnetConstructedDataMaxFailedAttemptsBuilder() BACnetConstructedDataMaxFailedAttemptsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaxFailedAttemptsBuilder()
+	}
+	return &_BACnetConstructedDataMaxFailedAttemptsBuilder{_BACnetConstructedDataMaxFailedAttempts: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

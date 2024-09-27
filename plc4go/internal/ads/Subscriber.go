@@ -189,14 +189,17 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 	subscriptionHandles := map[string]apiModel.PlcSubscriptionHandle{}
 	var err error = nil
 	for _, subscriptionResult := range subscriptionResults {
-		if subscriptionResult.GetErr() != nil {
-			m.log.Debug().Err(subscriptionResult.GetErr()).Msg("Error during subscription")
-			if err == nil {
+		if subErr := subscriptionResult.GetErr(); subErr != nil {
+			m.log.Debug().Err(subErr).Msg("Error during subscription")
+			if subErr == nil {
 				// Lazy initialization of multi error
-				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{subscriptionResult.GetErr()}}
+				subErr = &utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{subErr}}
 			} else {
-				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, subscriptionResult.GetErr())
+				var multiError *utils.MultiError
+				if ok := errors.As(subErr, &multiError); ok {
+					multiError.Append(subErr)
+					multiError.Errors = append(multiError.Errors, subErr)
+				}
 			}
 		} else if subscriptionResult.GetResponse() != nil {
 			if len(subscriptionResult.GetResponse().GetRequest().GetTagNames()) > 1 {

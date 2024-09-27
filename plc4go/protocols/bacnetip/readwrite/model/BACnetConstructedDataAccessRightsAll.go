@@ -40,6 +40,8 @@ type BACnetConstructedDataAccessRightsAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccessRightsAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessRightsAll()
+	// CreateBuilder creates a BACnetConstructedDataAccessRightsAllBuilder
+	CreateBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAccessRightsAllBuilder
 }
 
 // _BACnetConstructedDataAccessRightsAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataAccessRightsAll(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessRightsAllBuilder is a builder for BACnetConstructedDataAccessRightsAll
+type BACnetConstructedDataAccessRightsAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataAccessRightsAllBuilder
+	// Build builds the BACnetConstructedDataAccessRightsAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessRightsAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessRightsAll
+}
+
+// NewBACnetConstructedDataAccessRightsAllBuilder() creates a BACnetConstructedDataAccessRightsAllBuilder
+func NewBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAccessRightsAllBuilder {
+	return &_BACnetConstructedDataAccessRightsAllBuilder{_BACnetConstructedDataAccessRightsAll: new(_BACnetConstructedDataAccessRightsAll)}
+}
+
+type _BACnetConstructedDataAccessRightsAllBuilder struct {
+	*_BACnetConstructedDataAccessRightsAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessRightsAllBuilder) = (*_BACnetConstructedDataAccessRightsAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessRightsAllBuilder) WithMandatoryFields() BACnetConstructedDataAccessRightsAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessRightsAllBuilder) Build() (BACnetConstructedDataAccessRightsAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessRightsAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessRightsAllBuilder) MustBuild() BACnetConstructedDataAccessRightsAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessRightsAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessRightsAllBuilder()
+}
+
+// CreateBACnetConstructedDataAccessRightsAllBuilder creates a BACnetConstructedDataAccessRightsAllBuilder
+func (m *_BACnetConstructedDataAccessRightsAll) CreateBACnetConstructedDataAccessRightsAllBuilder() BACnetConstructedDataAccessRightsAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessRightsAllBuilder()
+	}
+	return &_BACnetConstructedDataAccessRightsAllBuilder{_BACnetConstructedDataAccessRightsAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetConstructedDataCredentialsInZone interface {
 	GetCredentialsInZone() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataCredentialsInZone is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialsInZone()
+	// CreateBuilder creates a BACnetConstructedDataCredentialsInZoneBuilder
+	CreateBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataCredentialsInZone(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialsInZoneBuilder is a builder for BACnetConstructedDataCredentialsInZone
+type BACnetConstructedDataCredentialsInZoneBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(credentialsInZone []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder
+	// WithCredentialsInZone adds CredentialsInZone (property field)
+	WithCredentialsInZone(...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder
+	// Build builds the BACnetConstructedDataCredentialsInZone or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialsInZone, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialsInZone
+}
+
+// NewBACnetConstructedDataCredentialsInZoneBuilder() creates a BACnetConstructedDataCredentialsInZoneBuilder
+func NewBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder {
+	return &_BACnetConstructedDataCredentialsInZoneBuilder{_BACnetConstructedDataCredentialsInZone: new(_BACnetConstructedDataCredentialsInZone)}
+}
+
+type _BACnetConstructedDataCredentialsInZoneBuilder struct {
+	*_BACnetConstructedDataCredentialsInZone
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialsInZoneBuilder) = (*_BACnetConstructedDataCredentialsInZoneBuilder)(nil)
+
+func (m *_BACnetConstructedDataCredentialsInZoneBuilder) WithMandatoryFields(credentialsInZone []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder {
+	return m.WithCredentialsInZone(credentialsInZone...)
+}
+
+func (m *_BACnetConstructedDataCredentialsInZoneBuilder) WithCredentialsInZone(credentialsInZone ...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder {
+	m.CredentialsInZone = credentialsInZone
+	return m
+}
+
+func (m *_BACnetConstructedDataCredentialsInZoneBuilder) Build() (BACnetConstructedDataCredentialsInZone, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCredentialsInZone.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCredentialsInZoneBuilder) MustBuild() BACnetConstructedDataCredentialsInZone {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCredentialsInZoneBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCredentialsInZoneBuilder()
+}
+
+// CreateBACnetConstructedDataCredentialsInZoneBuilder creates a BACnetConstructedDataCredentialsInZoneBuilder
+func (m *_BACnetConstructedDataCredentialsInZone) CreateBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCredentialsInZoneBuilder()
+	}
+	return &_BACnetConstructedDataCredentialsInZoneBuilder{_BACnetConstructedDataCredentialsInZone: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

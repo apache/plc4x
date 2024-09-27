@@ -45,6 +45,8 @@ type BACnetDoorValueTagged interface {
 	GetValue() BACnetDoorValue
 	// IsBACnetDoorValueTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDoorValueTagged()
+	// CreateBuilder creates a BACnetDoorValueTaggedBuilder
+	CreateBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder
 }
 
 // _BACnetDoorValueTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tag
 	}
 	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDoorValueTaggedBuilder is a builder for BACnetDoorValueTagged
+type BACnetDoorValueTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetDoorValue) BACnetDoorValueTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDoorValueTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetDoorValue) BACnetDoorValueTaggedBuilder
+	// Build builds the BACnetDoorValueTagged or returns an error if something is wrong
+	Build() (BACnetDoorValueTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDoorValueTagged
+}
+
+// NewBACnetDoorValueTaggedBuilder() creates a BACnetDoorValueTaggedBuilder
+func NewBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder {
+	return &_BACnetDoorValueTaggedBuilder{_BACnetDoorValueTagged: new(_BACnetDoorValueTagged)}
+}
+
+type _BACnetDoorValueTaggedBuilder struct {
+	*_BACnetDoorValueTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDoorValueTaggedBuilder) = (*_BACnetDoorValueTaggedBuilder)(nil)
+
+func (m *_BACnetDoorValueTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDoorValueTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) WithValue(value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) Build() (BACnetDoorValueTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetDoorValueTagged.deepCopy(), nil
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) MustBuild() BACnetDoorValueTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetDoorValueTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetDoorValueTaggedBuilder()
+}
+
+// CreateBACnetDoorValueTaggedBuilder creates a BACnetDoorValueTaggedBuilder
+func (m *_BACnetDoorValueTagged) CreateBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder {
+	if m == nil {
+		return NewBACnetDoorValueTaggedBuilder()
+	}
+	return &_BACnetDoorValueTaggedBuilder{_BACnetDoorValueTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -52,6 +52,8 @@ type BACnetNotificationParametersUnsignedRange interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetNotificationParametersUnsignedRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersUnsignedRange()
+	// CreateBuilder creates a BACnetNotificationParametersUnsignedRangeBuilder
+	CreateBACnetNotificationParametersUnsignedRangeBuilder() BACnetNotificationParametersUnsignedRangeBuilder
 }
 
 // _BACnetNotificationParametersUnsignedRange is the data-structure of this message
@@ -95,6 +97,211 @@ func NewBACnetNotificationParametersUnsignedRange(openingTag BACnetOpeningTag, p
 	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersUnsignedRangeBuilder is a builder for BACnetNotificationParametersUnsignedRange
+type BACnetNotificationParametersUnsignedRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, sequenceNumber BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithSequenceNumberBuilder adds SequenceNumber (property field) which is build by the builder
+	WithSequenceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithExceededLimit adds ExceededLimit (property field)
+	WithExceededLimit(BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithExceededLimitBuilder adds ExceededLimit (property field) which is build by the builder
+	WithExceededLimitBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersUnsignedRangeBuilder
+	// Build builds the BACnetNotificationParametersUnsignedRange or returns an error if something is wrong
+	Build() (BACnetNotificationParametersUnsignedRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersUnsignedRange
+}
+
+// NewBACnetNotificationParametersUnsignedRangeBuilder() creates a BACnetNotificationParametersUnsignedRangeBuilder
+func NewBACnetNotificationParametersUnsignedRangeBuilder() BACnetNotificationParametersUnsignedRangeBuilder {
+	return &_BACnetNotificationParametersUnsignedRangeBuilder{_BACnetNotificationParametersUnsignedRange: new(_BACnetNotificationParametersUnsignedRange)}
+}
+
+type _BACnetNotificationParametersUnsignedRangeBuilder struct {
+	*_BACnetNotificationParametersUnsignedRange
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersUnsignedRangeBuilder) = (*_BACnetNotificationParametersUnsignedRangeBuilder)(nil)
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, sequenceNumber BACnetContextTagUnsignedInteger, statusFlags BACnetStatusFlagsTagged, exceededLimit BACnetContextTagUnsignedInteger, innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder {
+	return m.WithInnerOpeningTag(innerOpeningTag).WithSequenceNumber(sequenceNumber).WithStatusFlags(statusFlags).WithExceededLimit(exceededLimit).WithInnerClosingTag(innerClosingTag)
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersUnsignedRangeBuilder {
+	m.InnerOpeningTag = innerOpeningTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersUnsignedRangeBuilder {
+	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithSequenceNumber(sequenceNumber BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedRangeBuilder {
+	m.SequenceNumber = sequenceNumber
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithSequenceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedRangeBuilder {
+	builder := builderSupplier(m.SequenceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.SequenceNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersUnsignedRangeBuilder {
+	m.StatusFlags = statusFlags
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersUnsignedRangeBuilder {
+	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	m.StatusFlags, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithExceededLimit(exceededLimit BACnetContextTagUnsignedInteger) BACnetNotificationParametersUnsignedRangeBuilder {
+	m.ExceededLimit = exceededLimit
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithExceededLimitBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersUnsignedRangeBuilder {
+	builder := builderSupplier(m.ExceededLimit.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.ExceededLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersUnsignedRangeBuilder {
+	m.InnerClosingTag = innerClosingTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersUnsignedRangeBuilder {
+	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) Build() (BACnetNotificationParametersUnsignedRange, error) {
+	if m.InnerOpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if m.SequenceNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'sequenceNumber' not set"))
+	}
+	if m.StatusFlags == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if m.ExceededLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'exceededLimit' not set"))
+	}
+	if m.InnerClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersUnsignedRange.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) MustBuild() BACnetNotificationParametersUnsignedRange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersUnsignedRangeBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersUnsignedRangeBuilder()
+}
+
+// CreateBACnetNotificationParametersUnsignedRangeBuilder creates a BACnetNotificationParametersUnsignedRangeBuilder
+func (m *_BACnetNotificationParametersUnsignedRange) CreateBACnetNotificationParametersUnsignedRangeBuilder() BACnetNotificationParametersUnsignedRangeBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersUnsignedRangeBuilder()
+	}
+	return &_BACnetNotificationParametersUnsignedRangeBuilder{_BACnetNotificationParametersUnsignedRange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

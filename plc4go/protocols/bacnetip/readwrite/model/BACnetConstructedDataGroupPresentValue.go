@@ -44,6 +44,8 @@ type BACnetConstructedDataGroupPresentValue interface {
 	GetPresentValue() []BACnetReadAccessResult
 	// IsBACnetConstructedDataGroupPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGroupPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataGroupPresentValueBuilder
+	CreateBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGroupPresentValueBuilder
 }
 
 // _BACnetConstructedDataGroupPresentValue is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataGroupPresentValue(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGroupPresentValueBuilder is a builder for BACnetConstructedDataGroupPresentValue
+type BACnetConstructedDataGroupPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue []BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(...BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder
+	// Build builds the BACnetConstructedDataGroupPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataGroupPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGroupPresentValue
+}
+
+// NewBACnetConstructedDataGroupPresentValueBuilder() creates a BACnetConstructedDataGroupPresentValueBuilder
+func NewBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGroupPresentValueBuilder {
+	return &_BACnetConstructedDataGroupPresentValueBuilder{_BACnetConstructedDataGroupPresentValue: new(_BACnetConstructedDataGroupPresentValue)}
+}
+
+type _BACnetConstructedDataGroupPresentValueBuilder struct {
+	*_BACnetConstructedDataGroupPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGroupPresentValueBuilder) = (*_BACnetConstructedDataGroupPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataGroupPresentValueBuilder) WithMandatoryFields(presentValue []BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
+	return m.WithPresentValue(presentValue...)
+}
+
+func (m *_BACnetConstructedDataGroupPresentValueBuilder) WithPresentValue(presentValue ...BACnetReadAccessResult) BACnetConstructedDataGroupPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataGroupPresentValueBuilder) Build() (BACnetConstructedDataGroupPresentValue, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataGroupPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataGroupPresentValueBuilder) MustBuild() BACnetConstructedDataGroupPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataGroupPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataGroupPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataGroupPresentValueBuilder creates a BACnetConstructedDataGroupPresentValueBuilder
+func (m *_BACnetConstructedDataGroupPresentValue) CreateBACnetConstructedDataGroupPresentValueBuilder() BACnetConstructedDataGroupPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataGroupPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataGroupPresentValueBuilder{_BACnetConstructedDataGroupPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type SALData interface {
 	utils.Copyable
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
+	// CreateBuilder creates a SALDataBuilder
+	CreateSALDataBuilder() SALDataBuilder
 }
 
 // SALDataContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type SALDataContract interface {
 	GetSalData() SALData
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
+	// CreateBuilder creates a SALDataBuilder
+	CreateSALDataBuilder() SALDataBuilder
 }
 
 // SALDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +77,78 @@ var _ SALDataContract = (*_SALData)(nil)
 func NewSALData(salData SALData) *_SALData {
 	return &_SALData{SalData: salData}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataBuilder is a builder for SALData
+type SALDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataBuilder
+	// WithSalData adds SalData (property field)
+	WithOptionalSalData(SALData) SALDataBuilder
+	// Build builds the SALData or returns an error if something is wrong
+	Build() (SALDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataContract
+}
+
+// NewSALDataBuilder() creates a SALDataBuilder
+func NewSALDataBuilder() SALDataBuilder {
+	return &_SALDataBuilder{_SALData: new(_SALData)}
+}
+
+type _SALDataBuilder struct {
+	*_SALData
+
+	err *utils.MultiError
+}
+
+var _ (SALDataBuilder) = (*_SALDataBuilder)(nil)
+
+func (m *_SALDataBuilder) WithMandatoryFields() SALDataBuilder {
+	return m
+}
+
+func (m *_SALDataBuilder) WithOptionalSalData(salData SALData) SALDataBuilder {
+	m.SalData = salData
+	return m
+}
+
+func (m *_SALDataBuilder) Build() (SALDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALData.deepCopy(), nil
+}
+
+func (m *_SALDataBuilder) MustBuild() SALDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataBuilder) DeepCopy() any {
+	return m.CreateSALDataBuilder()
+}
+
+// CreateSALDataBuilder creates a SALDataBuilder
+func (m *_SALData) CreateSALDataBuilder() SALDataBuilder {
+	if m == nil {
+		return NewSALDataBuilder()
+	}
+	return &_SALDataBuilder{_SALData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

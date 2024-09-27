@@ -43,6 +43,8 @@ type ApduDataExt interface {
 	utils.Copyable
 	// IsApduDataExt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExt()
+	// CreateBuilder creates a ApduDataExtBuilder
+	CreateApduDataExtBuilder() ApduDataExtBuilder
 }
 
 // ApduDataExtContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type ApduDataExtContract interface {
 	GetLength() uint8
 	// IsApduDataExt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExt()
+	// CreateBuilder creates a ApduDataExtBuilder
+	CreateApduDataExtBuilder() ApduDataExtBuilder
 }
 
 // ApduDataExtRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +79,71 @@ var _ ApduDataExtContract = (*_ApduDataExt)(nil)
 func NewApduDataExt(length uint8) *_ApduDataExt {
 	return &_ApduDataExt{Length: length}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtBuilder is a builder for ApduDataExt
+type ApduDataExtBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtBuilder
+	// Build builds the ApduDataExt or returns an error if something is wrong
+	Build() (ApduDataExtContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtContract
+}
+
+// NewApduDataExtBuilder() creates a ApduDataExtBuilder
+func NewApduDataExtBuilder() ApduDataExtBuilder {
+	return &_ApduDataExtBuilder{_ApduDataExt: new(_ApduDataExt)}
+}
+
+type _ApduDataExtBuilder struct {
+	*_ApduDataExt
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtBuilder) = (*_ApduDataExtBuilder)(nil)
+
+func (m *_ApduDataExtBuilder) WithMandatoryFields() ApduDataExtBuilder {
+	return m
+}
+
+func (m *_ApduDataExtBuilder) Build() (ApduDataExtContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExt.deepCopy(), nil
+}
+
+func (m *_ApduDataExtBuilder) MustBuild() ApduDataExtContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtBuilder) DeepCopy() any {
+	return m.CreateApduDataExtBuilder()
+}
+
+// CreateApduDataExtBuilder creates a ApduDataExtBuilder
+func (m *_ApduDataExt) CreateApduDataExtBuilder() ApduDataExtBuilder {
+	if m == nil {
+		return NewApduDataExtBuilder()
+	}
+	return &_ApduDataExtBuilder{_ApduDataExt: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExt(structType any) ApduDataExt {

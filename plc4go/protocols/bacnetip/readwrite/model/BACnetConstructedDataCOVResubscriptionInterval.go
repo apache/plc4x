@@ -46,6 +46,8 @@ type BACnetConstructedDataCOVResubscriptionInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataCOVResubscriptionInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCOVResubscriptionInterval()
+	// CreateBuilder creates a BACnetConstructedDataCOVResubscriptionIntervalBuilder
+	CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructedDataCOVResubscriptionIntervalBuilder
 }
 
 // _BACnetConstructedDataCOVResubscriptionInterval is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCOVResubscriptionInterval(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCOVResubscriptionIntervalBuilder is a builder for BACnetConstructedDataCOVResubscriptionInterval
+type BACnetConstructedDataCOVResubscriptionIntervalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder
+	// WithCovResubscriptionInterval adds CovResubscriptionInterval (property field)
+	WithCovResubscriptionInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder
+	// WithCovResubscriptionIntervalBuilder adds CovResubscriptionInterval (property field) which is build by the builder
+	WithCovResubscriptionIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVResubscriptionIntervalBuilder
+	// Build builds the BACnetConstructedDataCOVResubscriptionInterval or returns an error if something is wrong
+	Build() (BACnetConstructedDataCOVResubscriptionInterval, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCOVResubscriptionInterval
+}
+
+// NewBACnetConstructedDataCOVResubscriptionIntervalBuilder() creates a BACnetConstructedDataCOVResubscriptionIntervalBuilder
+func NewBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	return &_BACnetConstructedDataCOVResubscriptionIntervalBuilder{_BACnetConstructedDataCOVResubscriptionInterval: new(_BACnetConstructedDataCOVResubscriptionInterval)}
+}
+
+type _BACnetConstructedDataCOVResubscriptionIntervalBuilder struct {
+	*_BACnetConstructedDataCOVResubscriptionInterval
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCOVResubscriptionIntervalBuilder) = (*_BACnetConstructedDataCOVResubscriptionIntervalBuilder)(nil)
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithMandatoryFields(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	return m.WithCovResubscriptionInterval(covResubscriptionInterval)
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionInterval(covResubscriptionInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	m.CovResubscriptionInterval = covResubscriptionInterval
+	return m
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) WithCovResubscriptionIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	builder := builderSupplier(m.CovResubscriptionInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.CovResubscriptionInterval, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) Build() (BACnetConstructedDataCOVResubscriptionInterval, error) {
+	if m.CovResubscriptionInterval == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'covResubscriptionInterval' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCOVResubscriptionInterval.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) MustBuild() BACnetConstructedDataCOVResubscriptionInterval {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCOVResubscriptionIntervalBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder()
+}
+
+// CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder creates a BACnetConstructedDataCOVResubscriptionIntervalBuilder
+func (m *_BACnetConstructedDataCOVResubscriptionInterval) CreateBACnetConstructedDataCOVResubscriptionIntervalBuilder() BACnetConstructedDataCOVResubscriptionIntervalBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCOVResubscriptionIntervalBuilder()
+	}
+	return &_BACnetConstructedDataCOVResubscriptionIntervalBuilder{_BACnetConstructedDataCOVResubscriptionInterval: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

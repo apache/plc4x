@@ -45,6 +45,8 @@ type BACnetNodeTypeTagged interface {
 	GetValue() BACnetNodeType
 	// IsBACnetNodeTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNodeTypeTagged()
+	// CreateBuilder creates a BACnetNodeTypeTaggedBuilder
+	CreateBACnetNodeTypeTaggedBuilder() BACnetNodeTypeTaggedBuilder
 }
 
 // _BACnetNodeTypeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetNodeTypeTagged(header BACnetTagHeader, value BACnetNodeType, tagNu
 	}
 	return &_BACnetNodeTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNodeTypeTaggedBuilder is a builder for BACnetNodeTypeTagged
+type BACnetNodeTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetNodeType) BACnetNodeTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetNodeTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNodeTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetNodeType) BACnetNodeTypeTaggedBuilder
+	// Build builds the BACnetNodeTypeTagged or returns an error if something is wrong
+	Build() (BACnetNodeTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNodeTypeTagged
+}
+
+// NewBACnetNodeTypeTaggedBuilder() creates a BACnetNodeTypeTaggedBuilder
+func NewBACnetNodeTypeTaggedBuilder() BACnetNodeTypeTaggedBuilder {
+	return &_BACnetNodeTypeTaggedBuilder{_BACnetNodeTypeTagged: new(_BACnetNodeTypeTagged)}
+}
+
+type _BACnetNodeTypeTaggedBuilder struct {
+	*_BACnetNodeTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNodeTypeTaggedBuilder) = (*_BACnetNodeTypeTaggedBuilder)(nil)
+
+func (m *_BACnetNodeTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNodeType) BACnetNodeTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNodeTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNodeTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) WithValue(value BACnetNodeType) BACnetNodeTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) Build() (BACnetNodeTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNodeTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) MustBuild() BACnetNodeTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNodeTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetNodeTypeTaggedBuilder()
+}
+
+// CreateBACnetNodeTypeTaggedBuilder creates a BACnetNodeTypeTaggedBuilder
+func (m *_BACnetNodeTypeTagged) CreateBACnetNodeTypeTaggedBuilder() BACnetNodeTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetNodeTypeTaggedBuilder()
+	}
+	return &_BACnetNodeTypeTaggedBuilder{_BACnetNodeTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

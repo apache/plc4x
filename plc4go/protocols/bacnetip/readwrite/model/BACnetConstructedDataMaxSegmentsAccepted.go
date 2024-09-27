@@ -46,6 +46,8 @@ type BACnetConstructedDataMaxSegmentsAccepted interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMaxSegmentsAccepted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxSegmentsAccepted()
+	// CreateBuilder creates a BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataMaxSegmentsAcceptedBuilder
 }
 
 // _BACnetConstructedDataMaxSegmentsAccepted is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaxSegmentsAccepted(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxSegmentsAcceptedBuilder is a builder for BACnetConstructedDataMaxSegmentsAccepted
+type BACnetConstructedDataMaxSegmentsAcceptedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	// WithMaxSegmentsAccepted adds MaxSegmentsAccepted (property field)
+	WithMaxSegmentsAccepted(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	// WithMaxSegmentsAcceptedBuilder adds MaxSegmentsAccepted (property field) which is build by the builder
+	WithMaxSegmentsAcceptedBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxSegmentsAcceptedBuilder
+	// Build builds the BACnetConstructedDataMaxSegmentsAccepted or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxSegmentsAccepted, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxSegmentsAccepted
+}
+
+// NewBACnetConstructedDataMaxSegmentsAcceptedBuilder() creates a BACnetConstructedDataMaxSegmentsAcceptedBuilder
+func NewBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	return &_BACnetConstructedDataMaxSegmentsAcceptedBuilder{_BACnetConstructedDataMaxSegmentsAccepted: new(_BACnetConstructedDataMaxSegmentsAccepted)}
+}
+
+type _BACnetConstructedDataMaxSegmentsAcceptedBuilder struct {
+	*_BACnetConstructedDataMaxSegmentsAccepted
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxSegmentsAcceptedBuilder) = (*_BACnetConstructedDataMaxSegmentsAcceptedBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMandatoryFields(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	return m.WithMaxSegmentsAccepted(maxSegmentsAccepted)
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAccepted(maxSegmentsAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	m.MaxSegmentsAccepted = maxSegmentsAccepted
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) WithMaxSegmentsAcceptedBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	builder := builderSupplier(m.MaxSegmentsAccepted.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MaxSegmentsAccepted, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) Build() (BACnetConstructedDataMaxSegmentsAccepted, error) {
+	if m.MaxSegmentsAccepted == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxSegmentsAccepted' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaxSegmentsAccepted.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) MustBuild() BACnetConstructedDataMaxSegmentsAccepted {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaxSegmentsAcceptedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder()
+}
+
+// CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder creates a BACnetConstructedDataMaxSegmentsAcceptedBuilder
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) CreateBACnetConstructedDataMaxSegmentsAcceptedBuilder() BACnetConstructedDataMaxSegmentsAcceptedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaxSegmentsAcceptedBuilder()
+	}
+	return &_BACnetConstructedDataMaxSegmentsAcceptedBuilder{_BACnetConstructedDataMaxSegmentsAccepted: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

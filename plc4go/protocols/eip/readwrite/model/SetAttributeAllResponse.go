@@ -40,6 +40,8 @@ type SetAttributeAllResponse interface {
 	CipService
 	// IsSetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeAllResponse()
+	// CreateBuilder creates a SetAttributeAllResponseBuilder
+	CreateSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder
 }
 
 // _SetAttributeAllResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSetAttributeAllResponse(serviceLen uint16) *_SetAttributeAllResponse {
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetAttributeAllResponseBuilder is a builder for SetAttributeAllResponse
+type SetAttributeAllResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SetAttributeAllResponseBuilder
+	// Build builds the SetAttributeAllResponse or returns an error if something is wrong
+	Build() (SetAttributeAllResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetAttributeAllResponse
+}
+
+// NewSetAttributeAllResponseBuilder() creates a SetAttributeAllResponseBuilder
+func NewSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
+	return &_SetAttributeAllResponseBuilder{_SetAttributeAllResponse: new(_SetAttributeAllResponse)}
+}
+
+type _SetAttributeAllResponseBuilder struct {
+	*_SetAttributeAllResponse
+
+	err *utils.MultiError
+}
+
+var _ (SetAttributeAllResponseBuilder) = (*_SetAttributeAllResponseBuilder)(nil)
+
+func (m *_SetAttributeAllResponseBuilder) WithMandatoryFields() SetAttributeAllResponseBuilder {
+	return m
+}
+
+func (m *_SetAttributeAllResponseBuilder) Build() (SetAttributeAllResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SetAttributeAllResponse.deepCopy(), nil
+}
+
+func (m *_SetAttributeAllResponseBuilder) MustBuild() SetAttributeAllResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SetAttributeAllResponseBuilder) DeepCopy() any {
+	return m.CreateSetAttributeAllResponseBuilder()
+}
+
+// CreateSetAttributeAllResponseBuilder creates a SetAttributeAllResponseBuilder
+func (m *_SetAttributeAllResponse) CreateSetAttributeAllResponseBuilder() SetAttributeAllResponseBuilder {
+	if m == nil {
+		return NewSetAttributeAllResponseBuilder()
+	}
+	return &_SetAttributeAllResponseBuilder{_SetAttributeAllResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

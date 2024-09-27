@@ -40,6 +40,8 @@ type DataTypeDefinition interface {
 	ExtensionObjectDefinition
 	// IsDataTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataTypeDefinition()
+	// CreateBuilder creates a DataTypeDefinitionBuilder
+	CreateDataTypeDefinitionBuilder() DataTypeDefinitionBuilder
 }
 
 // _DataTypeDefinition is the data-structure of this message
@@ -58,6 +60,71 @@ func NewDataTypeDefinition() *_DataTypeDefinition {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataTypeDefinitionBuilder is a builder for DataTypeDefinition
+type DataTypeDefinitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DataTypeDefinitionBuilder
+	// Build builds the DataTypeDefinition or returns an error if something is wrong
+	Build() (DataTypeDefinition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataTypeDefinition
+}
+
+// NewDataTypeDefinitionBuilder() creates a DataTypeDefinitionBuilder
+func NewDataTypeDefinitionBuilder() DataTypeDefinitionBuilder {
+	return &_DataTypeDefinitionBuilder{_DataTypeDefinition: new(_DataTypeDefinition)}
+}
+
+type _DataTypeDefinitionBuilder struct {
+	*_DataTypeDefinition
+
+	err *utils.MultiError
+}
+
+var _ (DataTypeDefinitionBuilder) = (*_DataTypeDefinitionBuilder)(nil)
+
+func (m *_DataTypeDefinitionBuilder) WithMandatoryFields() DataTypeDefinitionBuilder {
+	return m
+}
+
+func (m *_DataTypeDefinitionBuilder) Build() (DataTypeDefinition, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DataTypeDefinition.deepCopy(), nil
+}
+
+func (m *_DataTypeDefinitionBuilder) MustBuild() DataTypeDefinition {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DataTypeDefinitionBuilder) DeepCopy() any {
+	return m.CreateDataTypeDefinitionBuilder()
+}
+
+// CreateDataTypeDefinitionBuilder creates a DataTypeDefinitionBuilder
+func (m *_DataTypeDefinition) CreateDataTypeDefinitionBuilder() DataTypeDefinitionBuilder {
+	if m == nil {
+		return NewDataTypeDefinitionBuilder()
+	}
+	return &_DataTypeDefinitionBuilder{_DataTypeDefinition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

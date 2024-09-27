@@ -48,6 +48,8 @@ type BACnetConstructedDataCarDoorText interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataCarDoorText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarDoorText()
+	// CreateBuilder creates a BACnetConstructedDataCarDoorTextBuilder
+	CreateBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder
 }
 
 // _BACnetConstructedDataCarDoorText is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataCarDoorText(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarDoorTextBuilder is a builder for BACnetConstructedDataCarDoorText
+type BACnetConstructedDataCarDoorTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carDoorText []BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorTextBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorTextBuilder
+	// WithCarDoorText adds CarDoorText (property field)
+	WithCarDoorText(...BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder
+	// Build builds the BACnetConstructedDataCarDoorText or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarDoorText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarDoorText
+}
+
+// NewBACnetConstructedDataCarDoorTextBuilder() creates a BACnetConstructedDataCarDoorTextBuilder
+func NewBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder {
+	return &_BACnetConstructedDataCarDoorTextBuilder{_BACnetConstructedDataCarDoorText: new(_BACnetConstructedDataCarDoorText)}
+}
+
+type _BACnetConstructedDataCarDoorTextBuilder struct {
+	*_BACnetConstructedDataCarDoorText
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarDoorTextBuilder) = (*_BACnetConstructedDataCarDoorTextBuilder)(nil)
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) WithMandatoryFields(carDoorText []BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder {
+	return m.WithCarDoorText(carDoorText...)
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorTextBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorTextBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) WithCarDoorText(carDoorText ...BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder {
+	m.CarDoorText = carDoorText
+	return m
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) Build() (BACnetConstructedDataCarDoorText, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCarDoorText.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) MustBuild() BACnetConstructedDataCarDoorText {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCarDoorTextBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCarDoorTextBuilder()
+}
+
+// CreateBACnetConstructedDataCarDoorTextBuilder creates a BACnetConstructedDataCarDoorTextBuilder
+func (m *_BACnetConstructedDataCarDoorText) CreateBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCarDoorTextBuilder()
+	}
+	return &_BACnetConstructedDataCarDoorTextBuilder{_BACnetConstructedDataCarDoorText: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

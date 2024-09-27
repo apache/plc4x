@@ -75,6 +75,8 @@ type BACnetTagPayloadUnsignedInteger interface {
 	GetActualValue() uint64
 	// IsBACnetTagPayloadUnsignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadUnsignedInteger()
+	// CreateBuilder creates a BACnetTagPayloadUnsignedIntegerBuilder
+	CreateBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedIntegerBuilder
 }
 
 // _BACnetTagPayloadUnsignedInteger is the data-structure of this message
@@ -98,6 +100,127 @@ var _ BACnetTagPayloadUnsignedInteger = (*_BACnetTagPayloadUnsignedInteger)(nil)
 func NewBACnetTagPayloadUnsignedInteger(valueUint8 *uint8, valueUint16 *uint16, valueUint24 *uint32, valueUint32 *uint32, valueUint40 *uint64, valueUint48 *uint64, valueUint56 *uint64, valueUint64 *uint64, actualLength uint32) *_BACnetTagPayloadUnsignedInteger {
 	return &_BACnetTagPayloadUnsignedInteger{ValueUint8: valueUint8, ValueUint16: valueUint16, ValueUint24: valueUint24, ValueUint32: valueUint32, ValueUint40: valueUint40, ValueUint48: valueUint48, ValueUint56: valueUint56, ValueUint64: valueUint64, ActualLength: actualLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadUnsignedIntegerBuilder is a builder for BACnetTagPayloadUnsignedInteger
+type BACnetTagPayloadUnsignedIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint8 adds ValueUint8 (property field)
+	WithOptionalValueUint8(uint8) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint16 adds ValueUint16 (property field)
+	WithOptionalValueUint16(uint16) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint24 adds ValueUint24 (property field)
+	WithOptionalValueUint24(uint32) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint32 adds ValueUint32 (property field)
+	WithOptionalValueUint32(uint32) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint40 adds ValueUint40 (property field)
+	WithOptionalValueUint40(uint64) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint48 adds ValueUint48 (property field)
+	WithOptionalValueUint48(uint64) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint56 adds ValueUint56 (property field)
+	WithOptionalValueUint56(uint64) BACnetTagPayloadUnsignedIntegerBuilder
+	// WithValueUint64 adds ValueUint64 (property field)
+	WithOptionalValueUint64(uint64) BACnetTagPayloadUnsignedIntegerBuilder
+	// Build builds the BACnetTagPayloadUnsignedInteger or returns an error if something is wrong
+	Build() (BACnetTagPayloadUnsignedInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadUnsignedInteger
+}
+
+// NewBACnetTagPayloadUnsignedIntegerBuilder() creates a BACnetTagPayloadUnsignedIntegerBuilder
+func NewBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedIntegerBuilder {
+	return &_BACnetTagPayloadUnsignedIntegerBuilder{_BACnetTagPayloadUnsignedInteger: new(_BACnetTagPayloadUnsignedInteger)}
+}
+
+type _BACnetTagPayloadUnsignedIntegerBuilder struct {
+	*_BACnetTagPayloadUnsignedInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadUnsignedIntegerBuilder) = (*_BACnetTagPayloadUnsignedIntegerBuilder)(nil)
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithMandatoryFields() BACnetTagPayloadUnsignedIntegerBuilder {
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint8(valueUint8 uint8) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint8 = &valueUint8
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint16(valueUint16 uint16) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint16 = &valueUint16
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint24(valueUint24 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint24 = &valueUint24
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint32(valueUint32 uint32) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint32 = &valueUint32
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint40(valueUint40 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint40 = &valueUint40
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint48(valueUint48 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint48 = &valueUint48
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint56(valueUint56 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint56 = &valueUint56
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) WithOptionalValueUint64(valueUint64 uint64) BACnetTagPayloadUnsignedIntegerBuilder {
+	m.ValueUint64 = &valueUint64
+	return m
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) Build() (BACnetTagPayloadUnsignedInteger, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTagPayloadUnsignedInteger.deepCopy(), nil
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) MustBuild() BACnetTagPayloadUnsignedInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTagPayloadUnsignedIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetTagPayloadUnsignedIntegerBuilder()
+}
+
+// CreateBACnetTagPayloadUnsignedIntegerBuilder creates a BACnetTagPayloadUnsignedIntegerBuilder
+func (m *_BACnetTagPayloadUnsignedInteger) CreateBACnetTagPayloadUnsignedIntegerBuilder() BACnetTagPayloadUnsignedIntegerBuilder {
+	if m == nil {
+		return NewBACnetTagPayloadUnsignedIntegerBuilder()
+	}
+	return &_BACnetTagPayloadUnsignedIntegerBuilder{_BACnetTagPayloadUnsignedInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

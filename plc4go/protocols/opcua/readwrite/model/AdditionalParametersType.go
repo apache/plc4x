@@ -46,6 +46,8 @@ type AdditionalParametersType interface {
 	GetParameters() []ExtensionObjectDefinition
 	// IsAdditionalParametersType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdditionalParametersType()
+	// CreateBuilder creates a AdditionalParametersTypeBuilder
+	CreateAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder
 }
 
 // _AdditionalParametersType is the data-structure of this message
@@ -68,6 +70,85 @@ func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObj
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdditionalParametersTypeBuilder is a builder for AdditionalParametersType
+type AdditionalParametersTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	// WithNoOfParameters adds NoOfParameters (property field)
+	WithNoOfParameters(int32) AdditionalParametersTypeBuilder
+	// WithParameters adds Parameters (property field)
+	WithParameters(...ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	// Build builds the AdditionalParametersType or returns an error if something is wrong
+	Build() (AdditionalParametersType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdditionalParametersType
+}
+
+// NewAdditionalParametersTypeBuilder() creates a AdditionalParametersTypeBuilder
+func NewAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder {
+	return &_AdditionalParametersTypeBuilder{_AdditionalParametersType: new(_AdditionalParametersType)}
+}
+
+type _AdditionalParametersTypeBuilder struct {
+	*_AdditionalParametersType
+
+	err *utils.MultiError
+}
+
+var _ (AdditionalParametersTypeBuilder) = (*_AdditionalParametersTypeBuilder)(nil)
+
+func (m *_AdditionalParametersTypeBuilder) WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+	return m.WithNoOfParameters(noOfParameters).WithParameters(parameters...)
+}
+
+func (m *_AdditionalParametersTypeBuilder) WithNoOfParameters(noOfParameters int32) AdditionalParametersTypeBuilder {
+	m.NoOfParameters = noOfParameters
+	return m
+}
+
+func (m *_AdditionalParametersTypeBuilder) WithParameters(parameters ...ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+	m.Parameters = parameters
+	return m
+}
+
+func (m *_AdditionalParametersTypeBuilder) Build() (AdditionalParametersType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdditionalParametersType.deepCopy(), nil
+}
+
+func (m *_AdditionalParametersTypeBuilder) MustBuild() AdditionalParametersType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdditionalParametersTypeBuilder) DeepCopy() any {
+	return m.CreateAdditionalParametersTypeBuilder()
+}
+
+// CreateAdditionalParametersTypeBuilder creates a AdditionalParametersTypeBuilder
+func (m *_AdditionalParametersType) CreateAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder {
+	if m == nil {
+		return NewAdditionalParametersTypeBuilder()
+	}
+	return &_AdditionalParametersTypeBuilder{_AdditionalParametersType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetConstructedDataEventLogLogBuffer interface {
 	GetFloorText() []BACnetEventLogRecord
 	// IsBACnetConstructedDataEventLogLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventLogLogBuffer()
+	// CreateBuilder creates a BACnetConstructedDataEventLogLogBufferBuilder
+	CreateBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder
 }
 
 // _BACnetConstructedDataEventLogLogBuffer is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataEventLogLogBuffer(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventLogLogBufferBuilder is a builder for BACnetConstructedDataEventLogLogBuffer
+type BACnetConstructedDataEventLogLogBufferBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorText []BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder
+	// WithFloorText adds FloorText (property field)
+	WithFloorText(...BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder
+	// Build builds the BACnetConstructedDataEventLogLogBuffer or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventLogLogBuffer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventLogLogBuffer
+}
+
+// NewBACnetConstructedDataEventLogLogBufferBuilder() creates a BACnetConstructedDataEventLogLogBufferBuilder
+func NewBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder {
+	return &_BACnetConstructedDataEventLogLogBufferBuilder{_BACnetConstructedDataEventLogLogBuffer: new(_BACnetConstructedDataEventLogLogBuffer)}
+}
+
+type _BACnetConstructedDataEventLogLogBufferBuilder struct {
+	*_BACnetConstructedDataEventLogLogBuffer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventLogLogBufferBuilder) = (*_BACnetConstructedDataEventLogLogBufferBuilder)(nil)
+
+func (m *_BACnetConstructedDataEventLogLogBufferBuilder) WithMandatoryFields(floorText []BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder {
+	return m.WithFloorText(floorText...)
+}
+
+func (m *_BACnetConstructedDataEventLogLogBufferBuilder) WithFloorText(floorText ...BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder {
+	m.FloorText = floorText
+	return m
+}
+
+func (m *_BACnetConstructedDataEventLogLogBufferBuilder) Build() (BACnetConstructedDataEventLogLogBuffer, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEventLogLogBuffer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEventLogLogBufferBuilder) MustBuild() BACnetConstructedDataEventLogLogBuffer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEventLogLogBufferBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEventLogLogBufferBuilder()
+}
+
+// CreateBACnetConstructedDataEventLogLogBufferBuilder creates a BACnetConstructedDataEventLogLogBufferBuilder
+func (m *_BACnetConstructedDataEventLogLogBuffer) CreateBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEventLogLogBufferBuilder()
+	}
+	return &_BACnetConstructedDataEventLogLogBufferBuilder{_BACnetConstructedDataEventLogLogBuffer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@ type LightingLabelOptions interface {
 	GetLabelType() LightingLabelType
 	// IsLightingLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingLabelOptions()
+	// CreateBuilder creates a LightingLabelOptionsBuilder
+	CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder
 }
 
 // _LightingLabelOptions is the data-structure of this message
@@ -64,6 +66,85 @@ var _ LightingLabelOptions = (*_LightingLabelOptions)(nil)
 func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
 	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingLabelOptionsBuilder is a builder for LightingLabelOptions
+type LightingLabelOptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder
+	// WithLabelFlavour adds LabelFlavour (property field)
+	WithLabelFlavour(LightingLabelFlavour) LightingLabelOptionsBuilder
+	// WithLabelType adds LabelType (property field)
+	WithLabelType(LightingLabelType) LightingLabelOptionsBuilder
+	// Build builds the LightingLabelOptions or returns an error if something is wrong
+	Build() (LightingLabelOptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingLabelOptions
+}
+
+// NewLightingLabelOptionsBuilder() creates a LightingLabelOptionsBuilder
+func NewLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
+	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: new(_LightingLabelOptions)}
+}
+
+type _LightingLabelOptionsBuilder struct {
+	*_LightingLabelOptions
+
+	err *utils.MultiError
+}
+
+var _ (LightingLabelOptionsBuilder) = (*_LightingLabelOptionsBuilder)(nil)
+
+func (m *_LightingLabelOptionsBuilder) WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder {
+	return m.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
+}
+
+func (m *_LightingLabelOptionsBuilder) WithLabelFlavour(labelFlavour LightingLabelFlavour) LightingLabelOptionsBuilder {
+	m.LabelFlavour = labelFlavour
+	return m
+}
+
+func (m *_LightingLabelOptionsBuilder) WithLabelType(labelType LightingLabelType) LightingLabelOptionsBuilder {
+	m.LabelType = labelType
+	return m
+}
+
+func (m *_LightingLabelOptionsBuilder) Build() (LightingLabelOptions, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LightingLabelOptions.deepCopy(), nil
+}
+
+func (m *_LightingLabelOptionsBuilder) MustBuild() LightingLabelOptions {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LightingLabelOptionsBuilder) DeepCopy() any {
+	return m.CreateLightingLabelOptionsBuilder()
+}
+
+// CreateLightingLabelOptionsBuilder creates a LightingLabelOptionsBuilder
+func (m *_LightingLabelOptions) CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
+	if m == nil {
+		return NewLightingLabelOptionsBuilder()
+	}
+	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

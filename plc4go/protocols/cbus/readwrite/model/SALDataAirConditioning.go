@@ -44,6 +44,8 @@ type SALDataAirConditioning interface {
 	GetAirConditioningData() AirConditioningData
 	// IsSALDataAirConditioning is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataAirConditioning()
+	// CreateBuilder creates a SALDataAirConditioningBuilder
+	CreateSALDataAirConditioningBuilder() SALDataAirConditioningBuilder
 }
 
 // _SALDataAirConditioning is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataAirConditioning(salData SALData, airConditioningData AirCondition
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataAirConditioningBuilder is a builder for SALDataAirConditioning
+type SALDataAirConditioningBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(airConditioningData AirConditioningData) SALDataAirConditioningBuilder
+	// WithAirConditioningData adds AirConditioningData (property field)
+	WithAirConditioningData(AirConditioningData) SALDataAirConditioningBuilder
+	// Build builds the SALDataAirConditioning or returns an error if something is wrong
+	Build() (SALDataAirConditioning, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataAirConditioning
+}
+
+// NewSALDataAirConditioningBuilder() creates a SALDataAirConditioningBuilder
+func NewSALDataAirConditioningBuilder() SALDataAirConditioningBuilder {
+	return &_SALDataAirConditioningBuilder{_SALDataAirConditioning: new(_SALDataAirConditioning)}
+}
+
+type _SALDataAirConditioningBuilder struct {
+	*_SALDataAirConditioning
+
+	err *utils.MultiError
+}
+
+var _ (SALDataAirConditioningBuilder) = (*_SALDataAirConditioningBuilder)(nil)
+
+func (m *_SALDataAirConditioningBuilder) WithMandatoryFields(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
+	return m.WithAirConditioningData(airConditioningData)
+}
+
+func (m *_SALDataAirConditioningBuilder) WithAirConditioningData(airConditioningData AirConditioningData) SALDataAirConditioningBuilder {
+	m.AirConditioningData = airConditioningData
+	return m
+}
+
+func (m *_SALDataAirConditioningBuilder) Build() (SALDataAirConditioning, error) {
+	if m.AirConditioningData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'airConditioningData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataAirConditioning.deepCopy(), nil
+}
+
+func (m *_SALDataAirConditioningBuilder) MustBuild() SALDataAirConditioning {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataAirConditioningBuilder) DeepCopy() any {
+	return m.CreateSALDataAirConditioningBuilder()
+}
+
+// CreateSALDataAirConditioningBuilder creates a SALDataAirConditioningBuilder
+func (m *_SALDataAirConditioning) CreateSALDataAirConditioningBuilder() SALDataAirConditioningBuilder {
+	if m == nil {
+		return NewSALDataAirConditioningBuilder()
+	}
+	return &_SALDataAirConditioningBuilder{_SALDataAirConditioning: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

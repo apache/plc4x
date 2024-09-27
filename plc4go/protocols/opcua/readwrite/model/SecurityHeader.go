@@ -45,6 +45,8 @@ type SecurityHeader interface {
 	GetSecureTokenId() uint32
 	// IsSecurityHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityHeader()
+	// CreateBuilder creates a SecurityHeaderBuilder
+	CreateSecurityHeaderBuilder() SecurityHeaderBuilder
 }
 
 // _SecurityHeader is the data-structure of this message
@@ -59,6 +61,85 @@ var _ SecurityHeader = (*_SecurityHeader)(nil)
 func NewSecurityHeader(secureChannelId uint32, secureTokenId uint32) *_SecurityHeader {
 	return &_SecurityHeader{SecureChannelId: secureChannelId, SecureTokenId: secureTokenId}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityHeaderBuilder is a builder for SecurityHeader
+type SecurityHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(secureChannelId uint32, secureTokenId uint32) SecurityHeaderBuilder
+	// WithSecureChannelId adds SecureChannelId (property field)
+	WithSecureChannelId(uint32) SecurityHeaderBuilder
+	// WithSecureTokenId adds SecureTokenId (property field)
+	WithSecureTokenId(uint32) SecurityHeaderBuilder
+	// Build builds the SecurityHeader or returns an error if something is wrong
+	Build() (SecurityHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityHeader
+}
+
+// NewSecurityHeaderBuilder() creates a SecurityHeaderBuilder
+func NewSecurityHeaderBuilder() SecurityHeaderBuilder {
+	return &_SecurityHeaderBuilder{_SecurityHeader: new(_SecurityHeader)}
+}
+
+type _SecurityHeaderBuilder struct {
+	*_SecurityHeader
+
+	err *utils.MultiError
+}
+
+var _ (SecurityHeaderBuilder) = (*_SecurityHeaderBuilder)(nil)
+
+func (m *_SecurityHeaderBuilder) WithMandatoryFields(secureChannelId uint32, secureTokenId uint32) SecurityHeaderBuilder {
+	return m.WithSecureChannelId(secureChannelId).WithSecureTokenId(secureTokenId)
+}
+
+func (m *_SecurityHeaderBuilder) WithSecureChannelId(secureChannelId uint32) SecurityHeaderBuilder {
+	m.SecureChannelId = secureChannelId
+	return m
+}
+
+func (m *_SecurityHeaderBuilder) WithSecureTokenId(secureTokenId uint32) SecurityHeaderBuilder {
+	m.SecureTokenId = secureTokenId
+	return m
+}
+
+func (m *_SecurityHeaderBuilder) Build() (SecurityHeader, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityHeader.deepCopy(), nil
+}
+
+func (m *_SecurityHeaderBuilder) MustBuild() SecurityHeader {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityHeaderBuilder) DeepCopy() any {
+	return m.CreateSecurityHeaderBuilder()
+}
+
+// CreateSecurityHeaderBuilder creates a SecurityHeaderBuilder
+func (m *_SecurityHeader) CreateSecurityHeaderBuilder() SecurityHeaderBuilder {
+	if m == nil {
+		return NewSecurityHeaderBuilder()
+	}
+	return &_SecurityHeaderBuilder{_SecurityHeader: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

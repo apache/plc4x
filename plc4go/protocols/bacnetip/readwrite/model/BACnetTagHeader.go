@@ -65,6 +65,8 @@ type BACnetTagHeader interface {
 	GetActualLength() uint32
 	// IsBACnetTagHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagHeader()
+	// CreateBuilder creates a BACnetTagHeaderBuilder
+	CreateBACnetTagHeaderBuilder() BACnetTagHeaderBuilder
 }
 
 // _BACnetTagHeader is the data-structure of this message
@@ -84,6 +86,120 @@ var _ BACnetTagHeader = (*_BACnetTagHeader)(nil)
 func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, extExtLength *uint16, extExtExtLength *uint32) *_BACnetTagHeader {
 	return &_BACnetTagHeader{TagNumber: tagNumber, TagClass: tagClass, LengthValueType: lengthValueType, ExtTagNumber: extTagNumber, ExtLength: extLength, ExtExtLength: extExtLength, ExtExtExtLength: extExtExtLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagHeaderBuilder is a builder for BACnetTagHeader
+type BACnetTagHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tagNumber uint8, tagClass TagClass, lengthValueType uint8) BACnetTagHeaderBuilder
+	// WithTagNumber adds TagNumber (property field)
+	WithTagNumber(uint8) BACnetTagHeaderBuilder
+	// WithTagClass adds TagClass (property field)
+	WithTagClass(TagClass) BACnetTagHeaderBuilder
+	// WithLengthValueType adds LengthValueType (property field)
+	WithLengthValueType(uint8) BACnetTagHeaderBuilder
+	// WithExtTagNumber adds ExtTagNumber (property field)
+	WithOptionalExtTagNumber(uint8) BACnetTagHeaderBuilder
+	// WithExtLength adds ExtLength (property field)
+	WithOptionalExtLength(uint8) BACnetTagHeaderBuilder
+	// WithExtExtLength adds ExtExtLength (property field)
+	WithOptionalExtExtLength(uint16) BACnetTagHeaderBuilder
+	// WithExtExtExtLength adds ExtExtExtLength (property field)
+	WithOptionalExtExtExtLength(uint32) BACnetTagHeaderBuilder
+	// Build builds the BACnetTagHeader or returns an error if something is wrong
+	Build() (BACnetTagHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagHeader
+}
+
+// NewBACnetTagHeaderBuilder() creates a BACnetTagHeaderBuilder
+func NewBACnetTagHeaderBuilder() BACnetTagHeaderBuilder {
+	return &_BACnetTagHeaderBuilder{_BACnetTagHeader: new(_BACnetTagHeader)}
+}
+
+type _BACnetTagHeaderBuilder struct {
+	*_BACnetTagHeader
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagHeaderBuilder) = (*_BACnetTagHeaderBuilder)(nil)
+
+func (m *_BACnetTagHeaderBuilder) WithMandatoryFields(tagNumber uint8, tagClass TagClass, lengthValueType uint8) BACnetTagHeaderBuilder {
+	return m.WithTagNumber(tagNumber).WithTagClass(tagClass).WithLengthValueType(lengthValueType)
+}
+
+func (m *_BACnetTagHeaderBuilder) WithTagNumber(tagNumber uint8) BACnetTagHeaderBuilder {
+	m.TagNumber = tagNumber
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithTagClass(tagClass TagClass) BACnetTagHeaderBuilder {
+	m.TagClass = tagClass
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithLengthValueType(lengthValueType uint8) BACnetTagHeaderBuilder {
+	m.LengthValueType = lengthValueType
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithOptionalExtTagNumber(extTagNumber uint8) BACnetTagHeaderBuilder {
+	m.ExtTagNumber = &extTagNumber
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithOptionalExtLength(extLength uint8) BACnetTagHeaderBuilder {
+	m.ExtLength = &extLength
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithOptionalExtExtLength(extExtLength uint16) BACnetTagHeaderBuilder {
+	m.ExtExtLength = &extExtLength
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) WithOptionalExtExtExtLength(extExtExtLength uint32) BACnetTagHeaderBuilder {
+	m.ExtExtExtLength = &extExtExtLength
+	return m
+}
+
+func (m *_BACnetTagHeaderBuilder) Build() (BACnetTagHeader, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTagHeader.deepCopy(), nil
+}
+
+func (m *_BACnetTagHeaderBuilder) MustBuild() BACnetTagHeader {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTagHeaderBuilder) DeepCopy() any {
+	return m.CreateBACnetTagHeaderBuilder()
+}
+
+// CreateBACnetTagHeaderBuilder creates a BACnetTagHeaderBuilder
+func (m *_BACnetTagHeader) CreateBACnetTagHeaderBuilder() BACnetTagHeaderBuilder {
+	if m == nil {
+		return NewBACnetTagHeaderBuilder()
+	}
+	return &_BACnetTagHeaderBuilder{_BACnetTagHeader: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

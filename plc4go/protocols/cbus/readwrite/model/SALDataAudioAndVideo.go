@@ -44,6 +44,8 @@ type SALDataAudioAndVideo interface {
 	GetAudioVideoData() LightingData
 	// IsSALDataAudioAndVideo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataAudioAndVideo()
+	// CreateBuilder creates a SALDataAudioAndVideoBuilder
+	CreateSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder
 }
 
 // _SALDataAudioAndVideo is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataAudioAndVideo(salData SALData, audioVideoData LightingData) *_SAL
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataAudioAndVideoBuilder is a builder for SALDataAudioAndVideo
+type SALDataAudioAndVideoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(audioVideoData LightingData) SALDataAudioAndVideoBuilder
+	// WithAudioVideoData adds AudioVideoData (property field)
+	WithAudioVideoData(LightingData) SALDataAudioAndVideoBuilder
+	// Build builds the SALDataAudioAndVideo or returns an error if something is wrong
+	Build() (SALDataAudioAndVideo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataAudioAndVideo
+}
+
+// NewSALDataAudioAndVideoBuilder() creates a SALDataAudioAndVideoBuilder
+func NewSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder {
+	return &_SALDataAudioAndVideoBuilder{_SALDataAudioAndVideo: new(_SALDataAudioAndVideo)}
+}
+
+type _SALDataAudioAndVideoBuilder struct {
+	*_SALDataAudioAndVideo
+
+	err *utils.MultiError
+}
+
+var _ (SALDataAudioAndVideoBuilder) = (*_SALDataAudioAndVideoBuilder)(nil)
+
+func (m *_SALDataAudioAndVideoBuilder) WithMandatoryFields(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
+	return m.WithAudioVideoData(audioVideoData)
+}
+
+func (m *_SALDataAudioAndVideoBuilder) WithAudioVideoData(audioVideoData LightingData) SALDataAudioAndVideoBuilder {
+	m.AudioVideoData = audioVideoData
+	return m
+}
+
+func (m *_SALDataAudioAndVideoBuilder) Build() (SALDataAudioAndVideo, error) {
+	if m.AudioVideoData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'audioVideoData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataAudioAndVideo.deepCopy(), nil
+}
+
+func (m *_SALDataAudioAndVideoBuilder) MustBuild() SALDataAudioAndVideo {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataAudioAndVideoBuilder) DeepCopy() any {
+	return m.CreateSALDataAudioAndVideoBuilder()
+}
+
+// CreateSALDataAudioAndVideoBuilder creates a SALDataAudioAndVideoBuilder
+func (m *_SALDataAudioAndVideo) CreateSALDataAudioAndVideoBuilder() SALDataAudioAndVideoBuilder {
+	if m == nil {
+		return NewSALDataAudioAndVideoBuilder()
+	}
+	return &_SALDataAudioAndVideoBuilder{_SALDataAudioAndVideo: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

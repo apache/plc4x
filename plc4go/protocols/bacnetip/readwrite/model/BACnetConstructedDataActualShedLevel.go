@@ -46,6 +46,8 @@ type BACnetConstructedDataActualShedLevel interface {
 	GetActualValue() BACnetShedLevel
 	// IsBACnetConstructedDataActualShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActualShedLevel()
+	// CreateBuilder creates a BACnetConstructedDataActualShedLevelBuilder
+	CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder
 }
 
 // _BACnetConstructedDataActualShedLevel is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataActualShedLevel(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActualShedLevelBuilder is a builder for BACnetConstructedDataActualShedLevel
+type BACnetConstructedDataActualShedLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
+	// WithActualShedLevel adds ActualShedLevel (property field)
+	WithActualShedLevel(BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
+	// Build builds the BACnetConstructedDataActualShedLevel or returns an error if something is wrong
+	Build() (BACnetConstructedDataActualShedLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActualShedLevel
+}
+
+// NewBACnetConstructedDataActualShedLevelBuilder() creates a BACnetConstructedDataActualShedLevelBuilder
+func NewBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
+	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: new(_BACnetConstructedDataActualShedLevel)}
+}
+
+type _BACnetConstructedDataActualShedLevelBuilder struct {
+	*_BACnetConstructedDataActualShedLevel
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActualShedLevelBuilder) = (*_BACnetConstructedDataActualShedLevelBuilder)(nil)
+
+func (m *_BACnetConstructedDataActualShedLevelBuilder) WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	return m.WithActualShedLevel(actualShedLevel)
+}
+
+func (m *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevel(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	m.ActualShedLevel = actualShedLevel
+	return m
+}
+
+func (m *_BACnetConstructedDataActualShedLevelBuilder) Build() (BACnetConstructedDataActualShedLevel, error) {
+	if m.ActualShedLevel == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'actualShedLevel' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataActualShedLevel.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataActualShedLevelBuilder) MustBuild() BACnetConstructedDataActualShedLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataActualShedLevelBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataActualShedLevelBuilder()
+}
+
+// CreateBACnetConstructedDataActualShedLevelBuilder creates a BACnetConstructedDataActualShedLevelBuilder
+func (m *_BACnetConstructedDataActualShedLevel) CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataActualShedLevelBuilder()
+	}
+	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

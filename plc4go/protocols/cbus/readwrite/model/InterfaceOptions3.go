@@ -49,6 +49,8 @@ type InterfaceOptions3 interface {
 	GetPcn() bool
 	// IsInterfaceOptions3 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsInterfaceOptions3()
+	// CreateBuilder creates a InterfaceOptions3Builder
+	CreateInterfaceOptions3Builder() InterfaceOptions3Builder
 }
 
 // _InterfaceOptions3 is the data-structure of this message
@@ -70,6 +72,99 @@ var _ InterfaceOptions3 = (*_InterfaceOptions3)(nil)
 func NewInterfaceOptions3(exstat bool, pun bool, localSal bool, pcn bool) *_InterfaceOptions3 {
 	return &_InterfaceOptions3{Exstat: exstat, Pun: pun, LocalSal: localSal, Pcn: pcn}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// InterfaceOptions3Builder is a builder for InterfaceOptions3
+type InterfaceOptions3Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(exstat bool, pun bool, localSal bool, pcn bool) InterfaceOptions3Builder
+	// WithExstat adds Exstat (property field)
+	WithExstat(bool) InterfaceOptions3Builder
+	// WithPun adds Pun (property field)
+	WithPun(bool) InterfaceOptions3Builder
+	// WithLocalSal adds LocalSal (property field)
+	WithLocalSal(bool) InterfaceOptions3Builder
+	// WithPcn adds Pcn (property field)
+	WithPcn(bool) InterfaceOptions3Builder
+	// Build builds the InterfaceOptions3 or returns an error if something is wrong
+	Build() (InterfaceOptions3, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() InterfaceOptions3
+}
+
+// NewInterfaceOptions3Builder() creates a InterfaceOptions3Builder
+func NewInterfaceOptions3Builder() InterfaceOptions3Builder {
+	return &_InterfaceOptions3Builder{_InterfaceOptions3: new(_InterfaceOptions3)}
+}
+
+type _InterfaceOptions3Builder struct {
+	*_InterfaceOptions3
+
+	err *utils.MultiError
+}
+
+var _ (InterfaceOptions3Builder) = (*_InterfaceOptions3Builder)(nil)
+
+func (m *_InterfaceOptions3Builder) WithMandatoryFields(exstat bool, pun bool, localSal bool, pcn bool) InterfaceOptions3Builder {
+	return m.WithExstat(exstat).WithPun(pun).WithLocalSal(localSal).WithPcn(pcn)
+}
+
+func (m *_InterfaceOptions3Builder) WithExstat(exstat bool) InterfaceOptions3Builder {
+	m.Exstat = exstat
+	return m
+}
+
+func (m *_InterfaceOptions3Builder) WithPun(pun bool) InterfaceOptions3Builder {
+	m.Pun = pun
+	return m
+}
+
+func (m *_InterfaceOptions3Builder) WithLocalSal(localSal bool) InterfaceOptions3Builder {
+	m.LocalSal = localSal
+	return m
+}
+
+func (m *_InterfaceOptions3Builder) WithPcn(pcn bool) InterfaceOptions3Builder {
+	m.Pcn = pcn
+	return m
+}
+
+func (m *_InterfaceOptions3Builder) Build() (InterfaceOptions3, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._InterfaceOptions3.deepCopy(), nil
+}
+
+func (m *_InterfaceOptions3Builder) MustBuild() InterfaceOptions3 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_InterfaceOptions3Builder) DeepCopy() any {
+	return m.CreateInterfaceOptions3Builder()
+}
+
+// CreateInterfaceOptions3Builder creates a InterfaceOptions3Builder
+func (m *_InterfaceOptions3) CreateInterfaceOptions3Builder() InterfaceOptions3Builder {
+	if m == nil {
+		return NewInterfaceOptions3Builder()
+	}
+	return &_InterfaceOptions3Builder{_InterfaceOptions3: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

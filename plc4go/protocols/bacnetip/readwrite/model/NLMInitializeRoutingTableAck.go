@@ -46,6 +46,8 @@ type NLMInitializeRoutingTableAck interface {
 	GetPortMappings() []NLMInitializeRoutingTablePortMapping
 	// IsNLMInitializeRoutingTableAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMInitializeRoutingTableAck()
+	// CreateBuilder creates a NLMInitializeRoutingTableAckBuilder
+	CreateNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilder
 }
 
 // _NLMInitializeRoutingTableAck is the data-structure of this message
@@ -68,6 +70,85 @@ func NewNLMInitializeRoutingTableAck(numberOfPorts uint8, portMappings []NLMInit
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMInitializeRoutingTableAckBuilder is a builder for NLMInitializeRoutingTableAck
+type NLMInitializeRoutingTableAckBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder
+	// WithNumberOfPorts adds NumberOfPorts (property field)
+	WithNumberOfPorts(uint8) NLMInitializeRoutingTableAckBuilder
+	// WithPortMappings adds PortMappings (property field)
+	WithPortMappings(...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder
+	// Build builds the NLMInitializeRoutingTableAck or returns an error if something is wrong
+	Build() (NLMInitializeRoutingTableAck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMInitializeRoutingTableAck
+}
+
+// NewNLMInitializeRoutingTableAckBuilder() creates a NLMInitializeRoutingTableAckBuilder
+func NewNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilder {
+	return &_NLMInitializeRoutingTableAckBuilder{_NLMInitializeRoutingTableAck: new(_NLMInitializeRoutingTableAck)}
+}
+
+type _NLMInitializeRoutingTableAckBuilder struct {
+	*_NLMInitializeRoutingTableAck
+
+	err *utils.MultiError
+}
+
+var _ (NLMInitializeRoutingTableAckBuilder) = (*_NLMInitializeRoutingTableAckBuilder)(nil)
+
+func (m *_NLMInitializeRoutingTableAckBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
+	return m.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
+}
+
+func (m *_NLMInitializeRoutingTableAckBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableAckBuilder {
+	m.NumberOfPorts = numberOfPorts
+	return m
+}
+
+func (m *_NLMInitializeRoutingTableAckBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableAckBuilder {
+	m.PortMappings = portMappings
+	return m
+}
+
+func (m *_NLMInitializeRoutingTableAckBuilder) Build() (NLMInitializeRoutingTableAck, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMInitializeRoutingTableAck.deepCopy(), nil
+}
+
+func (m *_NLMInitializeRoutingTableAckBuilder) MustBuild() NLMInitializeRoutingTableAck {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMInitializeRoutingTableAckBuilder) DeepCopy() any {
+	return m.CreateNLMInitializeRoutingTableAckBuilder()
+}
+
+// CreateNLMInitializeRoutingTableAckBuilder creates a NLMInitializeRoutingTableAckBuilder
+func (m *_NLMInitializeRoutingTableAck) CreateNLMInitializeRoutingTableAckBuilder() NLMInitializeRoutingTableAckBuilder {
+	if m == nil {
+		return NewNLMInitializeRoutingTableAckBuilder()
+	}
+	return &_NLMInitializeRoutingTableAckBuilder{_NLMInitializeRoutingTableAck: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

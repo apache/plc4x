@@ -48,6 +48,8 @@ type ConnectionStateResponse interface {
 	GetStatus() Status
 	// IsConnectionStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionStateResponse()
+	// CreateBuilder creates a ConnectionStateResponseBuilder
+	CreateConnectionStateResponseBuilder() ConnectionStateResponseBuilder
 }
 
 // _ConnectionStateResponse is the data-structure of this message
@@ -70,6 +72,85 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_C
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionStateResponseBuilder is a builder for ConnectionStateResponse
+type ConnectionStateResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionStateResponseBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) ConnectionStateResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) ConnectionStateResponseBuilder
+	// Build builds the ConnectionStateResponse or returns an error if something is wrong
+	Build() (ConnectionStateResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionStateResponse
+}
+
+// NewConnectionStateResponseBuilder() creates a ConnectionStateResponseBuilder
+func NewConnectionStateResponseBuilder() ConnectionStateResponseBuilder {
+	return &_ConnectionStateResponseBuilder{_ConnectionStateResponse: new(_ConnectionStateResponse)}
+}
+
+type _ConnectionStateResponseBuilder struct {
+	*_ConnectionStateResponse
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionStateResponseBuilder) = (*_ConnectionStateResponseBuilder)(nil)
+
+func (m *_ConnectionStateResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionStateResponseBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+}
+
+func (m *_ConnectionStateResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateResponseBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_ConnectionStateResponseBuilder) WithStatus(status Status) ConnectionStateResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_ConnectionStateResponseBuilder) Build() (ConnectionStateResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionStateResponse.deepCopy(), nil
+}
+
+func (m *_ConnectionStateResponseBuilder) MustBuild() ConnectionStateResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionStateResponseBuilder) DeepCopy() any {
+	return m.CreateConnectionStateResponseBuilder()
+}
+
+// CreateConnectionStateResponseBuilder creates a ConnectionStateResponseBuilder
+func (m *_ConnectionStateResponse) CreateConnectionStateResponseBuilder() ConnectionStateResponseBuilder {
+	if m == nil {
+		return NewConnectionStateResponseBuilder()
+	}
+	return &_ConnectionStateResponseBuilder{_ConnectionStateResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

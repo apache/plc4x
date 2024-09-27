@@ -46,6 +46,8 @@ type BACnetConstructedDataNotificationClass interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataNotificationClass is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNotificationClass()
+	// CreateBuilder creates a BACnetConstructedDataNotificationClassBuilder
+	CreateBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNotificationClassBuilder
 }
 
 // _BACnetConstructedDataNotificationClass is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataNotificationClass(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNotificationClassBuilder is a builder for BACnetConstructedDataNotificationClass
+type BACnetConstructedDataNotificationClassBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder
+	// WithNotificationClass adds NotificationClass (property field)
+	WithNotificationClass(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder
+	// WithNotificationClassBuilder adds NotificationClass (property field) which is build by the builder
+	WithNotificationClassBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationClassBuilder
+	// Build builds the BACnetConstructedDataNotificationClass or returns an error if something is wrong
+	Build() (BACnetConstructedDataNotificationClass, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNotificationClass
+}
+
+// NewBACnetConstructedDataNotificationClassBuilder() creates a BACnetConstructedDataNotificationClassBuilder
+func NewBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNotificationClassBuilder {
+	return &_BACnetConstructedDataNotificationClassBuilder{_BACnetConstructedDataNotificationClass: new(_BACnetConstructedDataNotificationClass)}
+}
+
+type _BACnetConstructedDataNotificationClassBuilder struct {
+	*_BACnetConstructedDataNotificationClass
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNotificationClassBuilder) = (*_BACnetConstructedDataNotificationClassBuilder)(nil)
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) WithMandatoryFields(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
+	return m.WithNotificationClass(notificationClass)
+}
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClass(notificationClass BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNotificationClassBuilder {
+	m.NotificationClass = notificationClass
+	return m
+}
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) WithNotificationClassBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNotificationClassBuilder {
+	builder := builderSupplier(m.NotificationClass.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NotificationClass, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) Build() (BACnetConstructedDataNotificationClass, error) {
+	if m.NotificationClass == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notificationClass' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataNotificationClass.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) MustBuild() BACnetConstructedDataNotificationClass {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataNotificationClassBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataNotificationClassBuilder()
+}
+
+// CreateBACnetConstructedDataNotificationClassBuilder creates a BACnetConstructedDataNotificationClassBuilder
+func (m *_BACnetConstructedDataNotificationClass) CreateBACnetConstructedDataNotificationClassBuilder() BACnetConstructedDataNotificationClassBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataNotificationClassBuilder()
+	}
+	return &_BACnetConstructedDataNotificationClassBuilder{_BACnetConstructedDataNotificationClass: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type MResetInd interface {
 	CEMI
 	// IsMResetInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMResetInd()
+	// CreateBuilder creates a MResetIndBuilder
+	CreateMResetIndBuilder() MResetIndBuilder
 }
 
 // _MResetInd is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMResetInd(size uint16) *_MResetInd {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MResetIndBuilder is a builder for MResetInd
+type MResetIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MResetIndBuilder
+	// Build builds the MResetInd or returns an error if something is wrong
+	Build() (MResetInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MResetInd
+}
+
+// NewMResetIndBuilder() creates a MResetIndBuilder
+func NewMResetIndBuilder() MResetIndBuilder {
+	return &_MResetIndBuilder{_MResetInd: new(_MResetInd)}
+}
+
+type _MResetIndBuilder struct {
+	*_MResetInd
+
+	err *utils.MultiError
+}
+
+var _ (MResetIndBuilder) = (*_MResetIndBuilder)(nil)
+
+func (m *_MResetIndBuilder) WithMandatoryFields() MResetIndBuilder {
+	return m
+}
+
+func (m *_MResetIndBuilder) Build() (MResetInd, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MResetInd.deepCopy(), nil
+}
+
+func (m *_MResetIndBuilder) MustBuild() MResetInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MResetIndBuilder) DeepCopy() any {
+	return m.CreateMResetIndBuilder()
+}
+
+// CreateMResetIndBuilder creates a MResetIndBuilder
+func (m *_MResetInd) CreateMResetIndBuilder() MResetIndBuilder {
+	if m == nil {
+		return NewMResetIndBuilder()
+	}
+	return &_MResetIndBuilder{_MResetInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

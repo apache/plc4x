@@ -48,6 +48,8 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetEventLogRecordLogDatumNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatumNotification()
+	// CreateBuilder creates a BACnetEventLogRecordLogDatumNotificationBuilder
+	CreateBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder
 }
 
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message
@@ -81,6 +83,155 @@ func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, pe
 	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventLogRecordLogDatumNotificationBuilder is a builder for BACnetEventLogRecordLogDatumNotification
+type BACnetEventLogRecordLogDatumNotificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithNotification adds Notification (property field)
+	WithNotification(ConfirmedEventNotificationRequest) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithNotificationBuilder adds Notification (property field) which is build by the builder
+	WithNotificationBuilder(func(ConfirmedEventNotificationRequestBuilder) ConfirmedEventNotificationRequestBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// Build builds the BACnetEventLogRecordLogDatumNotification or returns an error if something is wrong
+	Build() (BACnetEventLogRecordLogDatumNotification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventLogRecordLogDatumNotification
+}
+
+// NewBACnetEventLogRecordLogDatumNotificationBuilder() creates a BACnetEventLogRecordLogDatumNotificationBuilder
+func NewBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder {
+	return &_BACnetEventLogRecordLogDatumNotificationBuilder{_BACnetEventLogRecordLogDatumNotification: new(_BACnetEventLogRecordLogDatumNotification)}
+}
+
+type _BACnetEventLogRecordLogDatumNotificationBuilder struct {
+	*_BACnetEventLogRecordLogDatumNotification
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventLogRecordLogDatumNotificationBuilder) = (*_BACnetEventLogRecordLogDatumNotificationBuilder)(nil)
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	return m.WithInnerOpeningTag(innerOpeningTag).WithNotification(notification).WithInnerClosingTag(innerClosingTag)
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	m.InnerOpeningTag = innerOpeningTag
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithNotification(notification ConfirmedEventNotificationRequest) BACnetEventLogRecordLogDatumNotificationBuilder {
+	m.Notification = notification
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithNotificationBuilder(builderSupplier func(ConfirmedEventNotificationRequestBuilder) ConfirmedEventNotificationRequestBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(m.Notification.CreateConfirmedEventNotificationRequestBuilder())
+	var err error
+	m.Notification, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ConfirmedEventNotificationRequestBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	m.InnerClosingTag = innerClosingTag
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) Build() (BACnetEventLogRecordLogDatumNotification, error) {
+	if m.InnerOpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if m.Notification == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notification' not set"))
+	}
+	if m.InnerClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventLogRecordLogDatumNotification.deepCopy(), nil
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) MustBuild() BACnetEventLogRecordLogDatumNotification {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotificationBuilder) DeepCopy() any {
+	return m.CreateBACnetEventLogRecordLogDatumNotificationBuilder()
+}
+
+// CreateBACnetEventLogRecordLogDatumNotificationBuilder creates a BACnetEventLogRecordLogDatumNotificationBuilder
+func (m *_BACnetEventLogRecordLogDatumNotification) CreateBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder {
+	if m == nil {
+		return NewBACnetEventLogRecordLogDatumNotificationBuilder()
+	}
+	return &_BACnetEventLogRecordLogDatumNotificationBuilder{_BACnetEventLogRecordLogDatumNotification: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

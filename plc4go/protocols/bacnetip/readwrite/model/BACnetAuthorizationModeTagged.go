@@ -49,6 +49,8 @@ type BACnetAuthorizationModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAuthorizationModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthorizationModeTagged()
+	// CreateBuilder creates a BACnetAuthorizationModeTaggedBuilder
+	CreateBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder
 }
 
 // _BACnetAuthorizationModeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthor
 	}
 	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthorizationModeTaggedBuilder is a builder for BACnetAuthorizationModeTagged
+type BACnetAuthorizationModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAuthorizationModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAuthorizationModeTaggedBuilder
+	// Build builds the BACnetAuthorizationModeTagged or returns an error if something is wrong
+	Build() (BACnetAuthorizationModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthorizationModeTagged
+}
+
+// NewBACnetAuthorizationModeTaggedBuilder() creates a BACnetAuthorizationModeTaggedBuilder
+func NewBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder {
+	return &_BACnetAuthorizationModeTaggedBuilder{_BACnetAuthorizationModeTagged: new(_BACnetAuthorizationModeTagged)}
+}
+
+type _BACnetAuthorizationModeTaggedBuilder struct {
+	*_BACnetAuthorizationModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthorizationModeTaggedBuilder) = (*_BACnetAuthorizationModeTaggedBuilder)(nil)
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthorizationModeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationModeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) WithValue(value BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) Build() (BACnetAuthorizationModeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAuthorizationModeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) MustBuild() BACnetAuthorizationModeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAuthorizationModeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAuthorizationModeTaggedBuilder()
+}
+
+// CreateBACnetAuthorizationModeTaggedBuilder creates a BACnetAuthorizationModeTaggedBuilder
+func (m *_BACnetAuthorizationModeTagged) CreateBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder {
+	if m == nil {
+		return NewBACnetAuthorizationModeTaggedBuilder()
+	}
+	return &_BACnetAuthorizationModeTaggedBuilder{_BACnetAuthorizationModeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

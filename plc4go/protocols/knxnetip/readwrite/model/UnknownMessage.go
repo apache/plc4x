@@ -46,6 +46,8 @@ type UnknownMessage interface {
 	GetUnknownData() []byte
 	// IsUnknownMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnknownMessage()
+	// CreateBuilder creates a UnknownMessageBuilder
+	CreateUnknownMessageBuilder() UnknownMessageBuilder
 }
 
 // _UnknownMessage is the data-structure of this message
@@ -69,6 +71,78 @@ func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage 
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnknownMessageBuilder is a builder for UnknownMessage
+type UnknownMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unknownData []byte) UnknownMessageBuilder
+	// WithUnknownData adds UnknownData (property field)
+	WithUnknownData(...byte) UnknownMessageBuilder
+	// Build builds the UnknownMessage or returns an error if something is wrong
+	Build() (UnknownMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnknownMessage
+}
+
+// NewUnknownMessageBuilder() creates a UnknownMessageBuilder
+func NewUnknownMessageBuilder() UnknownMessageBuilder {
+	return &_UnknownMessageBuilder{_UnknownMessage: new(_UnknownMessage)}
+}
+
+type _UnknownMessageBuilder struct {
+	*_UnknownMessage
+
+	err *utils.MultiError
+}
+
+var _ (UnknownMessageBuilder) = (*_UnknownMessageBuilder)(nil)
+
+func (m *_UnknownMessageBuilder) WithMandatoryFields(unknownData []byte) UnknownMessageBuilder {
+	return m.WithUnknownData(unknownData...)
+}
+
+func (m *_UnknownMessageBuilder) WithUnknownData(unknownData ...byte) UnknownMessageBuilder {
+	m.UnknownData = unknownData
+	return m
+}
+
+func (m *_UnknownMessageBuilder) Build() (UnknownMessage, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UnknownMessage.deepCopy(), nil
+}
+
+func (m *_UnknownMessageBuilder) MustBuild() UnknownMessage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UnknownMessageBuilder) DeepCopy() any {
+	return m.CreateUnknownMessageBuilder()
+}
+
+// CreateUnknownMessageBuilder creates a UnknownMessageBuilder
+func (m *_UnknownMessage) CreateUnknownMessageBuilder() UnknownMessageBuilder {
+	if m == nil {
+		return NewUnknownMessageBuilder()
+	}
+	return &_UnknownMessageBuilder{_UnknownMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

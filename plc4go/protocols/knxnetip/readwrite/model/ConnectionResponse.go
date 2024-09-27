@@ -52,6 +52,8 @@ type ConnectionResponse interface {
 	GetConnectionResponseDataBlock() ConnectionResponseDataBlock
 	// IsConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponse()
+	// CreateBuilder creates a ConnectionResponseBuilder
+	CreateConnectionResponseBuilder() ConnectionResponseBuilder
 }
 
 // _ConnectionResponse is the data-structure of this message
@@ -78,6 +80,114 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionResponseBuilder is a builder for ConnectionResponse
+type ConnectionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionResponseBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) ConnectionResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) ConnectionResponseBuilder
+	// WithHpaiDataEndpoint adds HpaiDataEndpoint (property field)
+	WithOptionalHpaiDataEndpoint(HPAIDataEndpoint) ConnectionResponseBuilder
+	// WithOptionalHpaiDataEndpointBuilder adds HpaiDataEndpoint (property field) which is build by the builder
+	WithOptionalHpaiDataEndpointBuilder(func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionResponseBuilder
+	// WithConnectionResponseDataBlock adds ConnectionResponseDataBlock (property field)
+	WithOptionalConnectionResponseDataBlock(ConnectionResponseDataBlock) ConnectionResponseBuilder
+	// Build builds the ConnectionResponse or returns an error if something is wrong
+	Build() (ConnectionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionResponse
+}
+
+// NewConnectionResponseBuilder() creates a ConnectionResponseBuilder
+func NewConnectionResponseBuilder() ConnectionResponseBuilder {
+	return &_ConnectionResponseBuilder{_ConnectionResponse: new(_ConnectionResponse)}
+}
+
+type _ConnectionResponseBuilder struct {
+	*_ConnectionResponse
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionResponseBuilder) = (*_ConnectionResponseBuilder)(nil)
+
+func (m *_ConnectionResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) ConnectionResponseBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+}
+
+func (m *_ConnectionResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionResponseBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_ConnectionResponseBuilder) WithStatus(status Status) ConnectionResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpoint(hpaiDataEndpoint HPAIDataEndpoint) ConnectionResponseBuilder {
+	m.HpaiDataEndpoint = hpaiDataEndpoint
+	return m
+}
+
+func (m *_ConnectionResponseBuilder) WithOptionalHpaiDataEndpointBuilder(builderSupplier func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionResponseBuilder {
+	builder := builderSupplier(m.HpaiDataEndpoint.CreateHPAIDataEndpointBuilder())
+	var err error
+	m.HpaiDataEndpoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConnectionResponseBuilder) WithOptionalConnectionResponseDataBlock(connectionResponseDataBlock ConnectionResponseDataBlock) ConnectionResponseBuilder {
+	m.ConnectionResponseDataBlock = connectionResponseDataBlock
+	return m
+}
+
+func (m *_ConnectionResponseBuilder) Build() (ConnectionResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionResponse.deepCopy(), nil
+}
+
+func (m *_ConnectionResponseBuilder) MustBuild() ConnectionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionResponseBuilder) DeepCopy() any {
+	return m.CreateConnectionResponseBuilder()
+}
+
+// CreateConnectionResponseBuilder creates a ConnectionResponseBuilder
+func (m *_ConnectionResponse) CreateConnectionResponseBuilder() ConnectionResponseBuilder {
+	if m == nil {
+		return NewConnectionResponseBuilder()
+	}
+	return &_ConnectionResponseBuilder{_ConnectionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type GetEndpointsResponse interface {
 	GetEndpoints() []ExtensionObjectDefinition
 	// IsGetEndpointsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetEndpointsResponse()
+	// CreateBuilder creates a GetEndpointsResponseBuilder
+	CreateGetEndpointsResponseBuilder() GetEndpointsResponseBuilder
 }
 
 // _GetEndpointsResponse is the data-structure of this message
@@ -75,6 +77,98 @@ func NewGetEndpointsResponse(responseHeader ExtensionObjectDefinition, noOfEndpo
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetEndpointsResponseBuilder is a builder for GetEndpointsResponse
+type GetEndpointsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	// WithNoOfEndpoints adds NoOfEndpoints (property field)
+	WithNoOfEndpoints(int32) GetEndpointsResponseBuilder
+	// WithEndpoints adds Endpoints (property field)
+	WithEndpoints(...ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	// Build builds the GetEndpointsResponse or returns an error if something is wrong
+	Build() (GetEndpointsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetEndpointsResponse
+}
+
+// NewGetEndpointsResponseBuilder() creates a GetEndpointsResponseBuilder
+func NewGetEndpointsResponseBuilder() GetEndpointsResponseBuilder {
+	return &_GetEndpointsResponseBuilder{_GetEndpointsResponse: new(_GetEndpointsResponse)}
+}
+
+type _GetEndpointsResponseBuilder struct {
+	*_GetEndpointsResponse
+
+	err *utils.MultiError
+}
+
+var _ (GetEndpointsResponseBuilder) = (*_GetEndpointsResponseBuilder)(nil)
+
+func (m *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfEndpoints(noOfEndpoints).WithEndpoints(endpoints...)
+}
+
+func (m *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_GetEndpointsResponseBuilder) WithNoOfEndpoints(noOfEndpoints int32) GetEndpointsResponseBuilder {
+	m.NoOfEndpoints = noOfEndpoints
+	return m
+}
+
+func (m *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+	m.Endpoints = endpoints
+	return m
+}
+
+func (m *_GetEndpointsResponseBuilder) Build() (GetEndpointsResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetEndpointsResponse.deepCopy(), nil
+}
+
+func (m *_GetEndpointsResponseBuilder) MustBuild() GetEndpointsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetEndpointsResponseBuilder) DeepCopy() any {
+	return m.CreateGetEndpointsResponseBuilder()
+}
+
+// CreateGetEndpointsResponseBuilder creates a GetEndpointsResponseBuilder
+func (m *_GetEndpointsResponse) CreateGetEndpointsResponseBuilder() GetEndpointsResponseBuilder {
+	if m == nil {
+		return NewGetEndpointsResponseBuilder()
+	}
+	return &_GetEndpointsResponseBuilder{_GetEndpointsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

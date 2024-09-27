@@ -46,6 +46,8 @@ type BACnetConstructedDataLightingCommand interface {
 	GetActualValue() BACnetLightingCommand
 	// IsBACnetConstructedDataLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLightingCommand()
+	// CreateBuilder creates a BACnetConstructedDataLightingCommandBuilder
+	CreateBACnetConstructedDataLightingCommandBuilder() BACnetConstructedDataLightingCommandBuilder
 }
 
 // _BACnetConstructedDataLightingCommand is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLightingCommand(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLightingCommandBuilder is a builder for BACnetConstructedDataLightingCommand
+type BACnetConstructedDataLightingCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lightingCommand BACnetLightingCommand) BACnetConstructedDataLightingCommandBuilder
+	// WithLightingCommand adds LightingCommand (property field)
+	WithLightingCommand(BACnetLightingCommand) BACnetConstructedDataLightingCommandBuilder
+	// WithLightingCommandBuilder adds LightingCommand (property field) which is build by the builder
+	WithLightingCommandBuilder(func(BACnetLightingCommandBuilder) BACnetLightingCommandBuilder) BACnetConstructedDataLightingCommandBuilder
+	// Build builds the BACnetConstructedDataLightingCommand or returns an error if something is wrong
+	Build() (BACnetConstructedDataLightingCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLightingCommand
+}
+
+// NewBACnetConstructedDataLightingCommandBuilder() creates a BACnetConstructedDataLightingCommandBuilder
+func NewBACnetConstructedDataLightingCommandBuilder() BACnetConstructedDataLightingCommandBuilder {
+	return &_BACnetConstructedDataLightingCommandBuilder{_BACnetConstructedDataLightingCommand: new(_BACnetConstructedDataLightingCommand)}
+}
+
+type _BACnetConstructedDataLightingCommandBuilder struct {
+	*_BACnetConstructedDataLightingCommand
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLightingCommandBuilder) = (*_BACnetConstructedDataLightingCommandBuilder)(nil)
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) WithMandatoryFields(lightingCommand BACnetLightingCommand) BACnetConstructedDataLightingCommandBuilder {
+	return m.WithLightingCommand(lightingCommand)
+}
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) WithLightingCommand(lightingCommand BACnetLightingCommand) BACnetConstructedDataLightingCommandBuilder {
+	m.LightingCommand = lightingCommand
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) WithLightingCommandBuilder(builderSupplier func(BACnetLightingCommandBuilder) BACnetLightingCommandBuilder) BACnetConstructedDataLightingCommandBuilder {
+	builder := builderSupplier(m.LightingCommand.CreateBACnetLightingCommandBuilder())
+	var err error
+	m.LightingCommand, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLightingCommandBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) Build() (BACnetConstructedDataLightingCommand, error) {
+	if m.LightingCommand == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lightingCommand' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLightingCommand.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) MustBuild() BACnetConstructedDataLightingCommand {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLightingCommandBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLightingCommandBuilder()
+}
+
+// CreateBACnetConstructedDataLightingCommandBuilder creates a BACnetConstructedDataLightingCommandBuilder
+func (m *_BACnetConstructedDataLightingCommand) CreateBACnetConstructedDataLightingCommandBuilder() BACnetConstructedDataLightingCommandBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLightingCommandBuilder()
+	}
+	return &_BACnetConstructedDataLightingCommandBuilder{_BACnetConstructedDataLightingCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

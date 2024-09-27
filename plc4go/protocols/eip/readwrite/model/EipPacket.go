@@ -43,6 +43,8 @@ type EipPacket interface {
 	utils.Copyable
 	// IsEipPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipPacket()
+	// CreateBuilder creates a EipPacketBuilder
+	CreateEipPacketBuilder() EipPacketBuilder
 }
 
 // EipPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type EipPacketContract interface {
 	GetOptions() uint32
 	// IsEipPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipPacket()
+	// CreateBuilder creates a EipPacketBuilder
+	CreateEipPacketBuilder() EipPacketBuilder
 }
 
 // EipPacketRequirements provides a set of functions which need to be implemented by a sub struct
@@ -86,6 +90,99 @@ var _ EipPacketContract = (*_EipPacket)(nil)
 func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipPacket {
 	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipPacketBuilder is a builder for EipPacket
+type EipPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []byte, options uint32) EipPacketBuilder
+	// WithSessionHandle adds SessionHandle (property field)
+	WithSessionHandle(uint32) EipPacketBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint32) EipPacketBuilder
+	// WithSenderContext adds SenderContext (property field)
+	WithSenderContext(...byte) EipPacketBuilder
+	// WithOptions adds Options (property field)
+	WithOptions(uint32) EipPacketBuilder
+	// Build builds the EipPacket or returns an error if something is wrong
+	Build() (EipPacketContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipPacketContract
+}
+
+// NewEipPacketBuilder() creates a EipPacketBuilder
+func NewEipPacketBuilder() EipPacketBuilder {
+	return &_EipPacketBuilder{_EipPacket: new(_EipPacket)}
+}
+
+type _EipPacketBuilder struct {
+	*_EipPacket
+
+	err *utils.MultiError
+}
+
+var _ (EipPacketBuilder) = (*_EipPacketBuilder)(nil)
+
+func (m *_EipPacketBuilder) WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []byte, options uint32) EipPacketBuilder {
+	return m.WithSessionHandle(sessionHandle).WithStatus(status).WithSenderContext(senderContext...).WithOptions(options)
+}
+
+func (m *_EipPacketBuilder) WithSessionHandle(sessionHandle uint32) EipPacketBuilder {
+	m.SessionHandle = sessionHandle
+	return m
+}
+
+func (m *_EipPacketBuilder) WithStatus(status uint32) EipPacketBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_EipPacketBuilder) WithSenderContext(senderContext ...byte) EipPacketBuilder {
+	m.SenderContext = senderContext
+	return m
+}
+
+func (m *_EipPacketBuilder) WithOptions(options uint32) EipPacketBuilder {
+	m.Options = options
+	return m
+}
+
+func (m *_EipPacketBuilder) Build() (EipPacketContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipPacket.deepCopy(), nil
+}
+
+func (m *_EipPacketBuilder) MustBuild() EipPacketContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipPacketBuilder) DeepCopy() any {
+	return m.CreateEipPacketBuilder()
+}
+
+// CreateEipPacketBuilder creates a EipPacketBuilder
+func (m *_EipPacket) CreateEipPacketBuilder() EipPacketBuilder {
+	if m == nil {
+		return NewEipPacketBuilder()
+	}
+	return &_EipPacketBuilder{_EipPacket: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

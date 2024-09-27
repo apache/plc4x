@@ -44,6 +44,8 @@ type BACnetConstructedDataDateList interface {
 	GetDateList() []BACnetCalendarEntry
 	// IsBACnetConstructedDataDateList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDateList()
+	// CreateBuilder creates a BACnetConstructedDataDateListBuilder
+	CreateBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuilder
 }
 
 // _BACnetConstructedDataDateList is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataDateList(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDateListBuilder is a builder for BACnetConstructedDataDateList
+type BACnetConstructedDataDateListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateList []BACnetCalendarEntry) BACnetConstructedDataDateListBuilder
+	// WithDateList adds DateList (property field)
+	WithDateList(...BACnetCalendarEntry) BACnetConstructedDataDateListBuilder
+	// Build builds the BACnetConstructedDataDateList or returns an error if something is wrong
+	Build() (BACnetConstructedDataDateList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDateList
+}
+
+// NewBACnetConstructedDataDateListBuilder() creates a BACnetConstructedDataDateListBuilder
+func NewBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuilder {
+	return &_BACnetConstructedDataDateListBuilder{_BACnetConstructedDataDateList: new(_BACnetConstructedDataDateList)}
+}
+
+type _BACnetConstructedDataDateListBuilder struct {
+	*_BACnetConstructedDataDateList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDateListBuilder) = (*_BACnetConstructedDataDateListBuilder)(nil)
+
+func (m *_BACnetConstructedDataDateListBuilder) WithMandatoryFields(dateList []BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
+	return m.WithDateList(dateList...)
+}
+
+func (m *_BACnetConstructedDataDateListBuilder) WithDateList(dateList ...BACnetCalendarEntry) BACnetConstructedDataDateListBuilder {
+	m.DateList = dateList
+	return m
+}
+
+func (m *_BACnetConstructedDataDateListBuilder) Build() (BACnetConstructedDataDateList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDateList.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDateListBuilder) MustBuild() BACnetConstructedDataDateList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDateListBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDateListBuilder()
+}
+
+// CreateBACnetConstructedDataDateListBuilder creates a BACnetConstructedDataDateListBuilder
+func (m *_BACnetConstructedDataDateList) CreateBACnetConstructedDataDateListBuilder() BACnetConstructedDataDateListBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDateListBuilder()
+	}
+	return &_BACnetConstructedDataDateListBuilder{_BACnetConstructedDataDateList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

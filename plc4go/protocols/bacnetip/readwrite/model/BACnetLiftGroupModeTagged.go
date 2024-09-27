@@ -45,6 +45,8 @@ type BACnetLiftGroupModeTagged interface {
 	GetValue() BACnetLiftGroupMode
 	// IsBACnetLiftGroupModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLiftGroupModeTagged()
+	// CreateBuilder creates a BACnetLiftGroupModeTaggedBuilder
+	CreateBACnetLiftGroupModeTaggedBuilder() BACnetLiftGroupModeTaggedBuilder
 }
 
 // _BACnetLiftGroupModeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupM
 	}
 	return &_BACnetLiftGroupModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLiftGroupModeTaggedBuilder is a builder for BACnetLiftGroupModeTagged
+type BACnetLiftGroupModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLiftGroupModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder
+	// Build builds the BACnetLiftGroupModeTagged or returns an error if something is wrong
+	Build() (BACnetLiftGroupModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLiftGroupModeTagged
+}
+
+// NewBACnetLiftGroupModeTaggedBuilder() creates a BACnetLiftGroupModeTaggedBuilder
+func NewBACnetLiftGroupModeTaggedBuilder() BACnetLiftGroupModeTaggedBuilder {
+	return &_BACnetLiftGroupModeTaggedBuilder{_BACnetLiftGroupModeTagged: new(_BACnetLiftGroupModeTagged)}
+}
+
+type _BACnetLiftGroupModeTaggedBuilder struct {
+	*_BACnetLiftGroupModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLiftGroupModeTaggedBuilder) = (*_BACnetLiftGroupModeTaggedBuilder)(nil)
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftGroupModeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftGroupModeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) WithValue(value BACnetLiftGroupMode) BACnetLiftGroupModeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) Build() (BACnetLiftGroupModeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLiftGroupModeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) MustBuild() BACnetLiftGroupModeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLiftGroupModeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLiftGroupModeTaggedBuilder()
+}
+
+// CreateBACnetLiftGroupModeTaggedBuilder creates a BACnetLiftGroupModeTaggedBuilder
+func (m *_BACnetLiftGroupModeTagged) CreateBACnetLiftGroupModeTaggedBuilder() BACnetLiftGroupModeTaggedBuilder {
+	if m == nil {
+		return NewBACnetLiftGroupModeTaggedBuilder()
+	}
+	return &_BACnetLiftGroupModeTaggedBuilder{_BACnetLiftGroupModeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

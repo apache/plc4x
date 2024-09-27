@@ -48,6 +48,8 @@ type BACnetConstructedDataPriority interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPriority()
+	// CreateBuilder creates a BACnetConstructedDataPriorityBuilder
+	CreateBACnetConstructedDataPriorityBuilder() BACnetConstructedDataPriorityBuilder
 }
 
 // _BACnetConstructedDataPriority is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataPriority(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPriorityBuilder is a builder for BACnetConstructedDataPriority
+type BACnetConstructedDataPriorityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(priority []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityBuilder
+	// WithPriority adds Priority (property field)
+	WithPriority(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder
+	// Build builds the BACnetConstructedDataPriority or returns an error if something is wrong
+	Build() (BACnetConstructedDataPriority, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPriority
+}
+
+// NewBACnetConstructedDataPriorityBuilder() creates a BACnetConstructedDataPriorityBuilder
+func NewBACnetConstructedDataPriorityBuilder() BACnetConstructedDataPriorityBuilder {
+	return &_BACnetConstructedDataPriorityBuilder{_BACnetConstructedDataPriority: new(_BACnetConstructedDataPriority)}
+}
+
+type _BACnetConstructedDataPriorityBuilder struct {
+	*_BACnetConstructedDataPriority
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPriorityBuilder) = (*_BACnetConstructedDataPriorityBuilder)(nil)
+
+func (m *_BACnetConstructedDataPriorityBuilder) WithMandatoryFields(priority []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder {
+	return m.WithPriority(priority...)
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) WithPriority(priority ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityBuilder {
+	m.Priority = priority
+	return m
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) Build() (BACnetConstructedDataPriority, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPriority.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) MustBuild() BACnetConstructedDataPriority {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPriorityBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPriorityBuilder()
+}
+
+// CreateBACnetConstructedDataPriorityBuilder creates a BACnetConstructedDataPriorityBuilder
+func (m *_BACnetConstructedDataPriority) CreateBACnetConstructedDataPriorityBuilder() BACnetConstructedDataPriorityBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPriorityBuilder()
+	}
+	return &_BACnetConstructedDataPriorityBuilder{_BACnetConstructedDataPriority: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

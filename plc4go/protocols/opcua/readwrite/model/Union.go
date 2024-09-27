@@ -40,6 +40,8 @@ type Union interface {
 	ExtensionObjectDefinition
 	// IsUnion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnion()
+	// CreateBuilder creates a UnionBuilder
+	CreateUnionBuilder() UnionBuilder
 }
 
 // _Union is the data-structure of this message
@@ -58,6 +60,71 @@ func NewUnion() *_Union {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnionBuilder is a builder for Union
+type UnionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() UnionBuilder
+	// Build builds the Union or returns an error if something is wrong
+	Build() (Union, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Union
+}
+
+// NewUnionBuilder() creates a UnionBuilder
+func NewUnionBuilder() UnionBuilder {
+	return &_UnionBuilder{_Union: new(_Union)}
+}
+
+type _UnionBuilder struct {
+	*_Union
+
+	err *utils.MultiError
+}
+
+var _ (UnionBuilder) = (*_UnionBuilder)(nil)
+
+func (m *_UnionBuilder) WithMandatoryFields() UnionBuilder {
+	return m
+}
+
+func (m *_UnionBuilder) Build() (Union, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Union.deepCopy(), nil
+}
+
+func (m *_UnionBuilder) MustBuild() Union {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UnionBuilder) DeepCopy() any {
+	return m.CreateUnionBuilder()
+}
+
+// CreateUnionBuilder creates a UnionBuilder
+func (m *_Union) CreateUnionBuilder() UnionBuilder {
+	if m == nil {
+		return NewUnionBuilder()
+	}
+	return &_UnionBuilder{_Union: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

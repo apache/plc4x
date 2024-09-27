@@ -52,6 +52,8 @@ type BACnetFaultParameterFaultExtended interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetFaultParameterFaultExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtended()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedBuilder
+	CreateBACnetFaultParameterFaultExtendedBuilder() BACnetFaultParameterFaultExtendedBuilder
 }
 
 // _BACnetFaultParameterFaultExtended is the data-structure of this message
@@ -95,6 +97,211 @@ func NewBACnetFaultParameterFaultExtended(peekedTagHeader BACnetTagHeader, openi
 	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedBuilder is a builder for BACnetFaultParameterFaultExtended
+type BACnetFaultParameterFaultExtendedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedFaultType BACnetContextTagUnsignedInteger, parameters BACnetFaultParameterFaultExtendedParameters, closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetFaultParameterFaultExtendedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultExtendedBuilder
+	// WithVendorId adds VendorId (property field)
+	WithVendorId(BACnetVendorIdTagged) BACnetFaultParameterFaultExtendedBuilder
+	// WithVendorIdBuilder adds VendorId (property field) which is build by the builder
+	WithVendorIdBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetFaultParameterFaultExtendedBuilder
+	// WithExtendedFaultType adds ExtendedFaultType (property field)
+	WithExtendedFaultType(BACnetContextTagUnsignedInteger) BACnetFaultParameterFaultExtendedBuilder
+	// WithExtendedFaultTypeBuilder adds ExtendedFaultType (property field) which is build by the builder
+	WithExtendedFaultTypeBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetFaultParameterFaultExtendedBuilder
+	// WithParameters adds Parameters (property field)
+	WithParameters(BACnetFaultParameterFaultExtendedParameters) BACnetFaultParameterFaultExtendedBuilder
+	// WithParametersBuilder adds Parameters (property field) which is build by the builder
+	WithParametersBuilder(func(BACnetFaultParameterFaultExtendedParametersBuilder) BACnetFaultParameterFaultExtendedParametersBuilder) BACnetFaultParameterFaultExtendedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultExtendedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedBuilder
+	// Build builds the BACnetFaultParameterFaultExtended or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtended, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtended
+}
+
+// NewBACnetFaultParameterFaultExtendedBuilder() creates a BACnetFaultParameterFaultExtendedBuilder
+func NewBACnetFaultParameterFaultExtendedBuilder() BACnetFaultParameterFaultExtendedBuilder {
+	return &_BACnetFaultParameterFaultExtendedBuilder{_BACnetFaultParameterFaultExtended: new(_BACnetFaultParameterFaultExtended)}
+}
+
+type _BACnetFaultParameterFaultExtendedBuilder struct {
+	*_BACnetFaultParameterFaultExtended
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedBuilder) = (*_BACnetFaultParameterFaultExtendedBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, vendorId BACnetVendorIdTagged, extendedFaultType BACnetContextTagUnsignedInteger, parameters BACnetFaultParameterFaultExtendedParameters, closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedBuilder {
+	return m.WithOpeningTag(openingTag).WithVendorId(vendorId).WithExtendedFaultType(extendedFaultType).WithParameters(parameters).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultExtendedBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultExtendedBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetFaultParameterFaultExtendedBuilder {
+	m.VendorId = vendorId
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetFaultParameterFaultExtendedBuilder {
+	builder := builderSupplier(m.VendorId.CreateBACnetVendorIdTaggedBuilder())
+	var err error
+	m.VendorId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithExtendedFaultType(extendedFaultType BACnetContextTagUnsignedInteger) BACnetFaultParameterFaultExtendedBuilder {
+	m.ExtendedFaultType = extendedFaultType
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithExtendedFaultTypeBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetFaultParameterFaultExtendedBuilder {
+	builder := builderSupplier(m.ExtendedFaultType.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.ExtendedFaultType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithParameters(parameters BACnetFaultParameterFaultExtendedParameters) BACnetFaultParameterFaultExtendedBuilder {
+	m.Parameters = parameters
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithParametersBuilder(builderSupplier func(BACnetFaultParameterFaultExtendedParametersBuilder) BACnetFaultParameterFaultExtendedParametersBuilder) BACnetFaultParameterFaultExtendedBuilder {
+	builder := builderSupplier(m.Parameters.CreateBACnetFaultParameterFaultExtendedParametersBuilder())
+	var err error
+	m.Parameters, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultExtendedParametersBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultExtendedBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultExtendedBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) Build() (BACnetFaultParameterFaultExtended, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.VendorId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'vendorId' not set"))
+	}
+	if m.ExtendedFaultType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'extendedFaultType' not set"))
+	}
+	if m.Parameters == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'parameters' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtended.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) MustBuild() BACnetFaultParameterFaultExtended {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedBuilder creates a BACnetFaultParameterFaultExtendedBuilder
+func (m *_BACnetFaultParameterFaultExtended) CreateBACnetFaultParameterFaultExtendedBuilder() BACnetFaultParameterFaultExtendedBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedBuilder{_BACnetFaultParameterFaultExtended: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

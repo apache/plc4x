@@ -44,6 +44,8 @@ type SALDataErrorReporting interface {
 	GetErrorReportingData() ErrorReportingData
 	// IsSALDataErrorReporting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataErrorReporting()
+	// CreateBuilder creates a SALDataErrorReportingBuilder
+	CreateSALDataErrorReportingBuilder() SALDataErrorReportingBuilder
 }
 
 // _SALDataErrorReporting is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataErrorReporting(salData SALData, errorReportingData ErrorReporting
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataErrorReportingBuilder is a builder for SALDataErrorReporting
+type SALDataErrorReportingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder
+	// WithErrorReportingData adds ErrorReportingData (property field)
+	WithErrorReportingData(ErrorReportingData) SALDataErrorReportingBuilder
+	// Build builds the SALDataErrorReporting or returns an error if something is wrong
+	Build() (SALDataErrorReporting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataErrorReporting
+}
+
+// NewSALDataErrorReportingBuilder() creates a SALDataErrorReportingBuilder
+func NewSALDataErrorReportingBuilder() SALDataErrorReportingBuilder {
+	return &_SALDataErrorReportingBuilder{_SALDataErrorReporting: new(_SALDataErrorReporting)}
+}
+
+type _SALDataErrorReportingBuilder struct {
+	*_SALDataErrorReporting
+
+	err *utils.MultiError
+}
+
+var _ (SALDataErrorReportingBuilder) = (*_SALDataErrorReportingBuilder)(nil)
+
+func (m *_SALDataErrorReportingBuilder) WithMandatoryFields(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder {
+	return m.WithErrorReportingData(errorReportingData)
+}
+
+func (m *_SALDataErrorReportingBuilder) WithErrorReportingData(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder {
+	m.ErrorReportingData = errorReportingData
+	return m
+}
+
+func (m *_SALDataErrorReportingBuilder) Build() (SALDataErrorReporting, error) {
+	if m.ErrorReportingData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorReportingData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataErrorReporting.deepCopy(), nil
+}
+
+func (m *_SALDataErrorReportingBuilder) MustBuild() SALDataErrorReporting {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataErrorReportingBuilder) DeepCopy() any {
+	return m.CreateSALDataErrorReportingBuilder()
+}
+
+// CreateSALDataErrorReportingBuilder creates a SALDataErrorReportingBuilder
+func (m *_SALDataErrorReporting) CreateSALDataErrorReportingBuilder() SALDataErrorReportingBuilder {
+	if m == nil {
+		return NewSALDataErrorReportingBuilder()
+	}
+	return &_SALDataErrorReportingBuilder{_SALDataErrorReporting: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

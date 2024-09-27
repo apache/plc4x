@@ -46,6 +46,8 @@ type BACnetConstructedDataDaylightSavingsStatus interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataDaylightSavingsStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDaylightSavingsStatus()
+	// CreateBuilder creates a BACnetConstructedDataDaylightSavingsStatusBuilder
+	CreateBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDataDaylightSavingsStatusBuilder
 }
 
 // _BACnetConstructedDataDaylightSavingsStatus is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDaylightSavingsStatus(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDaylightSavingsStatusBuilder is a builder for BACnetConstructedDataDaylightSavingsStatus
+type BACnetConstructedDataDaylightSavingsStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder
+	// WithDaylightSavingsStatus adds DaylightSavingsStatus (property field)
+	WithDaylightSavingsStatus(BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder
+	// WithDaylightSavingsStatusBuilder adds DaylightSavingsStatus (property field) which is build by the builder
+	WithDaylightSavingsStatusBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDaylightSavingsStatusBuilder
+	// Build builds the BACnetConstructedDataDaylightSavingsStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataDaylightSavingsStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDaylightSavingsStatus
+}
+
+// NewBACnetConstructedDataDaylightSavingsStatusBuilder() creates a BACnetConstructedDataDaylightSavingsStatusBuilder
+func NewBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDataDaylightSavingsStatusBuilder {
+	return &_BACnetConstructedDataDaylightSavingsStatusBuilder{_BACnetConstructedDataDaylightSavingsStatus: new(_BACnetConstructedDataDaylightSavingsStatus)}
+}
+
+type _BACnetConstructedDataDaylightSavingsStatusBuilder struct {
+	*_BACnetConstructedDataDaylightSavingsStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDaylightSavingsStatusBuilder) = (*_BACnetConstructedDataDaylightSavingsStatusBuilder)(nil)
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithMandatoryFields(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	return m.WithDaylightSavingsStatus(daylightSavingsStatus)
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatus(daylightSavingsStatus BACnetApplicationTagBoolean) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	m.DaylightSavingsStatus = daylightSavingsStatus
+	return m
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) WithDaylightSavingsStatusBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDaylightSavingsStatusBuilder {
+	builder := builderSupplier(m.DaylightSavingsStatus.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.DaylightSavingsStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) Build() (BACnetConstructedDataDaylightSavingsStatus, error) {
+	if m.DaylightSavingsStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'daylightSavingsStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDaylightSavingsStatus.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) MustBuild() BACnetConstructedDataDaylightSavingsStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDaylightSavingsStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDaylightSavingsStatusBuilder()
+}
+
+// CreateBACnetConstructedDataDaylightSavingsStatusBuilder creates a BACnetConstructedDataDaylightSavingsStatusBuilder
+func (m *_BACnetConstructedDataDaylightSavingsStatus) CreateBACnetConstructedDataDaylightSavingsStatusBuilder() BACnetConstructedDataDaylightSavingsStatusBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDaylightSavingsStatusBuilder()
+	}
+	return &_BACnetConstructedDataDaylightSavingsStatusBuilder{_BACnetConstructedDataDaylightSavingsStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

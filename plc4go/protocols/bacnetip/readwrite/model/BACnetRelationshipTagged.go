@@ -49,6 +49,8 @@ type BACnetRelationshipTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetRelationshipTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRelationshipTagged()
+	// CreateBuilder creates a BACnetRelationshipTaggedBuilder
+	CreateBACnetRelationshipTaggedBuilder() BACnetRelationshipTaggedBuilder
 }
 
 // _BACnetRelationshipTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetRelationshipTagged(header BACnetTagHeader, value BACnetRelationshi
 	}
 	return &_BACnetRelationshipTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRelationshipTaggedBuilder is a builder for BACnetRelationshipTagged
+type BACnetRelationshipTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32) BACnetRelationshipTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetRelationshipTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRelationshipTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetRelationship) BACnetRelationshipTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetRelationshipTaggedBuilder
+	// Build builds the BACnetRelationshipTagged or returns an error if something is wrong
+	Build() (BACnetRelationshipTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRelationshipTagged
+}
+
+// NewBACnetRelationshipTaggedBuilder() creates a BACnetRelationshipTaggedBuilder
+func NewBACnetRelationshipTaggedBuilder() BACnetRelationshipTaggedBuilder {
+	return &_BACnetRelationshipTaggedBuilder{_BACnetRelationshipTagged: new(_BACnetRelationshipTagged)}
+}
+
+type _BACnetRelationshipTaggedBuilder struct {
+	*_BACnetRelationshipTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRelationshipTaggedBuilder) = (*_BACnetRelationshipTaggedBuilder)(nil)
+
+func (m *_BACnetRelationshipTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetRelationship, proprietaryValue uint32) BACnetRelationshipTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetRelationshipTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRelationshipTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) WithValue(value BACnetRelationship) BACnetRelationshipTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRelationshipTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) Build() (BACnetRelationshipTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRelationshipTagged.deepCopy(), nil
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) MustBuild() BACnetRelationshipTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRelationshipTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetRelationshipTaggedBuilder()
+}
+
+// CreateBACnetRelationshipTaggedBuilder creates a BACnetRelationshipTaggedBuilder
+func (m *_BACnetRelationshipTagged) CreateBACnetRelationshipTaggedBuilder() BACnetRelationshipTaggedBuilder {
+	if m == nil {
+		return NewBACnetRelationshipTaggedBuilder()
+	}
+	return &_BACnetRelationshipTaggedBuilder{_BACnetRelationshipTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -54,6 +54,8 @@ type ServerStatusDataType interface {
 	GetShutdownReason() LocalizedText
 	// IsServerStatusDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerStatusDataType()
+	// CreateBuilder creates a ServerStatusDataTypeBuilder
+	CreateServerStatusDataTypeBuilder() ServerStatusDataTypeBuilder
 }
 
 // _ServerStatusDataType is the data-structure of this message
@@ -90,6 +92,140 @@ func NewServerStatusDataType(startTime int64, currentTime int64, state ServerSta
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServerStatusDataTypeBuilder is a builder for ServerStatusDataType
+type ServerStatusDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(int64) ServerStatusDataTypeBuilder
+	// WithCurrentTime adds CurrentTime (property field)
+	WithCurrentTime(int64) ServerStatusDataTypeBuilder
+	// WithState adds State (property field)
+	WithState(ServerState) ServerStatusDataTypeBuilder
+	// WithBuildInfo adds BuildInfo (property field)
+	WithBuildInfo(ExtensionObjectDefinition) ServerStatusDataTypeBuilder
+	// WithSecondsTillShutdown adds SecondsTillShutdown (property field)
+	WithSecondsTillShutdown(uint32) ServerStatusDataTypeBuilder
+	// WithShutdownReason adds ShutdownReason (property field)
+	WithShutdownReason(LocalizedText) ServerStatusDataTypeBuilder
+	// WithShutdownReasonBuilder adds ShutdownReason (property field) which is build by the builder
+	WithShutdownReasonBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ServerStatusDataTypeBuilder
+	// Build builds the ServerStatusDataType or returns an error if something is wrong
+	Build() (ServerStatusDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServerStatusDataType
+}
+
+// NewServerStatusDataTypeBuilder() creates a ServerStatusDataTypeBuilder
+func NewServerStatusDataTypeBuilder() ServerStatusDataTypeBuilder {
+	return &_ServerStatusDataTypeBuilder{_ServerStatusDataType: new(_ServerStatusDataType)}
+}
+
+type _ServerStatusDataTypeBuilder struct {
+	*_ServerStatusDataType
+
+	err *utils.MultiError
+}
+
+var _ (ServerStatusDataTypeBuilder) = (*_ServerStatusDataTypeBuilder)(nil)
+
+func (m *_ServerStatusDataTypeBuilder) WithMandatoryFields(startTime int64, currentTime int64, state ServerState, buildInfo ExtensionObjectDefinition, secondsTillShutdown uint32, shutdownReason LocalizedText) ServerStatusDataTypeBuilder {
+	return m.WithStartTime(startTime).WithCurrentTime(currentTime).WithState(state).WithBuildInfo(buildInfo).WithSecondsTillShutdown(secondsTillShutdown).WithShutdownReason(shutdownReason)
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithStartTime(startTime int64) ServerStatusDataTypeBuilder {
+	m.StartTime = startTime
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithCurrentTime(currentTime int64) ServerStatusDataTypeBuilder {
+	m.CurrentTime = currentTime
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithState(state ServerState) ServerStatusDataTypeBuilder {
+	m.State = state
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithBuildInfo(buildInfo ExtensionObjectDefinition) ServerStatusDataTypeBuilder {
+	m.BuildInfo = buildInfo
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithSecondsTillShutdown(secondsTillShutdown uint32) ServerStatusDataTypeBuilder {
+	m.SecondsTillShutdown = secondsTillShutdown
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithShutdownReason(shutdownReason LocalizedText) ServerStatusDataTypeBuilder {
+	m.ShutdownReason = shutdownReason
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) WithShutdownReasonBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ServerStatusDataTypeBuilder {
+	builder := builderSupplier(m.ShutdownReason.CreateLocalizedTextBuilder())
+	var err error
+	m.ShutdownReason, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ServerStatusDataTypeBuilder) Build() (ServerStatusDataType, error) {
+	if m.BuildInfo == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'buildInfo' not set"))
+	}
+	if m.ShutdownReason == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'shutdownReason' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ServerStatusDataType.deepCopy(), nil
+}
+
+func (m *_ServerStatusDataTypeBuilder) MustBuild() ServerStatusDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServerStatusDataTypeBuilder) DeepCopy() any {
+	return m.CreateServerStatusDataTypeBuilder()
+}
+
+// CreateServerStatusDataTypeBuilder creates a ServerStatusDataTypeBuilder
+func (m *_ServerStatusDataType) CreateServerStatusDataTypeBuilder() ServerStatusDataTypeBuilder {
+	if m == nil {
+		return NewServerStatusDataTypeBuilder()
+	}
+	return &_ServerStatusDataTypeBuilder{_ServerStatusDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

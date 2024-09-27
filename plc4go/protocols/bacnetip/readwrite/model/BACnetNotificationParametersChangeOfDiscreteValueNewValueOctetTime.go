@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interfac
 	GetTimeValue() BACnetApplicationTagTime
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(openi
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithTimeValue(BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	return m.WithTimeValue(timeValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	m.TimeValue = timeValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.TimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
+	if m.TimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

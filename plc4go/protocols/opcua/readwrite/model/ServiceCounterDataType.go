@@ -46,6 +46,8 @@ type ServiceCounterDataType interface {
 	GetErrorCount() uint32
 	// IsServiceCounterDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceCounterDataType()
+	// CreateBuilder creates a ServiceCounterDataTypeBuilder
+	CreateServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder
 }
 
 // _ServiceCounterDataType is the data-structure of this message
@@ -68,6 +70,85 @@ func NewServiceCounterDataType(totalCount uint32, errorCount uint32) *_ServiceCo
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServiceCounterDataTypeBuilder is a builder for ServiceCounterDataType
+type ServiceCounterDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(totalCount uint32, errorCount uint32) ServiceCounterDataTypeBuilder
+	// WithTotalCount adds TotalCount (property field)
+	WithTotalCount(uint32) ServiceCounterDataTypeBuilder
+	// WithErrorCount adds ErrorCount (property field)
+	WithErrorCount(uint32) ServiceCounterDataTypeBuilder
+	// Build builds the ServiceCounterDataType or returns an error if something is wrong
+	Build() (ServiceCounterDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServiceCounterDataType
+}
+
+// NewServiceCounterDataTypeBuilder() creates a ServiceCounterDataTypeBuilder
+func NewServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder {
+	return &_ServiceCounterDataTypeBuilder{_ServiceCounterDataType: new(_ServiceCounterDataType)}
+}
+
+type _ServiceCounterDataTypeBuilder struct {
+	*_ServiceCounterDataType
+
+	err *utils.MultiError
+}
+
+var _ (ServiceCounterDataTypeBuilder) = (*_ServiceCounterDataTypeBuilder)(nil)
+
+func (m *_ServiceCounterDataTypeBuilder) WithMandatoryFields(totalCount uint32, errorCount uint32) ServiceCounterDataTypeBuilder {
+	return m.WithTotalCount(totalCount).WithErrorCount(errorCount)
+}
+
+func (m *_ServiceCounterDataTypeBuilder) WithTotalCount(totalCount uint32) ServiceCounterDataTypeBuilder {
+	m.TotalCount = totalCount
+	return m
+}
+
+func (m *_ServiceCounterDataTypeBuilder) WithErrorCount(errorCount uint32) ServiceCounterDataTypeBuilder {
+	m.ErrorCount = errorCount
+	return m
+}
+
+func (m *_ServiceCounterDataTypeBuilder) Build() (ServiceCounterDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ServiceCounterDataType.deepCopy(), nil
+}
+
+func (m *_ServiceCounterDataTypeBuilder) MustBuild() ServiceCounterDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServiceCounterDataTypeBuilder) DeepCopy() any {
+	return m.CreateServiceCounterDataTypeBuilder()
+}
+
+// CreateServiceCounterDataTypeBuilder creates a ServiceCounterDataTypeBuilder
+func (m *_ServiceCounterDataType) CreateServiceCounterDataTypeBuilder() ServiceCounterDataTypeBuilder {
+	if m == nil {
+		return NewServiceCounterDataTypeBuilder()
+	}
+	return &_ServiceCounterDataTypeBuilder{_ServiceCounterDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

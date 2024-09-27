@@ -48,6 +48,8 @@ type AdsWriteControlRequest interface {
 	GetData() []byte
 	// IsAdsWriteControlRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteControlRequest()
+	// CreateBuilder creates a AdsWriteControlRequestBuilder
+	CreateAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder
 }
 
 // _AdsWriteControlRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewAdsWriteControlRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, so
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsWriteControlRequestBuilder is a builder for AdsWriteControlRequest
+type AdsWriteControlRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(adsState uint16, deviceState uint16, data []byte) AdsWriteControlRequestBuilder
+	// WithAdsState adds AdsState (property field)
+	WithAdsState(uint16) AdsWriteControlRequestBuilder
+	// WithDeviceState adds DeviceState (property field)
+	WithDeviceState(uint16) AdsWriteControlRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsWriteControlRequestBuilder
+	// Build builds the AdsWriteControlRequest or returns an error if something is wrong
+	Build() (AdsWriteControlRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsWriteControlRequest
+}
+
+// NewAdsWriteControlRequestBuilder() creates a AdsWriteControlRequestBuilder
+func NewAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder {
+	return &_AdsWriteControlRequestBuilder{_AdsWriteControlRequest: new(_AdsWriteControlRequest)}
+}
+
+type _AdsWriteControlRequestBuilder struct {
+	*_AdsWriteControlRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsWriteControlRequestBuilder) = (*_AdsWriteControlRequestBuilder)(nil)
+
+func (m *_AdsWriteControlRequestBuilder) WithMandatoryFields(adsState uint16, deviceState uint16, data []byte) AdsWriteControlRequestBuilder {
+	return m.WithAdsState(adsState).WithDeviceState(deviceState).WithData(data...)
+}
+
+func (m *_AdsWriteControlRequestBuilder) WithAdsState(adsState uint16) AdsWriteControlRequestBuilder {
+	m.AdsState = adsState
+	return m
+}
+
+func (m *_AdsWriteControlRequestBuilder) WithDeviceState(deviceState uint16) AdsWriteControlRequestBuilder {
+	m.DeviceState = deviceState
+	return m
+}
+
+func (m *_AdsWriteControlRequestBuilder) WithData(data ...byte) AdsWriteControlRequestBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AdsWriteControlRequestBuilder) Build() (AdsWriteControlRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsWriteControlRequest.deepCopy(), nil
+}
+
+func (m *_AdsWriteControlRequestBuilder) MustBuild() AdsWriteControlRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsWriteControlRequestBuilder) DeepCopy() any {
+	return m.CreateAdsWriteControlRequestBuilder()
+}
+
+// CreateAdsWriteControlRequestBuilder creates a AdsWriteControlRequestBuilder
+func (m *_AdsWriteControlRequest) CreateAdsWriteControlRequestBuilder() AdsWriteControlRequestBuilder {
+	if m == nil {
+		return NewAdsWriteControlRequestBuilder()
+	}
+	return &_AdsWriteControlRequestBuilder{_AdsWriteControlRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

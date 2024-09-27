@@ -47,6 +47,8 @@ type SubItem interface {
 	GetStartAddress() uint16
 	// IsSubItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubItem()
+	// CreateBuilder creates a SubItemBuilder
+	CreateSubItemBuilder() SubItemBuilder
 }
 
 // _SubItem is the data-structure of this message
@@ -62,6 +64,92 @@ var _ SubItem = (*_SubItem)(nil)
 func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
 	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubItemBuilder is a builder for SubItem
+type SubItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder
+	// WithBytesToRead adds BytesToRead (property field)
+	WithBytesToRead(uint8) SubItemBuilder
+	// WithDbNumber adds DbNumber (property field)
+	WithDbNumber(uint16) SubItemBuilder
+	// WithStartAddress adds StartAddress (property field)
+	WithStartAddress(uint16) SubItemBuilder
+	// Build builds the SubItem or returns an error if something is wrong
+	Build() (SubItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubItem
+}
+
+// NewSubItemBuilder() creates a SubItemBuilder
+func NewSubItemBuilder() SubItemBuilder {
+	return &_SubItemBuilder{_SubItem: new(_SubItem)}
+}
+
+type _SubItemBuilder struct {
+	*_SubItem
+
+	err *utils.MultiError
+}
+
+var _ (SubItemBuilder) = (*_SubItemBuilder)(nil)
+
+func (m *_SubItemBuilder) WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder {
+	return m.WithBytesToRead(bytesToRead).WithDbNumber(dbNumber).WithStartAddress(startAddress)
+}
+
+func (m *_SubItemBuilder) WithBytesToRead(bytesToRead uint8) SubItemBuilder {
+	m.BytesToRead = bytesToRead
+	return m
+}
+
+func (m *_SubItemBuilder) WithDbNumber(dbNumber uint16) SubItemBuilder {
+	m.DbNumber = dbNumber
+	return m
+}
+
+func (m *_SubItemBuilder) WithStartAddress(startAddress uint16) SubItemBuilder {
+	m.StartAddress = startAddress
+	return m
+}
+
+func (m *_SubItemBuilder) Build() (SubItem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SubItem.deepCopy(), nil
+}
+
+func (m *_SubItemBuilder) MustBuild() SubItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SubItemBuilder) DeepCopy() any {
+	return m.CreateSubItemBuilder()
+}
+
+// CreateSubItemBuilder creates a SubItemBuilder
+func (m *_SubItem) CreateSubItemBuilder() SubItemBuilder {
+	if m == nil {
+		return NewSubItemBuilder()
+	}
+	return &_SubItemBuilder{_SubItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

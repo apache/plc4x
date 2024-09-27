@@ -56,6 +56,8 @@ type AddNodesItem interface {
 	GetTypeDefinition() ExpandedNodeId
 	// IsAddNodesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddNodesItem()
+	// CreateBuilder creates a AddNodesItemBuilder
+	CreateAddNodesItemBuilder() AddNodesItemBuilder
 }
 
 // _AddNodesItem is the data-structure of this message
@@ -106,6 +108,246 @@ func NewAddNodesItem(parentNodeId ExpandedNodeId, referenceTypeId NodeId, reques
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AddNodesItemBuilder is a builder for AddNodesItem
+type AddNodesItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) AddNodesItemBuilder
+	// WithParentNodeId adds ParentNodeId (property field)
+	WithParentNodeId(ExpandedNodeId) AddNodesItemBuilder
+	// WithParentNodeIdBuilder adds ParentNodeId (property field) which is build by the builder
+	WithParentNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) AddNodesItemBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) AddNodesItemBuilder
+	// WithRequestedNewNodeId adds RequestedNewNodeId (property field)
+	WithRequestedNewNodeId(ExpandedNodeId) AddNodesItemBuilder
+	// WithRequestedNewNodeIdBuilder adds RequestedNewNodeId (property field) which is build by the builder
+	WithRequestedNewNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder
+	// WithBrowseName adds BrowseName (property field)
+	WithBrowseName(QualifiedName) AddNodesItemBuilder
+	// WithBrowseNameBuilder adds BrowseName (property field) which is build by the builder
+	WithBrowseNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) AddNodesItemBuilder
+	// WithNodeClass adds NodeClass (property field)
+	WithNodeClass(NodeClass) AddNodesItemBuilder
+	// WithNodeAttributes adds NodeAttributes (property field)
+	WithNodeAttributes(ExtensionObject) AddNodesItemBuilder
+	// WithNodeAttributesBuilder adds NodeAttributes (property field) which is build by the builder
+	WithNodeAttributesBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) AddNodesItemBuilder
+	// WithTypeDefinition adds TypeDefinition (property field)
+	WithTypeDefinition(ExpandedNodeId) AddNodesItemBuilder
+	// WithTypeDefinitionBuilder adds TypeDefinition (property field) which is build by the builder
+	WithTypeDefinitionBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder
+	// Build builds the AddNodesItem or returns an error if something is wrong
+	Build() (AddNodesItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AddNodesItem
+}
+
+// NewAddNodesItemBuilder() creates a AddNodesItemBuilder
+func NewAddNodesItemBuilder() AddNodesItemBuilder {
+	return &_AddNodesItemBuilder{_AddNodesItem: new(_AddNodesItem)}
+}
+
+type _AddNodesItemBuilder struct {
+	*_AddNodesItem
+
+	err *utils.MultiError
+}
+
+var _ (AddNodesItemBuilder) = (*_AddNodesItemBuilder)(nil)
+
+func (m *_AddNodesItemBuilder) WithMandatoryFields(parentNodeId ExpandedNodeId, referenceTypeId NodeId, requestedNewNodeId ExpandedNodeId, browseName QualifiedName, nodeClass NodeClass, nodeAttributes ExtensionObject, typeDefinition ExpandedNodeId) AddNodesItemBuilder {
+	return m.WithParentNodeId(parentNodeId).WithReferenceTypeId(referenceTypeId).WithRequestedNewNodeId(requestedNewNodeId).WithBrowseName(browseName).WithNodeClass(nodeClass).WithNodeAttributes(nodeAttributes).WithTypeDefinition(typeDefinition)
+}
+
+func (m *_AddNodesItemBuilder) WithParentNodeId(parentNodeId ExpandedNodeId) AddNodesItemBuilder {
+	m.ParentNodeId = parentNodeId
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithParentNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.ParentNodeId.CreateExpandedNodeIdBuilder())
+	var err error
+	m.ParentNodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithReferenceTypeId(referenceTypeId NodeId) AddNodesItemBuilder {
+	m.ReferenceTypeId = referenceTypeId
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	m.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithRequestedNewNodeId(requestedNewNodeId ExpandedNodeId) AddNodesItemBuilder {
+	m.RequestedNewNodeId = requestedNewNodeId
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithRequestedNewNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.RequestedNewNodeId.CreateExpandedNodeIdBuilder())
+	var err error
+	m.RequestedNewNodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithBrowseName(browseName QualifiedName) AddNodesItemBuilder {
+	m.BrowseName = browseName
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithBrowseNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.BrowseName.CreateQualifiedNameBuilder())
+	var err error
+	m.BrowseName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithNodeClass(nodeClass NodeClass) AddNodesItemBuilder {
+	m.NodeClass = nodeClass
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithNodeAttributes(nodeAttributes ExtensionObject) AddNodesItemBuilder {
+	m.NodeAttributes = nodeAttributes
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithNodeAttributesBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.NodeAttributes.CreateExtensionObjectBuilder())
+	var err error
+	m.NodeAttributes, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithTypeDefinition(typeDefinition ExpandedNodeId) AddNodesItemBuilder {
+	m.TypeDefinition = typeDefinition
+	return m
+}
+
+func (m *_AddNodesItemBuilder) WithTypeDefinitionBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddNodesItemBuilder {
+	builder := builderSupplier(m.TypeDefinition.CreateExpandedNodeIdBuilder())
+	var err error
+	m.TypeDefinition, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AddNodesItemBuilder) Build() (AddNodesItem, error) {
+	if m.ParentNodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'parentNodeId' not set"))
+	}
+	if m.ReferenceTypeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if m.RequestedNewNodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestedNewNodeId' not set"))
+	}
+	if m.BrowseName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'browseName' not set"))
+	}
+	if m.NodeAttributes == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nodeAttributes' not set"))
+	}
+	if m.TypeDefinition == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'typeDefinition' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AddNodesItem.deepCopy(), nil
+}
+
+func (m *_AddNodesItemBuilder) MustBuild() AddNodesItem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AddNodesItemBuilder) DeepCopy() any {
+	return m.CreateAddNodesItemBuilder()
+}
+
+// CreateAddNodesItemBuilder creates a AddNodesItemBuilder
+func (m *_AddNodesItem) CreateAddNodesItemBuilder() AddNodesItemBuilder {
+	if m == nil {
+		return NewAddNodesItemBuilder()
+	}
+	return &_AddNodesItemBuilder{_AddNodesItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

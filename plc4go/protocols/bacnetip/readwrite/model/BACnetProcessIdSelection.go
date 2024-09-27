@@ -43,6 +43,8 @@ type BACnetProcessIdSelection interface {
 	utils.Copyable
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
+	// CreateBuilder creates a BACnetProcessIdSelectionBuilder
+	CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder
 }
 
 // BACnetProcessIdSelectionContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetProcessIdSelectionContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
+	// CreateBuilder creates a BACnetProcessIdSelectionBuilder
+	CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder
 }
 
 // BACnetProcessIdSelectionRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProces
 	}
 	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProcessIdSelectionBuilder is a builder for BACnetProcessIdSelection
+type BACnetProcessIdSelectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetProcessIdSelectionBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProcessIdSelectionBuilder
+	// Build builds the BACnetProcessIdSelection or returns an error if something is wrong
+	Build() (BACnetProcessIdSelectionContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProcessIdSelectionContract
+}
+
+// NewBACnetProcessIdSelectionBuilder() creates a BACnetProcessIdSelectionBuilder
+func NewBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder {
+	return &_BACnetProcessIdSelectionBuilder{_BACnetProcessIdSelection: new(_BACnetProcessIdSelection)}
+}
+
+type _BACnetProcessIdSelectionBuilder struct {
+	*_BACnetProcessIdSelection
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProcessIdSelectionBuilder) = (*_BACnetProcessIdSelectionBuilder)(nil)
+
+func (m *_BACnetProcessIdSelectionBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetProcessIdSelectionBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetProcessIdSelectionBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProcessIdSelectionBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetProcessIdSelectionBuilder) Build() (BACnetProcessIdSelectionContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetProcessIdSelection.deepCopy(), nil
+}
+
+func (m *_BACnetProcessIdSelectionBuilder) MustBuild() BACnetProcessIdSelectionContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetProcessIdSelectionBuilder) DeepCopy() any {
+	return m.CreateBACnetProcessIdSelectionBuilder()
+}
+
+// CreateBACnetProcessIdSelectionBuilder creates a BACnetProcessIdSelectionBuilder
+func (m *_BACnetProcessIdSelection) CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder {
+	if m == nil {
+		return NewBACnetProcessIdSelectionBuilder()
+	}
+	return &_BACnetProcessIdSelectionBuilder{_BACnetProcessIdSelection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

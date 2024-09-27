@@ -48,6 +48,8 @@ type RegisterNodesResponse interface {
 	GetRegisteredNodeIds() []NodeId
 	// IsRegisterNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterNodesResponse()
+	// CreateBuilder creates a RegisterNodesResponseBuilder
+	CreateRegisterNodesResponseBuilder() RegisterNodesResponseBuilder
 }
 
 // _RegisterNodesResponse is the data-structure of this message
@@ -75,6 +77,98 @@ func NewRegisterNodesResponse(responseHeader ExtensionObjectDefinition, noOfRegi
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterNodesResponseBuilder is a builder for RegisterNodesResponse
+type RegisterNodesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) RegisterNodesResponseBuilder
+	// WithNoOfRegisteredNodeIds adds NoOfRegisteredNodeIds (property field)
+	WithNoOfRegisteredNodeIds(int32) RegisterNodesResponseBuilder
+	// WithRegisteredNodeIds adds RegisteredNodeIds (property field)
+	WithRegisteredNodeIds(...NodeId) RegisterNodesResponseBuilder
+	// Build builds the RegisterNodesResponse or returns an error if something is wrong
+	Build() (RegisterNodesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterNodesResponse
+}
+
+// NewRegisterNodesResponseBuilder() creates a RegisterNodesResponseBuilder
+func NewRegisterNodesResponseBuilder() RegisterNodesResponseBuilder {
+	return &_RegisterNodesResponseBuilder{_RegisterNodesResponse: new(_RegisterNodesResponse)}
+}
+
+type _RegisterNodesResponseBuilder struct {
+	*_RegisterNodesResponse
+
+	err *utils.MultiError
+}
+
+var _ (RegisterNodesResponseBuilder) = (*_RegisterNodesResponseBuilder)(nil)
+
+func (m *_RegisterNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfRegisteredNodeIds int32, registeredNodeIds []NodeId) RegisterNodesResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds).WithRegisteredNodeIds(registeredNodeIds...)
+}
+
+func (m *_RegisterNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterNodesResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_RegisterNodesResponseBuilder) WithNoOfRegisteredNodeIds(noOfRegisteredNodeIds int32) RegisterNodesResponseBuilder {
+	m.NoOfRegisteredNodeIds = noOfRegisteredNodeIds
+	return m
+}
+
+func (m *_RegisterNodesResponseBuilder) WithRegisteredNodeIds(registeredNodeIds ...NodeId) RegisterNodesResponseBuilder {
+	m.RegisteredNodeIds = registeredNodeIds
+	return m
+}
+
+func (m *_RegisterNodesResponseBuilder) Build() (RegisterNodesResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RegisterNodesResponse.deepCopy(), nil
+}
+
+func (m *_RegisterNodesResponseBuilder) MustBuild() RegisterNodesResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RegisterNodesResponseBuilder) DeepCopy() any {
+	return m.CreateRegisterNodesResponseBuilder()
+}
+
+// CreateRegisterNodesResponseBuilder creates a RegisterNodesResponseBuilder
+func (m *_RegisterNodesResponse) CreateRegisterNodesResponseBuilder() RegisterNodesResponseBuilder {
+	if m == nil {
+		return NewRegisterNodesResponseBuilder()
+	}
+	return &_RegisterNodesResponseBuilder{_RegisterNodesResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

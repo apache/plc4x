@@ -44,6 +44,8 @@ type MeteringDataElectricityConsumption interface {
 	GetKWhr() uint32
 	// IsMeteringDataElectricityConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataElectricityConsumption()
+	// CreateBuilder creates a MeteringDataElectricityConsumptionBuilder
+	CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder
 }
 
 // _MeteringDataElectricityConsumption is the data-structure of this message
@@ -64,6 +66,78 @@ func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandT
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataElectricityConsumptionBuilder is a builder for MeteringDataElectricityConsumption
+type MeteringDataElectricityConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder
+	// WithKWhr adds KWhr (property field)
+	WithKWhr(uint32) MeteringDataElectricityConsumptionBuilder
+	// Build builds the MeteringDataElectricityConsumption or returns an error if something is wrong
+	Build() (MeteringDataElectricityConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataElectricityConsumption
+}
+
+// NewMeteringDataElectricityConsumptionBuilder() creates a MeteringDataElectricityConsumptionBuilder
+func NewMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
+	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: new(_MeteringDataElectricityConsumption)}
+}
+
+type _MeteringDataElectricityConsumptionBuilder struct {
+	*_MeteringDataElectricityConsumption
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataElectricityConsumptionBuilder) = (*_MeteringDataElectricityConsumptionBuilder)(nil)
+
+func (m *_MeteringDataElectricityConsumptionBuilder) WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	return m.WithKWhr(kWhr)
+}
+
+func (m *_MeteringDataElectricityConsumptionBuilder) WithKWhr(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	m.KWhr = kWhr
+	return m
+}
+
+func (m *_MeteringDataElectricityConsumptionBuilder) Build() (MeteringDataElectricityConsumption, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataElectricityConsumption.deepCopy(), nil
+}
+
+func (m *_MeteringDataElectricityConsumptionBuilder) MustBuild() MeteringDataElectricityConsumption {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataElectricityConsumptionBuilder) DeepCopy() any {
+	return m.CreateMeteringDataElectricityConsumptionBuilder()
+}
+
+// CreateMeteringDataElectricityConsumptionBuilder creates a MeteringDataElectricityConsumptionBuilder
+func (m *_MeteringDataElectricityConsumption) CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
+	if m == nil {
+		return NewMeteringDataElectricityConsumptionBuilder()
+	}
+	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

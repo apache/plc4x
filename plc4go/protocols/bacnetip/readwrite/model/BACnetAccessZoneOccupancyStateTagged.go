@@ -49,6 +49,8 @@ type BACnetAccessZoneOccupancyStateTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessZoneOccupancyStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessZoneOccupancyStateTagged()
+	// CreateBuilder creates a BACnetAccessZoneOccupancyStateTaggedBuilder
+	CreateBACnetAccessZoneOccupancyStateTaggedBuilder() BACnetAccessZoneOccupancyStateTaggedBuilder
 }
 
 // _BACnetAccessZoneOccupancyStateTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetAccessZoneOccupancyStateTagged(header BACnetTagHeader, value BACne
 	}
 	return &_BACnetAccessZoneOccupancyStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessZoneOccupancyStateTaggedBuilder is a builder for BACnetAccessZoneOccupancyStateTagged
+type BACnetAccessZoneOccupancyStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessZoneOccupancyStateTaggedBuilder
+	// Build builds the BACnetAccessZoneOccupancyStateTagged or returns an error if something is wrong
+	Build() (BACnetAccessZoneOccupancyStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessZoneOccupancyStateTagged
+}
+
+// NewBACnetAccessZoneOccupancyStateTaggedBuilder() creates a BACnetAccessZoneOccupancyStateTaggedBuilder
+func NewBACnetAccessZoneOccupancyStateTaggedBuilder() BACnetAccessZoneOccupancyStateTaggedBuilder {
+	return &_BACnetAccessZoneOccupancyStateTaggedBuilder{_BACnetAccessZoneOccupancyStateTagged: new(_BACnetAccessZoneOccupancyStateTagged)}
+}
+
+type _BACnetAccessZoneOccupancyStateTaggedBuilder struct {
+	*_BACnetAccessZoneOccupancyStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessZoneOccupancyStateTaggedBuilder) = (*_BACnetAccessZoneOccupancyStateTaggedBuilder)(nil)
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessZoneOccupancyState, proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithValue(value BACnetAccessZoneOccupancyState) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessZoneOccupancyStateTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) Build() (BACnetAccessZoneOccupancyStateTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccessZoneOccupancyStateTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) MustBuild() BACnetAccessZoneOccupancyStateTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccessZoneOccupancyStateTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccessZoneOccupancyStateTaggedBuilder()
+}
+
+// CreateBACnetAccessZoneOccupancyStateTaggedBuilder creates a BACnetAccessZoneOccupancyStateTaggedBuilder
+func (m *_BACnetAccessZoneOccupancyStateTagged) CreateBACnetAccessZoneOccupancyStateTaggedBuilder() BACnetAccessZoneOccupancyStateTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccessZoneOccupancyStateTaggedBuilder()
+	}
+	return &_BACnetAccessZoneOccupancyStateTaggedBuilder{_BACnetAccessZoneOccupancyStateTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

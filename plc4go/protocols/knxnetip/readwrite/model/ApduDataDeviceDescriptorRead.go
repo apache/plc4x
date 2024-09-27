@@ -44,6 +44,8 @@ type ApduDataDeviceDescriptorRead interface {
 	GetDescriptorType() uint8
 	// IsApduDataDeviceDescriptorRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataDeviceDescriptorRead()
+	// CreateBuilder creates a ApduDataDeviceDescriptorReadBuilder
+	CreateApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilder
 }
 
 // _ApduDataDeviceDescriptorRead is the data-structure of this message
@@ -64,6 +66,78 @@ func NewApduDataDeviceDescriptorRead(descriptorType uint8, dataLength uint8) *_A
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataDeviceDescriptorReadBuilder is a builder for ApduDataDeviceDescriptorRead
+type ApduDataDeviceDescriptorReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder
+	// WithDescriptorType adds DescriptorType (property field)
+	WithDescriptorType(uint8) ApduDataDeviceDescriptorReadBuilder
+	// Build builds the ApduDataDeviceDescriptorRead or returns an error if something is wrong
+	Build() (ApduDataDeviceDescriptorRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataDeviceDescriptorRead
+}
+
+// NewApduDataDeviceDescriptorReadBuilder() creates a ApduDataDeviceDescriptorReadBuilder
+func NewApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilder {
+	return &_ApduDataDeviceDescriptorReadBuilder{_ApduDataDeviceDescriptorRead: new(_ApduDataDeviceDescriptorRead)}
+}
+
+type _ApduDataDeviceDescriptorReadBuilder struct {
+	*_ApduDataDeviceDescriptorRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataDeviceDescriptorReadBuilder) = (*_ApduDataDeviceDescriptorReadBuilder)(nil)
+
+func (m *_ApduDataDeviceDescriptorReadBuilder) WithMandatoryFields(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
+	return m.WithDescriptorType(descriptorType)
+}
+
+func (m *_ApduDataDeviceDescriptorReadBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorReadBuilder {
+	m.DescriptorType = descriptorType
+	return m
+}
+
+func (m *_ApduDataDeviceDescriptorReadBuilder) Build() (ApduDataDeviceDescriptorRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataDeviceDescriptorRead.deepCopy(), nil
+}
+
+func (m *_ApduDataDeviceDescriptorReadBuilder) MustBuild() ApduDataDeviceDescriptorRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataDeviceDescriptorReadBuilder) DeepCopy() any {
+	return m.CreateApduDataDeviceDescriptorReadBuilder()
+}
+
+// CreateApduDataDeviceDescriptorReadBuilder creates a ApduDataDeviceDescriptorReadBuilder
+func (m *_ApduDataDeviceDescriptorRead) CreateApduDataDeviceDescriptorReadBuilder() ApduDataDeviceDescriptorReadBuilder {
+	if m == nil {
+		return NewApduDataDeviceDescriptorReadBuilder()
+	}
+	return &_ApduDataDeviceDescriptorReadBuilder{_ApduDataDeviceDescriptorRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

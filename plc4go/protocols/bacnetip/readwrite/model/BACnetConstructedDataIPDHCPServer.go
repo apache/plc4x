@@ -46,6 +46,8 @@ type BACnetConstructedDataIPDHCPServer interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPDHCPServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPDHCPServer()
+	// CreateBuilder creates a BACnetConstructedDataIPDHCPServerBuilder
+	CreateBACnetConstructedDataIPDHCPServerBuilder() BACnetConstructedDataIPDHCPServerBuilder
 }
 
 // _BACnetConstructedDataIPDHCPServer is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIPDHCPServer(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPDHCPServerBuilder is a builder for BACnetConstructedDataIPDHCPServer
+type BACnetConstructedDataIPDHCPServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPDHCPServerBuilder
+	// WithDhcpServer adds DhcpServer (property field)
+	WithDhcpServer(BACnetApplicationTagOctetString) BACnetConstructedDataIPDHCPServerBuilder
+	// WithDhcpServerBuilder adds DhcpServer (property field) which is build by the builder
+	WithDhcpServerBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDHCPServerBuilder
+	// Build builds the BACnetConstructedDataIPDHCPServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPDHCPServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPDHCPServer
+}
+
+// NewBACnetConstructedDataIPDHCPServerBuilder() creates a BACnetConstructedDataIPDHCPServerBuilder
+func NewBACnetConstructedDataIPDHCPServerBuilder() BACnetConstructedDataIPDHCPServerBuilder {
+	return &_BACnetConstructedDataIPDHCPServerBuilder{_BACnetConstructedDataIPDHCPServer: new(_BACnetConstructedDataIPDHCPServer)}
+}
+
+type _BACnetConstructedDataIPDHCPServerBuilder struct {
+	*_BACnetConstructedDataIPDHCPServer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPDHCPServerBuilder) = (*_BACnetConstructedDataIPDHCPServerBuilder)(nil)
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) WithMandatoryFields(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPDHCPServerBuilder {
+	return m.WithDhcpServer(dhcpServer)
+}
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) WithDhcpServer(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPDHCPServerBuilder {
+	m.DhcpServer = dhcpServer
+	return m
+}
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) WithDhcpServerBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDHCPServerBuilder {
+	builder := builderSupplier(m.DhcpServer.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.DhcpServer, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) Build() (BACnetConstructedDataIPDHCPServer, error) {
+	if m.DhcpServer == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dhcpServer' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIPDHCPServer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) MustBuild() BACnetConstructedDataIPDHCPServer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIPDHCPServerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIPDHCPServerBuilder()
+}
+
+// CreateBACnetConstructedDataIPDHCPServerBuilder creates a BACnetConstructedDataIPDHCPServerBuilder
+func (m *_BACnetConstructedDataIPDHCPServer) CreateBACnetConstructedDataIPDHCPServerBuilder() BACnetConstructedDataIPDHCPServerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIPDHCPServerBuilder()
+	}
+	return &_BACnetConstructedDataIPDHCPServerBuilder{_BACnetConstructedDataIPDHCPServer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

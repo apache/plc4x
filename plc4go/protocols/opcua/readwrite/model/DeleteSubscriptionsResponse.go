@@ -52,6 +52,8 @@ type DeleteSubscriptionsResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteSubscriptionsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteSubscriptionsResponse()
+	// CreateBuilder creates a DeleteSubscriptionsResponseBuilder
+	CreateDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder
 }
 
 // _DeleteSubscriptionsResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, no
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteSubscriptionsResponseBuilder is a builder for DeleteSubscriptionsResponse
+type DeleteSubscriptionsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) DeleteSubscriptionsResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) DeleteSubscriptionsResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) DeleteSubscriptionsResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	// Build builds the DeleteSubscriptionsResponse or returns an error if something is wrong
+	Build() (DeleteSubscriptionsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteSubscriptionsResponse
+}
+
+// NewDeleteSubscriptionsResponseBuilder() creates a DeleteSubscriptionsResponseBuilder
+func NewDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder {
+	return &_DeleteSubscriptionsResponseBuilder{_DeleteSubscriptionsResponse: new(_DeleteSubscriptionsResponse)}
+}
+
+type _DeleteSubscriptionsResponseBuilder struct {
+	*_DeleteSubscriptionsResponse
+
+	err *utils.MultiError
+}
+
+var _ (DeleteSubscriptionsResponseBuilder) = (*_DeleteSubscriptionsResponseBuilder)(nil)
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithNoOfResults(noOfResults int32) DeleteSubscriptionsResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithResults(results ...StatusCode) DeleteSubscriptionsResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteSubscriptionsResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) Build() (DeleteSubscriptionsResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeleteSubscriptionsResponse.deepCopy(), nil
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) MustBuild() DeleteSubscriptionsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeleteSubscriptionsResponseBuilder) DeepCopy() any {
+	return m.CreateDeleteSubscriptionsResponseBuilder()
+}
+
+// CreateDeleteSubscriptionsResponseBuilder creates a DeleteSubscriptionsResponseBuilder
+func (m *_DeleteSubscriptionsResponse) CreateDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder {
+	if m == nil {
+		return NewDeleteSubscriptionsResponseBuilder()
+	}
+	return &_DeleteSubscriptionsResponseBuilder{_DeleteSubscriptionsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

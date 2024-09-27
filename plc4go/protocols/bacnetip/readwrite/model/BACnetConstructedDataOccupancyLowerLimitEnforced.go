@@ -46,6 +46,8 @@ type BACnetConstructedDataOccupancyLowerLimitEnforced interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataOccupancyLowerLimitEnforced is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOccupancyLowerLimitEnforced()
+	// CreateBuilder creates a BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	CreateBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder() BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
 }
 
 // _BACnetConstructedDataOccupancyLowerLimitEnforced is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataOccupancyLowerLimitEnforced(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder is a builder for BACnetConstructedDataOccupancyLowerLimitEnforced
+type BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(occupancyLowerLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	// WithOccupancyLowerLimitEnforced adds OccupancyLowerLimitEnforced (property field)
+	WithOccupancyLowerLimitEnforced(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	// WithOccupancyLowerLimitEnforcedBuilder adds OccupancyLowerLimitEnforced (property field) which is build by the builder
+	WithOccupancyLowerLimitEnforcedBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+	// Build builds the BACnetConstructedDataOccupancyLowerLimitEnforced or returns an error if something is wrong
+	Build() (BACnetConstructedDataOccupancyLowerLimitEnforced, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOccupancyLowerLimitEnforced
+}
+
+// NewBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder() creates a BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+func NewBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder() BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
+	return &_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder{_BACnetConstructedDataOccupancyLowerLimitEnforced: new(_BACnetConstructedDataOccupancyLowerLimitEnforced)}
+}
+
+type _BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder struct {
+	*_BACnetConstructedDataOccupancyLowerLimitEnforced
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) = (*_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder)(nil)
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) WithMandatoryFields(occupancyLowerLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
+	return m.WithOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced)
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) WithOccupancyLowerLimitEnforced(occupancyLowerLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
+	m.OccupancyLowerLimitEnforced = occupancyLowerLimitEnforced
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) WithOccupancyLowerLimitEnforcedBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
+	builder := builderSupplier(m.OccupancyLowerLimitEnforced.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.OccupancyLowerLimitEnforced, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) Build() (BACnetConstructedDataOccupancyLowerLimitEnforced, error) {
+	if m.OccupancyLowerLimitEnforced == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'occupancyLowerLimitEnforced' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOccupancyLowerLimitEnforced.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) MustBuild() BACnetConstructedDataOccupancyLowerLimitEnforced {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder()
+}
+
+// CreateBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder creates a BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+func (m *_BACnetConstructedDataOccupancyLowerLimitEnforced) CreateBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder() BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOccupancyLowerLimitEnforcedBuilder()
+	}
+	return &_BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder{_BACnetConstructedDataOccupancyLowerLimitEnforced: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

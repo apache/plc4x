@@ -44,6 +44,8 @@ type S7ParameterUserData interface {
 	GetItems() []S7ParameterUserDataItem
 	// IsS7ParameterUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserData()
+	// CreateBuilder creates a S7ParameterUserDataBuilder
+	CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder
 }
 
 // _S7ParameterUserData is the data-structure of this message
@@ -64,6 +66,78 @@ func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserDa
 	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterUserDataBuilder is a builder for S7ParameterUserData
+type S7ParameterUserDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7ParameterUserDataItem) S7ParameterUserDataBuilder
+	// Build builds the S7ParameterUserData or returns an error if something is wrong
+	Build() (S7ParameterUserData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterUserData
+}
+
+// NewS7ParameterUserDataBuilder() creates a S7ParameterUserDataBuilder
+func NewS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
+	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: new(_S7ParameterUserData)}
+}
+
+type _S7ParameterUserDataBuilder struct {
+	*_S7ParameterUserData
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterUserDataBuilder) = (*_S7ParameterUserDataBuilder)(nil)
+
+func (m *_S7ParameterUserDataBuilder) WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	return m.WithItems(items...)
+}
+
+func (m *_S7ParameterUserDataBuilder) WithItems(items ...S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_S7ParameterUserDataBuilder) Build() (S7ParameterUserData, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7ParameterUserData.deepCopy(), nil
+}
+
+func (m *_S7ParameterUserDataBuilder) MustBuild() S7ParameterUserData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7ParameterUserDataBuilder) DeepCopy() any {
+	return m.CreateS7ParameterUserDataBuilder()
+}
+
+// CreateS7ParameterUserDataBuilder creates a S7ParameterUserDataBuilder
+func (m *_S7ParameterUserData) CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
+	if m == nil {
+		return NewS7ParameterUserDataBuilder()
+	}
+	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

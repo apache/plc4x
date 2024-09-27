@@ -44,6 +44,8 @@ type SecurityDataSystemArmedDisarmed interface {
 	GetArmCodeType() SecurityArmCode
 	// IsSecurityDataSystemArmedDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataSystemArmedDisarmed()
+	// CreateBuilder creates a SecurityDataSystemArmedDisarmedBuilder
+	CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder
 }
 
 // _SecurityDataSystemArmedDisarmed is the data-structure of this message
@@ -67,6 +69,99 @@ func NewSecurityDataSystemArmedDisarmed(commandTypeContainer SecurityCommandType
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataSystemArmedDisarmedBuilder is a builder for SecurityDataSystemArmedDisarmed
+type SecurityDataSystemArmedDisarmedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder
+	// WithArmCodeType adds ArmCodeType (property field)
+	WithArmCodeType(SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder
+	// WithArmCodeTypeBuilder adds ArmCodeType (property field) which is build by the builder
+	WithArmCodeTypeBuilder(func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder
+	// Build builds the SecurityDataSystemArmedDisarmed or returns an error if something is wrong
+	Build() (SecurityDataSystemArmedDisarmed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataSystemArmedDisarmed
+}
+
+// NewSecurityDataSystemArmedDisarmedBuilder() creates a SecurityDataSystemArmedDisarmedBuilder
+func NewSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
+	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: new(_SecurityDataSystemArmedDisarmed)}
+}
+
+type _SecurityDataSystemArmedDisarmedBuilder struct {
+	*_SecurityDataSystemArmedDisarmed
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataSystemArmedDisarmedBuilder) = (*_SecurityDataSystemArmedDisarmedBuilder)(nil)
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	return m.WithArmCodeType(armCodeType)
+}
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	m.ArmCodeType = armCodeType
+	return m
+}
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder {
+	builder := builderSupplier(m.ArmCodeType.CreateSecurityArmCodeBuilder())
+	var err error
+	m.ArmCodeType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) Build() (SecurityDataSystemArmedDisarmed, error) {
+	if m.ArmCodeType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'armCodeType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataSystemArmedDisarmed.deepCopy(), nil
+}
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) MustBuild() SecurityDataSystemArmedDisarmed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataSystemArmedDisarmedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataSystemArmedDisarmedBuilder()
+}
+
+// CreateSecurityDataSystemArmedDisarmedBuilder creates a SecurityDataSystemArmedDisarmedBuilder
+func (m *_SecurityDataSystemArmedDisarmed) CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
+	if m == nil {
+		return NewSecurityDataSystemArmedDisarmedBuilder()
+	}
+	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

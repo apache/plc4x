@@ -40,6 +40,8 @@ type GetAttributeListResponse interface {
 	CipService
 	// IsGetAttributeListResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListResponse()
+	// CreateBuilder creates a GetAttributeListResponseBuilder
+	CreateGetAttributeListResponseBuilder() GetAttributeListResponseBuilder
 }
 
 // _GetAttributeListResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewGetAttributeListResponse(serviceLen uint16) *_GetAttributeListResponse {
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeListResponseBuilder is a builder for GetAttributeListResponse
+type GetAttributeListResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() GetAttributeListResponseBuilder
+	// Build builds the GetAttributeListResponse or returns an error if something is wrong
+	Build() (GetAttributeListResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeListResponse
+}
+
+// NewGetAttributeListResponseBuilder() creates a GetAttributeListResponseBuilder
+func NewGetAttributeListResponseBuilder() GetAttributeListResponseBuilder {
+	return &_GetAttributeListResponseBuilder{_GetAttributeListResponse: new(_GetAttributeListResponse)}
+}
+
+type _GetAttributeListResponseBuilder struct {
+	*_GetAttributeListResponse
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeListResponseBuilder) = (*_GetAttributeListResponseBuilder)(nil)
+
+func (m *_GetAttributeListResponseBuilder) WithMandatoryFields() GetAttributeListResponseBuilder {
+	return m
+}
+
+func (m *_GetAttributeListResponseBuilder) Build() (GetAttributeListResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetAttributeListResponse.deepCopy(), nil
+}
+
+func (m *_GetAttributeListResponseBuilder) MustBuild() GetAttributeListResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetAttributeListResponseBuilder) DeepCopy() any {
+	return m.CreateGetAttributeListResponseBuilder()
+}
+
+// CreateGetAttributeListResponseBuilder creates a GetAttributeListResponseBuilder
+func (m *_GetAttributeListResponse) CreateGetAttributeListResponseBuilder() GetAttributeListResponseBuilder {
+	if m == nil {
+		return NewGetAttributeListResponseBuilder()
+	}
+	return &_GetAttributeListResponseBuilder{_GetAttributeListResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

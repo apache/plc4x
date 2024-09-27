@@ -39,6 +39,8 @@ type NumericRange interface {
 	utils.Copyable
 	// IsNumericRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNumericRange()
+	// CreateBuilder creates a NumericRangeBuilder
+	CreateNumericRangeBuilder() NumericRangeBuilder
 }
 
 // _NumericRange is the data-structure of this message
@@ -51,6 +53,71 @@ var _ NumericRange = (*_NumericRange)(nil)
 func NewNumericRange() *_NumericRange {
 	return &_NumericRange{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NumericRangeBuilder is a builder for NumericRange
+type NumericRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NumericRangeBuilder
+	// Build builds the NumericRange or returns an error if something is wrong
+	Build() (NumericRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NumericRange
+}
+
+// NewNumericRangeBuilder() creates a NumericRangeBuilder
+func NewNumericRangeBuilder() NumericRangeBuilder {
+	return &_NumericRangeBuilder{_NumericRange: new(_NumericRange)}
+}
+
+type _NumericRangeBuilder struct {
+	*_NumericRange
+
+	err *utils.MultiError
+}
+
+var _ (NumericRangeBuilder) = (*_NumericRangeBuilder)(nil)
+
+func (m *_NumericRangeBuilder) WithMandatoryFields() NumericRangeBuilder {
+	return m
+}
+
+func (m *_NumericRangeBuilder) Build() (NumericRange, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NumericRange.deepCopy(), nil
+}
+
+func (m *_NumericRangeBuilder) MustBuild() NumericRange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NumericRangeBuilder) DeepCopy() any {
+	return m.CreateNumericRangeBuilder()
+}
+
+// CreateNumericRangeBuilder creates a NumericRangeBuilder
+func (m *_NumericRange) CreateNumericRangeBuilder() NumericRangeBuilder {
+	if m == nil {
+		return NewNumericRangeBuilder()
+	}
+	return &_NumericRangeBuilder{_NumericRange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastNumericRange(structType any) NumericRange {

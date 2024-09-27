@@ -46,6 +46,8 @@ type BACnetConstructedDataBACnetIPv6UDPPort interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataBACnetIPv6UDPPort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBACnetIPv6UDPPort()
+	// CreateBuilder creates a BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	CreateBACnetConstructedDataBACnetIPv6UDPPortBuilder() BACnetConstructedDataBACnetIPv6UDPPortBuilder
 }
 
 // _BACnetConstructedDataBACnetIPv6UDPPort is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBACnetIPv6UDPPort(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBACnetIPv6UDPPortBuilder is a builder for BACnetConstructedDataBACnetIPv6UDPPort
+type BACnetConstructedDataBACnetIPv6UDPPortBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipv6UdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	// WithIpv6UdpPort adds Ipv6UdpPort (property field)
+	WithIpv6UdpPort(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	// WithIpv6UdpPortBuilder adds Ipv6UdpPort (property field) which is build by the builder
+	WithIpv6UdpPortBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBACnetIPv6UDPPortBuilder
+	// Build builds the BACnetConstructedDataBACnetIPv6UDPPort or returns an error if something is wrong
+	Build() (BACnetConstructedDataBACnetIPv6UDPPort, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBACnetIPv6UDPPort
+}
+
+// NewBACnetConstructedDataBACnetIPv6UDPPortBuilder() creates a BACnetConstructedDataBACnetIPv6UDPPortBuilder
+func NewBACnetConstructedDataBACnetIPv6UDPPortBuilder() BACnetConstructedDataBACnetIPv6UDPPortBuilder {
+	return &_BACnetConstructedDataBACnetIPv6UDPPortBuilder{_BACnetConstructedDataBACnetIPv6UDPPort: new(_BACnetConstructedDataBACnetIPv6UDPPort)}
+}
+
+type _BACnetConstructedDataBACnetIPv6UDPPortBuilder struct {
+	*_BACnetConstructedDataBACnetIPv6UDPPort
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBACnetIPv6UDPPortBuilder) = (*_BACnetConstructedDataBACnetIPv6UDPPortBuilder)(nil)
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) WithMandatoryFields(ipv6UdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder {
+	return m.WithIpv6UdpPort(ipv6UdpPort)
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) WithIpv6UdpPort(ipv6UdpPort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBACnetIPv6UDPPortBuilder {
+	m.Ipv6UdpPort = ipv6UdpPort
+	return m
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) WithIpv6UdpPortBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBACnetIPv6UDPPortBuilder {
+	builder := builderSupplier(m.Ipv6UdpPort.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.Ipv6UdpPort, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) Build() (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+	if m.Ipv6UdpPort == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'ipv6UdpPort' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBACnetIPv6UDPPort.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) MustBuild() BACnetConstructedDataBACnetIPv6UDPPort {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6UDPPortBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBACnetIPv6UDPPortBuilder()
+}
+
+// CreateBACnetConstructedDataBACnetIPv6UDPPortBuilder creates a BACnetConstructedDataBACnetIPv6UDPPortBuilder
+func (m *_BACnetConstructedDataBACnetIPv6UDPPort) CreateBACnetConstructedDataBACnetIPv6UDPPortBuilder() BACnetConstructedDataBACnetIPv6UDPPortBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBACnetIPv6UDPPortBuilder()
+	}
+	return &_BACnetConstructedDataBACnetIPv6UDPPortBuilder{_BACnetConstructedDataBACnetIPv6UDPPort: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

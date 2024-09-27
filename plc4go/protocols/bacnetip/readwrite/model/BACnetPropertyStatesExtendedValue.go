@@ -44,6 +44,8 @@ type BACnetPropertyStatesExtendedValue interface {
 	GetExtendedValue() BACnetContextTagUnsignedInteger
 	// IsBACnetPropertyStatesExtendedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesExtendedValue()
+	// CreateBuilder creates a BACnetPropertyStatesExtendedValueBuilder
+	CreateBACnetPropertyStatesExtendedValueBuilder() BACnetPropertyStatesExtendedValueBuilder
 }
 
 // _BACnetPropertyStatesExtendedValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesExtendedValue(peekedTagHeader BACnetTagHeader, exten
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesExtendedValueBuilder is a builder for BACnetPropertyStatesExtendedValue
+type BACnetPropertyStatesExtendedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(extendedValue BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder
+	// WithExtendedValue adds ExtendedValue (property field)
+	WithExtendedValue(BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder
+	// WithExtendedValueBuilder adds ExtendedValue (property field) which is build by the builder
+	WithExtendedValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyStatesExtendedValueBuilder
+	// Build builds the BACnetPropertyStatesExtendedValue or returns an error if something is wrong
+	Build() (BACnetPropertyStatesExtendedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesExtendedValue
+}
+
+// NewBACnetPropertyStatesExtendedValueBuilder() creates a BACnetPropertyStatesExtendedValueBuilder
+func NewBACnetPropertyStatesExtendedValueBuilder() BACnetPropertyStatesExtendedValueBuilder {
+	return &_BACnetPropertyStatesExtendedValueBuilder{_BACnetPropertyStatesExtendedValue: new(_BACnetPropertyStatesExtendedValue)}
+}
+
+type _BACnetPropertyStatesExtendedValueBuilder struct {
+	*_BACnetPropertyStatesExtendedValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesExtendedValueBuilder) = (*_BACnetPropertyStatesExtendedValueBuilder)(nil)
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) WithMandatoryFields(extendedValue BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder {
+	return m.WithExtendedValue(extendedValue)
+}
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) WithExtendedValue(extendedValue BACnetContextTagUnsignedInteger) BACnetPropertyStatesExtendedValueBuilder {
+	m.ExtendedValue = extendedValue
+	return m
+}
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) WithExtendedValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyStatesExtendedValueBuilder {
+	builder := builderSupplier(m.ExtendedValue.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.ExtendedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) Build() (BACnetPropertyStatesExtendedValue, error) {
+	if m.ExtendedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'extendedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesExtendedValue.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) MustBuild() BACnetPropertyStatesExtendedValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesExtendedValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesExtendedValueBuilder()
+}
+
+// CreateBACnetPropertyStatesExtendedValueBuilder creates a BACnetPropertyStatesExtendedValueBuilder
+func (m *_BACnetPropertyStatesExtendedValue) CreateBACnetPropertyStatesExtendedValueBuilder() BACnetPropertyStatesExtendedValueBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesExtendedValueBuilder()
+	}
+	return &_BACnetPropertyStatesExtendedValueBuilder{_BACnetPropertyStatesExtendedValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

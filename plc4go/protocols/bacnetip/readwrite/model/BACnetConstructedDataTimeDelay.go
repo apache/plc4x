@@ -46,6 +46,8 @@ type BACnetConstructedDataTimeDelay interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTimeDelay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimeDelay()
+	// CreateBuilder creates a BACnetConstructedDataTimeDelayBuilder
+	CreateBACnetConstructedDataTimeDelayBuilder() BACnetConstructedDataTimeDelayBuilder
 }
 
 // _BACnetConstructedDataTimeDelay is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimeDelay(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimeDelayBuilder is a builder for BACnetConstructedDataTimeDelay
+type BACnetConstructedDataTimeDelayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeDelay BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder
+	// WithTimeDelay adds TimeDelay (property field)
+	WithTimeDelay(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder
+	// WithTimeDelayBuilder adds TimeDelay (property field) which is build by the builder
+	WithTimeDelayBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeDelayBuilder
+	// Build builds the BACnetConstructedDataTimeDelay or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimeDelay, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimeDelay
+}
+
+// NewBACnetConstructedDataTimeDelayBuilder() creates a BACnetConstructedDataTimeDelayBuilder
+func NewBACnetConstructedDataTimeDelayBuilder() BACnetConstructedDataTimeDelayBuilder {
+	return &_BACnetConstructedDataTimeDelayBuilder{_BACnetConstructedDataTimeDelay: new(_BACnetConstructedDataTimeDelay)}
+}
+
+type _BACnetConstructedDataTimeDelayBuilder struct {
+	*_BACnetConstructedDataTimeDelay
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimeDelayBuilder) = (*_BACnetConstructedDataTimeDelayBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) WithMandatoryFields(timeDelay BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder {
+	return m.WithTimeDelay(timeDelay)
+}
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) WithTimeDelay(timeDelay BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimeDelayBuilder {
+	m.TimeDelay = timeDelay
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) WithTimeDelayBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimeDelayBuilder {
+	builder := builderSupplier(m.TimeDelay.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.TimeDelay, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) Build() (BACnetConstructedDataTimeDelay, error) {
+	if m.TimeDelay == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeDelay' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimeDelay.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) MustBuild() BACnetConstructedDataTimeDelay {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimeDelayBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimeDelayBuilder()
+}
+
+// CreateBACnetConstructedDataTimeDelayBuilder creates a BACnetConstructedDataTimeDelayBuilder
+func (m *_BACnetConstructedDataTimeDelay) CreateBACnetConstructedDataTimeDelayBuilder() BACnetConstructedDataTimeDelayBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimeDelayBuilder()
+	}
+	return &_BACnetConstructedDataTimeDelayBuilder{_BACnetConstructedDataTimeDelay: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

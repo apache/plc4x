@@ -41,12 +41,16 @@ type BACnetError interface {
 	utils.Copyable
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
+	// CreateBuilder creates a BACnetErrorBuilder
+	CreateBACnetErrorBuilder() BACnetErrorBuilder
 }
 
 // BACnetErrorContract provides a set of functions which can be overwritten by a sub struct
 type BACnetErrorContract interface {
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
+	// CreateBuilder creates a BACnetErrorBuilder
+	CreateBACnetErrorBuilder() BACnetErrorBuilder
 }
 
 // BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ BACnetErrorContract = (*_BACnetError)(nil)
 func NewBACnetError() *_BACnetError {
 	return &_BACnetError{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetErrorBuilder is a builder for BACnetError
+type BACnetErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetErrorBuilder
+	// Build builds the BACnetError or returns an error if something is wrong
+	Build() (BACnetErrorContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetErrorContract
+}
+
+// NewBACnetErrorBuilder() creates a BACnetErrorBuilder
+func NewBACnetErrorBuilder() BACnetErrorBuilder {
+	return &_BACnetErrorBuilder{_BACnetError: new(_BACnetError)}
+}
+
+type _BACnetErrorBuilder struct {
+	*_BACnetError
+
+	err *utils.MultiError
+}
+
+var _ (BACnetErrorBuilder) = (*_BACnetErrorBuilder)(nil)
+
+func (m *_BACnetErrorBuilder) WithMandatoryFields() BACnetErrorBuilder {
+	return m
+}
+
+func (m *_BACnetErrorBuilder) Build() (BACnetErrorContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetError.deepCopy(), nil
+}
+
+func (m *_BACnetErrorBuilder) MustBuild() BACnetErrorContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetErrorBuilder) DeepCopy() any {
+	return m.CreateBACnetErrorBuilder()
+}
+
+// CreateBACnetErrorBuilder creates a BACnetErrorBuilder
+func (m *_BACnetError) CreateBACnetErrorBuilder() BACnetErrorBuilder {
+	if m == nil {
+		return NewBACnetErrorBuilder()
+	}
+	return &_BACnetErrorBuilder{_BACnetError: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBACnetError(structType any) BACnetError {

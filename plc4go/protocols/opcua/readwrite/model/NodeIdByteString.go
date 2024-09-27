@@ -48,6 +48,8 @@ type NodeIdByteString interface {
 	GetIdentifier() string
 	// IsNodeIdByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdByteString()
+	// CreateBuilder creates a NodeIdByteStringBuilder
+	CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder
 }
 
 // _NodeIdByteString is the data-structure of this message
@@ -73,6 +75,106 @@ func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByt
 	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdByteStringBuilder is a builder for NodeIdByteString
+type NodeIdByteStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) NodeIdByteStringBuilder
+	// WithId adds Id (property field)
+	WithId(PascalByteString) NodeIdByteStringBuilder
+	// WithIdBuilder adds Id (property field) which is build by the builder
+	WithIdBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder
+	// Build builds the NodeIdByteString or returns an error if something is wrong
+	Build() (NodeIdByteString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdByteString
+}
+
+// NewNodeIdByteStringBuilder() creates a NodeIdByteStringBuilder
+func NewNodeIdByteStringBuilder() NodeIdByteStringBuilder {
+	return &_NodeIdByteStringBuilder{_NodeIdByteString: new(_NodeIdByteString)}
+}
+
+type _NodeIdByteStringBuilder struct {
+	*_NodeIdByteString
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdByteStringBuilder) = (*_NodeIdByteStringBuilder)(nil)
+
+func (m *_NodeIdByteStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder {
+	return m.WithNamespaceIndex(namespaceIndex).WithId(id)
+}
+
+func (m *_NodeIdByteStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdByteStringBuilder {
+	m.NamespaceIndex = namespaceIndex
+	return m
+}
+
+func (m *_NodeIdByteStringBuilder) WithId(id PascalByteString) NodeIdByteStringBuilder {
+	m.Id = id
+	return m
+}
+
+func (m *_NodeIdByteStringBuilder) WithIdBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder {
+	builder := builderSupplier(m.Id.CreatePascalByteStringBuilder())
+	var err error
+	m.Id, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NodeIdByteStringBuilder) Build() (NodeIdByteString, error) {
+	if m.Id == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'id' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeIdByteString.deepCopy(), nil
+}
+
+func (m *_NodeIdByteStringBuilder) MustBuild() NodeIdByteString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdByteStringBuilder) DeepCopy() any {
+	return m.CreateNodeIdByteStringBuilder()
+}
+
+// CreateNodeIdByteStringBuilder creates a NodeIdByteStringBuilder
+func (m *_NodeIdByteString) CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder {
+	if m == nil {
+		return NewNodeIdByteStringBuilder()
+	}
+	return &_NodeIdByteStringBuilder{_NodeIdByteString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

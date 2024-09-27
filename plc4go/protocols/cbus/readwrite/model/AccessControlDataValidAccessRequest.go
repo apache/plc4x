@@ -46,6 +46,8 @@ type AccessControlDataValidAccessRequest interface {
 	GetData() []byte
 	// IsAccessControlDataValidAccessRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataValidAccessRequest()
+	// CreateBuilder creates a AccessControlDataValidAccessRequestBuilder
+	CreateAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAccessRequestBuilder
 }
 
 // _AccessControlDataValidAccessRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewAccessControlDataValidAccessRequest(commandTypeContainer AccessControlCo
 	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataValidAccessRequestBuilder is a builder for AccessControlDataValidAccessRequest
+type AccessControlDataValidAccessRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataValidAccessRequestBuilder
+	// WithAccessControlDirection adds AccessControlDirection (property field)
+	WithAccessControlDirection(AccessControlDirection) AccessControlDataValidAccessRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AccessControlDataValidAccessRequestBuilder
+	// Build builds the AccessControlDataValidAccessRequest or returns an error if something is wrong
+	Build() (AccessControlDataValidAccessRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlDataValidAccessRequest
+}
+
+// NewAccessControlDataValidAccessRequestBuilder() creates a AccessControlDataValidAccessRequestBuilder
+func NewAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAccessRequestBuilder {
+	return &_AccessControlDataValidAccessRequestBuilder{_AccessControlDataValidAccessRequest: new(_AccessControlDataValidAccessRequest)}
+}
+
+type _AccessControlDataValidAccessRequestBuilder struct {
+	*_AccessControlDataValidAccessRequest
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataValidAccessRequestBuilder) = (*_AccessControlDataValidAccessRequestBuilder)(nil)
+
+func (m *_AccessControlDataValidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataValidAccessRequestBuilder {
+	return m.WithAccessControlDirection(accessControlDirection).WithData(data...)
+}
+
+func (m *_AccessControlDataValidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataValidAccessRequestBuilder {
+	m.AccessControlDirection = accessControlDirection
+	return m
+}
+
+func (m *_AccessControlDataValidAccessRequestBuilder) WithData(data ...byte) AccessControlDataValidAccessRequestBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AccessControlDataValidAccessRequestBuilder) Build() (AccessControlDataValidAccessRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AccessControlDataValidAccessRequest.deepCopy(), nil
+}
+
+func (m *_AccessControlDataValidAccessRequestBuilder) MustBuild() AccessControlDataValidAccessRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AccessControlDataValidAccessRequestBuilder) DeepCopy() any {
+	return m.CreateAccessControlDataValidAccessRequestBuilder()
+}
+
+// CreateAccessControlDataValidAccessRequestBuilder creates a AccessControlDataValidAccessRequestBuilder
+func (m *_AccessControlDataValidAccessRequest) CreateAccessControlDataValidAccessRequestBuilder() AccessControlDataValidAccessRequestBuilder {
+	if m == nil {
+		return NewAccessControlDataValidAccessRequestBuilder()
+	}
+	return &_AccessControlDataValidAccessRequestBuilder{_AccessControlDataValidAccessRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

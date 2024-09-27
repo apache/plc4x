@@ -50,6 +50,8 @@ type EndpointType interface {
 	GetTransportProfileUri() PascalString
 	// IsEndpointType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEndpointType()
+	// CreateBuilder creates a EndpointTypeBuilder
+	CreateEndpointTypeBuilder() EndpointTypeBuilder
 }
 
 // _EndpointType is the data-structure of this message
@@ -85,6 +87,162 @@ func NewEndpointType(endpointUrl PascalString, securityMode MessageSecurityMode,
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EndpointTypeBuilder is a builder for EndpointType
+type EndpointTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) EndpointTypeBuilder
+	// WithEndpointUrl adds EndpointUrl (property field)
+	WithEndpointUrl(PascalString) EndpointTypeBuilder
+	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
+	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder
+	// WithSecurityMode adds SecurityMode (property field)
+	WithSecurityMode(MessageSecurityMode) EndpointTypeBuilder
+	// WithSecurityPolicyUri adds SecurityPolicyUri (property field)
+	WithSecurityPolicyUri(PascalString) EndpointTypeBuilder
+	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
+	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder
+	// WithTransportProfileUri adds TransportProfileUri (property field)
+	WithTransportProfileUri(PascalString) EndpointTypeBuilder
+	// WithTransportProfileUriBuilder adds TransportProfileUri (property field) which is build by the builder
+	WithTransportProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder
+	// Build builds the EndpointType or returns an error if something is wrong
+	Build() (EndpointType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EndpointType
+}
+
+// NewEndpointTypeBuilder() creates a EndpointTypeBuilder
+func NewEndpointTypeBuilder() EndpointTypeBuilder {
+	return &_EndpointTypeBuilder{_EndpointType: new(_EndpointType)}
+}
+
+type _EndpointTypeBuilder struct {
+	*_EndpointType
+
+	err *utils.MultiError
+}
+
+var _ (EndpointTypeBuilder) = (*_EndpointTypeBuilder)(nil)
+
+func (m *_EndpointTypeBuilder) WithMandatoryFields(endpointUrl PascalString, securityMode MessageSecurityMode, securityPolicyUri PascalString, transportProfileUri PascalString) EndpointTypeBuilder {
+	return m.WithEndpointUrl(endpointUrl).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithTransportProfileUri(transportProfileUri)
+}
+
+func (m *_EndpointTypeBuilder) WithEndpointUrl(endpointUrl PascalString) EndpointTypeBuilder {
+	m.EndpointUrl = endpointUrl
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+	var err error
+	m.EndpointUrl, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) EndpointTypeBuilder {
+	m.SecurityMode = securityMode
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) EndpointTypeBuilder {
+	m.SecurityPolicyUri = securityPolicyUri
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+	var err error
+	m.SecurityPolicyUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithTransportProfileUri(transportProfileUri PascalString) EndpointTypeBuilder {
+	m.TransportProfileUri = transportProfileUri
+	return m
+}
+
+func (m *_EndpointTypeBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointTypeBuilder {
+	builder := builderSupplier(m.TransportProfileUri.CreatePascalStringBuilder())
+	var err error
+	m.TransportProfileUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointTypeBuilder) Build() (EndpointType, error) {
+	if m.EndpointUrl == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if m.SecurityPolicyUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+	}
+	if m.TransportProfileUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EndpointType.deepCopy(), nil
+}
+
+func (m *_EndpointTypeBuilder) MustBuild() EndpointType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EndpointTypeBuilder) DeepCopy() any {
+	return m.CreateEndpointTypeBuilder()
+}
+
+// CreateEndpointTypeBuilder creates a EndpointTypeBuilder
+func (m *_EndpointType) CreateEndpointTypeBuilder() EndpointTypeBuilder {
+	if m == nil {
+		return NewEndpointTypeBuilder()
+	}
+	return &_EndpointTypeBuilder{_EndpointType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

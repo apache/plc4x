@@ -44,6 +44,8 @@ type BACnetChannelValueCharacterString interface {
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 	// IsBACnetChannelValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueCharacterString()
+	// CreateBuilder creates a BACnetChannelValueCharacterStringBuilder
+	CreateBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterStringBuilder
 }
 
 // _BACnetChannelValueCharacterString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueCharacterString(peekedTagHeader BACnetTagHeader, chara
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueCharacterStringBuilder is a builder for BACnetChannelValueCharacterString
+type BACnetChannelValueCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder
+	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetChannelValueCharacterStringBuilder
+	// Build builds the BACnetChannelValueCharacterString or returns an error if something is wrong
+	Build() (BACnetChannelValueCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueCharacterString
+}
+
+// NewBACnetChannelValueCharacterStringBuilder() creates a BACnetChannelValueCharacterStringBuilder
+func NewBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterStringBuilder {
+	return &_BACnetChannelValueCharacterStringBuilder{_BACnetChannelValueCharacterString: new(_BACnetChannelValueCharacterString)}
+}
+
+type _BACnetChannelValueCharacterStringBuilder struct {
+	*_BACnetChannelValueCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueCharacterStringBuilder) = (*_BACnetChannelValueCharacterStringBuilder)(nil)
+
+func (m *_BACnetChannelValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
+	return m.WithCharacterStringValue(characterStringValue)
+}
+
+func (m *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetChannelValueCharacterStringBuilder {
+	m.CharacterStringValue = characterStringValue
+	return m
+}
+
+func (m *_BACnetChannelValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetChannelValueCharacterStringBuilder {
+	builder := builderSupplier(m.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueCharacterStringBuilder) Build() (BACnetChannelValueCharacterString, error) {
+	if m.CharacterStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueCharacterString.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueCharacterStringBuilder) MustBuild() BACnetChannelValueCharacterString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueCharacterStringBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueCharacterStringBuilder()
+}
+
+// CreateBACnetChannelValueCharacterStringBuilder creates a BACnetChannelValueCharacterStringBuilder
+func (m *_BACnetChannelValueCharacterString) CreateBACnetChannelValueCharacterStringBuilder() BACnetChannelValueCharacterStringBuilder {
+	if m == nil {
+		return NewBACnetChannelValueCharacterStringBuilder()
+	}
+	return &_BACnetChannelValueCharacterStringBuilder{_BACnetChannelValueCharacterString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

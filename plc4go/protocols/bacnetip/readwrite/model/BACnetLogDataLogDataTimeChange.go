@@ -44,6 +44,8 @@ type BACnetLogDataLogDataTimeChange interface {
 	GetTimeChange() BACnetContextTagReal
 	// IsBACnetLogDataLogDataTimeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataTimeChange()
+	// CreateBuilder creates a BACnetLogDataLogDataTimeChangeBuilder
+	CreateBACnetLogDataLogDataTimeChangeBuilder() BACnetLogDataLogDataTimeChangeBuilder
 }
 
 // _BACnetLogDataLogDataTimeChange is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogDataLogDataTimeChange(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataTimeChangeBuilder is a builder for BACnetLogDataLogDataTimeChange
+type BACnetLogDataLogDataTimeChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeChange BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder
+	// WithTimeChange adds TimeChange (property field)
+	WithTimeChange(BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder
+	// WithTimeChangeBuilder adds TimeChange (property field) which is build by the builder
+	WithTimeChangeBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataTimeChangeBuilder
+	// Build builds the BACnetLogDataLogDataTimeChange or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataTimeChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataTimeChange
+}
+
+// NewBACnetLogDataLogDataTimeChangeBuilder() creates a BACnetLogDataLogDataTimeChangeBuilder
+func NewBACnetLogDataLogDataTimeChangeBuilder() BACnetLogDataLogDataTimeChangeBuilder {
+	return &_BACnetLogDataLogDataTimeChangeBuilder{_BACnetLogDataLogDataTimeChange: new(_BACnetLogDataLogDataTimeChange)}
+}
+
+type _BACnetLogDataLogDataTimeChangeBuilder struct {
+	*_BACnetLogDataLogDataTimeChange
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataTimeChangeBuilder) = (*_BACnetLogDataLogDataTimeChangeBuilder)(nil)
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) WithMandatoryFields(timeChange BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder {
+	return m.WithTimeChange(timeChange)
+}
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) WithTimeChange(timeChange BACnetContextTagReal) BACnetLogDataLogDataTimeChangeBuilder {
+	m.TimeChange = timeChange
+	return m
+}
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) WithTimeChangeBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogDataLogDataTimeChangeBuilder {
+	builder := builderSupplier(m.TimeChange.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.TimeChange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) Build() (BACnetLogDataLogDataTimeChange, error) {
+	if m.TimeChange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeChange' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogDataTimeChange.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) MustBuild() BACnetLogDataLogDataTimeChange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogDataTimeChangeBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogDataTimeChangeBuilder()
+}
+
+// CreateBACnetLogDataLogDataTimeChangeBuilder creates a BACnetLogDataLogDataTimeChangeBuilder
+func (m *_BACnetLogDataLogDataTimeChange) CreateBACnetLogDataLogDataTimeChangeBuilder() BACnetLogDataLogDataTimeChangeBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogDataTimeChangeBuilder()
+	}
+	return &_BACnetLogDataLogDataTimeChangeBuilder{_BACnetLogDataLogDataTimeChange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

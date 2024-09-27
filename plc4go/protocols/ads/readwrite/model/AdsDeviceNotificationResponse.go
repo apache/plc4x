@@ -40,6 +40,8 @@ type AdsDeviceNotificationResponse interface {
 	AmsPacket
 	// IsAdsDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationResponse()
+	// CreateBuilder creates a AdsDeviceNotificationResponseBuilder
+	CreateAdsDeviceNotificationResponseBuilder() AdsDeviceNotificationResponseBuilder
 }
 
 // _AdsDeviceNotificationResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uin
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDeviceNotificationResponseBuilder is a builder for AdsDeviceNotificationResponse
+type AdsDeviceNotificationResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsDeviceNotificationResponseBuilder
+	// Build builds the AdsDeviceNotificationResponse or returns an error if something is wrong
+	Build() (AdsDeviceNotificationResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDeviceNotificationResponse
+}
+
+// NewAdsDeviceNotificationResponseBuilder() creates a AdsDeviceNotificationResponseBuilder
+func NewAdsDeviceNotificationResponseBuilder() AdsDeviceNotificationResponseBuilder {
+	return &_AdsDeviceNotificationResponseBuilder{_AdsDeviceNotificationResponse: new(_AdsDeviceNotificationResponse)}
+}
+
+type _AdsDeviceNotificationResponseBuilder struct {
+	*_AdsDeviceNotificationResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsDeviceNotificationResponseBuilder) = (*_AdsDeviceNotificationResponseBuilder)(nil)
+
+func (m *_AdsDeviceNotificationResponseBuilder) WithMandatoryFields() AdsDeviceNotificationResponseBuilder {
+	return m
+}
+
+func (m *_AdsDeviceNotificationResponseBuilder) Build() (AdsDeviceNotificationResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDeviceNotificationResponse.deepCopy(), nil
+}
+
+func (m *_AdsDeviceNotificationResponseBuilder) MustBuild() AdsDeviceNotificationResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDeviceNotificationResponseBuilder) DeepCopy() any {
+	return m.CreateAdsDeviceNotificationResponseBuilder()
+}
+
+// CreateAdsDeviceNotificationResponseBuilder creates a AdsDeviceNotificationResponseBuilder
+func (m *_AdsDeviceNotificationResponse) CreateAdsDeviceNotificationResponseBuilder() AdsDeviceNotificationResponseBuilder {
+	if m == nil {
+		return NewAdsDeviceNotificationResponseBuilder()
+	}
+	return &_AdsDeviceNotificationResponseBuilder{_AdsDeviceNotificationResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

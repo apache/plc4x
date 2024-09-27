@@ -46,6 +46,8 @@ type IssuedIdentityToken interface {
 	GetEncryptionAlgorithm() PascalString
 	// IsIssuedIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIssuedIdentityToken()
+	// CreateBuilder creates a IssuedIdentityTokenBuilder
+	CreateIssuedIdentityTokenBuilder() IssuedIdentityTokenBuilder
 }
 
 // _IssuedIdentityToken is the data-structure of this message
@@ -74,6 +76,127 @@ func NewIssuedIdentityToken(tokenData PascalByteString, encryptionAlgorithm Pasc
 	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IssuedIdentityTokenBuilder is a builder for IssuedIdentityToken
+type IssuedIdentityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tokenData PascalByteString, encryptionAlgorithm PascalString) IssuedIdentityTokenBuilder
+	// WithTokenData adds TokenData (property field)
+	WithTokenData(PascalByteString) IssuedIdentityTokenBuilder
+	// WithTokenDataBuilder adds TokenData (property field) which is build by the builder
+	WithTokenDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) IssuedIdentityTokenBuilder
+	// WithEncryptionAlgorithm adds EncryptionAlgorithm (property field)
+	WithEncryptionAlgorithm(PascalString) IssuedIdentityTokenBuilder
+	// WithEncryptionAlgorithmBuilder adds EncryptionAlgorithm (property field) which is build by the builder
+	WithEncryptionAlgorithmBuilder(func(PascalStringBuilder) PascalStringBuilder) IssuedIdentityTokenBuilder
+	// Build builds the IssuedIdentityToken or returns an error if something is wrong
+	Build() (IssuedIdentityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IssuedIdentityToken
+}
+
+// NewIssuedIdentityTokenBuilder() creates a IssuedIdentityTokenBuilder
+func NewIssuedIdentityTokenBuilder() IssuedIdentityTokenBuilder {
+	return &_IssuedIdentityTokenBuilder{_IssuedIdentityToken: new(_IssuedIdentityToken)}
+}
+
+type _IssuedIdentityTokenBuilder struct {
+	*_IssuedIdentityToken
+
+	err *utils.MultiError
+}
+
+var _ (IssuedIdentityTokenBuilder) = (*_IssuedIdentityTokenBuilder)(nil)
+
+func (m *_IssuedIdentityTokenBuilder) WithMandatoryFields(tokenData PascalByteString, encryptionAlgorithm PascalString) IssuedIdentityTokenBuilder {
+	return m.WithTokenData(tokenData).WithEncryptionAlgorithm(encryptionAlgorithm)
+}
+
+func (m *_IssuedIdentityTokenBuilder) WithTokenData(tokenData PascalByteString) IssuedIdentityTokenBuilder {
+	m.TokenData = tokenData
+	return m
+}
+
+func (m *_IssuedIdentityTokenBuilder) WithTokenDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) IssuedIdentityTokenBuilder {
+	builder := builderSupplier(m.TokenData.CreatePascalByteStringBuilder())
+	var err error
+	m.TokenData, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_IssuedIdentityTokenBuilder) WithEncryptionAlgorithm(encryptionAlgorithm PascalString) IssuedIdentityTokenBuilder {
+	m.EncryptionAlgorithm = encryptionAlgorithm
+	return m
+}
+
+func (m *_IssuedIdentityTokenBuilder) WithEncryptionAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) IssuedIdentityTokenBuilder {
+	builder := builderSupplier(m.EncryptionAlgorithm.CreatePascalStringBuilder())
+	var err error
+	m.EncryptionAlgorithm, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_IssuedIdentityTokenBuilder) Build() (IssuedIdentityToken, error) {
+	if m.TokenData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'tokenData' not set"))
+	}
+	if m.EncryptionAlgorithm == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'encryptionAlgorithm' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IssuedIdentityToken.deepCopy(), nil
+}
+
+func (m *_IssuedIdentityTokenBuilder) MustBuild() IssuedIdentityToken {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IssuedIdentityTokenBuilder) DeepCopy() any {
+	return m.CreateIssuedIdentityTokenBuilder()
+}
+
+// CreateIssuedIdentityTokenBuilder creates a IssuedIdentityTokenBuilder
+func (m *_IssuedIdentityToken) CreateIssuedIdentityTokenBuilder() IssuedIdentityTokenBuilder {
+	if m == nil {
+		return NewIssuedIdentityTokenBuilder()
+	}
+	return &_IssuedIdentityTokenBuilder{_IssuedIdentityToken: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

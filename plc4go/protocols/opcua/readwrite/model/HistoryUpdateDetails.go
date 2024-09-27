@@ -40,6 +40,8 @@ type HistoryUpdateDetails interface {
 	ExtensionObjectDefinition
 	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryUpdateDetails()
+	// CreateBuilder creates a HistoryUpdateDetailsBuilder
+	CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder
 }
 
 // _HistoryUpdateDetails is the data-structure of this message
@@ -58,6 +60,71 @@ func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryUpdateDetailsBuilder is a builder for HistoryUpdateDetails
+type HistoryUpdateDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() HistoryUpdateDetailsBuilder
+	// Build builds the HistoryUpdateDetails or returns an error if something is wrong
+	Build() (HistoryUpdateDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryUpdateDetails
+}
+
+// NewHistoryUpdateDetailsBuilder() creates a HistoryUpdateDetailsBuilder
+func NewHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
+	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: new(_HistoryUpdateDetails)}
+}
+
+type _HistoryUpdateDetailsBuilder struct {
+	*_HistoryUpdateDetails
+
+	err *utils.MultiError
+}
+
+var _ (HistoryUpdateDetailsBuilder) = (*_HistoryUpdateDetailsBuilder)(nil)
+
+func (m *_HistoryUpdateDetailsBuilder) WithMandatoryFields() HistoryUpdateDetailsBuilder {
+	return m
+}
+
+func (m *_HistoryUpdateDetailsBuilder) Build() (HistoryUpdateDetails, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HistoryUpdateDetails.deepCopy(), nil
+}
+
+func (m *_HistoryUpdateDetailsBuilder) MustBuild() HistoryUpdateDetails {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HistoryUpdateDetailsBuilder) DeepCopy() any {
+	return m.CreateHistoryUpdateDetailsBuilder()
+}
+
+// CreateHistoryUpdateDetailsBuilder creates a HistoryUpdateDetailsBuilder
+func (m *_HistoryUpdateDetails) CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
+	if m == nil {
+		return NewHistoryUpdateDetailsBuilder()
+	}
+	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

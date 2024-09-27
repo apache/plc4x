@@ -50,6 +50,8 @@ type ConnectionRequest interface {
 	GetConnectionRequestInformation() ConnectionRequestInformation
 	// IsConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequest()
+	// CreateBuilder creates a ConnectionRequestBuilder
+	CreateConnectionRequestBuilder() ConnectionRequestBuilder
 }
 
 // _ConnectionRequest is the data-structure of this message
@@ -83,6 +85,140 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataE
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestBuilder is a builder for ConnectionRequest
+type ConnectionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder
+	// WithHpaiDiscoveryEndpoint adds HpaiDiscoveryEndpoint (property field)
+	WithHpaiDiscoveryEndpoint(HPAIDiscoveryEndpoint) ConnectionRequestBuilder
+	// WithHpaiDiscoveryEndpointBuilder adds HpaiDiscoveryEndpoint (property field) which is build by the builder
+	WithHpaiDiscoveryEndpointBuilder(func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) ConnectionRequestBuilder
+	// WithHpaiDataEndpoint adds HpaiDataEndpoint (property field)
+	WithHpaiDataEndpoint(HPAIDataEndpoint) ConnectionRequestBuilder
+	// WithHpaiDataEndpointBuilder adds HpaiDataEndpoint (property field) which is build by the builder
+	WithHpaiDataEndpointBuilder(func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionRequestBuilder
+	// WithConnectionRequestInformation adds ConnectionRequestInformation (property field)
+	WithConnectionRequestInformation(ConnectionRequestInformation) ConnectionRequestBuilder
+	// Build builds the ConnectionRequest or returns an error if something is wrong
+	Build() (ConnectionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequest
+}
+
+// NewConnectionRequestBuilder() creates a ConnectionRequestBuilder
+func NewConnectionRequestBuilder() ConnectionRequestBuilder {
+	return &_ConnectionRequestBuilder{_ConnectionRequest: new(_ConnectionRequest)}
+}
+
+type _ConnectionRequestBuilder struct {
+	*_ConnectionRequest
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestBuilder) = (*_ConnectionRequestBuilder)(nil)
+
+func (m *_ConnectionRequestBuilder) WithMandatoryFields(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder {
+	return m.WithHpaiDiscoveryEndpoint(hpaiDiscoveryEndpoint).WithHpaiDataEndpoint(hpaiDataEndpoint).WithConnectionRequestInformation(connectionRequestInformation)
+}
+
+func (m *_ConnectionRequestBuilder) WithHpaiDiscoveryEndpoint(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint) ConnectionRequestBuilder {
+	m.HpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint
+	return m
+}
+
+func (m *_ConnectionRequestBuilder) WithHpaiDiscoveryEndpointBuilder(builderSupplier func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) ConnectionRequestBuilder {
+	builder := builderSupplier(m.HpaiDiscoveryEndpoint.CreateHPAIDiscoveryEndpointBuilder())
+	var err error
+	m.HpaiDiscoveryEndpoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HPAIDiscoveryEndpointBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConnectionRequestBuilder) WithHpaiDataEndpoint(hpaiDataEndpoint HPAIDataEndpoint) ConnectionRequestBuilder {
+	m.HpaiDataEndpoint = hpaiDataEndpoint
+	return m
+}
+
+func (m *_ConnectionRequestBuilder) WithHpaiDataEndpointBuilder(builderSupplier func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionRequestBuilder {
+	builder := builderSupplier(m.HpaiDataEndpoint.CreateHPAIDataEndpointBuilder())
+	var err error
+	m.HpaiDataEndpoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConnectionRequestBuilder) WithConnectionRequestInformation(connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder {
+	m.ConnectionRequestInformation = connectionRequestInformation
+	return m
+}
+
+func (m *_ConnectionRequestBuilder) Build() (ConnectionRequest, error) {
+	if m.HpaiDiscoveryEndpoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hpaiDiscoveryEndpoint' not set"))
+	}
+	if m.HpaiDataEndpoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hpaiDataEndpoint' not set"))
+	}
+	if m.ConnectionRequestInformation == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'connectionRequestInformation' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionRequest.deepCopy(), nil
+}
+
+func (m *_ConnectionRequestBuilder) MustBuild() ConnectionRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionRequestBuilder) DeepCopy() any {
+	return m.CreateConnectionRequestBuilder()
+}
+
+// CreateConnectionRequestBuilder creates a ConnectionRequestBuilder
+func (m *_ConnectionRequest) CreateConnectionRequestBuilder() ConnectionRequestBuilder {
+	if m == nil {
+		return NewConnectionRequestBuilder()
+	}
+	return &_ConnectionRequestBuilder{_ConnectionRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

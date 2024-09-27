@@ -44,6 +44,8 @@ type S7PayloadReadVarResponse interface {
 	GetItems() []S7VarPayloadDataItem
 	// IsS7PayloadReadVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadReadVarResponse()
+	// CreateBuilder creates a S7PayloadReadVarResponseBuilder
+	CreateS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder
 }
 
 // _S7PayloadReadVarResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Param
 	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadReadVarResponseBuilder is a builder for S7PayloadReadVarResponse
+type S7PayloadReadVarResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder
+	// Build builds the S7PayloadReadVarResponse or returns an error if something is wrong
+	Build() (S7PayloadReadVarResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadReadVarResponse
+}
+
+// NewS7PayloadReadVarResponseBuilder() creates a S7PayloadReadVarResponseBuilder
+func NewS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder {
+	return &_S7PayloadReadVarResponseBuilder{_S7PayloadReadVarResponse: new(_S7PayloadReadVarResponse)}
+}
+
+type _S7PayloadReadVarResponseBuilder struct {
+	*_S7PayloadReadVarResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadReadVarResponseBuilder) = (*_S7PayloadReadVarResponseBuilder)(nil)
+
+func (m *_S7PayloadReadVarResponseBuilder) WithMandatoryFields(items []S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
+	return m.WithItems(items...)
+}
+
+func (m *_S7PayloadReadVarResponseBuilder) WithItems(items ...S7VarPayloadDataItem) S7PayloadReadVarResponseBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_S7PayloadReadVarResponseBuilder) Build() (S7PayloadReadVarResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadReadVarResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadReadVarResponseBuilder) MustBuild() S7PayloadReadVarResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadReadVarResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadReadVarResponseBuilder()
+}
+
+// CreateS7PayloadReadVarResponseBuilder creates a S7PayloadReadVarResponseBuilder
+func (m *_S7PayloadReadVarResponse) CreateS7PayloadReadVarResponseBuilder() S7PayloadReadVarResponseBuilder {
+	if m == nil {
+		return NewS7PayloadReadVarResponseBuilder()
+	}
+	return &_S7PayloadReadVarResponseBuilder{_S7PayloadReadVarResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

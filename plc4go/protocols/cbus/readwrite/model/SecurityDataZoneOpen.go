@@ -44,6 +44,8 @@ type SecurityDataZoneOpen interface {
 	GetZoneNumber() uint8
 	// IsSecurityDataZoneOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneOpen()
+	// CreateBuilder creates a SecurityDataZoneOpenBuilder
+	CreateSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder
 }
 
 // _SecurityDataZoneOpen is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataZoneOpen(commandTypeContainer SecurityCommandTypeContainer, 
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneOpenBuilder is a builder for SecurityDataZoneOpen
+type SecurityDataZoneOpenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneOpenBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneOpenBuilder
+	// Build builds the SecurityDataZoneOpen or returns an error if something is wrong
+	Build() (SecurityDataZoneOpen, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneOpen
+}
+
+// NewSecurityDataZoneOpenBuilder() creates a SecurityDataZoneOpenBuilder
+func NewSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder {
+	return &_SecurityDataZoneOpenBuilder{_SecurityDataZoneOpen: new(_SecurityDataZoneOpen)}
+}
+
+type _SecurityDataZoneOpenBuilder struct {
+	*_SecurityDataZoneOpen
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneOpenBuilder) = (*_SecurityDataZoneOpenBuilder)(nil)
+
+func (m *_SecurityDataZoneOpenBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneOpenBuilder {
+	return m.WithZoneNumber(zoneNumber)
+}
+
+func (m *_SecurityDataZoneOpenBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneOpenBuilder {
+	m.ZoneNumber = zoneNumber
+	return m
+}
+
+func (m *_SecurityDataZoneOpenBuilder) Build() (SecurityDataZoneOpen, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataZoneOpen.deepCopy(), nil
+}
+
+func (m *_SecurityDataZoneOpenBuilder) MustBuild() SecurityDataZoneOpen {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataZoneOpenBuilder) DeepCopy() any {
+	return m.CreateSecurityDataZoneOpenBuilder()
+}
+
+// CreateSecurityDataZoneOpenBuilder creates a SecurityDataZoneOpenBuilder
+func (m *_SecurityDataZoneOpen) CreateSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder {
+	if m == nil {
+		return NewSecurityDataZoneOpenBuilder()
+	}
+	return &_SecurityDataZoneOpenBuilder{_SecurityDataZoneOpen: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

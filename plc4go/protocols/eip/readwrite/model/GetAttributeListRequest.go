@@ -40,6 +40,8 @@ type GetAttributeListRequest interface {
 	CipService
 	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListRequest()
+	// CreateBuilder creates a GetAttributeListRequestBuilder
+	CreateGetAttributeListRequestBuilder() GetAttributeListRequestBuilder
 }
 
 // _GetAttributeListRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeListRequestBuilder is a builder for GetAttributeListRequest
+type GetAttributeListRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() GetAttributeListRequestBuilder
+	// Build builds the GetAttributeListRequest or returns an error if something is wrong
+	Build() (GetAttributeListRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeListRequest
+}
+
+// NewGetAttributeListRequestBuilder() creates a GetAttributeListRequestBuilder
+func NewGetAttributeListRequestBuilder() GetAttributeListRequestBuilder {
+	return &_GetAttributeListRequestBuilder{_GetAttributeListRequest: new(_GetAttributeListRequest)}
+}
+
+type _GetAttributeListRequestBuilder struct {
+	*_GetAttributeListRequest
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeListRequestBuilder) = (*_GetAttributeListRequestBuilder)(nil)
+
+func (m *_GetAttributeListRequestBuilder) WithMandatoryFields() GetAttributeListRequestBuilder {
+	return m
+}
+
+func (m *_GetAttributeListRequestBuilder) Build() (GetAttributeListRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetAttributeListRequest.deepCopy(), nil
+}
+
+func (m *_GetAttributeListRequestBuilder) MustBuild() GetAttributeListRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetAttributeListRequestBuilder) DeepCopy() any {
+	return m.CreateGetAttributeListRequestBuilder()
+}
+
+// CreateGetAttributeListRequestBuilder creates a GetAttributeListRequestBuilder
+func (m *_GetAttributeListRequest) CreateGetAttributeListRequestBuilder() GetAttributeListRequestBuilder {
+	if m == nil {
+		return NewGetAttributeListRequestBuilder()
+	}
+	return &_GetAttributeListRequestBuilder{_GetAttributeListRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type NodeIdGuid interface {
 	GetIdentifier() string
 	// IsNodeIdGuid is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdGuid()
+	// CreateBuilder creates a NodeIdGuidBuilder
+	CreateNodeIdGuidBuilder() NodeIdGuidBuilder
 }
 
 // _NodeIdGuid is the data-structure of this message
@@ -70,6 +72,85 @@ func NewNodeIdGuid(namespaceIndex uint16, id []byte) *_NodeIdGuid {
 	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdGuidBuilder is a builder for NodeIdGuid
+type NodeIdGuidBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) NodeIdGuidBuilder
+	// WithId adds Id (property field)
+	WithId(...byte) NodeIdGuidBuilder
+	// Build builds the NodeIdGuid or returns an error if something is wrong
+	Build() (NodeIdGuid, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdGuid
+}
+
+// NewNodeIdGuidBuilder() creates a NodeIdGuidBuilder
+func NewNodeIdGuidBuilder() NodeIdGuidBuilder {
+	return &_NodeIdGuidBuilder{_NodeIdGuid: new(_NodeIdGuid)}
+}
+
+type _NodeIdGuidBuilder struct {
+	*_NodeIdGuid
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdGuidBuilder) = (*_NodeIdGuidBuilder)(nil)
+
+func (m *_NodeIdGuidBuilder) WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder {
+	return m.WithNamespaceIndex(namespaceIndex).WithId(id...)
+}
+
+func (m *_NodeIdGuidBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdGuidBuilder {
+	m.NamespaceIndex = namespaceIndex
+	return m
+}
+
+func (m *_NodeIdGuidBuilder) WithId(id ...byte) NodeIdGuidBuilder {
+	m.Id = id
+	return m
+}
+
+func (m *_NodeIdGuidBuilder) Build() (NodeIdGuid, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeIdGuid.deepCopy(), nil
+}
+
+func (m *_NodeIdGuidBuilder) MustBuild() NodeIdGuid {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdGuidBuilder) DeepCopy() any {
+	return m.CreateNodeIdGuidBuilder()
+}
+
+// CreateNodeIdGuidBuilder creates a NodeIdGuidBuilder
+func (m *_NodeIdGuid) CreateNodeIdGuidBuilder() NodeIdGuidBuilder {
+	if m == nil {
+		return NewNodeIdGuidBuilder()
+	}
+	return &_NodeIdGuidBuilder{_NodeIdGuid: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

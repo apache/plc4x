@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble()
+	// CreateBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+	CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble(openingTag BACne
 	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder is a builder for BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+	// Build builds the BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
+}
+
+// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder() creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder {
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble: new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble)}
+}
+
+type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder struct {
+	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder {
+	return m.WithDoubleValue(doubleValue)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder {
+	m.DoubleValue = doubleValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder {
+	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.DoubleValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble, error) {
+	if m.DoubleValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder()
+}
+
+// CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble) CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder()
+	}
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

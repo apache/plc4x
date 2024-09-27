@@ -45,6 +45,8 @@ type BACnetProgramRequestTagged interface {
 	GetValue() BACnetProgramRequest
 	// IsBACnetProgramRequestTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProgramRequestTagged()
+	// CreateBuilder creates a BACnetProgramRequestTaggedBuilder
+	CreateBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder
 }
 
 // _BACnetProgramRequestTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRe
 	}
 	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProgramRequestTaggedBuilder is a builder for BACnetProgramRequestTagged
+type BACnetProgramRequestTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetProgramRequestTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramRequestTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetProgramRequest) BACnetProgramRequestTaggedBuilder
+	// Build builds the BACnetProgramRequestTagged or returns an error if something is wrong
+	Build() (BACnetProgramRequestTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProgramRequestTagged
+}
+
+// NewBACnetProgramRequestTaggedBuilder() creates a BACnetProgramRequestTaggedBuilder
+func NewBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder {
+	return &_BACnetProgramRequestTaggedBuilder{_BACnetProgramRequestTagged: new(_BACnetProgramRequestTagged)}
+}
+
+type _BACnetProgramRequestTaggedBuilder struct {
+	*_BACnetProgramRequestTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProgramRequestTaggedBuilder) = (*_BACnetProgramRequestTaggedBuilder)(nil)
+
+func (m *_BACnetProgramRequestTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetProgramRequestTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramRequestTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) WithValue(value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) Build() (BACnetProgramRequestTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetProgramRequestTagged.deepCopy(), nil
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) MustBuild() BACnetProgramRequestTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetProgramRequestTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetProgramRequestTaggedBuilder()
+}
+
+// CreateBACnetProgramRequestTaggedBuilder creates a BACnetProgramRequestTaggedBuilder
+func (m *_BACnetProgramRequestTagged) CreateBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder {
+	if m == nil {
+		return NewBACnetProgramRequestTaggedBuilder()
+	}
+	return &_BACnetProgramRequestTaggedBuilder{_BACnetProgramRequestTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

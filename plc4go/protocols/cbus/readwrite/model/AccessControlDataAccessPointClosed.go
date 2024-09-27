@@ -40,6 +40,8 @@ type AccessControlDataAccessPointClosed interface {
 	AccessControlData
 	// IsAccessControlDataAccessPointClosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointClosed()
+	// CreateBuilder creates a AccessControlDataAccessPointClosedBuilder
+	CreateAccessControlDataAccessPointClosedBuilder() AccessControlDataAccessPointClosedBuilder
 }
 
 // _AccessControlDataAccessPointClosed is the data-structure of this message
@@ -58,6 +60,71 @@ func NewAccessControlDataAccessPointClosed(commandTypeContainer AccessControlCom
 	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataAccessPointClosedBuilder is a builder for AccessControlDataAccessPointClosed
+type AccessControlDataAccessPointClosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AccessControlDataAccessPointClosedBuilder
+	// Build builds the AccessControlDataAccessPointClosed or returns an error if something is wrong
+	Build() (AccessControlDataAccessPointClosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlDataAccessPointClosed
+}
+
+// NewAccessControlDataAccessPointClosedBuilder() creates a AccessControlDataAccessPointClosedBuilder
+func NewAccessControlDataAccessPointClosedBuilder() AccessControlDataAccessPointClosedBuilder {
+	return &_AccessControlDataAccessPointClosedBuilder{_AccessControlDataAccessPointClosed: new(_AccessControlDataAccessPointClosed)}
+}
+
+type _AccessControlDataAccessPointClosedBuilder struct {
+	*_AccessControlDataAccessPointClosed
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataAccessPointClosedBuilder) = (*_AccessControlDataAccessPointClosedBuilder)(nil)
+
+func (m *_AccessControlDataAccessPointClosedBuilder) WithMandatoryFields() AccessControlDataAccessPointClosedBuilder {
+	return m
+}
+
+func (m *_AccessControlDataAccessPointClosedBuilder) Build() (AccessControlDataAccessPointClosed, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AccessControlDataAccessPointClosed.deepCopy(), nil
+}
+
+func (m *_AccessControlDataAccessPointClosedBuilder) MustBuild() AccessControlDataAccessPointClosed {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AccessControlDataAccessPointClosedBuilder) DeepCopy() any {
+	return m.CreateAccessControlDataAccessPointClosedBuilder()
+}
+
+// CreateAccessControlDataAccessPointClosedBuilder creates a AccessControlDataAccessPointClosedBuilder
+func (m *_AccessControlDataAccessPointClosed) CreateAccessControlDataAccessPointClosedBuilder() AccessControlDataAccessPointClosedBuilder {
+	if m == nil {
+		return NewAccessControlDataAccessPointClosedBuilder()
+	}
+	return &_AccessControlDataAccessPointClosedBuilder{_AccessControlDataAccessPointClosed: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

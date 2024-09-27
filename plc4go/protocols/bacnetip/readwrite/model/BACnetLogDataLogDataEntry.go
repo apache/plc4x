@@ -43,6 +43,8 @@ type BACnetLogDataLogDataEntry interface {
 	utils.Copyable
 	// IsBACnetLogDataLogDataEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntry()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryBuilder
+	CreateBACnetLogDataLogDataEntryBuilder() BACnetLogDataLogDataEntryBuilder
 }
 
 // BACnetLogDataLogDataEntryContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetLogDataLogDataEntryContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetLogDataLogDataEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntry()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryBuilder
+	CreateBACnetLogDataLogDataEntryBuilder() BACnetLogDataLogDataEntryBuilder
 }
 
 // BACnetLogDataLogDataEntryRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetLogDataLogDataEntry(peekedTagHeader BACnetTagHeader) *_BACnetLogDa
 	}
 	return &_BACnetLogDataLogDataEntry{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryBuilder is a builder for BACnetLogDataLogDataEntry
+type BACnetLogDataLogDataEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetLogDataLogDataEntryBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetLogDataLogDataEntryBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataLogDataEntryBuilder
+	// Build builds the BACnetLogDataLogDataEntry or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryContract
+}
+
+// NewBACnetLogDataLogDataEntryBuilder() creates a BACnetLogDataLogDataEntryBuilder
+func NewBACnetLogDataLogDataEntryBuilder() BACnetLogDataLogDataEntryBuilder {
+	return &_BACnetLogDataLogDataEntryBuilder{_BACnetLogDataLogDataEntry: new(_BACnetLogDataLogDataEntry)}
+}
+
+type _BACnetLogDataLogDataEntryBuilder struct {
+	*_BACnetLogDataLogDataEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryBuilder) = (*_BACnetLogDataLogDataEntryBuilder)(nil)
+
+func (m *_BACnetLogDataLogDataEntryBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetLogDataLogDataEntryBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetLogDataLogDataEntryBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogDataLogDataEntryBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataLogDataEntryBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryBuilder) Build() (BACnetLogDataLogDataEntryContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogDataEntry.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryBuilder) MustBuild() BACnetLogDataLogDataEntryContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogDataEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogDataEntryBuilder()
+}
+
+// CreateBACnetLogDataLogDataEntryBuilder creates a BACnetLogDataLogDataEntryBuilder
+func (m *_BACnetLogDataLogDataEntry) CreateBACnetLogDataLogDataEntryBuilder() BACnetLogDataLogDataEntryBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogDataEntryBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryBuilder{_BACnetLogDataLogDataEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type AddReferencesRequest interface {
 	GetReferencesToAdd() []ExtensionObjectDefinition
 	// IsAddReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddReferencesRequest()
+	// CreateBuilder creates a AddReferencesRequestBuilder
+	CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder
 }
 
 // _AddReferencesRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfRefere
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AddReferencesRequestBuilder is a builder for AddReferencesRequest
+type AddReferencesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// WithNoOfReferencesToAdd adds NoOfReferencesToAdd (property field)
+	WithNoOfReferencesToAdd(int32) AddReferencesRequestBuilder
+	// WithReferencesToAdd adds ReferencesToAdd (property field)
+	WithReferencesToAdd(...ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// Build builds the AddReferencesRequest or returns an error if something is wrong
+	Build() (AddReferencesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AddReferencesRequest
+}
+
+// NewAddReferencesRequestBuilder() creates a AddReferencesRequestBuilder
+func NewAddReferencesRequestBuilder() AddReferencesRequestBuilder {
+	return &_AddReferencesRequestBuilder{_AddReferencesRequest: new(_AddReferencesRequest)}
+}
+
+type _AddReferencesRequestBuilder struct {
+	*_AddReferencesRequest
+
+	err *utils.MultiError
+}
+
+var _ (AddReferencesRequestBuilder) = (*_AddReferencesRequestBuilder)(nil)
+
+func (m *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfReferencesToAdd(noOfReferencesToAdd).WithReferencesToAdd(referencesToAdd...)
+}
+
+func (m *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_AddReferencesRequestBuilder) WithNoOfReferencesToAdd(noOfReferencesToAdd int32) AddReferencesRequestBuilder {
+	m.NoOfReferencesToAdd = noOfReferencesToAdd
+	return m
+}
+
+func (m *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	m.ReferencesToAdd = referencesToAdd
+	return m
+}
+
+func (m *_AddReferencesRequestBuilder) Build() (AddReferencesRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AddReferencesRequest.deepCopy(), nil
+}
+
+func (m *_AddReferencesRequestBuilder) MustBuild() AddReferencesRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AddReferencesRequestBuilder) DeepCopy() any {
+	return m.CreateAddReferencesRequestBuilder()
+}
+
+// CreateAddReferencesRequestBuilder creates a AddReferencesRequestBuilder
+func (m *_AddReferencesRequest) CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder {
+	if m == nil {
+		return NewAddReferencesRequestBuilder()
+	}
+	return &_AddReferencesRequestBuilder{_AddReferencesRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

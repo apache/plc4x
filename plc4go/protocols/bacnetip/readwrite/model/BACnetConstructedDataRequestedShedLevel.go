@@ -46,6 +46,8 @@ type BACnetConstructedDataRequestedShedLevel interface {
 	GetActualValue() BACnetShedLevel
 	// IsBACnetConstructedDataRequestedShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRequestedShedLevel()
+	// CreateBuilder creates a BACnetConstructedDataRequestedShedLevelBuilder
+	CreateBACnetConstructedDataRequestedShedLevelBuilder() BACnetConstructedDataRequestedShedLevelBuilder
 }
 
 // _BACnetConstructedDataRequestedShedLevel is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataRequestedShedLevel(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRequestedShedLevelBuilder is a builder for BACnetConstructedDataRequestedShedLevel
+type BACnetConstructedDataRequestedShedLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestedShedLevel BACnetShedLevel) BACnetConstructedDataRequestedShedLevelBuilder
+	// WithRequestedShedLevel adds RequestedShedLevel (property field)
+	WithRequestedShedLevel(BACnetShedLevel) BACnetConstructedDataRequestedShedLevelBuilder
+	// Build builds the BACnetConstructedDataRequestedShedLevel or returns an error if something is wrong
+	Build() (BACnetConstructedDataRequestedShedLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRequestedShedLevel
+}
+
+// NewBACnetConstructedDataRequestedShedLevelBuilder() creates a BACnetConstructedDataRequestedShedLevelBuilder
+func NewBACnetConstructedDataRequestedShedLevelBuilder() BACnetConstructedDataRequestedShedLevelBuilder {
+	return &_BACnetConstructedDataRequestedShedLevelBuilder{_BACnetConstructedDataRequestedShedLevel: new(_BACnetConstructedDataRequestedShedLevel)}
+}
+
+type _BACnetConstructedDataRequestedShedLevelBuilder struct {
+	*_BACnetConstructedDataRequestedShedLevel
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRequestedShedLevelBuilder) = (*_BACnetConstructedDataRequestedShedLevelBuilder)(nil)
+
+func (m *_BACnetConstructedDataRequestedShedLevelBuilder) WithMandatoryFields(requestedShedLevel BACnetShedLevel) BACnetConstructedDataRequestedShedLevelBuilder {
+	return m.WithRequestedShedLevel(requestedShedLevel)
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevelBuilder) WithRequestedShedLevel(requestedShedLevel BACnetShedLevel) BACnetConstructedDataRequestedShedLevelBuilder {
+	m.RequestedShedLevel = requestedShedLevel
+	return m
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevelBuilder) Build() (BACnetConstructedDataRequestedShedLevel, error) {
+	if m.RequestedShedLevel == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestedShedLevel' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRequestedShedLevel.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevelBuilder) MustBuild() BACnetConstructedDataRequestedShedLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRequestedShedLevelBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRequestedShedLevelBuilder()
+}
+
+// CreateBACnetConstructedDataRequestedShedLevelBuilder creates a BACnetConstructedDataRequestedShedLevelBuilder
+func (m *_BACnetConstructedDataRequestedShedLevel) CreateBACnetConstructedDataRequestedShedLevelBuilder() BACnetConstructedDataRequestedShedLevelBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRequestedShedLevelBuilder()
+	}
+	return &_BACnetConstructedDataRequestedShedLevelBuilder{_BACnetConstructedDataRequestedShedLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

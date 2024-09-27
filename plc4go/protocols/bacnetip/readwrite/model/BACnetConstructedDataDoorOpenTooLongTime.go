@@ -46,6 +46,8 @@ type BACnetConstructedDataDoorOpenTooLongTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataDoorOpenTooLongTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDoorOpenTooLongTime()
+	// CreateBuilder creates a BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataDoorOpenTooLongTimeBuilder
 }
 
 // _BACnetConstructedDataDoorOpenTooLongTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDoorOpenTooLongTime(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDoorOpenTooLongTimeBuilder is a builder for BACnetConstructedDataDoorOpenTooLongTime
+type BACnetConstructedDataDoorOpenTooLongTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	// WithDoorOpenTooLongTime adds DoorOpenTooLongTime (property field)
+	WithDoorOpenTooLongTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	// WithDoorOpenTooLongTimeBuilder adds DoorOpenTooLongTime (property field) which is build by the builder
+	WithDoorOpenTooLongTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorOpenTooLongTimeBuilder
+	// Build builds the BACnetConstructedDataDoorOpenTooLongTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataDoorOpenTooLongTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDoorOpenTooLongTime
+}
+
+// NewBACnetConstructedDataDoorOpenTooLongTimeBuilder() creates a BACnetConstructedDataDoorOpenTooLongTimeBuilder
+func NewBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	return &_BACnetConstructedDataDoorOpenTooLongTimeBuilder{_BACnetConstructedDataDoorOpenTooLongTime: new(_BACnetConstructedDataDoorOpenTooLongTime)}
+}
+
+type _BACnetConstructedDataDoorOpenTooLongTimeBuilder struct {
+	*_BACnetConstructedDataDoorOpenTooLongTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDoorOpenTooLongTimeBuilder) = (*_BACnetConstructedDataDoorOpenTooLongTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithMandatoryFields(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	return m.WithDoorOpenTooLongTime(doorOpenTooLongTime)
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTime(doorOpenTooLongTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	m.DoorOpenTooLongTime = doorOpenTooLongTime
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) WithDoorOpenTooLongTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	builder := builderSupplier(m.DoorOpenTooLongTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.DoorOpenTooLongTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) Build() (BACnetConstructedDataDoorOpenTooLongTime, error) {
+	if m.DoorOpenTooLongTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doorOpenTooLongTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDoorOpenTooLongTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) MustBuild() BACnetConstructedDataDoorOpenTooLongTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDoorOpenTooLongTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder()
+}
+
+// CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder creates a BACnetConstructedDataDoorOpenTooLongTimeBuilder
+func (m *_BACnetConstructedDataDoorOpenTooLongTime) CreateBACnetConstructedDataDoorOpenTooLongTimeBuilder() BACnetConstructedDataDoorOpenTooLongTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDoorOpenTooLongTimeBuilder()
+	}
+	return &_BACnetConstructedDataDoorOpenTooLongTimeBuilder{_BACnetConstructedDataDoorOpenTooLongTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

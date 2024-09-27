@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger interface {
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger()
+	// CreateBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(openingTag BACn
 	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder is a builder for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// Build builds the BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+}
+
+// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger: new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger)}
+}
+
+type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder struct {
+	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	return m.WithIntegerValue(integerValue)
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	m.IntegerValue = integerValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	builder := builderSupplier(m.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.IntegerValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error) {
+	if m.IntegerValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder()
+}
+
+// CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder()
+	}
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

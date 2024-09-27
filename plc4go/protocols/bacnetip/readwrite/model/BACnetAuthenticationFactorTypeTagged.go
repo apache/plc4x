@@ -45,6 +45,8 @@ type BACnetAuthenticationFactorTypeTagged interface {
 	GetValue() BACnetAuthenticationFactorType
 	// IsBACnetAuthenticationFactorTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthenticationFactorTypeTagged()
+	// CreateBuilder creates a BACnetAuthenticationFactorTypeTaggedBuilder
+	CreateBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder
 }
 
 // _BACnetAuthenticationFactorTypeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACne
 	}
 	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthenticationFactorTypeTaggedBuilder is a builder for BACnetAuthenticationFactorTypeTagged
+type BACnetAuthenticationFactorTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
+	// Build builds the BACnetAuthenticationFactorTypeTagged or returns an error if something is wrong
+	Build() (BACnetAuthenticationFactorTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthenticationFactorTypeTagged
+}
+
+// NewBACnetAuthenticationFactorTypeTaggedBuilder() creates a BACnetAuthenticationFactorTypeTaggedBuilder
+func NewBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder {
+	return &_BACnetAuthenticationFactorTypeTaggedBuilder{_BACnetAuthenticationFactorTypeTagged: new(_BACnetAuthenticationFactorTypeTagged)}
+}
+
+type _BACnetAuthenticationFactorTypeTaggedBuilder struct {
+	*_BACnetAuthenticationFactorTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthenticationFactorTypeTaggedBuilder) = (*_BACnetAuthenticationFactorTypeTaggedBuilder)(nil)
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthenticationFactorTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) WithValue(value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) Build() (BACnetAuthenticationFactorTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAuthenticationFactorTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) MustBuild() BACnetAuthenticationFactorTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAuthenticationFactorTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAuthenticationFactorTypeTaggedBuilder()
+}
+
+// CreateBACnetAuthenticationFactorTypeTaggedBuilder creates a BACnetAuthenticationFactorTypeTaggedBuilder
+func (m *_BACnetAuthenticationFactorTypeTagged) CreateBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetAuthenticationFactorTypeTaggedBuilder()
+	}
+	return &_BACnetAuthenticationFactorTypeTaggedBuilder{_BACnetAuthenticationFactorTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

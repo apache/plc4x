@@ -46,6 +46,8 @@ type AdsReadWriteResponse interface {
 	GetData() []byte
 	// IsAdsReadWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadWriteResponse()
+	// CreateBuilder creates a AdsReadWriteResponseBuilder
+	CreateAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder
 }
 
 // _AdsReadWriteResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewAdsReadWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sour
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadWriteResponseBuilder is a builder for AdsReadWriteResponse
+type AdsReadWriteResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, data []byte) AdsReadWriteResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsReadWriteResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsReadWriteResponseBuilder
+	// Build builds the AdsReadWriteResponse or returns an error if something is wrong
+	Build() (AdsReadWriteResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadWriteResponse
+}
+
+// NewAdsReadWriteResponseBuilder() creates a AdsReadWriteResponseBuilder
+func NewAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder {
+	return &_AdsReadWriteResponseBuilder{_AdsReadWriteResponse: new(_AdsReadWriteResponse)}
+}
+
+type _AdsReadWriteResponseBuilder struct {
+	*_AdsReadWriteResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadWriteResponseBuilder) = (*_AdsReadWriteResponseBuilder)(nil)
+
+func (m *_AdsReadWriteResponseBuilder) WithMandatoryFields(result ReturnCode, data []byte) AdsReadWriteResponseBuilder {
+	return m.WithResult(result).WithData(data...)
+}
+
+func (m *_AdsReadWriteResponseBuilder) WithResult(result ReturnCode) AdsReadWriteResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_AdsReadWriteResponseBuilder) WithData(data ...byte) AdsReadWriteResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AdsReadWriteResponseBuilder) Build() (AdsReadWriteResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsReadWriteResponse.deepCopy(), nil
+}
+
+func (m *_AdsReadWriteResponseBuilder) MustBuild() AdsReadWriteResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsReadWriteResponseBuilder) DeepCopy() any {
+	return m.CreateAdsReadWriteResponseBuilder()
+}
+
+// CreateAdsReadWriteResponseBuilder creates a AdsReadWriteResponseBuilder
+func (m *_AdsReadWriteResponse) CreateAdsReadWriteResponseBuilder() AdsReadWriteResponseBuilder {
+	if m == nil {
+		return NewAdsReadWriteResponseBuilder()
+	}
+	return &_AdsReadWriteResponseBuilder{_AdsReadWriteResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

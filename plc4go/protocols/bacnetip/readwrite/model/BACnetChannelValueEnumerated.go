@@ -44,6 +44,8 @@ type BACnetChannelValueEnumerated interface {
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 	// IsBACnetChannelValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueEnumerated()
+	// CreateBuilder creates a BACnetChannelValueEnumeratedBuilder
+	CreateBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilder
 }
 
 // _BACnetChannelValueEnumerated is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetChannelValueEnumerated(peekedTagHeader BACnetTagHeader, enumerated
 	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueEnumeratedBuilder is a builder for BACnetChannelValueEnumerated
+type BACnetChannelValueEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetChannelValueEnumeratedBuilder
+	// Build builds the BACnetChannelValueEnumerated or returns an error if something is wrong
+	Build() (BACnetChannelValueEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueEnumerated
+}
+
+// NewBACnetChannelValueEnumeratedBuilder() creates a BACnetChannelValueEnumeratedBuilder
+func NewBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilder {
+	return &_BACnetChannelValueEnumeratedBuilder{_BACnetChannelValueEnumerated: new(_BACnetChannelValueEnumerated)}
+}
+
+type _BACnetChannelValueEnumeratedBuilder struct {
+	*_BACnetChannelValueEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueEnumeratedBuilder) = (*_BACnetChannelValueEnumeratedBuilder)(nil)
+
+func (m *_BACnetChannelValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
+	return m.WithEnumeratedValue(enumeratedValue)
+}
+
+func (m *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetChannelValueEnumeratedBuilder {
+	m.EnumeratedValue = enumeratedValue
+	return m
+}
+
+func (m *_BACnetChannelValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetChannelValueEnumeratedBuilder {
+	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	m.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetChannelValueEnumeratedBuilder) Build() (BACnetChannelValueEnumerated, error) {
+	if m.EnumeratedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetChannelValueEnumerated.deepCopy(), nil
+}
+
+func (m *_BACnetChannelValueEnumeratedBuilder) MustBuild() BACnetChannelValueEnumerated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetChannelValueEnumeratedBuilder) DeepCopy() any {
+	return m.CreateBACnetChannelValueEnumeratedBuilder()
+}
+
+// CreateBACnetChannelValueEnumeratedBuilder creates a BACnetChannelValueEnumeratedBuilder
+func (m *_BACnetChannelValueEnumerated) CreateBACnetChannelValueEnumeratedBuilder() BACnetChannelValueEnumeratedBuilder {
+	if m == nil {
+		return NewBACnetChannelValueEnumeratedBuilder()
+	}
+	return &_BACnetChannelValueEnumeratedBuilder{_BACnetChannelValueEnumerated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

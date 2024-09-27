@@ -40,6 +40,8 @@ type ApduDataExtReadRouterMemoryResponse interface {
 	ApduDataExt
 	// IsApduDataExtReadRouterMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtReadRouterMemoryResponse()
+	// CreateBuilder creates a ApduDataExtReadRouterMemoryResponseBuilder
+	CreateApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemoryResponseBuilder
 }
 
 // _ApduDataExtReadRouterMemoryResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtReadRouterMemoryResponse(length uint8) *_ApduDataExtReadRoute
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtReadRouterMemoryResponseBuilder is a builder for ApduDataExtReadRouterMemoryResponse
+type ApduDataExtReadRouterMemoryResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtReadRouterMemoryResponseBuilder
+	// Build builds the ApduDataExtReadRouterMemoryResponse or returns an error if something is wrong
+	Build() (ApduDataExtReadRouterMemoryResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtReadRouterMemoryResponse
+}
+
+// NewApduDataExtReadRouterMemoryResponseBuilder() creates a ApduDataExtReadRouterMemoryResponseBuilder
+func NewApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemoryResponseBuilder {
+	return &_ApduDataExtReadRouterMemoryResponseBuilder{_ApduDataExtReadRouterMemoryResponse: new(_ApduDataExtReadRouterMemoryResponse)}
+}
+
+type _ApduDataExtReadRouterMemoryResponseBuilder struct {
+	*_ApduDataExtReadRouterMemoryResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtReadRouterMemoryResponseBuilder) = (*_ApduDataExtReadRouterMemoryResponseBuilder)(nil)
+
+func (m *_ApduDataExtReadRouterMemoryResponseBuilder) WithMandatoryFields() ApduDataExtReadRouterMemoryResponseBuilder {
+	return m
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponseBuilder) Build() (ApduDataExtReadRouterMemoryResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtReadRouterMemoryResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponseBuilder) MustBuild() ApduDataExtReadRouterMemoryResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtReadRouterMemoryResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtReadRouterMemoryResponseBuilder()
+}
+
+// CreateApduDataExtReadRouterMemoryResponseBuilder creates a ApduDataExtReadRouterMemoryResponseBuilder
+func (m *_ApduDataExtReadRouterMemoryResponse) CreateApduDataExtReadRouterMemoryResponseBuilder() ApduDataExtReadRouterMemoryResponseBuilder {
+	if m == nil {
+		return NewApduDataExtReadRouterMemoryResponseBuilder()
+	}
+	return &_ApduDataExtReadRouterMemoryResponseBuilder{_ApduDataExtReadRouterMemoryResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type TelephonyDataDialInFailure interface {
 	GetReason() DialInFailureReason
 	// IsTelephonyDataDialInFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataDialInFailure()
+	// CreateBuilder creates a TelephonyDataDialInFailureBuilder
+	CreateTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder
 }
 
 // _TelephonyDataDialInFailure is the data-structure of this message
@@ -64,6 +66,78 @@ func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeCont
 	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataDialInFailureBuilder is a builder for TelephonyDataDialInFailure
+type TelephonyDataDialInFailureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reason DialInFailureReason) TelephonyDataDialInFailureBuilder
+	// WithReason adds Reason (property field)
+	WithReason(DialInFailureReason) TelephonyDataDialInFailureBuilder
+	// Build builds the TelephonyDataDialInFailure or returns an error if something is wrong
+	Build() (TelephonyDataDialInFailure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataDialInFailure
+}
+
+// NewTelephonyDataDialInFailureBuilder() creates a TelephonyDataDialInFailureBuilder
+func NewTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder {
+	return &_TelephonyDataDialInFailureBuilder{_TelephonyDataDialInFailure: new(_TelephonyDataDialInFailure)}
+}
+
+type _TelephonyDataDialInFailureBuilder struct {
+	*_TelephonyDataDialInFailure
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataDialInFailureBuilder) = (*_TelephonyDataDialInFailureBuilder)(nil)
+
+func (m *_TelephonyDataDialInFailureBuilder) WithMandatoryFields(reason DialInFailureReason) TelephonyDataDialInFailureBuilder {
+	return m.WithReason(reason)
+}
+
+func (m *_TelephonyDataDialInFailureBuilder) WithReason(reason DialInFailureReason) TelephonyDataDialInFailureBuilder {
+	m.Reason = reason
+	return m
+}
+
+func (m *_TelephonyDataDialInFailureBuilder) Build() (TelephonyDataDialInFailure, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyDataDialInFailure.deepCopy(), nil
+}
+
+func (m *_TelephonyDataDialInFailureBuilder) MustBuild() TelephonyDataDialInFailure {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataDialInFailureBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataDialInFailureBuilder()
+}
+
+// CreateTelephonyDataDialInFailureBuilder creates a TelephonyDataDialInFailureBuilder
+func (m *_TelephonyDataDialInFailure) CreateTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder {
+	if m == nil {
+		return NewTelephonyDataDialInFailureBuilder()
+	}
+	return &_TelephonyDataDialInFailureBuilder{_TelephonyDataDialInFailure: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataFileAccessMethod interface {
 	GetActualValue() BACnetFileAccessMethodTagged
 	// IsBACnetConstructedDataFileAccessMethod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFileAccessMethod()
+	// CreateBuilder creates a BACnetConstructedDataFileAccessMethodBuilder
+	CreateBACnetConstructedDataFileAccessMethodBuilder() BACnetConstructedDataFileAccessMethodBuilder
 }
 
 // _BACnetConstructedDataFileAccessMethod is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataFileAccessMethod(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFileAccessMethodBuilder is a builder for BACnetConstructedDataFileAccessMethod
+type BACnetConstructedDataFileAccessMethodBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetConstructedDataFileAccessMethodBuilder
+	// WithFileAccessMethod adds FileAccessMethod (property field)
+	WithFileAccessMethod(BACnetFileAccessMethodTagged) BACnetConstructedDataFileAccessMethodBuilder
+	// WithFileAccessMethodBuilder adds FileAccessMethod (property field) which is build by the builder
+	WithFileAccessMethodBuilder(func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetConstructedDataFileAccessMethodBuilder
+	// Build builds the BACnetConstructedDataFileAccessMethod or returns an error if something is wrong
+	Build() (BACnetConstructedDataFileAccessMethod, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFileAccessMethod
+}
+
+// NewBACnetConstructedDataFileAccessMethodBuilder() creates a BACnetConstructedDataFileAccessMethodBuilder
+func NewBACnetConstructedDataFileAccessMethodBuilder() BACnetConstructedDataFileAccessMethodBuilder {
+	return &_BACnetConstructedDataFileAccessMethodBuilder{_BACnetConstructedDataFileAccessMethod: new(_BACnetConstructedDataFileAccessMethod)}
+}
+
+type _BACnetConstructedDataFileAccessMethodBuilder struct {
+	*_BACnetConstructedDataFileAccessMethod
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFileAccessMethodBuilder) = (*_BACnetConstructedDataFileAccessMethodBuilder)(nil)
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetConstructedDataFileAccessMethodBuilder {
+	return m.WithFileAccessMethod(fileAccessMethod)
+}
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) WithFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged) BACnetConstructedDataFileAccessMethodBuilder {
+	m.FileAccessMethod = fileAccessMethod
+	return m
+}
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) WithFileAccessMethodBuilder(builderSupplier func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetConstructedDataFileAccessMethodBuilder {
+	builder := builderSupplier(m.FileAccessMethod.CreateBACnetFileAccessMethodTaggedBuilder())
+	var err error
+	m.FileAccessMethod, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetFileAccessMethodTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) Build() (BACnetConstructedDataFileAccessMethod, error) {
+	if m.FileAccessMethod == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fileAccessMethod' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataFileAccessMethod.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) MustBuild() BACnetConstructedDataFileAccessMethod {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataFileAccessMethodBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataFileAccessMethodBuilder()
+}
+
+// CreateBACnetConstructedDataFileAccessMethodBuilder creates a BACnetConstructedDataFileAccessMethodBuilder
+func (m *_BACnetConstructedDataFileAccessMethod) CreateBACnetConstructedDataFileAccessMethodBuilder() BACnetConstructedDataFileAccessMethodBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataFileAccessMethodBuilder()
+	}
+	return &_BACnetConstructedDataFileAccessMethodBuilder{_BACnetConstructedDataFileAccessMethod: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

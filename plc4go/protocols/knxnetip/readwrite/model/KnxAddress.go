@@ -47,6 +47,8 @@ type KnxAddress interface {
 	GetSubGroup() uint8
 	// IsKnxAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxAddress()
+	// CreateBuilder creates a KnxAddressBuilder
+	CreateKnxAddressBuilder() KnxAddressBuilder
 }
 
 // _KnxAddress is the data-structure of this message
@@ -62,6 +64,92 @@ var _ KnxAddress = (*_KnxAddress)(nil)
 func NewKnxAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) *_KnxAddress {
 	return &_KnxAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxAddressBuilder is a builder for KnxAddress
+type KnxAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxAddressBuilder
+	// WithMainGroup adds MainGroup (property field)
+	WithMainGroup(uint8) KnxAddressBuilder
+	// WithMiddleGroup adds MiddleGroup (property field)
+	WithMiddleGroup(uint8) KnxAddressBuilder
+	// WithSubGroup adds SubGroup (property field)
+	WithSubGroup(uint8) KnxAddressBuilder
+	// Build builds the KnxAddress or returns an error if something is wrong
+	Build() (KnxAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxAddress
+}
+
+// NewKnxAddressBuilder() creates a KnxAddressBuilder
+func NewKnxAddressBuilder() KnxAddressBuilder {
+	return &_KnxAddressBuilder{_KnxAddress: new(_KnxAddress)}
+}
+
+type _KnxAddressBuilder struct {
+	*_KnxAddress
+
+	err *utils.MultiError
+}
+
+var _ (KnxAddressBuilder) = (*_KnxAddressBuilder)(nil)
+
+func (m *_KnxAddressBuilder) WithMandatoryFields(mainGroup uint8, middleGroup uint8, subGroup uint8) KnxAddressBuilder {
+	return m.WithMainGroup(mainGroup).WithMiddleGroup(middleGroup).WithSubGroup(subGroup)
+}
+
+func (m *_KnxAddressBuilder) WithMainGroup(mainGroup uint8) KnxAddressBuilder {
+	m.MainGroup = mainGroup
+	return m
+}
+
+func (m *_KnxAddressBuilder) WithMiddleGroup(middleGroup uint8) KnxAddressBuilder {
+	m.MiddleGroup = middleGroup
+	return m
+}
+
+func (m *_KnxAddressBuilder) WithSubGroup(subGroup uint8) KnxAddressBuilder {
+	m.SubGroup = subGroup
+	return m
+}
+
+func (m *_KnxAddressBuilder) Build() (KnxAddress, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxAddress.deepCopy(), nil
+}
+
+func (m *_KnxAddressBuilder) MustBuild() KnxAddress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxAddressBuilder) DeepCopy() any {
+	return m.CreateKnxAddressBuilder()
+}
+
+// CreateKnxAddressBuilder creates a KnxAddressBuilder
+func (m *_KnxAddress) CreateKnxAddressBuilder() KnxAddressBuilder {
+	if m == nil {
+		return NewKnxAddressBuilder()
+	}
+	return &_KnxAddressBuilder{_KnxAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

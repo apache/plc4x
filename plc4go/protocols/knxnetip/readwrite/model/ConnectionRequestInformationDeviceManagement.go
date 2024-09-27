@@ -40,6 +40,8 @@ type ConnectionRequestInformationDeviceManagement interface {
 	ConnectionRequestInformation
 	// IsConnectionRequestInformationDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformationDeviceManagement()
+	// CreateBuilder creates a ConnectionRequestInformationDeviceManagementBuilder
+	CreateConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestInformationDeviceManagementBuilder
 }
 
 // _ConnectionRequestInformationDeviceManagement is the data-structure of this message
@@ -58,6 +60,71 @@ func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInform
 	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestInformationDeviceManagementBuilder is a builder for ConnectionRequestInformationDeviceManagement
+type ConnectionRequestInformationDeviceManagementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder
+	// Build builds the ConnectionRequestInformationDeviceManagement or returns an error if something is wrong
+	Build() (ConnectionRequestInformationDeviceManagement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequestInformationDeviceManagement
+}
+
+// NewConnectionRequestInformationDeviceManagementBuilder() creates a ConnectionRequestInformationDeviceManagementBuilder
+func NewConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestInformationDeviceManagementBuilder {
+	return &_ConnectionRequestInformationDeviceManagementBuilder{_ConnectionRequestInformationDeviceManagement: new(_ConnectionRequestInformationDeviceManagement)}
+}
+
+type _ConnectionRequestInformationDeviceManagementBuilder struct {
+	*_ConnectionRequestInformationDeviceManagement
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestInformationDeviceManagementBuilder) = (*_ConnectionRequestInformationDeviceManagementBuilder)(nil)
+
+func (m *_ConnectionRequestInformationDeviceManagementBuilder) WithMandatoryFields() ConnectionRequestInformationDeviceManagementBuilder {
+	return m
+}
+
+func (m *_ConnectionRequestInformationDeviceManagementBuilder) Build() (ConnectionRequestInformationDeviceManagement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionRequestInformationDeviceManagement.deepCopy(), nil
+}
+
+func (m *_ConnectionRequestInformationDeviceManagementBuilder) MustBuild() ConnectionRequestInformationDeviceManagement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionRequestInformationDeviceManagementBuilder) DeepCopy() any {
+	return m.CreateConnectionRequestInformationDeviceManagementBuilder()
+}
+
+// CreateConnectionRequestInformationDeviceManagementBuilder creates a ConnectionRequestInformationDeviceManagementBuilder
+func (m *_ConnectionRequestInformationDeviceManagement) CreateConnectionRequestInformationDeviceManagementBuilder() ConnectionRequestInformationDeviceManagementBuilder {
+	if m == nil {
+		return NewConnectionRequestInformationDeviceManagementBuilder()
+	}
+	return &_ConnectionRequestInformationDeviceManagementBuilder{_ConnectionRequestInformationDeviceManagement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

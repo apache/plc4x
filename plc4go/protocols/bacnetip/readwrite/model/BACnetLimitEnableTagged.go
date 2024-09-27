@@ -49,6 +49,8 @@ type BACnetLimitEnableTagged interface {
 	GetHighLimitEnable() bool
 	// IsBACnetLimitEnableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLimitEnableTagged()
+	// CreateBuilder creates a BACnetLimitEnableTaggedBuilder
+	CreateBACnetLimitEnableTaggedBuilder() BACnetLimitEnableTaggedBuilder
 }
 
 // _BACnetLimitEnableTagged is the data-structure of this message
@@ -73,6 +75,127 @@ func NewBACnetLimitEnableTagged(header BACnetTagHeader, payload BACnetTagPayload
 	}
 	return &_BACnetLimitEnableTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLimitEnableTaggedBuilder is a builder for BACnetLimitEnableTagged
+type BACnetLimitEnableTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLimitEnableTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLimitEnableTaggedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetLimitEnableTaggedBuilder
+	// Build builds the BACnetLimitEnableTagged or returns an error if something is wrong
+	Build() (BACnetLimitEnableTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLimitEnableTagged
+}
+
+// NewBACnetLimitEnableTaggedBuilder() creates a BACnetLimitEnableTaggedBuilder
+func NewBACnetLimitEnableTaggedBuilder() BACnetLimitEnableTaggedBuilder {
+	return &_BACnetLimitEnableTaggedBuilder{_BACnetLimitEnableTagged: new(_BACnetLimitEnableTagged)}
+}
+
+type _BACnetLimitEnableTaggedBuilder struct {
+	*_BACnetLimitEnableTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLimitEnableTaggedBuilder) = (*_BACnetLimitEnableTaggedBuilder)(nil)
+
+func (m *_BACnetLimitEnableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder {
+	return m.WithHeader(header).WithPayload(payload)
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLimitEnableTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLimitEnableTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetLimitEnableTaggedBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetLimitEnableTaggedBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) Build() (BACnetLimitEnableTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLimitEnableTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) MustBuild() BACnetLimitEnableTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLimitEnableTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLimitEnableTaggedBuilder()
+}
+
+// CreateBACnetLimitEnableTaggedBuilder creates a BACnetLimitEnableTaggedBuilder
+func (m *_BACnetLimitEnableTagged) CreateBACnetLimitEnableTaggedBuilder() BACnetLimitEnableTaggedBuilder {
+	if m == nil {
+		return NewBACnetLimitEnableTaggedBuilder()
+	}
+	return &_BACnetLimitEnableTaggedBuilder{_BACnetLimitEnableTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type CIPEncapsulationReadRequest interface {
 	GetRequest() DF1RequestMessage
 	// IsCIPEncapsulationReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationReadRequest()
+	// CreateBuilder creates a CIPEncapsulationReadRequestBuilder
+	CreateCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder
 }
 
 // _CIPEncapsulationReadRequest is the data-structure of this message
@@ -69,6 +71,84 @@ func NewCIPEncapsulationReadRequest(sessionHandle uint32, status uint32, senderC
 	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationReadRequestBuilder is a builder for CIPEncapsulationReadRequest
+type CIPEncapsulationReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder
+	// WithRequest adds Request (property field)
+	WithRequest(DF1RequestMessage) CIPEncapsulationReadRequestBuilder
+	// Build builds the CIPEncapsulationReadRequest or returns an error if something is wrong
+	Build() (CIPEncapsulationReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationReadRequest
+}
+
+// NewCIPEncapsulationReadRequestBuilder() creates a CIPEncapsulationReadRequestBuilder
+func NewCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder {
+	return &_CIPEncapsulationReadRequestBuilder{_CIPEncapsulationReadRequest: new(_CIPEncapsulationReadRequest)}
+}
+
+type _CIPEncapsulationReadRequestBuilder struct {
+	*_CIPEncapsulationReadRequest
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationReadRequestBuilder) = (*_CIPEncapsulationReadRequestBuilder)(nil)
+
+func (m *_CIPEncapsulationReadRequestBuilder) WithMandatoryFields(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
+	return m.WithRequest(request)
+}
+
+func (m *_CIPEncapsulationReadRequestBuilder) WithRequest(request DF1RequestMessage) CIPEncapsulationReadRequestBuilder {
+	m.Request = request
+	return m
+}
+
+func (m *_CIPEncapsulationReadRequestBuilder) Build() (CIPEncapsulationReadRequest, error) {
+	if m.Request == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'request' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPEncapsulationReadRequest.deepCopy(), nil
+}
+
+func (m *_CIPEncapsulationReadRequestBuilder) MustBuild() CIPEncapsulationReadRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPEncapsulationReadRequestBuilder) DeepCopy() any {
+	return m.CreateCIPEncapsulationReadRequestBuilder()
+}
+
+// CreateCIPEncapsulationReadRequestBuilder creates a CIPEncapsulationReadRequestBuilder
+func (m *_CIPEncapsulationReadRequest) CreateCIPEncapsulationReadRequestBuilder() CIPEncapsulationReadRequestBuilder {
+	if m == nil {
+		return NewCIPEncapsulationReadRequestBuilder()
+	}
+	return &_CIPEncapsulationReadRequestBuilder{_CIPEncapsulationReadRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

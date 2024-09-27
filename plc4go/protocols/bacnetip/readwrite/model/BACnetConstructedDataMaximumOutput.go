@@ -46,6 +46,8 @@ type BACnetConstructedDataMaximumOutput interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMaximumOutput is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaximumOutput()
+	// CreateBuilder creates a BACnetConstructedDataMaximumOutputBuilder
+	CreateBACnetConstructedDataMaximumOutputBuilder() BACnetConstructedDataMaximumOutputBuilder
 }
 
 // _BACnetConstructedDataMaximumOutput is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaximumOutput(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaximumOutputBuilder is a builder for BACnetConstructedDataMaximumOutput
+type BACnetConstructedDataMaximumOutputBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maximumOutput BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder
+	// WithMaximumOutput adds MaximumOutput (property field)
+	WithMaximumOutput(BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder
+	// WithMaximumOutputBuilder adds MaximumOutput (property field) which is build by the builder
+	WithMaximumOutputBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumOutputBuilder
+	// Build builds the BACnetConstructedDataMaximumOutput or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaximumOutput, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaximumOutput
+}
+
+// NewBACnetConstructedDataMaximumOutputBuilder() creates a BACnetConstructedDataMaximumOutputBuilder
+func NewBACnetConstructedDataMaximumOutputBuilder() BACnetConstructedDataMaximumOutputBuilder {
+	return &_BACnetConstructedDataMaximumOutputBuilder{_BACnetConstructedDataMaximumOutput: new(_BACnetConstructedDataMaximumOutput)}
+}
+
+type _BACnetConstructedDataMaximumOutputBuilder struct {
+	*_BACnetConstructedDataMaximumOutput
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaximumOutputBuilder) = (*_BACnetConstructedDataMaximumOutputBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) WithMandatoryFields(maximumOutput BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder {
+	return m.WithMaximumOutput(maximumOutput)
+}
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) WithMaximumOutput(maximumOutput BACnetApplicationTagReal) BACnetConstructedDataMaximumOutputBuilder {
+	m.MaximumOutput = maximumOutput
+	return m
+}
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) WithMaximumOutputBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumOutputBuilder {
+	builder := builderSupplier(m.MaximumOutput.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.MaximumOutput, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) Build() (BACnetConstructedDataMaximumOutput, error) {
+	if m.MaximumOutput == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maximumOutput' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaximumOutput.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) MustBuild() BACnetConstructedDataMaximumOutput {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaximumOutputBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaximumOutputBuilder()
+}
+
+// CreateBACnetConstructedDataMaximumOutputBuilder creates a BACnetConstructedDataMaximumOutputBuilder
+func (m *_BACnetConstructedDataMaximumOutput) CreateBACnetConstructedDataMaximumOutputBuilder() BACnetConstructedDataMaximumOutputBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaximumOutputBuilder()
+	}
+	return &_BACnetConstructedDataMaximumOutputBuilder{_BACnetConstructedDataMaximumOutput: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

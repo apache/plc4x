@@ -44,6 +44,8 @@ type BACnetConstructedDataTimerAlarmValues interface {
 	GetAlarmValues() []BACnetTimerStateTagged
 	// IsBACnetConstructedDataTimerAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataTimerAlarmValuesBuilder
+	CreateBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTimerAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataTimerAlarmValues is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataTimerAlarmValues(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerAlarmValuesBuilder is a builder for BACnetConstructedDataTimerAlarmValues
+type BACnetConstructedDataTimerAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataTimerAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerAlarmValues
+}
+
+// NewBACnetConstructedDataTimerAlarmValuesBuilder() creates a BACnetConstructedDataTimerAlarmValuesBuilder
+func NewBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTimerAlarmValuesBuilder {
+	return &_BACnetConstructedDataTimerAlarmValuesBuilder{_BACnetConstructedDataTimerAlarmValues: new(_BACnetConstructedDataTimerAlarmValues)}
+}
+
+type _BACnetConstructedDataTimerAlarmValuesBuilder struct {
+	*_BACnetConstructedDataTimerAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerAlarmValuesBuilder) = (*_BACnetConstructedDataTimerAlarmValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
+	return m.WithAlarmValues(alarmValues...)
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetTimerStateTagged) BACnetConstructedDataTimerAlarmValuesBuilder {
+	m.AlarmValues = alarmValues
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) Build() (BACnetConstructedDataTimerAlarmValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimerAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) MustBuild() BACnetConstructedDataTimerAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimerAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimerAlarmValuesBuilder()
+}
+
+// CreateBACnetConstructedDataTimerAlarmValuesBuilder creates a BACnetConstructedDataTimerAlarmValuesBuilder
+func (m *_BACnetConstructedDataTimerAlarmValues) CreateBACnetConstructedDataTimerAlarmValuesBuilder() BACnetConstructedDataTimerAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimerAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataTimerAlarmValuesBuilder{_BACnetConstructedDataTimerAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

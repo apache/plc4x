@@ -44,6 +44,8 @@ type AdsDiscoveryBlockVersion interface {
 	GetVersionData() []byte
 	// IsAdsDiscoveryBlockVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockVersion()
+	// CreateBuilder creates a AdsDiscoveryBlockVersionBuilder
+	CreateAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder
 }
 
 // _AdsDiscoveryBlockVersion is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAdsDiscoveryBlockVersion(versionData []byte) *_AdsDiscoveryBlockVersion 
 	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockVersionBuilder is a builder for AdsDiscoveryBlockVersion
+type AdsDiscoveryBlockVersionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(versionData []byte) AdsDiscoveryBlockVersionBuilder
+	// WithVersionData adds VersionData (property field)
+	WithVersionData(...byte) AdsDiscoveryBlockVersionBuilder
+	// Build builds the AdsDiscoveryBlockVersion or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockVersion, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockVersion
+}
+
+// NewAdsDiscoveryBlockVersionBuilder() creates a AdsDiscoveryBlockVersionBuilder
+func NewAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder {
+	return &_AdsDiscoveryBlockVersionBuilder{_AdsDiscoveryBlockVersion: new(_AdsDiscoveryBlockVersion)}
+}
+
+type _AdsDiscoveryBlockVersionBuilder struct {
+	*_AdsDiscoveryBlockVersion
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockVersionBuilder) = (*_AdsDiscoveryBlockVersionBuilder)(nil)
+
+func (m *_AdsDiscoveryBlockVersionBuilder) WithMandatoryFields(versionData []byte) AdsDiscoveryBlockVersionBuilder {
+	return m.WithVersionData(versionData...)
+}
+
+func (m *_AdsDiscoveryBlockVersionBuilder) WithVersionData(versionData ...byte) AdsDiscoveryBlockVersionBuilder {
+	m.VersionData = versionData
+	return m
+}
+
+func (m *_AdsDiscoveryBlockVersionBuilder) Build() (AdsDiscoveryBlockVersion, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDiscoveryBlockVersion.deepCopy(), nil
+}
+
+func (m *_AdsDiscoveryBlockVersionBuilder) MustBuild() AdsDiscoveryBlockVersion {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDiscoveryBlockVersionBuilder) DeepCopy() any {
+	return m.CreateAdsDiscoveryBlockVersionBuilder()
+}
+
+// CreateAdsDiscoveryBlockVersionBuilder creates a AdsDiscoveryBlockVersionBuilder
+func (m *_AdsDiscoveryBlockVersion) CreateAdsDiscoveryBlockVersionBuilder() AdsDiscoveryBlockVersionBuilder {
+	if m == nil {
+		return NewAdsDiscoveryBlockVersionBuilder()
+	}
+	return &_AdsDiscoveryBlockVersionBuilder{_AdsDiscoveryBlockVersion: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

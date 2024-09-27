@@ -46,6 +46,8 @@ type BACnetConstructedDataAuthenticationStatus interface {
 	GetActualValue() BACnetAuthenticationStatusTagged
 	// IsBACnetConstructedDataAuthenticationStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAuthenticationStatus()
+	// CreateBuilder creates a BACnetConstructedDataAuthenticationStatusBuilder
+	CreateBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedDataAuthenticationStatusBuilder
 }
 
 // _BACnetConstructedDataAuthenticationStatus is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAuthenticationStatus(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAuthenticationStatusBuilder is a builder for BACnetConstructedDataAuthenticationStatus
+type BACnetConstructedDataAuthenticationStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder
+	// WithAuthenticationStatus adds AuthenticationStatus (property field)
+	WithAuthenticationStatus(BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder
+	// WithAuthenticationStatusBuilder adds AuthenticationStatus (property field) which is build by the builder
+	WithAuthenticationStatusBuilder(func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetConstructedDataAuthenticationStatusBuilder
+	// Build builds the BACnetConstructedDataAuthenticationStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataAuthenticationStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAuthenticationStatus
+}
+
+// NewBACnetConstructedDataAuthenticationStatusBuilder() creates a BACnetConstructedDataAuthenticationStatusBuilder
+func NewBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedDataAuthenticationStatusBuilder {
+	return &_BACnetConstructedDataAuthenticationStatusBuilder{_BACnetConstructedDataAuthenticationStatus: new(_BACnetConstructedDataAuthenticationStatus)}
+}
+
+type _BACnetConstructedDataAuthenticationStatusBuilder struct {
+	*_BACnetConstructedDataAuthenticationStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAuthenticationStatusBuilder) = (*_BACnetConstructedDataAuthenticationStatusBuilder)(nil)
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithMandatoryFields(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
+	return m.WithAuthenticationStatus(authenticationStatus)
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatus(authenticationStatus BACnetAuthenticationStatusTagged) BACnetConstructedDataAuthenticationStatusBuilder {
+	m.AuthenticationStatus = authenticationStatus
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) WithAuthenticationStatusBuilder(builderSupplier func(BACnetAuthenticationStatusTaggedBuilder) BACnetAuthenticationStatusTaggedBuilder) BACnetConstructedDataAuthenticationStatusBuilder {
+	builder := builderSupplier(m.AuthenticationStatus.CreateBACnetAuthenticationStatusTaggedBuilder())
+	var err error
+	m.AuthenticationStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAuthenticationStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) Build() (BACnetConstructedDataAuthenticationStatus, error) {
+	if m.AuthenticationStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'authenticationStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAuthenticationStatus.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) MustBuild() BACnetConstructedDataAuthenticationStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAuthenticationStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAuthenticationStatusBuilder()
+}
+
+// CreateBACnetConstructedDataAuthenticationStatusBuilder creates a BACnetConstructedDataAuthenticationStatusBuilder
+func (m *_BACnetConstructedDataAuthenticationStatus) CreateBACnetConstructedDataAuthenticationStatusBuilder() BACnetConstructedDataAuthenticationStatusBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAuthenticationStatusBuilder()
+	}
+	return &_BACnetConstructedDataAuthenticationStatusBuilder{_BACnetConstructedDataAuthenticationStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

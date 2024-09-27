@@ -46,6 +46,8 @@ type ModbusPDUGetComEventCounterResponse interface {
 	GetEventCount() uint16
 	// IsModbusPDUGetComEventCounterResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventCounterResponse()
+	// CreateBuilder creates a ModbusPDUGetComEventCounterResponseBuilder
+	CreateModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounterResponseBuilder
 }
 
 // _ModbusPDUGetComEventCounterResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *_
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUGetComEventCounterResponseBuilder is a builder for ModbusPDUGetComEventCounterResponse
+type ModbusPDUGetComEventCounterResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint16, eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint16) ModbusPDUGetComEventCounterResponseBuilder
+	// WithEventCount adds EventCount (property field)
+	WithEventCount(uint16) ModbusPDUGetComEventCounterResponseBuilder
+	// Build builds the ModbusPDUGetComEventCounterResponse or returns an error if something is wrong
+	Build() (ModbusPDUGetComEventCounterResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUGetComEventCounterResponse
+}
+
+// NewModbusPDUGetComEventCounterResponseBuilder() creates a ModbusPDUGetComEventCounterResponseBuilder
+func NewModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounterResponseBuilder {
+	return &_ModbusPDUGetComEventCounterResponseBuilder{_ModbusPDUGetComEventCounterResponse: new(_ModbusPDUGetComEventCounterResponse)}
+}
+
+type _ModbusPDUGetComEventCounterResponseBuilder struct {
+	*_ModbusPDUGetComEventCounterResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUGetComEventCounterResponseBuilder) = (*_ModbusPDUGetComEventCounterResponseBuilder)(nil)
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	return m.WithStatus(status).WithEventCount(eventCount)
+}
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventCounterResponseBuilder {
+	m.EventCount = eventCount
+	return m
+}
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) Build() (ModbusPDUGetComEventCounterResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUGetComEventCounterResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) MustBuild() ModbusPDUGetComEventCounterResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUGetComEventCounterResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUGetComEventCounterResponseBuilder()
+}
+
+// CreateModbusPDUGetComEventCounterResponseBuilder creates a ModbusPDUGetComEventCounterResponseBuilder
+func (m *_ModbusPDUGetComEventCounterResponse) CreateModbusPDUGetComEventCounterResponseBuilder() ModbusPDUGetComEventCounterResponseBuilder {
+	if m == nil {
+		return NewModbusPDUGetComEventCounterResponseBuilder()
+	}
+	return &_ModbusPDUGetComEventCounterResponseBuilder{_ModbusPDUGetComEventCounterResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

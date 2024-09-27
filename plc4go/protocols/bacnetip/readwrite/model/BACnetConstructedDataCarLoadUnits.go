@@ -46,6 +46,8 @@ type BACnetConstructedDataCarLoadUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 	// IsBACnetConstructedDataCarLoadUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarLoadUnits()
+	// CreateBuilder creates a BACnetConstructedDataCarLoadUnitsBuilder
+	CreateBACnetConstructedDataCarLoadUnitsBuilder() BACnetConstructedDataCarLoadUnitsBuilder
 }
 
 // _BACnetConstructedDataCarLoadUnits is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCarLoadUnits(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarLoadUnitsBuilder is a builder for BACnetConstructedDataCarLoadUnits
+type BACnetConstructedDataCarLoadUnitsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataCarLoadUnitsBuilder
+	// WithUnits adds Units (property field)
+	WithUnits(BACnetEngineeringUnitsTagged) BACnetConstructedDataCarLoadUnitsBuilder
+	// WithUnitsBuilder adds Units (property field) which is build by the builder
+	WithUnitsBuilder(func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataCarLoadUnitsBuilder
+	// Build builds the BACnetConstructedDataCarLoadUnits or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarLoadUnits, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarLoadUnits
+}
+
+// NewBACnetConstructedDataCarLoadUnitsBuilder() creates a BACnetConstructedDataCarLoadUnitsBuilder
+func NewBACnetConstructedDataCarLoadUnitsBuilder() BACnetConstructedDataCarLoadUnitsBuilder {
+	return &_BACnetConstructedDataCarLoadUnitsBuilder{_BACnetConstructedDataCarLoadUnits: new(_BACnetConstructedDataCarLoadUnits)}
+}
+
+type _BACnetConstructedDataCarLoadUnitsBuilder struct {
+	*_BACnetConstructedDataCarLoadUnits
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarLoadUnitsBuilder) = (*_BACnetConstructedDataCarLoadUnitsBuilder)(nil)
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataCarLoadUnitsBuilder {
+	return m.WithUnits(units)
+}
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) WithUnits(units BACnetEngineeringUnitsTagged) BACnetConstructedDataCarLoadUnitsBuilder {
+	m.Units = units
+	return m
+}
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) WithUnitsBuilder(builderSupplier func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataCarLoadUnitsBuilder {
+	builder := builderSupplier(m.Units.CreateBACnetEngineeringUnitsTaggedBuilder())
+	var err error
+	m.Units, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEngineeringUnitsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) Build() (BACnetConstructedDataCarLoadUnits, error) {
+	if m.Units == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'units' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCarLoadUnits.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) MustBuild() BACnetConstructedDataCarLoadUnits {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCarLoadUnitsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCarLoadUnitsBuilder()
+}
+
+// CreateBACnetConstructedDataCarLoadUnitsBuilder creates a BACnetConstructedDataCarLoadUnitsBuilder
+func (m *_BACnetConstructedDataCarLoadUnits) CreateBACnetConstructedDataCarLoadUnitsBuilder() BACnetConstructedDataCarLoadUnitsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCarLoadUnitsBuilder()
+	}
+	return &_BACnetConstructedDataCarLoadUnitsBuilder{_BACnetConstructedDataCarLoadUnits: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

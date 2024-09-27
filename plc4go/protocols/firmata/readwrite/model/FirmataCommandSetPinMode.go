@@ -46,6 +46,8 @@ type FirmataCommandSetPinMode interface {
 	GetMode() PinMode
 	// IsFirmataCommandSetPinMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSetPinMode()
+	// CreateBuilder creates a FirmataCommandSetPinModeBuilder
+	CreateFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message
@@ -68,6 +70,85 @@ func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_Firma
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataCommandSetPinModeBuilder is a builder for FirmataCommandSetPinMode
+type FirmataCommandSetPinModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, mode PinMode) FirmataCommandSetPinModeBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) FirmataCommandSetPinModeBuilder
+	// WithMode adds Mode (property field)
+	WithMode(PinMode) FirmataCommandSetPinModeBuilder
+	// Build builds the FirmataCommandSetPinMode or returns an error if something is wrong
+	Build() (FirmataCommandSetPinMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommandSetPinMode
+}
+
+// NewFirmataCommandSetPinModeBuilder() creates a FirmataCommandSetPinModeBuilder
+func NewFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder {
+	return &_FirmataCommandSetPinModeBuilder{_FirmataCommandSetPinMode: new(_FirmataCommandSetPinMode)}
+}
+
+type _FirmataCommandSetPinModeBuilder struct {
+	*_FirmataCommandSetPinMode
+
+	err *utils.MultiError
+}
+
+var _ (FirmataCommandSetPinModeBuilder) = (*_FirmataCommandSetPinModeBuilder)(nil)
+
+func (m *_FirmataCommandSetPinModeBuilder) WithMandatoryFields(pin uint8, mode PinMode) FirmataCommandSetPinModeBuilder {
+	return m.WithPin(pin).WithMode(mode)
+}
+
+func (m *_FirmataCommandSetPinModeBuilder) WithPin(pin uint8) FirmataCommandSetPinModeBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_FirmataCommandSetPinModeBuilder) WithMode(mode PinMode) FirmataCommandSetPinModeBuilder {
+	m.Mode = mode
+	return m
+}
+
+func (m *_FirmataCommandSetPinModeBuilder) Build() (FirmataCommandSetPinMode, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataCommandSetPinMode.deepCopy(), nil
+}
+
+func (m *_FirmataCommandSetPinModeBuilder) MustBuild() FirmataCommandSetPinMode {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataCommandSetPinModeBuilder) DeepCopy() any {
+	return m.CreateFirmataCommandSetPinModeBuilder()
+}
+
+// CreateFirmataCommandSetPinModeBuilder creates a FirmataCommandSetPinModeBuilder
+func (m *_FirmataCommandSetPinMode) CreateFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder {
+	if m == nil {
+		return NewFirmataCommandSetPinModeBuilder()
+	}
+	return &_FirmataCommandSetPinModeBuilder{_FirmataCommandSetPinMode: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type NLMIAmRouterToNetwork interface {
 	GetDestinationNetworkAddresses() []uint16
 	// IsNLMIAmRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMIAmRouterToNetwork()
+	// CreateBuilder creates a NLMIAmRouterToNetworkBuilder
+	CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder
 }
 
 // _NLMIAmRouterToNetwork is the data-structure of this message
@@ -64,6 +66,78 @@ func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength u
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMIAmRouterToNetworkBuilder is a builder for NLMIAmRouterToNetwork
+type NLMIAmRouterToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder
+	// WithDestinationNetworkAddresses adds DestinationNetworkAddresses (property field)
+	WithDestinationNetworkAddresses(...uint16) NLMIAmRouterToNetworkBuilder
+	// Build builds the NLMIAmRouterToNetwork or returns an error if something is wrong
+	Build() (NLMIAmRouterToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMIAmRouterToNetwork
+}
+
+// NewNLMIAmRouterToNetworkBuilder() creates a NLMIAmRouterToNetworkBuilder
+func NewNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
+	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: new(_NLMIAmRouterToNetwork)}
+}
+
+type _NLMIAmRouterToNetworkBuilder struct {
+	*_NLMIAmRouterToNetwork
+
+	err *utils.MultiError
+}
+
+var _ (NLMIAmRouterToNetworkBuilder) = (*_NLMIAmRouterToNetworkBuilder)(nil)
+
+func (m *_NLMIAmRouterToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder {
+	return m.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+}
+
+func (m *_NLMIAmRouterToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMIAmRouterToNetworkBuilder {
+	m.DestinationNetworkAddresses = destinationNetworkAddresses
+	return m
+}
+
+func (m *_NLMIAmRouterToNetworkBuilder) Build() (NLMIAmRouterToNetwork, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMIAmRouterToNetwork.deepCopy(), nil
+}
+
+func (m *_NLMIAmRouterToNetworkBuilder) MustBuild() NLMIAmRouterToNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMIAmRouterToNetworkBuilder) DeepCopy() any {
+	return m.CreateNLMIAmRouterToNetworkBuilder()
+}
+
+// CreateNLMIAmRouterToNetworkBuilder creates a NLMIAmRouterToNetworkBuilder
+func (m *_NLMIAmRouterToNetwork) CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
+	if m == nil {
+		return NewNLMIAmRouterToNetworkBuilder()
+	}
+	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

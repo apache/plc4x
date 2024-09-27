@@ -46,6 +46,8 @@ type VariantInt64 interface {
 	GetValue() []int64
 	// IsVariantInt64 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantInt64()
+	// CreateBuilder creates a VariantInt64Builder
+	CreateVariantInt64Builder() VariantInt64Builder
 }
 
 // _VariantInt64 is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, n
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantInt64Builder is a builder for VariantInt64
+type VariantInt64Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []int64) VariantInt64Builder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantInt64Builder
+	// WithValue adds Value (property field)
+	WithValue(...int64) VariantInt64Builder
+	// Build builds the VariantInt64 or returns an error if something is wrong
+	Build() (VariantInt64, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantInt64
+}
+
+// NewVariantInt64Builder() creates a VariantInt64Builder
+func NewVariantInt64Builder() VariantInt64Builder {
+	return &_VariantInt64Builder{_VariantInt64: new(_VariantInt64)}
+}
+
+type _VariantInt64Builder struct {
+	*_VariantInt64
+
+	err *utils.MultiError
+}
+
+var _ (VariantInt64Builder) = (*_VariantInt64Builder)(nil)
+
+func (m *_VariantInt64Builder) WithMandatoryFields(value []int64) VariantInt64Builder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantInt64Builder) WithOptionalArrayLength(arrayLength int32) VariantInt64Builder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantInt64Builder) WithValue(value ...int64) VariantInt64Builder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantInt64Builder) Build() (VariantInt64, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantInt64.deepCopy(), nil
+}
+
+func (m *_VariantInt64Builder) MustBuild() VariantInt64 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantInt64Builder) DeepCopy() any {
+	return m.CreateVariantInt64Builder()
+}
+
+// CreateVariantInt64Builder creates a VariantInt64Builder
+func (m *_VariantInt64) CreateVariantInt64Builder() VariantInt64Builder {
+	if m == nil {
+		return NewVariantInt64Builder()
+	}
+	return &_VariantInt64Builder{_VariantInt64: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

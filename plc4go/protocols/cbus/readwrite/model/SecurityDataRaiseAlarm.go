@@ -40,6 +40,8 @@ type SecurityDataRaiseAlarm interface {
 	SecurityData
 	// IsSecurityDataRaiseAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataRaiseAlarm()
+	// CreateBuilder creates a SecurityDataRaiseAlarmBuilder
+	CreateSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder
 }
 
 // _SecurityDataRaiseAlarm is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataRaiseAlarm(commandTypeContainer SecurityCommandTypeContainer
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataRaiseAlarmBuilder is a builder for SecurityDataRaiseAlarm
+type SecurityDataRaiseAlarmBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataRaiseAlarmBuilder
+	// Build builds the SecurityDataRaiseAlarm or returns an error if something is wrong
+	Build() (SecurityDataRaiseAlarm, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataRaiseAlarm
+}
+
+// NewSecurityDataRaiseAlarmBuilder() creates a SecurityDataRaiseAlarmBuilder
+func NewSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder {
+	return &_SecurityDataRaiseAlarmBuilder{_SecurityDataRaiseAlarm: new(_SecurityDataRaiseAlarm)}
+}
+
+type _SecurityDataRaiseAlarmBuilder struct {
+	*_SecurityDataRaiseAlarm
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataRaiseAlarmBuilder) = (*_SecurityDataRaiseAlarmBuilder)(nil)
+
+func (m *_SecurityDataRaiseAlarmBuilder) WithMandatoryFields() SecurityDataRaiseAlarmBuilder {
+	return m
+}
+
+func (m *_SecurityDataRaiseAlarmBuilder) Build() (SecurityDataRaiseAlarm, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataRaiseAlarm.deepCopy(), nil
+}
+
+func (m *_SecurityDataRaiseAlarmBuilder) MustBuild() SecurityDataRaiseAlarm {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataRaiseAlarmBuilder) DeepCopy() any {
+	return m.CreateSecurityDataRaiseAlarmBuilder()
+}
+
+// CreateSecurityDataRaiseAlarmBuilder creates a SecurityDataRaiseAlarmBuilder
+func (m *_SecurityDataRaiseAlarm) CreateSecurityDataRaiseAlarmBuilder() SecurityDataRaiseAlarmBuilder {
+	if m == nil {
+		return NewSecurityDataRaiseAlarmBuilder()
+	}
+	return &_SecurityDataRaiseAlarmBuilder{_SecurityDataRaiseAlarm: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

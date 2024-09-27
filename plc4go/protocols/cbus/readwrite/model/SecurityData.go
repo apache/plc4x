@@ -43,6 +43,8 @@ type SecurityData interface {
 	utils.Copyable
 	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
+	// CreateBuilder creates a SecurityDataBuilder
+	CreateSecurityDataBuilder() SecurityDataBuilder
 }
 
 // SecurityDataContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type SecurityDataContract interface {
 	GetCommandType() SecurityCommandType
 	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
+	// CreateBuilder creates a SecurityDataBuilder
+	CreateSecurityDataBuilder() SecurityDataBuilder
 }
 
 // SecurityDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +84,85 @@ var _ SecurityDataContract = (*_SecurityData)(nil)
 func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityData {
 	return &_SecurityData{CommandTypeContainer: commandTypeContainer, Argument: argument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataBuilder is a builder for SecurityData
+type SecurityDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer SecurityCommandTypeContainer, argument byte) SecurityDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(SecurityCommandTypeContainer) SecurityDataBuilder
+	// WithArgument adds Argument (property field)
+	WithArgument(byte) SecurityDataBuilder
+	// Build builds the SecurityData or returns an error if something is wrong
+	Build() (SecurityDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataContract
+}
+
+// NewSecurityDataBuilder() creates a SecurityDataBuilder
+func NewSecurityDataBuilder() SecurityDataBuilder {
+	return &_SecurityDataBuilder{_SecurityData: new(_SecurityData)}
+}
+
+type _SecurityDataBuilder struct {
+	*_SecurityData
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataBuilder) = (*_SecurityDataBuilder)(nil)
+
+func (m *_SecurityDataBuilder) WithMandatoryFields(commandTypeContainer SecurityCommandTypeContainer, argument byte) SecurityDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+}
+
+func (m *_SecurityDataBuilder) WithCommandTypeContainer(commandTypeContainer SecurityCommandTypeContainer) SecurityDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_SecurityDataBuilder) WithArgument(argument byte) SecurityDataBuilder {
+	m.Argument = argument
+	return m
+}
+
+func (m *_SecurityDataBuilder) Build() (SecurityDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityData.deepCopy(), nil
+}
+
+func (m *_SecurityDataBuilder) MustBuild() SecurityDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataBuilder) DeepCopy() any {
+	return m.CreateSecurityDataBuilder()
+}
+
+// CreateSecurityDataBuilder creates a SecurityDataBuilder
+func (m *_SecurityData) CreateSecurityDataBuilder() SecurityDataBuilder {
+	if m == nil {
+		return NewSecurityDataBuilder()
+	}
+	return &_SecurityDataBuilder{_SecurityData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

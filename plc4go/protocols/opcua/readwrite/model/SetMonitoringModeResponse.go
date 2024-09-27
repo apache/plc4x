@@ -52,6 +52,8 @@ type SetMonitoringModeResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsSetMonitoringModeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetMonitoringModeResponse()
+	// CreateBuilder creates a SetMonitoringModeResponseBuilder
+	CreateSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder
 }
 
 // _SetMonitoringModeResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOf
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetMonitoringModeResponseBuilder is a builder for SetMonitoringModeResponse
+type SetMonitoringModeResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) SetMonitoringModeResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) SetMonitoringModeResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) SetMonitoringModeResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) SetMonitoringModeResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) SetMonitoringModeResponseBuilder
+	// Build builds the SetMonitoringModeResponse or returns an error if something is wrong
+	Build() (SetMonitoringModeResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetMonitoringModeResponse
+}
+
+// NewSetMonitoringModeResponseBuilder() creates a SetMonitoringModeResponseBuilder
+func NewSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder {
+	return &_SetMonitoringModeResponseBuilder{_SetMonitoringModeResponse: new(_SetMonitoringModeResponse)}
+}
+
+type _SetMonitoringModeResponseBuilder struct {
+	*_SetMonitoringModeResponse
+
+	err *utils.MultiError
+}
+
+var _ (SetMonitoringModeResponseBuilder) = (*_SetMonitoringModeResponseBuilder)(nil)
+
+func (m *_SetMonitoringModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_SetMonitoringModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetMonitoringModeResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_SetMonitoringModeResponseBuilder) WithNoOfResults(noOfResults int32) SetMonitoringModeResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_SetMonitoringModeResponseBuilder) WithResults(results ...StatusCode) SetMonitoringModeResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_SetMonitoringModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetMonitoringModeResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_SetMonitoringModeResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) SetMonitoringModeResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_SetMonitoringModeResponseBuilder) Build() (SetMonitoringModeResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SetMonitoringModeResponse.deepCopy(), nil
+}
+
+func (m *_SetMonitoringModeResponseBuilder) MustBuild() SetMonitoringModeResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SetMonitoringModeResponseBuilder) DeepCopy() any {
+	return m.CreateSetMonitoringModeResponseBuilder()
+}
+
+// CreateSetMonitoringModeResponseBuilder creates a SetMonitoringModeResponseBuilder
+func (m *_SetMonitoringModeResponse) CreateSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder {
+	if m == nil {
+		return NewSetMonitoringModeResponseBuilder()
+	}
+	return &_SetMonitoringModeResponseBuilder{_SetMonitoringModeResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

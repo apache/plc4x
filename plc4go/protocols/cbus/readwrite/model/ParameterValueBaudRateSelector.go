@@ -46,6 +46,8 @@ type ParameterValueBaudRateSelector interface {
 	GetData() []byte
 	// IsParameterValueBaudRateSelector is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueBaudRateSelector()
+	// CreateBuilder creates a ParameterValueBaudRateSelectorBuilder
+	CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder
 }
 
 // _ParameterValueBaudRateSelector is the data-structure of this message
@@ -68,6 +70,85 @@ func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numB
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueBaudRateSelectorBuilder is a builder for ParameterValueBaudRateSelector
+type ParameterValueBaudRateSelectorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder
+	// WithValue adds Value (property field)
+	WithValue(BaudRateSelector) ParameterValueBaudRateSelectorBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueBaudRateSelectorBuilder
+	// Build builds the ParameterValueBaudRateSelector or returns an error if something is wrong
+	Build() (ParameterValueBaudRateSelector, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueBaudRateSelector
+}
+
+// NewParameterValueBaudRateSelectorBuilder() creates a ParameterValueBaudRateSelectorBuilder
+func NewParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
+	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: new(_ParameterValueBaudRateSelector)}
+}
+
+type _ParameterValueBaudRateSelectorBuilder struct {
+	*_ParameterValueBaudRateSelector
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueBaudRateSelectorBuilder) = (*_ParameterValueBaudRateSelectorBuilder)(nil)
+
+func (m *_ParameterValueBaudRateSelectorBuilder) WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder {
+	return m.WithValue(value).WithData(data...)
+}
+
+func (m *_ParameterValueBaudRateSelectorBuilder) WithValue(value BaudRateSelector) ParameterValueBaudRateSelectorBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ParameterValueBaudRateSelectorBuilder) WithData(data ...byte) ParameterValueBaudRateSelectorBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ParameterValueBaudRateSelectorBuilder) Build() (ParameterValueBaudRateSelector, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueBaudRateSelector.deepCopy(), nil
+}
+
+func (m *_ParameterValueBaudRateSelectorBuilder) MustBuild() ParameterValueBaudRateSelector {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueBaudRateSelectorBuilder) DeepCopy() any {
+	return m.CreateParameterValueBaudRateSelectorBuilder()
+}
+
+// CreateParameterValueBaudRateSelectorBuilder creates a ParameterValueBaudRateSelectorBuilder
+func (m *_ParameterValueBaudRateSelector) CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
+	if m == nil {
+		return NewParameterValueBaudRateSelectorBuilder()
+	}
+	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

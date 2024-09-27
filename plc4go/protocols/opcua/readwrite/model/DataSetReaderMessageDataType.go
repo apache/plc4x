@@ -40,6 +40,8 @@ type DataSetReaderMessageDataType interface {
 	ExtensionObjectDefinition
 	// IsDataSetReaderMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetReaderMessageDataType()
+	// CreateBuilder creates a DataSetReaderMessageDataTypeBuilder
+	CreateDataSetReaderMessageDataTypeBuilder() DataSetReaderMessageDataTypeBuilder
 }
 
 // _DataSetReaderMessageDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewDataSetReaderMessageDataType() *_DataSetReaderMessageDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataSetReaderMessageDataTypeBuilder is a builder for DataSetReaderMessageDataType
+type DataSetReaderMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DataSetReaderMessageDataTypeBuilder
+	// Build builds the DataSetReaderMessageDataType or returns an error if something is wrong
+	Build() (DataSetReaderMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataSetReaderMessageDataType
+}
+
+// NewDataSetReaderMessageDataTypeBuilder() creates a DataSetReaderMessageDataTypeBuilder
+func NewDataSetReaderMessageDataTypeBuilder() DataSetReaderMessageDataTypeBuilder {
+	return &_DataSetReaderMessageDataTypeBuilder{_DataSetReaderMessageDataType: new(_DataSetReaderMessageDataType)}
+}
+
+type _DataSetReaderMessageDataTypeBuilder struct {
+	*_DataSetReaderMessageDataType
+
+	err *utils.MultiError
+}
+
+var _ (DataSetReaderMessageDataTypeBuilder) = (*_DataSetReaderMessageDataTypeBuilder)(nil)
+
+func (m *_DataSetReaderMessageDataTypeBuilder) WithMandatoryFields() DataSetReaderMessageDataTypeBuilder {
+	return m
+}
+
+func (m *_DataSetReaderMessageDataTypeBuilder) Build() (DataSetReaderMessageDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DataSetReaderMessageDataType.deepCopy(), nil
+}
+
+func (m *_DataSetReaderMessageDataTypeBuilder) MustBuild() DataSetReaderMessageDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DataSetReaderMessageDataTypeBuilder) DeepCopy() any {
+	return m.CreateDataSetReaderMessageDataTypeBuilder()
+}
+
+// CreateDataSetReaderMessageDataTypeBuilder creates a DataSetReaderMessageDataTypeBuilder
+func (m *_DataSetReaderMessageDataType) CreateDataSetReaderMessageDataTypeBuilder() DataSetReaderMessageDataTypeBuilder {
+	if m == nil {
+		return NewDataSetReaderMessageDataTypeBuilder()
+	}
+	return &_DataSetReaderMessageDataTypeBuilder{_DataSetReaderMessageDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

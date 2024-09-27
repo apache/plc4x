@@ -48,6 +48,8 @@ type AdsDeviceNotificationRequest interface {
 	GetAdsStampHeaders() []AdsStampHeader
 	// IsAdsDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationRequest()
+	// CreateBuilder creates a AdsDeviceNotificationRequestBuilder
+	CreateAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder
 }
 
 // _AdsDeviceNotificationRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewAdsDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDeviceNotificationRequestBuilder is a builder for AdsDeviceNotificationRequest
+type AdsDeviceNotificationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) AdsDeviceNotificationRequestBuilder
+	// WithLength adds Length (property field)
+	WithLength(uint32) AdsDeviceNotificationRequestBuilder
+	// WithStamps adds Stamps (property field)
+	WithStamps(uint32) AdsDeviceNotificationRequestBuilder
+	// WithAdsStampHeaders adds AdsStampHeaders (property field)
+	WithAdsStampHeaders(...AdsStampHeader) AdsDeviceNotificationRequestBuilder
+	// Build builds the AdsDeviceNotificationRequest or returns an error if something is wrong
+	Build() (AdsDeviceNotificationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDeviceNotificationRequest
+}
+
+// NewAdsDeviceNotificationRequestBuilder() creates a AdsDeviceNotificationRequestBuilder
+func NewAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder {
+	return &_AdsDeviceNotificationRequestBuilder{_AdsDeviceNotificationRequest: new(_AdsDeviceNotificationRequest)}
+}
+
+type _AdsDeviceNotificationRequestBuilder struct {
+	*_AdsDeviceNotificationRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsDeviceNotificationRequestBuilder) = (*_AdsDeviceNotificationRequestBuilder)(nil)
+
+func (m *_AdsDeviceNotificationRequestBuilder) WithMandatoryFields(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) AdsDeviceNotificationRequestBuilder {
+	return m.WithLength(length).WithStamps(stamps).WithAdsStampHeaders(adsStampHeaders...)
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) WithLength(length uint32) AdsDeviceNotificationRequestBuilder {
+	m.Length = length
+	return m
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) WithStamps(stamps uint32) AdsDeviceNotificationRequestBuilder {
+	m.Stamps = stamps
+	return m
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) WithAdsStampHeaders(adsStampHeaders ...AdsStampHeader) AdsDeviceNotificationRequestBuilder {
+	m.AdsStampHeaders = adsStampHeaders
+	return m
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) Build() (AdsDeviceNotificationRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDeviceNotificationRequest.deepCopy(), nil
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) MustBuild() AdsDeviceNotificationRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDeviceNotificationRequestBuilder) DeepCopy() any {
+	return m.CreateAdsDeviceNotificationRequestBuilder()
+}
+
+// CreateAdsDeviceNotificationRequestBuilder creates a AdsDeviceNotificationRequestBuilder
+func (m *_AdsDeviceNotificationRequest) CreateAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder {
+	if m == nil {
+		return NewAdsDeviceNotificationRequestBuilder()
+	}
+	return &_AdsDeviceNotificationRequestBuilder{_AdsDeviceNotificationRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

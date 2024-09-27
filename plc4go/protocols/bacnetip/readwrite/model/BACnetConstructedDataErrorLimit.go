@@ -46,6 +46,8 @@ type BACnetConstructedDataErrorLimit interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataErrorLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataErrorLimit()
+	// CreateBuilder creates a BACnetConstructedDataErrorLimitBuilder
+	CreateBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimitBuilder
 }
 
 // _BACnetConstructedDataErrorLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataErrorLimit(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataErrorLimitBuilder is a builder for BACnetConstructedDataErrorLimit
+type BACnetConstructedDataErrorLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder
+	// WithErrorLimit adds ErrorLimit (property field)
+	WithErrorLimit(BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder
+	// WithErrorLimitBuilder adds ErrorLimit (property field) which is build by the builder
+	WithErrorLimitBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataErrorLimitBuilder
+	// Build builds the BACnetConstructedDataErrorLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataErrorLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataErrorLimit
+}
+
+// NewBACnetConstructedDataErrorLimitBuilder() creates a BACnetConstructedDataErrorLimitBuilder
+func NewBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimitBuilder {
+	return &_BACnetConstructedDataErrorLimitBuilder{_BACnetConstructedDataErrorLimit: new(_BACnetConstructedDataErrorLimit)}
+}
+
+type _BACnetConstructedDataErrorLimitBuilder struct {
+	*_BACnetConstructedDataErrorLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataErrorLimitBuilder) = (*_BACnetConstructedDataErrorLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) WithMandatoryFields(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
+	return m.WithErrorLimit(errorLimit)
+}
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimit(errorLimit BACnetApplicationTagReal) BACnetConstructedDataErrorLimitBuilder {
+	m.ErrorLimit = errorLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataErrorLimitBuilder {
+	builder := builderSupplier(m.ErrorLimit.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.ErrorLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) Build() (BACnetConstructedDataErrorLimit, error) {
+	if m.ErrorLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataErrorLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) MustBuild() BACnetConstructedDataErrorLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataErrorLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataErrorLimitBuilder()
+}
+
+// CreateBACnetConstructedDataErrorLimitBuilder creates a BACnetConstructedDataErrorLimitBuilder
+func (m *_BACnetConstructedDataErrorLimit) CreateBACnetConstructedDataErrorLimitBuilder() BACnetConstructedDataErrorLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataErrorLimitBuilder()
+	}
+	return &_BACnetConstructedDataErrorLimitBuilder{_BACnetConstructedDataErrorLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

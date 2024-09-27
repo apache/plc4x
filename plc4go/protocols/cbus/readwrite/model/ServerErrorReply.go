@@ -45,6 +45,8 @@ type ServerErrorReply interface {
 	ReplyOrConfirmation
 	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerErrorReply()
+	// CreateBuilder creates a ServerErrorReplyBuilder
+	CreateServerErrorReplyBuilder() ServerErrorReplyBuilder
 }
 
 // _ServerErrorReply is the data-structure of this message
@@ -63,6 +65,71 @@ func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContex
 	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServerErrorReplyBuilder is a builder for ServerErrorReply
+type ServerErrorReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ServerErrorReplyBuilder
+	// Build builds the ServerErrorReply or returns an error if something is wrong
+	Build() (ServerErrorReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServerErrorReply
+}
+
+// NewServerErrorReplyBuilder() creates a ServerErrorReplyBuilder
+func NewServerErrorReplyBuilder() ServerErrorReplyBuilder {
+	return &_ServerErrorReplyBuilder{_ServerErrorReply: new(_ServerErrorReply)}
+}
+
+type _ServerErrorReplyBuilder struct {
+	*_ServerErrorReply
+
+	err *utils.MultiError
+}
+
+var _ (ServerErrorReplyBuilder) = (*_ServerErrorReplyBuilder)(nil)
+
+func (m *_ServerErrorReplyBuilder) WithMandatoryFields() ServerErrorReplyBuilder {
+	return m
+}
+
+func (m *_ServerErrorReplyBuilder) Build() (ServerErrorReply, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ServerErrorReply.deepCopy(), nil
+}
+
+func (m *_ServerErrorReplyBuilder) MustBuild() ServerErrorReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServerErrorReplyBuilder) DeepCopy() any {
+	return m.CreateServerErrorReplyBuilder()
+}
+
+// CreateServerErrorReplyBuilder creates a ServerErrorReplyBuilder
+func (m *_ServerErrorReply) CreateServerErrorReplyBuilder() ServerErrorReplyBuilder {
+	if m == nil {
+		return NewServerErrorReplyBuilder()
+	}
+	return &_ServerErrorReplyBuilder{_ServerErrorReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

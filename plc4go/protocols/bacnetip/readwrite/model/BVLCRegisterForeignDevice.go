@@ -46,6 +46,8 @@ type BVLCRegisterForeignDevice interface {
 	GetTtl() uint16
 	// IsBVLCRegisterForeignDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCRegisterForeignDevice()
+	// CreateBuilder creates a BVLCRegisterForeignDeviceBuilder
+	CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message
@@ -66,6 +68,78 @@ func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
 	_result.BVLCContract.(*_BVLC)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCRegisterForeignDeviceBuilder is a builder for BVLCRegisterForeignDevice
+type BVLCRegisterForeignDeviceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder
+	// WithTtl adds Ttl (property field)
+	WithTtl(uint16) BVLCRegisterForeignDeviceBuilder
+	// Build builds the BVLCRegisterForeignDevice or returns an error if something is wrong
+	Build() (BVLCRegisterForeignDevice, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCRegisterForeignDevice
+}
+
+// NewBVLCRegisterForeignDeviceBuilder() creates a BVLCRegisterForeignDeviceBuilder
+func NewBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
+	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: new(_BVLCRegisterForeignDevice)}
+}
+
+type _BVLCRegisterForeignDeviceBuilder struct {
+	*_BVLCRegisterForeignDevice
+
+	err *utils.MultiError
+}
+
+var _ (BVLCRegisterForeignDeviceBuilder) = (*_BVLCRegisterForeignDeviceBuilder)(nil)
+
+func (m *_BVLCRegisterForeignDeviceBuilder) WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	return m.WithTtl(ttl)
+}
+
+func (m *_BVLCRegisterForeignDeviceBuilder) WithTtl(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	m.Ttl = ttl
+	return m
+}
+
+func (m *_BVLCRegisterForeignDeviceBuilder) Build() (BVLCRegisterForeignDevice, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BVLCRegisterForeignDevice.deepCopy(), nil
+}
+
+func (m *_BVLCRegisterForeignDeviceBuilder) MustBuild() BVLCRegisterForeignDevice {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BVLCRegisterForeignDeviceBuilder) DeepCopy() any {
+	return m.CreateBVLCRegisterForeignDeviceBuilder()
+}
+
+// CreateBVLCRegisterForeignDeviceBuilder creates a BVLCRegisterForeignDeviceBuilder
+func (m *_BVLCRegisterForeignDevice) CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
+	if m == nil {
+		return NewBVLCRegisterForeignDeviceBuilder()
+	}
+	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

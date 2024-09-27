@@ -44,6 +44,8 @@ type BACnetPropertyStatesSecurityLevel interface {
 	GetSecurityLevel() BACnetSecurityLevelTagged
 	// IsBACnetPropertyStatesSecurityLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesSecurityLevel()
+	// CreateBuilder creates a BACnetPropertyStatesSecurityLevelBuilder
+	CreateBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder
 }
 
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesSecurityLevel(peekedTagHeader BACnetTagHeader, secur
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesSecurityLevelBuilder is a builder for BACnetPropertyStatesSecurityLevel
+type BACnetPropertyStatesSecurityLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder
+	// WithSecurityLevel adds SecurityLevel (property field)
+	WithSecurityLevel(BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder
+	// WithSecurityLevelBuilder adds SecurityLevel (property field) which is build by the builder
+	WithSecurityLevelBuilder(func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetPropertyStatesSecurityLevelBuilder
+	// Build builds the BACnetPropertyStatesSecurityLevel or returns an error if something is wrong
+	Build() (BACnetPropertyStatesSecurityLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesSecurityLevel
+}
+
+// NewBACnetPropertyStatesSecurityLevelBuilder() creates a BACnetPropertyStatesSecurityLevelBuilder
+func NewBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder {
+	return &_BACnetPropertyStatesSecurityLevelBuilder{_BACnetPropertyStatesSecurityLevel: new(_BACnetPropertyStatesSecurityLevel)}
+}
+
+type _BACnetPropertyStatesSecurityLevelBuilder struct {
+	*_BACnetPropertyStatesSecurityLevel
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesSecurityLevelBuilder) = (*_BACnetPropertyStatesSecurityLevelBuilder)(nil)
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) WithMandatoryFields(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder {
+	return m.WithSecurityLevel(securityLevel)
+}
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) WithSecurityLevel(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder {
+	m.SecurityLevel = securityLevel
+	return m
+}
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) WithSecurityLevelBuilder(builderSupplier func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetPropertyStatesSecurityLevelBuilder {
+	builder := builderSupplier(m.SecurityLevel.CreateBACnetSecurityLevelTaggedBuilder())
+	var err error
+	m.SecurityLevel, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) Build() (BACnetPropertyStatesSecurityLevel, error) {
+	if m.SecurityLevel == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityLevel' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesSecurityLevel.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) MustBuild() BACnetPropertyStatesSecurityLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesSecurityLevelBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesSecurityLevelBuilder()
+}
+
+// CreateBACnetPropertyStatesSecurityLevelBuilder creates a BACnetPropertyStatesSecurityLevelBuilder
+func (m *_BACnetPropertyStatesSecurityLevel) CreateBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesSecurityLevelBuilder()
+	}
+	return &_BACnetPropertyStatesSecurityLevelBuilder{_BACnetPropertyStatesSecurityLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

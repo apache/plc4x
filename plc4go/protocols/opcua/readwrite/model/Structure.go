@@ -39,6 +39,8 @@ type Structure interface {
 	utils.Copyable
 	// IsStructure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStructure()
+	// CreateBuilder creates a StructureBuilder
+	CreateStructureBuilder() StructureBuilder
 }
 
 // _Structure is the data-structure of this message
@@ -51,6 +53,71 @@ var _ Structure = (*_Structure)(nil)
 func NewStructure() *_Structure {
 	return &_Structure{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StructureBuilder is a builder for Structure
+type StructureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() StructureBuilder
+	// Build builds the Structure or returns an error if something is wrong
+	Build() (Structure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Structure
+}
+
+// NewStructureBuilder() creates a StructureBuilder
+func NewStructureBuilder() StructureBuilder {
+	return &_StructureBuilder{_Structure: new(_Structure)}
+}
+
+type _StructureBuilder struct {
+	*_Structure
+
+	err *utils.MultiError
+}
+
+var _ (StructureBuilder) = (*_StructureBuilder)(nil)
+
+func (m *_StructureBuilder) WithMandatoryFields() StructureBuilder {
+	return m
+}
+
+func (m *_StructureBuilder) Build() (Structure, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Structure.deepCopy(), nil
+}
+
+func (m *_StructureBuilder) MustBuild() Structure {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_StructureBuilder) DeepCopy() any {
+	return m.CreateStructureBuilder()
+}
+
+// CreateStructureBuilder creates a StructureBuilder
+func (m *_Structure) CreateStructureBuilder() StructureBuilder {
+	if m == nil {
+		return NewStructureBuilder()
+	}
+	return &_StructureBuilder{_Structure: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastStructure(structType any) Structure {

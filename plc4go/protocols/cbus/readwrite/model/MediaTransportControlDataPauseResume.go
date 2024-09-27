@@ -48,6 +48,8 @@ type MediaTransportControlDataPauseResume interface {
 	GetIsResume() bool
 	// IsMediaTransportControlDataPauseResume is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataPauseResume()
+	// CreateBuilder creates a MediaTransportControlDataPauseResumeBuilder
+	CreateMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataPauseResumeBuilder
 }
 
 // _MediaTransportControlDataPauseResume is the data-structure of this message
@@ -68,6 +70,78 @@ func NewMediaTransportControlDataPauseResume(commandTypeContainer MediaTransport
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataPauseResumeBuilder is a builder for MediaTransportControlDataPauseResume
+type MediaTransportControlDataPauseResumeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operation byte) MediaTransportControlDataPauseResumeBuilder
+	// WithOperation adds Operation (property field)
+	WithOperation(byte) MediaTransportControlDataPauseResumeBuilder
+	// Build builds the MediaTransportControlDataPauseResume or returns an error if something is wrong
+	Build() (MediaTransportControlDataPauseResume, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataPauseResume
+}
+
+// NewMediaTransportControlDataPauseResumeBuilder() creates a MediaTransportControlDataPauseResumeBuilder
+func NewMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataPauseResumeBuilder {
+	return &_MediaTransportControlDataPauseResumeBuilder{_MediaTransportControlDataPauseResume: new(_MediaTransportControlDataPauseResume)}
+}
+
+type _MediaTransportControlDataPauseResumeBuilder struct {
+	*_MediaTransportControlDataPauseResume
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataPauseResumeBuilder) = (*_MediaTransportControlDataPauseResumeBuilder)(nil)
+
+func (m *_MediaTransportControlDataPauseResumeBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataPauseResumeBuilder {
+	return m.WithOperation(operation)
+}
+
+func (m *_MediaTransportControlDataPauseResumeBuilder) WithOperation(operation byte) MediaTransportControlDataPauseResumeBuilder {
+	m.Operation = operation
+	return m
+}
+
+func (m *_MediaTransportControlDataPauseResumeBuilder) Build() (MediaTransportControlDataPauseResume, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataPauseResume.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataPauseResumeBuilder) MustBuild() MediaTransportControlDataPauseResume {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataPauseResumeBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataPauseResumeBuilder()
+}
+
+// CreateMediaTransportControlDataPauseResumeBuilder creates a MediaTransportControlDataPauseResumeBuilder
+func (m *_MediaTransportControlDataPauseResume) CreateMediaTransportControlDataPauseResumeBuilder() MediaTransportControlDataPauseResumeBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataPauseResumeBuilder()
+	}
+	return &_MediaTransportControlDataPauseResumeBuilder{_MediaTransportControlDataPauseResume: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

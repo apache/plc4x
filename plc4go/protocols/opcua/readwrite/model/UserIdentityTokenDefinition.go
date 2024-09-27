@@ -41,12 +41,16 @@ type UserIdentityTokenDefinition interface {
 	utils.Copyable
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
+	// CreateBuilder creates a UserIdentityTokenDefinitionBuilder
+	CreateUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder
 }
 
 // UserIdentityTokenDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type UserIdentityTokenDefinitionContract interface {
 	// IsUserIdentityTokenDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityTokenDefinition()
+	// CreateBuilder creates a UserIdentityTokenDefinitionBuilder
+	CreateUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder
 }
 
 // UserIdentityTokenDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ UserIdentityTokenDefinitionContract = (*_UserIdentityTokenDefinition)(nil)
 func NewUserIdentityTokenDefinition() *_UserIdentityTokenDefinition {
 	return &_UserIdentityTokenDefinition{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UserIdentityTokenDefinitionBuilder is a builder for UserIdentityTokenDefinition
+type UserIdentityTokenDefinitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() UserIdentityTokenDefinitionBuilder
+	// Build builds the UserIdentityTokenDefinition or returns an error if something is wrong
+	Build() (UserIdentityTokenDefinitionContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UserIdentityTokenDefinitionContract
+}
+
+// NewUserIdentityTokenDefinitionBuilder() creates a UserIdentityTokenDefinitionBuilder
+func NewUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder {
+	return &_UserIdentityTokenDefinitionBuilder{_UserIdentityTokenDefinition: new(_UserIdentityTokenDefinition)}
+}
+
+type _UserIdentityTokenDefinitionBuilder struct {
+	*_UserIdentityTokenDefinition
+
+	err *utils.MultiError
+}
+
+var _ (UserIdentityTokenDefinitionBuilder) = (*_UserIdentityTokenDefinitionBuilder)(nil)
+
+func (m *_UserIdentityTokenDefinitionBuilder) WithMandatoryFields() UserIdentityTokenDefinitionBuilder {
+	return m
+}
+
+func (m *_UserIdentityTokenDefinitionBuilder) Build() (UserIdentityTokenDefinitionContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UserIdentityTokenDefinition.deepCopy(), nil
+}
+
+func (m *_UserIdentityTokenDefinitionBuilder) MustBuild() UserIdentityTokenDefinitionContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UserIdentityTokenDefinitionBuilder) DeepCopy() any {
+	return m.CreateUserIdentityTokenDefinitionBuilder()
+}
+
+// CreateUserIdentityTokenDefinitionBuilder creates a UserIdentityTokenDefinitionBuilder
+func (m *_UserIdentityTokenDefinition) CreateUserIdentityTokenDefinitionBuilder() UserIdentityTokenDefinitionBuilder {
+	if m == nil {
+		return NewUserIdentityTokenDefinitionBuilder()
+	}
+	return &_UserIdentityTokenDefinitionBuilder{_UserIdentityTokenDefinition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastUserIdentityTokenDefinition(structType any) UserIdentityTokenDefinition {

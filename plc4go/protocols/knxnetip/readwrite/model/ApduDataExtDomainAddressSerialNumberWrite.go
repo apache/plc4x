@@ -40,6 +40,8 @@ type ApduDataExtDomainAddressSerialNumberWrite interface {
 	ApduDataExt
 	// IsApduDataExtDomainAddressSerialNumberWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressSerialNumberWrite()
+	// CreateBuilder creates a ApduDataExtDomainAddressSerialNumberWriteBuilder
+	CreateApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddressSerialNumberWriteBuilder
 }
 
 // _ApduDataExtDomainAddressSerialNumberWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtDomainAddressSerialNumberWrite(length uint8) *_ApduDataExtDom
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtDomainAddressSerialNumberWriteBuilder is a builder for ApduDataExtDomainAddressSerialNumberWrite
+type ApduDataExtDomainAddressSerialNumberWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtDomainAddressSerialNumberWriteBuilder
+	// Build builds the ApduDataExtDomainAddressSerialNumberWrite or returns an error if something is wrong
+	Build() (ApduDataExtDomainAddressSerialNumberWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtDomainAddressSerialNumberWrite
+}
+
+// NewApduDataExtDomainAddressSerialNumberWriteBuilder() creates a ApduDataExtDomainAddressSerialNumberWriteBuilder
+func NewApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	return &_ApduDataExtDomainAddressSerialNumberWriteBuilder{_ApduDataExtDomainAddressSerialNumberWrite: new(_ApduDataExtDomainAddressSerialNumberWrite)}
+}
+
+type _ApduDataExtDomainAddressSerialNumberWriteBuilder struct {
+	*_ApduDataExtDomainAddressSerialNumberWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtDomainAddressSerialNumberWriteBuilder) = (*_ApduDataExtDomainAddressSerialNumberWriteBuilder)(nil)
+
+func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) WithMandatoryFields() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) Build() (ApduDataExtDomainAddressSerialNumberWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtDomainAddressSerialNumberWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) MustBuild() ApduDataExtDomainAddressSerialNumberWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtDomainAddressSerialNumberWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtDomainAddressSerialNumberWriteBuilder()
+}
+
+// CreateApduDataExtDomainAddressSerialNumberWriteBuilder creates a ApduDataExtDomainAddressSerialNumberWriteBuilder
+func (m *_ApduDataExtDomainAddressSerialNumberWrite) CreateApduDataExtDomainAddressSerialNumberWriteBuilder() ApduDataExtDomainAddressSerialNumberWriteBuilder {
+	if m == nil {
+		return NewApduDataExtDomainAddressSerialNumberWriteBuilder()
+	}
+	return &_ApduDataExtDomainAddressSerialNumberWriteBuilder{_ApduDataExtDomainAddressSerialNumberWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

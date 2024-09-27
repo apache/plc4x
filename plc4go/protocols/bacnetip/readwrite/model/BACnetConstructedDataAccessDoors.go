@@ -48,6 +48,8 @@ type BACnetConstructedDataAccessDoors interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAccessDoors is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoors()
+	// CreateBuilder creates a BACnetConstructedDataAccessDoorsBuilder
+	CreateBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoorsBuilder
 }
 
 // _BACnetConstructedDataAccessDoors is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAccessDoors(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessDoorsBuilder is a builder for BACnetConstructedDataAccessDoors
+type BACnetConstructedDataAccessDoorsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessDoors []BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessDoorsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessDoorsBuilder
+	// WithAccessDoors adds AccessDoors (property field)
+	WithAccessDoors(...BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder
+	// Build builds the BACnetConstructedDataAccessDoors or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessDoors, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessDoors
+}
+
+// NewBACnetConstructedDataAccessDoorsBuilder() creates a BACnetConstructedDataAccessDoorsBuilder
+func NewBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoorsBuilder {
+	return &_BACnetConstructedDataAccessDoorsBuilder{_BACnetConstructedDataAccessDoors: new(_BACnetConstructedDataAccessDoors)}
+}
+
+type _BACnetConstructedDataAccessDoorsBuilder struct {
+	*_BACnetConstructedDataAccessDoors
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessDoorsBuilder) = (*_BACnetConstructedDataAccessDoorsBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) WithMandatoryFields(accessDoors []BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
+	return m.WithAccessDoors(accessDoors...)
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccessDoorsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccessDoorsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) WithAccessDoors(accessDoors ...BACnetDeviceObjectReference) BACnetConstructedDataAccessDoorsBuilder {
+	m.AccessDoors = accessDoors
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) Build() (BACnetConstructedDataAccessDoors, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessDoors.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) MustBuild() BACnetConstructedDataAccessDoors {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessDoorsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessDoorsBuilder()
+}
+
+// CreateBACnetConstructedDataAccessDoorsBuilder creates a BACnetConstructedDataAccessDoorsBuilder
+func (m *_BACnetConstructedDataAccessDoors) CreateBACnetConstructedDataAccessDoorsBuilder() BACnetConstructedDataAccessDoorsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessDoorsBuilder()
+	}
+	return &_BACnetConstructedDataAccessDoorsBuilder{_BACnetConstructedDataAccessDoors: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataLowerDeck interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 	// IsBACnetConstructedDataLowerDeck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLowerDeck()
+	// CreateBuilder creates a BACnetConstructedDataLowerDeckBuilder
+	CreateBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBuilder
 }
 
 // _BACnetConstructedDataLowerDeck is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLowerDeck(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLowerDeckBuilder is a builder for BACnetConstructedDataLowerDeck
+type BACnetConstructedDataLowerDeckBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder
+	// WithLowerDeck adds LowerDeck (property field)
+	WithLowerDeck(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder
+	// WithLowerDeckBuilder adds LowerDeck (property field) which is build by the builder
+	WithLowerDeckBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLowerDeckBuilder
+	// Build builds the BACnetConstructedDataLowerDeck or returns an error if something is wrong
+	Build() (BACnetConstructedDataLowerDeck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLowerDeck
+}
+
+// NewBACnetConstructedDataLowerDeckBuilder() creates a BACnetConstructedDataLowerDeckBuilder
+func NewBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBuilder {
+	return &_BACnetConstructedDataLowerDeckBuilder{_BACnetConstructedDataLowerDeck: new(_BACnetConstructedDataLowerDeck)}
+}
+
+type _BACnetConstructedDataLowerDeckBuilder struct {
+	*_BACnetConstructedDataLowerDeck
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLowerDeckBuilder) = (*_BACnetConstructedDataLowerDeckBuilder)(nil)
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) WithMandatoryFields(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
+	return m.WithLowerDeck(lowerDeck)
+}
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeck(lowerDeck BACnetApplicationTagObjectIdentifier) BACnetConstructedDataLowerDeckBuilder {
+	m.LowerDeck = lowerDeck
+	return m
+}
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) WithLowerDeckBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataLowerDeckBuilder {
+	builder := builderSupplier(m.LowerDeck.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	m.LowerDeck, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) Build() (BACnetConstructedDataLowerDeck, error) {
+	if m.LowerDeck == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lowerDeck' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLowerDeck.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) MustBuild() BACnetConstructedDataLowerDeck {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLowerDeckBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLowerDeckBuilder()
+}
+
+// CreateBACnetConstructedDataLowerDeckBuilder creates a BACnetConstructedDataLowerDeckBuilder
+func (m *_BACnetConstructedDataLowerDeck) CreateBACnetConstructedDataLowerDeckBuilder() BACnetConstructedDataLowerDeckBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLowerDeckBuilder()
+	}
+	return &_BACnetConstructedDataLowerDeckBuilder{_BACnetConstructedDataLowerDeck: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

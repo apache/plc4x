@@ -40,6 +40,8 @@ type QosDataType interface {
 	ExtensionObjectDefinition
 	// IsQosDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQosDataType()
+	// CreateBuilder creates a QosDataTypeBuilder
+	CreateQosDataTypeBuilder() QosDataTypeBuilder
 }
 
 // _QosDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewQosDataType() *_QosDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QosDataTypeBuilder is a builder for QosDataType
+type QosDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() QosDataTypeBuilder
+	// Build builds the QosDataType or returns an error if something is wrong
+	Build() (QosDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QosDataType
+}
+
+// NewQosDataTypeBuilder() creates a QosDataTypeBuilder
+func NewQosDataTypeBuilder() QosDataTypeBuilder {
+	return &_QosDataTypeBuilder{_QosDataType: new(_QosDataType)}
+}
+
+type _QosDataTypeBuilder struct {
+	*_QosDataType
+
+	err *utils.MultiError
+}
+
+var _ (QosDataTypeBuilder) = (*_QosDataTypeBuilder)(nil)
+
+func (m *_QosDataTypeBuilder) WithMandatoryFields() QosDataTypeBuilder {
+	return m
+}
+
+func (m *_QosDataTypeBuilder) Build() (QosDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._QosDataType.deepCopy(), nil
+}
+
+func (m *_QosDataTypeBuilder) MustBuild() QosDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_QosDataTypeBuilder) DeepCopy() any {
+	return m.CreateQosDataTypeBuilder()
+}
+
+// CreateQosDataTypeBuilder creates a QosDataTypeBuilder
+func (m *_QosDataType) CreateQosDataTypeBuilder() QosDataTypeBuilder {
+	if m == nil {
+		return NewQosDataTypeBuilder()
+	}
+	return &_QosDataTypeBuilder{_QosDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

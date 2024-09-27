@@ -46,6 +46,8 @@ type RationalNumber interface {
 	GetDenominator() uint32
 	// IsRationalNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRationalNumber()
+	// CreateBuilder creates a RationalNumberBuilder
+	CreateRationalNumberBuilder() RationalNumberBuilder
 }
 
 // _RationalNumber is the data-structure of this message
@@ -68,6 +70,85 @@ func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RationalNumberBuilder is a builder for RationalNumber
+type RationalNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder
+	// WithNumerator adds Numerator (property field)
+	WithNumerator(int32) RationalNumberBuilder
+	// WithDenominator adds Denominator (property field)
+	WithDenominator(uint32) RationalNumberBuilder
+	// Build builds the RationalNumber or returns an error if something is wrong
+	Build() (RationalNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RationalNumber
+}
+
+// NewRationalNumberBuilder() creates a RationalNumberBuilder
+func NewRationalNumberBuilder() RationalNumberBuilder {
+	return &_RationalNumberBuilder{_RationalNumber: new(_RationalNumber)}
+}
+
+type _RationalNumberBuilder struct {
+	*_RationalNumber
+
+	err *utils.MultiError
+}
+
+var _ (RationalNumberBuilder) = (*_RationalNumberBuilder)(nil)
+
+func (m *_RationalNumberBuilder) WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder {
+	return m.WithNumerator(numerator).WithDenominator(denominator)
+}
+
+func (m *_RationalNumberBuilder) WithNumerator(numerator int32) RationalNumberBuilder {
+	m.Numerator = numerator
+	return m
+}
+
+func (m *_RationalNumberBuilder) WithDenominator(denominator uint32) RationalNumberBuilder {
+	m.Denominator = denominator
+	return m
+}
+
+func (m *_RationalNumberBuilder) Build() (RationalNumber, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RationalNumber.deepCopy(), nil
+}
+
+func (m *_RationalNumberBuilder) MustBuild() RationalNumber {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RationalNumberBuilder) DeepCopy() any {
+	return m.CreateRationalNumberBuilder()
+}
+
+// CreateRationalNumberBuilder creates a RationalNumberBuilder
+func (m *_RationalNumber) CreateRationalNumberBuilder() RationalNumberBuilder {
+	if m == nil {
+		return NewRationalNumberBuilder()
+	}
+	return &_RationalNumberBuilder{_RationalNumber: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

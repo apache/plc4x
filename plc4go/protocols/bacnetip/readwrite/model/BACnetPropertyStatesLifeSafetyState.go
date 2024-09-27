@@ -44,6 +44,8 @@ type BACnetPropertyStatesLifeSafetyState interface {
 	GetLifeSafetyState() BACnetLifeSafetyStateTagged
 	// IsBACnetPropertyStatesLifeSafetyState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLifeSafetyState()
+	// CreateBuilder creates a BACnetPropertyStatesLifeSafetyStateBuilder
+	CreateBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSafetyStateBuilder
 }
 
 // _BACnetPropertyStatesLifeSafetyState is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesLifeSafetyState(peekedTagHeader BACnetTagHeader, lif
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLifeSafetyStateBuilder is a builder for BACnetPropertyStatesLifeSafetyState
+type BACnetPropertyStatesLifeSafetyStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder
+	// WithLifeSafetyState adds LifeSafetyState (property field)
+	WithLifeSafetyState(BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder
+	// WithLifeSafetyStateBuilder adds LifeSafetyState (property field) which is build by the builder
+	WithLifeSafetyStateBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetPropertyStatesLifeSafetyStateBuilder
+	// Build builds the BACnetPropertyStatesLifeSafetyState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLifeSafetyState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLifeSafetyState
+}
+
+// NewBACnetPropertyStatesLifeSafetyStateBuilder() creates a BACnetPropertyStatesLifeSafetyStateBuilder
+func NewBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSafetyStateBuilder {
+	return &_BACnetPropertyStatesLifeSafetyStateBuilder{_BACnetPropertyStatesLifeSafetyState: new(_BACnetPropertyStatesLifeSafetyState)}
+}
+
+type _BACnetPropertyStatesLifeSafetyStateBuilder struct {
+	*_BACnetPropertyStatesLifeSafetyState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLifeSafetyStateBuilder) = (*_BACnetPropertyStatesLifeSafetyStateBuilder)(nil)
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithMandatoryFields(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
+	return m.WithLifeSafetyState(lifeSafetyState)
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyState(lifeSafetyState BACnetLifeSafetyStateTagged) BACnetPropertyStatesLifeSafetyStateBuilder {
+	m.LifeSafetyState = lifeSafetyState
+	return m
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) WithLifeSafetyStateBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetPropertyStatesLifeSafetyStateBuilder {
+	builder := builderSupplier(m.LifeSafetyState.CreateBACnetLifeSafetyStateTaggedBuilder())
+	var err error
+	m.LifeSafetyState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) Build() (BACnetPropertyStatesLifeSafetyState, error) {
+	if m.LifeSafetyState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lifeSafetyState' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesLifeSafetyState.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) MustBuild() BACnetPropertyStatesLifeSafetyState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesLifeSafetyStateBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesLifeSafetyStateBuilder()
+}
+
+// CreateBACnetPropertyStatesLifeSafetyStateBuilder creates a BACnetPropertyStatesLifeSafetyStateBuilder
+func (m *_BACnetPropertyStatesLifeSafetyState) CreateBACnetPropertyStatesLifeSafetyStateBuilder() BACnetPropertyStatesLifeSafetyStateBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesLifeSafetyStateBuilder()
+	}
+	return &_BACnetPropertyStatesLifeSafetyStateBuilder{_BACnetPropertyStatesLifeSafetyState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -60,6 +60,8 @@ type EndpointConfiguration interface {
 	GetSecurityTokenLifetime() int32
 	// IsEndpointConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEndpointConfiguration()
+	// CreateBuilder creates a EndpointConfigurationBuilder
+	CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder
 }
 
 // _EndpointConfiguration is the data-structure of this message
@@ -98,6 +100,134 @@ func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, ma
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EndpointConfigurationBuilder is a builder for EndpointConfiguration
+type EndpointConfigurationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder
+	// WithOperationTimeout adds OperationTimeout (property field)
+	WithOperationTimeout(int32) EndpointConfigurationBuilder
+	// WithUseBinaryEncoding adds UseBinaryEncoding (property field)
+	WithUseBinaryEncoding(bool) EndpointConfigurationBuilder
+	// WithMaxStringLength adds MaxStringLength (property field)
+	WithMaxStringLength(int32) EndpointConfigurationBuilder
+	// WithMaxByteStringLength adds MaxByteStringLength (property field)
+	WithMaxByteStringLength(int32) EndpointConfigurationBuilder
+	// WithMaxArrayLength adds MaxArrayLength (property field)
+	WithMaxArrayLength(int32) EndpointConfigurationBuilder
+	// WithMaxMessageSize adds MaxMessageSize (property field)
+	WithMaxMessageSize(int32) EndpointConfigurationBuilder
+	// WithMaxBufferSize adds MaxBufferSize (property field)
+	WithMaxBufferSize(int32) EndpointConfigurationBuilder
+	// WithChannelLifetime adds ChannelLifetime (property field)
+	WithChannelLifetime(int32) EndpointConfigurationBuilder
+	// WithSecurityTokenLifetime adds SecurityTokenLifetime (property field)
+	WithSecurityTokenLifetime(int32) EndpointConfigurationBuilder
+	// Build builds the EndpointConfiguration or returns an error if something is wrong
+	Build() (EndpointConfiguration, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EndpointConfiguration
+}
+
+// NewEndpointConfigurationBuilder() creates a EndpointConfigurationBuilder
+func NewEndpointConfigurationBuilder() EndpointConfigurationBuilder {
+	return &_EndpointConfigurationBuilder{_EndpointConfiguration: new(_EndpointConfiguration)}
+}
+
+type _EndpointConfigurationBuilder struct {
+	*_EndpointConfiguration
+
+	err *utils.MultiError
+}
+
+var _ (EndpointConfigurationBuilder) = (*_EndpointConfigurationBuilder)(nil)
+
+func (m *_EndpointConfigurationBuilder) WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder {
+	return m.WithOperationTimeout(operationTimeout).WithUseBinaryEncoding(useBinaryEncoding).WithMaxStringLength(maxStringLength).WithMaxByteStringLength(maxByteStringLength).WithMaxArrayLength(maxArrayLength).WithMaxMessageSize(maxMessageSize).WithMaxBufferSize(maxBufferSize).WithChannelLifetime(channelLifetime).WithSecurityTokenLifetime(securityTokenLifetime)
+}
+
+func (m *_EndpointConfigurationBuilder) WithOperationTimeout(operationTimeout int32) EndpointConfigurationBuilder {
+	m.OperationTimeout = operationTimeout
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithUseBinaryEncoding(useBinaryEncoding bool) EndpointConfigurationBuilder {
+	m.UseBinaryEncoding = useBinaryEncoding
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithMaxStringLength(maxStringLength int32) EndpointConfigurationBuilder {
+	m.MaxStringLength = maxStringLength
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithMaxByteStringLength(maxByteStringLength int32) EndpointConfigurationBuilder {
+	m.MaxByteStringLength = maxByteStringLength
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithMaxArrayLength(maxArrayLength int32) EndpointConfigurationBuilder {
+	m.MaxArrayLength = maxArrayLength
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithMaxMessageSize(maxMessageSize int32) EndpointConfigurationBuilder {
+	m.MaxMessageSize = maxMessageSize
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithMaxBufferSize(maxBufferSize int32) EndpointConfigurationBuilder {
+	m.MaxBufferSize = maxBufferSize
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithChannelLifetime(channelLifetime int32) EndpointConfigurationBuilder {
+	m.ChannelLifetime = channelLifetime
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) WithSecurityTokenLifetime(securityTokenLifetime int32) EndpointConfigurationBuilder {
+	m.SecurityTokenLifetime = securityTokenLifetime
+	return m
+}
+
+func (m *_EndpointConfigurationBuilder) Build() (EndpointConfiguration, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EndpointConfiguration.deepCopy(), nil
+}
+
+func (m *_EndpointConfigurationBuilder) MustBuild() EndpointConfiguration {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EndpointConfigurationBuilder) DeepCopy() any {
+	return m.CreateEndpointConfigurationBuilder()
+}
+
+// CreateEndpointConfigurationBuilder creates a EndpointConfigurationBuilder
+func (m *_EndpointConfiguration) CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder {
+	if m == nil {
+		return NewEndpointConfigurationBuilder()
+	}
+	return &_EndpointConfigurationBuilder{_EndpointConfiguration: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

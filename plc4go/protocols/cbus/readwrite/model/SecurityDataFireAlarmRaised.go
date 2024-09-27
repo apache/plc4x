@@ -40,6 +40,8 @@ type SecurityDataFireAlarmRaised interface {
 	SecurityData
 	// IsSecurityDataFireAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataFireAlarmRaised()
+	// CreateBuilder creates a SecurityDataFireAlarmRaisedBuilder
+	CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder
 }
 
 // _SecurityDataFireAlarmRaised is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeCont
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataFireAlarmRaisedBuilder is a builder for SecurityDataFireAlarmRaised
+type SecurityDataFireAlarmRaisedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder
+	// Build builds the SecurityDataFireAlarmRaised or returns an error if something is wrong
+	Build() (SecurityDataFireAlarmRaised, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataFireAlarmRaised
+}
+
+// NewSecurityDataFireAlarmRaisedBuilder() creates a SecurityDataFireAlarmRaisedBuilder
+func NewSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
+	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: new(_SecurityDataFireAlarmRaised)}
+}
+
+type _SecurityDataFireAlarmRaisedBuilder struct {
+	*_SecurityDataFireAlarmRaised
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataFireAlarmRaisedBuilder) = (*_SecurityDataFireAlarmRaisedBuilder)(nil)
+
+func (m *_SecurityDataFireAlarmRaisedBuilder) WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder {
+	return m
+}
+
+func (m *_SecurityDataFireAlarmRaisedBuilder) Build() (SecurityDataFireAlarmRaised, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataFireAlarmRaised.deepCopy(), nil
+}
+
+func (m *_SecurityDataFireAlarmRaisedBuilder) MustBuild() SecurityDataFireAlarmRaised {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataFireAlarmRaisedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataFireAlarmRaisedBuilder()
+}
+
+// CreateSecurityDataFireAlarmRaisedBuilder creates a SecurityDataFireAlarmRaisedBuilder
+func (m *_SecurityDataFireAlarmRaised) CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
+	if m == nil {
+		return NewSecurityDataFireAlarmRaisedBuilder()
+	}
+	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

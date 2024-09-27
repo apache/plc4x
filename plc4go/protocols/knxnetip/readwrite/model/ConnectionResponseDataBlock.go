@@ -43,12 +43,16 @@ type ConnectionResponseDataBlock interface {
 	utils.Copyable
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
+	// CreateBuilder creates a ConnectionResponseDataBlockBuilder
+	CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder
 }
 
 // ConnectionResponseDataBlockContract provides a set of functions which can be overwritten by a sub struct
 type ConnectionResponseDataBlockContract interface {
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
+	// CreateBuilder creates a ConnectionResponseDataBlockBuilder
+	CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder
 }
 
 // ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)
 func NewConnectionResponseDataBlock() *_ConnectionResponseDataBlock {
 	return &_ConnectionResponseDataBlock{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionResponseDataBlockBuilder is a builder for ConnectionResponseDataBlock
+type ConnectionResponseDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ConnectionResponseDataBlockBuilder
+	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
+	Build() (ConnectionResponseDataBlockContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionResponseDataBlockContract
+}
+
+// NewConnectionResponseDataBlockBuilder() creates a ConnectionResponseDataBlockBuilder
+func NewConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
+	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: new(_ConnectionResponseDataBlock)}
+}
+
+type _ConnectionResponseDataBlockBuilder struct {
+	*_ConnectionResponseDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionResponseDataBlockBuilder) = (*_ConnectionResponseDataBlockBuilder)(nil)
+
+func (m *_ConnectionResponseDataBlockBuilder) WithMandatoryFields() ConnectionResponseDataBlockBuilder {
+	return m
+}
+
+func (m *_ConnectionResponseDataBlockBuilder) Build() (ConnectionResponseDataBlockContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionResponseDataBlock.deepCopy(), nil
+}
+
+func (m *_ConnectionResponseDataBlockBuilder) MustBuild() ConnectionResponseDataBlockContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionResponseDataBlockBuilder) DeepCopy() any {
+	return m.CreateConnectionResponseDataBlockBuilder()
+}
+
+// CreateConnectionResponseDataBlockBuilder creates a ConnectionResponseDataBlockBuilder
+func (m *_ConnectionResponseDataBlock) CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
+	if m == nil {
+		return NewConnectionResponseDataBlockBuilder()
+	}
+	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastConnectionResponseDataBlock(structType any) ConnectionResponseDataBlock {

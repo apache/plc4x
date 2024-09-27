@@ -48,6 +48,8 @@ type ContentFilterElement interface {
 	GetFilterOperands() []ExtensionObject
 	// IsContentFilterElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContentFilterElement()
+	// CreateBuilder creates a ContentFilterElementBuilder
+	CreateContentFilterElementBuilder() ContentFilterElementBuilder
 }
 
 // _ContentFilterElement is the data-structure of this message
@@ -72,6 +74,92 @@ func NewContentFilterElement(filterOperator FilterOperator, noOfFilterOperands i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ContentFilterElementBuilder is a builder for ContentFilterElement
+type ContentFilterElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder
+	// WithFilterOperator adds FilterOperator (property field)
+	WithFilterOperator(FilterOperator) ContentFilterElementBuilder
+	// WithNoOfFilterOperands adds NoOfFilterOperands (property field)
+	WithNoOfFilterOperands(int32) ContentFilterElementBuilder
+	// WithFilterOperands adds FilterOperands (property field)
+	WithFilterOperands(...ExtensionObject) ContentFilterElementBuilder
+	// Build builds the ContentFilterElement or returns an error if something is wrong
+	Build() (ContentFilterElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ContentFilterElement
+}
+
+// NewContentFilterElementBuilder() creates a ContentFilterElementBuilder
+func NewContentFilterElementBuilder() ContentFilterElementBuilder {
+	return &_ContentFilterElementBuilder{_ContentFilterElement: new(_ContentFilterElement)}
+}
+
+type _ContentFilterElementBuilder struct {
+	*_ContentFilterElement
+
+	err *utils.MultiError
+}
+
+var _ (ContentFilterElementBuilder) = (*_ContentFilterElementBuilder)(nil)
+
+func (m *_ContentFilterElementBuilder) WithMandatoryFields(filterOperator FilterOperator, noOfFilterOperands int32, filterOperands []ExtensionObject) ContentFilterElementBuilder {
+	return m.WithFilterOperator(filterOperator).WithNoOfFilterOperands(noOfFilterOperands).WithFilterOperands(filterOperands...)
+}
+
+func (m *_ContentFilterElementBuilder) WithFilterOperator(filterOperator FilterOperator) ContentFilterElementBuilder {
+	m.FilterOperator = filterOperator
+	return m
+}
+
+func (m *_ContentFilterElementBuilder) WithNoOfFilterOperands(noOfFilterOperands int32) ContentFilterElementBuilder {
+	m.NoOfFilterOperands = noOfFilterOperands
+	return m
+}
+
+func (m *_ContentFilterElementBuilder) WithFilterOperands(filterOperands ...ExtensionObject) ContentFilterElementBuilder {
+	m.FilterOperands = filterOperands
+	return m
+}
+
+func (m *_ContentFilterElementBuilder) Build() (ContentFilterElement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ContentFilterElement.deepCopy(), nil
+}
+
+func (m *_ContentFilterElementBuilder) MustBuild() ContentFilterElement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ContentFilterElementBuilder) DeepCopy() any {
+	return m.CreateContentFilterElementBuilder()
+}
+
+// CreateContentFilterElementBuilder creates a ContentFilterElementBuilder
+func (m *_ContentFilterElement) CreateContentFilterElementBuilder() ContentFilterElementBuilder {
+	if m == nil {
+		return NewContentFilterElementBuilder()
+	}
+	return &_ContentFilterElementBuilder{_ContentFilterElement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

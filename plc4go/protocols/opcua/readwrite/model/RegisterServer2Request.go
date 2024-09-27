@@ -50,6 +50,8 @@ type RegisterServer2Request interface {
 	GetDiscoveryConfiguration() []ExtensionObject
 	// IsRegisterServer2Request is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServer2Request()
+	// CreateBuilder creates a RegisterServer2RequestBuilder
+	CreateRegisterServer2RequestBuilder() RegisterServer2RequestBuilder
 }
 
 // _RegisterServer2Request is the data-structure of this message
@@ -82,6 +84,111 @@ func NewRegisterServer2Request(requestHeader ExtensionObjectDefinition, server E
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterServer2RequestBuilder is a builder for RegisterServer2Request
+type RegisterServer2RequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	// WithServer adds Server (property field)
+	WithServer(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	// WithNoOfDiscoveryConfiguration adds NoOfDiscoveryConfiguration (property field)
+	WithNoOfDiscoveryConfiguration(int32) RegisterServer2RequestBuilder
+	// WithDiscoveryConfiguration adds DiscoveryConfiguration (property field)
+	WithDiscoveryConfiguration(...ExtensionObject) RegisterServer2RequestBuilder
+	// Build builds the RegisterServer2Request or returns an error if something is wrong
+	Build() (RegisterServer2Request, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterServer2Request
+}
+
+// NewRegisterServer2RequestBuilder() creates a RegisterServer2RequestBuilder
+func NewRegisterServer2RequestBuilder() RegisterServer2RequestBuilder {
+	return &_RegisterServer2RequestBuilder{_RegisterServer2Request: new(_RegisterServer2Request)}
+}
+
+type _RegisterServer2RequestBuilder struct {
+	*_RegisterServer2Request
+
+	err *utils.MultiError
+}
+
+var _ (RegisterServer2RequestBuilder) = (*_RegisterServer2RequestBuilder)(nil)
+
+func (m *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithServer(server).WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration).WithDiscoveryConfiguration(discoveryConfiguration...)
+}
+
+func (m *_RegisterServer2RequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_RegisterServer2RequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+	m.Server = server
+	return m
+}
+
+func (m *_RegisterServer2RequestBuilder) WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration int32) RegisterServer2RequestBuilder {
+	m.NoOfDiscoveryConfiguration = noOfDiscoveryConfiguration
+	return m
+}
+
+func (m *_RegisterServer2RequestBuilder) WithDiscoveryConfiguration(discoveryConfiguration ...ExtensionObject) RegisterServer2RequestBuilder {
+	m.DiscoveryConfiguration = discoveryConfiguration
+	return m
+}
+
+func (m *_RegisterServer2RequestBuilder) Build() (RegisterServer2Request, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.Server == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'server' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RegisterServer2Request.deepCopy(), nil
+}
+
+func (m *_RegisterServer2RequestBuilder) MustBuild() RegisterServer2Request {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RegisterServer2RequestBuilder) DeepCopy() any {
+	return m.CreateRegisterServer2RequestBuilder()
+}
+
+// CreateRegisterServer2RequestBuilder creates a RegisterServer2RequestBuilder
+func (m *_RegisterServer2Request) CreateRegisterServer2RequestBuilder() RegisterServer2RequestBuilder {
+	if m == nil {
+		return NewRegisterServer2RequestBuilder()
+	}
+	return &_RegisterServer2RequestBuilder{_RegisterServer2Request: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

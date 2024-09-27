@@ -43,12 +43,16 @@ type ServiceId interface {
 	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
+	// CreateBuilder creates a ServiceIdBuilder
+	CreateServiceIdBuilder() ServiceIdBuilder
 }
 
 // ServiceIdContract provides a set of functions which can be overwritten by a sub struct
 type ServiceIdContract interface {
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
+	// CreateBuilder creates a ServiceIdBuilder
+	CreateServiceIdBuilder() ServiceIdBuilder
 }
 
 // ServiceIdRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ ServiceIdContract = (*_ServiceId)(nil)
 func NewServiceId() *_ServiceId {
 	return &_ServiceId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServiceIdBuilder is a builder for ServiceId
+type ServiceIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ServiceIdBuilder
+	// Build builds the ServiceId or returns an error if something is wrong
+	Build() (ServiceIdContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServiceIdContract
+}
+
+// NewServiceIdBuilder() creates a ServiceIdBuilder
+func NewServiceIdBuilder() ServiceIdBuilder {
+	return &_ServiceIdBuilder{_ServiceId: new(_ServiceId)}
+}
+
+type _ServiceIdBuilder struct {
+	*_ServiceId
+
+	err *utils.MultiError
+}
+
+var _ (ServiceIdBuilder) = (*_ServiceIdBuilder)(nil)
+
+func (m *_ServiceIdBuilder) WithMandatoryFields() ServiceIdBuilder {
+	return m
+}
+
+func (m *_ServiceIdBuilder) Build() (ServiceIdContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ServiceId.deepCopy(), nil
+}
+
+func (m *_ServiceIdBuilder) MustBuild() ServiceIdContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServiceIdBuilder) DeepCopy() any {
+	return m.CreateServiceIdBuilder()
+}
+
+// CreateServiceIdBuilder creates a ServiceIdBuilder
+func (m *_ServiceId) CreateServiceIdBuilder() ServiceIdBuilder {
+	if m == nil {
+		return NewServiceIdBuilder()
+	}
+	return &_ServiceIdBuilder{_ServiceId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastServiceId(structType any) ServiceId {

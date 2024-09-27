@@ -43,6 +43,8 @@ type BACnetEventParameter interface {
 	utils.Copyable
 	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameter()
+	// CreateBuilder creates a BACnetEventParameterBuilder
+	CreateBACnetEventParameterBuilder() BACnetEventParameterBuilder
 }
 
 // BACnetEventParameterContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetEventParameterContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetEventParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameter()
+	// CreateBuilder creates a BACnetEventParameterBuilder
+	CreateBACnetEventParameterBuilder() BACnetEventParameterBuilder
 }
 
 // BACnetEventParameterRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetEventParameter(peekedTagHeader BACnetTagHeader) *_BACnetEventParam
 	}
 	return &_BACnetEventParameter{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterBuilder is a builder for BACnetEventParameter
+type BACnetEventParameterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetEventParameterBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder
+	// Build builds the BACnetEventParameter or returns an error if something is wrong
+	Build() (BACnetEventParameterContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterContract
+}
+
+// NewBACnetEventParameterBuilder() creates a BACnetEventParameterBuilder
+func NewBACnetEventParameterBuilder() BACnetEventParameterBuilder {
+	return &_BACnetEventParameterBuilder{_BACnetEventParameter: new(_BACnetEventParameter)}
+}
+
+type _BACnetEventParameterBuilder struct {
+	*_BACnetEventParameter
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterBuilder) = (*_BACnetEventParameterBuilder)(nil)
+
+func (m *_BACnetEventParameterBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetEventParameterBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventParameterBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetEventParameterBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterBuilder) Build() (BACnetEventParameterContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventParameter.deepCopy(), nil
+}
+
+func (m *_BACnetEventParameterBuilder) MustBuild() BACnetEventParameterContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventParameterBuilder) DeepCopy() any {
+	return m.CreateBACnetEventParameterBuilder()
+}
+
+// CreateBACnetEventParameterBuilder creates a BACnetEventParameterBuilder
+func (m *_BACnetEventParameter) CreateBACnetEventParameterBuilder() BACnetEventParameterBuilder {
+	if m == nil {
+		return NewBACnetEventParameterBuilder()
+	}
+	return &_BACnetEventParameterBuilder{_BACnetEventParameter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -49,6 +49,8 @@ type PanicStatus interface {
 	GetIsPanicCurrentlyActive() bool
 	// IsPanicStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPanicStatus()
+	// CreateBuilder creates a PanicStatusBuilder
+	CreatePanicStatusBuilder() PanicStatusBuilder
 }
 
 // _PanicStatus is the data-structure of this message
@@ -62,6 +64,78 @@ var _ PanicStatus = (*_PanicStatus)(nil)
 func NewPanicStatus(status uint8) *_PanicStatus {
 	return &_PanicStatus{Status: status}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PanicStatusBuilder is a builder for PanicStatus
+type PanicStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8) PanicStatusBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) PanicStatusBuilder
+	// Build builds the PanicStatus or returns an error if something is wrong
+	Build() (PanicStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PanicStatus
+}
+
+// NewPanicStatusBuilder() creates a PanicStatusBuilder
+func NewPanicStatusBuilder() PanicStatusBuilder {
+	return &_PanicStatusBuilder{_PanicStatus: new(_PanicStatus)}
+}
+
+type _PanicStatusBuilder struct {
+	*_PanicStatus
+
+	err *utils.MultiError
+}
+
+var _ (PanicStatusBuilder) = (*_PanicStatusBuilder)(nil)
+
+func (m *_PanicStatusBuilder) WithMandatoryFields(status uint8) PanicStatusBuilder {
+	return m.WithStatus(status)
+}
+
+func (m *_PanicStatusBuilder) WithStatus(status uint8) PanicStatusBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_PanicStatusBuilder) Build() (PanicStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PanicStatus.deepCopy(), nil
+}
+
+func (m *_PanicStatusBuilder) MustBuild() PanicStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PanicStatusBuilder) DeepCopy() any {
+	return m.CreatePanicStatusBuilder()
+}
+
+// CreatePanicStatusBuilder creates a PanicStatusBuilder
+func (m *_PanicStatus) CreatePanicStatusBuilder() PanicStatusBuilder {
+	if m == nil {
+		return NewPanicStatusBuilder()
+	}
+	return &_PanicStatusBuilder{_PanicStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

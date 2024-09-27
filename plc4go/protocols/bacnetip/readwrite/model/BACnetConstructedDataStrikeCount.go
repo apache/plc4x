@@ -46,6 +46,8 @@ type BACnetConstructedDataStrikeCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataStrikeCount is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStrikeCount()
+	// CreateBuilder creates a BACnetConstructedDataStrikeCountBuilder
+	CreateBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder
 }
 
 // _BACnetConstructedDataStrikeCount is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataStrikeCount(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataStrikeCountBuilder is a builder for BACnetConstructedDataStrikeCount
+type BACnetConstructedDataStrikeCountBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder
+	// WithStrikeCount adds StrikeCount (property field)
+	WithStrikeCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder
+	// WithStrikeCountBuilder adds StrikeCount (property field) which is build by the builder
+	WithStrikeCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStrikeCountBuilder
+	// Build builds the BACnetConstructedDataStrikeCount or returns an error if something is wrong
+	Build() (BACnetConstructedDataStrikeCount, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataStrikeCount
+}
+
+// NewBACnetConstructedDataStrikeCountBuilder() creates a BACnetConstructedDataStrikeCountBuilder
+func NewBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder {
+	return &_BACnetConstructedDataStrikeCountBuilder{_BACnetConstructedDataStrikeCount: new(_BACnetConstructedDataStrikeCount)}
+}
+
+type _BACnetConstructedDataStrikeCountBuilder struct {
+	*_BACnetConstructedDataStrikeCount
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataStrikeCountBuilder) = (*_BACnetConstructedDataStrikeCountBuilder)(nil)
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) WithMandatoryFields(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder {
+	return m.WithStrikeCount(strikeCount)
+}
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) WithStrikeCount(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder {
+	m.StrikeCount = strikeCount
+	return m
+}
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) WithStrikeCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStrikeCountBuilder {
+	builder := builderSupplier(m.StrikeCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.StrikeCount, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) Build() (BACnetConstructedDataStrikeCount, error) {
+	if m.StrikeCount == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'strikeCount' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataStrikeCount.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) MustBuild() BACnetConstructedDataStrikeCount {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataStrikeCountBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataStrikeCountBuilder()
+}
+
+// CreateBACnetConstructedDataStrikeCountBuilder creates a BACnetConstructedDataStrikeCountBuilder
+func (m *_BACnetConstructedDataStrikeCount) CreateBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataStrikeCountBuilder()
+	}
+	return &_BACnetConstructedDataStrikeCountBuilder{_BACnetConstructedDataStrikeCount: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,12 +43,16 @@ type S7VarRequestParameterItem interface {
 	utils.Copyable
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
+	// CreateBuilder creates a S7VarRequestParameterItemBuilder
+	CreateS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder
 }
 
 // S7VarRequestParameterItemContract provides a set of functions which can be overwritten by a sub struct
 type S7VarRequestParameterItemContract interface {
 	// IsS7VarRequestParameterItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItem()
+	// CreateBuilder creates a S7VarRequestParameterItemBuilder
+	CreateS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder
 }
 
 // S7VarRequestParameterItemRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +74,71 @@ var _ S7VarRequestParameterItemContract = (*_S7VarRequestParameterItem)(nil)
 func NewS7VarRequestParameterItem() *_S7VarRequestParameterItem {
 	return &_S7VarRequestParameterItem{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7VarRequestParameterItemBuilder is a builder for S7VarRequestParameterItem
+type S7VarRequestParameterItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7VarRequestParameterItemBuilder
+	// Build builds the S7VarRequestParameterItem or returns an error if something is wrong
+	Build() (S7VarRequestParameterItemContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7VarRequestParameterItemContract
+}
+
+// NewS7VarRequestParameterItemBuilder() creates a S7VarRequestParameterItemBuilder
+func NewS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder {
+	return &_S7VarRequestParameterItemBuilder{_S7VarRequestParameterItem: new(_S7VarRequestParameterItem)}
+}
+
+type _S7VarRequestParameterItemBuilder struct {
+	*_S7VarRequestParameterItem
+
+	err *utils.MultiError
+}
+
+var _ (S7VarRequestParameterItemBuilder) = (*_S7VarRequestParameterItemBuilder)(nil)
+
+func (m *_S7VarRequestParameterItemBuilder) WithMandatoryFields() S7VarRequestParameterItemBuilder {
+	return m
+}
+
+func (m *_S7VarRequestParameterItemBuilder) Build() (S7VarRequestParameterItemContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7VarRequestParameterItem.deepCopy(), nil
+}
+
+func (m *_S7VarRequestParameterItemBuilder) MustBuild() S7VarRequestParameterItemContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7VarRequestParameterItemBuilder) DeepCopy() any {
+	return m.CreateS7VarRequestParameterItemBuilder()
+}
+
+// CreateS7VarRequestParameterItemBuilder creates a S7VarRequestParameterItemBuilder
+func (m *_S7VarRequestParameterItem) CreateS7VarRequestParameterItemBuilder() S7VarRequestParameterItemBuilder {
+	if m == nil {
+		return NewS7VarRequestParameterItemBuilder()
+	}
+	return &_S7VarRequestParameterItemBuilder{_S7VarRequestParameterItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastS7VarRequestParameterItem(structType any) S7VarRequestParameterItem {

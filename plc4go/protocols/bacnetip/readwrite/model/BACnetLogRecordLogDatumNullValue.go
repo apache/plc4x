@@ -44,6 +44,8 @@ type BACnetLogRecordLogDatumNullValue interface {
 	GetNullValue() BACnetContextTagNull
 	// IsBACnetLogRecordLogDatumNullValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumNullValue()
+	// CreateBuilder creates a BACnetLogRecordLogDatumNullValueBuilder
+	CreateBACnetLogRecordLogDatumNullValueBuilder() BACnetLogRecordLogDatumNullValueBuilder
 }
 
 // _BACnetLogRecordLogDatumNullValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogRecordLogDatumNullValue(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumNullValueBuilder is a builder for BACnetLogRecordLogDatumNullValue
+type BACnetLogRecordLogDatumNullValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogRecordLogDatumNullValueBuilder
+	// Build builds the BACnetLogRecordLogDatumNullValue or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumNullValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumNullValue
+}
+
+// NewBACnetLogRecordLogDatumNullValueBuilder() creates a BACnetLogRecordLogDatumNullValueBuilder
+func NewBACnetLogRecordLogDatumNullValueBuilder() BACnetLogRecordLogDatumNullValueBuilder {
+	return &_BACnetLogRecordLogDatumNullValueBuilder{_BACnetLogRecordLogDatumNullValue: new(_BACnetLogRecordLogDatumNullValue)}
+}
+
+type _BACnetLogRecordLogDatumNullValueBuilder struct {
+	*_BACnetLogRecordLogDatumNullValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumNullValueBuilder) = (*_BACnetLogRecordLogDatumNullValueBuilder)(nil)
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder {
+	return m.WithNullValue(nullValue)
+}
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) WithNullValue(nullValue BACnetContextTagNull) BACnetLogRecordLogDatumNullValueBuilder {
+	m.NullValue = nullValue
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) WithNullValueBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogRecordLogDatumNullValueBuilder {
+	builder := builderSupplier(m.NullValue.CreateBACnetContextTagNullBuilder())
+	var err error
+	m.NullValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) Build() (BACnetLogRecordLogDatumNullValue, error) {
+	if m.NullValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogRecordLogDatumNullValue.deepCopy(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) MustBuild() BACnetLogRecordLogDatumNullValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogRecordLogDatumNullValueBuilder) DeepCopy() any {
+	return m.CreateBACnetLogRecordLogDatumNullValueBuilder()
+}
+
+// CreateBACnetLogRecordLogDatumNullValueBuilder creates a BACnetLogRecordLogDatumNullValueBuilder
+func (m *_BACnetLogRecordLogDatumNullValue) CreateBACnetLogRecordLogDatumNullValueBuilder() BACnetLogRecordLogDatumNullValueBuilder {
+	if m == nil {
+		return NewBACnetLogRecordLogDatumNullValueBuilder()
+	}
+	return &_BACnetLogRecordLogDatumNullValueBuilder{_BACnetLogRecordLogDatumNullValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

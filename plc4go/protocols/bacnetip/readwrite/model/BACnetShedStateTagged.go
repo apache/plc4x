@@ -45,6 +45,8 @@ type BACnetShedStateTagged interface {
 	GetValue() BACnetShedState
 	// IsBACnetShedStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetShedStateTagged()
+	// CreateBuilder creates a BACnetShedStateTaggedBuilder
+	CreateBACnetShedStateTaggedBuilder() BACnetShedStateTaggedBuilder
 }
 
 // _BACnetShedStateTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetShedStateTagged(header BACnetTagHeader, value BACnetShedState, tag
 	}
 	return &_BACnetShedStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetShedStateTaggedBuilder is a builder for BACnetShedStateTagged
+type BACnetShedStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetShedState) BACnetShedStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetShedStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetShedState) BACnetShedStateTaggedBuilder
+	// Build builds the BACnetShedStateTagged or returns an error if something is wrong
+	Build() (BACnetShedStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetShedStateTagged
+}
+
+// NewBACnetShedStateTaggedBuilder() creates a BACnetShedStateTaggedBuilder
+func NewBACnetShedStateTaggedBuilder() BACnetShedStateTaggedBuilder {
+	return &_BACnetShedStateTaggedBuilder{_BACnetShedStateTagged: new(_BACnetShedStateTagged)}
+}
+
+type _BACnetShedStateTaggedBuilder struct {
+	*_BACnetShedStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetShedStateTaggedBuilder) = (*_BACnetShedStateTaggedBuilder)(nil)
+
+func (m *_BACnetShedStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetShedState) BACnetShedStateTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetShedStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetShedStateTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetShedStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedStateTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetShedStateTaggedBuilder) WithValue(value BACnetShedState) BACnetShedStateTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetShedStateTaggedBuilder) Build() (BACnetShedStateTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetShedStateTagged.deepCopy(), nil
+}
+
+func (m *_BACnetShedStateTaggedBuilder) MustBuild() BACnetShedStateTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetShedStateTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetShedStateTaggedBuilder()
+}
+
+// CreateBACnetShedStateTaggedBuilder creates a BACnetShedStateTaggedBuilder
+func (m *_BACnetShedStateTagged) CreateBACnetShedStateTaggedBuilder() BACnetShedStateTaggedBuilder {
+	if m == nil {
+		return NewBACnetShedStateTaggedBuilder()
+	}
+	return &_BACnetShedStateTaggedBuilder{_BACnetShedStateTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

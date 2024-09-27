@@ -48,6 +48,8 @@ type BACnetConstructedDataAuthenticationPolicyList interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAuthenticationPolicyList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAuthenticationPolicyList()
+	// CreateBuilder creates a BACnetConstructedDataAuthenticationPolicyListBuilder
+	CreateBACnetConstructedDataAuthenticationPolicyListBuilder() BACnetConstructedDataAuthenticationPolicyListBuilder
 }
 
 // _BACnetConstructedDataAuthenticationPolicyList is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAuthenticationPolicyList(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAuthenticationPolicyListBuilder is a builder for BACnetConstructedDataAuthenticationPolicyList
+type BACnetConstructedDataAuthenticationPolicyListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(authenticationPolicyList []BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationPolicyListBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationPolicyListBuilder
+	// WithAuthenticationPolicyList adds AuthenticationPolicyList (property field)
+	WithAuthenticationPolicyList(...BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder
+	// Build builds the BACnetConstructedDataAuthenticationPolicyList or returns an error if something is wrong
+	Build() (BACnetConstructedDataAuthenticationPolicyList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAuthenticationPolicyList
+}
+
+// NewBACnetConstructedDataAuthenticationPolicyListBuilder() creates a BACnetConstructedDataAuthenticationPolicyListBuilder
+func NewBACnetConstructedDataAuthenticationPolicyListBuilder() BACnetConstructedDataAuthenticationPolicyListBuilder {
+	return &_BACnetConstructedDataAuthenticationPolicyListBuilder{_BACnetConstructedDataAuthenticationPolicyList: new(_BACnetConstructedDataAuthenticationPolicyList)}
+}
+
+type _BACnetConstructedDataAuthenticationPolicyListBuilder struct {
+	*_BACnetConstructedDataAuthenticationPolicyList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAuthenticationPolicyListBuilder) = (*_BACnetConstructedDataAuthenticationPolicyListBuilder)(nil)
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) WithMandatoryFields(authenticationPolicyList []BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder {
+	return m.WithAuthenticationPolicyList(authenticationPolicyList...)
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAuthenticationPolicyListBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAuthenticationPolicyListBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) WithAuthenticationPolicyList(authenticationPolicyList ...BACnetAuthenticationPolicy) BACnetConstructedDataAuthenticationPolicyListBuilder {
+	m.AuthenticationPolicyList = authenticationPolicyList
+	return m
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) Build() (BACnetConstructedDataAuthenticationPolicyList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAuthenticationPolicyList.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) MustBuild() BACnetConstructedDataAuthenticationPolicyList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAuthenticationPolicyListBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAuthenticationPolicyListBuilder()
+}
+
+// CreateBACnetConstructedDataAuthenticationPolicyListBuilder creates a BACnetConstructedDataAuthenticationPolicyListBuilder
+func (m *_BACnetConstructedDataAuthenticationPolicyList) CreateBACnetConstructedDataAuthenticationPolicyListBuilder() BACnetConstructedDataAuthenticationPolicyListBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAuthenticationPolicyListBuilder()
+	}
+	return &_BACnetConstructedDataAuthenticationPolicyListBuilder{_BACnetConstructedDataAuthenticationPolicyList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

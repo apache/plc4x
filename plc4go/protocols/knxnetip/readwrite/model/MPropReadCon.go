@@ -54,6 +54,8 @@ type MPropReadCon interface {
 	GetData() uint16
 	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropReadCon()
+	// CreateBuilder creates a MPropReadConBuilder
+	CreateMPropReadConBuilder() MPropReadConBuilder
 }
 
 // _MPropReadCon is the data-structure of this message
@@ -84,6 +86,113 @@ func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyI
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MPropReadConBuilder is a builder for MPropReadCon
+type MPropReadConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder
+	// WithInterfaceObjectType adds InterfaceObjectType (property field)
+	WithInterfaceObjectType(uint16) MPropReadConBuilder
+	// WithObjectInstance adds ObjectInstance (property field)
+	WithObjectInstance(uint8) MPropReadConBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) MPropReadConBuilder
+	// WithNumberOfElements adds NumberOfElements (property field)
+	WithNumberOfElements(uint8) MPropReadConBuilder
+	// WithStartIndex adds StartIndex (property field)
+	WithStartIndex(uint16) MPropReadConBuilder
+	// WithData adds Data (property field)
+	WithData(uint16) MPropReadConBuilder
+	// Build builds the MPropReadCon or returns an error if something is wrong
+	Build() (MPropReadCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MPropReadCon
+}
+
+// NewMPropReadConBuilder() creates a MPropReadConBuilder
+func NewMPropReadConBuilder() MPropReadConBuilder {
+	return &_MPropReadConBuilder{_MPropReadCon: new(_MPropReadCon)}
+}
+
+type _MPropReadConBuilder struct {
+	*_MPropReadCon
+
+	err *utils.MultiError
+}
+
+var _ (MPropReadConBuilder) = (*_MPropReadConBuilder)(nil)
+
+func (m *_MPropReadConBuilder) WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder {
+	return m.WithInterfaceObjectType(interfaceObjectType).WithObjectInstance(objectInstance).WithPropertyId(propertyId).WithNumberOfElements(numberOfElements).WithStartIndex(startIndex).WithData(data)
+}
+
+func (m *_MPropReadConBuilder) WithInterfaceObjectType(interfaceObjectType uint16) MPropReadConBuilder {
+	m.InterfaceObjectType = interfaceObjectType
+	return m
+}
+
+func (m *_MPropReadConBuilder) WithObjectInstance(objectInstance uint8) MPropReadConBuilder {
+	m.ObjectInstance = objectInstance
+	return m
+}
+
+func (m *_MPropReadConBuilder) WithPropertyId(propertyId uint8) MPropReadConBuilder {
+	m.PropertyId = propertyId
+	return m
+}
+
+func (m *_MPropReadConBuilder) WithNumberOfElements(numberOfElements uint8) MPropReadConBuilder {
+	m.NumberOfElements = numberOfElements
+	return m
+}
+
+func (m *_MPropReadConBuilder) WithStartIndex(startIndex uint16) MPropReadConBuilder {
+	m.StartIndex = startIndex
+	return m
+}
+
+func (m *_MPropReadConBuilder) WithData(data uint16) MPropReadConBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_MPropReadConBuilder) Build() (MPropReadCon, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MPropReadCon.deepCopy(), nil
+}
+
+func (m *_MPropReadConBuilder) MustBuild() MPropReadCon {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MPropReadConBuilder) DeepCopy() any {
+	return m.CreateMPropReadConBuilder()
+}
+
+// CreateMPropReadConBuilder creates a MPropReadConBuilder
+func (m *_MPropReadCon) CreateMPropReadConBuilder() MPropReadConBuilder {
+	if m == nil {
+		return NewMPropReadConBuilder()
+	}
+	return &_MPropReadConBuilder{_MPropReadCon: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

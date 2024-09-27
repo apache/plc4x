@@ -44,6 +44,8 @@ type BACnetConstructedDataAccessAlarmEvents interface {
 	GetAccessAlarmEvents() []BACnetAccessEventTagged
 	// IsBACnetConstructedDataAccessAlarmEvents is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessAlarmEvents()
+	// CreateBuilder creates a BACnetConstructedDataAccessAlarmEventsBuilder
+	CreateBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAccessAlarmEventsBuilder
 }
 
 // _BACnetConstructedDataAccessAlarmEvents is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataAccessAlarmEvents(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessAlarmEventsBuilder is a builder for BACnetConstructedDataAccessAlarmEvents
+type BACnetConstructedDataAccessAlarmEventsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessAlarmEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder
+	// WithAccessAlarmEvents adds AccessAlarmEvents (property field)
+	WithAccessAlarmEvents(...BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder
+	// Build builds the BACnetConstructedDataAccessAlarmEvents or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessAlarmEvents, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessAlarmEvents
+}
+
+// NewBACnetConstructedDataAccessAlarmEventsBuilder() creates a BACnetConstructedDataAccessAlarmEventsBuilder
+func NewBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAccessAlarmEventsBuilder {
+	return &_BACnetConstructedDataAccessAlarmEventsBuilder{_BACnetConstructedDataAccessAlarmEvents: new(_BACnetConstructedDataAccessAlarmEvents)}
+}
+
+type _BACnetConstructedDataAccessAlarmEventsBuilder struct {
+	*_BACnetConstructedDataAccessAlarmEvents
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessAlarmEventsBuilder) = (*_BACnetConstructedDataAccessAlarmEventsBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) WithMandatoryFields(accessAlarmEvents []BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
+	return m.WithAccessAlarmEvents(accessAlarmEvents...)
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) WithAccessAlarmEvents(accessAlarmEvents ...BACnetAccessEventTagged) BACnetConstructedDataAccessAlarmEventsBuilder {
+	m.AccessAlarmEvents = accessAlarmEvents
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) Build() (BACnetConstructedDataAccessAlarmEvents, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessAlarmEvents.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) MustBuild() BACnetConstructedDataAccessAlarmEvents {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessAlarmEventsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessAlarmEventsBuilder()
+}
+
+// CreateBACnetConstructedDataAccessAlarmEventsBuilder creates a BACnetConstructedDataAccessAlarmEventsBuilder
+func (m *_BACnetConstructedDataAccessAlarmEvents) CreateBACnetConstructedDataAccessAlarmEventsBuilder() BACnetConstructedDataAccessAlarmEventsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessAlarmEventsBuilder()
+	}
+	return &_BACnetConstructedDataAccessAlarmEventsBuilder{_BACnetConstructedDataAccessAlarmEvents: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

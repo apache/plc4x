@@ -46,6 +46,8 @@ type BACnetConstructedDataBias interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataBias is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBias()
+	// CreateBuilder creates a BACnetConstructedDataBiasBuilder
+	CreateBACnetConstructedDataBiasBuilder() BACnetConstructedDataBiasBuilder
 }
 
 // _BACnetConstructedDataBias is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBias(openingTag BACnetOpeningTag, peekedTagHeader B
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBiasBuilder is a builder for BACnetConstructedDataBias
+type BACnetConstructedDataBiasBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bias BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder
+	// WithBias adds Bias (property field)
+	WithBias(BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder
+	// WithBiasBuilder adds Bias (property field) which is build by the builder
+	WithBiasBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataBiasBuilder
+	// Build builds the BACnetConstructedDataBias or returns an error if something is wrong
+	Build() (BACnetConstructedDataBias, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBias
+}
+
+// NewBACnetConstructedDataBiasBuilder() creates a BACnetConstructedDataBiasBuilder
+func NewBACnetConstructedDataBiasBuilder() BACnetConstructedDataBiasBuilder {
+	return &_BACnetConstructedDataBiasBuilder{_BACnetConstructedDataBias: new(_BACnetConstructedDataBias)}
+}
+
+type _BACnetConstructedDataBiasBuilder struct {
+	*_BACnetConstructedDataBias
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBiasBuilder) = (*_BACnetConstructedDataBiasBuilder)(nil)
+
+func (m *_BACnetConstructedDataBiasBuilder) WithMandatoryFields(bias BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder {
+	return m.WithBias(bias)
+}
+
+func (m *_BACnetConstructedDataBiasBuilder) WithBias(bias BACnetApplicationTagReal) BACnetConstructedDataBiasBuilder {
+	m.Bias = bias
+	return m
+}
+
+func (m *_BACnetConstructedDataBiasBuilder) WithBiasBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataBiasBuilder {
+	builder := builderSupplier(m.Bias.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.Bias, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBiasBuilder) Build() (BACnetConstructedDataBias, error) {
+	if m.Bias == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bias' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBias.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBiasBuilder) MustBuild() BACnetConstructedDataBias {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBiasBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBiasBuilder()
+}
+
+// CreateBACnetConstructedDataBiasBuilder creates a BACnetConstructedDataBiasBuilder
+func (m *_BACnetConstructedDataBias) CreateBACnetConstructedDataBiasBuilder() BACnetConstructedDataBiasBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBiasBuilder()
+	}
+	return &_BACnetConstructedDataBiasBuilder{_BACnetConstructedDataBias: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

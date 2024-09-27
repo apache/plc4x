@@ -44,6 +44,8 @@ type BACnetFaultParameterNone interface {
 	GetNone() BACnetContextTagNull
 	// IsBACnetFaultParameterNone is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterNone()
+	// CreateBuilder creates a BACnetFaultParameterNoneBuilder
+	CreateBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder
 }
 
 // _BACnetFaultParameterNone is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterNone(peekedTagHeader BACnetTagHeader, none BACnetCon
 	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterNoneBuilder is a builder for BACnetFaultParameterNone
+type BACnetFaultParameterNoneBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder
+	// WithNone adds None (property field)
+	WithNone(BACnetContextTagNull) BACnetFaultParameterNoneBuilder
+	// WithNoneBuilder adds None (property field) which is build by the builder
+	WithNoneBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetFaultParameterNoneBuilder
+	// Build builds the BACnetFaultParameterNone or returns an error if something is wrong
+	Build() (BACnetFaultParameterNone, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterNone
+}
+
+// NewBACnetFaultParameterNoneBuilder() creates a BACnetFaultParameterNoneBuilder
+func NewBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder {
+	return &_BACnetFaultParameterNoneBuilder{_BACnetFaultParameterNone: new(_BACnetFaultParameterNone)}
+}
+
+type _BACnetFaultParameterNoneBuilder struct {
+	*_BACnetFaultParameterNone
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterNoneBuilder) = (*_BACnetFaultParameterNoneBuilder)(nil)
+
+func (m *_BACnetFaultParameterNoneBuilder) WithMandatoryFields(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
+	return m.WithNone(none)
+}
+
+func (m *_BACnetFaultParameterNoneBuilder) WithNone(none BACnetContextTagNull) BACnetFaultParameterNoneBuilder {
+	m.None = none
+	return m
+}
+
+func (m *_BACnetFaultParameterNoneBuilder) WithNoneBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetFaultParameterNoneBuilder {
+	builder := builderSupplier(m.None.CreateBACnetContextTagNullBuilder())
+	var err error
+	m.None, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterNoneBuilder) Build() (BACnetFaultParameterNone, error) {
+	if m.None == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'none' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterNone.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterNoneBuilder) MustBuild() BACnetFaultParameterNone {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterNoneBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterNoneBuilder()
+}
+
+// CreateBACnetFaultParameterNoneBuilder creates a BACnetFaultParameterNoneBuilder
+func (m *_BACnetFaultParameterNone) CreateBACnetFaultParameterNoneBuilder() BACnetFaultParameterNoneBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterNoneBuilder()
+	}
+	return &_BACnetFaultParameterNoneBuilder{_BACnetFaultParameterNone: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

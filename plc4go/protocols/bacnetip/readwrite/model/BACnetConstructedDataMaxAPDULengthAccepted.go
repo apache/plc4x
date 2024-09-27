@@ -46,6 +46,8 @@ type BACnetConstructedDataMaxAPDULengthAccepted interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMaxAPDULengthAccepted is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxAPDULengthAccepted()
+	// CreateBuilder creates a BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+	CreateBACnetConstructedDataMaxAPDULengthAcceptedBuilder() BACnetConstructedDataMaxAPDULengthAcceptedBuilder
 }
 
 // _BACnetConstructedDataMaxAPDULengthAccepted is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMaxAPDULengthAccepted(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxAPDULengthAcceptedBuilder is a builder for BACnetConstructedDataMaxAPDULengthAccepted
+type BACnetConstructedDataMaxAPDULengthAcceptedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxApduLengthAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+	// WithMaxApduLengthAccepted adds MaxApduLengthAccepted (property field)
+	WithMaxApduLengthAccepted(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+	// WithMaxApduLengthAcceptedBuilder adds MaxApduLengthAccepted (property field) which is build by the builder
+	WithMaxApduLengthAcceptedBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+	// Build builds the BACnetConstructedDataMaxAPDULengthAccepted or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxAPDULengthAccepted, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxAPDULengthAccepted
+}
+
+// NewBACnetConstructedDataMaxAPDULengthAcceptedBuilder() creates a BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+func NewBACnetConstructedDataMaxAPDULengthAcceptedBuilder() BACnetConstructedDataMaxAPDULengthAcceptedBuilder {
+	return &_BACnetConstructedDataMaxAPDULengthAcceptedBuilder{_BACnetConstructedDataMaxAPDULengthAccepted: new(_BACnetConstructedDataMaxAPDULengthAccepted)}
+}
+
+type _BACnetConstructedDataMaxAPDULengthAcceptedBuilder struct {
+	*_BACnetConstructedDataMaxAPDULengthAccepted
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxAPDULengthAcceptedBuilder) = (*_BACnetConstructedDataMaxAPDULengthAcceptedBuilder)(nil)
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) WithMandatoryFields(maxApduLengthAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxAPDULengthAcceptedBuilder {
+	return m.WithMaxApduLengthAccepted(maxApduLengthAccepted)
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) WithMaxApduLengthAccepted(maxApduLengthAccepted BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxAPDULengthAcceptedBuilder {
+	m.MaxApduLengthAccepted = maxApduLengthAccepted
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) WithMaxApduLengthAcceptedBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxAPDULengthAcceptedBuilder {
+	builder := builderSupplier(m.MaxApduLengthAccepted.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MaxApduLengthAccepted, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) Build() (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+	if m.MaxApduLengthAccepted == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxApduLengthAccepted' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMaxAPDULengthAccepted.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) MustBuild() BACnetConstructedDataMaxAPDULengthAccepted {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMaxAPDULengthAcceptedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMaxAPDULengthAcceptedBuilder()
+}
+
+// CreateBACnetConstructedDataMaxAPDULengthAcceptedBuilder creates a BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+func (m *_BACnetConstructedDataMaxAPDULengthAccepted) CreateBACnetConstructedDataMaxAPDULengthAcceptedBuilder() BACnetConstructedDataMaxAPDULengthAcceptedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMaxAPDULengthAcceptedBuilder()
+	}
+	return &_BACnetConstructedDataMaxAPDULengthAcceptedBuilder{_BACnetConstructedDataMaxAPDULengthAccepted: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

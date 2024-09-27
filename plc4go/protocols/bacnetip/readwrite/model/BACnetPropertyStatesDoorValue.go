@@ -44,6 +44,8 @@ type BACnetPropertyStatesDoorValue interface {
 	GetDoorValue() BACnetDoorValueTagged
 	// IsBACnetPropertyStatesDoorValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesDoorValue()
+	// CreateBuilder creates a BACnetPropertyStatesDoorValueBuilder
+	CreateBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuilder
 }
 
 // _BACnetPropertyStatesDoorValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesDoorValue(peekedTagHeader BACnetTagHeader, doorValue
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesDoorValueBuilder is a builder for BACnetPropertyStatesDoorValue
+type BACnetPropertyStatesDoorValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder
+	// WithDoorValue adds DoorValue (property field)
+	WithDoorValue(BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder
+	// WithDoorValueBuilder adds DoorValue (property field) which is build by the builder
+	WithDoorValueBuilder(func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetPropertyStatesDoorValueBuilder
+	// Build builds the BACnetPropertyStatesDoorValue or returns an error if something is wrong
+	Build() (BACnetPropertyStatesDoorValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesDoorValue
+}
+
+// NewBACnetPropertyStatesDoorValueBuilder() creates a BACnetPropertyStatesDoorValueBuilder
+func NewBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuilder {
+	return &_BACnetPropertyStatesDoorValueBuilder{_BACnetPropertyStatesDoorValue: new(_BACnetPropertyStatesDoorValue)}
+}
+
+type _BACnetPropertyStatesDoorValueBuilder struct {
+	*_BACnetPropertyStatesDoorValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesDoorValueBuilder) = (*_BACnetPropertyStatesDoorValueBuilder)(nil)
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) WithMandatoryFields(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
+	return m.WithDoorValue(doorValue)
+}
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) WithDoorValue(doorValue BACnetDoorValueTagged) BACnetPropertyStatesDoorValueBuilder {
+	m.DoorValue = doorValue
+	return m
+}
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) WithDoorValueBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetPropertyStatesDoorValueBuilder {
+	builder := builderSupplier(m.DoorValue.CreateBACnetDoorValueTaggedBuilder())
+	var err error
+	m.DoorValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) Build() (BACnetPropertyStatesDoorValue, error) {
+	if m.DoorValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doorValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesDoorValue.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) MustBuild() BACnetPropertyStatesDoorValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesDoorValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesDoorValueBuilder()
+}
+
+// CreateBACnetPropertyStatesDoorValueBuilder creates a BACnetPropertyStatesDoorValueBuilder
+func (m *_BACnetPropertyStatesDoorValue) CreateBACnetPropertyStatesDoorValueBuilder() BACnetPropertyStatesDoorValueBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesDoorValueBuilder()
+	}
+	return &_BACnetPropertyStatesDoorValueBuilder{_BACnetPropertyStatesDoorValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

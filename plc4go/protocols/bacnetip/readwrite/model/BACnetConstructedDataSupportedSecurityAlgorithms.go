@@ -44,6 +44,8 @@ type BACnetConstructedDataSupportedSecurityAlgorithms interface {
 	GetSupportedSecurityAlgorithms() []BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataSupportedSecurityAlgorithms is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSupportedSecurityAlgorithms()
+	// CreateBuilder creates a BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+	CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
 }
 
 // _BACnetConstructedDataSupportedSecurityAlgorithms is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataSupportedSecurityAlgorithms(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSupportedSecurityAlgorithmsBuilder is a builder for BACnetConstructedDataSupportedSecurityAlgorithms
+type BACnetConstructedDataSupportedSecurityAlgorithmsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+	// WithSupportedSecurityAlgorithms adds SupportedSecurityAlgorithms (property field)
+	WithSupportedSecurityAlgorithms(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+	// Build builds the BACnetConstructedDataSupportedSecurityAlgorithms or returns an error if something is wrong
+	Build() (BACnetConstructedDataSupportedSecurityAlgorithms, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSupportedSecurityAlgorithms
+}
+
+// NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() creates a BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+func NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	return &_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder{_BACnetConstructedDataSupportedSecurityAlgorithms: new(_BACnetConstructedDataSupportedSecurityAlgorithms)}
+}
+
+type _BACnetConstructedDataSupportedSecurityAlgorithmsBuilder struct {
+	*_BACnetConstructedDataSupportedSecurityAlgorithms
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) = (*_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder)(nil)
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithMandatoryFields(supportedSecurityAlgorithms []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	return m.WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms...)
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) WithSupportedSecurityAlgorithms(supportedSecurityAlgorithms ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	m.SupportedSecurityAlgorithms = supportedSecurityAlgorithms
+	return m
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) Build() (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSupportedSecurityAlgorithms.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) MustBuild() BACnetConstructedDataSupportedSecurityAlgorithms {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder()
+}
+
+// CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder creates a BACnetConstructedDataSupportedSecurityAlgorithmsBuilder
+func (m *_BACnetConstructedDataSupportedSecurityAlgorithms) CreateBACnetConstructedDataSupportedSecurityAlgorithmsBuilder() BACnetConstructedDataSupportedSecurityAlgorithmsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSupportedSecurityAlgorithmsBuilder()
+	}
+	return &_BACnetConstructedDataSupportedSecurityAlgorithmsBuilder{_BACnetConstructedDataSupportedSecurityAlgorithms: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

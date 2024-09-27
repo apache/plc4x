@@ -40,6 +40,8 @@ type TDataConnectedReq interface {
 	CEMI
 	// IsTDataConnectedReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedReq()
+	// CreateBuilder creates a TDataConnectedReqBuilder
+	CreateTDataConnectedReqBuilder() TDataConnectedReqBuilder
 }
 
 // _TDataConnectedReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTDataConnectedReq(size uint16) *_TDataConnectedReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TDataConnectedReqBuilder is a builder for TDataConnectedReq
+type TDataConnectedReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TDataConnectedReqBuilder
+	// Build builds the TDataConnectedReq or returns an error if something is wrong
+	Build() (TDataConnectedReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TDataConnectedReq
+}
+
+// NewTDataConnectedReqBuilder() creates a TDataConnectedReqBuilder
+func NewTDataConnectedReqBuilder() TDataConnectedReqBuilder {
+	return &_TDataConnectedReqBuilder{_TDataConnectedReq: new(_TDataConnectedReq)}
+}
+
+type _TDataConnectedReqBuilder struct {
+	*_TDataConnectedReq
+
+	err *utils.MultiError
+}
+
+var _ (TDataConnectedReqBuilder) = (*_TDataConnectedReqBuilder)(nil)
+
+func (m *_TDataConnectedReqBuilder) WithMandatoryFields() TDataConnectedReqBuilder {
+	return m
+}
+
+func (m *_TDataConnectedReqBuilder) Build() (TDataConnectedReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TDataConnectedReq.deepCopy(), nil
+}
+
+func (m *_TDataConnectedReqBuilder) MustBuild() TDataConnectedReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TDataConnectedReqBuilder) DeepCopy() any {
+	return m.CreateTDataConnectedReqBuilder()
+}
+
+// CreateTDataConnectedReqBuilder creates a TDataConnectedReqBuilder
+func (m *_TDataConnectedReq) CreateTDataConnectedReqBuilder() TDataConnectedReqBuilder {
+	if m == nil {
+		return NewTDataConnectedReqBuilder()
+	}
+	return &_TDataConnectedReqBuilder{_TDataConnectedReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

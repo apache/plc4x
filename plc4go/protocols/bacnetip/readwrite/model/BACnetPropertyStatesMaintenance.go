@@ -44,6 +44,8 @@ type BACnetPropertyStatesMaintenance interface {
 	GetMaintenance() BACnetMaintenanceTagged
 	// IsBACnetPropertyStatesMaintenance is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesMaintenance()
+	// CreateBuilder creates a BACnetPropertyStatesMaintenanceBuilder
+	CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder
 }
 
 // _BACnetPropertyStatesMaintenance is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, mainten
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesMaintenanceBuilder is a builder for BACnetPropertyStatesMaintenance
+type BACnetPropertyStatesMaintenanceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder
+	// WithMaintenance adds Maintenance (property field)
+	WithMaintenance(BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder
+	// WithMaintenanceBuilder adds Maintenance (property field) which is build by the builder
+	WithMaintenanceBuilder(func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder
+	// Build builds the BACnetPropertyStatesMaintenance or returns an error if something is wrong
+	Build() (BACnetPropertyStatesMaintenance, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesMaintenance
+}
+
+// NewBACnetPropertyStatesMaintenanceBuilder() creates a BACnetPropertyStatesMaintenanceBuilder
+func NewBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
+	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: new(_BACnetPropertyStatesMaintenance)}
+}
+
+type _BACnetPropertyStatesMaintenanceBuilder struct {
+	*_BACnetPropertyStatesMaintenance
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesMaintenanceBuilder) = (*_BACnetPropertyStatesMaintenanceBuilder)(nil)
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	return m.WithMaintenance(maintenance)
+}
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenance(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	m.Maintenance = maintenance
+	return m
+}
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenanceBuilder(builderSupplier func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder {
+	builder := builderSupplier(m.Maintenance.CreateBACnetMaintenanceTaggedBuilder())
+	var err error
+	m.Maintenance, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetMaintenanceTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) Build() (BACnetPropertyStatesMaintenance, error) {
+	if m.Maintenance == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maintenance' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesMaintenance.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) MustBuild() BACnetPropertyStatesMaintenance {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesMaintenanceBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesMaintenanceBuilder()
+}
+
+// CreateBACnetPropertyStatesMaintenanceBuilder creates a BACnetPropertyStatesMaintenanceBuilder
+func (m *_BACnetPropertyStatesMaintenance) CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesMaintenanceBuilder()
+	}
+	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

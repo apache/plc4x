@@ -46,6 +46,8 @@ type BACnetConstructedDataLocation interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLocation()
+	// CreateBuilder creates a BACnetConstructedDataLocationBuilder
+	CreateBACnetConstructedDataLocationBuilder() BACnetConstructedDataLocationBuilder
 }
 
 // _BACnetConstructedDataLocation is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLocation(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLocationBuilder is a builder for BACnetConstructedDataLocation
+type BACnetConstructedDataLocationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(location BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder
+	// WithLocation adds Location (property field)
+	WithLocation(BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder
+	// WithLocationBuilder adds Location (property field) which is build by the builder
+	WithLocationBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataLocationBuilder
+	// Build builds the BACnetConstructedDataLocation or returns an error if something is wrong
+	Build() (BACnetConstructedDataLocation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLocation
+}
+
+// NewBACnetConstructedDataLocationBuilder() creates a BACnetConstructedDataLocationBuilder
+func NewBACnetConstructedDataLocationBuilder() BACnetConstructedDataLocationBuilder {
+	return &_BACnetConstructedDataLocationBuilder{_BACnetConstructedDataLocation: new(_BACnetConstructedDataLocation)}
+}
+
+type _BACnetConstructedDataLocationBuilder struct {
+	*_BACnetConstructedDataLocation
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLocationBuilder) = (*_BACnetConstructedDataLocationBuilder)(nil)
+
+func (m *_BACnetConstructedDataLocationBuilder) WithMandatoryFields(location BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder {
+	return m.WithLocation(location)
+}
+
+func (m *_BACnetConstructedDataLocationBuilder) WithLocation(location BACnetApplicationTagCharacterString) BACnetConstructedDataLocationBuilder {
+	m.Location = location
+	return m
+}
+
+func (m *_BACnetConstructedDataLocationBuilder) WithLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataLocationBuilder {
+	builder := builderSupplier(m.Location.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.Location, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLocationBuilder) Build() (BACnetConstructedDataLocation, error) {
+	if m.Location == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'location' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLocation.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLocationBuilder) MustBuild() BACnetConstructedDataLocation {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLocationBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLocationBuilder()
+}
+
+// CreateBACnetConstructedDataLocationBuilder creates a BACnetConstructedDataLocationBuilder
+func (m *_BACnetConstructedDataLocation) CreateBACnetConstructedDataLocationBuilder() BACnetConstructedDataLocationBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLocationBuilder()
+	}
+	return &_BACnetConstructedDataLocationBuilder{_BACnetConstructedDataLocation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

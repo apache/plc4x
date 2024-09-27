@@ -46,6 +46,8 @@ type BACnetConstructedDataDoorPulseTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataDoorPulseTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDoorPulseTime()
+	// CreateBuilder creates a BACnetConstructedDataDoorPulseTimeBuilder
+	CreateBACnetConstructedDataDoorPulseTimeBuilder() BACnetConstructedDataDoorPulseTimeBuilder
 }
 
 // _BACnetConstructedDataDoorPulseTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDoorPulseTime(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDoorPulseTimeBuilder is a builder for BACnetConstructedDataDoorPulseTime
+type BACnetConstructedDataDoorPulseTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doorPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder
+	// WithDoorPulseTime adds DoorPulseTime (property field)
+	WithDoorPulseTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder
+	// WithDoorPulseTimeBuilder adds DoorPulseTime (property field) which is build by the builder
+	WithDoorPulseTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorPulseTimeBuilder
+	// Build builds the BACnetConstructedDataDoorPulseTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataDoorPulseTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDoorPulseTime
+}
+
+// NewBACnetConstructedDataDoorPulseTimeBuilder() creates a BACnetConstructedDataDoorPulseTimeBuilder
+func NewBACnetConstructedDataDoorPulseTimeBuilder() BACnetConstructedDataDoorPulseTimeBuilder {
+	return &_BACnetConstructedDataDoorPulseTimeBuilder{_BACnetConstructedDataDoorPulseTime: new(_BACnetConstructedDataDoorPulseTime)}
+}
+
+type _BACnetConstructedDataDoorPulseTimeBuilder struct {
+	*_BACnetConstructedDataDoorPulseTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDoorPulseTimeBuilder) = (*_BACnetConstructedDataDoorPulseTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) WithMandatoryFields(doorPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder {
+	return m.WithDoorPulseTime(doorPulseTime)
+}
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) WithDoorPulseTime(doorPulseTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDoorPulseTimeBuilder {
+	m.DoorPulseTime = doorPulseTime
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) WithDoorPulseTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDoorPulseTimeBuilder {
+	builder := builderSupplier(m.DoorPulseTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.DoorPulseTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) Build() (BACnetConstructedDataDoorPulseTime, error) {
+	if m.DoorPulseTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doorPulseTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDoorPulseTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) MustBuild() BACnetConstructedDataDoorPulseTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDoorPulseTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDoorPulseTimeBuilder()
+}
+
+// CreateBACnetConstructedDataDoorPulseTimeBuilder creates a BACnetConstructedDataDoorPulseTimeBuilder
+func (m *_BACnetConstructedDataDoorPulseTime) CreateBACnetConstructedDataDoorPulseTimeBuilder() BACnetConstructedDataDoorPulseTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDoorPulseTimeBuilder()
+	}
+	return &_BACnetConstructedDataDoorPulseTimeBuilder{_BACnetConstructedDataDoorPulseTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

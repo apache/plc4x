@@ -45,6 +45,8 @@ type CIPEncapsulationPacket interface {
 	utils.Copyable
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
+	// CreateBuilder creates a CIPEncapsulationPacketBuilder
+	CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder
 }
 
 // CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -59,6 +61,8 @@ type CIPEncapsulationPacketContract interface {
 	GetOptions() uint32
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
+	// CreateBuilder creates a CIPEncapsulationPacketBuilder
+	CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder
 }
 
 // CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
@@ -86,6 +90,99 @@ var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
 func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
 	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationPacketBuilder is a builder for CIPEncapsulationPacket
+type CIPEncapsulationPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) CIPEncapsulationPacketBuilder
+	// WithSessionHandle adds SessionHandle (property field)
+	WithSessionHandle(uint32) CIPEncapsulationPacketBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint32) CIPEncapsulationPacketBuilder
+	// WithSenderContext adds SenderContext (property field)
+	WithSenderContext(...uint8) CIPEncapsulationPacketBuilder
+	// WithOptions adds Options (property field)
+	WithOptions(uint32) CIPEncapsulationPacketBuilder
+	// Build builds the CIPEncapsulationPacket or returns an error if something is wrong
+	Build() (CIPEncapsulationPacketContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationPacketContract
+}
+
+// NewCIPEncapsulationPacketBuilder() creates a CIPEncapsulationPacketBuilder
+func NewCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder {
+	return &_CIPEncapsulationPacketBuilder{_CIPEncapsulationPacket: new(_CIPEncapsulationPacket)}
+}
+
+type _CIPEncapsulationPacketBuilder struct {
+	*_CIPEncapsulationPacket
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationPacketBuilder) = (*_CIPEncapsulationPacketBuilder)(nil)
+
+func (m *_CIPEncapsulationPacketBuilder) WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) CIPEncapsulationPacketBuilder {
+	return m.WithSessionHandle(sessionHandle).WithStatus(status).WithSenderContext(senderContext...).WithOptions(options)
+}
+
+func (m *_CIPEncapsulationPacketBuilder) WithSessionHandle(sessionHandle uint32) CIPEncapsulationPacketBuilder {
+	m.SessionHandle = sessionHandle
+	return m
+}
+
+func (m *_CIPEncapsulationPacketBuilder) WithStatus(status uint32) CIPEncapsulationPacketBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_CIPEncapsulationPacketBuilder) WithSenderContext(senderContext ...uint8) CIPEncapsulationPacketBuilder {
+	m.SenderContext = senderContext
+	return m
+}
+
+func (m *_CIPEncapsulationPacketBuilder) WithOptions(options uint32) CIPEncapsulationPacketBuilder {
+	m.Options = options
+	return m
+}
+
+func (m *_CIPEncapsulationPacketBuilder) Build() (CIPEncapsulationPacketContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CIPEncapsulationPacket.deepCopy(), nil
+}
+
+func (m *_CIPEncapsulationPacketBuilder) MustBuild() CIPEncapsulationPacketContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CIPEncapsulationPacketBuilder) DeepCopy() any {
+	return m.CreateCIPEncapsulationPacketBuilder()
+}
+
+// CreateCIPEncapsulationPacketBuilder creates a CIPEncapsulationPacketBuilder
+func (m *_CIPEncapsulationPacket) CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder {
+	if m == nil {
+		return NewCIPEncapsulationPacketBuilder()
+	}
+	return &_CIPEncapsulationPacketBuilder{_CIPEncapsulationPacket: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

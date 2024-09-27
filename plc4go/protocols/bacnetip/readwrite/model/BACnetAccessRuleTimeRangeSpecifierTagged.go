@@ -45,6 +45,8 @@ type BACnetAccessRuleTimeRangeSpecifierTagged interface {
 	GetValue() BACnetAccessRuleTimeRangeSpecifier
 	// IsBACnetAccessRuleTimeRangeSpecifierTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessRuleTimeRangeSpecifierTagged()
+	// CreateBuilder creates a BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder() BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
 }
 
 // _BACnetAccessRuleTimeRangeSpecifierTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetAccessRuleTimeRangeSpecifierTagged(header BACnetTagHeader, value B
 	}
 	return &_BACnetAccessRuleTimeRangeSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessRuleTimeRangeSpecifierTaggedBuilder is a builder for BACnetAccessRuleTimeRangeSpecifierTagged
+type BACnetAccessRuleTimeRangeSpecifierTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+	// Build builds the BACnetAccessRuleTimeRangeSpecifierTagged or returns an error if something is wrong
+	Build() (BACnetAccessRuleTimeRangeSpecifierTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessRuleTimeRangeSpecifierTagged
+}
+
+// NewBACnetAccessRuleTimeRangeSpecifierTaggedBuilder() creates a BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+func NewBACnetAccessRuleTimeRangeSpecifierTaggedBuilder() BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	return &_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder{_BACnetAccessRuleTimeRangeSpecifierTagged: new(_BACnetAccessRuleTimeRangeSpecifierTagged)}
+}
+
+type _BACnetAccessRuleTimeRangeSpecifierTaggedBuilder struct {
+	*_BACnetAccessRuleTimeRangeSpecifierTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) = (*_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder)(nil)
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) WithValue(value BACnetAccessRuleTimeRangeSpecifier) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) Build() (BACnetAccessRuleTimeRangeSpecifierTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccessRuleTimeRangeSpecifierTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) MustBuild() BACnetAccessRuleTimeRangeSpecifierTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder()
+}
+
+// CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder creates a BACnetAccessRuleTimeRangeSpecifierTaggedBuilder
+func (m *_BACnetAccessRuleTimeRangeSpecifierTagged) CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder() BACnetAccessRuleTimeRangeSpecifierTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccessRuleTimeRangeSpecifierTaggedBuilder()
+	}
+	return &_BACnetAccessRuleTimeRangeSpecifierTaggedBuilder{_BACnetAccessRuleTimeRangeSpecifierTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

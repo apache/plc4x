@@ -46,6 +46,8 @@ type CALDataReply interface {
 	GetParameterValue() ParameterValue
 	// IsCALDataReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataReply()
+	// CreateBuilder creates a CALDataReplyBuilder
+	CreateCALDataReplyBuilder() CALDataReplyBuilder
 }
 
 // _CALDataReply is the data-structure of this message
@@ -71,6 +73,91 @@ func NewCALDataReply(commandTypeContainer CALCommandTypeContainer, additionalDat
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataReplyBuilder is a builder for CALDataReply
+type CALDataReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, parameterValue ParameterValue) CALDataReplyBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CALDataReplyBuilder
+	// WithParameterValue adds ParameterValue (property field)
+	WithParameterValue(ParameterValue) CALDataReplyBuilder
+	// Build builds the CALDataReply or returns an error if something is wrong
+	Build() (CALDataReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataReply
+}
+
+// NewCALDataReplyBuilder() creates a CALDataReplyBuilder
+func NewCALDataReplyBuilder() CALDataReplyBuilder {
+	return &_CALDataReplyBuilder{_CALDataReply: new(_CALDataReply)}
+}
+
+type _CALDataReplyBuilder struct {
+	*_CALDataReply
+
+	err *utils.MultiError
+}
+
+var _ (CALDataReplyBuilder) = (*_CALDataReplyBuilder)(nil)
+
+func (m *_CALDataReplyBuilder) WithMandatoryFields(paramNo Parameter, parameterValue ParameterValue) CALDataReplyBuilder {
+	return m.WithParamNo(paramNo).WithParameterValue(parameterValue)
+}
+
+func (m *_CALDataReplyBuilder) WithParamNo(paramNo Parameter) CALDataReplyBuilder {
+	m.ParamNo = paramNo
+	return m
+}
+
+func (m *_CALDataReplyBuilder) WithParameterValue(parameterValue ParameterValue) CALDataReplyBuilder {
+	m.ParameterValue = parameterValue
+	return m
+}
+
+func (m *_CALDataReplyBuilder) Build() (CALDataReply, error) {
+	if m.ParameterValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'parameterValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataReply.deepCopy(), nil
+}
+
+func (m *_CALDataReplyBuilder) MustBuild() CALDataReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataReplyBuilder) DeepCopy() any {
+	return m.CreateCALDataReplyBuilder()
+}
+
+// CreateCALDataReplyBuilder creates a CALDataReplyBuilder
+func (m *_CALDataReply) CreateCALDataReplyBuilder() CALDataReplyBuilder {
+	if m == nil {
+		return NewCALDataReplyBuilder()
+	}
+	return &_CALDataReplyBuilder{_CALDataReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

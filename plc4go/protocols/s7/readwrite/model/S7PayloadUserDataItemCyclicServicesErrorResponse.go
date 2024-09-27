@@ -40,6 +40,8 @@ type S7PayloadUserDataItemCyclicServicesErrorResponse interface {
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCyclicServicesErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesErrorResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
+	CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesErrorResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewS7PayloadUserDataItemCyclicServicesErrorResponse(returnCode DataTranspor
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesErrorResponseBuilder is a builder for S7PayloadUserDataItemCyclicServicesErrorResponse
+type S7PayloadUserDataItemCyclicServicesErrorResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesErrorResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesErrorResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesErrorResponse
+}
+
+// NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() creates a S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
+func NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder{_S7PayloadUserDataItemCyclicServicesErrorResponse: new(_S7PayloadUserDataItemCyclicServicesErrorResponse)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesErrorResponseBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesErrorResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) = (*_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) Build() (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesErrorResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesErrorResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder creates a S7PayloadUserDataItemCyclicServicesErrorResponseBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesErrorResponse) CreateS7PayloadUserDataItemCyclicServicesErrorResponseBuilder() S7PayloadUserDataItemCyclicServicesErrorResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesErrorResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesErrorResponseBuilder{_S7PayloadUserDataItemCyclicServicesErrorResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

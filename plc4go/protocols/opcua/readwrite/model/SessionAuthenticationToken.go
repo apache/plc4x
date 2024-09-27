@@ -39,6 +39,8 @@ type SessionAuthenticationToken interface {
 	utils.Copyable
 	// IsSessionAuthenticationToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSessionAuthenticationToken()
+	// CreateBuilder creates a SessionAuthenticationTokenBuilder
+	CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder
 }
 
 // _SessionAuthenticationToken is the data-structure of this message
@@ -51,6 +53,71 @@ var _ SessionAuthenticationToken = (*_SessionAuthenticationToken)(nil)
 func NewSessionAuthenticationToken() *_SessionAuthenticationToken {
 	return &_SessionAuthenticationToken{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SessionAuthenticationTokenBuilder is a builder for SessionAuthenticationToken
+type SessionAuthenticationTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SessionAuthenticationTokenBuilder
+	// Build builds the SessionAuthenticationToken or returns an error if something is wrong
+	Build() (SessionAuthenticationToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SessionAuthenticationToken
+}
+
+// NewSessionAuthenticationTokenBuilder() creates a SessionAuthenticationTokenBuilder
+func NewSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
+	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: new(_SessionAuthenticationToken)}
+}
+
+type _SessionAuthenticationTokenBuilder struct {
+	*_SessionAuthenticationToken
+
+	err *utils.MultiError
+}
+
+var _ (SessionAuthenticationTokenBuilder) = (*_SessionAuthenticationTokenBuilder)(nil)
+
+func (m *_SessionAuthenticationTokenBuilder) WithMandatoryFields() SessionAuthenticationTokenBuilder {
+	return m
+}
+
+func (m *_SessionAuthenticationTokenBuilder) Build() (SessionAuthenticationToken, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SessionAuthenticationToken.deepCopy(), nil
+}
+
+func (m *_SessionAuthenticationTokenBuilder) MustBuild() SessionAuthenticationToken {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SessionAuthenticationTokenBuilder) DeepCopy() any {
+	return m.CreateSessionAuthenticationTokenBuilder()
+}
+
+// CreateSessionAuthenticationTokenBuilder creates a SessionAuthenticationTokenBuilder
+func (m *_SessionAuthenticationToken) CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
+	if m == nil {
+		return NewSessionAuthenticationTokenBuilder()
+	}
+	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastSessionAuthenticationToken(structType any) SessionAuthenticationToken {

@@ -44,6 +44,8 @@ type LightingDataTerminateRamp interface {
 	GetGroup() byte
 	// IsLightingDataTerminateRamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingDataTerminateRamp()
+	// CreateBuilder creates a LightingDataTerminateRampBuilder
+	CreateLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder
 }
 
 // _LightingDataTerminateRamp is the data-structure of this message
@@ -64,6 +66,78 @@ func NewLightingDataTerminateRamp(commandTypeContainer LightingCommandTypeContai
 	_result.LightingDataContract.(*_LightingData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingDataTerminateRampBuilder is a builder for LightingDataTerminateRamp
+type LightingDataTerminateRampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(group byte) LightingDataTerminateRampBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(byte) LightingDataTerminateRampBuilder
+	// Build builds the LightingDataTerminateRamp or returns an error if something is wrong
+	Build() (LightingDataTerminateRamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingDataTerminateRamp
+}
+
+// NewLightingDataTerminateRampBuilder() creates a LightingDataTerminateRampBuilder
+func NewLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder {
+	return &_LightingDataTerminateRampBuilder{_LightingDataTerminateRamp: new(_LightingDataTerminateRamp)}
+}
+
+type _LightingDataTerminateRampBuilder struct {
+	*_LightingDataTerminateRamp
+
+	err *utils.MultiError
+}
+
+var _ (LightingDataTerminateRampBuilder) = (*_LightingDataTerminateRampBuilder)(nil)
+
+func (m *_LightingDataTerminateRampBuilder) WithMandatoryFields(group byte) LightingDataTerminateRampBuilder {
+	return m.WithGroup(group)
+}
+
+func (m *_LightingDataTerminateRampBuilder) WithGroup(group byte) LightingDataTerminateRampBuilder {
+	m.Group = group
+	return m
+}
+
+func (m *_LightingDataTerminateRampBuilder) Build() (LightingDataTerminateRamp, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LightingDataTerminateRamp.deepCopy(), nil
+}
+
+func (m *_LightingDataTerminateRampBuilder) MustBuild() LightingDataTerminateRamp {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LightingDataTerminateRampBuilder) DeepCopy() any {
+	return m.CreateLightingDataTerminateRampBuilder()
+}
+
+// CreateLightingDataTerminateRampBuilder creates a LightingDataTerminateRampBuilder
+func (m *_LightingDataTerminateRamp) CreateLightingDataTerminateRampBuilder() LightingDataTerminateRampBuilder {
+	if m == nil {
+		return NewLightingDataTerminateRampBuilder()
+	}
+	return &_LightingDataTerminateRampBuilder{_LightingDataTerminateRamp: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

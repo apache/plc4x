@@ -44,6 +44,8 @@ type FirmataCommandSysex interface {
 	GetCommand() SysexCommand
 	// IsFirmataCommandSysex is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSysex()
+	// CreateBuilder creates a FirmataCommandSysexBuilder
+	CreateFirmataCommandSysexBuilder() FirmataCommandSysexBuilder
 }
 
 // _FirmataCommandSysex is the data-structure of this message
@@ -69,6 +71,84 @@ func NewFirmataCommandSysex(command SysexCommand, response bool) *_FirmataComman
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataCommandSysexBuilder is a builder for FirmataCommandSysex
+type FirmataCommandSysexBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(SysexCommand) FirmataCommandSysexBuilder
+	// Build builds the FirmataCommandSysex or returns an error if something is wrong
+	Build() (FirmataCommandSysex, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommandSysex
+}
+
+// NewFirmataCommandSysexBuilder() creates a FirmataCommandSysexBuilder
+func NewFirmataCommandSysexBuilder() FirmataCommandSysexBuilder {
+	return &_FirmataCommandSysexBuilder{_FirmataCommandSysex: new(_FirmataCommandSysex)}
+}
+
+type _FirmataCommandSysexBuilder struct {
+	*_FirmataCommandSysex
+
+	err *utils.MultiError
+}
+
+var _ (FirmataCommandSysexBuilder) = (*_FirmataCommandSysexBuilder)(nil)
+
+func (m *_FirmataCommandSysexBuilder) WithMandatoryFields(command SysexCommand) FirmataCommandSysexBuilder {
+	return m.WithCommand(command)
+}
+
+func (m *_FirmataCommandSysexBuilder) WithCommand(command SysexCommand) FirmataCommandSysexBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_FirmataCommandSysexBuilder) Build() (FirmataCommandSysex, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataCommandSysex.deepCopy(), nil
+}
+
+func (m *_FirmataCommandSysexBuilder) MustBuild() FirmataCommandSysex {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataCommandSysexBuilder) DeepCopy() any {
+	return m.CreateFirmataCommandSysexBuilder()
+}
+
+// CreateFirmataCommandSysexBuilder creates a FirmataCommandSysexBuilder
+func (m *_FirmataCommandSysex) CreateFirmataCommandSysexBuilder() FirmataCommandSysexBuilder {
+	if m == nil {
+		return NewFirmataCommandSysexBuilder()
+	}
+	return &_FirmataCommandSysexBuilder{_FirmataCommandSysex: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

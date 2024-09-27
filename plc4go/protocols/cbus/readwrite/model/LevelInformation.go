@@ -43,6 +43,8 @@ type LevelInformation interface {
 	utils.Copyable
 	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
+	// CreateBuilder creates a LevelInformationBuilder
+	CreateLevelInformationBuilder() LevelInformationBuilder
 }
 
 // LevelInformationContract provides a set of functions which can be overwritten by a sub struct
@@ -67,6 +69,8 @@ type LevelInformationContract interface {
 	GetIsCorrupted() bool
 	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
+	// CreateBuilder creates a LevelInformationBuilder
+	CreateLevelInformationBuilder() LevelInformationBuilder
 }
 
 // LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -91,6 +95,78 @@ var _ LevelInformationContract = (*_LevelInformation)(nil)
 func NewLevelInformation(raw uint16) *_LevelInformation {
 	return &_LevelInformation{Raw: raw}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LevelInformationBuilder is a builder for LevelInformation
+type LevelInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(raw uint16) LevelInformationBuilder
+	// WithRaw adds Raw (property field)
+	WithRaw(uint16) LevelInformationBuilder
+	// Build builds the LevelInformation or returns an error if something is wrong
+	Build() (LevelInformationContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LevelInformationContract
+}
+
+// NewLevelInformationBuilder() creates a LevelInformationBuilder
+func NewLevelInformationBuilder() LevelInformationBuilder {
+	return &_LevelInformationBuilder{_LevelInformation: new(_LevelInformation)}
+}
+
+type _LevelInformationBuilder struct {
+	*_LevelInformation
+
+	err *utils.MultiError
+}
+
+var _ (LevelInformationBuilder) = (*_LevelInformationBuilder)(nil)
+
+func (m *_LevelInformationBuilder) WithMandatoryFields(raw uint16) LevelInformationBuilder {
+	return m.WithRaw(raw)
+}
+
+func (m *_LevelInformationBuilder) WithRaw(raw uint16) LevelInformationBuilder {
+	m.Raw = raw
+	return m
+}
+
+func (m *_LevelInformationBuilder) Build() (LevelInformationContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LevelInformation.deepCopy(), nil
+}
+
+func (m *_LevelInformationBuilder) MustBuild() LevelInformationContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LevelInformationBuilder) DeepCopy() any {
+	return m.CreateLevelInformationBuilder()
+}
+
+// CreateLevelInformationBuilder creates a LevelInformationBuilder
+func (m *_LevelInformation) CreateLevelInformationBuilder() LevelInformationBuilder {
+	if m == nil {
+		return NewLevelInformationBuilder()
+	}
+	return &_LevelInformationBuilder{_LevelInformation: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

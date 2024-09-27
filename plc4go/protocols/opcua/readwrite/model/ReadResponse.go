@@ -52,6 +52,8 @@ type ReadResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReadResponse()
+	// CreateBuilder creates a ReadResponseBuilder
+	CreateReadResponseBuilder() ReadResponseBuilder
 }
 
 // _ReadResponse is the data-structure of this message
@@ -83,6 +85,112 @@ func NewReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReadResponseBuilder is a builder for ReadResponse
+type ReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) ReadResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) ReadResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...DataValue) ReadResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) ReadResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) ReadResponseBuilder
+	// Build builds the ReadResponse or returns an error if something is wrong
+	Build() (ReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReadResponse
+}
+
+// NewReadResponseBuilder() creates a ReadResponseBuilder
+func NewReadResponseBuilder() ReadResponseBuilder {
+	return &_ReadResponseBuilder{_ReadResponse: new(_ReadResponse)}
+}
+
+type _ReadResponseBuilder struct {
+	*_ReadResponse
+
+	err *utils.MultiError
+}
+
+var _ (ReadResponseBuilder) = (*_ReadResponseBuilder)(nil)
+
+func (m *_ReadResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []DataValue, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ReadResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (m *_ReadResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ReadResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_ReadResponseBuilder) WithNoOfResults(noOfResults int32) ReadResponseBuilder {
+	m.NoOfResults = noOfResults
+	return m
+}
+
+func (m *_ReadResponseBuilder) WithResults(results ...DataValue) ReadResponseBuilder {
+	m.Results = results
+	return m
+}
+
+func (m *_ReadResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ReadResponseBuilder {
+	m.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return m
+}
+
+func (m *_ReadResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ReadResponseBuilder {
+	m.DiagnosticInfos = diagnosticInfos
+	return m
+}
+
+func (m *_ReadResponseBuilder) Build() (ReadResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReadResponse.deepCopy(), nil
+}
+
+func (m *_ReadResponseBuilder) MustBuild() ReadResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReadResponseBuilder) DeepCopy() any {
+	return m.CreateReadResponseBuilder()
+}
+
+// CreateReadResponseBuilder creates a ReadResponseBuilder
+func (m *_ReadResponse) CreateReadResponseBuilder() ReadResponseBuilder {
+	if m == nil {
+		return NewReadResponseBuilder()
+	}
+	return &_ReadResponseBuilder{_ReadResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

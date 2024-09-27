@@ -40,6 +40,8 @@ type BACnetConstructedDataNotificationForwarderAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataNotificationForwarderAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNotificationForwarderAll()
+	// CreateBuilder creates a BACnetConstructedDataNotificationForwarderAllBuilder
+	CreateBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructedDataNotificationForwarderAllBuilder
 }
 
 // _BACnetConstructedDataNotificationForwarderAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataNotificationForwarderAll(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNotificationForwarderAllBuilder is a builder for BACnetConstructedDataNotificationForwarderAll
+type BACnetConstructedDataNotificationForwarderAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder
+	// Build builds the BACnetConstructedDataNotificationForwarderAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataNotificationForwarderAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNotificationForwarderAll
+}
+
+// NewBACnetConstructedDataNotificationForwarderAllBuilder() creates a BACnetConstructedDataNotificationForwarderAllBuilder
+func NewBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructedDataNotificationForwarderAllBuilder {
+	return &_BACnetConstructedDataNotificationForwarderAllBuilder{_BACnetConstructedDataNotificationForwarderAll: new(_BACnetConstructedDataNotificationForwarderAll)}
+}
+
+type _BACnetConstructedDataNotificationForwarderAllBuilder struct {
+	*_BACnetConstructedDataNotificationForwarderAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNotificationForwarderAllBuilder) = (*_BACnetConstructedDataNotificationForwarderAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationForwarderAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) Build() (BACnetConstructedDataNotificationForwarderAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataNotificationForwarderAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) MustBuild() BACnetConstructedDataNotificationForwarderAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataNotificationForwarderAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataNotificationForwarderAllBuilder()
+}
+
+// CreateBACnetConstructedDataNotificationForwarderAllBuilder creates a BACnetConstructedDataNotificationForwarderAllBuilder
+func (m *_BACnetConstructedDataNotificationForwarderAll) CreateBACnetConstructedDataNotificationForwarderAllBuilder() BACnetConstructedDataNotificationForwarderAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataNotificationForwarderAllBuilder()
+	}
+	return &_BACnetConstructedDataNotificationForwarderAllBuilder{_BACnetConstructedDataNotificationForwarderAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

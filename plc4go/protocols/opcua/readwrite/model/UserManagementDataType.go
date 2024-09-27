@@ -48,6 +48,8 @@ type UserManagementDataType interface {
 	GetDescription() PascalString
 	// IsUserManagementDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserManagementDataType()
+	// CreateBuilder creates a UserManagementDataTypeBuilder
+	CreateUserManagementDataTypeBuilder() UserManagementDataTypeBuilder
 }
 
 // _UserManagementDataType is the data-structure of this message
@@ -78,6 +80,134 @@ func NewUserManagementDataType(userName PascalString, userConfiguration UserConf
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UserManagementDataTypeBuilder is a builder for UserManagementDataType
+type UserManagementDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) UserManagementDataTypeBuilder
+	// WithUserName adds UserName (property field)
+	WithUserName(PascalString) UserManagementDataTypeBuilder
+	// WithUserNameBuilder adds UserName (property field) which is build by the builder
+	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder
+	// WithUserConfiguration adds UserConfiguration (property field)
+	WithUserConfiguration(UserConfigurationMask) UserManagementDataTypeBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(PascalString) UserManagementDataTypeBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder
+	// Build builds the UserManagementDataType or returns an error if something is wrong
+	Build() (UserManagementDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UserManagementDataType
+}
+
+// NewUserManagementDataTypeBuilder() creates a UserManagementDataTypeBuilder
+func NewUserManagementDataTypeBuilder() UserManagementDataTypeBuilder {
+	return &_UserManagementDataTypeBuilder{_UserManagementDataType: new(_UserManagementDataType)}
+}
+
+type _UserManagementDataTypeBuilder struct {
+	*_UserManagementDataType
+
+	err *utils.MultiError
+}
+
+var _ (UserManagementDataTypeBuilder) = (*_UserManagementDataTypeBuilder)(nil)
+
+func (m *_UserManagementDataTypeBuilder) WithMandatoryFields(userName PascalString, userConfiguration UserConfigurationMask, description PascalString) UserManagementDataTypeBuilder {
+	return m.WithUserName(userName).WithUserConfiguration(userConfiguration).WithDescription(description)
+}
+
+func (m *_UserManagementDataTypeBuilder) WithUserName(userName PascalString) UserManagementDataTypeBuilder {
+	m.UserName = userName
+	return m
+}
+
+func (m *_UserManagementDataTypeBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
+	builder := builderSupplier(m.UserName.CreatePascalStringBuilder())
+	var err error
+	m.UserName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_UserManagementDataTypeBuilder) WithUserConfiguration(userConfiguration UserConfigurationMask) UserManagementDataTypeBuilder {
+	m.UserConfiguration = userConfiguration
+	return m
+}
+
+func (m *_UserManagementDataTypeBuilder) WithDescription(description PascalString) UserManagementDataTypeBuilder {
+	m.Description = description
+	return m
+}
+
+func (m *_UserManagementDataTypeBuilder) WithDescriptionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserManagementDataTypeBuilder {
+	builder := builderSupplier(m.Description.CreatePascalStringBuilder())
+	var err error
+	m.Description, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_UserManagementDataTypeBuilder) Build() (UserManagementDataType, error) {
+	if m.UserName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'userName' not set"))
+	}
+	if m.Description == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UserManagementDataType.deepCopy(), nil
+}
+
+func (m *_UserManagementDataTypeBuilder) MustBuild() UserManagementDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UserManagementDataTypeBuilder) DeepCopy() any {
+	return m.CreateUserManagementDataTypeBuilder()
+}
+
+// CreateUserManagementDataTypeBuilder creates a UserManagementDataTypeBuilder
+func (m *_UserManagementDataType) CreateUserManagementDataTypeBuilder() UserManagementDataTypeBuilder {
+	if m == nil {
+		return NewUserManagementDataTypeBuilder()
+	}
+	return &_UserManagementDataTypeBuilder{_UserManagementDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

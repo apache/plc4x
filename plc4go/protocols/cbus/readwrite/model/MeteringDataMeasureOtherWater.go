@@ -40,6 +40,8 @@ type MeteringDataMeasureOtherWater interface {
 	MeteringData
 	// IsMeteringDataMeasureOtherWater is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureOtherWater()
+	// CreateBuilder creates a MeteringDataMeasureOtherWaterBuilder
+	CreateMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder
 }
 
 // _MeteringDataMeasureOtherWater is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeCo
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataMeasureOtherWaterBuilder is a builder for MeteringDataMeasureOtherWater
+type MeteringDataMeasureOtherWaterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MeteringDataMeasureOtherWaterBuilder
+	// Build builds the MeteringDataMeasureOtherWater or returns an error if something is wrong
+	Build() (MeteringDataMeasureOtherWater, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataMeasureOtherWater
+}
+
+// NewMeteringDataMeasureOtherWaterBuilder() creates a MeteringDataMeasureOtherWaterBuilder
+func NewMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder {
+	return &_MeteringDataMeasureOtherWaterBuilder{_MeteringDataMeasureOtherWater: new(_MeteringDataMeasureOtherWater)}
+}
+
+type _MeteringDataMeasureOtherWaterBuilder struct {
+	*_MeteringDataMeasureOtherWater
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataMeasureOtherWaterBuilder) = (*_MeteringDataMeasureOtherWaterBuilder)(nil)
+
+func (m *_MeteringDataMeasureOtherWaterBuilder) WithMandatoryFields() MeteringDataMeasureOtherWaterBuilder {
+	return m
+}
+
+func (m *_MeteringDataMeasureOtherWaterBuilder) Build() (MeteringDataMeasureOtherWater, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataMeasureOtherWater.deepCopy(), nil
+}
+
+func (m *_MeteringDataMeasureOtherWaterBuilder) MustBuild() MeteringDataMeasureOtherWater {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataMeasureOtherWaterBuilder) DeepCopy() any {
+	return m.CreateMeteringDataMeasureOtherWaterBuilder()
+}
+
+// CreateMeteringDataMeasureOtherWaterBuilder creates a MeteringDataMeasureOtherWaterBuilder
+func (m *_MeteringDataMeasureOtherWater) CreateMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder {
+	if m == nil {
+		return NewMeteringDataMeasureOtherWaterBuilder()
+	}
+	return &_MeteringDataMeasureOtherWaterBuilder{_MeteringDataMeasureOtherWater: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

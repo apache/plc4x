@@ -48,6 +48,8 @@ type BACnetConstructedDataIPDNSServer interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataIPDNSServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPDNSServer()
+	// CreateBuilder creates a BACnetConstructedDataIPDNSServerBuilder
+	CreateBACnetConstructedDataIPDNSServerBuilder() BACnetConstructedDataIPDNSServerBuilder
 }
 
 // _BACnetConstructedDataIPDNSServer is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataIPDNSServer(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPDNSServerBuilder is a builder for BACnetConstructedDataIPDNSServer
+type BACnetConstructedDataIPDNSServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipDnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDNSServerBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDNSServerBuilder
+	// WithIpDnsServer adds IpDnsServer (property field)
+	WithIpDnsServer(...BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder
+	// Build builds the BACnetConstructedDataIPDNSServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPDNSServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPDNSServer
+}
+
+// NewBACnetConstructedDataIPDNSServerBuilder() creates a BACnetConstructedDataIPDNSServerBuilder
+func NewBACnetConstructedDataIPDNSServerBuilder() BACnetConstructedDataIPDNSServerBuilder {
+	return &_BACnetConstructedDataIPDNSServerBuilder{_BACnetConstructedDataIPDNSServer: new(_BACnetConstructedDataIPDNSServer)}
+}
+
+type _BACnetConstructedDataIPDNSServerBuilder struct {
+	*_BACnetConstructedDataIPDNSServer
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPDNSServerBuilder) = (*_BACnetConstructedDataIPDNSServerBuilder)(nil)
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) WithMandatoryFields(ipDnsServer []BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder {
+	return m.WithIpDnsServer(ipDnsServer...)
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDNSServerBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDNSServerBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) WithIpDnsServer(ipDnsServer ...BACnetApplicationTagOctetString) BACnetConstructedDataIPDNSServerBuilder {
+	m.IpDnsServer = ipDnsServer
+	return m
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) Build() (BACnetConstructedDataIPDNSServer, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIPDNSServer.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) MustBuild() BACnetConstructedDataIPDNSServer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIPDNSServerBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIPDNSServerBuilder()
+}
+
+// CreateBACnetConstructedDataIPDNSServerBuilder creates a BACnetConstructedDataIPDNSServerBuilder
+func (m *_BACnetConstructedDataIPDNSServer) CreateBACnetConstructedDataIPDNSServerBuilder() BACnetConstructedDataIPDNSServerBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIPDNSServerBuilder()
+	}
+	return &_BACnetConstructedDataIPDNSServerBuilder{_BACnetConstructedDataIPDNSServer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

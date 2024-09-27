@@ -46,6 +46,8 @@ type ModbusPDUReadDiscreteInputsRequest interface {
 	GetQuantity() uint16
 	// IsModbusPDUReadDiscreteInputsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadDiscreteInputsRequest()
+	// CreateBuilder creates a ModbusPDUReadDiscreteInputsRequestBuilder
+	CreateModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsRequestBuilder
 }
 
 // _ModbusPDUReadDiscreteInputsRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadDiscreteInputsRequestBuilder is a builder for ModbusPDUReadDiscreteInputsRequest
+type ModbusPDUReadDiscreteInputsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder
+	// WithStartingAddress adds StartingAddress (property field)
+	WithStartingAddress(uint16) ModbusPDUReadDiscreteInputsRequestBuilder
+	// WithQuantity adds Quantity (property field)
+	WithQuantity(uint16) ModbusPDUReadDiscreteInputsRequestBuilder
+	// Build builds the ModbusPDUReadDiscreteInputsRequest or returns an error if something is wrong
+	Build() (ModbusPDUReadDiscreteInputsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadDiscreteInputsRequest
+}
+
+// NewModbusPDUReadDiscreteInputsRequestBuilder() creates a ModbusPDUReadDiscreteInputsRequestBuilder
+func NewModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsRequestBuilder {
+	return &_ModbusPDUReadDiscreteInputsRequestBuilder{_ModbusPDUReadDiscreteInputsRequest: new(_ModbusPDUReadDiscreteInputsRequest)}
+}
+
+type _ModbusPDUReadDiscreteInputsRequestBuilder struct {
+	*_ModbusPDUReadDiscreteInputsRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadDiscreteInputsRequestBuilder) = (*_ModbusPDUReadDiscreteInputsRequestBuilder)(nil)
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	m.StartingAddress = startingAddress
+	return m
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadDiscreteInputsRequestBuilder {
+	m.Quantity = quantity
+	return m
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) Build() (ModbusPDUReadDiscreteInputsRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadDiscreteInputsRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) MustBuild() ModbusPDUReadDiscreteInputsRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadDiscreteInputsRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadDiscreteInputsRequestBuilder()
+}
+
+// CreateModbusPDUReadDiscreteInputsRequestBuilder creates a ModbusPDUReadDiscreteInputsRequestBuilder
+func (m *_ModbusPDUReadDiscreteInputsRequest) CreateModbusPDUReadDiscreteInputsRequestBuilder() ModbusPDUReadDiscreteInputsRequestBuilder {
+	if m == nil {
+		return NewModbusPDUReadDiscreteInputsRequestBuilder()
+	}
+	return &_ModbusPDUReadDiscreteInputsRequestBuilder{_ModbusPDUReadDiscreteInputsRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

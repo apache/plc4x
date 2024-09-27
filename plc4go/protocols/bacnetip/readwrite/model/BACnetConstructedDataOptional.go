@@ -40,6 +40,8 @@ type BACnetConstructedDataOptional interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataOptional is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOptional()
+	// CreateBuilder creates a BACnetConstructedDataOptionalBuilder
+	CreateBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuilder
 }
 
 // _BACnetConstructedDataOptional is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataOptional(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOptionalBuilder is a builder for BACnetConstructedDataOptional
+type BACnetConstructedDataOptionalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataOptionalBuilder
+	// Build builds the BACnetConstructedDataOptional or returns an error if something is wrong
+	Build() (BACnetConstructedDataOptional, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOptional
+}
+
+// NewBACnetConstructedDataOptionalBuilder() creates a BACnetConstructedDataOptionalBuilder
+func NewBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuilder {
+	return &_BACnetConstructedDataOptionalBuilder{_BACnetConstructedDataOptional: new(_BACnetConstructedDataOptional)}
+}
+
+type _BACnetConstructedDataOptionalBuilder struct {
+	*_BACnetConstructedDataOptional
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOptionalBuilder) = (*_BACnetConstructedDataOptionalBuilder)(nil)
+
+func (m *_BACnetConstructedDataOptionalBuilder) WithMandatoryFields() BACnetConstructedDataOptionalBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataOptionalBuilder) Build() (BACnetConstructedDataOptional, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataOptional.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataOptionalBuilder) MustBuild() BACnetConstructedDataOptional {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataOptionalBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataOptionalBuilder()
+}
+
+// CreateBACnetConstructedDataOptionalBuilder creates a BACnetConstructedDataOptionalBuilder
+func (m *_BACnetConstructedDataOptional) CreateBACnetConstructedDataOptionalBuilder() BACnetConstructedDataOptionalBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataOptionalBuilder()
+	}
+	return &_BACnetConstructedDataOptionalBuilder{_BACnetConstructedDataOptional: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

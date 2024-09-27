@@ -46,6 +46,8 @@ type BACnetConstructedDataAccessZoneAdjustValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataAccessZoneAdjustValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessZoneAdjustValue()
+	// CreateBuilder creates a BACnetConstructedDataAccessZoneAdjustValueBuilder
+	CreateBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDataAccessZoneAdjustValueBuilder
 }
 
 // _BACnetConstructedDataAccessZoneAdjustValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAccessZoneAdjustValue(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessZoneAdjustValueBuilder is a builder for BACnetConstructedDataAccessZoneAdjustValue
+type BACnetConstructedDataAccessZoneAdjustValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder
+	// WithAdjustValue adds AdjustValue (property field)
+	WithAdjustValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder
+	// WithAdjustValueBuilder adds AdjustValue (property field) which is build by the builder
+	WithAdjustValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAccessZoneAdjustValueBuilder
+	// Build builds the BACnetConstructedDataAccessZoneAdjustValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessZoneAdjustValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessZoneAdjustValue
+}
+
+// NewBACnetConstructedDataAccessZoneAdjustValueBuilder() creates a BACnetConstructedDataAccessZoneAdjustValueBuilder
+func NewBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	return &_BACnetConstructedDataAccessZoneAdjustValueBuilder{_BACnetConstructedDataAccessZoneAdjustValue: new(_BACnetConstructedDataAccessZoneAdjustValue)}
+}
+
+type _BACnetConstructedDataAccessZoneAdjustValueBuilder struct {
+	*_BACnetConstructedDataAccessZoneAdjustValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessZoneAdjustValueBuilder) = (*_BACnetConstructedDataAccessZoneAdjustValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	return m.WithAdjustValue(adjustValue)
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	m.AdjustValue = adjustValue
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	builder := builderSupplier(m.AdjustValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.AdjustValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) Build() (BACnetConstructedDataAccessZoneAdjustValue, error) {
+	if m.AdjustValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'adjustValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessZoneAdjustValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) MustBuild() BACnetConstructedDataAccessZoneAdjustValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessZoneAdjustValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessZoneAdjustValueBuilder()
+}
+
+// CreateBACnetConstructedDataAccessZoneAdjustValueBuilder creates a BACnetConstructedDataAccessZoneAdjustValueBuilder
+func (m *_BACnetConstructedDataAccessZoneAdjustValue) CreateBACnetConstructedDataAccessZoneAdjustValueBuilder() BACnetConstructedDataAccessZoneAdjustValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessZoneAdjustValueBuilder()
+	}
+	return &_BACnetConstructedDataAccessZoneAdjustValueBuilder{_BACnetConstructedDataAccessZoneAdjustValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

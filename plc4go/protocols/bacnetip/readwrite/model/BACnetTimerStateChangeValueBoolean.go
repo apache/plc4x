@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 	// IsBACnetTimerStateChangeValueBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueBoolean()
+	// CreateBuilder creates a BACnetTimerStateChangeValueBooleanBuilder
+	CreateBACnetTimerStateChangeValueBooleanBuilder() BACnetTimerStateChangeValueBooleanBuilder
 }
 
 // _BACnetTimerStateChangeValueBoolean is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueBoolean(peekedTagHeader BACnetTagHeader, bool
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueBooleanBuilder is a builder for BACnetTimerStateChangeValueBoolean
+type BACnetTimerStateChangeValueBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder
+	// WithBooleanValue adds BooleanValue (property field)
+	WithBooleanValue(BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder
+	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
+	WithBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetTimerStateChangeValueBooleanBuilder
+	// Build builds the BACnetTimerStateChangeValueBoolean or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueBoolean
+}
+
+// NewBACnetTimerStateChangeValueBooleanBuilder() creates a BACnetTimerStateChangeValueBooleanBuilder
+func NewBACnetTimerStateChangeValueBooleanBuilder() BACnetTimerStateChangeValueBooleanBuilder {
+	return &_BACnetTimerStateChangeValueBooleanBuilder{_BACnetTimerStateChangeValueBoolean: new(_BACnetTimerStateChangeValueBoolean)}
+}
+
+type _BACnetTimerStateChangeValueBooleanBuilder struct {
+	*_BACnetTimerStateChangeValueBoolean
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueBooleanBuilder) = (*_BACnetTimerStateChangeValueBooleanBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder {
+	return m.WithBooleanValue(booleanValue)
+}
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetTimerStateChangeValueBooleanBuilder {
+	m.BooleanValue = booleanValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetTimerStateChangeValueBooleanBuilder {
+	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.BooleanValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) Build() (BACnetTimerStateChangeValueBoolean, error) {
+	if m.BooleanValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueBoolean.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) MustBuild() BACnetTimerStateChangeValueBoolean {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueBooleanBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueBooleanBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueBooleanBuilder creates a BACnetTimerStateChangeValueBooleanBuilder
+func (m *_BACnetTimerStateChangeValueBoolean) CreateBACnetTimerStateChangeValueBooleanBuilder() BACnetTimerStateChangeValueBooleanBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueBooleanBuilder()
+	}
+	return &_BACnetTimerStateChangeValueBooleanBuilder{_BACnetTimerStateChangeValueBoolean: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

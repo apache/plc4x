@@ -46,6 +46,8 @@ type BACnetConstructedDataCharacterStringValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataCharacterStringValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCharacterStringValuePresentValue()
+	// CreateBuilder creates a BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetConstructedDataCharacterStringValuePresentValueBuilder
 }
 
 // _BACnetConstructedDataCharacterStringValuePresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataCharacterStringValuePresentValue(openingTag BACnetO
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCharacterStringValuePresentValueBuilder is a builder for BACnetConstructedDataCharacterStringValuePresentValue
+type BACnetConstructedDataCharacterStringValuePresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValuePresentValueBuilder
+	// Build builds the BACnetConstructedDataCharacterStringValuePresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataCharacterStringValuePresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCharacterStringValuePresentValue
+}
+
+// NewBACnetConstructedDataCharacterStringValuePresentValueBuilder() creates a BACnetConstructedDataCharacterStringValuePresentValueBuilder
+func NewBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	return &_BACnetConstructedDataCharacterStringValuePresentValueBuilder{_BACnetConstructedDataCharacterStringValuePresentValue: new(_BACnetConstructedDataCharacterStringValuePresentValue)}
+}
+
+type _BACnetConstructedDataCharacterStringValuePresentValueBuilder struct {
+	*_BACnetConstructedDataCharacterStringValuePresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCharacterStringValuePresentValueBuilder) = (*_BACnetConstructedDataCharacterStringValuePresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagCharacterString) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) Build() (BACnetConstructedDataCharacterStringValuePresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCharacterStringValuePresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) MustBuild() BACnetConstructedDataCharacterStringValuePresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCharacterStringValuePresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder creates a BACnetConstructedDataCharacterStringValuePresentValueBuilder
+func (m *_BACnetConstructedDataCharacterStringValuePresentValue) CreateBACnetConstructedDataCharacterStringValuePresentValueBuilder() BACnetConstructedDataCharacterStringValuePresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCharacterStringValuePresentValueBuilder()
+	}
+	return &_BACnetConstructedDataCharacterStringValuePresentValueBuilder{_BACnetConstructedDataCharacterStringValuePresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

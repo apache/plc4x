@@ -46,6 +46,8 @@ type BACnetConstructedDataLargeAnalogValueCOVIncrement interface {
 	GetActualValue() BACnetApplicationTagDouble
 	// IsBACnetConstructedDataLargeAnalogValueCOVIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueCOVIncrement()
+	// CreateBuilder creates a BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	CreateBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder() BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
 }
 
 // _BACnetConstructedDataLargeAnalogValueCOVIncrement is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLargeAnalogValueCOVIncrement(openingTag BACnetOpeni
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder is a builder for BACnetConstructedDataLargeAnalogValueCOVIncrement
+type BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(covIncrement BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithCovIncrement(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	// WithCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
+	WithCovIncrementBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+	// Build builds the BACnetConstructedDataLargeAnalogValueCOVIncrement or returns an error if something is wrong
+	Build() (BACnetConstructedDataLargeAnalogValueCOVIncrement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLargeAnalogValueCOVIncrement
+}
+
+// NewBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder() creates a BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+func NewBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder() BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
+	return &_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder{_BACnetConstructedDataLargeAnalogValueCOVIncrement: new(_BACnetConstructedDataLargeAnalogValueCOVIncrement)}
+}
+
+type _BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder struct {
+	*_BACnetConstructedDataLargeAnalogValueCOVIncrement
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) = (*_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder)(nil)
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) WithMandatoryFields(covIncrement BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
+	return m.WithCovIncrement(covIncrement)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) WithCovIncrement(covIncrement BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
+	m.CovIncrement = covIncrement
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) WithCovIncrementBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
+	builder := builderSupplier(m.CovIncrement.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.CovIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) Build() (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+	if m.CovIncrement == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'covIncrement' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLargeAnalogValueCOVIncrement.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueCOVIncrement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder()
+}
+
+// CreateBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder creates a BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder
+func (m *_BACnetConstructedDataLargeAnalogValueCOVIncrement) CreateBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder() BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLargeAnalogValueCOVIncrementBuilder()
+	}
+	return &_BACnetConstructedDataLargeAnalogValueCOVIncrementBuilder{_BACnetConstructedDataLargeAnalogValueCOVIncrement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

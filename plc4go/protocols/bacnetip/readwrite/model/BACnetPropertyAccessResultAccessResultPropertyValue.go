@@ -44,6 +44,8 @@ type BACnetPropertyAccessResultAccessResultPropertyValue interface {
 	GetPropertyValue() BACnetConstructedData
 	// IsBACnetPropertyAccessResultAccessResultPropertyValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyAccessResultAccessResultPropertyValue()
+	// CreateBuilder creates a BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPropertyAccessResultAccessResultPropertyValueBuilder
 }
 
 // _BACnetPropertyAccessResultAccessResultPropertyValue is the data-structure of this message
@@ -67,6 +69,84 @@ func NewBACnetPropertyAccessResultAccessResultPropertyValue(peekedTagHeader BACn
 	_result.BACnetPropertyAccessResultAccessResultContract.(*_BACnetPropertyAccessResultAccessResult)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyAccessResultAccessResultPropertyValueBuilder is a builder for BACnetPropertyAccessResultAccessResultPropertyValue
+type BACnetPropertyAccessResultAccessResultPropertyValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	// WithPropertyValue adds PropertyValue (property field)
+	WithPropertyValue(BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+	// Build builds the BACnetPropertyAccessResultAccessResultPropertyValue or returns an error if something is wrong
+	Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyAccessResultAccessResultPropertyValue
+}
+
+// NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder() creates a BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+func NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	return &_BACnetPropertyAccessResultAccessResultPropertyValueBuilder{_BACnetPropertyAccessResultAccessResultPropertyValue: new(_BACnetPropertyAccessResultAccessResultPropertyValue)}
+}
+
+type _BACnetPropertyAccessResultAccessResultPropertyValueBuilder struct {
+	*_BACnetPropertyAccessResultAccessResultPropertyValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyAccessResultAccessResultPropertyValueBuilder) = (*_BACnetPropertyAccessResultAccessResultPropertyValueBuilder)(nil)
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithMandatoryFields(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	return m.WithPropertyValue(propertyValue)
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) WithPropertyValue(propertyValue BACnetConstructedData) BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	m.PropertyValue = propertyValue
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) Build() (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
+	if m.PropertyValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'propertyValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyAccessResultAccessResultPropertyValue.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) MustBuild() BACnetPropertyAccessResultAccessResultPropertyValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder()
+}
+
+// CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder creates a BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+func (m *_BACnetPropertyAccessResultAccessResultPropertyValue) CreateBACnetPropertyAccessResultAccessResultPropertyValueBuilder() BACnetPropertyAccessResultAccessResultPropertyValueBuilder {
+	if m == nil {
+		return NewBACnetPropertyAccessResultAccessResultPropertyValueBuilder()
+	}
+	return &_BACnetPropertyAccessResultAccessResultPropertyValueBuilder{_BACnetPropertyAccessResultAccessResultPropertyValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

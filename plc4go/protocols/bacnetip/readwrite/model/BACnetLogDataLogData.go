@@ -48,6 +48,8 @@ type BACnetLogDataLogData interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetLogDataLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogData()
+	// CreateBuilder creates a BACnetLogDataLogDataBuilder
+	CreateBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder
 }
 
 // _BACnetLogDataLogData is the data-structure of this message
@@ -78,6 +80,134 @@ func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnet
 	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataBuilder is a builder for BACnetLogDataLogData
+type BACnetLogDataLogDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetLogDataLogDataBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataLogDataBuilder
+	// WithLogData adds LogData (property field)
+	WithLogData(...BACnetLogDataLogDataEntry) BACnetLogDataLogDataBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetLogDataLogDataBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataLogDataBuilder
+	// Build builds the BACnetLogDataLogData or returns an error if something is wrong
+	Build() (BACnetLogDataLogData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogData
+}
+
+// NewBACnetLogDataLogDataBuilder() creates a BACnetLogDataLogDataBuilder
+func NewBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder {
+	return &_BACnetLogDataLogDataBuilder{_BACnetLogDataLogData: new(_BACnetLogDataLogData)}
+}
+
+type _BACnetLogDataLogDataBuilder struct {
+	*_BACnetLogDataLogData
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataBuilder) = (*_BACnetLogDataLogDataBuilder)(nil)
+
+func (m *_BACnetLogDataLogDataBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder {
+	return m.WithInnerOpeningTag(innerOpeningTag).WithLogData(logData...).WithInnerClosingTag(innerClosingTag)
+}
+
+func (m *_BACnetLogDataLogDataBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetLogDataLogDataBuilder {
+	m.InnerOpeningTag = innerOpeningTag
+	return m
+}
+
+func (m *_BACnetLogDataLogDataBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataLogDataBuilder {
+	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogDataBuilder) WithLogData(logData ...BACnetLogDataLogDataEntry) BACnetLogDataLogDataBuilder {
+	m.LogData = logData
+	return m
+}
+
+func (m *_BACnetLogDataLogDataBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder {
+	m.InnerClosingTag = innerClosingTag
+	return m
+}
+
+func (m *_BACnetLogDataLogDataBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataLogDataBuilder {
+	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogDataBuilder) Build() (BACnetLogDataLogData, error) {
+	if m.InnerOpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if m.InnerClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogData.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogDataBuilder) MustBuild() BACnetLogDataLogData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogDataBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogDataBuilder()
+}
+
+// CreateBACnetLogDataLogDataBuilder creates a BACnetLogDataLogDataBuilder
+func (m *_BACnetLogDataLogData) CreateBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogDataBuilder()
+	}
+	return &_BACnetLogDataLogDataBuilder{_BACnetLogDataLogData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

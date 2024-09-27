@@ -44,6 +44,8 @@ type ApduDataExtAuthorizeResponse interface {
 	GetLevel() uint8
 	// IsApduDataExtAuthorizeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtAuthorizeResponse()
+	// CreateBuilder creates a ApduDataExtAuthorizeResponseBuilder
+	CreateApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilder
 }
 
 // _ApduDataExtAuthorizeResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewApduDataExtAuthorizeResponse(level uint8, length uint8) *_ApduDataExtAut
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtAuthorizeResponseBuilder is a builder for ApduDataExtAuthorizeResponse
+type ApduDataExtAuthorizeResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(uint8) ApduDataExtAuthorizeResponseBuilder
+	// Build builds the ApduDataExtAuthorizeResponse or returns an error if something is wrong
+	Build() (ApduDataExtAuthorizeResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtAuthorizeResponse
+}
+
+// NewApduDataExtAuthorizeResponseBuilder() creates a ApduDataExtAuthorizeResponseBuilder
+func NewApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilder {
+	return &_ApduDataExtAuthorizeResponseBuilder{_ApduDataExtAuthorizeResponse: new(_ApduDataExtAuthorizeResponse)}
+}
+
+type _ApduDataExtAuthorizeResponseBuilder struct {
+	*_ApduDataExtAuthorizeResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtAuthorizeResponseBuilder) = (*_ApduDataExtAuthorizeResponseBuilder)(nil)
+
+func (m *_ApduDataExtAuthorizeResponseBuilder) WithMandatoryFields(level uint8) ApduDataExtAuthorizeResponseBuilder {
+	return m.WithLevel(level)
+}
+
+func (m *_ApduDataExtAuthorizeResponseBuilder) WithLevel(level uint8) ApduDataExtAuthorizeResponseBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_ApduDataExtAuthorizeResponseBuilder) Build() (ApduDataExtAuthorizeResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtAuthorizeResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtAuthorizeResponseBuilder) MustBuild() ApduDataExtAuthorizeResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtAuthorizeResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtAuthorizeResponseBuilder()
+}
+
+// CreateApduDataExtAuthorizeResponseBuilder creates a ApduDataExtAuthorizeResponseBuilder
+func (m *_ApduDataExtAuthorizeResponse) CreateApduDataExtAuthorizeResponseBuilder() ApduDataExtAuthorizeResponseBuilder {
+	if m == nil {
+		return NewApduDataExtAuthorizeResponseBuilder()
+	}
+	return &_ApduDataExtAuthorizeResponseBuilder{_ApduDataExtAuthorizeResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

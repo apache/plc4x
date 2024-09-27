@@ -44,6 +44,8 @@ type BACnetScaleIntegerScale interface {
 	GetIntegerScale() BACnetContextTagSignedInteger
 	// IsBACnetScaleIntegerScale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetScaleIntegerScale()
+	// CreateBuilder creates a BACnetScaleIntegerScaleBuilder
+	CreateBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder
 }
 
 // _BACnetScaleIntegerScale is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetScaleIntegerScale(peekedTagHeader BACnetTagHeader, integerScale BA
 	_result.BACnetScaleContract.(*_BACnetScale)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetScaleIntegerScaleBuilder is a builder for BACnetScaleIntegerScale
+type BACnetScaleIntegerScaleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder
+	// WithIntegerScale adds IntegerScale (property field)
+	WithIntegerScale(BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder
+	// WithIntegerScaleBuilder adds IntegerScale (property field) which is build by the builder
+	WithIntegerScaleBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetScaleIntegerScaleBuilder
+	// Build builds the BACnetScaleIntegerScale or returns an error if something is wrong
+	Build() (BACnetScaleIntegerScale, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetScaleIntegerScale
+}
+
+// NewBACnetScaleIntegerScaleBuilder() creates a BACnetScaleIntegerScaleBuilder
+func NewBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder {
+	return &_BACnetScaleIntegerScaleBuilder{_BACnetScaleIntegerScale: new(_BACnetScaleIntegerScale)}
+}
+
+type _BACnetScaleIntegerScaleBuilder struct {
+	*_BACnetScaleIntegerScale
+
+	err *utils.MultiError
+}
+
+var _ (BACnetScaleIntegerScaleBuilder) = (*_BACnetScaleIntegerScaleBuilder)(nil)
+
+func (m *_BACnetScaleIntegerScaleBuilder) WithMandatoryFields(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
+	return m.WithIntegerScale(integerScale)
+}
+
+func (m *_BACnetScaleIntegerScaleBuilder) WithIntegerScale(integerScale BACnetContextTagSignedInteger) BACnetScaleIntegerScaleBuilder {
+	m.IntegerScale = integerScale
+	return m
+}
+
+func (m *_BACnetScaleIntegerScaleBuilder) WithIntegerScaleBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetScaleIntegerScaleBuilder {
+	builder := builderSupplier(m.IntegerScale.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	m.IntegerScale, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetScaleIntegerScaleBuilder) Build() (BACnetScaleIntegerScale, error) {
+	if m.IntegerScale == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'integerScale' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetScaleIntegerScale.deepCopy(), nil
+}
+
+func (m *_BACnetScaleIntegerScaleBuilder) MustBuild() BACnetScaleIntegerScale {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetScaleIntegerScaleBuilder) DeepCopy() any {
+	return m.CreateBACnetScaleIntegerScaleBuilder()
+}
+
+// CreateBACnetScaleIntegerScaleBuilder creates a BACnetScaleIntegerScaleBuilder
+func (m *_BACnetScaleIntegerScale) CreateBACnetScaleIntegerScaleBuilder() BACnetScaleIntegerScaleBuilder {
+	if m == nil {
+		return NewBACnetScaleIntegerScaleBuilder()
+	}
+	return &_BACnetScaleIntegerScaleBuilder{_BACnetScaleIntegerScale: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

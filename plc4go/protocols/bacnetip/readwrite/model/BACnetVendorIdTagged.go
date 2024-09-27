@@ -49,6 +49,8 @@ type BACnetVendorIdTagged interface {
 	GetIsUnknownId() bool
 	// IsBACnetVendorIdTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetVendorIdTagged()
+	// CreateBuilder creates a BACnetVendorIdTaggedBuilder
+	CreateBACnetVendorIdTaggedBuilder() BACnetVendorIdTaggedBuilder
 }
 
 // _BACnetVendorIdTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetVendorIdTagged(header BACnetTagHeader, value BACnetVendorId, unkno
 	}
 	return &_BACnetVendorIdTagged{Header: header, Value: value, UnknownId: unknownId, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetVendorIdTaggedBuilder is a builder for BACnetVendorIdTagged
+type BACnetVendorIdTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetVendorId, unknownId uint32) BACnetVendorIdTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetVendorIdTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetVendorIdTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetVendorId) BACnetVendorIdTaggedBuilder
+	// WithUnknownId adds UnknownId (property field)
+	WithUnknownId(uint32) BACnetVendorIdTaggedBuilder
+	// Build builds the BACnetVendorIdTagged or returns an error if something is wrong
+	Build() (BACnetVendorIdTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetVendorIdTagged
+}
+
+// NewBACnetVendorIdTaggedBuilder() creates a BACnetVendorIdTaggedBuilder
+func NewBACnetVendorIdTaggedBuilder() BACnetVendorIdTaggedBuilder {
+	return &_BACnetVendorIdTaggedBuilder{_BACnetVendorIdTagged: new(_BACnetVendorIdTagged)}
+}
+
+type _BACnetVendorIdTaggedBuilder struct {
+	*_BACnetVendorIdTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetVendorIdTaggedBuilder) = (*_BACnetVendorIdTaggedBuilder)(nil)
+
+func (m *_BACnetVendorIdTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetVendorId, unknownId uint32) BACnetVendorIdTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithUnknownId(unknownId)
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetVendorIdTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetVendorIdTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) WithValue(value BACnetVendorId) BACnetVendorIdTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) WithUnknownId(unknownId uint32) BACnetVendorIdTaggedBuilder {
+	m.UnknownId = unknownId
+	return m
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) Build() (BACnetVendorIdTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetVendorIdTagged.deepCopy(), nil
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) MustBuild() BACnetVendorIdTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetVendorIdTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetVendorIdTaggedBuilder()
+}
+
+// CreateBACnetVendorIdTaggedBuilder creates a BACnetVendorIdTaggedBuilder
+func (m *_BACnetVendorIdTagged) CreateBACnetVendorIdTaggedBuilder() BACnetVendorIdTaggedBuilder {
+	if m == nil {
+		return NewBACnetVendorIdTaggedBuilder()
+	}
+	return &_BACnetVendorIdTaggedBuilder{_BACnetVendorIdTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

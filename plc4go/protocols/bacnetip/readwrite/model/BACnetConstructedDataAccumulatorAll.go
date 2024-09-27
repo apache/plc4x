@@ -40,6 +40,8 @@ type BACnetConstructedDataAccumulatorAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataAccumulatorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccumulatorAll()
+	// CreateBuilder creates a BACnetConstructedDataAccumulatorAllBuilder
+	CreateBACnetConstructedDataAccumulatorAllBuilder() BACnetConstructedDataAccumulatorAllBuilder
 }
 
 // _BACnetConstructedDataAccumulatorAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataAccumulatorAll(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccumulatorAllBuilder is a builder for BACnetConstructedDataAccumulatorAll
+type BACnetConstructedDataAccumulatorAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataAccumulatorAllBuilder
+	// Build builds the BACnetConstructedDataAccumulatorAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccumulatorAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccumulatorAll
+}
+
+// NewBACnetConstructedDataAccumulatorAllBuilder() creates a BACnetConstructedDataAccumulatorAllBuilder
+func NewBACnetConstructedDataAccumulatorAllBuilder() BACnetConstructedDataAccumulatorAllBuilder {
+	return &_BACnetConstructedDataAccumulatorAllBuilder{_BACnetConstructedDataAccumulatorAll: new(_BACnetConstructedDataAccumulatorAll)}
+}
+
+type _BACnetConstructedDataAccumulatorAllBuilder struct {
+	*_BACnetConstructedDataAccumulatorAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccumulatorAllBuilder) = (*_BACnetConstructedDataAccumulatorAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccumulatorAllBuilder) WithMandatoryFields() BACnetConstructedDataAccumulatorAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataAccumulatorAllBuilder) Build() (BACnetConstructedDataAccumulatorAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccumulatorAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccumulatorAllBuilder) MustBuild() BACnetConstructedDataAccumulatorAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccumulatorAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccumulatorAllBuilder()
+}
+
+// CreateBACnetConstructedDataAccumulatorAllBuilder creates a BACnetConstructedDataAccumulatorAllBuilder
+func (m *_BACnetConstructedDataAccumulatorAll) CreateBACnetConstructedDataAccumulatorAllBuilder() BACnetConstructedDataAccumulatorAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccumulatorAllBuilder()
+	}
+	return &_BACnetConstructedDataAccumulatorAllBuilder{_BACnetConstructedDataAccumulatorAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type AdsReadRequest interface {
 	GetLength() uint32
 	// IsAdsReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadRequest()
+	// CreateBuilder creates a AdsReadRequestBuilder
+	CreateAdsReadRequestBuilder() AdsReadRequestBuilder
 }
 
 // _AdsReadRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewAdsReadRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsN
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadRequestBuilder is a builder for AdsReadRequest
+type AdsReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32) AdsReadRequestBuilder
+	// WithIndexGroup adds IndexGroup (property field)
+	WithIndexGroup(uint32) AdsReadRequestBuilder
+	// WithIndexOffset adds IndexOffset (property field)
+	WithIndexOffset(uint32) AdsReadRequestBuilder
+	// WithLength adds Length (property field)
+	WithLength(uint32) AdsReadRequestBuilder
+	// Build builds the AdsReadRequest or returns an error if something is wrong
+	Build() (AdsReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadRequest
+}
+
+// NewAdsReadRequestBuilder() creates a AdsReadRequestBuilder
+func NewAdsReadRequestBuilder() AdsReadRequestBuilder {
+	return &_AdsReadRequestBuilder{_AdsReadRequest: new(_AdsReadRequest)}
+}
+
+type _AdsReadRequestBuilder struct {
+	*_AdsReadRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadRequestBuilder) = (*_AdsReadRequestBuilder)(nil)
+
+func (m *_AdsReadRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, length uint32) AdsReadRequestBuilder {
+	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithLength(length)
+}
+
+func (m *_AdsReadRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadRequestBuilder {
+	m.IndexGroup = indexGroup
+	return m
+}
+
+func (m *_AdsReadRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadRequestBuilder {
+	m.IndexOffset = indexOffset
+	return m
+}
+
+func (m *_AdsReadRequestBuilder) WithLength(length uint32) AdsReadRequestBuilder {
+	m.Length = length
+	return m
+}
+
+func (m *_AdsReadRequestBuilder) Build() (AdsReadRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsReadRequest.deepCopy(), nil
+}
+
+func (m *_AdsReadRequestBuilder) MustBuild() AdsReadRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsReadRequestBuilder) DeepCopy() any {
+	return m.CreateAdsReadRequestBuilder()
+}
+
+// CreateAdsReadRequestBuilder creates a AdsReadRequestBuilder
+func (m *_AdsReadRequest) CreateAdsReadRequestBuilder() AdsReadRequestBuilder {
+	if m == nil {
+		return NewAdsReadRequestBuilder()
+	}
+	return &_AdsReadRequestBuilder{_AdsReadRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

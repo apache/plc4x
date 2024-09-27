@@ -40,6 +40,8 @@ type S7PayloadUserDataItemClkRequest interface {
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemClkRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemClkRequestBuilder
+	CreateS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequestBuilder
 }
 
 // _S7PayloadUserDataItemClkRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewS7PayloadUserDataItemClkRequest(returnCode DataTransportErrorCode, trans
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemClkRequestBuilder is a builder for S7PayloadUserDataItemClkRequest
+type S7PayloadUserDataItemClkRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemClkRequestBuilder
+	// Build builds the S7PayloadUserDataItemClkRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemClkRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemClkRequest
+}
+
+// NewS7PayloadUserDataItemClkRequestBuilder() creates a S7PayloadUserDataItemClkRequestBuilder
+func NewS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequestBuilder {
+	return &_S7PayloadUserDataItemClkRequestBuilder{_S7PayloadUserDataItemClkRequest: new(_S7PayloadUserDataItemClkRequest)}
+}
+
+type _S7PayloadUserDataItemClkRequestBuilder struct {
+	*_S7PayloadUserDataItemClkRequest
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemClkRequestBuilder) = (*_S7PayloadUserDataItemClkRequestBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemClkRequestBuilder) WithMandatoryFields() S7PayloadUserDataItemClkRequestBuilder {
+	return m
+}
+
+func (m *_S7PayloadUserDataItemClkRequestBuilder) Build() (S7PayloadUserDataItemClkRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemClkRequest.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemClkRequestBuilder) MustBuild() S7PayloadUserDataItemClkRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemClkRequestBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemClkRequestBuilder()
+}
+
+// CreateS7PayloadUserDataItemClkRequestBuilder creates a S7PayloadUserDataItemClkRequestBuilder
+func (m *_S7PayloadUserDataItemClkRequest) CreateS7PayloadUserDataItemClkRequestBuilder() S7PayloadUserDataItemClkRequestBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemClkRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemClkRequestBuilder{_S7PayloadUserDataItemClkRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

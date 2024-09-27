@@ -46,6 +46,8 @@ type OpcuaCloseRequest interface {
 	GetMessage() Payload
 	// IsOpcuaCloseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaCloseRequest()
+	// CreateBuilder creates a OpcuaCloseRequestBuilder
+	CreateOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder
 }
 
 // _OpcuaCloseRequest is the data-structure of this message
@@ -74,6 +76,112 @@ func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, messag
 	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaCloseRequestBuilder is a builder for OpcuaCloseRequest
+type OpcuaCloseRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaCloseRequestBuilder
+	// WithSecurityHeader adds SecurityHeader (property field)
+	WithSecurityHeader(SecurityHeader) OpcuaCloseRequestBuilder
+	// WithSecurityHeaderBuilder adds SecurityHeader (property field) which is build by the builder
+	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaCloseRequestBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(Payload) OpcuaCloseRequestBuilder
+	// Build builds the OpcuaCloseRequest or returns an error if something is wrong
+	Build() (OpcuaCloseRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaCloseRequest
+}
+
+// NewOpcuaCloseRequestBuilder() creates a OpcuaCloseRequestBuilder
+func NewOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder {
+	return &_OpcuaCloseRequestBuilder{_OpcuaCloseRequest: new(_OpcuaCloseRequest)}
+}
+
+type _OpcuaCloseRequestBuilder struct {
+	*_OpcuaCloseRequest
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaCloseRequestBuilder) = (*_OpcuaCloseRequestBuilder)(nil)
+
+func (m *_OpcuaCloseRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaCloseRequestBuilder {
+	return m.WithSecurityHeader(securityHeader).WithMessage(message)
+}
+
+func (m *_OpcuaCloseRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaCloseRequestBuilder {
+	m.SecurityHeader = securityHeader
+	return m
+}
+
+func (m *_OpcuaCloseRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaCloseRequestBuilder {
+	builder := builderSupplier(m.SecurityHeader.CreateSecurityHeaderBuilder())
+	var err error
+	m.SecurityHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_OpcuaCloseRequestBuilder) WithMessage(message Payload) OpcuaCloseRequestBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_OpcuaCloseRequestBuilder) Build() (OpcuaCloseRequest, error) {
+	if m.SecurityHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpcuaCloseRequest.deepCopy(), nil
+}
+
+func (m *_OpcuaCloseRequestBuilder) MustBuild() OpcuaCloseRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpcuaCloseRequestBuilder) DeepCopy() any {
+	return m.CreateOpcuaCloseRequestBuilder()
+}
+
+// CreateOpcuaCloseRequestBuilder creates a OpcuaCloseRequestBuilder
+func (m *_OpcuaCloseRequest) CreateOpcuaCloseRequestBuilder() OpcuaCloseRequestBuilder {
+	if m == nil {
+		return NewOpcuaCloseRequestBuilder()
+	}
+	return &_OpcuaCloseRequestBuilder{_OpcuaCloseRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

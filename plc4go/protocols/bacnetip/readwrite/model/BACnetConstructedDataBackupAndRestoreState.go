@@ -46,6 +46,8 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	GetActualValue() BACnetBackupStateTagged
 	// IsBACnetConstructedDataBackupAndRestoreState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBackupAndRestoreState()
+	// CreateBuilder creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+	CreateBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder
 }
 
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBackupAndRestoreStateBuilder is a builder for BACnetConstructedDataBackupAndRestoreState
+type BACnetConstructedDataBackupAndRestoreStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// WithBackupAndRestoreState adds BackupAndRestoreState (property field)
+	WithBackupAndRestoreState(BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// WithBackupAndRestoreStateBuilder adds BackupAndRestoreState (property field) which is build by the builder
+	WithBackupAndRestoreStateBuilder(func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// Build builds the BACnetConstructedDataBackupAndRestoreState or returns an error if something is wrong
+	Build() (BACnetConstructedDataBackupAndRestoreState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBackupAndRestoreState
+}
+
+// NewBACnetConstructedDataBackupAndRestoreStateBuilder() creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+func NewBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder {
+	return &_BACnetConstructedDataBackupAndRestoreStateBuilder{_BACnetConstructedDataBackupAndRestoreState: new(_BACnetConstructedDataBackupAndRestoreState)}
+}
+
+type _BACnetConstructedDataBackupAndRestoreStateBuilder struct {
+	*_BACnetConstructedDataBackupAndRestoreState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBackupAndRestoreStateBuilder) = (*_BACnetConstructedDataBackupAndRestoreStateBuilder)(nil)
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithMandatoryFields(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	return m.WithBackupAndRestoreState(backupAndRestoreState)
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithBackupAndRestoreState(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	m.BackupAndRestoreState = backupAndRestoreState
+	return m
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithBackupAndRestoreStateBuilder(builderSupplier func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	builder := builderSupplier(m.BackupAndRestoreState.CreateBACnetBackupStateTaggedBuilder())
+	var err error
+	m.BackupAndRestoreState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetBackupStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) Build() (BACnetConstructedDataBackupAndRestoreState, error) {
+	if m.BackupAndRestoreState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'backupAndRestoreState' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBackupAndRestoreState.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) MustBuild() BACnetConstructedDataBackupAndRestoreState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreStateBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBackupAndRestoreStateBuilder()
+}
+
+// CreateBACnetConstructedDataBackupAndRestoreStateBuilder creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+func (m *_BACnetConstructedDataBackupAndRestoreState) CreateBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBackupAndRestoreStateBuilder()
+	}
+	return &_BACnetConstructedDataBackupAndRestoreStateBuilder{_BACnetConstructedDataBackupAndRestoreState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

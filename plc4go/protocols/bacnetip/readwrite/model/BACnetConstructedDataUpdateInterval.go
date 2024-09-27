@@ -46,6 +46,8 @@ type BACnetConstructedDataUpdateInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataUpdateInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUpdateInterval()
+	// CreateBuilder creates a BACnetConstructedDataUpdateIntervalBuilder
+	CreateBACnetConstructedDataUpdateIntervalBuilder() BACnetConstructedDataUpdateIntervalBuilder
 }
 
 // _BACnetConstructedDataUpdateInterval is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataUpdateInterval(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUpdateIntervalBuilder is a builder for BACnetConstructedDataUpdateInterval
+type BACnetConstructedDataUpdateIntervalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(updateInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateIntervalBuilder
+	// WithUpdateInterval adds UpdateInterval (property field)
+	WithUpdateInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateIntervalBuilder
+	// WithUpdateIntervalBuilder adds UpdateInterval (property field) which is build by the builder
+	WithUpdateIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateIntervalBuilder
+	// Build builds the BACnetConstructedDataUpdateInterval or returns an error if something is wrong
+	Build() (BACnetConstructedDataUpdateInterval, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUpdateInterval
+}
+
+// NewBACnetConstructedDataUpdateIntervalBuilder() creates a BACnetConstructedDataUpdateIntervalBuilder
+func NewBACnetConstructedDataUpdateIntervalBuilder() BACnetConstructedDataUpdateIntervalBuilder {
+	return &_BACnetConstructedDataUpdateIntervalBuilder{_BACnetConstructedDataUpdateInterval: new(_BACnetConstructedDataUpdateInterval)}
+}
+
+type _BACnetConstructedDataUpdateIntervalBuilder struct {
+	*_BACnetConstructedDataUpdateInterval
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUpdateIntervalBuilder) = (*_BACnetConstructedDataUpdateIntervalBuilder)(nil)
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) WithMandatoryFields(updateInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateIntervalBuilder {
+	return m.WithUpdateInterval(updateInterval)
+}
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) WithUpdateInterval(updateInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUpdateIntervalBuilder {
+	m.UpdateInterval = updateInterval
+	return m
+}
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) WithUpdateIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUpdateIntervalBuilder {
+	builder := builderSupplier(m.UpdateInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.UpdateInterval, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) Build() (BACnetConstructedDataUpdateInterval, error) {
+	if m.UpdateInterval == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'updateInterval' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataUpdateInterval.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) MustBuild() BACnetConstructedDataUpdateInterval {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataUpdateIntervalBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataUpdateIntervalBuilder()
+}
+
+// CreateBACnetConstructedDataUpdateIntervalBuilder creates a BACnetConstructedDataUpdateIntervalBuilder
+func (m *_BACnetConstructedDataUpdateInterval) CreateBACnetConstructedDataUpdateIntervalBuilder() BACnetConstructedDataUpdateIntervalBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataUpdateIntervalBuilder()
+	}
+	return &_BACnetConstructedDataUpdateIntervalBuilder{_BACnetConstructedDataUpdateInterval: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

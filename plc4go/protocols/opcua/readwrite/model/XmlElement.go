@@ -45,6 +45,8 @@ type XmlElement interface {
 	GetValue() []string
 	// IsXmlElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsXmlElement()
+	// CreateBuilder creates a XmlElementBuilder
+	CreateXmlElementBuilder() XmlElementBuilder
 }
 
 // _XmlElement is the data-structure of this message
@@ -59,6 +61,85 @@ var _ XmlElement = (*_XmlElement)(nil)
 func NewXmlElement(length int32, value []string) *_XmlElement {
 	return &_XmlElement{Length: length, Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// XmlElementBuilder is a builder for XmlElement
+type XmlElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(length int32, value []string) XmlElementBuilder
+	// WithLength adds Length (property field)
+	WithLength(int32) XmlElementBuilder
+	// WithValue adds Value (property field)
+	WithValue(...string) XmlElementBuilder
+	// Build builds the XmlElement or returns an error if something is wrong
+	Build() (XmlElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() XmlElement
+}
+
+// NewXmlElementBuilder() creates a XmlElementBuilder
+func NewXmlElementBuilder() XmlElementBuilder {
+	return &_XmlElementBuilder{_XmlElement: new(_XmlElement)}
+}
+
+type _XmlElementBuilder struct {
+	*_XmlElement
+
+	err *utils.MultiError
+}
+
+var _ (XmlElementBuilder) = (*_XmlElementBuilder)(nil)
+
+func (m *_XmlElementBuilder) WithMandatoryFields(length int32, value []string) XmlElementBuilder {
+	return m.WithLength(length).WithValue(value...)
+}
+
+func (m *_XmlElementBuilder) WithLength(length int32) XmlElementBuilder {
+	m.Length = length
+	return m
+}
+
+func (m *_XmlElementBuilder) WithValue(value ...string) XmlElementBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_XmlElementBuilder) Build() (XmlElement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._XmlElement.deepCopy(), nil
+}
+
+func (m *_XmlElementBuilder) MustBuild() XmlElement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_XmlElementBuilder) DeepCopy() any {
+	return m.CreateXmlElementBuilder()
+}
+
+// CreateXmlElementBuilder creates a XmlElementBuilder
+func (m *_XmlElement) CreateXmlElementBuilder() XmlElementBuilder {
+	if m == nil {
+		return NewXmlElementBuilder()
+	}
+	return &_XmlElementBuilder{_XmlElement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

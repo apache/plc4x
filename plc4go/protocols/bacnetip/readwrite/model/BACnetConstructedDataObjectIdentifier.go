@@ -46,6 +46,8 @@ type BACnetConstructedDataObjectIdentifier interface {
 	GetActualValue() BACnetApplicationTagObjectIdentifier
 	// IsBACnetConstructedDataObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectIdentifier()
+	// CreateBuilder creates a BACnetConstructedDataObjectIdentifierBuilder
+	CreateBACnetConstructedDataObjectIdentifierBuilder() BACnetConstructedDataObjectIdentifierBuilder
 }
 
 // _BACnetConstructedDataObjectIdentifier is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataObjectIdentifier(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectIdentifierBuilder is a builder for BACnetConstructedDataObjectIdentifier
+type BACnetConstructedDataObjectIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataObjectIdentifierBuilder
+	// Build builds the BACnetConstructedDataObjectIdentifier or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectIdentifier
+}
+
+// NewBACnetConstructedDataObjectIdentifierBuilder() creates a BACnetConstructedDataObjectIdentifierBuilder
+func NewBACnetConstructedDataObjectIdentifierBuilder() BACnetConstructedDataObjectIdentifierBuilder {
+	return &_BACnetConstructedDataObjectIdentifierBuilder{_BACnetConstructedDataObjectIdentifier: new(_BACnetConstructedDataObjectIdentifier)}
+}
+
+type _BACnetConstructedDataObjectIdentifierBuilder struct {
+	*_BACnetConstructedDataObjectIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectIdentifierBuilder) = (*_BACnetConstructedDataObjectIdentifierBuilder)(nil)
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) WithMandatoryFields(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder {
+	return m.WithObjectIdentifier(objectIdentifier)
+}
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) WithObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectIdentifierBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetConstructedDataObjectIdentifierBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) Build() (BACnetConstructedDataObjectIdentifier, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataObjectIdentifier.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) MustBuild() BACnetConstructedDataObjectIdentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataObjectIdentifierBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataObjectIdentifierBuilder()
+}
+
+// CreateBACnetConstructedDataObjectIdentifierBuilder creates a BACnetConstructedDataObjectIdentifierBuilder
+func (m *_BACnetConstructedDataObjectIdentifier) CreateBACnetConstructedDataObjectIdentifierBuilder() BACnetConstructedDataObjectIdentifierBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataObjectIdentifierBuilder()
+	}
+	return &_BACnetConstructedDataObjectIdentifierBuilder{_BACnetConstructedDataObjectIdentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

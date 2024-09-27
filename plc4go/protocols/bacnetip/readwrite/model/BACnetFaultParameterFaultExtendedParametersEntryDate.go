@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryDate interface {
 	GetDateValue() BACnetApplicationTagDate
 	// IsBACnetFaultParameterFaultExtendedParametersEntryDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryDate()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDate is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryDate(peekedTagHeader BAC
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryDateBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryDate
+type BACnetFaultParameterFaultExtendedParametersEntryDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+	// WithDateValue adds DateValue (property field)
+	WithDateValue(BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryDate or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDate
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDate: new(_BACnetFaultParameterFaultExtendedParametersEntryDate)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryDateBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	return m.WithDateValue(dateValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	m.DateValue = dateValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	builder := builderSupplier(m.DateValue.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	m.DateValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
+	if m.DateValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dateValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryDate.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDate) CreateBACnetFaultParameterFaultExtendedParametersEntryDateBuilder() BACnetFaultParameterFaultExtendedParametersEntryDateBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type CreateObjectError interface {
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
 	// IsCreateObjectError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCreateObjectError()
+	// CreateBuilder creates a CreateObjectErrorBuilder
+	CreateCreateObjectErrorBuilder() CreateObjectErrorBuilder
 }
 
 // _CreateObjectError is the data-structure of this message
@@ -74,6 +76,127 @@ func NewCreateObjectError(errorType ErrorEnclosed, firstFailedElementNumber BACn
 	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CreateObjectErrorBuilder is a builder for CreateObjectError
+type CreateObjectErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder
+	// WithErrorType adds ErrorType (property field)
+	WithErrorType(ErrorEnclosed) CreateObjectErrorBuilder
+	// WithErrorTypeBuilder adds ErrorType (property field) which is build by the builder
+	WithErrorTypeBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) CreateObjectErrorBuilder
+	// WithFirstFailedElementNumber adds FirstFailedElementNumber (property field)
+	WithFirstFailedElementNumber(BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder
+	// WithFirstFailedElementNumberBuilder adds FirstFailedElementNumber (property field) which is build by the builder
+	WithFirstFailedElementNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) CreateObjectErrorBuilder
+	// Build builds the CreateObjectError or returns an error if something is wrong
+	Build() (CreateObjectError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CreateObjectError
+}
+
+// NewCreateObjectErrorBuilder() creates a CreateObjectErrorBuilder
+func NewCreateObjectErrorBuilder() CreateObjectErrorBuilder {
+	return &_CreateObjectErrorBuilder{_CreateObjectError: new(_CreateObjectError)}
+}
+
+type _CreateObjectErrorBuilder struct {
+	*_CreateObjectError
+
+	err *utils.MultiError
+}
+
+var _ (CreateObjectErrorBuilder) = (*_CreateObjectErrorBuilder)(nil)
+
+func (m *_CreateObjectErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
+	return m.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
+}
+
+func (m *_CreateObjectErrorBuilder) WithErrorType(errorType ErrorEnclosed) CreateObjectErrorBuilder {
+	m.ErrorType = errorType
+	return m
+}
+
+func (m *_CreateObjectErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) CreateObjectErrorBuilder {
+	builder := builderSupplier(m.ErrorType.CreateErrorEnclosedBuilder())
+	var err error
+	m.ErrorType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CreateObjectErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) CreateObjectErrorBuilder {
+	m.FirstFailedElementNumber = firstFailedElementNumber
+	return m
+}
+
+func (m *_CreateObjectErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) CreateObjectErrorBuilder {
+	builder := builderSupplier(m.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.FirstFailedElementNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CreateObjectErrorBuilder) Build() (CreateObjectError, error) {
+	if m.ErrorType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorType' not set"))
+	}
+	if m.FirstFailedElementNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CreateObjectError.deepCopy(), nil
+}
+
+func (m *_CreateObjectErrorBuilder) MustBuild() CreateObjectError {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CreateObjectErrorBuilder) DeepCopy() any {
+	return m.CreateCreateObjectErrorBuilder()
+}
+
+// CreateCreateObjectErrorBuilder creates a CreateObjectErrorBuilder
+func (m *_CreateObjectError) CreateCreateObjectErrorBuilder() CreateObjectErrorBuilder {
+	if m == nil {
+		return NewCreateObjectErrorBuilder()
+	}
+	return &_CreateObjectErrorBuilder{_CreateObjectError: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

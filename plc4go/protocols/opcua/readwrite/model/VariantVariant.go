@@ -46,6 +46,8 @@ type VariantVariant interface {
 	GetValue() []Variant
 	// IsVariantVariant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantVariant()
+	// CreateBuilder creates a VariantVariantBuilder
+	CreateVariantVariantBuilder() VariantVariantBuilder
 }
 
 // _VariantVariant is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantVariant(arrayLengthSpecified bool, arrayDimensionsSpecified bool,
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantVariantBuilder is a builder for VariantVariant
+type VariantVariantBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []Variant) VariantVariantBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantVariantBuilder
+	// WithValue adds Value (property field)
+	WithValue(...Variant) VariantVariantBuilder
+	// Build builds the VariantVariant or returns an error if something is wrong
+	Build() (VariantVariant, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantVariant
+}
+
+// NewVariantVariantBuilder() creates a VariantVariantBuilder
+func NewVariantVariantBuilder() VariantVariantBuilder {
+	return &_VariantVariantBuilder{_VariantVariant: new(_VariantVariant)}
+}
+
+type _VariantVariantBuilder struct {
+	*_VariantVariant
+
+	err *utils.MultiError
+}
+
+var _ (VariantVariantBuilder) = (*_VariantVariantBuilder)(nil)
+
+func (m *_VariantVariantBuilder) WithMandatoryFields(value []Variant) VariantVariantBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantVariantBuilder) WithOptionalArrayLength(arrayLength int32) VariantVariantBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantVariantBuilder) WithValue(value ...Variant) VariantVariantBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantVariantBuilder) Build() (VariantVariant, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantVariant.deepCopy(), nil
+}
+
+func (m *_VariantVariantBuilder) MustBuild() VariantVariant {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantVariantBuilder) DeepCopy() any {
+	return m.CreateVariantVariantBuilder()
+}
+
+// CreateVariantVariantBuilder creates a VariantVariantBuilder
+func (m *_VariantVariant) CreateVariantVariantBuilder() VariantVariantBuilder {
+	if m == nil {
+		return NewVariantVariantBuilder()
+	}
+	return &_VariantVariantBuilder{_VariantVariant: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

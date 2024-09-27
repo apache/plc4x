@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryReal interface {
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetFaultParameterFaultExtendedParametersEntryReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryReal()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryRealBuilder() BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReal is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryReal(peekedTagHeader BAC
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryRealBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryReal
+type BACnetFaultParameterFaultExtendedParametersEntryRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryReal or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryReal
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryRealBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryRealBuilder() BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder{_BACnetFaultParameterFaultExtendedParametersEntryReal: new(_BACnetFaultParameterFaultExtendedParametersEntryReal)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryRealBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryReal
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	return m.WithRealValue(realValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	m.RealValue = realValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.RealValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryReal, error) {
+	if m.RealValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryReal.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryReal {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryRealBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryRealBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReal) CreateBACnetFaultParameterFaultExtendedParametersEntryRealBuilder() BACnetFaultParameterFaultExtendedParametersEntryRealBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryRealBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder{_BACnetFaultParameterFaultExtendedParametersEntryReal: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

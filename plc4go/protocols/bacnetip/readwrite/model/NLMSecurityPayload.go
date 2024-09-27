@@ -46,6 +46,8 @@ type NLMSecurityPayload interface {
 	GetPayload() []byte
 	// IsNLMSecurityPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMSecurityPayload()
+	// CreateBuilder creates a NLMSecurityPayloadBuilder
+	CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder
 }
 
 // _NLMSecurityPayload is the data-structure of this message
@@ -68,6 +70,85 @@ func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMSecurityPayloadBuilder is a builder for NLMSecurityPayload
+type NLMSecurityPayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder
+	// WithPayloadLength adds PayloadLength (property field)
+	WithPayloadLength(uint16) NLMSecurityPayloadBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(...byte) NLMSecurityPayloadBuilder
+	// Build builds the NLMSecurityPayload or returns an error if something is wrong
+	Build() (NLMSecurityPayload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMSecurityPayload
+}
+
+// NewNLMSecurityPayloadBuilder() creates a NLMSecurityPayloadBuilder
+func NewNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
+	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: new(_NLMSecurityPayload)}
+}
+
+type _NLMSecurityPayloadBuilder struct {
+	*_NLMSecurityPayload
+
+	err *utils.MultiError
+}
+
+var _ (NLMSecurityPayloadBuilder) = (*_NLMSecurityPayloadBuilder)(nil)
+
+func (m *_NLMSecurityPayloadBuilder) WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder {
+	return m.WithPayloadLength(payloadLength).WithPayload(payload...)
+}
+
+func (m *_NLMSecurityPayloadBuilder) WithPayloadLength(payloadLength uint16) NLMSecurityPayloadBuilder {
+	m.PayloadLength = payloadLength
+	return m
+}
+
+func (m *_NLMSecurityPayloadBuilder) WithPayload(payload ...byte) NLMSecurityPayloadBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_NLMSecurityPayloadBuilder) Build() (NLMSecurityPayload, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMSecurityPayload.deepCopy(), nil
+}
+
+func (m *_NLMSecurityPayloadBuilder) MustBuild() NLMSecurityPayload {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMSecurityPayloadBuilder) DeepCopy() any {
+	return m.CreateNLMSecurityPayloadBuilder()
+}
+
+// CreateNLMSecurityPayloadBuilder creates a NLMSecurityPayloadBuilder
+func (m *_NLMSecurityPayload) CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
+	if m == nil {
+		return NewNLMSecurityPayloadBuilder()
+	}
+	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

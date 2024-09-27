@@ -41,12 +41,16 @@ type ComObjectTable interface {
 	utils.Copyable
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
+	// CreateBuilder creates a ComObjectTableBuilder
+	CreateComObjectTableBuilder() ComObjectTableBuilder
 }
 
 // ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
 type ComObjectTableContract interface {
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
+	// CreateBuilder creates a ComObjectTableBuilder
+	CreateComObjectTableBuilder() ComObjectTableBuilder
 }
 
 // ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ ComObjectTableContract = (*_ComObjectTable)(nil)
 func NewComObjectTable() *_ComObjectTable {
 	return &_ComObjectTable{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ComObjectTableBuilder is a builder for ComObjectTable
+type ComObjectTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ComObjectTableBuilder
+	// Build builds the ComObjectTable or returns an error if something is wrong
+	Build() (ComObjectTableContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ComObjectTableContract
+}
+
+// NewComObjectTableBuilder() creates a ComObjectTableBuilder
+func NewComObjectTableBuilder() ComObjectTableBuilder {
+	return &_ComObjectTableBuilder{_ComObjectTable: new(_ComObjectTable)}
+}
+
+type _ComObjectTableBuilder struct {
+	*_ComObjectTable
+
+	err *utils.MultiError
+}
+
+var _ (ComObjectTableBuilder) = (*_ComObjectTableBuilder)(nil)
+
+func (m *_ComObjectTableBuilder) WithMandatoryFields() ComObjectTableBuilder {
+	return m
+}
+
+func (m *_ComObjectTableBuilder) Build() (ComObjectTableContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ComObjectTable.deepCopy(), nil
+}
+
+func (m *_ComObjectTableBuilder) MustBuild() ComObjectTableContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ComObjectTableBuilder) DeepCopy() any {
+	return m.CreateComObjectTableBuilder()
+}
+
+// CreateComObjectTableBuilder creates a ComObjectTableBuilder
+func (m *_ComObjectTable) CreateComObjectTableBuilder() ComObjectTableBuilder {
+	if m == nil {
+		return NewComObjectTableBuilder()
+	}
+	return &_ComObjectTableBuilder{_ComObjectTable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTable(structType any) ComObjectTable {

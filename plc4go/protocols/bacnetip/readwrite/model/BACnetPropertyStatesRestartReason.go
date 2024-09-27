@@ -44,6 +44,8 @@ type BACnetPropertyStatesRestartReason interface {
 	GetRestartReason() BACnetRestartReasonTagged
 	// IsBACnetPropertyStatesRestartReason is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesRestartReason()
+	// CreateBuilder creates a BACnetPropertyStatesRestartReasonBuilder
+	CreateBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartReasonBuilder
 }
 
 // _BACnetPropertyStatesRestartReason is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesRestartReason(peekedTagHeader BACnetTagHeader, resta
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesRestartReasonBuilder is a builder for BACnetPropertyStatesRestartReason
+type BACnetPropertyStatesRestartReasonBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder
+	// WithRestartReason adds RestartReason (property field)
+	WithRestartReason(BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder
+	// WithRestartReasonBuilder adds RestartReason (property field) which is build by the builder
+	WithRestartReasonBuilder(func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetPropertyStatesRestartReasonBuilder
+	// Build builds the BACnetPropertyStatesRestartReason or returns an error if something is wrong
+	Build() (BACnetPropertyStatesRestartReason, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesRestartReason
+}
+
+// NewBACnetPropertyStatesRestartReasonBuilder() creates a BACnetPropertyStatesRestartReasonBuilder
+func NewBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartReasonBuilder {
+	return &_BACnetPropertyStatesRestartReasonBuilder{_BACnetPropertyStatesRestartReason: new(_BACnetPropertyStatesRestartReason)}
+}
+
+type _BACnetPropertyStatesRestartReasonBuilder struct {
+	*_BACnetPropertyStatesRestartReason
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesRestartReasonBuilder) = (*_BACnetPropertyStatesRestartReasonBuilder)(nil)
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) WithMandatoryFields(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
+	return m.WithRestartReason(restartReason)
+}
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReason(restartReason BACnetRestartReasonTagged) BACnetPropertyStatesRestartReasonBuilder {
+	m.RestartReason = restartReason
+	return m
+}
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) WithRestartReasonBuilder(builderSupplier func(BACnetRestartReasonTaggedBuilder) BACnetRestartReasonTaggedBuilder) BACnetPropertyStatesRestartReasonBuilder {
+	builder := builderSupplier(m.RestartReason.CreateBACnetRestartReasonTaggedBuilder())
+	var err error
+	m.RestartReason, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetRestartReasonTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) Build() (BACnetPropertyStatesRestartReason, error) {
+	if m.RestartReason == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'restartReason' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesRestartReason.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) MustBuild() BACnetPropertyStatesRestartReason {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesRestartReasonBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesRestartReasonBuilder()
+}
+
+// CreateBACnetPropertyStatesRestartReasonBuilder creates a BACnetPropertyStatesRestartReasonBuilder
+func (m *_BACnetPropertyStatesRestartReason) CreateBACnetPropertyStatesRestartReasonBuilder() BACnetPropertyStatesRestartReasonBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesRestartReasonBuilder()
+	}
+	return &_BACnetPropertyStatesRestartReasonBuilder{_BACnetPropertyStatesRestartReason: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

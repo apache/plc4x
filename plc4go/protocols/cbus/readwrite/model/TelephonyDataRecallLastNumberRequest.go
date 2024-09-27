@@ -48,6 +48,8 @@ type TelephonyDataRecallLastNumberRequest interface {
 	GetIsNumberOfLastIncomingCall() bool
 	// IsTelephonyDataRecallLastNumberRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataRecallLastNumberRequest()
+	// CreateBuilder creates a TelephonyDataRecallLastNumberRequestBuilder
+	CreateTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNumberRequestBuilder
 }
 
 // _TelephonyDataRecallLastNumberRequest is the data-structure of this message
@@ -68,6 +70,78 @@ func NewTelephonyDataRecallLastNumberRequest(commandTypeContainer TelephonyComma
 	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataRecallLastNumberRequestBuilder is a builder for TelephonyDataRecallLastNumberRequest
+type TelephonyDataRecallLastNumberRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder
+	// WithRecallLastNumberType adds RecallLastNumberType (property field)
+	WithRecallLastNumberType(byte) TelephonyDataRecallLastNumberRequestBuilder
+	// Build builds the TelephonyDataRecallLastNumberRequest or returns an error if something is wrong
+	Build() (TelephonyDataRecallLastNumberRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataRecallLastNumberRequest
+}
+
+// NewTelephonyDataRecallLastNumberRequestBuilder() creates a TelephonyDataRecallLastNumberRequestBuilder
+func NewTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNumberRequestBuilder {
+	return &_TelephonyDataRecallLastNumberRequestBuilder{_TelephonyDataRecallLastNumberRequest: new(_TelephonyDataRecallLastNumberRequest)}
+}
+
+type _TelephonyDataRecallLastNumberRequestBuilder struct {
+	*_TelephonyDataRecallLastNumberRequest
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataRecallLastNumberRequestBuilder) = (*_TelephonyDataRecallLastNumberRequestBuilder)(nil)
+
+func (m *_TelephonyDataRecallLastNumberRequestBuilder) WithMandatoryFields(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
+	return m.WithRecallLastNumberType(recallLastNumberType)
+}
+
+func (m *_TelephonyDataRecallLastNumberRequestBuilder) WithRecallLastNumberType(recallLastNumberType byte) TelephonyDataRecallLastNumberRequestBuilder {
+	m.RecallLastNumberType = recallLastNumberType
+	return m
+}
+
+func (m *_TelephonyDataRecallLastNumberRequestBuilder) Build() (TelephonyDataRecallLastNumberRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyDataRecallLastNumberRequest.deepCopy(), nil
+}
+
+func (m *_TelephonyDataRecallLastNumberRequestBuilder) MustBuild() TelephonyDataRecallLastNumberRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataRecallLastNumberRequestBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataRecallLastNumberRequestBuilder()
+}
+
+// CreateTelephonyDataRecallLastNumberRequestBuilder creates a TelephonyDataRecallLastNumberRequestBuilder
+func (m *_TelephonyDataRecallLastNumberRequest) CreateTelephonyDataRecallLastNumberRequestBuilder() TelephonyDataRecallLastNumberRequestBuilder {
+	if m == nil {
+		return NewTelephonyDataRecallLastNumberRequestBuilder()
+	}
+	return &_TelephonyDataRecallLastNumberRequestBuilder{_TelephonyDataRecallLastNumberRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

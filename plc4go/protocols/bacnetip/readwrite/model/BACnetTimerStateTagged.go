@@ -45,6 +45,8 @@ type BACnetTimerStateTagged interface {
 	GetValue() BACnetTimerState
 	// IsBACnetTimerStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateTagged()
+	// CreateBuilder creates a BACnetTimerStateTaggedBuilder
+	CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder
 }
 
 // _BACnetTimerStateTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, t
 	}
 	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateTaggedBuilder is a builder for BACnetTimerStateTagged
+type BACnetTimerStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetTimerStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetTimerState) BACnetTimerStateTaggedBuilder
+	// Build builds the BACnetTimerStateTagged or returns an error if something is wrong
+	Build() (BACnetTimerStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateTagged
+}
+
+// NewBACnetTimerStateTaggedBuilder() creates a BACnetTimerStateTaggedBuilder
+func NewBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
+	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: new(_BACnetTimerStateTagged)}
+}
+
+type _BACnetTimerStateTaggedBuilder struct {
+	*_BACnetTimerStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateTaggedBuilder) = (*_BACnetTimerStateTaggedBuilder)(nil)
+
+func (m *_BACnetTimerStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetTimerStateTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) Build() (BACnetTimerStateTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateTagged.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) MustBuild() BACnetTimerStateTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateTaggedBuilder()
+}
+
+// CreateBACnetTimerStateTaggedBuilder creates a BACnetTimerStateTaggedBuilder
+func (m *_BACnetTimerStateTagged) CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
+	if m == nil {
+		return NewBACnetTimerStateTaggedBuilder()
+	}
+	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

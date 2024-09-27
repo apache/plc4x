@@ -49,6 +49,8 @@ type ErrorClassTagged interface {
 	GetIsProprietary() bool
 	// IsErrorClassTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorClassTagged()
+	// CreateBuilder creates a ErrorClassTaggedBuilder
+	CreateErrorClassTaggedBuilder() ErrorClassTaggedBuilder
 }
 
 // _ErrorClassTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewErrorClassTagged(header BACnetTagHeader, value ErrorClass, proprietaryVa
 	}
 	return &_ErrorClassTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorClassTaggedBuilder is a builder for ErrorClassTagged
+type ErrorClassTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value ErrorClass, proprietaryValue uint32) ErrorClassTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) ErrorClassTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorClassTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(ErrorClass) ErrorClassTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) ErrorClassTaggedBuilder
+	// Build builds the ErrorClassTagged or returns an error if something is wrong
+	Build() (ErrorClassTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorClassTagged
+}
+
+// NewErrorClassTaggedBuilder() creates a ErrorClassTaggedBuilder
+func NewErrorClassTaggedBuilder() ErrorClassTaggedBuilder {
+	return &_ErrorClassTaggedBuilder{_ErrorClassTagged: new(_ErrorClassTagged)}
+}
+
+type _ErrorClassTaggedBuilder struct {
+	*_ErrorClassTagged
+
+	err *utils.MultiError
+}
+
+var _ (ErrorClassTaggedBuilder) = (*_ErrorClassTaggedBuilder)(nil)
+
+func (m *_ErrorClassTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value ErrorClass, proprietaryValue uint32) ErrorClassTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_ErrorClassTaggedBuilder) WithHeader(header BACnetTagHeader) ErrorClassTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_ErrorClassTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorClassTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ErrorClassTaggedBuilder) WithValue(value ErrorClass) ErrorClassTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ErrorClassTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorClassTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_ErrorClassTaggedBuilder) Build() (ErrorClassTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ErrorClassTagged.deepCopy(), nil
+}
+
+func (m *_ErrorClassTaggedBuilder) MustBuild() ErrorClassTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorClassTaggedBuilder) DeepCopy() any {
+	return m.CreateErrorClassTaggedBuilder()
+}
+
+// CreateErrorClassTaggedBuilder creates a ErrorClassTaggedBuilder
+func (m *_ErrorClassTagged) CreateErrorClassTaggedBuilder() ErrorClassTaggedBuilder {
+	if m == nil {
+		return NewErrorClassTaggedBuilder()
+	}
+	return &_ErrorClassTaggedBuilder{_ErrorClassTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

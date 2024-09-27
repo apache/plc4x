@@ -40,6 +40,8 @@ type TDataIndividualInd interface {
 	CEMI
 	// IsTDataIndividualInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataIndividualInd()
+	// CreateBuilder creates a TDataIndividualIndBuilder
+	CreateTDataIndividualIndBuilder() TDataIndividualIndBuilder
 }
 
 // _TDataIndividualInd is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTDataIndividualInd(size uint16) *_TDataIndividualInd {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TDataIndividualIndBuilder is a builder for TDataIndividualInd
+type TDataIndividualIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TDataIndividualIndBuilder
+	// Build builds the TDataIndividualInd or returns an error if something is wrong
+	Build() (TDataIndividualInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TDataIndividualInd
+}
+
+// NewTDataIndividualIndBuilder() creates a TDataIndividualIndBuilder
+func NewTDataIndividualIndBuilder() TDataIndividualIndBuilder {
+	return &_TDataIndividualIndBuilder{_TDataIndividualInd: new(_TDataIndividualInd)}
+}
+
+type _TDataIndividualIndBuilder struct {
+	*_TDataIndividualInd
+
+	err *utils.MultiError
+}
+
+var _ (TDataIndividualIndBuilder) = (*_TDataIndividualIndBuilder)(nil)
+
+func (m *_TDataIndividualIndBuilder) WithMandatoryFields() TDataIndividualIndBuilder {
+	return m
+}
+
+func (m *_TDataIndividualIndBuilder) Build() (TDataIndividualInd, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TDataIndividualInd.deepCopy(), nil
+}
+
+func (m *_TDataIndividualIndBuilder) MustBuild() TDataIndividualInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TDataIndividualIndBuilder) DeepCopy() any {
+	return m.CreateTDataIndividualIndBuilder()
+}
+
+// CreateTDataIndividualIndBuilder creates a TDataIndividualIndBuilder
+func (m *_TDataIndividualInd) CreateTDataIndividualIndBuilder() TDataIndividualIndBuilder {
+	if m == nil {
+		return NewTDataIndividualIndBuilder()
+	}
+	return &_TDataIndividualIndBuilder{_TDataIndividualInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

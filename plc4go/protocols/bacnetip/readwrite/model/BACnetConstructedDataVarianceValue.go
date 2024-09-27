@@ -46,6 +46,8 @@ type BACnetConstructedDataVarianceValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataVarianceValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataVarianceValue()
+	// CreateBuilder creates a BACnetConstructedDataVarianceValueBuilder
+	CreateBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianceValueBuilder
 }
 
 // _BACnetConstructedDataVarianceValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataVarianceValue(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataVarianceValueBuilder is a builder for BACnetConstructedDataVarianceValue
+type BACnetConstructedDataVarianceValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder
+	// WithVarianceValue adds VarianceValue (property field)
+	WithVarianceValue(BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder
+	// WithVarianceValueBuilder adds VarianceValue (property field) which is build by the builder
+	WithVarianceValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataVarianceValueBuilder
+	// Build builds the BACnetConstructedDataVarianceValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataVarianceValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataVarianceValue
+}
+
+// NewBACnetConstructedDataVarianceValueBuilder() creates a BACnetConstructedDataVarianceValueBuilder
+func NewBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianceValueBuilder {
+	return &_BACnetConstructedDataVarianceValueBuilder{_BACnetConstructedDataVarianceValue: new(_BACnetConstructedDataVarianceValue)}
+}
+
+type _BACnetConstructedDataVarianceValueBuilder struct {
+	*_BACnetConstructedDataVarianceValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataVarianceValueBuilder) = (*_BACnetConstructedDataVarianceValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) WithMandatoryFields(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
+	return m.WithVarianceValue(varianceValue)
+}
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValue(varianceValue BACnetApplicationTagReal) BACnetConstructedDataVarianceValueBuilder {
+	m.VarianceValue = varianceValue
+	return m
+}
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) WithVarianceValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataVarianceValueBuilder {
+	builder := builderSupplier(m.VarianceValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.VarianceValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) Build() (BACnetConstructedDataVarianceValue, error) {
+	if m.VarianceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'varianceValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataVarianceValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) MustBuild() BACnetConstructedDataVarianceValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataVarianceValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataVarianceValueBuilder()
+}
+
+// CreateBACnetConstructedDataVarianceValueBuilder creates a BACnetConstructedDataVarianceValueBuilder
+func (m *_BACnetConstructedDataVarianceValue) CreateBACnetConstructedDataVarianceValueBuilder() BACnetConstructedDataVarianceValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataVarianceValueBuilder()
+	}
+	return &_BACnetConstructedDataVarianceValueBuilder{_BACnetConstructedDataVarianceValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

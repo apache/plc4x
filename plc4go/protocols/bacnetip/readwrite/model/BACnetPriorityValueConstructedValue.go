@@ -44,6 +44,8 @@ type BACnetPriorityValueConstructedValue interface {
 	GetConstructedValue() BACnetConstructedData
 	// IsBACnetPriorityValueConstructedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueConstructedValue()
+	// CreateBuilder creates a BACnetPriorityValueConstructedValueBuilder
+	CreateBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstructedValueBuilder
 }
 
 // _BACnetPriorityValueConstructedValue is the data-structure of this message
@@ -67,6 +69,84 @@ func NewBACnetPriorityValueConstructedValue(peekedTagHeader BACnetTagHeader, con
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueConstructedValueBuilder is a builder for BACnetPriorityValueConstructedValue
+type BACnetPriorityValueConstructedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder
+	// WithConstructedValue adds ConstructedValue (property field)
+	WithConstructedValue(BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder
+	// Build builds the BACnetPriorityValueConstructedValue or returns an error if something is wrong
+	Build() (BACnetPriorityValueConstructedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueConstructedValue
+}
+
+// NewBACnetPriorityValueConstructedValueBuilder() creates a BACnetPriorityValueConstructedValueBuilder
+func NewBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstructedValueBuilder {
+	return &_BACnetPriorityValueConstructedValueBuilder{_BACnetPriorityValueConstructedValue: new(_BACnetPriorityValueConstructedValue)}
+}
+
+type _BACnetPriorityValueConstructedValueBuilder struct {
+	*_BACnetPriorityValueConstructedValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueConstructedValueBuilder) = (*_BACnetPriorityValueConstructedValueBuilder)(nil)
+
+func (m *_BACnetPriorityValueConstructedValueBuilder) WithMandatoryFields(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
+	return m.WithConstructedValue(constructedValue)
+}
+
+func (m *_BACnetPriorityValueConstructedValueBuilder) WithConstructedValue(constructedValue BACnetConstructedData) BACnetPriorityValueConstructedValueBuilder {
+	m.ConstructedValue = constructedValue
+	return m
+}
+
+func (m *_BACnetPriorityValueConstructedValueBuilder) Build() (BACnetPriorityValueConstructedValue, error) {
+	if m.ConstructedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'constructedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueConstructedValue.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueConstructedValueBuilder) MustBuild() BACnetPriorityValueConstructedValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueConstructedValueBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueConstructedValueBuilder()
+}
+
+// CreateBACnetPriorityValueConstructedValueBuilder creates a BACnetPriorityValueConstructedValueBuilder
+func (m *_BACnetPriorityValueConstructedValue) CreateBACnetPriorityValueConstructedValueBuilder() BACnetPriorityValueConstructedValueBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueConstructedValueBuilder()
+	}
+	return &_BACnetPriorityValueConstructedValueBuilder{_BACnetPriorityValueConstructedValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

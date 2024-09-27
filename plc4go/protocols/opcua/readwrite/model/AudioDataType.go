@@ -39,6 +39,8 @@ type AudioDataType interface {
 	utils.Copyable
 	// IsAudioDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAudioDataType()
+	// CreateBuilder creates a AudioDataTypeBuilder
+	CreateAudioDataTypeBuilder() AudioDataTypeBuilder
 }
 
 // _AudioDataType is the data-structure of this message
@@ -51,6 +53,71 @@ var _ AudioDataType = (*_AudioDataType)(nil)
 func NewAudioDataType() *_AudioDataType {
 	return &_AudioDataType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AudioDataTypeBuilder is a builder for AudioDataType
+type AudioDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AudioDataTypeBuilder
+	// Build builds the AudioDataType or returns an error if something is wrong
+	Build() (AudioDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AudioDataType
+}
+
+// NewAudioDataTypeBuilder() creates a AudioDataTypeBuilder
+func NewAudioDataTypeBuilder() AudioDataTypeBuilder {
+	return &_AudioDataTypeBuilder{_AudioDataType: new(_AudioDataType)}
+}
+
+type _AudioDataTypeBuilder struct {
+	*_AudioDataType
+
+	err *utils.MultiError
+}
+
+var _ (AudioDataTypeBuilder) = (*_AudioDataTypeBuilder)(nil)
+
+func (m *_AudioDataTypeBuilder) WithMandatoryFields() AudioDataTypeBuilder {
+	return m
+}
+
+func (m *_AudioDataTypeBuilder) Build() (AudioDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AudioDataType.deepCopy(), nil
+}
+
+func (m *_AudioDataTypeBuilder) MustBuild() AudioDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AudioDataTypeBuilder) DeepCopy() any {
+	return m.CreateAudioDataTypeBuilder()
+}
+
+// CreateAudioDataTypeBuilder creates a AudioDataTypeBuilder
+func (m *_AudioDataType) CreateAudioDataTypeBuilder() AudioDataTypeBuilder {
+	if m == nil {
+		return NewAudioDataTypeBuilder()
+	}
+	return &_AudioDataTypeBuilder{_AudioDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAudioDataType(structType any) AudioDataType {

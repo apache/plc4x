@@ -40,6 +40,8 @@ type MPropWriteCon interface {
 	CEMI
 	// IsMPropWriteCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropWriteCon()
+	// CreateBuilder creates a MPropWriteConBuilder
+	CreateMPropWriteConBuilder() MPropWriteConBuilder
 }
 
 // _MPropWriteCon is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMPropWriteCon(size uint16) *_MPropWriteCon {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MPropWriteConBuilder is a builder for MPropWriteCon
+type MPropWriteConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MPropWriteConBuilder
+	// Build builds the MPropWriteCon or returns an error if something is wrong
+	Build() (MPropWriteCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MPropWriteCon
+}
+
+// NewMPropWriteConBuilder() creates a MPropWriteConBuilder
+func NewMPropWriteConBuilder() MPropWriteConBuilder {
+	return &_MPropWriteConBuilder{_MPropWriteCon: new(_MPropWriteCon)}
+}
+
+type _MPropWriteConBuilder struct {
+	*_MPropWriteCon
+
+	err *utils.MultiError
+}
+
+var _ (MPropWriteConBuilder) = (*_MPropWriteConBuilder)(nil)
+
+func (m *_MPropWriteConBuilder) WithMandatoryFields() MPropWriteConBuilder {
+	return m
+}
+
+func (m *_MPropWriteConBuilder) Build() (MPropWriteCon, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MPropWriteCon.deepCopy(), nil
+}
+
+func (m *_MPropWriteConBuilder) MustBuild() MPropWriteCon {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MPropWriteConBuilder) DeepCopy() any {
+	return m.CreateMPropWriteConBuilder()
+}
+
+// CreateMPropWriteConBuilder creates a MPropWriteConBuilder
+func (m *_MPropWriteCon) CreateMPropWriteConBuilder() MPropWriteConBuilder {
+	if m == nil {
+		return NewMPropWriteConBuilder()
+	}
+	return &_MPropWriteConBuilder{_MPropWriteCon: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

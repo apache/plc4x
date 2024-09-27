@@ -44,6 +44,8 @@ type ParameterValueCustomManufacturer interface {
 	GetValue() CustomManufacturer
 	// IsParameterValueCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueCustomManufacturer()
+	// CreateBuilder creates a ParameterValueCustomManufacturerBuilder
+	CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder
 }
 
 // _ParameterValueCustomManufacturer is the data-structure of this message
@@ -67,6 +69,99 @@ func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueCustomManufacturerBuilder is a builder for ParameterValueCustomManufacturer
+type ParameterValueCustomManufacturerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder
+	// WithValue adds Value (property field)
+	WithValue(CustomManufacturer) ParameterValueCustomManufacturerBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder
+	// Build builds the ParameterValueCustomManufacturer or returns an error if something is wrong
+	Build() (ParameterValueCustomManufacturer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueCustomManufacturer
+}
+
+// NewParameterValueCustomManufacturerBuilder() creates a ParameterValueCustomManufacturerBuilder
+func NewParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
+	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: new(_ParameterValueCustomManufacturer)}
+}
+
+type _ParameterValueCustomManufacturerBuilder struct {
+	*_ParameterValueCustomManufacturer
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueCustomManufacturerBuilder) = (*_ParameterValueCustomManufacturerBuilder)(nil)
+
+func (m *_ParameterValueCustomManufacturerBuilder) WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	return m.WithValue(value)
+}
+
+func (m *_ParameterValueCustomManufacturerBuilder) WithValue(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ParameterValueCustomManufacturerBuilder) WithValueBuilder(builderSupplier func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder {
+	builder := builderSupplier(m.Value.CreateCustomManufacturerBuilder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "CustomManufacturerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ParameterValueCustomManufacturerBuilder) Build() (ParameterValueCustomManufacturer, error) {
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueCustomManufacturer.deepCopy(), nil
+}
+
+func (m *_ParameterValueCustomManufacturerBuilder) MustBuild() ParameterValueCustomManufacturer {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueCustomManufacturerBuilder) DeepCopy() any {
+	return m.CreateParameterValueCustomManufacturerBuilder()
+}
+
+// CreateParameterValueCustomManufacturerBuilder creates a ParameterValueCustomManufacturerBuilder
+func (m *_ParameterValueCustomManufacturer) CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
+	if m == nil {
+		return NewParameterValueCustomManufacturerBuilder()
+	}
+	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

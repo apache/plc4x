@@ -46,6 +46,8 @@ type BACnetConstructedDataMusterPoint interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataMusterPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMusterPoint()
+	// CreateBuilder creates a BACnetConstructedDataMusterPointBuilder
+	CreateBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPointBuilder
 }
 
 // _BACnetConstructedDataMusterPoint is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMusterPoint(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMusterPointBuilder is a builder for BACnetConstructedDataMusterPoint
+type BACnetConstructedDataMusterPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder
+	// WithMusterPoint adds MusterPoint (property field)
+	WithMusterPoint(BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder
+	// WithMusterPointBuilder adds MusterPoint (property field) which is build by the builder
+	WithMusterPointBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataMusterPointBuilder
+	// Build builds the BACnetConstructedDataMusterPoint or returns an error if something is wrong
+	Build() (BACnetConstructedDataMusterPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMusterPoint
+}
+
+// NewBACnetConstructedDataMusterPointBuilder() creates a BACnetConstructedDataMusterPointBuilder
+func NewBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPointBuilder {
+	return &_BACnetConstructedDataMusterPointBuilder{_BACnetConstructedDataMusterPoint: new(_BACnetConstructedDataMusterPoint)}
+}
+
+type _BACnetConstructedDataMusterPointBuilder struct {
+	*_BACnetConstructedDataMusterPoint
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMusterPointBuilder) = (*_BACnetConstructedDataMusterPointBuilder)(nil)
+
+func (m *_BACnetConstructedDataMusterPointBuilder) WithMandatoryFields(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
+	return m.WithMusterPoint(musterPoint)
+}
+
+func (m *_BACnetConstructedDataMusterPointBuilder) WithMusterPoint(musterPoint BACnetApplicationTagBoolean) BACnetConstructedDataMusterPointBuilder {
+	m.MusterPoint = musterPoint
+	return m
+}
+
+func (m *_BACnetConstructedDataMusterPointBuilder) WithMusterPointBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataMusterPointBuilder {
+	builder := builderSupplier(m.MusterPoint.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.MusterPoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMusterPointBuilder) Build() (BACnetConstructedDataMusterPoint, error) {
+	if m.MusterPoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'musterPoint' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMusterPoint.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMusterPointBuilder) MustBuild() BACnetConstructedDataMusterPoint {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMusterPointBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMusterPointBuilder()
+}
+
+// CreateBACnetConstructedDataMusterPointBuilder creates a BACnetConstructedDataMusterPointBuilder
+func (m *_BACnetConstructedDataMusterPoint) CreateBACnetConstructedDataMusterPointBuilder() BACnetConstructedDataMusterPointBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMusterPointBuilder()
+	}
+	return &_BACnetConstructedDataMusterPointBuilder{_BACnetConstructedDataMusterPoint: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

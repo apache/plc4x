@@ -40,6 +40,8 @@ type SecurityDataAlarmOn interface {
 	SecurityData
 	// IsSecurityDataAlarmOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataAlarmOn()
+	// CreateBuilder creates a SecurityDataAlarmOnBuilder
+	CreateSecurityDataAlarmOnBuilder() SecurityDataAlarmOnBuilder
 }
 
 // _SecurityDataAlarmOn is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataAlarmOn(commandTypeContainer SecurityCommandTypeContainer, a
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataAlarmOnBuilder is a builder for SecurityDataAlarmOn
+type SecurityDataAlarmOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataAlarmOnBuilder
+	// Build builds the SecurityDataAlarmOn or returns an error if something is wrong
+	Build() (SecurityDataAlarmOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataAlarmOn
+}
+
+// NewSecurityDataAlarmOnBuilder() creates a SecurityDataAlarmOnBuilder
+func NewSecurityDataAlarmOnBuilder() SecurityDataAlarmOnBuilder {
+	return &_SecurityDataAlarmOnBuilder{_SecurityDataAlarmOn: new(_SecurityDataAlarmOn)}
+}
+
+type _SecurityDataAlarmOnBuilder struct {
+	*_SecurityDataAlarmOn
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataAlarmOnBuilder) = (*_SecurityDataAlarmOnBuilder)(nil)
+
+func (m *_SecurityDataAlarmOnBuilder) WithMandatoryFields() SecurityDataAlarmOnBuilder {
+	return m
+}
+
+func (m *_SecurityDataAlarmOnBuilder) Build() (SecurityDataAlarmOn, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataAlarmOn.deepCopy(), nil
+}
+
+func (m *_SecurityDataAlarmOnBuilder) MustBuild() SecurityDataAlarmOn {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataAlarmOnBuilder) DeepCopy() any {
+	return m.CreateSecurityDataAlarmOnBuilder()
+}
+
+// CreateSecurityDataAlarmOnBuilder creates a SecurityDataAlarmOnBuilder
+func (m *_SecurityDataAlarmOn) CreateSecurityDataAlarmOnBuilder() SecurityDataAlarmOnBuilder {
+	if m == nil {
+		return NewSecurityDataAlarmOnBuilder()
+	}
+	return &_SecurityDataAlarmOnBuilder{_SecurityDataAlarmOn: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

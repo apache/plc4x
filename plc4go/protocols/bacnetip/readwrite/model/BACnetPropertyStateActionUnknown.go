@@ -44,6 +44,8 @@ type BACnetPropertyStateActionUnknown interface {
 	GetUnknownValue() BACnetContextTagUnknown
 	// IsBACnetPropertyStateActionUnknown is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStateActionUnknown()
+	// CreateBuilder creates a BACnetPropertyStateActionUnknownBuilder
+	CreateBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnknownBuilder
 }
 
 // _BACnetPropertyStateActionUnknown is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStateActionUnknown(peekedTagHeader BACnetTagHeader, unknow
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStateActionUnknownBuilder is a builder for BACnetPropertyStateActionUnknown
+type BACnetPropertyStateActionUnknownBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder
+	// WithUnknownValue adds UnknownValue (property field)
+	WithUnknownValue(BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder
+	// WithUnknownValueBuilder adds UnknownValue (property field) which is build by the builder
+	WithUnknownValueBuilder(func(BACnetContextTagUnknownBuilder) BACnetContextTagUnknownBuilder) BACnetPropertyStateActionUnknownBuilder
+	// Build builds the BACnetPropertyStateActionUnknown or returns an error if something is wrong
+	Build() (BACnetPropertyStateActionUnknown, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStateActionUnknown
+}
+
+// NewBACnetPropertyStateActionUnknownBuilder() creates a BACnetPropertyStateActionUnknownBuilder
+func NewBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnknownBuilder {
+	return &_BACnetPropertyStateActionUnknownBuilder{_BACnetPropertyStateActionUnknown: new(_BACnetPropertyStateActionUnknown)}
+}
+
+type _BACnetPropertyStateActionUnknownBuilder struct {
+	*_BACnetPropertyStateActionUnknown
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStateActionUnknownBuilder) = (*_BACnetPropertyStateActionUnknownBuilder)(nil)
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) WithMandatoryFields(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
+	return m.WithUnknownValue(unknownValue)
+}
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValue(unknownValue BACnetContextTagUnknown) BACnetPropertyStateActionUnknownBuilder {
+	m.UnknownValue = unknownValue
+	return m
+}
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) WithUnknownValueBuilder(builderSupplier func(BACnetContextTagUnknownBuilder) BACnetContextTagUnknownBuilder) BACnetPropertyStateActionUnknownBuilder {
+	builder := builderSupplier(m.UnknownValue.CreateBACnetContextTagUnknownBuilder())
+	var err error
+	m.UnknownValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnknownBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) Build() (BACnetPropertyStateActionUnknown, error) {
+	if m.UnknownValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'unknownValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStateActionUnknown.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) MustBuild() BACnetPropertyStateActionUnknown {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStateActionUnknownBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStateActionUnknownBuilder()
+}
+
+// CreateBACnetPropertyStateActionUnknownBuilder creates a BACnetPropertyStateActionUnknownBuilder
+func (m *_BACnetPropertyStateActionUnknown) CreateBACnetPropertyStateActionUnknownBuilder() BACnetPropertyStateActionUnknownBuilder {
+	if m == nil {
+		return NewBACnetPropertyStateActionUnknownBuilder()
+	}
+	return &_BACnetPropertyStateActionUnknownBuilder{_BACnetPropertyStateActionUnknown: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

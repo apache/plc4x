@@ -45,6 +45,8 @@ type BACnetSecurityPolicyTagged interface {
 	GetValue() BACnetSecurityPolicy
 	// IsBACnetSecurityPolicyTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSecurityPolicyTagged()
+	// CreateBuilder creates a BACnetSecurityPolicyTaggedBuilder
+	CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder
 }
 
 // _BACnetSecurityPolicyTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityP
 	}
 	return &_BACnetSecurityPolicyTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSecurityPolicyTaggedBuilder is a builder for BACnetSecurityPolicyTagged
+type BACnetSecurityPolicyTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder
+	// Build builds the BACnetSecurityPolicyTagged or returns an error if something is wrong
+	Build() (BACnetSecurityPolicyTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSecurityPolicyTagged
+}
+
+// NewBACnetSecurityPolicyTaggedBuilder() creates a BACnetSecurityPolicyTaggedBuilder
+func NewBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
+	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: new(_BACnetSecurityPolicyTagged)}
+}
+
+type _BACnetSecurityPolicyTaggedBuilder struct {
+	*_BACnetSecurityPolicyTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSecurityPolicyTaggedBuilder) = (*_BACnetSecurityPolicyTaggedBuilder)(nil)
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) WithValue(value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) Build() (BACnetSecurityPolicyTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetSecurityPolicyTagged.deepCopy(), nil
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) MustBuild() BACnetSecurityPolicyTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetSecurityPolicyTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetSecurityPolicyTaggedBuilder()
+}
+
+// CreateBACnetSecurityPolicyTaggedBuilder creates a BACnetSecurityPolicyTaggedBuilder
+func (m *_BACnetSecurityPolicyTagged) CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
+	if m == nil {
+		return NewBACnetSecurityPolicyTaggedBuilder()
+	}
+	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

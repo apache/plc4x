@@ -45,6 +45,8 @@ type ReplyNetwork interface {
 	GetUnitAddress() UnitAddress
 	// IsReplyNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyNetwork()
+	// CreateBuilder creates a ReplyNetworkBuilder
+	CreateReplyNetworkBuilder() ReplyNetworkBuilder
 }
 
 // _ReplyNetwork is the data-structure of this message
@@ -65,6 +67,127 @@ func NewReplyNetwork(networkRoute NetworkRoute, unitAddress UnitAddress) *_Reply
 	}
 	return &_ReplyNetwork{NetworkRoute: networkRoute, UnitAddress: unitAddress}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyNetworkBuilder is a builder for ReplyNetwork
+type ReplyNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkRoute NetworkRoute, unitAddress UnitAddress) ReplyNetworkBuilder
+	// WithNetworkRoute adds NetworkRoute (property field)
+	WithNetworkRoute(NetworkRoute) ReplyNetworkBuilder
+	// WithNetworkRouteBuilder adds NetworkRoute (property field) which is build by the builder
+	WithNetworkRouteBuilder(func(NetworkRouteBuilder) NetworkRouteBuilder) ReplyNetworkBuilder
+	// WithUnitAddress adds UnitAddress (property field)
+	WithUnitAddress(UnitAddress) ReplyNetworkBuilder
+	// WithUnitAddressBuilder adds UnitAddress (property field) which is build by the builder
+	WithUnitAddressBuilder(func(UnitAddressBuilder) UnitAddressBuilder) ReplyNetworkBuilder
+	// Build builds the ReplyNetwork or returns an error if something is wrong
+	Build() (ReplyNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyNetwork
+}
+
+// NewReplyNetworkBuilder() creates a ReplyNetworkBuilder
+func NewReplyNetworkBuilder() ReplyNetworkBuilder {
+	return &_ReplyNetworkBuilder{_ReplyNetwork: new(_ReplyNetwork)}
+}
+
+type _ReplyNetworkBuilder struct {
+	*_ReplyNetwork
+
+	err *utils.MultiError
+}
+
+var _ (ReplyNetworkBuilder) = (*_ReplyNetworkBuilder)(nil)
+
+func (m *_ReplyNetworkBuilder) WithMandatoryFields(networkRoute NetworkRoute, unitAddress UnitAddress) ReplyNetworkBuilder {
+	return m.WithNetworkRoute(networkRoute).WithUnitAddress(unitAddress)
+}
+
+func (m *_ReplyNetworkBuilder) WithNetworkRoute(networkRoute NetworkRoute) ReplyNetworkBuilder {
+	m.NetworkRoute = networkRoute
+	return m
+}
+
+func (m *_ReplyNetworkBuilder) WithNetworkRouteBuilder(builderSupplier func(NetworkRouteBuilder) NetworkRouteBuilder) ReplyNetworkBuilder {
+	builder := builderSupplier(m.NetworkRoute.CreateNetworkRouteBuilder())
+	var err error
+	m.NetworkRoute, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NetworkRouteBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReplyNetworkBuilder) WithUnitAddress(unitAddress UnitAddress) ReplyNetworkBuilder {
+	m.UnitAddress = unitAddress
+	return m
+}
+
+func (m *_ReplyNetworkBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) ReplyNetworkBuilder {
+	builder := builderSupplier(m.UnitAddress.CreateUnitAddressBuilder())
+	var err error
+	m.UnitAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReplyNetworkBuilder) Build() (ReplyNetwork, error) {
+	if m.NetworkRoute == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkRoute' not set"))
+	}
+	if m.UnitAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'unitAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReplyNetwork.deepCopy(), nil
+}
+
+func (m *_ReplyNetworkBuilder) MustBuild() ReplyNetwork {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReplyNetworkBuilder) DeepCopy() any {
+	return m.CreateReplyNetworkBuilder()
+}
+
+// CreateReplyNetworkBuilder creates a ReplyNetworkBuilder
+func (m *_ReplyNetwork) CreateReplyNetworkBuilder() ReplyNetworkBuilder {
+	if m == nil {
+		return NewReplyNetworkBuilder()
+	}
+	return &_ReplyNetworkBuilder{_ReplyNetwork: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

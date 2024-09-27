@@ -45,6 +45,8 @@ type BACnetPolarityTagged interface {
 	GetValue() BACnetPolarity
 	// IsBACnetPolarityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPolarityTagged()
+	// CreateBuilder creates a BACnetPolarityTaggedBuilder
+	CreateBACnetPolarityTaggedBuilder() BACnetPolarityTaggedBuilder
 }
 
 // _BACnetPolarityTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetPolarityTagged(header BACnetTagHeader, value BACnetPolarity, tagNu
 	}
 	return &_BACnetPolarityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPolarityTaggedBuilder is a builder for BACnetPolarityTagged
+type BACnetPolarityTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetPolarity) BACnetPolarityTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetPolarityTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPolarityTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetPolarity) BACnetPolarityTaggedBuilder
+	// Build builds the BACnetPolarityTagged or returns an error if something is wrong
+	Build() (BACnetPolarityTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPolarityTagged
+}
+
+// NewBACnetPolarityTaggedBuilder() creates a BACnetPolarityTaggedBuilder
+func NewBACnetPolarityTaggedBuilder() BACnetPolarityTaggedBuilder {
+	return &_BACnetPolarityTaggedBuilder{_BACnetPolarityTagged: new(_BACnetPolarityTagged)}
+}
+
+type _BACnetPolarityTaggedBuilder struct {
+	*_BACnetPolarityTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPolarityTaggedBuilder) = (*_BACnetPolarityTaggedBuilder)(nil)
+
+func (m *_BACnetPolarityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetPolarity) BACnetPolarityTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetPolarityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetPolarityTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetPolarityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPolarityTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPolarityTaggedBuilder) WithValue(value BACnetPolarity) BACnetPolarityTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetPolarityTaggedBuilder) Build() (BACnetPolarityTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPolarityTagged.deepCopy(), nil
+}
+
+func (m *_BACnetPolarityTaggedBuilder) MustBuild() BACnetPolarityTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPolarityTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetPolarityTaggedBuilder()
+}
+
+// CreateBACnetPolarityTaggedBuilder creates a BACnetPolarityTaggedBuilder
+func (m *_BACnetPolarityTagged) CreateBACnetPolarityTaggedBuilder() BACnetPolarityTaggedBuilder {
+	if m == nil {
+		return NewBACnetPolarityTaggedBuilder()
+	}
+	return &_BACnetPolarityTaggedBuilder{_BACnetPolarityTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

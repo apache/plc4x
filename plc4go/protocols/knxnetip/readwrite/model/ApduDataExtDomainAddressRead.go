@@ -40,6 +40,8 @@ type ApduDataExtDomainAddressRead interface {
 	ApduDataExt
 	// IsApduDataExtDomainAddressRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressRead()
+	// CreateBuilder creates a ApduDataExtDomainAddressReadBuilder
+	CreateApduDataExtDomainAddressReadBuilder() ApduDataExtDomainAddressReadBuilder
 }
 
 // _ApduDataExtDomainAddressRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtDomainAddressRead(length uint8) *_ApduDataExtDomainAddressRea
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtDomainAddressReadBuilder is a builder for ApduDataExtDomainAddressRead
+type ApduDataExtDomainAddressReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtDomainAddressReadBuilder
+	// Build builds the ApduDataExtDomainAddressRead or returns an error if something is wrong
+	Build() (ApduDataExtDomainAddressRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtDomainAddressRead
+}
+
+// NewApduDataExtDomainAddressReadBuilder() creates a ApduDataExtDomainAddressReadBuilder
+func NewApduDataExtDomainAddressReadBuilder() ApduDataExtDomainAddressReadBuilder {
+	return &_ApduDataExtDomainAddressReadBuilder{_ApduDataExtDomainAddressRead: new(_ApduDataExtDomainAddressRead)}
+}
+
+type _ApduDataExtDomainAddressReadBuilder struct {
+	*_ApduDataExtDomainAddressRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtDomainAddressReadBuilder) = (*_ApduDataExtDomainAddressReadBuilder)(nil)
+
+func (m *_ApduDataExtDomainAddressReadBuilder) WithMandatoryFields() ApduDataExtDomainAddressReadBuilder {
+	return m
+}
+
+func (m *_ApduDataExtDomainAddressReadBuilder) Build() (ApduDataExtDomainAddressRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtDomainAddressRead.deepCopy(), nil
+}
+
+func (m *_ApduDataExtDomainAddressReadBuilder) MustBuild() ApduDataExtDomainAddressRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtDomainAddressReadBuilder) DeepCopy() any {
+	return m.CreateApduDataExtDomainAddressReadBuilder()
+}
+
+// CreateApduDataExtDomainAddressReadBuilder creates a ApduDataExtDomainAddressReadBuilder
+func (m *_ApduDataExtDomainAddressRead) CreateApduDataExtDomainAddressReadBuilder() ApduDataExtDomainAddressReadBuilder {
+	if m == nil {
+		return NewApduDataExtDomainAddressReadBuilder()
+	}
+	return &_ApduDataExtDomainAddressReadBuilder{_ApduDataExtDomainAddressRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

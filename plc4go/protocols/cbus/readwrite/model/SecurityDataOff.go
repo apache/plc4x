@@ -44,6 +44,8 @@ type SecurityDataOff interface {
 	GetData() []byte
 	// IsSecurityDataOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataOff()
+	// CreateBuilder creates a SecurityDataOffBuilder
+	CreateSecurityDataOffBuilder() SecurityDataOffBuilder
 }
 
 // _SecurityDataOff is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataOff(commandTypeContainer SecurityCommandTypeContainer, argum
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataOffBuilder is a builder for SecurityDataOff
+type SecurityDataOffBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) SecurityDataOffBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) SecurityDataOffBuilder
+	// Build builds the SecurityDataOff or returns an error if something is wrong
+	Build() (SecurityDataOff, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataOff
+}
+
+// NewSecurityDataOffBuilder() creates a SecurityDataOffBuilder
+func NewSecurityDataOffBuilder() SecurityDataOffBuilder {
+	return &_SecurityDataOffBuilder{_SecurityDataOff: new(_SecurityDataOff)}
+}
+
+type _SecurityDataOffBuilder struct {
+	*_SecurityDataOff
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataOffBuilder) = (*_SecurityDataOffBuilder)(nil)
+
+func (m *_SecurityDataOffBuilder) WithMandatoryFields(data []byte) SecurityDataOffBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_SecurityDataOffBuilder) WithData(data ...byte) SecurityDataOffBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_SecurityDataOffBuilder) Build() (SecurityDataOff, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataOff.deepCopy(), nil
+}
+
+func (m *_SecurityDataOffBuilder) MustBuild() SecurityDataOff {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataOffBuilder) DeepCopy() any {
+	return m.CreateSecurityDataOffBuilder()
+}
+
+// CreateSecurityDataOffBuilder creates a SecurityDataOffBuilder
+func (m *_SecurityDataOff) CreateSecurityDataOffBuilder() SecurityDataOffBuilder {
+	if m == nil {
+		return NewSecurityDataOffBuilder()
+	}
+	return &_SecurityDataOffBuilder{_SecurityDataOff: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

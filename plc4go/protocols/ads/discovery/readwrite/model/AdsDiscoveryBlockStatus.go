@@ -47,6 +47,8 @@ type AdsDiscoveryBlockStatus interface {
 	GetStatus() Status
 	// IsAdsDiscoveryBlockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockStatus()
+	// CreateBuilder creates a AdsDiscoveryBlockStatusBuilder
+	CreateAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder
 }
 
 // _AdsDiscoveryBlockStatus is the data-structure of this message
@@ -67,6 +69,78 @@ func NewAdsDiscoveryBlockStatus(status Status) *_AdsDiscoveryBlockStatus {
 	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockStatusBuilder is a builder for AdsDiscoveryBlockStatus
+type AdsDiscoveryBlockStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status Status) AdsDiscoveryBlockStatusBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) AdsDiscoveryBlockStatusBuilder
+	// Build builds the AdsDiscoveryBlockStatus or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockStatus
+}
+
+// NewAdsDiscoveryBlockStatusBuilder() creates a AdsDiscoveryBlockStatusBuilder
+func NewAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder {
+	return &_AdsDiscoveryBlockStatusBuilder{_AdsDiscoveryBlockStatus: new(_AdsDiscoveryBlockStatus)}
+}
+
+type _AdsDiscoveryBlockStatusBuilder struct {
+	*_AdsDiscoveryBlockStatus
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockStatusBuilder) = (*_AdsDiscoveryBlockStatusBuilder)(nil)
+
+func (m *_AdsDiscoveryBlockStatusBuilder) WithMandatoryFields(status Status) AdsDiscoveryBlockStatusBuilder {
+	return m.WithStatus(status)
+}
+
+func (m *_AdsDiscoveryBlockStatusBuilder) WithStatus(status Status) AdsDiscoveryBlockStatusBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_AdsDiscoveryBlockStatusBuilder) Build() (AdsDiscoveryBlockStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsDiscoveryBlockStatus.deepCopy(), nil
+}
+
+func (m *_AdsDiscoveryBlockStatusBuilder) MustBuild() AdsDiscoveryBlockStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsDiscoveryBlockStatusBuilder) DeepCopy() any {
+	return m.CreateAdsDiscoveryBlockStatusBuilder()
+}
+
+// CreateAdsDiscoveryBlockStatusBuilder creates a AdsDiscoveryBlockStatusBuilder
+func (m *_AdsDiscoveryBlockStatus) CreateAdsDiscoveryBlockStatusBuilder() AdsDiscoveryBlockStatusBuilder {
+	if m == nil {
+		return NewAdsDiscoveryBlockStatusBuilder()
+	}
+	return &_AdsDiscoveryBlockStatusBuilder{_AdsDiscoveryBlockStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

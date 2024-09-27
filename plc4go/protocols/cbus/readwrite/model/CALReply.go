@@ -43,6 +43,8 @@ type CALReply interface {
 	utils.Copyable
 	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
+	// CreateBuilder creates a CALReplyBuilder
+	CreateCALReplyBuilder() CALReplyBuilder
 }
 
 // CALReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type CALReplyContract interface {
 	GetRequestContext() RequestContext
 	// IsCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALReply()
+	// CreateBuilder creates a CALReplyBuilder
+	CreateCALReplyBuilder() CALReplyBuilder
 }
 
 // CALReplyRequirements provides a set of functions which need to be implemented by a sub struct
@@ -87,6 +91,91 @@ func NewCALReply(calType byte, calData CALData, cBusOptions CBusOptions, request
 	}
 	return &_CALReply{CalType: calType, CalData: calData, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALReplyBuilder is a builder for CALReply
+type CALReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(calType byte, calData CALData) CALReplyBuilder
+	// WithCalType adds CalType (property field)
+	WithCalType(byte) CALReplyBuilder
+	// WithCalData adds CalData (property field)
+	WithCalData(CALData) CALReplyBuilder
+	// Build builds the CALReply or returns an error if something is wrong
+	Build() (CALReplyContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALReplyContract
+}
+
+// NewCALReplyBuilder() creates a CALReplyBuilder
+func NewCALReplyBuilder() CALReplyBuilder {
+	return &_CALReplyBuilder{_CALReply: new(_CALReply)}
+}
+
+type _CALReplyBuilder struct {
+	*_CALReply
+
+	err *utils.MultiError
+}
+
+var _ (CALReplyBuilder) = (*_CALReplyBuilder)(nil)
+
+func (m *_CALReplyBuilder) WithMandatoryFields(calType byte, calData CALData) CALReplyBuilder {
+	return m.WithCalType(calType).WithCalData(calData)
+}
+
+func (m *_CALReplyBuilder) WithCalType(calType byte) CALReplyBuilder {
+	m.CalType = calType
+	return m
+}
+
+func (m *_CALReplyBuilder) WithCalData(calData CALData) CALReplyBuilder {
+	m.CalData = calData
+	return m
+}
+
+func (m *_CALReplyBuilder) Build() (CALReplyContract, error) {
+	if m.CalData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALReply.deepCopy(), nil
+}
+
+func (m *_CALReplyBuilder) MustBuild() CALReplyContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALReplyBuilder) DeepCopy() any {
+	return m.CreateCALReplyBuilder()
+}
+
+// CreateCALReplyBuilder creates a CALReplyBuilder
+func (m *_CALReply) CreateCALReplyBuilder() CALReplyBuilder {
+	if m == nil {
+		return NewCALReplyBuilder()
+	}
+	return &_CALReplyBuilder{_CALReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

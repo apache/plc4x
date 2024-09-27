@@ -48,6 +48,8 @@ type HistoryUpdateRequest interface {
 	GetHistoryUpdateDetails() []ExtensionObject
 	// IsHistoryUpdateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryUpdateRequest()
+	// CreateBuilder creates a HistoryUpdateRequestBuilder
+	CreateHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder
 }
 
 // _HistoryUpdateRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewHistoryUpdateRequest(requestHeader ExtensionObjectDefinition, noOfHistor
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryUpdateRequestBuilder is a builder for HistoryUpdateRequest
+type HistoryUpdateRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) HistoryUpdateRequestBuilder
+	// WithNoOfHistoryUpdateDetails adds NoOfHistoryUpdateDetails (property field)
+	WithNoOfHistoryUpdateDetails(int32) HistoryUpdateRequestBuilder
+	// WithHistoryUpdateDetails adds HistoryUpdateDetails (property field)
+	WithHistoryUpdateDetails(...ExtensionObject) HistoryUpdateRequestBuilder
+	// Build builds the HistoryUpdateRequest or returns an error if something is wrong
+	Build() (HistoryUpdateRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryUpdateRequest
+}
+
+// NewHistoryUpdateRequestBuilder() creates a HistoryUpdateRequestBuilder
+func NewHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder {
+	return &_HistoryUpdateRequestBuilder{_HistoryUpdateRequest: new(_HistoryUpdateRequest)}
+}
+
+type _HistoryUpdateRequestBuilder struct {
+	*_HistoryUpdateRequest
+
+	err *utils.MultiError
+}
+
+var _ (HistoryUpdateRequestBuilder) = (*_HistoryUpdateRequestBuilder)(nil)
+
+func (m *_HistoryUpdateRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfHistoryUpdateDetails int32, historyUpdateDetails []ExtensionObject) HistoryUpdateRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails).WithHistoryUpdateDetails(historyUpdateDetails...)
+}
+
+func (m *_HistoryUpdateRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) HistoryUpdateRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_HistoryUpdateRequestBuilder) WithNoOfHistoryUpdateDetails(noOfHistoryUpdateDetails int32) HistoryUpdateRequestBuilder {
+	m.NoOfHistoryUpdateDetails = noOfHistoryUpdateDetails
+	return m
+}
+
+func (m *_HistoryUpdateRequestBuilder) WithHistoryUpdateDetails(historyUpdateDetails ...ExtensionObject) HistoryUpdateRequestBuilder {
+	m.HistoryUpdateDetails = historyUpdateDetails
+	return m
+}
+
+func (m *_HistoryUpdateRequestBuilder) Build() (HistoryUpdateRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HistoryUpdateRequest.deepCopy(), nil
+}
+
+func (m *_HistoryUpdateRequestBuilder) MustBuild() HistoryUpdateRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HistoryUpdateRequestBuilder) DeepCopy() any {
+	return m.CreateHistoryUpdateRequestBuilder()
+}
+
+// CreateHistoryUpdateRequestBuilder creates a HistoryUpdateRequestBuilder
+func (m *_HistoryUpdateRequest) CreateHistoryUpdateRequestBuilder() HistoryUpdateRequestBuilder {
+	if m == nil {
+		return NewHistoryUpdateRequestBuilder()
+	}
+	return &_HistoryUpdateRequestBuilder{_HistoryUpdateRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

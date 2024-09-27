@@ -44,6 +44,8 @@ type MeteringDataOtherWaterConsumption interface {
 	GetKL() uint32
 	// IsMeteringDataOtherWaterConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataOtherWaterConsumption()
+	// CreateBuilder creates a MeteringDataOtherWaterConsumptionBuilder
+	CreateMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsumptionBuilder
 }
 
 // _MeteringDataOtherWaterConsumption is the data-structure of this message
@@ -64,6 +66,78 @@ func NewMeteringDataOtherWaterConsumption(commandTypeContainer MeteringCommandTy
 	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataOtherWaterConsumptionBuilder is a builder for MeteringDataOtherWaterConsumption
+type MeteringDataOtherWaterConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(kL uint32) MeteringDataOtherWaterConsumptionBuilder
+	// WithKL adds KL (property field)
+	WithKL(uint32) MeteringDataOtherWaterConsumptionBuilder
+	// Build builds the MeteringDataOtherWaterConsumption or returns an error if something is wrong
+	Build() (MeteringDataOtherWaterConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataOtherWaterConsumption
+}
+
+// NewMeteringDataOtherWaterConsumptionBuilder() creates a MeteringDataOtherWaterConsumptionBuilder
+func NewMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsumptionBuilder {
+	return &_MeteringDataOtherWaterConsumptionBuilder{_MeteringDataOtherWaterConsumption: new(_MeteringDataOtherWaterConsumption)}
+}
+
+type _MeteringDataOtherWaterConsumptionBuilder struct {
+	*_MeteringDataOtherWaterConsumption
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataOtherWaterConsumptionBuilder) = (*_MeteringDataOtherWaterConsumptionBuilder)(nil)
+
+func (m *_MeteringDataOtherWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
+	return m.WithKL(kL)
+}
+
+func (m *_MeteringDataOtherWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataOtherWaterConsumptionBuilder {
+	m.KL = kL
+	return m
+}
+
+func (m *_MeteringDataOtherWaterConsumptionBuilder) Build() (MeteringDataOtherWaterConsumption, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringDataOtherWaterConsumption.deepCopy(), nil
+}
+
+func (m *_MeteringDataOtherWaterConsumptionBuilder) MustBuild() MeteringDataOtherWaterConsumption {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataOtherWaterConsumptionBuilder) DeepCopy() any {
+	return m.CreateMeteringDataOtherWaterConsumptionBuilder()
+}
+
+// CreateMeteringDataOtherWaterConsumptionBuilder creates a MeteringDataOtherWaterConsumptionBuilder
+func (m *_MeteringDataOtherWaterConsumption) CreateMeteringDataOtherWaterConsumptionBuilder() MeteringDataOtherWaterConsumptionBuilder {
+	if m == nil {
+		return NewMeteringDataOtherWaterConsumptionBuilder()
+	}
+	return &_MeteringDataOtherWaterConsumptionBuilder{_MeteringDataOtherWaterConsumption: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

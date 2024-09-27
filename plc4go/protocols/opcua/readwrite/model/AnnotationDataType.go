@@ -48,6 +48,8 @@ type AnnotationDataType interface {
 	GetUri() PascalString
 	// IsAnnotationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnnotationDataType()
+	// CreateBuilder creates a AnnotationDataTypeBuilder
+	CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder
 }
 
 // _AnnotationDataType is the data-structure of this message
@@ -81,6 +83,155 @@ func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AnnotationDataTypeBuilder is a builder for AnnotationDataType
+type AnnotationDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder
+	// WithAnnotation adds Annotation (property field)
+	WithAnnotation(PascalString) AnnotationDataTypeBuilder
+	// WithAnnotationBuilder adds Annotation (property field) which is build by the builder
+	WithAnnotationBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// WithDiscipline adds Discipline (property field)
+	WithDiscipline(PascalString) AnnotationDataTypeBuilder
+	// WithDisciplineBuilder adds Discipline (property field) which is build by the builder
+	WithDisciplineBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// WithUri adds Uri (property field)
+	WithUri(PascalString) AnnotationDataTypeBuilder
+	// WithUriBuilder adds Uri (property field) which is build by the builder
+	WithUriBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// Build builds the AnnotationDataType or returns an error if something is wrong
+	Build() (AnnotationDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AnnotationDataType
+}
+
+// NewAnnotationDataTypeBuilder() creates a AnnotationDataTypeBuilder
+func NewAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
+	return &_AnnotationDataTypeBuilder{_AnnotationDataType: new(_AnnotationDataType)}
+}
+
+type _AnnotationDataTypeBuilder struct {
+	*_AnnotationDataType
+
+	err *utils.MultiError
+}
+
+var _ (AnnotationDataTypeBuilder) = (*_AnnotationDataTypeBuilder)(nil)
+
+func (m *_AnnotationDataTypeBuilder) WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder {
+	return m.WithAnnotation(annotation).WithDiscipline(discipline).WithUri(uri)
+}
+
+func (m *_AnnotationDataTypeBuilder) WithAnnotation(annotation PascalString) AnnotationDataTypeBuilder {
+	m.Annotation = annotation
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) WithAnnotationBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(m.Annotation.CreatePascalStringBuilder())
+	var err error
+	m.Annotation, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) WithDiscipline(discipline PascalString) AnnotationDataTypeBuilder {
+	m.Discipline = discipline
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) WithDisciplineBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(m.Discipline.CreatePascalStringBuilder())
+	var err error
+	m.Discipline, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) WithUri(uri PascalString) AnnotationDataTypeBuilder {
+	m.Uri = uri
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) WithUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(m.Uri.CreatePascalStringBuilder())
+	var err error
+	m.Uri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
+	if m.Annotation == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'annotation' not set"))
+	}
+	if m.Discipline == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'discipline' not set"))
+	}
+	if m.Uri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'uri' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AnnotationDataType.deepCopy(), nil
+}
+
+func (m *_AnnotationDataTypeBuilder) MustBuild() AnnotationDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AnnotationDataTypeBuilder) DeepCopy() any {
+	return m.CreateAnnotationDataTypeBuilder()
+}
+
+// CreateAnnotationDataTypeBuilder creates a AnnotationDataTypeBuilder
+func (m *_AnnotationDataType) CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
+	if m == nil {
+		return NewAnnotationDataTypeBuilder()
+	}
+	return &_AnnotationDataTypeBuilder{_AnnotationDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type SysexCommandAnalogMappingQueryResponse interface {
 	GetPin() uint8
 	// IsSysexCommandAnalogMappingQueryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingQueryResponse()
+	// CreateBuilder creates a SysexCommandAnalogMappingQueryResponseBuilder
+	CreateSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappingQueryResponseBuilder
 }
 
 // _SysexCommandAnalogMappingQueryResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSysexCommandAnalogMappingQueryResponse(pin uint8) *_SysexCommandAnalogMa
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandAnalogMappingQueryResponseBuilder is a builder for SysexCommandAnalogMappingQueryResponse
+type SysexCommandAnalogMappingQueryResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) SysexCommandAnalogMappingQueryResponseBuilder
+	// Build builds the SysexCommandAnalogMappingQueryResponse or returns an error if something is wrong
+	Build() (SysexCommandAnalogMappingQueryResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandAnalogMappingQueryResponse
+}
+
+// NewSysexCommandAnalogMappingQueryResponseBuilder() creates a SysexCommandAnalogMappingQueryResponseBuilder
+func NewSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappingQueryResponseBuilder {
+	return &_SysexCommandAnalogMappingQueryResponseBuilder{_SysexCommandAnalogMappingQueryResponse: new(_SysexCommandAnalogMappingQueryResponse)}
+}
+
+type _SysexCommandAnalogMappingQueryResponseBuilder struct {
+	*_SysexCommandAnalogMappingQueryResponse
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandAnalogMappingQueryResponseBuilder) = (*_SysexCommandAnalogMappingQueryResponseBuilder)(nil)
+
+func (m *_SysexCommandAnalogMappingQueryResponseBuilder) WithMandatoryFields(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
+	return m.WithPin(pin)
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponseBuilder) WithPin(pin uint8) SysexCommandAnalogMappingQueryResponseBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponseBuilder) Build() (SysexCommandAnalogMappingQueryResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandAnalogMappingQueryResponse.deepCopy(), nil
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponseBuilder) MustBuild() SysexCommandAnalogMappingQueryResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandAnalogMappingQueryResponseBuilder) DeepCopy() any {
+	return m.CreateSysexCommandAnalogMappingQueryResponseBuilder()
+}
+
+// CreateSysexCommandAnalogMappingQueryResponseBuilder creates a SysexCommandAnalogMappingQueryResponseBuilder
+func (m *_SysexCommandAnalogMappingQueryResponse) CreateSysexCommandAnalogMappingQueryResponseBuilder() SysexCommandAnalogMappingQueryResponseBuilder {
+	if m == nil {
+		return NewSysexCommandAnalogMappingQueryResponseBuilder()
+	}
+	return &_SysexCommandAnalogMappingQueryResponseBuilder{_SysexCommandAnalogMappingQueryResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

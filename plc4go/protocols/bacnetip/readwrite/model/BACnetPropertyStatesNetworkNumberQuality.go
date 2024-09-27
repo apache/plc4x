@@ -44,6 +44,8 @@ type BACnetPropertyStatesNetworkNumberQuality interface {
 	GetNetworkNumberQuality() BACnetNetworkNumberQualityTagged
 	// IsBACnetPropertyStatesNetworkNumberQuality is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesNetworkNumberQuality()
+	// CreateBuilder creates a BACnetPropertyStatesNetworkNumberQualityBuilder
+	CreateBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNetworkNumberQualityBuilder
 }
 
 // _BACnetPropertyStatesNetworkNumberQuality is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesNetworkNumberQuality(peekedTagHeader BACnetTagHeader
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesNetworkNumberQualityBuilder is a builder for BACnetPropertyStatesNetworkNumberQuality
+type BACnetPropertyStatesNetworkNumberQualityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder
+	// WithNetworkNumberQuality adds NetworkNumberQuality (property field)
+	WithNetworkNumberQuality(BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder
+	// WithNetworkNumberQualityBuilder adds NetworkNumberQuality (property field) which is build by the builder
+	WithNetworkNumberQualityBuilder(func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetPropertyStatesNetworkNumberQualityBuilder
+	// Build builds the BACnetPropertyStatesNetworkNumberQuality or returns an error if something is wrong
+	Build() (BACnetPropertyStatesNetworkNumberQuality, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesNetworkNumberQuality
+}
+
+// NewBACnetPropertyStatesNetworkNumberQualityBuilder() creates a BACnetPropertyStatesNetworkNumberQualityBuilder
+func NewBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNetworkNumberQualityBuilder {
+	return &_BACnetPropertyStatesNetworkNumberQualityBuilder{_BACnetPropertyStatesNetworkNumberQuality: new(_BACnetPropertyStatesNetworkNumberQuality)}
+}
+
+type _BACnetPropertyStatesNetworkNumberQualityBuilder struct {
+	*_BACnetPropertyStatesNetworkNumberQuality
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesNetworkNumberQualityBuilder) = (*_BACnetPropertyStatesNetworkNumberQualityBuilder)(nil)
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithMandatoryFields(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	return m.WithNetworkNumberQuality(networkNumberQuality)
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQuality(networkNumberQuality BACnetNetworkNumberQualityTagged) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	m.NetworkNumberQuality = networkNumberQuality
+	return m
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) WithNetworkNumberQualityBuilder(builderSupplier func(BACnetNetworkNumberQualityTaggedBuilder) BACnetNetworkNumberQualityTaggedBuilder) BACnetPropertyStatesNetworkNumberQualityBuilder {
+	builder := builderSupplier(m.NetworkNumberQuality.CreateBACnetNetworkNumberQualityTaggedBuilder())
+	var err error
+	m.NetworkNumberQuality, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNetworkNumberQualityTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) Build() (BACnetPropertyStatesNetworkNumberQuality, error) {
+	if m.NetworkNumberQuality == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkNumberQuality' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesNetworkNumberQuality.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) MustBuild() BACnetPropertyStatesNetworkNumberQuality {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesNetworkNumberQualityBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesNetworkNumberQualityBuilder()
+}
+
+// CreateBACnetPropertyStatesNetworkNumberQualityBuilder creates a BACnetPropertyStatesNetworkNumberQualityBuilder
+func (m *_BACnetPropertyStatesNetworkNumberQuality) CreateBACnetPropertyStatesNetworkNumberQualityBuilder() BACnetPropertyStatesNetworkNumberQualityBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesNetworkNumberQualityBuilder()
+	}
+	return &_BACnetPropertyStatesNetworkNumberQualityBuilder{_BACnetPropertyStatesNetworkNumberQuality: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

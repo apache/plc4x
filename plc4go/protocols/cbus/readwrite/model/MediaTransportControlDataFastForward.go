@@ -60,6 +60,8 @@ type MediaTransportControlDataFastForward interface {
 	GetIsReserved() bool
 	// IsMediaTransportControlDataFastForward is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataFastForward()
+	// CreateBuilder creates a MediaTransportControlDataFastForwardBuilder
+	CreateMediaTransportControlDataFastForwardBuilder() MediaTransportControlDataFastForwardBuilder
 }
 
 // _MediaTransportControlDataFastForward is the data-structure of this message
@@ -80,6 +82,78 @@ func NewMediaTransportControlDataFastForward(commandTypeContainer MediaTransport
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataFastForwardBuilder is a builder for MediaTransportControlDataFastForward
+type MediaTransportControlDataFastForwardBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operation byte) MediaTransportControlDataFastForwardBuilder
+	// WithOperation adds Operation (property field)
+	WithOperation(byte) MediaTransportControlDataFastForwardBuilder
+	// Build builds the MediaTransportControlDataFastForward or returns an error if something is wrong
+	Build() (MediaTransportControlDataFastForward, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataFastForward
+}
+
+// NewMediaTransportControlDataFastForwardBuilder() creates a MediaTransportControlDataFastForwardBuilder
+func NewMediaTransportControlDataFastForwardBuilder() MediaTransportControlDataFastForwardBuilder {
+	return &_MediaTransportControlDataFastForwardBuilder{_MediaTransportControlDataFastForward: new(_MediaTransportControlDataFastForward)}
+}
+
+type _MediaTransportControlDataFastForwardBuilder struct {
+	*_MediaTransportControlDataFastForward
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataFastForwardBuilder) = (*_MediaTransportControlDataFastForwardBuilder)(nil)
+
+func (m *_MediaTransportControlDataFastForwardBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataFastForwardBuilder {
+	return m.WithOperation(operation)
+}
+
+func (m *_MediaTransportControlDataFastForwardBuilder) WithOperation(operation byte) MediaTransportControlDataFastForwardBuilder {
+	m.Operation = operation
+	return m
+}
+
+func (m *_MediaTransportControlDataFastForwardBuilder) Build() (MediaTransportControlDataFastForward, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataFastForward.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataFastForwardBuilder) MustBuild() MediaTransportControlDataFastForward {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataFastForwardBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataFastForwardBuilder()
+}
+
+// CreateMediaTransportControlDataFastForwardBuilder creates a MediaTransportControlDataFastForwardBuilder
+func (m *_MediaTransportControlDataFastForward) CreateMediaTransportControlDataFastForwardBuilder() MediaTransportControlDataFastForwardBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataFastForwardBuilder()
+	}
+	return &_MediaTransportControlDataFastForwardBuilder{_MediaTransportControlDataFastForward: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

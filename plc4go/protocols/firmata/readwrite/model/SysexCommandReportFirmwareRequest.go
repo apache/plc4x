@@ -40,6 +40,8 @@ type SysexCommandReportFirmwareRequest interface {
 	SysexCommand
 	// IsSysexCommandReportFirmwareRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandReportFirmwareRequest()
+	// CreateBuilder creates a SysexCommandReportFirmwareRequestBuilder
+	CreateSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareRequestBuilder
 }
 
 // _SysexCommandReportFirmwareRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandReportFirmwareRequest() *_SysexCommandReportFirmwareRequest 
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandReportFirmwareRequestBuilder is a builder for SysexCommandReportFirmwareRequest
+type SysexCommandReportFirmwareRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder
+	// Build builds the SysexCommandReportFirmwareRequest or returns an error if something is wrong
+	Build() (SysexCommandReportFirmwareRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandReportFirmwareRequest
+}
+
+// NewSysexCommandReportFirmwareRequestBuilder() creates a SysexCommandReportFirmwareRequestBuilder
+func NewSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareRequestBuilder {
+	return &_SysexCommandReportFirmwareRequestBuilder{_SysexCommandReportFirmwareRequest: new(_SysexCommandReportFirmwareRequest)}
+}
+
+type _SysexCommandReportFirmwareRequestBuilder struct {
+	*_SysexCommandReportFirmwareRequest
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandReportFirmwareRequestBuilder) = (*_SysexCommandReportFirmwareRequestBuilder)(nil)
+
+func (m *_SysexCommandReportFirmwareRequestBuilder) WithMandatoryFields() SysexCommandReportFirmwareRequestBuilder {
+	return m
+}
+
+func (m *_SysexCommandReportFirmwareRequestBuilder) Build() (SysexCommandReportFirmwareRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandReportFirmwareRequest.deepCopy(), nil
+}
+
+func (m *_SysexCommandReportFirmwareRequestBuilder) MustBuild() SysexCommandReportFirmwareRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandReportFirmwareRequestBuilder) DeepCopy() any {
+	return m.CreateSysexCommandReportFirmwareRequestBuilder()
+}
+
+// CreateSysexCommandReportFirmwareRequestBuilder creates a SysexCommandReportFirmwareRequestBuilder
+func (m *_SysexCommandReportFirmwareRequest) CreateSysexCommandReportFirmwareRequestBuilder() SysexCommandReportFirmwareRequestBuilder {
+	if m == nil {
+		return NewSysexCommandReportFirmwareRequestBuilder()
+	}
+	return &_SysexCommandReportFirmwareRequestBuilder{_SysexCommandReportFirmwareRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

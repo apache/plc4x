@@ -40,6 +40,8 @@ type SysexCommandExtendedAnalog interface {
 	SysexCommand
 	// IsSysexCommandExtendedAnalog is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandExtendedAnalog()
+	// CreateBuilder creates a SysexCommandExtendedAnalogBuilder
+	CreateSysexCommandExtendedAnalogBuilder() SysexCommandExtendedAnalogBuilder
 }
 
 // _SysexCommandExtendedAnalog is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandExtendedAnalogBuilder is a builder for SysexCommandExtendedAnalog
+type SysexCommandExtendedAnalogBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandExtendedAnalogBuilder
+	// Build builds the SysexCommandExtendedAnalog or returns an error if something is wrong
+	Build() (SysexCommandExtendedAnalog, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandExtendedAnalog
+}
+
+// NewSysexCommandExtendedAnalogBuilder() creates a SysexCommandExtendedAnalogBuilder
+func NewSysexCommandExtendedAnalogBuilder() SysexCommandExtendedAnalogBuilder {
+	return &_SysexCommandExtendedAnalogBuilder{_SysexCommandExtendedAnalog: new(_SysexCommandExtendedAnalog)}
+}
+
+type _SysexCommandExtendedAnalogBuilder struct {
+	*_SysexCommandExtendedAnalog
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandExtendedAnalogBuilder) = (*_SysexCommandExtendedAnalogBuilder)(nil)
+
+func (m *_SysexCommandExtendedAnalogBuilder) WithMandatoryFields() SysexCommandExtendedAnalogBuilder {
+	return m
+}
+
+func (m *_SysexCommandExtendedAnalogBuilder) Build() (SysexCommandExtendedAnalog, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandExtendedAnalog.deepCopy(), nil
+}
+
+func (m *_SysexCommandExtendedAnalogBuilder) MustBuild() SysexCommandExtendedAnalog {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandExtendedAnalogBuilder) DeepCopy() any {
+	return m.CreateSysexCommandExtendedAnalogBuilder()
+}
+
+// CreateSysexCommandExtendedAnalogBuilder creates a SysexCommandExtendedAnalogBuilder
+func (m *_SysexCommandExtendedAnalog) CreateSysexCommandExtendedAnalogBuilder() SysexCommandExtendedAnalogBuilder {
+	if m == nil {
+		return NewSysexCommandExtendedAnalogBuilder()
+	}
+	return &_SysexCommandExtendedAnalogBuilder{_SysexCommandExtendedAnalog: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

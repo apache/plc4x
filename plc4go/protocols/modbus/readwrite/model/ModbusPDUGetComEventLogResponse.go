@@ -50,6 +50,8 @@ type ModbusPDUGetComEventLogResponse interface {
 	GetEvents() []byte
 	// IsModbusPDUGetComEventLogResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventLogResponse()
+	// CreateBuilder creates a ModbusPDUGetComEventLogResponseBuilder
+	CreateModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponseBuilder
 }
 
 // _ModbusPDUGetComEventLogResponse is the data-structure of this message
@@ -76,6 +78,99 @@ func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messag
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUGetComEventLogResponseBuilder is a builder for ModbusPDUGetComEventLogResponse
+type ModbusPDUGetComEventLogResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint16, eventCount uint16, messageCount uint16, events []byte) ModbusPDUGetComEventLogResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint16) ModbusPDUGetComEventLogResponseBuilder
+	// WithEventCount adds EventCount (property field)
+	WithEventCount(uint16) ModbusPDUGetComEventLogResponseBuilder
+	// WithMessageCount adds MessageCount (property field)
+	WithMessageCount(uint16) ModbusPDUGetComEventLogResponseBuilder
+	// WithEvents adds Events (property field)
+	WithEvents(...byte) ModbusPDUGetComEventLogResponseBuilder
+	// Build builds the ModbusPDUGetComEventLogResponse or returns an error if something is wrong
+	Build() (ModbusPDUGetComEventLogResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUGetComEventLogResponse
+}
+
+// NewModbusPDUGetComEventLogResponseBuilder() creates a ModbusPDUGetComEventLogResponseBuilder
+func NewModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponseBuilder {
+	return &_ModbusPDUGetComEventLogResponseBuilder{_ModbusPDUGetComEventLogResponse: new(_ModbusPDUGetComEventLogResponse)}
+}
+
+type _ModbusPDUGetComEventLogResponseBuilder struct {
+	*_ModbusPDUGetComEventLogResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUGetComEventLogResponseBuilder) = (*_ModbusPDUGetComEventLogResponseBuilder)(nil)
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) WithMandatoryFields(status uint16, eventCount uint16, messageCount uint16, events []byte) ModbusPDUGetComEventLogResponseBuilder {
+	return m.WithStatus(status).WithEventCount(eventCount).WithMessageCount(messageCount).WithEvents(events...)
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) WithStatus(status uint16) ModbusPDUGetComEventLogResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) WithEventCount(eventCount uint16) ModbusPDUGetComEventLogResponseBuilder {
+	m.EventCount = eventCount
+	return m
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) WithMessageCount(messageCount uint16) ModbusPDUGetComEventLogResponseBuilder {
+	m.MessageCount = messageCount
+	return m
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) WithEvents(events ...byte) ModbusPDUGetComEventLogResponseBuilder {
+	m.Events = events
+	return m
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) Build() (ModbusPDUGetComEventLogResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUGetComEventLogResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) MustBuild() ModbusPDUGetComEventLogResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUGetComEventLogResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUGetComEventLogResponseBuilder()
+}
+
+// CreateModbusPDUGetComEventLogResponseBuilder creates a ModbusPDUGetComEventLogResponseBuilder
+func (m *_ModbusPDUGetComEventLogResponse) CreateModbusPDUGetComEventLogResponseBuilder() ModbusPDUGetComEventLogResponseBuilder {
+	if m == nil {
+		return NewModbusPDUGetComEventLogResponseBuilder()
+	}
+	return &_ModbusPDUGetComEventLogResponseBuilder{_ModbusPDUGetComEventLogResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

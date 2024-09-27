@@ -46,6 +46,8 @@ type HistoryEvent interface {
 	GetEvents() []ExtensionObjectDefinition
 	// IsHistoryEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryEvent()
+	// CreateBuilder creates a HistoryEventBuilder
+	CreateHistoryEventBuilder() HistoryEventBuilder
 }
 
 // _HistoryEvent is the data-structure of this message
@@ -68,6 +70,85 @@ func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_His
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryEventBuilder is a builder for HistoryEvent
+type HistoryEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder
+	// WithNoOfEvents adds NoOfEvents (property field)
+	WithNoOfEvents(int32) HistoryEventBuilder
+	// WithEvents adds Events (property field)
+	WithEvents(...ExtensionObjectDefinition) HistoryEventBuilder
+	// Build builds the HistoryEvent or returns an error if something is wrong
+	Build() (HistoryEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryEvent
+}
+
+// NewHistoryEventBuilder() creates a HistoryEventBuilder
+func NewHistoryEventBuilder() HistoryEventBuilder {
+	return &_HistoryEventBuilder{_HistoryEvent: new(_HistoryEvent)}
+}
+
+type _HistoryEventBuilder struct {
+	*_HistoryEvent
+
+	err *utils.MultiError
+}
+
+var _ (HistoryEventBuilder) = (*_HistoryEventBuilder)(nil)
+
+func (m *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
+	return m.WithNoOfEvents(noOfEvents).WithEvents(events...)
+}
+
+func (m *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
+	m.NoOfEvents = noOfEvents
+	return m
+}
+
+func (m *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
+	m.Events = events
+	return m
+}
+
+func (m *_HistoryEventBuilder) Build() (HistoryEvent, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HistoryEvent.deepCopy(), nil
+}
+
+func (m *_HistoryEventBuilder) MustBuild() HistoryEvent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HistoryEventBuilder) DeepCopy() any {
+	return m.CreateHistoryEventBuilder()
+}
+
+// CreateHistoryEventBuilder creates a HistoryEventBuilder
+func (m *_HistoryEvent) CreateHistoryEventBuilder() HistoryEventBuilder {
+	if m == nil {
+		return NewHistoryEventBuilder()
+	}
+	return &_HistoryEventBuilder{_HistoryEvent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

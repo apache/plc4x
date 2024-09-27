@@ -48,6 +48,8 @@ type BACnetFaultParameterFaultState interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetFaultParameterFaultState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultState()
+	// CreateBuilder creates a BACnetFaultParameterFaultStateBuilder
+	CreateBACnetFaultParameterFaultStateBuilder() BACnetFaultParameterFaultStateBuilder
 }
 
 // _BACnetFaultParameterFaultState is the data-structure of this message
@@ -81,6 +83,155 @@ func NewBACnetFaultParameterFaultState(peekedTagHeader BACnetTagHeader, openingT
 	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultStateBuilder is a builder for BACnetFaultParameterFaultState
+type BACnetFaultParameterFaultStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag) BACnetFaultParameterFaultStateBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetFaultParameterFaultStateBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultStateBuilder
+	// WithListOfFaultValues adds ListOfFaultValues (property field)
+	WithListOfFaultValues(BACnetFaultParameterFaultStateListOfFaultValues) BACnetFaultParameterFaultStateBuilder
+	// WithListOfFaultValuesBuilder adds ListOfFaultValues (property field) which is build by the builder
+	WithListOfFaultValuesBuilder(func(BACnetFaultParameterFaultStateListOfFaultValuesBuilder) BACnetFaultParameterFaultStateListOfFaultValuesBuilder) BACnetFaultParameterFaultStateBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultStateBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultStateBuilder
+	// Build builds the BACnetFaultParameterFaultState or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultState
+}
+
+// NewBACnetFaultParameterFaultStateBuilder() creates a BACnetFaultParameterFaultStateBuilder
+func NewBACnetFaultParameterFaultStateBuilder() BACnetFaultParameterFaultStateBuilder {
+	return &_BACnetFaultParameterFaultStateBuilder{_BACnetFaultParameterFaultState: new(_BACnetFaultParameterFaultState)}
+}
+
+type _BACnetFaultParameterFaultStateBuilder struct {
+	*_BACnetFaultParameterFaultState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultStateBuilder) = (*_BACnetFaultParameterFaultStateBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues, closingTag BACnetClosingTag) BACnetFaultParameterFaultStateBuilder {
+	return m.WithOpeningTag(openingTag).WithListOfFaultValues(listOfFaultValues).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultStateBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultStateBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithListOfFaultValues(listOfFaultValues BACnetFaultParameterFaultStateListOfFaultValues) BACnetFaultParameterFaultStateBuilder {
+	m.ListOfFaultValues = listOfFaultValues
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithListOfFaultValuesBuilder(builderSupplier func(BACnetFaultParameterFaultStateListOfFaultValuesBuilder) BACnetFaultParameterFaultStateListOfFaultValuesBuilder) BACnetFaultParameterFaultStateBuilder {
+	builder := builderSupplier(m.ListOfFaultValues.CreateBACnetFaultParameterFaultStateListOfFaultValuesBuilder())
+	var err error
+	m.ListOfFaultValues, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultStateListOfFaultValuesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultStateBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultStateBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) Build() (BACnetFaultParameterFaultState, error) {
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.ListOfFaultValues == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'listOfFaultValues' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultState.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) MustBuild() BACnetFaultParameterFaultState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultStateBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultStateBuilder()
+}
+
+// CreateBACnetFaultParameterFaultStateBuilder creates a BACnetFaultParameterFaultStateBuilder
+func (m *_BACnetFaultParameterFaultState) CreateBACnetFaultParameterFaultStateBuilder() BACnetFaultParameterFaultStateBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultStateBuilder()
+	}
+	return &_BACnetFaultParameterFaultStateBuilder{_BACnetFaultParameterFaultState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

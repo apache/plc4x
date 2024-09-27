@@ -46,6 +46,8 @@ type FirmataCommandSetDigitalPinValue interface {
 	GetOn() bool
 	// IsFirmataCommandSetDigitalPinValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSetDigitalPinValue()
+	// CreateBuilder creates a FirmataCommandSetDigitalPinValueBuilder
+	CreateFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinValueBuilder
 }
 
 // _FirmataCommandSetDigitalPinValue is the data-structure of this message
@@ -70,6 +72,85 @@ func NewFirmataCommandSetDigitalPinValue(pin uint8, on bool, response bool) *_Fi
 	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataCommandSetDigitalPinValueBuilder is a builder for FirmataCommandSetDigitalPinValue
+type FirmataCommandSetDigitalPinValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, on bool) FirmataCommandSetDigitalPinValueBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) FirmataCommandSetDigitalPinValueBuilder
+	// WithOn adds On (property field)
+	WithOn(bool) FirmataCommandSetDigitalPinValueBuilder
+	// Build builds the FirmataCommandSetDigitalPinValue or returns an error if something is wrong
+	Build() (FirmataCommandSetDigitalPinValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommandSetDigitalPinValue
+}
+
+// NewFirmataCommandSetDigitalPinValueBuilder() creates a FirmataCommandSetDigitalPinValueBuilder
+func NewFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinValueBuilder {
+	return &_FirmataCommandSetDigitalPinValueBuilder{_FirmataCommandSetDigitalPinValue: new(_FirmataCommandSetDigitalPinValue)}
+}
+
+type _FirmataCommandSetDigitalPinValueBuilder struct {
+	*_FirmataCommandSetDigitalPinValue
+
+	err *utils.MultiError
+}
+
+var _ (FirmataCommandSetDigitalPinValueBuilder) = (*_FirmataCommandSetDigitalPinValueBuilder)(nil)
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) WithMandatoryFields(pin uint8, on bool) FirmataCommandSetDigitalPinValueBuilder {
+	return m.WithPin(pin).WithOn(on)
+}
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) WithPin(pin uint8) FirmataCommandSetDigitalPinValueBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) WithOn(on bool) FirmataCommandSetDigitalPinValueBuilder {
+	m.On = on
+	return m
+}
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) Build() (FirmataCommandSetDigitalPinValue, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FirmataCommandSetDigitalPinValue.deepCopy(), nil
+}
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) MustBuild() FirmataCommandSetDigitalPinValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FirmataCommandSetDigitalPinValueBuilder) DeepCopy() any {
+	return m.CreateFirmataCommandSetDigitalPinValueBuilder()
+}
+
+// CreateFirmataCommandSetDigitalPinValueBuilder creates a FirmataCommandSetDigitalPinValueBuilder
+func (m *_FirmataCommandSetDigitalPinValue) CreateFirmataCommandSetDigitalPinValueBuilder() FirmataCommandSetDigitalPinValueBuilder {
+	if m == nil {
+		return NewFirmataCommandSetDigitalPinValueBuilder()
+	}
+	return &_FirmataCommandSetDigitalPinValueBuilder{_FirmataCommandSetDigitalPinValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

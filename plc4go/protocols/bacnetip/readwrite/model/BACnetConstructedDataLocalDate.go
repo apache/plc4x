@@ -46,6 +46,8 @@ type BACnetConstructedDataLocalDate interface {
 	GetActualValue() BACnetApplicationTagDate
 	// IsBACnetConstructedDataLocalDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLocalDate()
+	// CreateBuilder creates a BACnetConstructedDataLocalDateBuilder
+	CreateBACnetConstructedDataLocalDateBuilder() BACnetConstructedDataLocalDateBuilder
 }
 
 // _BACnetConstructedDataLocalDate is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLocalDate(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLocalDateBuilder is a builder for BACnetConstructedDataLocalDate
+type BACnetConstructedDataLocalDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(localDate BACnetApplicationTagDate) BACnetConstructedDataLocalDateBuilder
+	// WithLocalDate adds LocalDate (property field)
+	WithLocalDate(BACnetApplicationTagDate) BACnetConstructedDataLocalDateBuilder
+	// WithLocalDateBuilder adds LocalDate (property field) which is build by the builder
+	WithLocalDateBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetConstructedDataLocalDateBuilder
+	// Build builds the BACnetConstructedDataLocalDate or returns an error if something is wrong
+	Build() (BACnetConstructedDataLocalDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLocalDate
+}
+
+// NewBACnetConstructedDataLocalDateBuilder() creates a BACnetConstructedDataLocalDateBuilder
+func NewBACnetConstructedDataLocalDateBuilder() BACnetConstructedDataLocalDateBuilder {
+	return &_BACnetConstructedDataLocalDateBuilder{_BACnetConstructedDataLocalDate: new(_BACnetConstructedDataLocalDate)}
+}
+
+type _BACnetConstructedDataLocalDateBuilder struct {
+	*_BACnetConstructedDataLocalDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLocalDateBuilder) = (*_BACnetConstructedDataLocalDateBuilder)(nil)
+
+func (m *_BACnetConstructedDataLocalDateBuilder) WithMandatoryFields(localDate BACnetApplicationTagDate) BACnetConstructedDataLocalDateBuilder {
+	return m.WithLocalDate(localDate)
+}
+
+func (m *_BACnetConstructedDataLocalDateBuilder) WithLocalDate(localDate BACnetApplicationTagDate) BACnetConstructedDataLocalDateBuilder {
+	m.LocalDate = localDate
+	return m
+}
+
+func (m *_BACnetConstructedDataLocalDateBuilder) WithLocalDateBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetConstructedDataLocalDateBuilder {
+	builder := builderSupplier(m.LocalDate.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	m.LocalDate, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLocalDateBuilder) Build() (BACnetConstructedDataLocalDate, error) {
+	if m.LocalDate == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'localDate' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLocalDate.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLocalDateBuilder) MustBuild() BACnetConstructedDataLocalDate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLocalDateBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLocalDateBuilder()
+}
+
+// CreateBACnetConstructedDataLocalDateBuilder creates a BACnetConstructedDataLocalDateBuilder
+func (m *_BACnetConstructedDataLocalDate) CreateBACnetConstructedDataLocalDateBuilder() BACnetConstructedDataLocalDateBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLocalDateBuilder()
+	}
+	return &_BACnetConstructedDataLocalDateBuilder{_BACnetConstructedDataLocalDate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

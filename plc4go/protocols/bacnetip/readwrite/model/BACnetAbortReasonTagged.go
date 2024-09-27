@@ -46,6 +46,8 @@ type BACnetAbortReasonTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAbortReasonTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAbortReasonTagged()
+	// CreateBuilder creates a BACnetAbortReasonTaggedBuilder
+	CreateBACnetAbortReasonTaggedBuilder() BACnetAbortReasonTaggedBuilder
 }
 
 // _BACnetAbortReasonTagged is the data-structure of this message
@@ -63,6 +65,85 @@ var _ BACnetAbortReasonTagged = (*_BACnetAbortReasonTagged)(nil)
 func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32, actualLength uint32) *_BACnetAbortReasonTagged {
 	return &_BACnetAbortReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAbortReasonTaggedBuilder is a builder for BACnetAbortReasonTagged
+type BACnetAbortReasonTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAbortReason) BACnetAbortReasonTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAbortReasonTaggedBuilder
+	// Build builds the BACnetAbortReasonTagged or returns an error if something is wrong
+	Build() (BACnetAbortReasonTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAbortReasonTagged
+}
+
+// NewBACnetAbortReasonTaggedBuilder() creates a BACnetAbortReasonTaggedBuilder
+func NewBACnetAbortReasonTaggedBuilder() BACnetAbortReasonTaggedBuilder {
+	return &_BACnetAbortReasonTaggedBuilder{_BACnetAbortReasonTagged: new(_BACnetAbortReasonTagged)}
+}
+
+type _BACnetAbortReasonTaggedBuilder struct {
+	*_BACnetAbortReasonTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAbortReasonTaggedBuilder) = (*_BACnetAbortReasonTaggedBuilder)(nil)
+
+func (m *_BACnetAbortReasonTaggedBuilder) WithMandatoryFields(value BACnetAbortReason, proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
+	return m.WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAbortReasonTaggedBuilder) WithValue(value BACnetAbortReason) BACnetAbortReasonTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAbortReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAbortReasonTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAbortReasonTaggedBuilder) Build() (BACnetAbortReasonTagged, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAbortReasonTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAbortReasonTaggedBuilder) MustBuild() BACnetAbortReasonTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAbortReasonTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAbortReasonTaggedBuilder()
+}
+
+// CreateBACnetAbortReasonTaggedBuilder creates a BACnetAbortReasonTaggedBuilder
+func (m *_BACnetAbortReasonTagged) CreateBACnetAbortReasonTaggedBuilder() BACnetAbortReasonTaggedBuilder {
+	if m == nil {
+		return NewBACnetAbortReasonTaggedBuilder()
+	}
+	return &_BACnetAbortReasonTaggedBuilder{_BACnetAbortReasonTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

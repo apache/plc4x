@@ -46,6 +46,8 @@ type BACnetContextTagDouble interface {
 	GetActualValue() float64
 	// IsBACnetContextTagDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagDouble()
+	// CreateBuilder creates a BACnetContextTagDoubleBuilder
+	CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder
 }
 
 // _BACnetContextTagDouble is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadD
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagDoubleBuilder is a builder for BACnetContextTagDouble
+type BACnetContextTagDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder
+	// Build builds the BACnetContextTagDouble or returns an error if something is wrong
+	Build() (BACnetContextTagDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagDouble
+}
+
+// NewBACnetContextTagDoubleBuilder() creates a BACnetContextTagDoubleBuilder
+func NewBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
+	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: new(_BACnetContextTagDouble)}
+}
+
+type _BACnetContextTagDoubleBuilder struct {
+	*_BACnetContextTagDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagDoubleBuilder) = (*_BACnetContextTagDoubleBuilder)(nil)
+
+func (m *_BACnetContextTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetContextTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetContextTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadDoubleBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetContextTagDoubleBuilder) Build() (BACnetContextTagDouble, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagDouble.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagDoubleBuilder) MustBuild() BACnetContextTagDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagDoubleBuilder()
+}
+
+// CreateBACnetContextTagDoubleBuilder creates a BACnetContextTagDoubleBuilder
+func (m *_BACnetContextTagDouble) CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
+	if m == nil {
+		return NewBACnetContextTagDoubleBuilder()
+	}
+	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

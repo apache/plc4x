@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfValueNewValueChangedValue interface {
 	GetChangedValue() BACnetContextTagReal
 	// IsBACnetNotificationParametersChangeOfValueNewValueChangedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfValueNewValueChangedValue()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	CreateBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder() BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
 }
 
 // _BACnetNotificationParametersChangeOfValueNewValueChangedValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(openingTag
 	_result.BACnetNotificationParametersChangeOfValueNewValueContract.(*_BACnetNotificationParametersChangeOfValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder is a builder for BACnetNotificationParametersChangeOfValueNewValueChangedValue
+type BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(changedValue BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	// WithChangedValue adds ChangedValue (property field)
+	WithChangedValue(BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	// WithChangedValueBuilder adds ChangedValue (property field) which is build by the builder
+	WithChangedValueBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	// Build builds the BACnetNotificationParametersChangeOfValueNewValueChangedValue or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfValueNewValueChangedValue
+}
+
+// NewBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder() creates a BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+func NewBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder() BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
+	return &_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder{_BACnetNotificationParametersChangeOfValueNewValueChangedValue: new(_BACnetNotificationParametersChangeOfValueNewValueChangedValue)}
+}
+
+type _BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder struct {
+	*_BACnetNotificationParametersChangeOfValueNewValueChangedValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) = (*_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) WithMandatoryFields(changedValue BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
+	return m.WithChangedValue(changedValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) WithChangedValue(changedValue BACnetContextTagReal) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
+	m.ChangedValue = changedValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) WithChangedValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
+	builder := builderSupplier(m.ChangedValue.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.ChangedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+	if m.ChangedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'changedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfValueNewValueChangedValue.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValueChangedValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder creates a BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+func (m *_BACnetNotificationParametersChangeOfValueNewValueChangedValue) CreateBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder() BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder{_BACnetNotificationParametersChangeOfValueNewValueChangedValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

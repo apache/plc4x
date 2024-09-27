@@ -39,6 +39,8 @@ type ApplicationInstanceCertificate interface {
 	utils.Copyable
 	// IsApplicationInstanceCertificate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationInstanceCertificate()
+	// CreateBuilder creates a ApplicationInstanceCertificateBuilder
+	CreateApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder
 }
 
 // _ApplicationInstanceCertificate is the data-structure of this message
@@ -51,6 +53,71 @@ var _ ApplicationInstanceCertificate = (*_ApplicationInstanceCertificate)(nil)
 func NewApplicationInstanceCertificate() *_ApplicationInstanceCertificate {
 	return &_ApplicationInstanceCertificate{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApplicationInstanceCertificateBuilder is a builder for ApplicationInstanceCertificate
+type ApplicationInstanceCertificateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApplicationInstanceCertificateBuilder
+	// Build builds the ApplicationInstanceCertificate or returns an error if something is wrong
+	Build() (ApplicationInstanceCertificate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApplicationInstanceCertificate
+}
+
+// NewApplicationInstanceCertificateBuilder() creates a ApplicationInstanceCertificateBuilder
+func NewApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder {
+	return &_ApplicationInstanceCertificateBuilder{_ApplicationInstanceCertificate: new(_ApplicationInstanceCertificate)}
+}
+
+type _ApplicationInstanceCertificateBuilder struct {
+	*_ApplicationInstanceCertificate
+
+	err *utils.MultiError
+}
+
+var _ (ApplicationInstanceCertificateBuilder) = (*_ApplicationInstanceCertificateBuilder)(nil)
+
+func (m *_ApplicationInstanceCertificateBuilder) WithMandatoryFields() ApplicationInstanceCertificateBuilder {
+	return m
+}
+
+func (m *_ApplicationInstanceCertificateBuilder) Build() (ApplicationInstanceCertificate, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApplicationInstanceCertificate.deepCopy(), nil
+}
+
+func (m *_ApplicationInstanceCertificateBuilder) MustBuild() ApplicationInstanceCertificate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApplicationInstanceCertificateBuilder) DeepCopy() any {
+	return m.CreateApplicationInstanceCertificateBuilder()
+}
+
+// CreateApplicationInstanceCertificateBuilder creates a ApplicationInstanceCertificateBuilder
+func (m *_ApplicationInstanceCertificate) CreateApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder {
+	if m == nil {
+		return NewApplicationInstanceCertificateBuilder()
+	}
+	return &_ApplicationInstanceCertificateBuilder{_ApplicationInstanceCertificate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApplicationInstanceCertificate(structType any) ApplicationInstanceCertificate {

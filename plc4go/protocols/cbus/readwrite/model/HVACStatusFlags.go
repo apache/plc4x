@@ -59,6 +59,8 @@ type HVACStatusFlags interface {
 	GetIsDamperStateOpen() bool
 	// IsHVACStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACStatusFlags()
+	// CreateBuilder creates a HVACStatusFlagsBuilder
+	CreateHVACStatusFlagsBuilder() HVACStatusFlagsBuilder
 }
 
 // _HVACStatusFlags is the data-structure of this message
@@ -80,6 +82,120 @@ var _ HVACStatusFlags = (*_HVACStatusFlags)(nil)
 func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) *_HVACStatusFlags {
 	return &_HVACStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, HeatingPlant: heatingPlant, CoolingPlant: coolingPlant}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACStatusFlagsBuilder is a builder for HVACStatusFlags
+type HVACStatusFlagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) HVACStatusFlagsBuilder
+	// WithExpansion adds Expansion (property field)
+	WithExpansion(bool) HVACStatusFlagsBuilder
+	// WithError adds Error (property field)
+	WithError(bool) HVACStatusFlagsBuilder
+	// WithBusy adds Busy (property field)
+	WithBusy(bool) HVACStatusFlagsBuilder
+	// WithDamperState adds DamperState (property field)
+	WithDamperState(bool) HVACStatusFlagsBuilder
+	// WithFanActive adds FanActive (property field)
+	WithFanActive(bool) HVACStatusFlagsBuilder
+	// WithHeatingPlant adds HeatingPlant (property field)
+	WithHeatingPlant(bool) HVACStatusFlagsBuilder
+	// WithCoolingPlant adds CoolingPlant (property field)
+	WithCoolingPlant(bool) HVACStatusFlagsBuilder
+	// Build builds the HVACStatusFlags or returns an error if something is wrong
+	Build() (HVACStatusFlags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACStatusFlags
+}
+
+// NewHVACStatusFlagsBuilder() creates a HVACStatusFlagsBuilder
+func NewHVACStatusFlagsBuilder() HVACStatusFlagsBuilder {
+	return &_HVACStatusFlagsBuilder{_HVACStatusFlags: new(_HVACStatusFlags)}
+}
+
+type _HVACStatusFlagsBuilder struct {
+	*_HVACStatusFlags
+
+	err *utils.MultiError
+}
+
+var _ (HVACStatusFlagsBuilder) = (*_HVACStatusFlagsBuilder)(nil)
+
+func (m *_HVACStatusFlagsBuilder) WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, heatingPlant bool, coolingPlant bool) HVACStatusFlagsBuilder {
+	return m.WithExpansion(expansion).WithError(error).WithBusy(busy).WithDamperState(damperState).WithFanActive(fanActive).WithHeatingPlant(heatingPlant).WithCoolingPlant(coolingPlant)
+}
+
+func (m *_HVACStatusFlagsBuilder) WithExpansion(expansion bool) HVACStatusFlagsBuilder {
+	m.Expansion = expansion
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithError(error bool) HVACStatusFlagsBuilder {
+	m.Error = error
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithBusy(busy bool) HVACStatusFlagsBuilder {
+	m.Busy = busy
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithDamperState(damperState bool) HVACStatusFlagsBuilder {
+	m.DamperState = damperState
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithFanActive(fanActive bool) HVACStatusFlagsBuilder {
+	m.FanActive = fanActive
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithHeatingPlant(heatingPlant bool) HVACStatusFlagsBuilder {
+	m.HeatingPlant = heatingPlant
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) WithCoolingPlant(coolingPlant bool) HVACStatusFlagsBuilder {
+	m.CoolingPlant = coolingPlant
+	return m
+}
+
+func (m *_HVACStatusFlagsBuilder) Build() (HVACStatusFlags, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HVACStatusFlags.deepCopy(), nil
+}
+
+func (m *_HVACStatusFlagsBuilder) MustBuild() HVACStatusFlags {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HVACStatusFlagsBuilder) DeepCopy() any {
+	return m.CreateHVACStatusFlagsBuilder()
+}
+
+// CreateHVACStatusFlagsBuilder creates a HVACStatusFlagsBuilder
+func (m *_HVACStatusFlags) CreateHVACStatusFlagsBuilder() HVACStatusFlagsBuilder {
+	if m == nil {
+		return NewHVACStatusFlagsBuilder()
+	}
+	return &_HVACStatusFlagsBuilder{_HVACStatusFlags: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

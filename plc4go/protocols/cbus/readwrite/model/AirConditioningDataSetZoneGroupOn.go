@@ -44,6 +44,8 @@ type AirConditioningDataSetZoneGroupOn interface {
 	GetZoneGroup() byte
 	// IsAirConditioningDataSetZoneGroupOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataSetZoneGroupOn()
+	// CreateBuilder creates a AirConditioningDataSetZoneGroupOnBuilder
+	CreateAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGroupOnBuilder
 }
 
 // _AirConditioningDataSetZoneGroupOn is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAirConditioningDataSetZoneGroupOn(commandTypeContainer AirConditioningCo
 	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataSetZoneGroupOnBuilder is a builder for AirConditioningDataSetZoneGroupOn
+type AirConditioningDataSetZoneGroupOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataSetZoneGroupOnBuilder
+	// Build builds the AirConditioningDataSetZoneGroupOn or returns an error if something is wrong
+	Build() (AirConditioningDataSetZoneGroupOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataSetZoneGroupOn
+}
+
+// NewAirConditioningDataSetZoneGroupOnBuilder() creates a AirConditioningDataSetZoneGroupOnBuilder
+func NewAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGroupOnBuilder {
+	return &_AirConditioningDataSetZoneGroupOnBuilder{_AirConditioningDataSetZoneGroupOn: new(_AirConditioningDataSetZoneGroupOn)}
+}
+
+type _AirConditioningDataSetZoneGroupOnBuilder struct {
+	*_AirConditioningDataSetZoneGroupOn
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataSetZoneGroupOnBuilder) = (*_AirConditioningDataSetZoneGroupOnBuilder)(nil)
+
+func (m *_AirConditioningDataSetZoneGroupOnBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
+	return m.WithZoneGroup(zoneGroup)
+}
+
+func (m *_AirConditioningDataSetZoneGroupOnBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetZoneGroupOnBuilder {
+	m.ZoneGroup = zoneGroup
+	return m
+}
+
+func (m *_AirConditioningDataSetZoneGroupOnBuilder) Build() (AirConditioningDataSetZoneGroupOn, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AirConditioningDataSetZoneGroupOn.deepCopy(), nil
+}
+
+func (m *_AirConditioningDataSetZoneGroupOnBuilder) MustBuild() AirConditioningDataSetZoneGroupOn {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AirConditioningDataSetZoneGroupOnBuilder) DeepCopy() any {
+	return m.CreateAirConditioningDataSetZoneGroupOnBuilder()
+}
+
+// CreateAirConditioningDataSetZoneGroupOnBuilder creates a AirConditioningDataSetZoneGroupOnBuilder
+func (m *_AirConditioningDataSetZoneGroupOn) CreateAirConditioningDataSetZoneGroupOnBuilder() AirConditioningDataSetZoneGroupOnBuilder {
+	if m == nil {
+		return NewAirConditioningDataSetZoneGroupOnBuilder()
+	}
+	return &_AirConditioningDataSetZoneGroupOnBuilder{_AirConditioningDataSetZoneGroupOn: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	GetItems() []byte
 	// IsS7PayloadUserDataItemCpuFunctionReadSzlResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionReadSzlResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(returnCode DataTransport
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionReadSzlResponse
+type S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
+	// WithItems adds Items (property field)
+	WithItems(...byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionReadSzlResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlResponse: new(_S7PayloadUserDataItemCpuFunctionReadSzlResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionReadSzlResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithMandatoryFields(items []byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	return m.WithItems(items...)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) WithItems(items ...byte) S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCpuFunctionReadSzlResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) CreateS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder() S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlResponseBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

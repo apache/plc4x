@@ -46,6 +46,8 @@ type BACnetConstructedDataTimerRunning interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataTimerRunning is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerRunning()
+	// CreateBuilder creates a BACnetConstructedDataTimerRunningBuilder
+	CreateBACnetConstructedDataTimerRunningBuilder() BACnetConstructedDataTimerRunningBuilder
 }
 
 // _BACnetConstructedDataTimerRunning is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimerRunning(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerRunningBuilder is a builder for BACnetConstructedDataTimerRunning
+type BACnetConstructedDataTimerRunningBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timerRunning BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder
+	// WithTimerRunning adds TimerRunning (property field)
+	WithTimerRunning(BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder
+	// WithTimerRunningBuilder adds TimerRunning (property field) which is build by the builder
+	WithTimerRunningBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTimerRunningBuilder
+	// Build builds the BACnetConstructedDataTimerRunning or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerRunning, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerRunning
+}
+
+// NewBACnetConstructedDataTimerRunningBuilder() creates a BACnetConstructedDataTimerRunningBuilder
+func NewBACnetConstructedDataTimerRunningBuilder() BACnetConstructedDataTimerRunningBuilder {
+	return &_BACnetConstructedDataTimerRunningBuilder{_BACnetConstructedDataTimerRunning: new(_BACnetConstructedDataTimerRunning)}
+}
+
+type _BACnetConstructedDataTimerRunningBuilder struct {
+	*_BACnetConstructedDataTimerRunning
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerRunningBuilder) = (*_BACnetConstructedDataTimerRunningBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) WithMandatoryFields(timerRunning BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder {
+	return m.WithTimerRunning(timerRunning)
+}
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) WithTimerRunning(timerRunning BACnetApplicationTagBoolean) BACnetConstructedDataTimerRunningBuilder {
+	m.TimerRunning = timerRunning
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) WithTimerRunningBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTimerRunningBuilder {
+	builder := builderSupplier(m.TimerRunning.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.TimerRunning, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) Build() (BACnetConstructedDataTimerRunning, error) {
+	if m.TimerRunning == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timerRunning' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimerRunning.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) MustBuild() BACnetConstructedDataTimerRunning {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimerRunningBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimerRunningBuilder()
+}
+
+// CreateBACnetConstructedDataTimerRunningBuilder creates a BACnetConstructedDataTimerRunningBuilder
+func (m *_BACnetConstructedDataTimerRunning) CreateBACnetConstructedDataTimerRunningBuilder() BACnetConstructedDataTimerRunningBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimerRunningBuilder()
+	}
+	return &_BACnetConstructedDataTimerRunningBuilder{_BACnetConstructedDataTimerRunning: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

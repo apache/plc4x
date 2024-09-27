@@ -54,6 +54,8 @@ type BACnetNotificationParametersFloatingLimit interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetNotificationParametersFloatingLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersFloatingLimit()
+	// CreateBuilder creates a BACnetNotificationParametersFloatingLimitBuilder
+	CreateBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationParametersFloatingLimitBuilder
 }
 
 // _BACnetNotificationParametersFloatingLimit is the data-structure of this message
@@ -102,6 +104,239 @@ func NewBACnetNotificationParametersFloatingLimit(openingTag BACnetOpeningTag, p
 	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersFloatingLimitBuilder is a builder for BACnetNotificationParametersFloatingLimit
+type BACnetNotificationParametersFloatingLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetNotificationParametersFloatingLimitBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// WithReferenceValue adds ReferenceValue (property field)
+	WithReferenceValue(BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder
+	// WithReferenceValueBuilder adds ReferenceValue (property field) which is build by the builder
+	WithReferenceValueBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersFloatingLimitBuilder
+	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// WithSetPointValue adds SetPointValue (property field)
+	WithSetPointValue(BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder
+	// WithSetPointValueBuilder adds SetPointValue (property field) which is build by the builder
+	WithSetPointValueBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// WithErrorLimit adds ErrorLimit (property field)
+	WithErrorLimit(BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder
+	// WithErrorLimitBuilder adds ErrorLimit (property field) which is build by the builder
+	WithErrorLimitBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersFloatingLimitBuilder
+	// Build builds the BACnetNotificationParametersFloatingLimit or returns an error if something is wrong
+	Build() (BACnetNotificationParametersFloatingLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersFloatingLimit
+}
+
+// NewBACnetNotificationParametersFloatingLimitBuilder() creates a BACnetNotificationParametersFloatingLimitBuilder
+func NewBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationParametersFloatingLimitBuilder {
+	return &_BACnetNotificationParametersFloatingLimitBuilder{_BACnetNotificationParametersFloatingLimit: new(_BACnetNotificationParametersFloatingLimit)}
+}
+
+type _BACnetNotificationParametersFloatingLimitBuilder struct {
+	*_BACnetNotificationParametersFloatingLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersFloatingLimitBuilder) = (*_BACnetNotificationParametersFloatingLimitBuilder)(nil)
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, referenceValue BACnetContextTagReal, statusFlags BACnetStatusFlagsTagged, setPointValue BACnetContextTagReal, errorLimit BACnetContextTagReal, innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
+	return m.WithInnerOpeningTag(innerOpeningTag).WithReferenceValue(referenceValue).WithStatusFlags(statusFlags).WithSetPointValue(setPointValue).WithErrorLimit(errorLimit).WithInnerClosingTag(innerClosingTag)
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersFloatingLimitBuilder {
+	m.InnerOpeningTag = innerOpeningTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValue(referenceValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	m.ReferenceValue = referenceValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithReferenceValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.ReferenceValue.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.ReferenceValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersFloatingLimitBuilder {
+	m.StatusFlags = statusFlags
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	m.StatusFlags, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValue(setPointValue BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	m.SetPointValue = setPointValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithSetPointValueBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.SetPointValue.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.SetPointValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimit(errorLimit BACnetContextTagReal) BACnetNotificationParametersFloatingLimitBuilder {
+	m.ErrorLimit = errorLimit
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithErrorLimitBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.ErrorLimit.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.ErrorLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersFloatingLimitBuilder {
+	m.InnerClosingTag = innerClosingTag
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersFloatingLimitBuilder {
+	builder := builderSupplier(m.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) Build() (BACnetNotificationParametersFloatingLimit, error) {
+	if m.InnerOpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if m.ReferenceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referenceValue' not set"))
+	}
+	if m.StatusFlags == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if m.SetPointValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'setPointValue' not set"))
+	}
+	if m.ErrorLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'errorLimit' not set"))
+	}
+	if m.InnerClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersFloatingLimit.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) MustBuild() BACnetNotificationParametersFloatingLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersFloatingLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersFloatingLimitBuilder()
+}
+
+// CreateBACnetNotificationParametersFloatingLimitBuilder creates a BACnetNotificationParametersFloatingLimitBuilder
+func (m *_BACnetNotificationParametersFloatingLimit) CreateBACnetNotificationParametersFloatingLimitBuilder() BACnetNotificationParametersFloatingLimitBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersFloatingLimitBuilder()
+	}
+	return &_BACnetNotificationParametersFloatingLimitBuilder{_BACnetNotificationParametersFloatingLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

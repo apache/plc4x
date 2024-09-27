@@ -46,6 +46,8 @@ type EphemeralKeyType interface {
 	GetSignature() PascalByteString
 	// IsEphemeralKeyType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEphemeralKeyType()
+	// CreateBuilder creates a EphemeralKeyTypeBuilder
+	CreateEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder
 }
 
 // _EphemeralKeyType is the data-structure of this message
@@ -74,6 +76,127 @@ func NewEphemeralKeyType(publicKey PascalByteString, signature PascalByteString)
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EphemeralKeyTypeBuilder is a builder for EphemeralKeyType
+type EphemeralKeyTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(publicKey PascalByteString, signature PascalByteString) EphemeralKeyTypeBuilder
+	// WithPublicKey adds PublicKey (property field)
+	WithPublicKey(PascalByteString) EphemeralKeyTypeBuilder
+	// WithPublicKeyBuilder adds PublicKey (property field) which is build by the builder
+	WithPublicKeyBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder
+	// WithSignature adds Signature (property field)
+	WithSignature(PascalByteString) EphemeralKeyTypeBuilder
+	// WithSignatureBuilder adds Signature (property field) which is build by the builder
+	WithSignatureBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder
+	// Build builds the EphemeralKeyType or returns an error if something is wrong
+	Build() (EphemeralKeyType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EphemeralKeyType
+}
+
+// NewEphemeralKeyTypeBuilder() creates a EphemeralKeyTypeBuilder
+func NewEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder {
+	return &_EphemeralKeyTypeBuilder{_EphemeralKeyType: new(_EphemeralKeyType)}
+}
+
+type _EphemeralKeyTypeBuilder struct {
+	*_EphemeralKeyType
+
+	err *utils.MultiError
+}
+
+var _ (EphemeralKeyTypeBuilder) = (*_EphemeralKeyTypeBuilder)(nil)
+
+func (m *_EphemeralKeyTypeBuilder) WithMandatoryFields(publicKey PascalByteString, signature PascalByteString) EphemeralKeyTypeBuilder {
+	return m.WithPublicKey(publicKey).WithSignature(signature)
+}
+
+func (m *_EphemeralKeyTypeBuilder) WithPublicKey(publicKey PascalByteString) EphemeralKeyTypeBuilder {
+	m.PublicKey = publicKey
+	return m
+}
+
+func (m *_EphemeralKeyTypeBuilder) WithPublicKeyBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
+	builder := builderSupplier(m.PublicKey.CreatePascalByteStringBuilder())
+	var err error
+	m.PublicKey, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EphemeralKeyTypeBuilder) WithSignature(signature PascalByteString) EphemeralKeyTypeBuilder {
+	m.Signature = signature
+	return m
+}
+
+func (m *_EphemeralKeyTypeBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EphemeralKeyTypeBuilder {
+	builder := builderSupplier(m.Signature.CreatePascalByteStringBuilder())
+	var err error
+	m.Signature, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EphemeralKeyTypeBuilder) Build() (EphemeralKeyType, error) {
+	if m.PublicKey == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'publicKey' not set"))
+	}
+	if m.Signature == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'signature' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EphemeralKeyType.deepCopy(), nil
+}
+
+func (m *_EphemeralKeyTypeBuilder) MustBuild() EphemeralKeyType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EphemeralKeyTypeBuilder) DeepCopy() any {
+	return m.CreateEphemeralKeyTypeBuilder()
+}
+
+// CreateEphemeralKeyTypeBuilder creates a EphemeralKeyTypeBuilder
+func (m *_EphemeralKeyType) CreateEphemeralKeyTypeBuilder() EphemeralKeyTypeBuilder {
+	if m == nil {
+		return NewEphemeralKeyTypeBuilder()
+	}
+	return &_EphemeralKeyTypeBuilder{_EphemeralKeyType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

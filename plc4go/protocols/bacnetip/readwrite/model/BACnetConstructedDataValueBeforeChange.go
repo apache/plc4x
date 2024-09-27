@@ -46,6 +46,8 @@ type BACnetConstructedDataValueBeforeChange interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataValueBeforeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueBeforeChange()
+	// CreateBuilder creates a BACnetConstructedDataValueBeforeChangeBuilder
+	CreateBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataValueBeforeChangeBuilder
 }
 
 // _BACnetConstructedDataValueBeforeChange is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataValueBeforeChange(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueBeforeChangeBuilder is a builder for BACnetConstructedDataValueBeforeChange
+type BACnetConstructedDataValueBeforeChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder
+	// WithValuesBeforeChange adds ValuesBeforeChange (property field)
+	WithValuesBeforeChange(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder
+	// WithValuesBeforeChangeBuilder adds ValuesBeforeChange (property field) which is build by the builder
+	WithValuesBeforeChangeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueBeforeChangeBuilder
+	// Build builds the BACnetConstructedDataValueBeforeChange or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueBeforeChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueBeforeChange
+}
+
+// NewBACnetConstructedDataValueBeforeChangeBuilder() creates a BACnetConstructedDataValueBeforeChangeBuilder
+func NewBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataValueBeforeChangeBuilder {
+	return &_BACnetConstructedDataValueBeforeChangeBuilder{_BACnetConstructedDataValueBeforeChange: new(_BACnetConstructedDataValueBeforeChange)}
+}
+
+type _BACnetConstructedDataValueBeforeChangeBuilder struct {
+	*_BACnetConstructedDataValueBeforeChange
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueBeforeChangeBuilder) = (*_BACnetConstructedDataValueBeforeChangeBuilder)(nil)
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithMandatoryFields(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
+	return m.WithValuesBeforeChange(valuesBeforeChange)
+}
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChange(valuesBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueBeforeChangeBuilder {
+	m.ValuesBeforeChange = valuesBeforeChange
+	return m
+}
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) WithValuesBeforeChangeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueBeforeChangeBuilder {
+	builder := builderSupplier(m.ValuesBeforeChange.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ValuesBeforeChange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) Build() (BACnetConstructedDataValueBeforeChange, error) {
+	if m.ValuesBeforeChange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'valuesBeforeChange' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataValueBeforeChange.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) MustBuild() BACnetConstructedDataValueBeforeChange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataValueBeforeChangeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataValueBeforeChangeBuilder()
+}
+
+// CreateBACnetConstructedDataValueBeforeChangeBuilder creates a BACnetConstructedDataValueBeforeChangeBuilder
+func (m *_BACnetConstructedDataValueBeforeChange) CreateBACnetConstructedDataValueBeforeChangeBuilder() BACnetConstructedDataValueBeforeChangeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataValueBeforeChangeBuilder()
+	}
+	return &_BACnetConstructedDataValueBeforeChangeBuilder{_BACnetConstructedDataValueBeforeChange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

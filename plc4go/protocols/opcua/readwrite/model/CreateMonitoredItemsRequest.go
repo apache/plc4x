@@ -52,6 +52,8 @@ type CreateMonitoredItemsRequest interface {
 	GetItemsToCreate() []ExtensionObjectDefinition
 	// IsCreateMonitoredItemsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCreateMonitoredItemsRequest()
+	// CreateBuilder creates a CreateMonitoredItemsRequestBuilder
+	CreateCreateMonitoredItemsRequestBuilder() CreateMonitoredItemsRequestBuilder
 }
 
 // _CreateMonitoredItemsRequest is the data-structure of this message
@@ -83,6 +85,112 @@ func NewCreateMonitoredItemsRequest(requestHeader ExtensionObjectDefinition, sub
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CreateMonitoredItemsRequestBuilder is a builder for CreateMonitoredItemsRequest
+type CreateMonitoredItemsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToCreate int32, itemsToCreate []ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	// WithSubscriptionId adds SubscriptionId (property field)
+	WithSubscriptionId(uint32) CreateMonitoredItemsRequestBuilder
+	// WithTimestampsToReturn adds TimestampsToReturn (property field)
+	WithTimestampsToReturn(TimestampsToReturn) CreateMonitoredItemsRequestBuilder
+	// WithNoOfItemsToCreate adds NoOfItemsToCreate (property field)
+	WithNoOfItemsToCreate(int32) CreateMonitoredItemsRequestBuilder
+	// WithItemsToCreate adds ItemsToCreate (property field)
+	WithItemsToCreate(...ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder
+	// Build builds the CreateMonitoredItemsRequest or returns an error if something is wrong
+	Build() (CreateMonitoredItemsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CreateMonitoredItemsRequest
+}
+
+// NewCreateMonitoredItemsRequestBuilder() creates a CreateMonitoredItemsRequestBuilder
+func NewCreateMonitoredItemsRequestBuilder() CreateMonitoredItemsRequestBuilder {
+	return &_CreateMonitoredItemsRequestBuilder{_CreateMonitoredItemsRequest: new(_CreateMonitoredItemsRequest)}
+}
+
+type _CreateMonitoredItemsRequestBuilder struct {
+	*_CreateMonitoredItemsRequest
+
+	err *utils.MultiError
+}
+
+var _ (CreateMonitoredItemsRequestBuilder) = (*_CreateMonitoredItemsRequestBuilder)(nil)
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, timestampsToReturn TimestampsToReturn, noOfItemsToCreate int32, itemsToCreate []ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTimestampsToReturn(timestampsToReturn).WithNoOfItemsToCreate(noOfItemsToCreate).WithItemsToCreate(itemsToCreate...)
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) CreateMonitoredItemsRequestBuilder {
+	m.SubscriptionId = subscriptionId
+	return m
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithTimestampsToReturn(timestampsToReturn TimestampsToReturn) CreateMonitoredItemsRequestBuilder {
+	m.TimestampsToReturn = timestampsToReturn
+	return m
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithNoOfItemsToCreate(noOfItemsToCreate int32) CreateMonitoredItemsRequestBuilder {
+	m.NoOfItemsToCreate = noOfItemsToCreate
+	return m
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) WithItemsToCreate(itemsToCreate ...ExtensionObjectDefinition) CreateMonitoredItemsRequestBuilder {
+	m.ItemsToCreate = itemsToCreate
+	return m
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) Build() (CreateMonitoredItemsRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CreateMonitoredItemsRequest.deepCopy(), nil
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) MustBuild() CreateMonitoredItemsRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CreateMonitoredItemsRequestBuilder) DeepCopy() any {
+	return m.CreateCreateMonitoredItemsRequestBuilder()
+}
+
+// CreateCreateMonitoredItemsRequestBuilder creates a CreateMonitoredItemsRequestBuilder
+func (m *_CreateMonitoredItemsRequest) CreateCreateMonitoredItemsRequestBuilder() CreateMonitoredItemsRequestBuilder {
+	if m == nil {
+		return NewCreateMonitoredItemsRequestBuilder()
+	}
+	return &_CreateMonitoredItemsRequestBuilder{_CreateMonitoredItemsRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

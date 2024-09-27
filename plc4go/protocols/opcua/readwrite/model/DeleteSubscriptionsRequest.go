@@ -48,6 +48,8 @@ type DeleteSubscriptionsRequest interface {
 	GetSubscriptionIds() []uint32
 	// IsDeleteSubscriptionsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteSubscriptionsRequest()
+	// CreateBuilder creates a DeleteSubscriptionsRequestBuilder
+	CreateDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder
 }
 
 // _DeleteSubscriptionsRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewDeleteSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOf
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteSubscriptionsRequestBuilder is a builder for DeleteSubscriptionsRequest
+type DeleteSubscriptionsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder
+	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
+	WithNoOfSubscriptionIds(int32) DeleteSubscriptionsRequestBuilder
+	// WithSubscriptionIds adds SubscriptionIds (property field)
+	WithSubscriptionIds(...uint32) DeleteSubscriptionsRequestBuilder
+	// Build builds the DeleteSubscriptionsRequest or returns an error if something is wrong
+	Build() (DeleteSubscriptionsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteSubscriptionsRequest
+}
+
+// NewDeleteSubscriptionsRequestBuilder() creates a DeleteSubscriptionsRequestBuilder
+func NewDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder {
+	return &_DeleteSubscriptionsRequestBuilder{_DeleteSubscriptionsRequest: new(_DeleteSubscriptionsRequest)}
+}
+
+type _DeleteSubscriptionsRequestBuilder struct {
+	*_DeleteSubscriptionsRequest
+
+	err *utils.MultiError
+}
+
+var _ (DeleteSubscriptionsRequestBuilder) = (*_DeleteSubscriptionsRequestBuilder)(nil)
+
+func (m *_DeleteSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) DeleteSubscriptionsRequestBuilder {
+	m.NoOfSubscriptionIds = noOfSubscriptionIds
+	return m
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) DeleteSubscriptionsRequestBuilder {
+	m.SubscriptionIds = subscriptionIds
+	return m
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) Build() (DeleteSubscriptionsRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeleteSubscriptionsRequest.deepCopy(), nil
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) MustBuild() DeleteSubscriptionsRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeleteSubscriptionsRequestBuilder) DeepCopy() any {
+	return m.CreateDeleteSubscriptionsRequestBuilder()
+}
+
+// CreateDeleteSubscriptionsRequestBuilder creates a DeleteSubscriptionsRequestBuilder
+func (m *_DeleteSubscriptionsRequest) CreateDeleteSubscriptionsRequestBuilder() DeleteSubscriptionsRequestBuilder {
+	if m == nil {
+		return NewDeleteSubscriptionsRequestBuilder()
+	}
+	return &_DeleteSubscriptionsRequestBuilder{_DeleteSubscriptionsRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

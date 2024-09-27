@@ -44,6 +44,8 @@ type SecurityDataEvent interface {
 	GetData() []byte
 	// IsSecurityDataEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataEvent()
+	// CreateBuilder creates a SecurityDataEventBuilder
+	CreateSecurityDataEventBuilder() SecurityDataEventBuilder
 }
 
 // _SecurityDataEvent is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataEvent(commandTypeContainer SecurityCommandTypeContainer, arg
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataEventBuilder is a builder for SecurityDataEvent
+type SecurityDataEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) SecurityDataEventBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) SecurityDataEventBuilder
+	// Build builds the SecurityDataEvent or returns an error if something is wrong
+	Build() (SecurityDataEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataEvent
+}
+
+// NewSecurityDataEventBuilder() creates a SecurityDataEventBuilder
+func NewSecurityDataEventBuilder() SecurityDataEventBuilder {
+	return &_SecurityDataEventBuilder{_SecurityDataEvent: new(_SecurityDataEvent)}
+}
+
+type _SecurityDataEventBuilder struct {
+	*_SecurityDataEvent
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataEventBuilder) = (*_SecurityDataEventBuilder)(nil)
+
+func (m *_SecurityDataEventBuilder) WithMandatoryFields(data []byte) SecurityDataEventBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_SecurityDataEventBuilder) WithData(data ...byte) SecurityDataEventBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_SecurityDataEventBuilder) Build() (SecurityDataEvent, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataEvent.deepCopy(), nil
+}
+
+func (m *_SecurityDataEventBuilder) MustBuild() SecurityDataEvent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataEventBuilder) DeepCopy() any {
+	return m.CreateSecurityDataEventBuilder()
+}
+
+// CreateSecurityDataEventBuilder creates a SecurityDataEventBuilder
+func (m *_SecurityDataEvent) CreateSecurityDataEventBuilder() SecurityDataEventBuilder {
+	if m == nil {
+		return NewSecurityDataEventBuilder()
+	}
+	return &_SecurityDataEventBuilder{_SecurityDataEvent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

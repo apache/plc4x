@@ -43,6 +43,8 @@ type BACnetHostAddress interface {
 	utils.Copyable
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
+	// CreateBuilder creates a BACnetHostAddressBuilder
+	CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder
 }
 
 // BACnetHostAddressContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetHostAddressContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
+	// CreateBuilder creates a BACnetHostAddressBuilder
+	CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder
 }
 
 // BACnetHostAddressRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
 	}
 	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostAddressBuilder is a builder for BACnetHostAddress
+type BACnetHostAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetHostAddressBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetHostAddressBuilder
+	// Build builds the BACnetHostAddress or returns an error if something is wrong
+	Build() (BACnetHostAddressContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostAddressContract
+}
+
+// NewBACnetHostAddressBuilder() creates a BACnetHostAddressBuilder
+func NewBACnetHostAddressBuilder() BACnetHostAddressBuilder {
+	return &_BACnetHostAddressBuilder{_BACnetHostAddress: new(_BACnetHostAddress)}
+}
+
+type _BACnetHostAddressBuilder struct {
+	*_BACnetHostAddress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostAddressBuilder) = (*_BACnetHostAddressBuilder)(nil)
+
+func (m *_BACnetHostAddressBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetHostAddressBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetHostAddressBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetHostAddressBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetHostAddressBuilder) Build() (BACnetHostAddressContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetHostAddress.deepCopy(), nil
+}
+
+func (m *_BACnetHostAddressBuilder) MustBuild() BACnetHostAddressContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetHostAddressBuilder) DeepCopy() any {
+	return m.CreateBACnetHostAddressBuilder()
+}
+
+// CreateBACnetHostAddressBuilder creates a BACnetHostAddressBuilder
+func (m *_BACnetHostAddress) CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder {
+	if m == nil {
+		return NewBACnetHostAddressBuilder()
+	}
+	return &_BACnetHostAddressBuilder{_BACnetHostAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

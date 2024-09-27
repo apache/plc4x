@@ -48,6 +48,8 @@ type MediaTransportControlDataSourcePowerControl interface {
 	GetIsShouldPowerOff() bool
 	// IsMediaTransportControlDataSourcePowerControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataSourcePowerControl()
+	// CreateBuilder creates a MediaTransportControlDataSourcePowerControlBuilder
+	CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder
 }
 
 // _MediaTransportControlDataSourcePowerControl is the data-structure of this message
@@ -68,6 +70,78 @@ func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTr
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataSourcePowerControlBuilder is a builder for MediaTransportControlDataSourcePowerControl
+type MediaTransportControlDataSourcePowerControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder
+	// WithState adds State (property field)
+	WithState(byte) MediaTransportControlDataSourcePowerControlBuilder
+	// Build builds the MediaTransportControlDataSourcePowerControl or returns an error if something is wrong
+	Build() (MediaTransportControlDataSourcePowerControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataSourcePowerControl
+}
+
+// NewMediaTransportControlDataSourcePowerControlBuilder() creates a MediaTransportControlDataSourcePowerControlBuilder
+func NewMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
+	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: new(_MediaTransportControlDataSourcePowerControl)}
+}
+
+type _MediaTransportControlDataSourcePowerControlBuilder struct {
+	*_MediaTransportControlDataSourcePowerControl
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataSourcePowerControlBuilder) = (*_MediaTransportControlDataSourcePowerControlBuilder)(nil)
+
+func (m *_MediaTransportControlDataSourcePowerControlBuilder) WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	return m.WithState(state)
+}
+
+func (m *_MediaTransportControlDataSourcePowerControlBuilder) WithState(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	m.State = state
+	return m
+}
+
+func (m *_MediaTransportControlDataSourcePowerControlBuilder) Build() (MediaTransportControlDataSourcePowerControl, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataSourcePowerControl.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataSourcePowerControlBuilder) MustBuild() MediaTransportControlDataSourcePowerControl {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataSourcePowerControlBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataSourcePowerControlBuilder()
+}
+
+// CreateMediaTransportControlDataSourcePowerControlBuilder creates a MediaTransportControlDataSourcePowerControlBuilder
+func (m *_MediaTransportControlDataSourcePowerControl) CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataSourcePowerControlBuilder()
+	}
+	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

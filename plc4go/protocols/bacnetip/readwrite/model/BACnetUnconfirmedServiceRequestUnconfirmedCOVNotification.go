@@ -52,6 +52,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	GetListOfValues() BACnetPropertyValues
 	// IsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	CreateBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder() BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification is the data-structure of this message
@@ -95,6 +97,211 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(subscriberProc
 	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder is a builder for BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithSubscriberProcessIdentifier adds SubscriberProcessIdentifier (property field)
+	WithSubscriberProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithSubscriberProcessIdentifierBuilder adds SubscriberProcessIdentifier (property field) which is build by the builder
+	WithSubscriberProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithInitiatingDeviceIdentifier adds InitiatingDeviceIdentifier (property field)
+	WithInitiatingDeviceIdentifier(BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithInitiatingDeviceIdentifierBuilder adds InitiatingDeviceIdentifier (property field) which is build by the builder
+	WithInitiatingDeviceIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithMonitoredObjectIdentifier adds MonitoredObjectIdentifier (property field)
+	WithMonitoredObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithMonitoredObjectIdentifierBuilder adds MonitoredObjectIdentifier (property field) which is build by the builder
+	WithMonitoredObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithLifetimeInSeconds adds LifetimeInSeconds (property field)
+	WithLifetimeInSeconds(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithLifetimeInSecondsBuilder adds LifetimeInSeconds (property field) which is build by the builder
+	WithLifetimeInSecondsBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithListOfValues adds ListOfValues (property field)
+	WithListOfValues(BACnetPropertyValues) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// WithListOfValuesBuilder adds ListOfValues (property field) which is build by the builder
+	WithListOfValuesBuilder(func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+}
+
+// NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder() creates a BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder() BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification: new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification)}
+}
+
+type _BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder struct {
+	*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) = (*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder)(nil)
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	return m.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithLifetimeInSeconds(lifetimeInSeconds).WithListOfValues(listOfValues)
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	m.SubscriberProcessIdentifier = subscriberProcessIdentifier
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	builder := builderSupplier(m.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.SubscriberProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	m.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	builder := builderSupplier(m.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.InitiatingDeviceIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	m.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	builder := builderSupplier(m.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.MonitoredObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithLifetimeInSeconds(lifetimeInSeconds BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	m.LifetimeInSeconds = lifetimeInSeconds
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithLifetimeInSecondsBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	builder := builderSupplier(m.LifetimeInSeconds.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.LifetimeInSeconds, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithListOfValues(listOfValues BACnetPropertyValues) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	m.ListOfValues = listOfValues
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) WithListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	builder := builderSupplier(m.ListOfValues.CreateBACnetPropertyValuesBuilder())
+	var err error
+	m.ListOfValues, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, error) {
+	if m.SubscriberProcessIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+	}
+	if m.InitiatingDeviceIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+	}
+	if m.MonitoredObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+	}
+	if m.LifetimeInSeconds == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lifetimeInSeconds' not set"))
+	}
+	if m.ListOfValues == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'listOfValues' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification.deepCopy(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder) DeepCopy() any {
+	return m.CreateBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder()
+}
+
+// CreateBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) CreateBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder() BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder {
+	if m == nil {
+		return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

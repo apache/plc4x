@@ -52,6 +52,8 @@ type PubSubConfigurationDataType interface {
 	GetEnabled() bool
 	// IsPubSubConfigurationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPubSubConfigurationDataType()
+	// CreateBuilder creates a PubSubConfigurationDataTypeBuilder
+	CreatePubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder
 }
 
 // _PubSubConfigurationDataType is the data-structure of this message
@@ -82,6 +84,106 @@ func NewPubSubConfigurationDataType(noOfPublishedDataSets int32, publishedDataSe
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PubSubConfigurationDataTypeBuilder is a builder for PubSubConfigurationDataType
+type PubSubConfigurationDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder
+	// WithNoOfPublishedDataSets adds NoOfPublishedDataSets (property field)
+	WithNoOfPublishedDataSets(int32) PubSubConfigurationDataTypeBuilder
+	// WithPublishedDataSets adds PublishedDataSets (property field)
+	WithPublishedDataSets(...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder
+	// WithNoOfConnections adds NoOfConnections (property field)
+	WithNoOfConnections(int32) PubSubConfigurationDataTypeBuilder
+	// WithConnections adds Connections (property field)
+	WithConnections(...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder
+	// WithEnabled adds Enabled (property field)
+	WithEnabled(bool) PubSubConfigurationDataTypeBuilder
+	// Build builds the PubSubConfigurationDataType or returns an error if something is wrong
+	Build() (PubSubConfigurationDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PubSubConfigurationDataType
+}
+
+// NewPubSubConfigurationDataTypeBuilder() creates a PubSubConfigurationDataTypeBuilder
+func NewPubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder {
+	return &_PubSubConfigurationDataTypeBuilder{_PubSubConfigurationDataType: new(_PubSubConfigurationDataType)}
+}
+
+type _PubSubConfigurationDataTypeBuilder struct {
+	*_PubSubConfigurationDataType
+
+	err *utils.MultiError
+}
+
+var _ (PubSubConfigurationDataTypeBuilder) = (*_PubSubConfigurationDataTypeBuilder)(nil)
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithMandatoryFields(noOfPublishedDataSets int32, publishedDataSets []ExtensionObjectDefinition, noOfConnections int32, connections []ExtensionObjectDefinition, enabled bool) PubSubConfigurationDataTypeBuilder {
+	return m.WithNoOfPublishedDataSets(noOfPublishedDataSets).WithPublishedDataSets(publishedDataSets...).WithNoOfConnections(noOfConnections).WithConnections(connections...).WithEnabled(enabled)
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithNoOfPublishedDataSets(noOfPublishedDataSets int32) PubSubConfigurationDataTypeBuilder {
+	m.NoOfPublishedDataSets = noOfPublishedDataSets
+	return m
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithPublishedDataSets(publishedDataSets ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+	m.PublishedDataSets = publishedDataSets
+	return m
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithNoOfConnections(noOfConnections int32) PubSubConfigurationDataTypeBuilder {
+	m.NoOfConnections = noOfConnections
+	return m
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithConnections(connections ...ExtensionObjectDefinition) PubSubConfigurationDataTypeBuilder {
+	m.Connections = connections
+	return m
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) WithEnabled(enabled bool) PubSubConfigurationDataTypeBuilder {
+	m.Enabled = enabled
+	return m
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) Build() (PubSubConfigurationDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PubSubConfigurationDataType.deepCopy(), nil
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) MustBuild() PubSubConfigurationDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PubSubConfigurationDataTypeBuilder) DeepCopy() any {
+	return m.CreatePubSubConfigurationDataTypeBuilder()
+}
+
+// CreatePubSubConfigurationDataTypeBuilder creates a PubSubConfigurationDataTypeBuilder
+func (m *_PubSubConfigurationDataType) CreatePubSubConfigurationDataTypeBuilder() PubSubConfigurationDataTypeBuilder {
+	if m == nil {
+		return NewPubSubConfigurationDataTypeBuilder()
+	}
+	return &_PubSubConfigurationDataTypeBuilder{_PubSubConfigurationDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

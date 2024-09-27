@@ -46,6 +46,8 @@ type CALDataAcknowledge interface {
 	GetCode() uint8
 	// IsCALDataAcknowledge is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataAcknowledge()
+	// CreateBuilder creates a CALDataAcknowledgeBuilder
+	CreateCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder
 }
 
 // _CALDataAcknowledge is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCALDataAcknowledge(commandTypeContainer CALCommandTypeContainer, additio
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataAcknowledgeBuilder is a builder for CALDataAcknowledge
+type CALDataAcknowledgeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, code uint8) CALDataAcknowledgeBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CALDataAcknowledgeBuilder
+	// WithCode adds Code (property field)
+	WithCode(uint8) CALDataAcknowledgeBuilder
+	// Build builds the CALDataAcknowledge or returns an error if something is wrong
+	Build() (CALDataAcknowledge, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataAcknowledge
+}
+
+// NewCALDataAcknowledgeBuilder() creates a CALDataAcknowledgeBuilder
+func NewCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder {
+	return &_CALDataAcknowledgeBuilder{_CALDataAcknowledge: new(_CALDataAcknowledge)}
+}
+
+type _CALDataAcknowledgeBuilder struct {
+	*_CALDataAcknowledge
+
+	err *utils.MultiError
+}
+
+var _ (CALDataAcknowledgeBuilder) = (*_CALDataAcknowledgeBuilder)(nil)
+
+func (m *_CALDataAcknowledgeBuilder) WithMandatoryFields(paramNo Parameter, code uint8) CALDataAcknowledgeBuilder {
+	return m.WithParamNo(paramNo).WithCode(code)
+}
+
+func (m *_CALDataAcknowledgeBuilder) WithParamNo(paramNo Parameter) CALDataAcknowledgeBuilder {
+	m.ParamNo = paramNo
+	return m
+}
+
+func (m *_CALDataAcknowledgeBuilder) WithCode(code uint8) CALDataAcknowledgeBuilder {
+	m.Code = code
+	return m
+}
+
+func (m *_CALDataAcknowledgeBuilder) Build() (CALDataAcknowledge, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataAcknowledge.deepCopy(), nil
+}
+
+func (m *_CALDataAcknowledgeBuilder) MustBuild() CALDataAcknowledge {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataAcknowledgeBuilder) DeepCopy() any {
+	return m.CreateCALDataAcknowledgeBuilder()
+}
+
+// CreateCALDataAcknowledgeBuilder creates a CALDataAcknowledgeBuilder
+func (m *_CALDataAcknowledge) CreateCALDataAcknowledgeBuilder() CALDataAcknowledgeBuilder {
+	if m == nil {
+		return NewCALDataAcknowledgeBuilder()
+	}
+	return &_CALDataAcknowledgeBuilder{_CALDataAcknowledge: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

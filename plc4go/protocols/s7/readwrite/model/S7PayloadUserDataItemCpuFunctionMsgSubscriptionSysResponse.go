@@ -46,6 +46,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	GetReserved01() uint8
 	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(returnCode Da
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// WithReserved01 adds Reserved01 (property field)
+	WithReserved01(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	return m.WithResult(result).WithReserved01(reserved01)
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithResult(result uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithReserved01(reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	m.Reserved01 = reserved01
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder()
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

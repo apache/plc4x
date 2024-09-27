@@ -44,6 +44,8 @@ type BACnetPropertyStatesLightningTransition interface {
 	GetLightningTransition() BACnetLightingTransitionTagged
 	// IsBACnetPropertyStatesLightningTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLightningTransition()
+	// CreateBuilder creates a BACnetPropertyStatesLightningTransitionBuilder
+	CreateBACnetPropertyStatesLightningTransitionBuilder() BACnetPropertyStatesLightningTransitionBuilder
 }
 
 // _BACnetPropertyStatesLightningTransition is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesLightningTransition(peekedTagHeader BACnetTagHeader,
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLightningTransitionBuilder is a builder for BACnetPropertyStatesLightningTransition
+type BACnetPropertyStatesLightningTransitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lightningTransition BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder
+	// WithLightningTransition adds LightningTransition (property field)
+	WithLightningTransition(BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder
+	// WithLightningTransitionBuilder adds LightningTransition (property field) which is build by the builder
+	WithLightningTransitionBuilder(func(BACnetLightingTransitionTaggedBuilder) BACnetLightingTransitionTaggedBuilder) BACnetPropertyStatesLightningTransitionBuilder
+	// Build builds the BACnetPropertyStatesLightningTransition or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLightningTransition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLightningTransition
+}
+
+// NewBACnetPropertyStatesLightningTransitionBuilder() creates a BACnetPropertyStatesLightningTransitionBuilder
+func NewBACnetPropertyStatesLightningTransitionBuilder() BACnetPropertyStatesLightningTransitionBuilder {
+	return &_BACnetPropertyStatesLightningTransitionBuilder{_BACnetPropertyStatesLightningTransition: new(_BACnetPropertyStatesLightningTransition)}
+}
+
+type _BACnetPropertyStatesLightningTransitionBuilder struct {
+	*_BACnetPropertyStatesLightningTransition
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLightningTransitionBuilder) = (*_BACnetPropertyStatesLightningTransitionBuilder)(nil)
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) WithMandatoryFields(lightningTransition BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder {
+	return m.WithLightningTransition(lightningTransition)
+}
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) WithLightningTransition(lightningTransition BACnetLightingTransitionTagged) BACnetPropertyStatesLightningTransitionBuilder {
+	m.LightningTransition = lightningTransition
+	return m
+}
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) WithLightningTransitionBuilder(builderSupplier func(BACnetLightingTransitionTaggedBuilder) BACnetLightingTransitionTaggedBuilder) BACnetPropertyStatesLightningTransitionBuilder {
+	builder := builderSupplier(m.LightningTransition.CreateBACnetLightingTransitionTaggedBuilder())
+	var err error
+	m.LightningTransition, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLightingTransitionTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) Build() (BACnetPropertyStatesLightningTransition, error) {
+	if m.LightningTransition == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lightningTransition' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesLightningTransition.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) MustBuild() BACnetPropertyStatesLightningTransition {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesLightningTransitionBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesLightningTransitionBuilder()
+}
+
+// CreateBACnetPropertyStatesLightningTransitionBuilder creates a BACnetPropertyStatesLightningTransitionBuilder
+func (m *_BACnetPropertyStatesLightningTransition) CreateBACnetPropertyStatesLightningTransitionBuilder() BACnetPropertyStatesLightningTransitionBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesLightningTransitionBuilder()
+	}
+	return &_BACnetPropertyStatesLightningTransitionBuilder{_BACnetPropertyStatesLightningTransition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

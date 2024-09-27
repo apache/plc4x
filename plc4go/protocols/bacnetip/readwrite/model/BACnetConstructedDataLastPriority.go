@@ -46,6 +46,8 @@ type BACnetConstructedDataLastPriority interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataLastPriority is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastPriority()
+	// CreateBuilder creates a BACnetConstructedDataLastPriorityBuilder
+	CreateBACnetConstructedDataLastPriorityBuilder() BACnetConstructedDataLastPriorityBuilder
 }
 
 // _BACnetConstructedDataLastPriority is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLastPriority(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastPriorityBuilder is a builder for BACnetConstructedDataLastPriority
+type BACnetConstructedDataLastPriorityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastPriorityBuilder
+	// WithLastPriority adds LastPriority (property field)
+	WithLastPriority(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastPriorityBuilder
+	// WithLastPriorityBuilder adds LastPriority (property field) which is build by the builder
+	WithLastPriorityBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastPriorityBuilder
+	// Build builds the BACnetConstructedDataLastPriority or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastPriority, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastPriority
+}
+
+// NewBACnetConstructedDataLastPriorityBuilder() creates a BACnetConstructedDataLastPriorityBuilder
+func NewBACnetConstructedDataLastPriorityBuilder() BACnetConstructedDataLastPriorityBuilder {
+	return &_BACnetConstructedDataLastPriorityBuilder{_BACnetConstructedDataLastPriority: new(_BACnetConstructedDataLastPriority)}
+}
+
+type _BACnetConstructedDataLastPriorityBuilder struct {
+	*_BACnetConstructedDataLastPriority
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastPriorityBuilder) = (*_BACnetConstructedDataLastPriorityBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) WithMandatoryFields(lastPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastPriorityBuilder {
+	return m.WithLastPriority(lastPriority)
+}
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) WithLastPriority(lastPriority BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastPriorityBuilder {
+	m.LastPriority = lastPriority
+	return m
+}
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) WithLastPriorityBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastPriorityBuilder {
+	builder := builderSupplier(m.LastPriority.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.LastPriority, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) Build() (BACnetConstructedDataLastPriority, error) {
+	if m.LastPriority == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastPriority' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastPriority.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) MustBuild() BACnetConstructedDataLastPriority {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastPriorityBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastPriorityBuilder()
+}
+
+// CreateBACnetConstructedDataLastPriorityBuilder creates a BACnetConstructedDataLastPriorityBuilder
+func (m *_BACnetConstructedDataLastPriority) CreateBACnetConstructedDataLastPriorityBuilder() BACnetConstructedDataLastPriorityBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastPriorityBuilder()
+	}
+	return &_BACnetConstructedDataLastPriorityBuilder{_BACnetConstructedDataLastPriority: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

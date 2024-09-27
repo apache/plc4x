@@ -45,6 +45,8 @@ type DeviceConfigurationRequestDataBlock interface {
 	GetSequenceCounter() uint8
 	// IsDeviceConfigurationRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceConfigurationRequestDataBlock()
+	// CreateBuilder creates a DeviceConfigurationRequestDataBlockBuilder
+	CreateDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestDataBlockBuilder
 }
 
 // _DeviceConfigurationRequestDataBlock is the data-structure of this message
@@ -61,6 +63,85 @@ var _ DeviceConfigurationRequestDataBlock = (*_DeviceConfigurationRequestDataBlo
 func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_DeviceConfigurationRequestDataBlock {
 	return &_DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceConfigurationRequestDataBlockBuilder is a builder for DeviceConfigurationRequestDataBlock
+type DeviceConfigurationRequestDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) DeviceConfigurationRequestDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) DeviceConfigurationRequestDataBlockBuilder
+	// Build builds the DeviceConfigurationRequestDataBlock or returns an error if something is wrong
+	Build() (DeviceConfigurationRequestDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceConfigurationRequestDataBlock
+}
+
+// NewDeviceConfigurationRequestDataBlockBuilder() creates a DeviceConfigurationRequestDataBlockBuilder
+func NewDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestDataBlockBuilder {
+	return &_DeviceConfigurationRequestDataBlockBuilder{_DeviceConfigurationRequestDataBlock: new(_DeviceConfigurationRequestDataBlock)}
+}
+
+type _DeviceConfigurationRequestDataBlockBuilder struct {
+	*_DeviceConfigurationRequestDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (DeviceConfigurationRequestDataBlockBuilder) = (*_DeviceConfigurationRequestDataBlockBuilder)(nil)
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
+}
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationRequestDataBlockBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationRequestDataBlockBuilder {
+	m.SequenceCounter = sequenceCounter
+	return m
+}
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) Build() (DeviceConfigurationRequestDataBlock, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeviceConfigurationRequestDataBlock.deepCopy(), nil
+}
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) MustBuild() DeviceConfigurationRequestDataBlock {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeviceConfigurationRequestDataBlockBuilder) DeepCopy() any {
+	return m.CreateDeviceConfigurationRequestDataBlockBuilder()
+}
+
+// CreateDeviceConfigurationRequestDataBlockBuilder creates a DeviceConfigurationRequestDataBlockBuilder
+func (m *_DeviceConfigurationRequestDataBlock) CreateDeviceConfigurationRequestDataBlockBuilder() DeviceConfigurationRequestDataBlockBuilder {
+	if m == nil {
+		return NewDeviceConfigurationRequestDataBlockBuilder()
+	}
+	return &_DeviceConfigurationRequestDataBlockBuilder{_DeviceConfigurationRequestDataBlock: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type S7PayloadUserDataItem interface {
 	utils.Copyable
 	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItem()
+	// CreateBuilder creates a S7PayloadUserDataItemBuilder
+	CreateS7PayloadUserDataItemBuilder() S7PayloadUserDataItemBuilder
 }
 
 // S7PayloadUserDataItemContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type S7PayloadUserDataItemContract interface {
 	GetDataLength() uint16
 	// IsS7PayloadUserDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItem()
+	// CreateBuilder creates a S7PayloadUserDataItemBuilder
+	CreateS7PayloadUserDataItemBuilder() S7PayloadUserDataItemBuilder
 }
 
 // S7PayloadUserDataItemRequirements provides a set of functions which need to be implemented by a sub struct
@@ -85,6 +89,92 @@ var _ S7PayloadUserDataItemContract = (*_S7PayloadUserDataItem)(nil)
 func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItem {
 	return &_S7PayloadUserDataItem{ReturnCode: returnCode, TransportSize: transportSize, DataLength: dataLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemBuilder is a builder for S7PayloadUserDataItem
+type S7PayloadUserDataItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) S7PayloadUserDataItemBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) S7PayloadUserDataItemBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) S7PayloadUserDataItemBuilder
+	// WithDataLength adds DataLength (property field)
+	WithDataLength(uint16) S7PayloadUserDataItemBuilder
+	// Build builds the S7PayloadUserDataItem or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemContract
+}
+
+// NewS7PayloadUserDataItemBuilder() creates a S7PayloadUserDataItemBuilder
+func NewS7PayloadUserDataItemBuilder() S7PayloadUserDataItemBuilder {
+	return &_S7PayloadUserDataItemBuilder{_S7PayloadUserDataItem: new(_S7PayloadUserDataItem)}
+}
+
+type _S7PayloadUserDataItemBuilder struct {
+	*_S7PayloadUserDataItem
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemBuilder) = (*_S7PayloadUserDataItemBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) S7PayloadUserDataItemBuilder {
+	return m.WithReturnCode(returnCode).WithTransportSize(transportSize).WithDataLength(dataLength)
+}
+
+func (m *_S7PayloadUserDataItemBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7PayloadUserDataItemBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_S7PayloadUserDataItemBuilder) WithTransportSize(transportSize DataTransportSize) S7PayloadUserDataItemBuilder {
+	m.TransportSize = transportSize
+	return m
+}
+
+func (m *_S7PayloadUserDataItemBuilder) WithDataLength(dataLength uint16) S7PayloadUserDataItemBuilder {
+	m.DataLength = dataLength
+	return m
+}
+
+func (m *_S7PayloadUserDataItemBuilder) Build() (S7PayloadUserDataItemContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItem.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemBuilder) MustBuild() S7PayloadUserDataItemContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemBuilder()
+}
+
+// CreateS7PayloadUserDataItemBuilder creates a S7PayloadUserDataItemBuilder
+func (m *_S7PayloadUserDataItem) CreateS7PayloadUserDataItemBuilder() S7PayloadUserDataItemBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemBuilder()
+	}
+	return &_S7PayloadUserDataItemBuilder{_S7PayloadUserDataItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

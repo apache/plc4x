@@ -56,6 +56,8 @@ type FieldTargetDataType interface {
 	GetOverrideValue() Variant
 	// IsFieldTargetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFieldTargetDataType()
+	// CreateBuilder creates a FieldTargetDataTypeBuilder
+	CreateFieldTargetDataTypeBuilder() FieldTargetDataTypeBuilder
 }
 
 // _FieldTargetDataType is the data-structure of this message
@@ -103,6 +105,210 @@ func NewFieldTargetDataType(dataSetFieldId GuidValue, receiverIndexRange PascalS
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FieldTargetDataTypeBuilder is a builder for FieldTargetDataType
+type FieldTargetDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) FieldTargetDataTypeBuilder
+	// WithDataSetFieldId adds DataSetFieldId (property field)
+	WithDataSetFieldId(GuidValue) FieldTargetDataTypeBuilder
+	// WithDataSetFieldIdBuilder adds DataSetFieldId (property field) which is build by the builder
+	WithDataSetFieldIdBuilder(func(GuidValueBuilder) GuidValueBuilder) FieldTargetDataTypeBuilder
+	// WithReceiverIndexRange adds ReceiverIndexRange (property field)
+	WithReceiverIndexRange(PascalString) FieldTargetDataTypeBuilder
+	// WithReceiverIndexRangeBuilder adds ReceiverIndexRange (property field) which is build by the builder
+	WithReceiverIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) FieldTargetDataTypeBuilder
+	// WithTargetNodeId adds TargetNodeId (property field)
+	WithTargetNodeId(NodeId) FieldTargetDataTypeBuilder
+	// WithTargetNodeIdBuilder adds TargetNodeId (property field) which is build by the builder
+	WithTargetNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) FieldTargetDataTypeBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) FieldTargetDataTypeBuilder
+	// WithWriteIndexRange adds WriteIndexRange (property field)
+	WithWriteIndexRange(PascalString) FieldTargetDataTypeBuilder
+	// WithWriteIndexRangeBuilder adds WriteIndexRange (property field) which is build by the builder
+	WithWriteIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) FieldTargetDataTypeBuilder
+	// WithOverrideValueHandling adds OverrideValueHandling (property field)
+	WithOverrideValueHandling(OverrideValueHandling) FieldTargetDataTypeBuilder
+	// WithOverrideValue adds OverrideValue (property field)
+	WithOverrideValue(Variant) FieldTargetDataTypeBuilder
+	// Build builds the FieldTargetDataType or returns an error if something is wrong
+	Build() (FieldTargetDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FieldTargetDataType
+}
+
+// NewFieldTargetDataTypeBuilder() creates a FieldTargetDataTypeBuilder
+func NewFieldTargetDataTypeBuilder() FieldTargetDataTypeBuilder {
+	return &_FieldTargetDataTypeBuilder{_FieldTargetDataType: new(_FieldTargetDataType)}
+}
+
+type _FieldTargetDataTypeBuilder struct {
+	*_FieldTargetDataType
+
+	err *utils.MultiError
+}
+
+var _ (FieldTargetDataTypeBuilder) = (*_FieldTargetDataTypeBuilder)(nil)
+
+func (m *_FieldTargetDataTypeBuilder) WithMandatoryFields(dataSetFieldId GuidValue, receiverIndexRange PascalString, targetNodeId NodeId, attributeId uint32, writeIndexRange PascalString, overrideValueHandling OverrideValueHandling, overrideValue Variant) FieldTargetDataTypeBuilder {
+	return m.WithDataSetFieldId(dataSetFieldId).WithReceiverIndexRange(receiverIndexRange).WithTargetNodeId(targetNodeId).WithAttributeId(attributeId).WithWriteIndexRange(writeIndexRange).WithOverrideValueHandling(overrideValueHandling).WithOverrideValue(overrideValue)
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithDataSetFieldId(dataSetFieldId GuidValue) FieldTargetDataTypeBuilder {
+	m.DataSetFieldId = dataSetFieldId
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithDataSetFieldIdBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) FieldTargetDataTypeBuilder {
+	builder := builderSupplier(m.DataSetFieldId.CreateGuidValueBuilder())
+	var err error
+	m.DataSetFieldId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+	}
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithReceiverIndexRange(receiverIndexRange PascalString) FieldTargetDataTypeBuilder {
+	m.ReceiverIndexRange = receiverIndexRange
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithReceiverIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FieldTargetDataTypeBuilder {
+	builder := builderSupplier(m.ReceiverIndexRange.CreatePascalStringBuilder())
+	var err error
+	m.ReceiverIndexRange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithTargetNodeId(targetNodeId NodeId) FieldTargetDataTypeBuilder {
+	m.TargetNodeId = targetNodeId
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithTargetNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) FieldTargetDataTypeBuilder {
+	builder := builderSupplier(m.TargetNodeId.CreateNodeIdBuilder())
+	var err error
+	m.TargetNodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithAttributeId(attributeId uint32) FieldTargetDataTypeBuilder {
+	m.AttributeId = attributeId
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithWriteIndexRange(writeIndexRange PascalString) FieldTargetDataTypeBuilder {
+	m.WriteIndexRange = writeIndexRange
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithWriteIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) FieldTargetDataTypeBuilder {
+	builder := builderSupplier(m.WriteIndexRange.CreatePascalStringBuilder())
+	var err error
+	m.WriteIndexRange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithOverrideValueHandling(overrideValueHandling OverrideValueHandling) FieldTargetDataTypeBuilder {
+	m.OverrideValueHandling = overrideValueHandling
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) WithOverrideValue(overrideValue Variant) FieldTargetDataTypeBuilder {
+	m.OverrideValue = overrideValue
+	return m
+}
+
+func (m *_FieldTargetDataTypeBuilder) Build() (FieldTargetDataType, error) {
+	if m.DataSetFieldId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataSetFieldId' not set"))
+	}
+	if m.ReceiverIndexRange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'receiverIndexRange' not set"))
+	}
+	if m.TargetNodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'targetNodeId' not set"))
+	}
+	if m.WriteIndexRange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'writeIndexRange' not set"))
+	}
+	if m.OverrideValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'overrideValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._FieldTargetDataType.deepCopy(), nil
+}
+
+func (m *_FieldTargetDataTypeBuilder) MustBuild() FieldTargetDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_FieldTargetDataTypeBuilder) DeepCopy() any {
+	return m.CreateFieldTargetDataTypeBuilder()
+}
+
+// CreateFieldTargetDataTypeBuilder creates a FieldTargetDataTypeBuilder
+func (m *_FieldTargetDataType) CreateFieldTargetDataTypeBuilder() FieldTargetDataTypeBuilder {
+	if m == nil {
+		return NewFieldTargetDataTypeBuilder()
+	}
+	return &_FieldTargetDataTypeBuilder{_FieldTargetDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

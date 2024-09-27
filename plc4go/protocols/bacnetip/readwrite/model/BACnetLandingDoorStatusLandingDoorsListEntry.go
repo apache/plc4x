@@ -45,6 +45,8 @@ type BACnetLandingDoorStatusLandingDoorsListEntry interface {
 	GetDoorStatus() BACnetDoorStatusTagged
 	// IsBACnetLandingDoorStatusLandingDoorsListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLandingDoorStatusLandingDoorsListEntry()
+	// CreateBuilder creates a BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	CreateBACnetLandingDoorStatusLandingDoorsListEntryBuilder() BACnetLandingDoorStatusLandingDoorsListEntryBuilder
 }
 
 // _BACnetLandingDoorStatusLandingDoorsListEntry is the data-structure of this message
@@ -65,6 +67,127 @@ func NewBACnetLandingDoorStatusLandingDoorsListEntry(floorNumber BACnetContextTa
 	}
 	return &_BACnetLandingDoorStatusLandingDoorsListEntry{FloorNumber: floorNumber, DoorStatus: doorStatus}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLandingDoorStatusLandingDoorsListEntryBuilder is a builder for BACnetLandingDoorStatusLandingDoorsListEntry
+type BACnetLandingDoorStatusLandingDoorsListEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	// WithFloorNumber adds FloorNumber (property field)
+	WithFloorNumber(BACnetContextTagUnsignedInteger) BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	// WithFloorNumberBuilder adds FloorNumber (property field) which is build by the builder
+	WithFloorNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	// WithDoorStatus adds DoorStatus (property field)
+	WithDoorStatus(BACnetDoorStatusTagged) BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	// WithDoorStatusBuilder adds DoorStatus (property field) which is build by the builder
+	WithDoorStatusBuilder(func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+	// Build builds the BACnetLandingDoorStatusLandingDoorsListEntry or returns an error if something is wrong
+	Build() (BACnetLandingDoorStatusLandingDoorsListEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLandingDoorStatusLandingDoorsListEntry
+}
+
+// NewBACnetLandingDoorStatusLandingDoorsListEntryBuilder() creates a BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+func NewBACnetLandingDoorStatusLandingDoorsListEntryBuilder() BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	return &_BACnetLandingDoorStatusLandingDoorsListEntryBuilder{_BACnetLandingDoorStatusLandingDoorsListEntry: new(_BACnetLandingDoorStatusLandingDoorsListEntry)}
+}
+
+type _BACnetLandingDoorStatusLandingDoorsListEntryBuilder struct {
+	*_BACnetLandingDoorStatusLandingDoorsListEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLandingDoorStatusLandingDoorsListEntryBuilder) = (*_BACnetLandingDoorStatusLandingDoorsListEntryBuilder)(nil)
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithMandatoryFields(floorNumber BACnetContextTagUnsignedInteger, doorStatus BACnetDoorStatusTagged) BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	return m.WithFloorNumber(floorNumber).WithDoorStatus(doorStatus)
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithFloorNumber(floorNumber BACnetContextTagUnsignedInteger) BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	m.FloorNumber = floorNumber
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithFloorNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	builder := builderSupplier(m.FloorNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.FloorNumber, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithDoorStatus(doorStatus BACnetDoorStatusTagged) BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	m.DoorStatus = doorStatus
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) WithDoorStatusBuilder(builderSupplier func(BACnetDoorStatusTaggedBuilder) BACnetDoorStatusTaggedBuilder) BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	builder := builderSupplier(m.DoorStatus.CreateBACnetDoorStatusTaggedBuilder())
+	var err error
+	m.DoorStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDoorStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) Build() (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
+	if m.FloorNumber == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'floorNumber' not set"))
+	}
+	if m.DoorStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doorStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLandingDoorStatusLandingDoorsListEntry.deepCopy(), nil
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) MustBuild() BACnetLandingDoorStatusLandingDoorsListEntry {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntryBuilder) DeepCopy() any {
+	return m.CreateBACnetLandingDoorStatusLandingDoorsListEntryBuilder()
+}
+
+// CreateBACnetLandingDoorStatusLandingDoorsListEntryBuilder creates a BACnetLandingDoorStatusLandingDoorsListEntryBuilder
+func (m *_BACnetLandingDoorStatusLandingDoorsListEntry) CreateBACnetLandingDoorStatusLandingDoorsListEntryBuilder() BACnetLandingDoorStatusLandingDoorsListEntryBuilder {
+	if m == nil {
+		return NewBACnetLandingDoorStatusLandingDoorsListEntryBuilder()
+	}
+	return &_BACnetLandingDoorStatusLandingDoorsListEntryBuilder{_BACnetLandingDoorStatusLandingDoorsListEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

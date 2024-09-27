@@ -44,6 +44,8 @@ type BACnetLogRecordLogDatumFailure interface {
 	GetFailure() ErrorEnclosed
 	// IsBACnetLogRecordLogDatumFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumFailure()
+	// CreateBuilder creates a BACnetLogRecordLogDatumFailureBuilder
+	CreateBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBuilder
 }
 
 // _BACnetLogRecordLogDatumFailure is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogRecordLogDatumFailure(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumFailureBuilder is a builder for BACnetLogRecordLogDatumFailure
+type BACnetLogRecordLogDatumFailureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder
+	// WithFailure adds Failure (property field)
+	WithFailure(ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder
+	// WithFailureBuilder adds Failure (property field) which is build by the builder
+	WithFailureBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetLogRecordLogDatumFailureBuilder
+	// Build builds the BACnetLogRecordLogDatumFailure or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumFailure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumFailure
+}
+
+// NewBACnetLogRecordLogDatumFailureBuilder() creates a BACnetLogRecordLogDatumFailureBuilder
+func NewBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBuilder {
+	return &_BACnetLogRecordLogDatumFailureBuilder{_BACnetLogRecordLogDatumFailure: new(_BACnetLogRecordLogDatumFailure)}
+}
+
+type _BACnetLogRecordLogDatumFailureBuilder struct {
+	*_BACnetLogRecordLogDatumFailure
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumFailureBuilder) = (*_BACnetLogRecordLogDatumFailureBuilder)(nil)
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) WithMandatoryFields(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
+	return m.WithFailure(failure)
+}
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) WithFailure(failure ErrorEnclosed) BACnetLogRecordLogDatumFailureBuilder {
+	m.Failure = failure
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) WithFailureBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) BACnetLogRecordLogDatumFailureBuilder {
+	builder := builderSupplier(m.Failure.CreateErrorEnclosedBuilder())
+	var err error
+	m.Failure, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) Build() (BACnetLogRecordLogDatumFailure, error) {
+	if m.Failure == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'failure' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogRecordLogDatumFailure.deepCopy(), nil
+}
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) MustBuild() BACnetLogRecordLogDatumFailure {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogRecordLogDatumFailureBuilder) DeepCopy() any {
+	return m.CreateBACnetLogRecordLogDatumFailureBuilder()
+}
+
+// CreateBACnetLogRecordLogDatumFailureBuilder creates a BACnetLogRecordLogDatumFailureBuilder
+func (m *_BACnetLogRecordLogDatumFailure) CreateBACnetLogRecordLogDatumFailureBuilder() BACnetLogRecordLogDatumFailureBuilder {
+	if m == nil {
+		return NewBACnetLogRecordLogDatumFailureBuilder()
+	}
+	return &_BACnetLogRecordLogDatumFailureBuilder{_BACnetLogRecordLogDatumFailure: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

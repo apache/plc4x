@@ -46,6 +46,8 @@ type BACnetConstructedDataLogDeviceObjectProperty interface {
 	GetActualValue() BACnetDeviceObjectPropertyReference
 	// IsBACnetConstructedDataLogDeviceObjectProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLogDeviceObjectProperty()
+	// CreateBuilder creates a BACnetConstructedDataLogDeviceObjectPropertyBuilder
+	CreateBACnetConstructedDataLogDeviceObjectPropertyBuilder() BACnetConstructedDataLogDeviceObjectPropertyBuilder
 }
 
 // _BACnetConstructedDataLogDeviceObjectProperty is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLogDeviceObjectProperty(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLogDeviceObjectPropertyBuilder is a builder for BACnetConstructedDataLogDeviceObjectProperty
+type BACnetConstructedDataLogDeviceObjectPropertyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataLogDeviceObjectPropertyBuilder
+	// WithLogDeviceObjectProperty adds LogDeviceObjectProperty (property field)
+	WithLogDeviceObjectProperty(BACnetDeviceObjectPropertyReference) BACnetConstructedDataLogDeviceObjectPropertyBuilder
+	// WithLogDeviceObjectPropertyBuilder adds LogDeviceObjectProperty (property field) which is build by the builder
+	WithLogDeviceObjectPropertyBuilder(func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataLogDeviceObjectPropertyBuilder
+	// Build builds the BACnetConstructedDataLogDeviceObjectProperty or returns an error if something is wrong
+	Build() (BACnetConstructedDataLogDeviceObjectProperty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLogDeviceObjectProperty
+}
+
+// NewBACnetConstructedDataLogDeviceObjectPropertyBuilder() creates a BACnetConstructedDataLogDeviceObjectPropertyBuilder
+func NewBACnetConstructedDataLogDeviceObjectPropertyBuilder() BACnetConstructedDataLogDeviceObjectPropertyBuilder {
+	return &_BACnetConstructedDataLogDeviceObjectPropertyBuilder{_BACnetConstructedDataLogDeviceObjectProperty: new(_BACnetConstructedDataLogDeviceObjectProperty)}
+}
+
+type _BACnetConstructedDataLogDeviceObjectPropertyBuilder struct {
+	*_BACnetConstructedDataLogDeviceObjectProperty
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLogDeviceObjectPropertyBuilder) = (*_BACnetConstructedDataLogDeviceObjectPropertyBuilder)(nil)
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) WithMandatoryFields(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataLogDeviceObjectPropertyBuilder {
+	return m.WithLogDeviceObjectProperty(logDeviceObjectProperty)
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) WithLogDeviceObjectProperty(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataLogDeviceObjectPropertyBuilder {
+	m.LogDeviceObjectProperty = logDeviceObjectProperty
+	return m
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) WithLogDeviceObjectPropertyBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataLogDeviceObjectPropertyBuilder {
+	builder := builderSupplier(m.LogDeviceObjectProperty.CreateBACnetDeviceObjectPropertyReferenceBuilder())
+	var err error
+	m.LogDeviceObjectProperty, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) Build() (BACnetConstructedDataLogDeviceObjectProperty, error) {
+	if m.LogDeviceObjectProperty == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logDeviceObjectProperty' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLogDeviceObjectProperty.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) MustBuild() BACnetConstructedDataLogDeviceObjectProperty {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLogDeviceObjectPropertyBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLogDeviceObjectPropertyBuilder()
+}
+
+// CreateBACnetConstructedDataLogDeviceObjectPropertyBuilder creates a BACnetConstructedDataLogDeviceObjectPropertyBuilder
+func (m *_BACnetConstructedDataLogDeviceObjectProperty) CreateBACnetConstructedDataLogDeviceObjectPropertyBuilder() BACnetConstructedDataLogDeviceObjectPropertyBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLogDeviceObjectPropertyBuilder()
+	}
+	return &_BACnetConstructedDataLogDeviceObjectPropertyBuilder{_BACnetConstructedDataLogDeviceObjectProperty: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

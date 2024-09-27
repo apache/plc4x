@@ -314,7 +314,7 @@ func (m *plcDriverManger) Close() error {
 		}
 	}
 	if len(aggregatedErrors) > 0 {
-		return utils.MultiError{
+		return &utils.MultiError{
 			MainError: errors.New("error closing everything"),
 			Errors:    aggregatedErrors,
 		}

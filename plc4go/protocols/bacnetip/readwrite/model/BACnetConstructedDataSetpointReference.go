@@ -46,6 +46,8 @@ type BACnetConstructedDataSetpointReference interface {
 	GetActualValue() BACnetSetpointReference
 	// IsBACnetConstructedDataSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSetpointReference()
+	// CreateBuilder creates a BACnetConstructedDataSetpointReferenceBuilder
+	CreateBACnetConstructedDataSetpointReferenceBuilder() BACnetConstructedDataSetpointReferenceBuilder
 }
 
 // _BACnetConstructedDataSetpointReference is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataSetpointReference(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSetpointReferenceBuilder is a builder for BACnetConstructedDataSetpointReference
+type BACnetConstructedDataSetpointReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(setpointReference BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder
+	// WithSetpointReference adds SetpointReference (property field)
+	WithSetpointReference(BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder
+	// WithSetpointReferenceBuilder adds SetpointReference (property field) which is build by the builder
+	WithSetpointReferenceBuilder(func(BACnetSetpointReferenceBuilder) BACnetSetpointReferenceBuilder) BACnetConstructedDataSetpointReferenceBuilder
+	// Build builds the BACnetConstructedDataSetpointReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataSetpointReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSetpointReference
+}
+
+// NewBACnetConstructedDataSetpointReferenceBuilder() creates a BACnetConstructedDataSetpointReferenceBuilder
+func NewBACnetConstructedDataSetpointReferenceBuilder() BACnetConstructedDataSetpointReferenceBuilder {
+	return &_BACnetConstructedDataSetpointReferenceBuilder{_BACnetConstructedDataSetpointReference: new(_BACnetConstructedDataSetpointReference)}
+}
+
+type _BACnetConstructedDataSetpointReferenceBuilder struct {
+	*_BACnetConstructedDataSetpointReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSetpointReferenceBuilder) = (*_BACnetConstructedDataSetpointReferenceBuilder)(nil)
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) WithMandatoryFields(setpointReference BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder {
+	return m.WithSetpointReference(setpointReference)
+}
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) WithSetpointReference(setpointReference BACnetSetpointReference) BACnetConstructedDataSetpointReferenceBuilder {
+	m.SetpointReference = setpointReference
+	return m
+}
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) WithSetpointReferenceBuilder(builderSupplier func(BACnetSetpointReferenceBuilder) BACnetSetpointReferenceBuilder) BACnetConstructedDataSetpointReferenceBuilder {
+	builder := builderSupplier(m.SetpointReference.CreateBACnetSetpointReferenceBuilder())
+	var err error
+	m.SetpointReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSetpointReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) Build() (BACnetConstructedDataSetpointReference, error) {
+	if m.SetpointReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'setpointReference' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSetpointReference.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) MustBuild() BACnetConstructedDataSetpointReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSetpointReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSetpointReferenceBuilder()
+}
+
+// CreateBACnetConstructedDataSetpointReferenceBuilder creates a BACnetConstructedDataSetpointReferenceBuilder
+func (m *_BACnetConstructedDataSetpointReference) CreateBACnetConstructedDataSetpointReferenceBuilder() BACnetConstructedDataSetpointReferenceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSetpointReferenceBuilder()
+	}
+	return &_BACnetConstructedDataSetpointReferenceBuilder{_BACnetConstructedDataSetpointReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

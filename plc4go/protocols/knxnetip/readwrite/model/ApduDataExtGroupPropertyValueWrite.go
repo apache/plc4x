@@ -40,6 +40,8 @@ type ApduDataExtGroupPropertyValueWrite interface {
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueWrite()
+	// CreateBuilder creates a ApduDataExtGroupPropertyValueWriteBuilder
+	CreateApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValueWriteBuilder
 }
 
 // _ApduDataExtGroupPropertyValueWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtGroupPropertyValueWrite(length uint8) *_ApduDataExtGroupPrope
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtGroupPropertyValueWriteBuilder is a builder for ApduDataExtGroupPropertyValueWrite
+type ApduDataExtGroupPropertyValueWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtGroupPropertyValueWriteBuilder
+	// Build builds the ApduDataExtGroupPropertyValueWrite or returns an error if something is wrong
+	Build() (ApduDataExtGroupPropertyValueWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtGroupPropertyValueWrite
+}
+
+// NewApduDataExtGroupPropertyValueWriteBuilder() creates a ApduDataExtGroupPropertyValueWriteBuilder
+func NewApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValueWriteBuilder {
+	return &_ApduDataExtGroupPropertyValueWriteBuilder{_ApduDataExtGroupPropertyValueWrite: new(_ApduDataExtGroupPropertyValueWrite)}
+}
+
+type _ApduDataExtGroupPropertyValueWriteBuilder struct {
+	*_ApduDataExtGroupPropertyValueWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtGroupPropertyValueWriteBuilder) = (*_ApduDataExtGroupPropertyValueWriteBuilder)(nil)
+
+func (m *_ApduDataExtGroupPropertyValueWriteBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataExtGroupPropertyValueWriteBuilder) Build() (ApduDataExtGroupPropertyValueWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtGroupPropertyValueWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtGroupPropertyValueWriteBuilder) MustBuild() ApduDataExtGroupPropertyValueWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtGroupPropertyValueWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtGroupPropertyValueWriteBuilder()
+}
+
+// CreateApduDataExtGroupPropertyValueWriteBuilder creates a ApduDataExtGroupPropertyValueWriteBuilder
+func (m *_ApduDataExtGroupPropertyValueWrite) CreateApduDataExtGroupPropertyValueWriteBuilder() ApduDataExtGroupPropertyValueWriteBuilder {
+	if m == nil {
+		return NewApduDataExtGroupPropertyValueWriteBuilder()
+	}
+	return &_ApduDataExtGroupPropertyValueWriteBuilder{_ApduDataExtGroupPropertyValueWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

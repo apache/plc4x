@@ -45,6 +45,8 @@ type ParameterChange interface {
 	utils.Copyable
 	// IsParameterChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterChange()
+	// CreateBuilder creates a ParameterChangeBuilder
+	CreateParameterChangeBuilder() ParameterChangeBuilder
 }
 
 // _ParameterChange is the data-structure of this message
@@ -57,6 +59,71 @@ var _ ParameterChange = (*_ParameterChange)(nil)
 func NewParameterChange() *_ParameterChange {
 	return &_ParameterChange{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterChangeBuilder is a builder for ParameterChange
+type ParameterChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ParameterChangeBuilder
+	// Build builds the ParameterChange or returns an error if something is wrong
+	Build() (ParameterChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterChange
+}
+
+// NewParameterChangeBuilder() creates a ParameterChangeBuilder
+func NewParameterChangeBuilder() ParameterChangeBuilder {
+	return &_ParameterChangeBuilder{_ParameterChange: new(_ParameterChange)}
+}
+
+type _ParameterChangeBuilder struct {
+	*_ParameterChange
+
+	err *utils.MultiError
+}
+
+var _ (ParameterChangeBuilder) = (*_ParameterChangeBuilder)(nil)
+
+func (m *_ParameterChangeBuilder) WithMandatoryFields() ParameterChangeBuilder {
+	return m
+}
+
+func (m *_ParameterChangeBuilder) Build() (ParameterChange, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterChange.deepCopy(), nil
+}
+
+func (m *_ParameterChangeBuilder) MustBuild() ParameterChange {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterChangeBuilder) DeepCopy() any {
+	return m.CreateParameterChangeBuilder()
+}
+
+// CreateParameterChangeBuilder creates a ParameterChangeBuilder
+func (m *_ParameterChange) CreateParameterChangeBuilder() ParameterChangeBuilder {
+	if m == nil {
+		return NewParameterChangeBuilder()
+	}
+	return &_ParameterChangeBuilder{_ParameterChange: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

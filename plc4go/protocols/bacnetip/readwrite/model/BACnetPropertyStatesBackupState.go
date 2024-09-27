@@ -44,6 +44,8 @@ type BACnetPropertyStatesBackupState interface {
 	GetBackupState() BACnetBackupStateTagged
 	// IsBACnetPropertyStatesBackupState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesBackupState()
+	// CreateBuilder creates a BACnetPropertyStatesBackupStateBuilder
+	CreateBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder
 }
 
 // _BACnetPropertyStatesBackupState is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupS
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesBackupStateBuilder is a builder for BACnetPropertyStatesBackupState
+type BACnetPropertyStatesBackupStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder
+	// WithBackupState adds BackupState (property field)
+	WithBackupState(BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder
+	// WithBackupStateBuilder adds BackupState (property field) which is build by the builder
+	WithBackupStateBuilder(func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetPropertyStatesBackupStateBuilder
+	// Build builds the BACnetPropertyStatesBackupState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesBackupState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesBackupState
+}
+
+// NewBACnetPropertyStatesBackupStateBuilder() creates a BACnetPropertyStatesBackupStateBuilder
+func NewBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder {
+	return &_BACnetPropertyStatesBackupStateBuilder{_BACnetPropertyStatesBackupState: new(_BACnetPropertyStatesBackupState)}
+}
+
+type _BACnetPropertyStatesBackupStateBuilder struct {
+	*_BACnetPropertyStatesBackupState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesBackupStateBuilder) = (*_BACnetPropertyStatesBackupStateBuilder)(nil)
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) WithMandatoryFields(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder {
+	return m.WithBackupState(backupState)
+}
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) WithBackupState(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder {
+	m.BackupState = backupState
+	return m
+}
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) WithBackupStateBuilder(builderSupplier func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetPropertyStatesBackupStateBuilder {
+	builder := builderSupplier(m.BackupState.CreateBACnetBackupStateTaggedBuilder())
+	var err error
+	m.BackupState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetBackupStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) Build() (BACnetPropertyStatesBackupState, error) {
+	if m.BackupState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'backupState' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesBackupState.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) MustBuild() BACnetPropertyStatesBackupState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesBackupStateBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesBackupStateBuilder()
+}
+
+// CreateBACnetPropertyStatesBackupStateBuilder creates a BACnetPropertyStatesBackupStateBuilder
+func (m *_BACnetPropertyStatesBackupState) CreateBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesBackupStateBuilder()
+	}
+	return &_BACnetPropertyStatesBackupStateBuilder{_BACnetPropertyStatesBackupState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

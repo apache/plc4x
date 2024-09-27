@@ -46,6 +46,8 @@ type S7PayloadUserDataItemCyclicServicesChangeDrivenPush interface {
 	GetItems() []AssociatedQueryValueType
 	// IsS7PayloadUserDataItemCyclicServicesChangeDrivenPush is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesChangeDrivenPush()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+	CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesChangeDrivenPush is the data-structure of this message
@@ -68,6 +70,85 @@ func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPush(returnCode DataTrans
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder is a builder for S7PayloadUserDataItemCyclicServicesChangeDrivenPush
+type S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+	// WithItemsCount adds ItemsCount (property field)
+	WithItemsCount(uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+	// WithItems adds Items (property field)
+	WithItems(...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesChangeDrivenPush or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenPush, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenPush
+}
+
+// NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() creates a S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+func NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenPush: new(_S7PayloadUserDataItemCyclicServicesChangeDrivenPush)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesChangeDrivenPush
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) = (*_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithMandatoryFields(itemsCount uint16, items []AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	return m.WithItemsCount(itemsCount).WithItems(items...)
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	m.ItemsCount = itemsCount
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) WithItems(items ...AssociatedQueryValueType) S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) Build() (S7PayloadUserDataItemCyclicServicesChangeDrivenPush, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesChangeDrivenPush.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesChangeDrivenPush {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder creates a S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenPush) CreateS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder() S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesChangeDrivenPushBuilder{_S7PayloadUserDataItemCyclicServicesChangeDrivenPush: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

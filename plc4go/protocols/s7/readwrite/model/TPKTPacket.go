@@ -48,6 +48,8 @@ type TPKTPacket interface {
 	GetPayload() COTPPacket
 	// IsTPKTPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTPKTPacket()
+	// CreateBuilder creates a TPKTPacketBuilder
+	CreateTPKTPacketBuilder() TPKTPacketBuilder
 }
 
 // _TPKTPacket is the data-structure of this message
@@ -66,6 +68,84 @@ func NewTPKTPacket(payload COTPPacket) *_TPKTPacket {
 	}
 	return &_TPKTPacket{Payload: payload}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TPKTPacketBuilder is a builder for TPKTPacket
+type TPKTPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload COTPPacket) TPKTPacketBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(COTPPacket) TPKTPacketBuilder
+	// Build builds the TPKTPacket or returns an error if something is wrong
+	Build() (TPKTPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TPKTPacket
+}
+
+// NewTPKTPacketBuilder() creates a TPKTPacketBuilder
+func NewTPKTPacketBuilder() TPKTPacketBuilder {
+	return &_TPKTPacketBuilder{_TPKTPacket: new(_TPKTPacket)}
+}
+
+type _TPKTPacketBuilder struct {
+	*_TPKTPacket
+
+	err *utils.MultiError
+}
+
+var _ (TPKTPacketBuilder) = (*_TPKTPacketBuilder)(nil)
+
+func (m *_TPKTPacketBuilder) WithMandatoryFields(payload COTPPacket) TPKTPacketBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_TPKTPacketBuilder) WithPayload(payload COTPPacket) TPKTPacketBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_TPKTPacketBuilder) Build() (TPKTPacket, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TPKTPacket.deepCopy(), nil
+}
+
+func (m *_TPKTPacketBuilder) MustBuild() TPKTPacket {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TPKTPacketBuilder) DeepCopy() any {
+	return m.CreateTPKTPacketBuilder()
+}
+
+// CreateTPKTPacketBuilder creates a TPKTPacketBuilder
+func (m *_TPKTPacket) CreateTPKTPacketBuilder() TPKTPacketBuilder {
+	if m == nil {
+		return NewTPKTPacketBuilder()
+	}
+	return &_TPKTPacketBuilder{_TPKTPacket: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

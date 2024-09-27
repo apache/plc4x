@@ -44,6 +44,8 @@ type BACnetPropertyStatesEventType interface {
 	GetEventType() BACnetEventTypeTagged
 	// IsBACnetPropertyStatesEventType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesEventType()
+	// CreateBuilder creates a BACnetPropertyStatesEventTypeBuilder
+	CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder
 }
 
 // _BACnetPropertyStatesEventType is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesEventTypeBuilder is a builder for BACnetPropertyStatesEventType
+type BACnetPropertyStatesEventTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder
+	// WithEventType adds EventType (property field)
+	WithEventType(BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder
+	// WithEventTypeBuilder adds EventType (property field) which is build by the builder
+	WithEventTypeBuilder(func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder
+	// Build builds the BACnetPropertyStatesEventType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesEventType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesEventType
+}
+
+// NewBACnetPropertyStatesEventTypeBuilder() creates a BACnetPropertyStatesEventTypeBuilder
+func NewBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
+	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: new(_BACnetPropertyStatesEventType)}
+}
+
+type _BACnetPropertyStatesEventTypeBuilder struct {
+	*_BACnetPropertyStatesEventType
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesEventTypeBuilder) = (*_BACnetPropertyStatesEventTypeBuilder)(nil)
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	return m.WithEventType(eventType)
+}
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	m.EventType = eventType
+	return m
+}
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder {
+	builder := builderSupplier(m.EventType.CreateBACnetEventTypeTaggedBuilder())
+	var err error
+	m.EventType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) Build() (BACnetPropertyStatesEventType, error) {
+	if m.EventType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesEventType.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) MustBuild() BACnetPropertyStatesEventType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesEventTypeBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesEventTypeBuilder()
+}
+
+// CreateBACnetPropertyStatesEventTypeBuilder creates a BACnetPropertyStatesEventTypeBuilder
+func (m *_BACnetPropertyStatesEventType) CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesEventTypeBuilder()
+	}
+	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

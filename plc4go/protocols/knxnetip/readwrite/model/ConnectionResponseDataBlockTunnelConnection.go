@@ -44,6 +44,8 @@ type ConnectionResponseDataBlockTunnelConnection interface {
 	GetKnxAddress() KnxAddress
 	// IsConnectionResponseDataBlockTunnelConnection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlockTunnelConnection()
+	// CreateBuilder creates a ConnectionResponseDataBlockTunnelConnectionBuilder
+	CreateConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseDataBlockTunnelConnectionBuilder
 }
 
 // _ConnectionResponseDataBlockTunnelConnection is the data-structure of this message
@@ -67,6 +69,99 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress KnxAddress) *_Con
 	_result.ConnectionResponseDataBlockContract.(*_ConnectionResponseDataBlock)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionResponseDataBlockTunnelConnectionBuilder is a builder for ConnectionResponseDataBlockTunnelConnection
+type ConnectionResponseDataBlockTunnelConnectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder
+	// WithKnxAddress adds KnxAddress (property field)
+	WithKnxAddress(KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder
+	// WithKnxAddressBuilder adds KnxAddress (property field) which is build by the builder
+	WithKnxAddressBuilder(func(KnxAddressBuilder) KnxAddressBuilder) ConnectionResponseDataBlockTunnelConnectionBuilder
+	// Build builds the ConnectionResponseDataBlockTunnelConnection or returns an error if something is wrong
+	Build() (ConnectionResponseDataBlockTunnelConnection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionResponseDataBlockTunnelConnection
+}
+
+// NewConnectionResponseDataBlockTunnelConnectionBuilder() creates a ConnectionResponseDataBlockTunnelConnectionBuilder
+func NewConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseDataBlockTunnelConnectionBuilder {
+	return &_ConnectionResponseDataBlockTunnelConnectionBuilder{_ConnectionResponseDataBlockTunnelConnection: new(_ConnectionResponseDataBlockTunnelConnection)}
+}
+
+type _ConnectionResponseDataBlockTunnelConnectionBuilder struct {
+	*_ConnectionResponseDataBlockTunnelConnection
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionResponseDataBlockTunnelConnectionBuilder) = (*_ConnectionResponseDataBlockTunnelConnectionBuilder)(nil)
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithMandatoryFields(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	return m.WithKnxAddress(knxAddress)
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddress(knxAddress KnxAddress) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	m.KnxAddress = knxAddress
+	return m
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) WithKnxAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) ConnectionResponseDataBlockTunnelConnectionBuilder {
+	builder := builderSupplier(m.KnxAddress.CreateKnxAddressBuilder())
+	var err error
+	m.KnxAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) Build() (ConnectionResponseDataBlockTunnelConnection, error) {
+	if m.KnxAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'knxAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionResponseDataBlockTunnelConnection.deepCopy(), nil
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) MustBuild() ConnectionResponseDataBlockTunnelConnection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionResponseDataBlockTunnelConnectionBuilder) DeepCopy() any {
+	return m.CreateConnectionResponseDataBlockTunnelConnectionBuilder()
+}
+
+// CreateConnectionResponseDataBlockTunnelConnectionBuilder creates a ConnectionResponseDataBlockTunnelConnectionBuilder
+func (m *_ConnectionResponseDataBlockTunnelConnection) CreateConnectionResponseDataBlockTunnelConnectionBuilder() ConnectionResponseDataBlockTunnelConnectionBuilder {
+	if m == nil {
+		return NewConnectionResponseDataBlockTunnelConnectionBuilder()
+	}
+	return &_ConnectionResponseDataBlockTunnelConnectionBuilder{_ConnectionResponseDataBlockTunnelConnection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type CipReadRequest interface {
 	GetElementNb() uint16
 	// IsCipReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipReadRequest()
+	// CreateBuilder creates a CipReadRequestBuilder
+	CreateCipReadRequestBuilder() CipReadRequestBuilder
 }
 
 // _CipReadRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipRea
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipReadRequestBuilder is a builder for CipReadRequest
+type CipReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tag []byte, elementNb uint16) CipReadRequestBuilder
+	// WithTag adds Tag (property field)
+	WithTag(...byte) CipReadRequestBuilder
+	// WithElementNb adds ElementNb (property field)
+	WithElementNb(uint16) CipReadRequestBuilder
+	// Build builds the CipReadRequest or returns an error if something is wrong
+	Build() (CipReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipReadRequest
+}
+
+// NewCipReadRequestBuilder() creates a CipReadRequestBuilder
+func NewCipReadRequestBuilder() CipReadRequestBuilder {
+	return &_CipReadRequestBuilder{_CipReadRequest: new(_CipReadRequest)}
+}
+
+type _CipReadRequestBuilder struct {
+	*_CipReadRequest
+
+	err *utils.MultiError
+}
+
+var _ (CipReadRequestBuilder) = (*_CipReadRequestBuilder)(nil)
+
+func (m *_CipReadRequestBuilder) WithMandatoryFields(tag []byte, elementNb uint16) CipReadRequestBuilder {
+	return m.WithTag(tag...).WithElementNb(elementNb)
+}
+
+func (m *_CipReadRequestBuilder) WithTag(tag ...byte) CipReadRequestBuilder {
+	m.Tag = tag
+	return m
+}
+
+func (m *_CipReadRequestBuilder) WithElementNb(elementNb uint16) CipReadRequestBuilder {
+	m.ElementNb = elementNb
+	return m
+}
+
+func (m *_CipReadRequestBuilder) Build() (CipReadRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipReadRequest.deepCopy(), nil
+}
+
+func (m *_CipReadRequestBuilder) MustBuild() CipReadRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipReadRequestBuilder) DeepCopy() any {
+	return m.CreateCipReadRequestBuilder()
+}
+
+// CreateCipReadRequestBuilder creates a CipReadRequestBuilder
+func (m *_CipReadRequest) CreateCipReadRequestBuilder() CipReadRequestBuilder {
+	if m == nil {
+		return NewCipReadRequestBuilder()
+	}
+	return &_CipReadRequestBuilder{_CipReadRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

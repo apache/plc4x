@@ -82,6 +82,8 @@ type IdentifyReplyCommandExtendedDiagnosticSummary interface {
 	GetNetworkVoltageInVolts() float32
 	// IsIdentifyReplyCommandExtendedDiagnosticSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandExtendedDiagnosticSummary()
+	// CreateBuilder creates a IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
 }
 
 // _IdentifyReplyCommandExtendedDiagnosticSummary is the data-structure of this message
@@ -142,6 +144,204 @@ func NewIdentifyReplyCommandExtendedDiagnosticSummary(lowApplication Application
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandExtendedDiagnosticSummaryBuilder is a builder for IdentifyReplyCommandExtendedDiagnosticSummary
+type IdentifyReplyCommandExtendedDiagnosticSummaryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithLowApplication adds LowApplication (property field)
+	WithLowApplication(ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithHighApplication adds HighApplication (property field)
+	WithHighApplication(ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithArea adds Area (property field)
+	WithArea(byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithCrc adds Crc (property field)
+	WithCrc(uint16) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithSerialNumber adds SerialNumber (property field)
+	WithSerialNumber(uint32) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithNetworkVoltage adds NetworkVoltage (property field)
+	WithNetworkVoltage(byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithUnitInLearnMode adds UnitInLearnMode (property field)
+	WithUnitInLearnMode(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithNetworkVoltageLow adds NetworkVoltageLow (property field)
+	WithNetworkVoltageLow(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithNetworkVoltageMarginal adds NetworkVoltageMarginal (property field)
+	WithNetworkVoltageMarginal(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithEnableChecksumAlarm adds EnableChecksumAlarm (property field)
+	WithEnableChecksumAlarm(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithOutputUnit adds OutputUnit (property field)
+	WithOutputUnit(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithInstallationMMIError adds InstallationMMIError (property field)
+	WithInstallationMMIError(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithEEWriteError adds EEWriteError (property field)
+	WithEEWriteError(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithEEChecksumError adds EEChecksumError (property field)
+	WithEEChecksumError(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithEEDataError adds EEDataError (property field)
+	WithEEDataError(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithMicroReset adds MicroReset (property field)
+	WithMicroReset(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithCommsTxError adds CommsTxError (property field)
+	WithCommsTxError(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithInternalStackOverflow adds InternalStackOverflow (property field)
+	WithInternalStackOverflow(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// WithMicroPowerReset adds MicroPowerReset (property field)
+	WithMicroPowerReset(bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+	// Build builds the IdentifyReplyCommandExtendedDiagnosticSummary or returns an error if something is wrong
+	Build() (IdentifyReplyCommandExtendedDiagnosticSummary, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandExtendedDiagnosticSummary
+}
+
+// NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() creates a IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+func NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	return &_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder{_IdentifyReplyCommandExtendedDiagnosticSummary: new(_IdentifyReplyCommandExtendedDiagnosticSummary)}
+}
+
+type _IdentifyReplyCommandExtendedDiagnosticSummaryBuilder struct {
+	*_IdentifyReplyCommandExtendedDiagnosticSummary
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) = (*_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder)(nil)
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMandatoryFields(lowApplication ApplicationIdContainer, highApplication ApplicationIdContainer, area byte, crc uint16, serialNumber uint32, networkVoltage byte, unitInLearnMode bool, networkVoltageLow bool, networkVoltageMarginal bool, enableChecksumAlarm bool, outputUnit bool, installationMMIError bool, EEWriteError bool, EEChecksumError bool, EEDataError bool, microReset bool, commsTxError bool, internalStackOverflow bool, microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	return m.WithLowApplication(lowApplication).WithHighApplication(highApplication).WithArea(area).WithCrc(crc).WithSerialNumber(serialNumber).WithNetworkVoltage(networkVoltage).WithUnitInLearnMode(unitInLearnMode).WithNetworkVoltageLow(networkVoltageLow).WithNetworkVoltageMarginal(networkVoltageMarginal).WithEnableChecksumAlarm(enableChecksumAlarm).WithOutputUnit(outputUnit).WithInstallationMMIError(installationMMIError).WithEEWriteError(EEWriteError).WithEEChecksumError(EEChecksumError).WithEEDataError(EEDataError).WithMicroReset(microReset).WithCommsTxError(commsTxError).WithInternalStackOverflow(internalStackOverflow).WithMicroPowerReset(microPowerReset)
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithLowApplication(lowApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.LowApplication = lowApplication
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithHighApplication(highApplication ApplicationIdContainer) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.HighApplication = highApplication
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithArea(area byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.Area = area
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCrc(crc uint16) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.Crc = crc
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithSerialNumber(serialNumber uint32) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.SerialNumber = serialNumber
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltage(networkVoltage byte) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.NetworkVoltage = networkVoltage
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithUnitInLearnMode(unitInLearnMode bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.UnitInLearnMode = unitInLearnMode
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageLow(networkVoltageLow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.NetworkVoltageLow = networkVoltageLow
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithNetworkVoltageMarginal(networkVoltageMarginal bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.NetworkVoltageMarginal = networkVoltageMarginal
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEnableChecksumAlarm(enableChecksumAlarm bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.EnableChecksumAlarm = enableChecksumAlarm
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithOutputUnit(outputUnit bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.OutputUnit = outputUnit
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInstallationMMIError(installationMMIError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.InstallationMMIError = installationMMIError
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEWriteError(EEWriteError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.EEWriteError = EEWriteError
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEChecksumError(EEChecksumError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.EEChecksumError = EEChecksumError
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithEEDataError(EEDataError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.EEDataError = EEDataError
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroReset(microReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.MicroReset = microReset
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithCommsTxError(commsTxError bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.CommsTxError = commsTxError
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithInternalStackOverflow(internalStackOverflow bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.InternalStackOverflow = internalStackOverflow
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) WithMicroPowerReset(microPowerReset bool) IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	m.MicroPowerReset = microPowerReset
+	return m
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) Build() (IdentifyReplyCommandExtendedDiagnosticSummary, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandExtendedDiagnosticSummary.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) MustBuild() IdentifyReplyCommandExtendedDiagnosticSummary {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder()
+}
+
+// CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder creates a IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) CreateIdentifyReplyCommandExtendedDiagnosticSummaryBuilder() IdentifyReplyCommandExtendedDiagnosticSummaryBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandExtendedDiagnosticSummaryBuilder()
+	}
+	return &_IdentifyReplyCommandExtendedDiagnosticSummaryBuilder{_IdentifyReplyCommandExtendedDiagnosticSummary: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type GetAttributeAllResponse interface {
 	GetAttributes() CIPAttributes
 	// IsGetAttributeAllResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeAllResponse()
+	// CreateBuilder creates a GetAttributeAllResponseBuilder
+	CreateGetAttributeAllResponseBuilder() GetAttributeAllResponseBuilder
 }
 
 // _GetAttributeAllResponse is the data-structure of this message
@@ -74,6 +76,107 @@ func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAtt
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeAllResponseBuilder is a builder for GetAttributeAllResponse
+type GetAttributeAllResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, extStatus uint8) GetAttributeAllResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) GetAttributeAllResponseBuilder
+	// WithExtStatus adds ExtStatus (property field)
+	WithExtStatus(uint8) GetAttributeAllResponseBuilder
+	// WithAttributes adds Attributes (property field)
+	WithOptionalAttributes(CIPAttributes) GetAttributeAllResponseBuilder
+	// WithOptionalAttributesBuilder adds Attributes (property field) which is build by the builder
+	WithOptionalAttributesBuilder(func(CIPAttributesBuilder) CIPAttributesBuilder) GetAttributeAllResponseBuilder
+	// Build builds the GetAttributeAllResponse or returns an error if something is wrong
+	Build() (GetAttributeAllResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeAllResponse
+}
+
+// NewGetAttributeAllResponseBuilder() creates a GetAttributeAllResponseBuilder
+func NewGetAttributeAllResponseBuilder() GetAttributeAllResponseBuilder {
+	return &_GetAttributeAllResponseBuilder{_GetAttributeAllResponse: new(_GetAttributeAllResponse)}
+}
+
+type _GetAttributeAllResponseBuilder struct {
+	*_GetAttributeAllResponse
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeAllResponseBuilder) = (*_GetAttributeAllResponseBuilder)(nil)
+
+func (m *_GetAttributeAllResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) GetAttributeAllResponseBuilder {
+	return m.WithStatus(status).WithExtStatus(extStatus)
+}
+
+func (m *_GetAttributeAllResponseBuilder) WithStatus(status uint8) GetAttributeAllResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_GetAttributeAllResponseBuilder) WithExtStatus(extStatus uint8) GetAttributeAllResponseBuilder {
+	m.ExtStatus = extStatus
+	return m
+}
+
+func (m *_GetAttributeAllResponseBuilder) WithOptionalAttributes(attributes CIPAttributes) GetAttributeAllResponseBuilder {
+	m.Attributes = attributes
+	return m
+}
+
+func (m *_GetAttributeAllResponseBuilder) WithOptionalAttributesBuilder(builderSupplier func(CIPAttributesBuilder) CIPAttributesBuilder) GetAttributeAllResponseBuilder {
+	builder := builderSupplier(m.Attributes.CreateCIPAttributesBuilder())
+	var err error
+	m.Attributes, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "CIPAttributesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_GetAttributeAllResponseBuilder) Build() (GetAttributeAllResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetAttributeAllResponse.deepCopy(), nil
+}
+
+func (m *_GetAttributeAllResponseBuilder) MustBuild() GetAttributeAllResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetAttributeAllResponseBuilder) DeepCopy() any {
+	return m.CreateGetAttributeAllResponseBuilder()
+}
+
+// CreateGetAttributeAllResponseBuilder creates a GetAttributeAllResponseBuilder
+func (m *_GetAttributeAllResponse) CreateGetAttributeAllResponseBuilder() GetAttributeAllResponseBuilder {
+	if m == nil {
+		return NewGetAttributeAllResponseBuilder()
+	}
+	return &_GetAttributeAllResponseBuilder{_GetAttributeAllResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -66,6 +66,8 @@ type SecurityGroupDataType interface {
 	GetGroupProperties() []ExtensionObjectDefinition
 	// IsSecurityGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityGroupDataType()
+	// CreateBuilder creates a SecurityGroupDataTypeBuilder
+	CreateSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder
 }
 
 // _SecurityGroupDataType is the data-structure of this message
@@ -117,6 +119,218 @@ func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityGroupDataTypeBuilder is a builder for SecurityGroupDataType
+type SecurityGroupDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) SecurityGroupDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithNoOfSecurityGroupFolder adds NoOfSecurityGroupFolder (property field)
+	WithNoOfSecurityGroupFolder(int32) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupFolder adds SecurityGroupFolder (property field)
+	WithSecurityGroupFolder(...PascalString) SecurityGroupDataTypeBuilder
+	// WithKeyLifetime adds KeyLifetime (property field)
+	WithKeyLifetime(float64) SecurityGroupDataTypeBuilder
+	// WithSecurityPolicyUri adds SecurityPolicyUri (property field)
+	WithSecurityPolicyUri(PascalString) SecurityGroupDataTypeBuilder
+	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
+	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithMaxFutureKeyCount adds MaxFutureKeyCount (property field)
+	WithMaxFutureKeyCount(uint32) SecurityGroupDataTypeBuilder
+	// WithMaxPastKeyCount adds MaxPastKeyCount (property field)
+	WithMaxPastKeyCount(uint32) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupId adds SecurityGroupId (property field)
+	WithSecurityGroupId(PascalString) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
+	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithNoOfRolePermissions adds NoOfRolePermissions (property field)
+	WithNoOfRolePermissions(int32) SecurityGroupDataTypeBuilder
+	// WithRolePermissions adds RolePermissions (property field)
+	WithRolePermissions(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// WithNoOfGroupProperties adds NoOfGroupProperties (property field)
+	WithNoOfGroupProperties(int32) SecurityGroupDataTypeBuilder
+	// WithGroupProperties adds GroupProperties (property field)
+	WithGroupProperties(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// Build builds the SecurityGroupDataType or returns an error if something is wrong
+	Build() (SecurityGroupDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityGroupDataType
+}
+
+// NewSecurityGroupDataTypeBuilder() creates a SecurityGroupDataTypeBuilder
+func NewSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder {
+	return &_SecurityGroupDataTypeBuilder{_SecurityGroupDataType: new(_SecurityGroupDataType)}
+}
+
+type _SecurityGroupDataTypeBuilder struct {
+	*_SecurityGroupDataType
+
+	err *utils.MultiError
+}
+
+var _ (SecurityGroupDataTypeBuilder) = (*_SecurityGroupDataTypeBuilder)(nil)
+
+func (m *_SecurityGroupDataTypeBuilder) WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	return m.WithName(name).WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder).WithSecurityGroupFolder(securityGroupFolder...).WithKeyLifetime(keyLifetime).WithSecurityPolicyUri(securityPolicyUri).WithMaxFutureKeyCount(maxFutureKeyCount).WithMaxPastKeyCount(maxPastKeyCount).WithSecurityGroupId(securityGroupId).WithNoOfRolePermissions(noOfRolePermissions).WithRolePermissions(rolePermissions...).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithName(name PascalString) SecurityGroupDataTypeBuilder {
+	m.Name = name
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+	var err error
+	m.Name, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder int32) SecurityGroupDataTypeBuilder {
+	m.NoOfSecurityGroupFolder = noOfSecurityGroupFolder
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithSecurityGroupFolder(securityGroupFolder ...PascalString) SecurityGroupDataTypeBuilder {
+	m.SecurityGroupFolder = securityGroupFolder
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithKeyLifetime(keyLifetime float64) SecurityGroupDataTypeBuilder {
+	m.KeyLifetime = keyLifetime
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) SecurityGroupDataTypeBuilder {
+	m.SecurityPolicyUri = securityPolicyUri
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+	var err error
+	m.SecurityPolicyUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithMaxFutureKeyCount(maxFutureKeyCount uint32) SecurityGroupDataTypeBuilder {
+	m.MaxFutureKeyCount = maxFutureKeyCount
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithMaxPastKeyCount(maxPastKeyCount uint32) SecurityGroupDataTypeBuilder {
+	m.MaxPastKeyCount = maxPastKeyCount
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) SecurityGroupDataTypeBuilder {
+	m.SecurityGroupId = securityGroupId
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(m.SecurityGroupId.CreatePascalStringBuilder())
+	var err error
+	m.SecurityGroupId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithNoOfRolePermissions(noOfRolePermissions int32) SecurityGroupDataTypeBuilder {
+	m.NoOfRolePermissions = noOfRolePermissions
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithRolePermissions(rolePermissions ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	m.RolePermissions = rolePermissions
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) SecurityGroupDataTypeBuilder {
+	m.NoOfGroupProperties = noOfGroupProperties
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	m.GroupProperties = groupProperties
+	return m
+}
+
+func (m *_SecurityGroupDataTypeBuilder) Build() (SecurityGroupDataType, error) {
+	if m.Name == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if m.SecurityPolicyUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+	}
+	if m.SecurityGroupId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityGroupDataType.deepCopy(), nil
+}
+
+func (m *_SecurityGroupDataTypeBuilder) MustBuild() SecurityGroupDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityGroupDataTypeBuilder) DeepCopy() any {
+	return m.CreateSecurityGroupDataTypeBuilder()
+}
+
+// CreateSecurityGroupDataTypeBuilder creates a SecurityGroupDataTypeBuilder
+func (m *_SecurityGroupDataType) CreateSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder {
+	if m == nil {
+		return NewSecurityGroupDataTypeBuilder()
+	}
+	return &_SecurityGroupDataTypeBuilder{_SecurityGroupDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

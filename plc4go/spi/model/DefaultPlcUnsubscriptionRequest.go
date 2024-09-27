@@ -82,7 +82,7 @@ func (d *DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context
 		}
 		var err error
 		if len(collectedErrors) > 0 {
-			err = utils.MultiError{MainError: errors.New("error unsubscribing from all"), Errors: collectedErrors}
+			err = &utils.MultiError{MainError: errors.New("error unsubscribing from all"), Errors: collectedErrors}
 		}
 		results <- NewDefaultPlcUnsubscriptionRequestResult(d, NewDefaultPlcUnsubscriptionResponse(d), err)
 	}()

@@ -46,6 +46,8 @@ type BACnetConstructedDataLastAccessPoint interface {
 	GetActualValue() BACnetDeviceObjectReference
 	// IsBACnetConstructedDataLastAccessPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastAccessPoint()
+	// CreateBuilder creates a BACnetConstructedDataLastAccessPointBuilder
+	CreateBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastAccessPointBuilder
 }
 
 // _BACnetConstructedDataLastAccessPoint is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLastAccessPoint(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastAccessPointBuilder is a builder for BACnetConstructedDataLastAccessPoint
+type BACnetConstructedDataLastAccessPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder
+	// WithLastAccessPoint adds LastAccessPoint (property field)
+	WithLastAccessPoint(BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder
+	// WithLastAccessPointBuilder adds LastAccessPoint (property field) which is build by the builder
+	WithLastAccessPointBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastAccessPointBuilder
+	// Build builds the BACnetConstructedDataLastAccessPoint or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastAccessPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastAccessPoint
+}
+
+// NewBACnetConstructedDataLastAccessPointBuilder() creates a BACnetConstructedDataLastAccessPointBuilder
+func NewBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastAccessPointBuilder {
+	return &_BACnetConstructedDataLastAccessPointBuilder{_BACnetConstructedDataLastAccessPoint: new(_BACnetConstructedDataLastAccessPoint)}
+}
+
+type _BACnetConstructedDataLastAccessPointBuilder struct {
+	*_BACnetConstructedDataLastAccessPoint
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastAccessPointBuilder) = (*_BACnetConstructedDataLastAccessPointBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) WithMandatoryFields(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
+	return m.WithLastAccessPoint(lastAccessPoint)
+}
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPoint(lastAccessPoint BACnetDeviceObjectReference) BACnetConstructedDataLastAccessPointBuilder {
+	m.LastAccessPoint = lastAccessPoint
+	return m
+}
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) WithLastAccessPointBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastAccessPointBuilder {
+	builder := builderSupplier(m.LastAccessPoint.CreateBACnetDeviceObjectReferenceBuilder())
+	var err error
+	m.LastAccessPoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) Build() (BACnetConstructedDataLastAccessPoint, error) {
+	if m.LastAccessPoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastAccessPoint' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastAccessPoint.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) MustBuild() BACnetConstructedDataLastAccessPoint {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastAccessPointBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastAccessPointBuilder()
+}
+
+// CreateBACnetConstructedDataLastAccessPointBuilder creates a BACnetConstructedDataLastAccessPointBuilder
+func (m *_BACnetConstructedDataLastAccessPoint) CreateBACnetConstructedDataLastAccessPointBuilder() BACnetConstructedDataLastAccessPointBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastAccessPointBuilder()
+	}
+	return &_BACnetConstructedDataLastAccessPointBuilder{_BACnetConstructedDataLastAccessPoint: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

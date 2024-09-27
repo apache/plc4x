@@ -48,6 +48,8 @@ type BACnetConstructedDataAlarmValues interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataAlarmValuesBuilder
+	CreateBACnetConstructedDataAlarmValuesBuilder() BACnetConstructedDataAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataAlarmValues is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAlarmValues(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAlarmValuesBuilder is a builder for BACnetConstructedDataAlarmValues
+type BACnetConstructedDataAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataAlarmValuesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAlarmValuesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetLifeSafetyStateTagged) BACnetConstructedDataAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAlarmValues
+}
+
+// NewBACnetConstructedDataAlarmValuesBuilder() creates a BACnetConstructedDataAlarmValuesBuilder
+func NewBACnetConstructedDataAlarmValuesBuilder() BACnetConstructedDataAlarmValuesBuilder {
+	return &_BACnetConstructedDataAlarmValuesBuilder{_BACnetConstructedDataAlarmValues: new(_BACnetConstructedDataAlarmValues)}
+}
+
+type _BACnetConstructedDataAlarmValuesBuilder struct {
+	*_BACnetConstructedDataAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAlarmValuesBuilder) = (*_BACnetConstructedDataAlarmValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataAlarmValuesBuilder {
+	return m.WithAlarmValues(alarmValues...)
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAlarmValuesBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAlarmValuesBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataAlarmValuesBuilder {
+	m.AlarmValues = alarmValues
+	return m
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) Build() (BACnetConstructedDataAlarmValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) MustBuild() BACnetConstructedDataAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAlarmValuesBuilder()
+}
+
+// CreateBACnetConstructedDataAlarmValuesBuilder creates a BACnetConstructedDataAlarmValuesBuilder
+func (m *_BACnetConstructedDataAlarmValues) CreateBACnetConstructedDataAlarmValuesBuilder() BACnetConstructedDataAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataAlarmValuesBuilder{_BACnetConstructedDataAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

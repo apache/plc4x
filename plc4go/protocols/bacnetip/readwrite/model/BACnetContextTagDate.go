@@ -44,6 +44,8 @@ type BACnetContextTagDate interface {
 	GetPayload() BACnetTagPayloadDate
 	// IsBACnetContextTagDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagDate()
+	// CreateBuilder creates a BACnetContextTagDateBuilder
+	CreateBACnetContextTagDateBuilder() BACnetContextTagDateBuilder
 }
 
 // _BACnetContextTagDate is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetContextTagDate(header BACnetTagHeader, payload BACnetTagPayloadDat
 	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagDateBuilder is a builder for BACnetContextTagDate
+type BACnetContextTagDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadDate) BACnetContextTagDateBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadDateBuilder) BACnetTagPayloadDateBuilder) BACnetContextTagDateBuilder
+	// Build builds the BACnetContextTagDate or returns an error if something is wrong
+	Build() (BACnetContextTagDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagDate
+}
+
+// NewBACnetContextTagDateBuilder() creates a BACnetContextTagDateBuilder
+func NewBACnetContextTagDateBuilder() BACnetContextTagDateBuilder {
+	return &_BACnetContextTagDateBuilder{_BACnetContextTagDate: new(_BACnetContextTagDate)}
+}
+
+type _BACnetContextTagDateBuilder struct {
+	*_BACnetContextTagDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagDateBuilder) = (*_BACnetContextTagDateBuilder)(nil)
+
+func (m *_BACnetContextTagDateBuilder) WithMandatoryFields(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder {
+	return m.WithPayload(payload)
+}
+
+func (m *_BACnetContextTagDateBuilder) WithPayload(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetContextTagDateBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDateBuilder) BACnetTagPayloadDateBuilder) BACnetContextTagDateBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadDateBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadDateBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetContextTagDateBuilder) Build() (BACnetContextTagDate, error) {
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetContextTagDate.deepCopy(), nil
+}
+
+func (m *_BACnetContextTagDateBuilder) MustBuild() BACnetContextTagDate {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetContextTagDateBuilder) DeepCopy() any {
+	return m.CreateBACnetContextTagDateBuilder()
+}
+
+// CreateBACnetContextTagDateBuilder creates a BACnetContextTagDateBuilder
+func (m *_BACnetContextTagDate) CreateBACnetContextTagDateBuilder() BACnetContextTagDateBuilder {
+	if m == nil {
+		return NewBACnetContextTagDateBuilder()
+	}
+	return &_BACnetContextTagDateBuilder{_BACnetContextTagDate: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

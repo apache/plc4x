@@ -45,6 +45,8 @@ type Services interface {
 	GetServices() []CipService
 	// IsServices is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServices()
+	// CreateBuilder creates a ServicesBuilder
+	CreateServicesBuilder() ServicesBuilder
 }
 
 // _Services is the data-structure of this message
@@ -62,6 +64,85 @@ var _ Services = (*_Services)(nil)
 func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
 	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServicesBuilder is a builder for Services
+type ServicesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder
+	// WithOffsets adds Offsets (property field)
+	WithOffsets(...uint16) ServicesBuilder
+	// WithServices adds Services (property field)
+	WithServices(...CipService) ServicesBuilder
+	// Build builds the Services or returns an error if something is wrong
+	Build() (Services, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Services
+}
+
+// NewServicesBuilder() creates a ServicesBuilder
+func NewServicesBuilder() ServicesBuilder {
+	return &_ServicesBuilder{_Services: new(_Services)}
+}
+
+type _ServicesBuilder struct {
+	*_Services
+
+	err *utils.MultiError
+}
+
+var _ (ServicesBuilder) = (*_ServicesBuilder)(nil)
+
+func (m *_ServicesBuilder) WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder {
+	return m.WithOffsets(offsets...).WithServices(services...)
+}
+
+func (m *_ServicesBuilder) WithOffsets(offsets ...uint16) ServicesBuilder {
+	m.Offsets = offsets
+	return m
+}
+
+func (m *_ServicesBuilder) WithServices(services ...CipService) ServicesBuilder {
+	m.Services = services
+	return m
+}
+
+func (m *_ServicesBuilder) Build() (Services, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Services.deepCopy(), nil
+}
+
+func (m *_ServicesBuilder) MustBuild() Services {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ServicesBuilder) DeepCopy() any {
+	return m.CreateServicesBuilder()
+}
+
+// CreateServicesBuilder creates a ServicesBuilder
+func (m *_Services) CreateServicesBuilder() ServicesBuilder {
+	if m == nil {
+		return NewServicesBuilder()
+	}
+	return &_ServicesBuilder{_Services: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

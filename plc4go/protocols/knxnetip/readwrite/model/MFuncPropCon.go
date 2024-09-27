@@ -40,6 +40,8 @@ type MFuncPropCon interface {
 	CEMI
 	// IsMFuncPropCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCon()
+	// CreateBuilder creates a MFuncPropConBuilder
+	CreateMFuncPropConBuilder() MFuncPropConBuilder
 }
 
 // _MFuncPropCon is the data-structure of this message
@@ -58,6 +60,71 @@ func NewMFuncPropCon(size uint16) *_MFuncPropCon {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MFuncPropConBuilder is a builder for MFuncPropCon
+type MFuncPropConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MFuncPropConBuilder
+	// Build builds the MFuncPropCon or returns an error if something is wrong
+	Build() (MFuncPropCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MFuncPropCon
+}
+
+// NewMFuncPropConBuilder() creates a MFuncPropConBuilder
+func NewMFuncPropConBuilder() MFuncPropConBuilder {
+	return &_MFuncPropConBuilder{_MFuncPropCon: new(_MFuncPropCon)}
+}
+
+type _MFuncPropConBuilder struct {
+	*_MFuncPropCon
+
+	err *utils.MultiError
+}
+
+var _ (MFuncPropConBuilder) = (*_MFuncPropConBuilder)(nil)
+
+func (m *_MFuncPropConBuilder) WithMandatoryFields() MFuncPropConBuilder {
+	return m
+}
+
+func (m *_MFuncPropConBuilder) Build() (MFuncPropCon, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MFuncPropCon.deepCopy(), nil
+}
+
+func (m *_MFuncPropConBuilder) MustBuild() MFuncPropCon {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MFuncPropConBuilder) DeepCopy() any {
+	return m.CreateMFuncPropConBuilder()
+}
+
+// CreateMFuncPropConBuilder creates a MFuncPropConBuilder
+func (m *_MFuncPropCon) CreateMFuncPropConBuilder() MFuncPropConBuilder {
+	if m == nil {
+		return NewMFuncPropConBuilder()
+	}
+	return &_MFuncPropConBuilder{_MFuncPropCon: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

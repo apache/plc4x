@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueNoValue interface {
 	GetNoValue() BACnetContextTagNull
 	// IsBACnetTimerStateChangeValueNoValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueNoValue()
+	// CreateBuilder creates a BACnetTimerStateChangeValueNoValueBuilder
+	CreateBACnetTimerStateChangeValueNoValueBuilder() BACnetTimerStateChangeValueNoValueBuilder
 }
 
 // _BACnetTimerStateChangeValueNoValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueNoValue(peekedTagHeader BACnetTagHeader, noVa
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueNoValueBuilder is a builder for BACnetTimerStateChangeValueNoValue
+type BACnetTimerStateChangeValueNoValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noValue BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder
+	// WithNoValue adds NoValue (property field)
+	WithNoValue(BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder
+	// WithNoValueBuilder adds NoValue (property field) which is build by the builder
+	WithNoValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetTimerStateChangeValueNoValueBuilder
+	// Build builds the BACnetTimerStateChangeValueNoValue or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueNoValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueNoValue
+}
+
+// NewBACnetTimerStateChangeValueNoValueBuilder() creates a BACnetTimerStateChangeValueNoValueBuilder
+func NewBACnetTimerStateChangeValueNoValueBuilder() BACnetTimerStateChangeValueNoValueBuilder {
+	return &_BACnetTimerStateChangeValueNoValueBuilder{_BACnetTimerStateChangeValueNoValue: new(_BACnetTimerStateChangeValueNoValue)}
+}
+
+type _BACnetTimerStateChangeValueNoValueBuilder struct {
+	*_BACnetTimerStateChangeValueNoValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueNoValueBuilder) = (*_BACnetTimerStateChangeValueNoValueBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) WithMandatoryFields(noValue BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder {
+	return m.WithNoValue(noValue)
+}
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) WithNoValue(noValue BACnetContextTagNull) BACnetTimerStateChangeValueNoValueBuilder {
+	m.NoValue = noValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) WithNoValueBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetTimerStateChangeValueNoValueBuilder {
+	builder := builderSupplier(m.NoValue.CreateBACnetContextTagNullBuilder())
+	var err error
+	m.NoValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) Build() (BACnetTimerStateChangeValueNoValue, error) {
+	if m.NoValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'noValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueNoValue.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) MustBuild() BACnetTimerStateChangeValueNoValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueNoValueBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueNoValueBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueNoValueBuilder creates a BACnetTimerStateChangeValueNoValueBuilder
+func (m *_BACnetTimerStateChangeValueNoValue) CreateBACnetTimerStateChangeValueNoValueBuilder() BACnetTimerStateChangeValueNoValueBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueNoValueBuilder()
+	}
+	return &_BACnetTimerStateChangeValueNoValueBuilder{_BACnetTimerStateChangeValueNoValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataControlledVariableReference interface {
 	GetActualValue() BACnetObjectPropertyReference
 	// IsBACnetConstructedDataControlledVariableReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataControlledVariableReference()
+	// CreateBuilder creates a BACnetConstructedDataControlledVariableReferenceBuilder
+	CreateBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstructedDataControlledVariableReferenceBuilder
 }
 
 // _BACnetConstructedDataControlledVariableReference is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataControlledVariableReference(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataControlledVariableReferenceBuilder is a builder for BACnetConstructedDataControlledVariableReference
+type BACnetConstructedDataControlledVariableReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder
+	// WithControlledVariableReference adds ControlledVariableReference (property field)
+	WithControlledVariableReference(BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder
+	// WithControlledVariableReferenceBuilder adds ControlledVariableReference (property field) which is build by the builder
+	WithControlledVariableReferenceBuilder(func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataControlledVariableReferenceBuilder
+	// Build builds the BACnetConstructedDataControlledVariableReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataControlledVariableReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataControlledVariableReference
+}
+
+// NewBACnetConstructedDataControlledVariableReferenceBuilder() creates a BACnetConstructedDataControlledVariableReferenceBuilder
+func NewBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstructedDataControlledVariableReferenceBuilder {
+	return &_BACnetConstructedDataControlledVariableReferenceBuilder{_BACnetConstructedDataControlledVariableReference: new(_BACnetConstructedDataControlledVariableReference)}
+}
+
+type _BACnetConstructedDataControlledVariableReferenceBuilder struct {
+	*_BACnetConstructedDataControlledVariableReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataControlledVariableReferenceBuilder) = (*_BACnetConstructedDataControlledVariableReferenceBuilder)(nil)
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithMandatoryFields(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
+	return m.WithControlledVariableReference(controlledVariableReference)
+}
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReference(controlledVariableReference BACnetObjectPropertyReference) BACnetConstructedDataControlledVariableReferenceBuilder {
+	m.ControlledVariableReference = controlledVariableReference
+	return m
+}
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) WithControlledVariableReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataControlledVariableReferenceBuilder {
+	builder := builderSupplier(m.ControlledVariableReference.CreateBACnetObjectPropertyReferenceBuilder())
+	var err error
+	m.ControlledVariableReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) Build() (BACnetConstructedDataControlledVariableReference, error) {
+	if m.ControlledVariableReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'controlledVariableReference' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataControlledVariableReference.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) MustBuild() BACnetConstructedDataControlledVariableReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataControlledVariableReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataControlledVariableReferenceBuilder()
+}
+
+// CreateBACnetConstructedDataControlledVariableReferenceBuilder creates a BACnetConstructedDataControlledVariableReferenceBuilder
+func (m *_BACnetConstructedDataControlledVariableReference) CreateBACnetConstructedDataControlledVariableReferenceBuilder() BACnetConstructedDataControlledVariableReferenceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataControlledVariableReferenceBuilder()
+	}
+	return &_BACnetConstructedDataControlledVariableReferenceBuilder{_BACnetConstructedDataControlledVariableReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

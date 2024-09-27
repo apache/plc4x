@@ -46,6 +46,8 @@ type BACnetConstructedDataInputReference interface {
 	GetActualValue() BACnetObjectPropertyReference
 	// IsBACnetConstructedDataInputReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataInputReference()
+	// CreateBuilder creates a BACnetConstructedDataInputReferenceBuilder
+	CreateBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputReferenceBuilder
 }
 
 // _BACnetConstructedDataInputReference is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataInputReference(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataInputReferenceBuilder is a builder for BACnetConstructedDataInputReference
+type BACnetConstructedDataInputReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder
+	// WithInputReference adds InputReference (property field)
+	WithInputReference(BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder
+	// WithInputReferenceBuilder adds InputReference (property field) which is build by the builder
+	WithInputReferenceBuilder(func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataInputReferenceBuilder
+	// Build builds the BACnetConstructedDataInputReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataInputReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataInputReference
+}
+
+// NewBACnetConstructedDataInputReferenceBuilder() creates a BACnetConstructedDataInputReferenceBuilder
+func NewBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputReferenceBuilder {
+	return &_BACnetConstructedDataInputReferenceBuilder{_BACnetConstructedDataInputReference: new(_BACnetConstructedDataInputReference)}
+}
+
+type _BACnetConstructedDataInputReferenceBuilder struct {
+	*_BACnetConstructedDataInputReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataInputReferenceBuilder) = (*_BACnetConstructedDataInputReferenceBuilder)(nil)
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) WithMandatoryFields(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
+	return m.WithInputReference(inputReference)
+}
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) WithInputReference(inputReference BACnetObjectPropertyReference) BACnetConstructedDataInputReferenceBuilder {
+	m.InputReference = inputReference
+	return m
+}
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) WithInputReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataInputReferenceBuilder {
+	builder := builderSupplier(m.InputReference.CreateBACnetObjectPropertyReferenceBuilder())
+	var err error
+	m.InputReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) Build() (BACnetConstructedDataInputReference, error) {
+	if m.InputReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'inputReference' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataInputReference.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) MustBuild() BACnetConstructedDataInputReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataInputReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataInputReferenceBuilder()
+}
+
+// CreateBACnetConstructedDataInputReferenceBuilder creates a BACnetConstructedDataInputReferenceBuilder
+func (m *_BACnetConstructedDataInputReference) CreateBACnetConstructedDataInputReferenceBuilder() BACnetConstructedDataInputReferenceBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataInputReferenceBuilder()
+	}
+	return &_BACnetConstructedDataInputReferenceBuilder{_BACnetConstructedDataInputReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -39,6 +39,8 @@ type ImageBMP interface {
 	utils.Copyable
 	// IsImageBMP is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageBMP()
+	// CreateBuilder creates a ImageBMPBuilder
+	CreateImageBMPBuilder() ImageBMPBuilder
 }
 
 // _ImageBMP is the data-structure of this message
@@ -51,6 +53,71 @@ var _ ImageBMP = (*_ImageBMP)(nil)
 func NewImageBMP() *_ImageBMP {
 	return &_ImageBMP{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ImageBMPBuilder is a builder for ImageBMP
+type ImageBMPBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ImageBMPBuilder
+	// Build builds the ImageBMP or returns an error if something is wrong
+	Build() (ImageBMP, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ImageBMP
+}
+
+// NewImageBMPBuilder() creates a ImageBMPBuilder
+func NewImageBMPBuilder() ImageBMPBuilder {
+	return &_ImageBMPBuilder{_ImageBMP: new(_ImageBMP)}
+}
+
+type _ImageBMPBuilder struct {
+	*_ImageBMP
+
+	err *utils.MultiError
+}
+
+var _ (ImageBMPBuilder) = (*_ImageBMPBuilder)(nil)
+
+func (m *_ImageBMPBuilder) WithMandatoryFields() ImageBMPBuilder {
+	return m
+}
+
+func (m *_ImageBMPBuilder) Build() (ImageBMP, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ImageBMP.deepCopy(), nil
+}
+
+func (m *_ImageBMPBuilder) MustBuild() ImageBMP {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ImageBMPBuilder) DeepCopy() any {
+	return m.CreateImageBMPBuilder()
+}
+
+// CreateImageBMPBuilder creates a ImageBMPBuilder
+func (m *_ImageBMP) CreateImageBMPBuilder() ImageBMPBuilder {
+	if m == nil {
+		return NewImageBMPBuilder()
+	}
+	return &_ImageBMPBuilder{_ImageBMP: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastImageBMP(structType any) ImageBMP {

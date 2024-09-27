@@ -45,6 +45,8 @@ type ByteStringArray interface {
 	GetValue() []uint8
 	// IsByteStringArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsByteStringArray()
+	// CreateBuilder creates a ByteStringArrayBuilder
+	CreateByteStringArrayBuilder() ByteStringArrayBuilder
 }
 
 // _ByteStringArray is the data-structure of this message
@@ -59,6 +61,85 @@ var _ ByteStringArray = (*_ByteStringArray)(nil)
 func NewByteStringArray(arrayLength int32, value []uint8) *_ByteStringArray {
 	return &_ByteStringArray{ArrayLength: arrayLength, Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ByteStringArrayBuilder is a builder for ByteStringArray
+type ByteStringArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithArrayLength(int32) ByteStringArrayBuilder
+	// WithValue adds Value (property field)
+	WithValue(...uint8) ByteStringArrayBuilder
+	// Build builds the ByteStringArray or returns an error if something is wrong
+	Build() (ByteStringArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ByteStringArray
+}
+
+// NewByteStringArrayBuilder() creates a ByteStringArrayBuilder
+func NewByteStringArrayBuilder() ByteStringArrayBuilder {
+	return &_ByteStringArrayBuilder{_ByteStringArray: new(_ByteStringArray)}
+}
+
+type _ByteStringArrayBuilder struct {
+	*_ByteStringArray
+
+	err *utils.MultiError
+}
+
+var _ (ByteStringArrayBuilder) = (*_ByteStringArrayBuilder)(nil)
+
+func (m *_ByteStringArrayBuilder) WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder {
+	return m.WithArrayLength(arrayLength).WithValue(value...)
+}
+
+func (m *_ByteStringArrayBuilder) WithArrayLength(arrayLength int32) ByteStringArrayBuilder {
+	m.ArrayLength = arrayLength
+	return m
+}
+
+func (m *_ByteStringArrayBuilder) WithValue(value ...uint8) ByteStringArrayBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ByteStringArrayBuilder) Build() (ByteStringArray, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ByteStringArray.deepCopy(), nil
+}
+
+func (m *_ByteStringArrayBuilder) MustBuild() ByteStringArray {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ByteStringArrayBuilder) DeepCopy() any {
+	return m.CreateByteStringArrayBuilder()
+}
+
+// CreateByteStringArrayBuilder creates a ByteStringArrayBuilder
+func (m *_ByteStringArray) CreateByteStringArrayBuilder() ByteStringArrayBuilder {
+	if m == nil {
+		return NewByteStringArrayBuilder()
+	}
+	return &_ByteStringArrayBuilder{_ByteStringArray: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

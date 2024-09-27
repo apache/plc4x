@@ -44,6 +44,8 @@ type BACnetPropertyStatesNetworkType interface {
 	GetNetworkType() BACnetNetworkTypeTagged
 	// IsBACnetPropertyStatesNetworkType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesNetworkType()
+	// CreateBuilder creates a BACnetPropertyStatesNetworkTypeBuilder
+	CreateBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkTypeBuilder
 }
 
 // _BACnetPropertyStatesNetworkType is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesNetworkType(peekedTagHeader BACnetTagHeader, network
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesNetworkTypeBuilder is a builder for BACnetPropertyStatesNetworkType
+type BACnetPropertyStatesNetworkTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder
+	// WithNetworkType adds NetworkType (property field)
+	WithNetworkType(BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder
+	// WithNetworkTypeBuilder adds NetworkType (property field) which is build by the builder
+	WithNetworkTypeBuilder(func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetPropertyStatesNetworkTypeBuilder
+	// Build builds the BACnetPropertyStatesNetworkType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesNetworkType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesNetworkType
+}
+
+// NewBACnetPropertyStatesNetworkTypeBuilder() creates a BACnetPropertyStatesNetworkTypeBuilder
+func NewBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkTypeBuilder {
+	return &_BACnetPropertyStatesNetworkTypeBuilder{_BACnetPropertyStatesNetworkType: new(_BACnetPropertyStatesNetworkType)}
+}
+
+type _BACnetPropertyStatesNetworkTypeBuilder struct {
+	*_BACnetPropertyStatesNetworkType
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesNetworkTypeBuilder) = (*_BACnetPropertyStatesNetworkTypeBuilder)(nil)
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithMandatoryFields(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
+	return m.WithNetworkType(networkType)
+}
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkType(networkType BACnetNetworkTypeTagged) BACnetPropertyStatesNetworkTypeBuilder {
+	m.NetworkType = networkType
+	return m
+}
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) WithNetworkTypeBuilder(builderSupplier func(BACnetNetworkTypeTaggedBuilder) BACnetNetworkTypeTaggedBuilder) BACnetPropertyStatesNetworkTypeBuilder {
+	builder := builderSupplier(m.NetworkType.CreateBACnetNetworkTypeTaggedBuilder())
+	var err error
+	m.NetworkType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNetworkTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) Build() (BACnetPropertyStatesNetworkType, error) {
+	if m.NetworkType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'networkType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesNetworkType.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) MustBuild() BACnetPropertyStatesNetworkType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesNetworkTypeBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesNetworkTypeBuilder()
+}
+
+// CreateBACnetPropertyStatesNetworkTypeBuilder creates a BACnetPropertyStatesNetworkTypeBuilder
+func (m *_BACnetPropertyStatesNetworkType) CreateBACnetPropertyStatesNetworkTypeBuilder() BACnetPropertyStatesNetworkTypeBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesNetworkTypeBuilder()
+	}
+	return &_BACnetPropertyStatesNetworkTypeBuilder{_BACnetPropertyStatesNetworkType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

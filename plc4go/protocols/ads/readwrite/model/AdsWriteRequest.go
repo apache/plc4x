@@ -48,6 +48,8 @@ type AdsWriteRequest interface {
 	GetData() []byte
 	// IsAdsWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteRequest()
+	// CreateBuilder creates a AdsWriteRequestBuilder
+	CreateAdsWriteRequestBuilder() AdsWriteRequestBuilder
 }
 
 // _AdsWriteRequest is the data-structure of this message
@@ -72,6 +74,92 @@ func NewAdsWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAms
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsWriteRequestBuilder is a builder for AdsWriteRequest
+type AdsWriteRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(indexGroup uint32, indexOffset uint32, data []byte) AdsWriteRequestBuilder
+	// WithIndexGroup adds IndexGroup (property field)
+	WithIndexGroup(uint32) AdsWriteRequestBuilder
+	// WithIndexOffset adds IndexOffset (property field)
+	WithIndexOffset(uint32) AdsWriteRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsWriteRequestBuilder
+	// Build builds the AdsWriteRequest or returns an error if something is wrong
+	Build() (AdsWriteRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsWriteRequest
+}
+
+// NewAdsWriteRequestBuilder() creates a AdsWriteRequestBuilder
+func NewAdsWriteRequestBuilder() AdsWriteRequestBuilder {
+	return &_AdsWriteRequestBuilder{_AdsWriteRequest: new(_AdsWriteRequest)}
+}
+
+type _AdsWriteRequestBuilder struct {
+	*_AdsWriteRequest
+
+	err *utils.MultiError
+}
+
+var _ (AdsWriteRequestBuilder) = (*_AdsWriteRequestBuilder)(nil)
+
+func (m *_AdsWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, data []byte) AdsWriteRequestBuilder {
+	return m.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithData(data...)
+}
+
+func (m *_AdsWriteRequestBuilder) WithIndexGroup(indexGroup uint32) AdsWriteRequestBuilder {
+	m.IndexGroup = indexGroup
+	return m
+}
+
+func (m *_AdsWriteRequestBuilder) WithIndexOffset(indexOffset uint32) AdsWriteRequestBuilder {
+	m.IndexOffset = indexOffset
+	return m
+}
+
+func (m *_AdsWriteRequestBuilder) WithData(data ...byte) AdsWriteRequestBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AdsWriteRequestBuilder) Build() (AdsWriteRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsWriteRequest.deepCopy(), nil
+}
+
+func (m *_AdsWriteRequestBuilder) MustBuild() AdsWriteRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsWriteRequestBuilder) DeepCopy() any {
+	return m.CreateAdsWriteRequestBuilder()
+}
+
+// CreateAdsWriteRequestBuilder creates a AdsWriteRequestBuilder
+func (m *_AdsWriteRequest) CreateAdsWriteRequestBuilder() AdsWriteRequestBuilder {
+	if m == nil {
+		return NewAdsWriteRequestBuilder()
+	}
+	return &_AdsWriteRequestBuilder{_AdsWriteRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type VariantXmlElement interface {
 	GetValue() []PascalString
 	// IsVariantXmlElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantXmlElement()
+	// CreateBuilder creates a VariantXmlElementBuilder
+	CreateVariantXmlElementBuilder() VariantXmlElementBuilder
 }
 
 // _VariantXmlElement is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantXmlElement(arrayLengthSpecified bool, arrayDimensionsSpecified bo
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantXmlElementBuilder is a builder for VariantXmlElement
+type VariantXmlElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []PascalString) VariantXmlElementBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantXmlElementBuilder
+	// WithValue adds Value (property field)
+	WithValue(...PascalString) VariantXmlElementBuilder
+	// Build builds the VariantXmlElement or returns an error if something is wrong
+	Build() (VariantXmlElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantXmlElement
+}
+
+// NewVariantXmlElementBuilder() creates a VariantXmlElementBuilder
+func NewVariantXmlElementBuilder() VariantXmlElementBuilder {
+	return &_VariantXmlElementBuilder{_VariantXmlElement: new(_VariantXmlElement)}
+}
+
+type _VariantXmlElementBuilder struct {
+	*_VariantXmlElement
+
+	err *utils.MultiError
+}
+
+var _ (VariantXmlElementBuilder) = (*_VariantXmlElementBuilder)(nil)
+
+func (m *_VariantXmlElementBuilder) WithMandatoryFields(value []PascalString) VariantXmlElementBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantXmlElementBuilder) WithOptionalArrayLength(arrayLength int32) VariantXmlElementBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantXmlElementBuilder) WithValue(value ...PascalString) VariantXmlElementBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantXmlElementBuilder) Build() (VariantXmlElement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantXmlElement.deepCopy(), nil
+}
+
+func (m *_VariantXmlElementBuilder) MustBuild() VariantXmlElement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantXmlElementBuilder) DeepCopy() any {
+	return m.CreateVariantXmlElementBuilder()
+}
+
+// CreateVariantXmlElementBuilder creates a VariantXmlElementBuilder
+func (m *_VariantXmlElement) CreateVariantXmlElementBuilder() VariantXmlElementBuilder {
+	if m == nil {
+		return NewVariantXmlElementBuilder()
+	}
+	return &_VariantXmlElementBuilder{_VariantXmlElement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

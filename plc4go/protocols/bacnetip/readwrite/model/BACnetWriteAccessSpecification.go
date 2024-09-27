@@ -49,6 +49,8 @@ type BACnetWriteAccessSpecification interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetWriteAccessSpecification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetWriteAccessSpecification()
+	// CreateBuilder creates a BACnetWriteAccessSpecificationBuilder
+	CreateBACnetWriteAccessSpecificationBuilder() BACnetWriteAccessSpecificationBuilder
 }
 
 // _BACnetWriteAccessSpecification is the data-structure of this message
@@ -74,6 +76,162 @@ func NewBACnetWriteAccessSpecification(objectIdentifier BACnetContextTagObjectId
 	}
 	return &_BACnetWriteAccessSpecification{ObjectIdentifier: objectIdentifier, OpeningTag: openingTag, ListOfPropertyWriteDefinition: listOfPropertyWriteDefinition, ClosingTag: closingTag}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetWriteAccessSpecificationBuilder is a builder for BACnetWriteAccessSpecification
+type BACnetWriteAccessSpecificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetWriteAccessSpecificationBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetWriteAccessSpecificationBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetWriteAccessSpecificationBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetWriteAccessSpecificationBuilder
+	// WithListOfPropertyWriteDefinition adds ListOfPropertyWriteDefinition (property field)
+	WithListOfPropertyWriteDefinition(...BACnetPropertyWriteDefinition) BACnetWriteAccessSpecificationBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetWriteAccessSpecificationBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetWriteAccessSpecificationBuilder
+	// Build builds the BACnetWriteAccessSpecification or returns an error if something is wrong
+	Build() (BACnetWriteAccessSpecification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetWriteAccessSpecification
+}
+
+// NewBACnetWriteAccessSpecificationBuilder() creates a BACnetWriteAccessSpecificationBuilder
+func NewBACnetWriteAccessSpecificationBuilder() BACnetWriteAccessSpecificationBuilder {
+	return &_BACnetWriteAccessSpecificationBuilder{_BACnetWriteAccessSpecification: new(_BACnetWriteAccessSpecification)}
+}
+
+type _BACnetWriteAccessSpecificationBuilder struct {
+	*_BACnetWriteAccessSpecification
+
+	err *utils.MultiError
+}
+
+var _ (BACnetWriteAccessSpecificationBuilder) = (*_BACnetWriteAccessSpecificationBuilder)(nil)
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition, closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
+	return m.WithObjectIdentifier(objectIdentifier).WithOpeningTag(openingTag).WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition...).WithClosingTag(closingTag)
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetWriteAccessSpecificationBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetWriteAccessSpecificationBuilder {
+	m.OpeningTag = openingTag
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(m.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	m.OpeningTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithListOfPropertyWriteDefinition(listOfPropertyWriteDefinition ...BACnetPropertyWriteDefinition) BACnetWriteAccessSpecificationBuilder {
+	m.ListOfPropertyWriteDefinition = listOfPropertyWriteDefinition
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetWriteAccessSpecificationBuilder {
+	m.ClosingTag = closingTag
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetWriteAccessSpecificationBuilder {
+	builder := builderSupplier(m.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	m.ClosingTag, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) Build() (BACnetWriteAccessSpecification, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.OpeningTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if m.ClosingTag == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetWriteAccessSpecification.deepCopy(), nil
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) MustBuild() BACnetWriteAccessSpecification {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetWriteAccessSpecificationBuilder) DeepCopy() any {
+	return m.CreateBACnetWriteAccessSpecificationBuilder()
+}
+
+// CreateBACnetWriteAccessSpecificationBuilder creates a BACnetWriteAccessSpecificationBuilder
+func (m *_BACnetWriteAccessSpecification) CreateBACnetWriteAccessSpecificationBuilder() BACnetWriteAccessSpecificationBuilder {
+	if m == nil {
+		return NewBACnetWriteAccessSpecificationBuilder()
+	}
+	return &_BACnetWriteAccessSpecificationBuilder{_BACnetWriteAccessSpecification: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

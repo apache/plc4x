@@ -44,6 +44,8 @@ type SecurityDataArmReadyNotReady interface {
 	GetZoneNumber() uint8
 	// IsSecurityDataArmReadyNotReady is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataArmReadyNotReady()
+	// CreateBuilder creates a SecurityDataArmReadyNotReadyBuilder
+	CreateSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilder
 }
 
 // _SecurityDataArmReadyNotReady is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataArmReadyNotReady(commandTypeContainer SecurityCommandTypeCon
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataArmReadyNotReadyBuilder is a builder for SecurityDataArmReadyNotReady
+type SecurityDataArmReadyNotReadyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataArmReadyNotReadyBuilder
+	// Build builds the SecurityDataArmReadyNotReady or returns an error if something is wrong
+	Build() (SecurityDataArmReadyNotReady, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataArmReadyNotReady
+}
+
+// NewSecurityDataArmReadyNotReadyBuilder() creates a SecurityDataArmReadyNotReadyBuilder
+func NewSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilder {
+	return &_SecurityDataArmReadyNotReadyBuilder{_SecurityDataArmReadyNotReady: new(_SecurityDataArmReadyNotReady)}
+}
+
+type _SecurityDataArmReadyNotReadyBuilder struct {
+	*_SecurityDataArmReadyNotReady
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataArmReadyNotReadyBuilder) = (*_SecurityDataArmReadyNotReadyBuilder)(nil)
+
+func (m *_SecurityDataArmReadyNotReadyBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
+	return m.WithZoneNumber(zoneNumber)
+}
+
+func (m *_SecurityDataArmReadyNotReadyBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataArmReadyNotReadyBuilder {
+	m.ZoneNumber = zoneNumber
+	return m
+}
+
+func (m *_SecurityDataArmReadyNotReadyBuilder) Build() (SecurityDataArmReadyNotReady, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataArmReadyNotReady.deepCopy(), nil
+}
+
+func (m *_SecurityDataArmReadyNotReadyBuilder) MustBuild() SecurityDataArmReadyNotReady {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataArmReadyNotReadyBuilder) DeepCopy() any {
+	return m.CreateSecurityDataArmReadyNotReadyBuilder()
+}
+
+// CreateSecurityDataArmReadyNotReadyBuilder creates a SecurityDataArmReadyNotReadyBuilder
+func (m *_SecurityDataArmReadyNotReady) CreateSecurityDataArmReadyNotReadyBuilder() SecurityDataArmReadyNotReadyBuilder {
+	if m == nil {
+		return NewSecurityDataArmReadyNotReadyBuilder()
+	}
+	return &_SecurityDataArmReadyNotReadyBuilder{_SecurityDataArmReadyNotReady: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

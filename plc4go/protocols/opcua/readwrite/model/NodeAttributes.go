@@ -52,6 +52,8 @@ type NodeAttributes interface {
 	GetUserWriteMask() uint32
 	// IsNodeAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeAttributes()
+	// CreateBuilder creates a NodeAttributesBuilder
+	CreateNodeAttributesBuilder() NodeAttributesBuilder
 }
 
 // _NodeAttributes is the data-structure of this message
@@ -86,6 +88,148 @@ func NewNodeAttributes(specifiedAttributes uint32, displayName LocalizedText, de
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeAttributesBuilder is a builder for NodeAttributes
+type NodeAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) NodeAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) NodeAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) NodeAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) NodeAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) NodeAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) NodeAttributesBuilder
+	// Build builds the NodeAttributes or returns an error if something is wrong
+	Build() (NodeAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeAttributes
+}
+
+// NewNodeAttributesBuilder() creates a NodeAttributesBuilder
+func NewNodeAttributesBuilder() NodeAttributesBuilder {
+	return &_NodeAttributesBuilder{_NodeAttributes: new(_NodeAttributes)}
+}
+
+type _NodeAttributesBuilder struct {
+	*_NodeAttributes
+
+	err *utils.MultiError
+}
+
+var _ (NodeAttributesBuilder) = (*_NodeAttributesBuilder)(nil)
+
+func (m *_NodeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32) NodeAttributesBuilder {
+	return m.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask)
+}
+
+func (m *_NodeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) NodeAttributesBuilder {
+	m.SpecifiedAttributes = specifiedAttributes
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithDisplayName(displayName LocalizedText) NodeAttributesBuilder {
+	m.DisplayName = displayName
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
+	builder := builderSupplier(m.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	m.DisplayName, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithDescription(description LocalizedText) NodeAttributesBuilder {
+	m.Description = description
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) NodeAttributesBuilder {
+	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+	var err error
+	m.Description, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithWriteMask(writeMask uint32) NodeAttributesBuilder {
+	m.WriteMask = writeMask
+	return m
+}
+
+func (m *_NodeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) NodeAttributesBuilder {
+	m.UserWriteMask = userWriteMask
+	return m
+}
+
+func (m *_NodeAttributesBuilder) Build() (NodeAttributes, error) {
+	if m.DisplayName == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if m.Description == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeAttributes.deepCopy(), nil
+}
+
+func (m *_NodeAttributesBuilder) MustBuild() NodeAttributes {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeAttributesBuilder) DeepCopy() any {
+	return m.CreateNodeAttributesBuilder()
+}
+
+// CreateNodeAttributesBuilder creates a NodeAttributesBuilder
+func (m *_NodeAttributes) CreateNodeAttributesBuilder() NodeAttributesBuilder {
+	if m == nil {
+		return NewNodeAttributesBuilder()
+	}
+	return &_NodeAttributesBuilder{_NodeAttributes: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

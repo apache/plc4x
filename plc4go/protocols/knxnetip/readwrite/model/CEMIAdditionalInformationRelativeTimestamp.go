@@ -47,6 +47,8 @@ type CEMIAdditionalInformationRelativeTimestamp interface {
 	GetRelativeTimestamp() RelativeTimestamp
 	// IsCEMIAdditionalInformationRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformationRelativeTimestamp()
+	// CreateBuilder creates a CEMIAdditionalInformationRelativeTimestampBuilder
+	CreateCEMIAdditionalInformationRelativeTimestampBuilder() CEMIAdditionalInformationRelativeTimestampBuilder
 }
 
 // _CEMIAdditionalInformationRelativeTimestamp is the data-structure of this message
@@ -70,6 +72,99 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTim
 	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CEMIAdditionalInformationRelativeTimestampBuilder is a builder for CEMIAdditionalInformationRelativeTimestamp
+type CEMIAdditionalInformationRelativeTimestampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relativeTimestamp RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder
+	// WithRelativeTimestamp adds RelativeTimestamp (property field)
+	WithRelativeTimestamp(RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder
+	// WithRelativeTimestampBuilder adds RelativeTimestamp (property field) which is build by the builder
+	WithRelativeTimestampBuilder(func(RelativeTimestampBuilder) RelativeTimestampBuilder) CEMIAdditionalInformationRelativeTimestampBuilder
+	// Build builds the CEMIAdditionalInformationRelativeTimestamp or returns an error if something is wrong
+	Build() (CEMIAdditionalInformationRelativeTimestamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CEMIAdditionalInformationRelativeTimestamp
+}
+
+// NewCEMIAdditionalInformationRelativeTimestampBuilder() creates a CEMIAdditionalInformationRelativeTimestampBuilder
+func NewCEMIAdditionalInformationRelativeTimestampBuilder() CEMIAdditionalInformationRelativeTimestampBuilder {
+	return &_CEMIAdditionalInformationRelativeTimestampBuilder{_CEMIAdditionalInformationRelativeTimestamp: new(_CEMIAdditionalInformationRelativeTimestamp)}
+}
+
+type _CEMIAdditionalInformationRelativeTimestampBuilder struct {
+	*_CEMIAdditionalInformationRelativeTimestamp
+
+	err *utils.MultiError
+}
+
+var _ (CEMIAdditionalInformationRelativeTimestampBuilder) = (*_CEMIAdditionalInformationRelativeTimestampBuilder)(nil)
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) WithMandatoryFields(relativeTimestamp RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder {
+	return m.WithRelativeTimestamp(relativeTimestamp)
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) WithRelativeTimestamp(relativeTimestamp RelativeTimestamp) CEMIAdditionalInformationRelativeTimestampBuilder {
+	m.RelativeTimestamp = relativeTimestamp
+	return m
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) WithRelativeTimestampBuilder(builderSupplier func(RelativeTimestampBuilder) RelativeTimestampBuilder) CEMIAdditionalInformationRelativeTimestampBuilder {
+	builder := builderSupplier(m.RelativeTimestamp.CreateRelativeTimestampBuilder())
+	var err error
+	m.RelativeTimestamp, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "RelativeTimestampBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) Build() (CEMIAdditionalInformationRelativeTimestamp, error) {
+	if m.RelativeTimestamp == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'relativeTimestamp' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CEMIAdditionalInformationRelativeTimestamp.deepCopy(), nil
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) MustBuild() CEMIAdditionalInformationRelativeTimestamp {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CEMIAdditionalInformationRelativeTimestampBuilder) DeepCopy() any {
+	return m.CreateCEMIAdditionalInformationRelativeTimestampBuilder()
+}
+
+// CreateCEMIAdditionalInformationRelativeTimestampBuilder creates a CEMIAdditionalInformationRelativeTimestampBuilder
+func (m *_CEMIAdditionalInformationRelativeTimestamp) CreateCEMIAdditionalInformationRelativeTimestampBuilder() CEMIAdditionalInformationRelativeTimestampBuilder {
+	if m == nil {
+		return NewCEMIAdditionalInformationRelativeTimestampBuilder()
+	}
+	return &_CEMIAdditionalInformationRelativeTimestampBuilder{_CEMIAdditionalInformationRelativeTimestamp: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

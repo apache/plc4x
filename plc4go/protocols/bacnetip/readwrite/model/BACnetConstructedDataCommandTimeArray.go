@@ -48,6 +48,8 @@ type BACnetConstructedDataCommandTimeArray interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataCommandTimeArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommandTimeArray()
+	// CreateBuilder creates a BACnetConstructedDataCommandTimeArrayBuilder
+	CreateBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataCommandTimeArrayBuilder
 }
 
 // _BACnetConstructedDataCommandTimeArray is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataCommandTimeArray(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCommandTimeArrayBuilder is a builder for BACnetConstructedDataCommandTimeArray
+type BACnetConstructedDataCommandTimeArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTimeArray []BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCommandTimeArrayBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCommandTimeArrayBuilder
+	// WithCommandTimeArray adds CommandTimeArray (property field)
+	WithCommandTimeArray(...BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder
+	// Build builds the BACnetConstructedDataCommandTimeArray or returns an error if something is wrong
+	Build() (BACnetConstructedDataCommandTimeArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCommandTimeArray
+}
+
+// NewBACnetConstructedDataCommandTimeArrayBuilder() creates a BACnetConstructedDataCommandTimeArrayBuilder
+func NewBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataCommandTimeArrayBuilder {
+	return &_BACnetConstructedDataCommandTimeArrayBuilder{_BACnetConstructedDataCommandTimeArray: new(_BACnetConstructedDataCommandTimeArray)}
+}
+
+type _BACnetConstructedDataCommandTimeArrayBuilder struct {
+	*_BACnetConstructedDataCommandTimeArray
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCommandTimeArrayBuilder) = (*_BACnetConstructedDataCommandTimeArrayBuilder)(nil)
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithMandatoryFields(commandTimeArray []BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
+	return m.WithCommandTimeArray(commandTimeArray...)
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCommandTimeArrayBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCommandTimeArrayBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) WithCommandTimeArray(commandTimeArray ...BACnetTimeStamp) BACnetConstructedDataCommandTimeArrayBuilder {
+	m.CommandTimeArray = commandTimeArray
+	return m
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) Build() (BACnetConstructedDataCommandTimeArray, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCommandTimeArray.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) MustBuild() BACnetConstructedDataCommandTimeArray {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCommandTimeArrayBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCommandTimeArrayBuilder()
+}
+
+// CreateBACnetConstructedDataCommandTimeArrayBuilder creates a BACnetConstructedDataCommandTimeArrayBuilder
+func (m *_BACnetConstructedDataCommandTimeArray) CreateBACnetConstructedDataCommandTimeArrayBuilder() BACnetConstructedDataCommandTimeArrayBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCommandTimeArrayBuilder()
+	}
+	return &_BACnetConstructedDataCommandTimeArrayBuilder{_BACnetConstructedDataCommandTimeArray: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

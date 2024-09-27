@@ -51,6 +51,8 @@ type BACnetPropertyAccessResult interface {
 	GetAccessResult() BACnetPropertyAccessResultAccessResult
 	// IsBACnetPropertyAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyAccessResult()
+	// CreateBuilder creates a BACnetPropertyAccessResultBuilder
+	CreateBACnetPropertyAccessResultBuilder() BACnetPropertyAccessResultBuilder
 }
 
 // _BACnetPropertyAccessResult is the data-structure of this message
@@ -77,6 +79,184 @@ func NewBACnetPropertyAccessResult(objectIdentifier BACnetContextTagObjectIdenti
 	}
 	return &_BACnetPropertyAccessResult{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, PropertyArrayIndex: propertyArrayIndex, DeviceIdentifier: deviceIdentifier, AccessResult: accessResult}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyAccessResultBuilder is a builder for BACnetPropertyAccessResult
+type BACnetPropertyAccessResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, accessResult BACnetPropertyAccessResultAccessResult) BACnetPropertyAccessResultBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetPropertyAccessResultBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetPropertyAccessResultBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetPropertyAccessResultBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyAccessResultBuilder
+	// WithPropertyArrayIndex adds PropertyArrayIndex (property field)
+	WithOptionalPropertyArrayIndex(BACnetContextTagUnsignedInteger) BACnetPropertyAccessResultBuilder
+	// WithOptionalPropertyArrayIndexBuilder adds PropertyArrayIndex (property field) which is build by the builder
+	WithOptionalPropertyArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyAccessResultBuilder
+	// WithDeviceIdentifier adds DeviceIdentifier (property field)
+	WithOptionalDeviceIdentifier(BACnetContextTagObjectIdentifier) BACnetPropertyAccessResultBuilder
+	// WithOptionalDeviceIdentifierBuilder adds DeviceIdentifier (property field) which is build by the builder
+	WithOptionalDeviceIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetPropertyAccessResultBuilder
+	// WithAccessResult adds AccessResult (property field)
+	WithAccessResult(BACnetPropertyAccessResultAccessResult) BACnetPropertyAccessResultBuilder
+	// Build builds the BACnetPropertyAccessResult or returns an error if something is wrong
+	Build() (BACnetPropertyAccessResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyAccessResult
+}
+
+// NewBACnetPropertyAccessResultBuilder() creates a BACnetPropertyAccessResultBuilder
+func NewBACnetPropertyAccessResultBuilder() BACnetPropertyAccessResultBuilder {
+	return &_BACnetPropertyAccessResultBuilder{_BACnetPropertyAccessResult: new(_BACnetPropertyAccessResult)}
+}
+
+type _BACnetPropertyAccessResultBuilder struct {
+	*_BACnetPropertyAccessResult
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyAccessResultBuilder) = (*_BACnetPropertyAccessResultBuilder)(nil)
+
+func (m *_BACnetPropertyAccessResultBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, accessResult BACnetPropertyAccessResultAccessResult) BACnetPropertyAccessResultBuilder {
+	return m.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier).WithAccessResult(accessResult)
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetPropertyAccessResultBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetPropertyAccessResultBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetPropertyAccessResultBuilder {
+	m.PropertyIdentifier = propertyIdentifier
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyAccessResultBuilder {
+	builder := builderSupplier(m.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	m.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithOptionalPropertyArrayIndex(propertyArrayIndex BACnetContextTagUnsignedInteger) BACnetPropertyAccessResultBuilder {
+	m.PropertyArrayIndex = propertyArrayIndex
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithOptionalPropertyArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPropertyAccessResultBuilder {
+	builder := builderSupplier(m.PropertyArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.PropertyArrayIndex, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithOptionalDeviceIdentifier(deviceIdentifier BACnetContextTagObjectIdentifier) BACnetPropertyAccessResultBuilder {
+	m.DeviceIdentifier = deviceIdentifier
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithOptionalDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetPropertyAccessResultBuilder {
+	builder := builderSupplier(m.DeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.DeviceIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) WithAccessResult(accessResult BACnetPropertyAccessResultAccessResult) BACnetPropertyAccessResultBuilder {
+	m.AccessResult = accessResult
+	return m
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) Build() (BACnetPropertyAccessResult, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.PropertyIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if m.AccessResult == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accessResult' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyAccessResult.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) MustBuild() BACnetPropertyAccessResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyAccessResultBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyAccessResultBuilder()
+}
+
+// CreateBACnetPropertyAccessResultBuilder creates a BACnetPropertyAccessResultBuilder
+func (m *_BACnetPropertyAccessResult) CreateBACnetPropertyAccessResultBuilder() BACnetPropertyAccessResultBuilder {
+	if m == nil {
+		return NewBACnetPropertyAccessResultBuilder()
+	}
+	return &_BACnetPropertyAccessResultBuilder{_BACnetPropertyAccessResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataScale interface {
 	GetActualValue() BACnetScale
 	// IsBACnetConstructedDataScale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataScale()
+	// CreateBuilder creates a BACnetConstructedDataScaleBuilder
+	CreateBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder
 }
 
 // _BACnetConstructedDataScale is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataScaleBuilder is a builder for BACnetConstructedDataScale
+type BACnetConstructedDataScaleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(scale BACnetScale) BACnetConstructedDataScaleBuilder
+	// WithScale adds Scale (property field)
+	WithScale(BACnetScale) BACnetConstructedDataScaleBuilder
+	// Build builds the BACnetConstructedDataScale or returns an error if something is wrong
+	Build() (BACnetConstructedDataScale, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataScale
+}
+
+// NewBACnetConstructedDataScaleBuilder() creates a BACnetConstructedDataScaleBuilder
+func NewBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder {
+	return &_BACnetConstructedDataScaleBuilder{_BACnetConstructedDataScale: new(_BACnetConstructedDataScale)}
+}
+
+type _BACnetConstructedDataScaleBuilder struct {
+	*_BACnetConstructedDataScale
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataScaleBuilder) = (*_BACnetConstructedDataScaleBuilder)(nil)
+
+func (m *_BACnetConstructedDataScaleBuilder) WithMandatoryFields(scale BACnetScale) BACnetConstructedDataScaleBuilder {
+	return m.WithScale(scale)
+}
+
+func (m *_BACnetConstructedDataScaleBuilder) WithScale(scale BACnetScale) BACnetConstructedDataScaleBuilder {
+	m.Scale = scale
+	return m
+}
+
+func (m *_BACnetConstructedDataScaleBuilder) Build() (BACnetConstructedDataScale, error) {
+	if m.Scale == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'scale' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataScale.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataScaleBuilder) MustBuild() BACnetConstructedDataScale {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataScaleBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataScaleBuilder()
+}
+
+// CreateBACnetConstructedDataScaleBuilder creates a BACnetConstructedDataScaleBuilder
+func (m *_BACnetConstructedDataScale) CreateBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataScaleBuilder()
+	}
+	return &_BACnetConstructedDataScaleBuilder{_BACnetConstructedDataScale: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

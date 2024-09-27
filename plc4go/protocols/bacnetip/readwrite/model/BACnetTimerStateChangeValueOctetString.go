@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueOctetString interface {
 	GetOctetStringValue() BACnetApplicationTagOctetString
 	// IsBACnetTimerStateChangeValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueOctetString()
+	// CreateBuilder creates a BACnetTimerStateChangeValueOctetStringBuilder
+	CreateBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeValueOctetStringBuilder
 }
 
 // _BACnetTimerStateChangeValueOctetString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueOctetString(peekedTagHeader BACnetTagHeader, 
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueOctetStringBuilder is a builder for BACnetTimerStateChangeValueOctetString
+type BACnetTimerStateChangeValueOctetStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder
+	// WithOctetStringValue adds OctetStringValue (property field)
+	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder
+	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
+	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetTimerStateChangeValueOctetStringBuilder
+	// Build builds the BACnetTimerStateChangeValueOctetString or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueOctetString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueOctetString
+}
+
+// NewBACnetTimerStateChangeValueOctetStringBuilder() creates a BACnetTimerStateChangeValueOctetStringBuilder
+func NewBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeValueOctetStringBuilder {
+	return &_BACnetTimerStateChangeValueOctetStringBuilder{_BACnetTimerStateChangeValueOctetString: new(_BACnetTimerStateChangeValueOctetString)}
+}
+
+type _BACnetTimerStateChangeValueOctetStringBuilder struct {
+	*_BACnetTimerStateChangeValueOctetString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueOctetStringBuilder) = (*_BACnetTimerStateChangeValueOctetStringBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
+	return m.WithOctetStringValue(octetStringValue)
+}
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetTimerStateChangeValueOctetStringBuilder {
+	m.OctetStringValue = octetStringValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetTimerStateChangeValueOctetStringBuilder {
+	builder := builderSupplier(m.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	m.OctetStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) Build() (BACnetTimerStateChangeValueOctetString, error) {
+	if m.OctetStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueOctetString.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) MustBuild() BACnetTimerStateChangeValueOctetString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueOctetStringBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueOctetStringBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueOctetStringBuilder creates a BACnetTimerStateChangeValueOctetStringBuilder
+func (m *_BACnetTimerStateChangeValueOctetString) CreateBACnetTimerStateChangeValueOctetStringBuilder() BACnetTimerStateChangeValueOctetStringBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueOctetStringBuilder()
+	}
+	return &_BACnetTimerStateChangeValueOctetStringBuilder{_BACnetTimerStateChangeValueOctetString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

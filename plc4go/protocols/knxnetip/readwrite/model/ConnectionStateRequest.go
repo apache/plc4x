@@ -48,6 +48,8 @@ type ConnectionStateRequest interface {
 	GetHpaiControlEndpoint() HPAIControlEndpoint
 	// IsConnectionStateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionStateRequest()
+	// CreateBuilder creates a ConnectionStateRequestBuilder
+	CreateConnectionStateRequestBuilder() ConnectionStateRequestBuilder
 }
 
 // _ConnectionStateRequest is the data-structure of this message
@@ -75,6 +77,106 @@ func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionStateRequestBuilder is a builder for ConnectionStateRequest
+type ConnectionStateRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) ConnectionStateRequestBuilder
+	// WithHpaiControlEndpoint adds HpaiControlEndpoint (property field)
+	WithHpaiControlEndpoint(HPAIControlEndpoint) ConnectionStateRequestBuilder
+	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
+	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) ConnectionStateRequestBuilder
+	// Build builds the ConnectionStateRequest or returns an error if something is wrong
+	Build() (ConnectionStateRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionStateRequest
+}
+
+// NewConnectionStateRequestBuilder() creates a ConnectionStateRequestBuilder
+func NewConnectionStateRequestBuilder() ConnectionStateRequestBuilder {
+	return &_ConnectionStateRequestBuilder{_ConnectionStateRequest: new(_ConnectionStateRequest)}
+}
+
+type _ConnectionStateRequestBuilder struct {
+	*_ConnectionStateRequest
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionStateRequestBuilder) = (*_ConnectionStateRequestBuilder)(nil)
+
+func (m *_ConnectionStateRequestBuilder) WithMandatoryFields(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithHpaiControlEndpoint(hpaiControlEndpoint)
+}
+
+func (m *_ConnectionStateRequestBuilder) WithCommunicationChannelId(communicationChannelId uint8) ConnectionStateRequestBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_ConnectionStateRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) ConnectionStateRequestBuilder {
+	m.HpaiControlEndpoint = hpaiControlEndpoint
+	return m
+}
+
+func (m *_ConnectionStateRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) ConnectionStateRequestBuilder {
+	builder := builderSupplier(m.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
+	var err error
+	m.HpaiControlEndpoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ConnectionStateRequestBuilder) Build() (ConnectionStateRequest, error) {
+	if m.HpaiControlEndpoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConnectionStateRequest.deepCopy(), nil
+}
+
+func (m *_ConnectionStateRequestBuilder) MustBuild() ConnectionStateRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConnectionStateRequestBuilder) DeepCopy() any {
+	return m.CreateConnectionStateRequestBuilder()
+}
+
+// CreateConnectionStateRequestBuilder creates a ConnectionStateRequestBuilder
+func (m *_ConnectionStateRequest) CreateConnectionStateRequestBuilder() ConnectionStateRequestBuilder {
+	if m == nil {
+		return NewConnectionStateRequestBuilder()
+	}
+	return &_ConnectionStateRequestBuilder{_ConnectionStateRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

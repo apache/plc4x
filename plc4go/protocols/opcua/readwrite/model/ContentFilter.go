@@ -46,6 +46,8 @@ type ContentFilter interface {
 	GetElements() []ExtensionObjectDefinition
 	// IsContentFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContentFilter()
+	// CreateBuilder creates a ContentFilterBuilder
+	CreateContentFilterBuilder() ContentFilterBuilder
 }
 
 // _ContentFilter is the data-structure of this message
@@ -68,6 +70,85 @@ func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ContentFilterBuilder is a builder for ContentFilter
+type ContentFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder
+	// WithNoOfElements adds NoOfElements (property field)
+	WithNoOfElements(int32) ContentFilterBuilder
+	// WithElements adds Elements (property field)
+	WithElements(...ExtensionObjectDefinition) ContentFilterBuilder
+	// Build builds the ContentFilter or returns an error if something is wrong
+	Build() (ContentFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ContentFilter
+}
+
+// NewContentFilterBuilder() creates a ContentFilterBuilder
+func NewContentFilterBuilder() ContentFilterBuilder {
+	return &_ContentFilterBuilder{_ContentFilter: new(_ContentFilter)}
+}
+
+type _ContentFilterBuilder struct {
+	*_ContentFilter
+
+	err *utils.MultiError
+}
+
+var _ (ContentFilterBuilder) = (*_ContentFilterBuilder)(nil)
+
+func (m *_ContentFilterBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder {
+	return m.WithNoOfElements(noOfElements).WithElements(elements...)
+}
+
+func (m *_ContentFilterBuilder) WithNoOfElements(noOfElements int32) ContentFilterBuilder {
+	m.NoOfElements = noOfElements
+	return m
+}
+
+func (m *_ContentFilterBuilder) WithElements(elements ...ExtensionObjectDefinition) ContentFilterBuilder {
+	m.Elements = elements
+	return m
+}
+
+func (m *_ContentFilterBuilder) Build() (ContentFilter, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ContentFilter.deepCopy(), nil
+}
+
+func (m *_ContentFilterBuilder) MustBuild() ContentFilter {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ContentFilterBuilder) DeepCopy() any {
+	return m.CreateContentFilterBuilder()
+}
+
+// CreateContentFilterBuilder creates a ContentFilterBuilder
+func (m *_ContentFilter) CreateContentFilterBuilder() ContentFilterBuilder {
+	if m == nil {
+		return NewContentFilterBuilder()
+	}
+	return &_ContentFilterBuilder{_ContentFilter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

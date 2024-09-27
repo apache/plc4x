@@ -46,6 +46,8 @@ type UserIdentityToken interface {
 	GetUserIdentityTokenDefinition() UserIdentityTokenDefinition
 	// IsUserIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUserIdentityToken()
+	// CreateBuilder creates a UserIdentityTokenBuilder
+	CreateUserIdentityTokenBuilder() UserIdentityTokenBuilder
 }
 
 // _UserIdentityToken is the data-structure of this message
@@ -74,6 +76,112 @@ func NewUserIdentityToken(policyId PascalString, userIdentityTokenDefinition Use
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UserIdentityTokenBuilder is a builder for UserIdentityToken
+type UserIdentityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder
+	// WithPolicyId adds PolicyId (property field)
+	WithPolicyId(PascalString) UserIdentityTokenBuilder
+	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
+	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) UserIdentityTokenBuilder
+	// WithUserIdentityTokenDefinition adds UserIdentityTokenDefinition (property field)
+	WithUserIdentityTokenDefinition(UserIdentityTokenDefinition) UserIdentityTokenBuilder
+	// Build builds the UserIdentityToken or returns an error if something is wrong
+	Build() (UserIdentityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UserIdentityToken
+}
+
+// NewUserIdentityTokenBuilder() creates a UserIdentityTokenBuilder
+func NewUserIdentityTokenBuilder() UserIdentityTokenBuilder {
+	return &_UserIdentityTokenBuilder{_UserIdentityToken: new(_UserIdentityToken)}
+}
+
+type _UserIdentityTokenBuilder struct {
+	*_UserIdentityToken
+
+	err *utils.MultiError
+}
+
+var _ (UserIdentityTokenBuilder) = (*_UserIdentityTokenBuilder)(nil)
+
+func (m *_UserIdentityTokenBuilder) WithMandatoryFields(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder {
+	return m.WithPolicyId(policyId).WithUserIdentityTokenDefinition(userIdentityTokenDefinition)
+}
+
+func (m *_UserIdentityTokenBuilder) WithPolicyId(policyId PascalString) UserIdentityTokenBuilder {
+	m.PolicyId = policyId
+	return m
+}
+
+func (m *_UserIdentityTokenBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UserIdentityTokenBuilder {
+	builder := builderSupplier(m.PolicyId.CreatePascalStringBuilder())
+	var err error
+	m.PolicyId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_UserIdentityTokenBuilder) WithUserIdentityTokenDefinition(userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder {
+	m.UserIdentityTokenDefinition = userIdentityTokenDefinition
+	return m
+}
+
+func (m *_UserIdentityTokenBuilder) Build() (UserIdentityToken, error) {
+	if m.PolicyId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'policyId' not set"))
+	}
+	if m.UserIdentityTokenDefinition == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'userIdentityTokenDefinition' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._UserIdentityToken.deepCopy(), nil
+}
+
+func (m *_UserIdentityTokenBuilder) MustBuild() UserIdentityToken {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_UserIdentityTokenBuilder) DeepCopy() any {
+	return m.CreateUserIdentityTokenBuilder()
+}
+
+// CreateUserIdentityTokenBuilder creates a UserIdentityTokenBuilder
+func (m *_UserIdentityToken) CreateUserIdentityTokenBuilder() UserIdentityTokenBuilder {
+	if m == nil {
+		return NewUserIdentityTokenBuilder()
+	}
+	return &_UserIdentityTokenBuilder{_UserIdentityToken: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

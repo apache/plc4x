@@ -46,6 +46,8 @@ type S7MessageObjectResponse interface {
 	GetTransportSize() DataTransportSize
 	// IsS7MessageObjectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageObjectResponse()
+	// CreateBuilder creates a S7MessageObjectResponseBuilder
+	CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder
 }
 
 // _S7MessageObjectResponse is the data-structure of this message
@@ -70,6 +72,85 @@ func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize
 	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageObjectResponseBuilder is a builder for S7MessageObjectResponse
+type S7MessageObjectResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) S7MessageObjectResponseBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) S7MessageObjectResponseBuilder
+	// Build builds the S7MessageObjectResponse or returns an error if something is wrong
+	Build() (S7MessageObjectResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7MessageObjectResponse
+}
+
+// NewS7MessageObjectResponseBuilder() creates a S7MessageObjectResponseBuilder
+func NewS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
+	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: new(_S7MessageObjectResponse)}
+}
+
+type _S7MessageObjectResponseBuilder struct {
+	*_S7MessageObjectResponse
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageObjectResponseBuilder) = (*_S7MessageObjectResponseBuilder)(nil)
+
+func (m *_S7MessageObjectResponseBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	return m.WithReturnCode(returnCode).WithTransportSize(transportSize)
+}
+
+func (m *_S7MessageObjectResponseBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7MessageObjectResponseBuilder {
+	m.ReturnCode = returnCode
+	return m
+}
+
+func (m *_S7MessageObjectResponseBuilder) WithTransportSize(transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	m.TransportSize = transportSize
+	return m
+}
+
+func (m *_S7MessageObjectResponseBuilder) Build() (S7MessageObjectResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7MessageObjectResponse.deepCopy(), nil
+}
+
+func (m *_S7MessageObjectResponseBuilder) MustBuild() S7MessageObjectResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7MessageObjectResponseBuilder) DeepCopy() any {
+	return m.CreateS7MessageObjectResponseBuilder()
+}
+
+// CreateS7MessageObjectResponseBuilder creates a S7MessageObjectResponseBuilder
+func (m *_S7MessageObjectResponse) CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
+	if m == nil {
+		return NewS7MessageObjectResponseBuilder()
+	}
+	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

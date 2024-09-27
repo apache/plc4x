@@ -46,6 +46,8 @@ type AdsAddDeviceNotificationResponse interface {
 	GetNotificationHandle() uint32
 	// IsAdsAddDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsAddDeviceNotificationResponse()
+	// CreateBuilder creates a AdsAddDeviceNotificationResponseBuilder
+	CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder
 }
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort 
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsAddDeviceNotificationResponseBuilder is a builder for AdsAddDeviceNotificationResponse
+type AdsAddDeviceNotificationResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsAddDeviceNotificationResponseBuilder
+	// WithNotificationHandle adds NotificationHandle (property field)
+	WithNotificationHandle(uint32) AdsAddDeviceNotificationResponseBuilder
+	// Build builds the AdsAddDeviceNotificationResponse or returns an error if something is wrong
+	Build() (AdsAddDeviceNotificationResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsAddDeviceNotificationResponse
+}
+
+// NewAdsAddDeviceNotificationResponseBuilder() creates a AdsAddDeviceNotificationResponseBuilder
+func NewAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
+	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: new(_AdsAddDeviceNotificationResponse)}
+}
+
+type _AdsAddDeviceNotificationResponseBuilder struct {
+	*_AdsAddDeviceNotificationResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsAddDeviceNotificationResponseBuilder) = (*_AdsAddDeviceNotificationResponseBuilder)(nil)
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	return m.WithResult(result).WithNotificationHandle(notificationHandle)
+}
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsAddDeviceNotificationResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) WithNotificationHandle(notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	m.NotificationHandle = notificationHandle
+	return m
+}
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) Build() (AdsAddDeviceNotificationResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsAddDeviceNotificationResponse.deepCopy(), nil
+}
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) MustBuild() AdsAddDeviceNotificationResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsAddDeviceNotificationResponseBuilder) DeepCopy() any {
+	return m.CreateAdsAddDeviceNotificationResponseBuilder()
+}
+
+// CreateAdsAddDeviceNotificationResponseBuilder creates a AdsAddDeviceNotificationResponseBuilder
+func (m *_AdsAddDeviceNotificationResponse) CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
+	if m == nil {
+		return NewAdsAddDeviceNotificationResponseBuilder()
+	}
+	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

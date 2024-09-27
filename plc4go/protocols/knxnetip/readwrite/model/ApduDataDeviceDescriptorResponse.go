@@ -46,6 +46,8 @@ type ApduDataDeviceDescriptorResponse interface {
 	GetData() []byte
 	// IsApduDataDeviceDescriptorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataDeviceDescriptorResponse()
+	// CreateBuilder creates a ApduDataDeviceDescriptorResponseBuilder
+	CreateApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorResponseBuilder
 }
 
 // _ApduDataDeviceDescriptorResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewApduDataDeviceDescriptorResponse(descriptorType uint8, data []byte, data
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataDeviceDescriptorResponseBuilder is a builder for ApduDataDeviceDescriptorResponse
+type ApduDataDeviceDescriptorResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(descriptorType uint8, data []byte) ApduDataDeviceDescriptorResponseBuilder
+	// WithDescriptorType adds DescriptorType (property field)
+	WithDescriptorType(uint8) ApduDataDeviceDescriptorResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataDeviceDescriptorResponseBuilder
+	// Build builds the ApduDataDeviceDescriptorResponse or returns an error if something is wrong
+	Build() (ApduDataDeviceDescriptorResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataDeviceDescriptorResponse
+}
+
+// NewApduDataDeviceDescriptorResponseBuilder() creates a ApduDataDeviceDescriptorResponseBuilder
+func NewApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorResponseBuilder {
+	return &_ApduDataDeviceDescriptorResponseBuilder{_ApduDataDeviceDescriptorResponse: new(_ApduDataDeviceDescriptorResponse)}
+}
+
+type _ApduDataDeviceDescriptorResponseBuilder struct {
+	*_ApduDataDeviceDescriptorResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataDeviceDescriptorResponseBuilder) = (*_ApduDataDeviceDescriptorResponseBuilder)(nil)
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) WithMandatoryFields(descriptorType uint8, data []byte) ApduDataDeviceDescriptorResponseBuilder {
+	return m.WithDescriptorType(descriptorType).WithData(data...)
+}
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) WithDescriptorType(descriptorType uint8) ApduDataDeviceDescriptorResponseBuilder {
+	m.DescriptorType = descriptorType
+	return m
+}
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) WithData(data ...byte) ApduDataDeviceDescriptorResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) Build() (ApduDataDeviceDescriptorResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataDeviceDescriptorResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) MustBuild() ApduDataDeviceDescriptorResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataDeviceDescriptorResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataDeviceDescriptorResponseBuilder()
+}
+
+// CreateApduDataDeviceDescriptorResponseBuilder creates a ApduDataDeviceDescriptorResponseBuilder
+func (m *_ApduDataDeviceDescriptorResponse) CreateApduDataDeviceDescriptorResponseBuilder() ApduDataDeviceDescriptorResponseBuilder {
+	if m == nil {
+		return NewApduDataDeviceDescriptorResponseBuilder()
+	}
+	return &_ApduDataDeviceDescriptorResponseBuilder{_ApduDataDeviceDescriptorResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type AccessControlDataInvalidAccessRequest interface {
 	GetData() []byte
 	// IsAccessControlDataInvalidAccessRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataInvalidAccessRequest()
+	// CreateBuilder creates a AccessControlDataInvalidAccessRequestBuilder
+	CreateAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidAccessRequestBuilder
 }
 
 // _AccessControlDataInvalidAccessRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewAccessControlDataInvalidAccessRequest(commandTypeContainer AccessControl
 	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataInvalidAccessRequestBuilder is a builder for AccessControlDataInvalidAccessRequest
+type AccessControlDataInvalidAccessRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataInvalidAccessRequestBuilder
+	// WithAccessControlDirection adds AccessControlDirection (property field)
+	WithAccessControlDirection(AccessControlDirection) AccessControlDataInvalidAccessRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AccessControlDataInvalidAccessRequestBuilder
+	// Build builds the AccessControlDataInvalidAccessRequest or returns an error if something is wrong
+	Build() (AccessControlDataInvalidAccessRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlDataInvalidAccessRequest
+}
+
+// NewAccessControlDataInvalidAccessRequestBuilder() creates a AccessControlDataInvalidAccessRequestBuilder
+func NewAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidAccessRequestBuilder {
+	return &_AccessControlDataInvalidAccessRequestBuilder{_AccessControlDataInvalidAccessRequest: new(_AccessControlDataInvalidAccessRequest)}
+}
+
+type _AccessControlDataInvalidAccessRequestBuilder struct {
+	*_AccessControlDataInvalidAccessRequest
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataInvalidAccessRequestBuilder) = (*_AccessControlDataInvalidAccessRequestBuilder)(nil)
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) WithMandatoryFields(accessControlDirection AccessControlDirection, data []byte) AccessControlDataInvalidAccessRequestBuilder {
+	return m.WithAccessControlDirection(accessControlDirection).WithData(data...)
+}
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) WithAccessControlDirection(accessControlDirection AccessControlDirection) AccessControlDataInvalidAccessRequestBuilder {
+	m.AccessControlDirection = accessControlDirection
+	return m
+}
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) WithData(data ...byte) AccessControlDataInvalidAccessRequestBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) Build() (AccessControlDataInvalidAccessRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AccessControlDataInvalidAccessRequest.deepCopy(), nil
+}
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) MustBuild() AccessControlDataInvalidAccessRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AccessControlDataInvalidAccessRequestBuilder) DeepCopy() any {
+	return m.CreateAccessControlDataInvalidAccessRequestBuilder()
+}
+
+// CreateAccessControlDataInvalidAccessRequestBuilder creates a AccessControlDataInvalidAccessRequestBuilder
+func (m *_AccessControlDataInvalidAccessRequest) CreateAccessControlDataInvalidAccessRequestBuilder() AccessControlDataInvalidAccessRequestBuilder {
+	if m == nil {
+		return NewAccessControlDataInvalidAccessRequestBuilder()
+	}
+	return &_AccessControlDataInvalidAccessRequestBuilder{_AccessControlDataInvalidAccessRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

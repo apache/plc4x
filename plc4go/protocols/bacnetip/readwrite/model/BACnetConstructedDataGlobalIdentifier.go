@@ -46,6 +46,8 @@ type BACnetConstructedDataGlobalIdentifier interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataGlobalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalIdentifier()
+	// CreateBuilder creates a BACnetConstructedDataGlobalIdentifierBuilder
+	CreateBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlobalIdentifierBuilder
 }
 
 // _BACnetConstructedDataGlobalIdentifier is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataGlobalIdentifier(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGlobalIdentifierBuilder is a builder for BACnetConstructedDataGlobalIdentifier
+type BACnetConstructedDataGlobalIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder
+	// WithGlobalIdentifier adds GlobalIdentifier (property field)
+	WithGlobalIdentifier(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder
+	// WithGlobalIdentifierBuilder adds GlobalIdentifier (property field) which is build by the builder
+	WithGlobalIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalIdentifierBuilder
+	// Build builds the BACnetConstructedDataGlobalIdentifier or returns an error if something is wrong
+	Build() (BACnetConstructedDataGlobalIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGlobalIdentifier
+}
+
+// NewBACnetConstructedDataGlobalIdentifierBuilder() creates a BACnetConstructedDataGlobalIdentifierBuilder
+func NewBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlobalIdentifierBuilder {
+	return &_BACnetConstructedDataGlobalIdentifierBuilder{_BACnetConstructedDataGlobalIdentifier: new(_BACnetConstructedDataGlobalIdentifier)}
+}
+
+type _BACnetConstructedDataGlobalIdentifierBuilder struct {
+	*_BACnetConstructedDataGlobalIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGlobalIdentifierBuilder) = (*_BACnetConstructedDataGlobalIdentifierBuilder)(nil)
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithMandatoryFields(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
+	return m.WithGlobalIdentifier(globalIdentifier)
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifier(globalIdentifier BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalIdentifierBuilder {
+	m.GlobalIdentifier = globalIdentifier
+	return m
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) WithGlobalIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalIdentifierBuilder {
+	builder := builderSupplier(m.GlobalIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.GlobalIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) Build() (BACnetConstructedDataGlobalIdentifier, error) {
+	if m.GlobalIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'globalIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataGlobalIdentifier.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) MustBuild() BACnetConstructedDataGlobalIdentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataGlobalIdentifierBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataGlobalIdentifierBuilder()
+}
+
+// CreateBACnetConstructedDataGlobalIdentifierBuilder creates a BACnetConstructedDataGlobalIdentifierBuilder
+func (m *_BACnetConstructedDataGlobalIdentifier) CreateBACnetConstructedDataGlobalIdentifierBuilder() BACnetConstructedDataGlobalIdentifierBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataGlobalIdentifierBuilder()
+	}
+	return &_BACnetConstructedDataGlobalIdentifierBuilder{_BACnetConstructedDataGlobalIdentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

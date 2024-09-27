@@ -43,6 +43,8 @@ type Alpha interface {
 	GetCharacter() byte
 	// IsAlpha is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlpha()
+	// CreateBuilder creates a AlphaBuilder
+	CreateAlphaBuilder() AlphaBuilder
 }
 
 // _Alpha is the data-structure of this message
@@ -56,6 +58,78 @@ var _ Alpha = (*_Alpha)(nil)
 func NewAlpha(character byte) *_Alpha {
 	return &_Alpha{Character: character}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlphaBuilder is a builder for Alpha
+type AlphaBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(character byte) AlphaBuilder
+	// WithCharacter adds Character (property field)
+	WithCharacter(byte) AlphaBuilder
+	// Build builds the Alpha or returns an error if something is wrong
+	Build() (Alpha, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Alpha
+}
+
+// NewAlphaBuilder() creates a AlphaBuilder
+func NewAlphaBuilder() AlphaBuilder {
+	return &_AlphaBuilder{_Alpha: new(_Alpha)}
+}
+
+type _AlphaBuilder struct {
+	*_Alpha
+
+	err *utils.MultiError
+}
+
+var _ (AlphaBuilder) = (*_AlphaBuilder)(nil)
+
+func (m *_AlphaBuilder) WithMandatoryFields(character byte) AlphaBuilder {
+	return m.WithCharacter(character)
+}
+
+func (m *_AlphaBuilder) WithCharacter(character byte) AlphaBuilder {
+	m.Character = character
+	return m
+}
+
+func (m *_AlphaBuilder) Build() (Alpha, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Alpha.deepCopy(), nil
+}
+
+func (m *_AlphaBuilder) MustBuild() Alpha {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AlphaBuilder) DeepCopy() any {
+	return m.CreateAlphaBuilder()
+}
+
+// CreateAlphaBuilder creates a AlphaBuilder
+func (m *_Alpha) CreateAlphaBuilder() AlphaBuilder {
+	if m == nil {
+		return NewAlphaBuilder()
+	}
+	return &_AlphaBuilder{_Alpha: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type CancelRequest interface {
 	GetRequestHandle() uint32
 	// IsCancelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCancelRequest()
+	// CreateBuilder creates a CancelRequestBuilder
+	CreateCancelRequestBuilder() CancelRequestBuilder
 }
 
 // _CancelRequest is the data-structure of this message
@@ -71,6 +73,91 @@ func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uin
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CancelRequestBuilder is a builder for CancelRequest
+type CancelRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CancelRequestBuilder
+	// WithRequestHandle adds RequestHandle (property field)
+	WithRequestHandle(uint32) CancelRequestBuilder
+	// Build builds the CancelRequest or returns an error if something is wrong
+	Build() (CancelRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CancelRequest
+}
+
+// NewCancelRequestBuilder() creates a CancelRequestBuilder
+func NewCancelRequestBuilder() CancelRequestBuilder {
+	return &_CancelRequestBuilder{_CancelRequest: new(_CancelRequest)}
+}
+
+type _CancelRequestBuilder struct {
+	*_CancelRequest
+
+	err *utils.MultiError
+}
+
+var _ (CancelRequestBuilder) = (*_CancelRequestBuilder)(nil)
+
+func (m *_CancelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithRequestHandle(requestHandle)
+}
+
+func (m *_CancelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CancelRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_CancelRequestBuilder) WithRequestHandle(requestHandle uint32) CancelRequestBuilder {
+	m.RequestHandle = requestHandle
+	return m
+}
+
+func (m *_CancelRequestBuilder) Build() (CancelRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CancelRequest.deepCopy(), nil
+}
+
+func (m *_CancelRequestBuilder) MustBuild() CancelRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CancelRequestBuilder) DeepCopy() any {
+	return m.CreateCancelRequestBuilder()
+}
+
+// CreateCancelRequestBuilder creates a CancelRequestBuilder
+func (m *_CancelRequest) CreateCancelRequestBuilder() CancelRequestBuilder {
+	if m == nil {
+		return NewCancelRequestBuilder()
+	}
+	return &_CancelRequestBuilder{_CancelRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

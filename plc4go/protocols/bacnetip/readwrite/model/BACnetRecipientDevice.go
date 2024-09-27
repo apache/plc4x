@@ -44,6 +44,8 @@ type BACnetRecipientDevice interface {
 	GetDeviceValue() BACnetContextTagObjectIdentifier
 	// IsBACnetRecipientDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipientDevice()
+	// CreateBuilder creates a BACnetRecipientDeviceBuilder
+	CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder
 }
 
 // _BACnetRecipientDevice is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACne
 	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientDeviceBuilder is a builder for BACnetRecipientDevice
+type BACnetRecipientDeviceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder
+	// WithDeviceValue adds DeviceValue (property field)
+	WithDeviceValue(BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder
+	// WithDeviceValueBuilder adds DeviceValue (property field) which is build by the builder
+	WithDeviceValueBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder
+	// Build builds the BACnetRecipientDevice or returns an error if something is wrong
+	Build() (BACnetRecipientDevice, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientDevice
+}
+
+// NewBACnetRecipientDeviceBuilder() creates a BACnetRecipientDeviceBuilder
+func NewBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
+	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: new(_BACnetRecipientDevice)}
+}
+
+type _BACnetRecipientDeviceBuilder struct {
+	*_BACnetRecipientDevice
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientDeviceBuilder) = (*_BACnetRecipientDeviceBuilder)(nil)
+
+func (m *_BACnetRecipientDeviceBuilder) WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	return m.WithDeviceValue(deviceValue)
+}
+
+func (m *_BACnetRecipientDeviceBuilder) WithDeviceValue(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	m.DeviceValue = deviceValue
+	return m
+}
+
+func (m *_BACnetRecipientDeviceBuilder) WithDeviceValueBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder {
+	builder := builderSupplier(m.DeviceValue.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.DeviceValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRecipientDeviceBuilder) Build() (BACnetRecipientDevice, error) {
+	if m.DeviceValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deviceValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRecipientDevice.deepCopy(), nil
+}
+
+func (m *_BACnetRecipientDeviceBuilder) MustBuild() BACnetRecipientDevice {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRecipientDeviceBuilder) DeepCopy() any {
+	return m.CreateBACnetRecipientDeviceBuilder()
+}
+
+// CreateBACnetRecipientDeviceBuilder creates a BACnetRecipientDeviceBuilder
+func (m *_BACnetRecipientDevice) CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
+	if m == nil {
+		return NewBACnetRecipientDeviceBuilder()
+	}
+	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

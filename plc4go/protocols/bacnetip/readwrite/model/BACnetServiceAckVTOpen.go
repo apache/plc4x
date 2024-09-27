@@ -44,6 +44,8 @@ type BACnetServiceAckVTOpen interface {
 	GetRemoteVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
 	// IsBACnetServiceAckVTOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckVTOpen()
+	// CreateBuilder creates a BACnetServiceAckVTOpenBuilder
+	CreateBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder
 }
 
 // _BACnetServiceAckVTOpen is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetServiceAckVTOpen(remoteVtSessionIdentifier BACnetApplicationTagUns
 	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckVTOpenBuilder is a builder for BACnetServiceAckVTOpen
+type BACnetServiceAckVTOpenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder
+	// WithRemoteVtSessionIdentifier adds RemoteVtSessionIdentifier (property field)
+	WithRemoteVtSessionIdentifier(BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder
+	// WithRemoteVtSessionIdentifierBuilder adds RemoteVtSessionIdentifier (property field) which is build by the builder
+	WithRemoteVtSessionIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTOpenBuilder
+	// Build builds the BACnetServiceAckVTOpen or returns an error if something is wrong
+	Build() (BACnetServiceAckVTOpen, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckVTOpen
+}
+
+// NewBACnetServiceAckVTOpenBuilder() creates a BACnetServiceAckVTOpenBuilder
+func NewBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder {
+	return &_BACnetServiceAckVTOpenBuilder{_BACnetServiceAckVTOpen: new(_BACnetServiceAckVTOpen)}
+}
+
+type _BACnetServiceAckVTOpenBuilder struct {
+	*_BACnetServiceAckVTOpen
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckVTOpenBuilder) = (*_BACnetServiceAckVTOpenBuilder)(nil)
+
+func (m *_BACnetServiceAckVTOpenBuilder) WithMandatoryFields(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
+	return m.WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier)
+}
+
+func (m *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifier(remoteVtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetServiceAckVTOpenBuilder {
+	m.RemoteVtSessionIdentifier = remoteVtSessionIdentifier
+	return m
+}
+
+func (m *_BACnetServiceAckVTOpenBuilder) WithRemoteVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckVTOpenBuilder {
+	builder := builderSupplier(m.RemoteVtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.RemoteVtSessionIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckVTOpenBuilder) Build() (BACnetServiceAckVTOpen, error) {
+	if m.RemoteVtSessionIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'remoteVtSessionIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetServiceAckVTOpen.deepCopy(), nil
+}
+
+func (m *_BACnetServiceAckVTOpenBuilder) MustBuild() BACnetServiceAckVTOpen {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetServiceAckVTOpenBuilder) DeepCopy() any {
+	return m.CreateBACnetServiceAckVTOpenBuilder()
+}
+
+// CreateBACnetServiceAckVTOpenBuilder creates a BACnetServiceAckVTOpenBuilder
+func (m *_BACnetServiceAckVTOpen) CreateBACnetServiceAckVTOpenBuilder() BACnetServiceAckVTOpenBuilder {
+	if m == nil {
+		return NewBACnetServiceAckVTOpenBuilder()
+	}
+	return &_BACnetServiceAckVTOpenBuilder{_BACnetServiceAckVTOpen: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

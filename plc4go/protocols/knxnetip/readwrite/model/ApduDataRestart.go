@@ -40,6 +40,8 @@ type ApduDataRestart interface {
 	ApduData
 	// IsApduDataRestart is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataRestart()
+	// CreateBuilder creates a ApduDataRestartBuilder
+	CreateApduDataRestartBuilder() ApduDataRestartBuilder
 }
 
 // _ApduDataRestart is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataRestart(dataLength uint8) *_ApduDataRestart {
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataRestartBuilder is a builder for ApduDataRestart
+type ApduDataRestartBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataRestartBuilder
+	// Build builds the ApduDataRestart or returns an error if something is wrong
+	Build() (ApduDataRestart, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataRestart
+}
+
+// NewApduDataRestartBuilder() creates a ApduDataRestartBuilder
+func NewApduDataRestartBuilder() ApduDataRestartBuilder {
+	return &_ApduDataRestartBuilder{_ApduDataRestart: new(_ApduDataRestart)}
+}
+
+type _ApduDataRestartBuilder struct {
+	*_ApduDataRestart
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataRestartBuilder) = (*_ApduDataRestartBuilder)(nil)
+
+func (m *_ApduDataRestartBuilder) WithMandatoryFields() ApduDataRestartBuilder {
+	return m
+}
+
+func (m *_ApduDataRestartBuilder) Build() (ApduDataRestart, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataRestart.deepCopy(), nil
+}
+
+func (m *_ApduDataRestartBuilder) MustBuild() ApduDataRestart {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataRestartBuilder) DeepCopy() any {
+	return m.CreateApduDataRestartBuilder()
+}
+
+// CreateApduDataRestartBuilder creates a ApduDataRestartBuilder
+func (m *_ApduDataRestart) CreateApduDataRestartBuilder() ApduDataRestartBuilder {
+	if m == nil {
+		return NewApduDataRestartBuilder()
+	}
+	return &_ApduDataRestartBuilder{_ApduDataRestart: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

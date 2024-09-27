@@ -45,6 +45,8 @@ type BACnetTimeValue interface {
 	GetValue() BACnetConstructedDataElement
 	// IsBACnetTimeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeValue()
+	// CreateBuilder creates a BACnetTimeValueBuilder
+	CreateBACnetTimeValueBuilder() BACnetTimeValueBuilder
 }
 
 // _BACnetTimeValue is the data-structure of this message
@@ -65,6 +67,127 @@ func NewBACnetTimeValue(timeValue BACnetApplicationTagTime, value BACnetConstruc
 	}
 	return &_BACnetTimeValue{TimeValue: timeValue, Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimeValueBuilder is a builder for BACnetTimeValue
+type BACnetTimeValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeValue BACnetApplicationTagTime, value BACnetConstructedDataElement) BACnetTimeValueBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithTimeValue(BACnetApplicationTagTime) BACnetTimeValueBuilder
+	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetTimeValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetConstructedDataElement) BACnetTimeValueBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetTimeValueBuilder
+	// Build builds the BACnetTimeValue or returns an error if something is wrong
+	Build() (BACnetTimeValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimeValue
+}
+
+// NewBACnetTimeValueBuilder() creates a BACnetTimeValueBuilder
+func NewBACnetTimeValueBuilder() BACnetTimeValueBuilder {
+	return &_BACnetTimeValueBuilder{_BACnetTimeValue: new(_BACnetTimeValue)}
+}
+
+type _BACnetTimeValueBuilder struct {
+	*_BACnetTimeValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimeValueBuilder) = (*_BACnetTimeValueBuilder)(nil)
+
+func (m *_BACnetTimeValueBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime, value BACnetConstructedDataElement) BACnetTimeValueBuilder {
+	return m.WithTimeValue(timeValue).WithValue(value)
+}
+
+func (m *_BACnetTimeValueBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetTimeValueBuilder {
+	m.TimeValue = timeValue
+	return m
+}
+
+func (m *_BACnetTimeValueBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetTimeValueBuilder {
+	builder := builderSupplier(m.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	m.TimeValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimeValueBuilder) WithValue(value BACnetConstructedDataElement) BACnetTimeValueBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetTimeValueBuilder) WithValueBuilder(builderSupplier func(BACnetConstructedDataElementBuilder) BACnetConstructedDataElementBuilder) BACnetTimeValueBuilder {
+	builder := builderSupplier(m.Value.CreateBACnetConstructedDataElementBuilder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetConstructedDataElementBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimeValueBuilder) Build() (BACnetTimeValue, error) {
+	if m.TimeValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeValue' not set"))
+	}
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimeValue.deepCopy(), nil
+}
+
+func (m *_BACnetTimeValueBuilder) MustBuild() BACnetTimeValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimeValueBuilder) DeepCopy() any {
+	return m.CreateBACnetTimeValueBuilder()
+}
+
+// CreateBACnetTimeValueBuilder creates a BACnetTimeValueBuilder
+func (m *_BACnetTimeValue) CreateBACnetTimeValueBuilder() BACnetTimeValueBuilder {
+	if m == nil {
+		return NewBACnetTimeValueBuilder()
+	}
+	return &_BACnetTimeValueBuilder{_BACnetTimeValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

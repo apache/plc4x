@@ -44,6 +44,8 @@ type BACnetConstructedDataRecipientList interface {
 	GetRecipientList() []BACnetDestination
 	// IsBACnetConstructedDataRecipientList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRecipientList()
+	// CreateBuilder creates a BACnetConstructedDataRecipientListBuilder
+	CreateBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipientListBuilder
 }
 
 // _BACnetConstructedDataRecipientList is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataRecipientList(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRecipientListBuilder is a builder for BACnetConstructedDataRecipientList
+type BACnetConstructedDataRecipientListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder
+	// WithRecipientList adds RecipientList (property field)
+	WithRecipientList(...BACnetDestination) BACnetConstructedDataRecipientListBuilder
+	// Build builds the BACnetConstructedDataRecipientList or returns an error if something is wrong
+	Build() (BACnetConstructedDataRecipientList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRecipientList
+}
+
+// NewBACnetConstructedDataRecipientListBuilder() creates a BACnetConstructedDataRecipientListBuilder
+func NewBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipientListBuilder {
+	return &_BACnetConstructedDataRecipientListBuilder{_BACnetConstructedDataRecipientList: new(_BACnetConstructedDataRecipientList)}
+}
+
+type _BACnetConstructedDataRecipientListBuilder struct {
+	*_BACnetConstructedDataRecipientList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRecipientListBuilder) = (*_BACnetConstructedDataRecipientListBuilder)(nil)
+
+func (m *_BACnetConstructedDataRecipientListBuilder) WithMandatoryFields(recipientList []BACnetDestination) BACnetConstructedDataRecipientListBuilder {
+	return m.WithRecipientList(recipientList...)
+}
+
+func (m *_BACnetConstructedDataRecipientListBuilder) WithRecipientList(recipientList ...BACnetDestination) BACnetConstructedDataRecipientListBuilder {
+	m.RecipientList = recipientList
+	return m
+}
+
+func (m *_BACnetConstructedDataRecipientListBuilder) Build() (BACnetConstructedDataRecipientList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataRecipientList.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataRecipientListBuilder) MustBuild() BACnetConstructedDataRecipientList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataRecipientListBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataRecipientListBuilder()
+}
+
+// CreateBACnetConstructedDataRecipientListBuilder creates a BACnetConstructedDataRecipientListBuilder
+func (m *_BACnetConstructedDataRecipientList) CreateBACnetConstructedDataRecipientListBuilder() BACnetConstructedDataRecipientListBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataRecipientListBuilder()
+	}
+	return &_BACnetConstructedDataRecipientListBuilder{_BACnetConstructedDataRecipientList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

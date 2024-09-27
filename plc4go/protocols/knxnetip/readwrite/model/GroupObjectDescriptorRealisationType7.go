@@ -59,6 +59,8 @@ type GroupObjectDescriptorRealisationType7 interface {
 	GetValueType() ComObjectValueType
 	// IsGroupObjectDescriptorRealisationType7 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGroupObjectDescriptorRealisationType7()
+	// CreateBuilder creates a GroupObjectDescriptorRealisationType7Builder
+	CreateGroupObjectDescriptorRealisationType7Builder() GroupObjectDescriptorRealisationType7Builder
 }
 
 // _GroupObjectDescriptorRealisationType7 is the data-structure of this message
@@ -80,6 +82,134 @@ var _ GroupObjectDescriptorRealisationType7 = (*_GroupObjectDescriptorRealisatio
 func NewGroupObjectDescriptorRealisationType7(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType7 {
 	return &_GroupObjectDescriptorRealisationType7{DataAddress: dataAddress, UpdateEnable: updateEnable, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GroupObjectDescriptorRealisationType7Builder is a builder for GroupObjectDescriptorRealisationType7
+type GroupObjectDescriptorRealisationType7Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder
+	// WithDataAddress adds DataAddress (property field)
+	WithDataAddress(uint16) GroupObjectDescriptorRealisationType7Builder
+	// WithUpdateEnable adds UpdateEnable (property field)
+	WithUpdateEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithTransmitEnable adds TransmitEnable (property field)
+	WithTransmitEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithSegmentSelectorEnable adds SegmentSelectorEnable (property field)
+	WithSegmentSelectorEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithWriteEnable adds WriteEnable (property field)
+	WithWriteEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithReadEnable adds ReadEnable (property field)
+	WithReadEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithCommunicationEnable adds CommunicationEnable (property field)
+	WithCommunicationEnable(bool) GroupObjectDescriptorRealisationType7Builder
+	// WithPriority adds Priority (property field)
+	WithPriority(CEMIPriority) GroupObjectDescriptorRealisationType7Builder
+	// WithValueType adds ValueType (property field)
+	WithValueType(ComObjectValueType) GroupObjectDescriptorRealisationType7Builder
+	// Build builds the GroupObjectDescriptorRealisationType7 or returns an error if something is wrong
+	Build() (GroupObjectDescriptorRealisationType7, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GroupObjectDescriptorRealisationType7
+}
+
+// NewGroupObjectDescriptorRealisationType7Builder() creates a GroupObjectDescriptorRealisationType7Builder
+func NewGroupObjectDescriptorRealisationType7Builder() GroupObjectDescriptorRealisationType7Builder {
+	return &_GroupObjectDescriptorRealisationType7Builder{_GroupObjectDescriptorRealisationType7: new(_GroupObjectDescriptorRealisationType7)}
+}
+
+type _GroupObjectDescriptorRealisationType7Builder struct {
+	*_GroupObjectDescriptorRealisationType7
+
+	err *utils.MultiError
+}
+
+var _ (GroupObjectDescriptorRealisationType7Builder) = (*_GroupObjectDescriptorRealisationType7Builder)(nil)
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithMandatoryFields(dataAddress uint16, updateEnable bool, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
+	return m.WithDataAddress(dataAddress).WithUpdateEnable(updateEnable).WithTransmitEnable(transmitEnable).WithSegmentSelectorEnable(segmentSelectorEnable).WithWriteEnable(writeEnable).WithReadEnable(readEnable).WithCommunicationEnable(communicationEnable).WithPriority(priority).WithValueType(valueType)
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithDataAddress(dataAddress uint16) GroupObjectDescriptorRealisationType7Builder {
+	m.DataAddress = dataAddress
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithUpdateEnable(updateEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.UpdateEnable = updateEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithTransmitEnable(transmitEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.TransmitEnable = transmitEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithSegmentSelectorEnable(segmentSelectorEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.SegmentSelectorEnable = segmentSelectorEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithWriteEnable(writeEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.WriteEnable = writeEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithReadEnable(readEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.ReadEnable = readEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithCommunicationEnable(communicationEnable bool) GroupObjectDescriptorRealisationType7Builder {
+	m.CommunicationEnable = communicationEnable
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithPriority(priority CEMIPriority) GroupObjectDescriptorRealisationType7Builder {
+	m.Priority = priority
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) WithValueType(valueType ComObjectValueType) GroupObjectDescriptorRealisationType7Builder {
+	m.ValueType = valueType
+	return m
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) Build() (GroupObjectDescriptorRealisationType7, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GroupObjectDescriptorRealisationType7.deepCopy(), nil
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) MustBuild() GroupObjectDescriptorRealisationType7 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GroupObjectDescriptorRealisationType7Builder) DeepCopy() any {
+	return m.CreateGroupObjectDescriptorRealisationType7Builder()
+}
+
+// CreateGroupObjectDescriptorRealisationType7Builder creates a GroupObjectDescriptorRealisationType7Builder
+func (m *_GroupObjectDescriptorRealisationType7) CreateGroupObjectDescriptorRealisationType7Builder() GroupObjectDescriptorRealisationType7Builder {
+	if m == nil {
+		return NewGroupObjectDescriptorRealisationType7Builder()
+	}
+	return &_GroupObjectDescriptorRealisationType7Builder{_GroupObjectDescriptorRealisationType7: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

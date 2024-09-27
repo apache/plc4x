@@ -46,6 +46,8 @@ type BACnetConstructedDataPassengerAlarm interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataPassengerAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPassengerAlarm()
+	// CreateBuilder creates a BACnetConstructedDataPassengerAlarmBuilder
+	CreateBACnetConstructedDataPassengerAlarmBuilder() BACnetConstructedDataPassengerAlarmBuilder
 }
 
 // _BACnetConstructedDataPassengerAlarm is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataPassengerAlarm(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPassengerAlarmBuilder is a builder for BACnetConstructedDataPassengerAlarm
+type BACnetConstructedDataPassengerAlarmBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(passengerAlarm BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder
+	// WithPassengerAlarm adds PassengerAlarm (property field)
+	WithPassengerAlarm(BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder
+	// WithPassengerAlarmBuilder adds PassengerAlarm (property field) which is build by the builder
+	WithPassengerAlarmBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataPassengerAlarmBuilder
+	// Build builds the BACnetConstructedDataPassengerAlarm or returns an error if something is wrong
+	Build() (BACnetConstructedDataPassengerAlarm, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPassengerAlarm
+}
+
+// NewBACnetConstructedDataPassengerAlarmBuilder() creates a BACnetConstructedDataPassengerAlarmBuilder
+func NewBACnetConstructedDataPassengerAlarmBuilder() BACnetConstructedDataPassengerAlarmBuilder {
+	return &_BACnetConstructedDataPassengerAlarmBuilder{_BACnetConstructedDataPassengerAlarm: new(_BACnetConstructedDataPassengerAlarm)}
+}
+
+type _BACnetConstructedDataPassengerAlarmBuilder struct {
+	*_BACnetConstructedDataPassengerAlarm
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPassengerAlarmBuilder) = (*_BACnetConstructedDataPassengerAlarmBuilder)(nil)
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) WithMandatoryFields(passengerAlarm BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder {
+	return m.WithPassengerAlarm(passengerAlarm)
+}
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) WithPassengerAlarm(passengerAlarm BACnetApplicationTagBoolean) BACnetConstructedDataPassengerAlarmBuilder {
+	m.PassengerAlarm = passengerAlarm
+	return m
+}
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) WithPassengerAlarmBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataPassengerAlarmBuilder {
+	builder := builderSupplier(m.PassengerAlarm.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.PassengerAlarm, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) Build() (BACnetConstructedDataPassengerAlarm, error) {
+	if m.PassengerAlarm == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'passengerAlarm' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPassengerAlarm.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) MustBuild() BACnetConstructedDataPassengerAlarm {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPassengerAlarmBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPassengerAlarmBuilder()
+}
+
+// CreateBACnetConstructedDataPassengerAlarmBuilder creates a BACnetConstructedDataPassengerAlarmBuilder
+func (m *_BACnetConstructedDataPassengerAlarm) CreateBACnetConstructedDataPassengerAlarmBuilder() BACnetConstructedDataPassengerAlarmBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPassengerAlarmBuilder()
+	}
+	return &_BACnetConstructedDataPassengerAlarmBuilder{_BACnetConstructedDataPassengerAlarm: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

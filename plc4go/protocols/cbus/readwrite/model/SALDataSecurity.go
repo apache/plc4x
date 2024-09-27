@@ -44,6 +44,8 @@ type SALDataSecurity interface {
 	GetSecurityData() SecurityData
 	// IsSALDataSecurity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataSecurity()
+	// CreateBuilder creates a SALDataSecurityBuilder
+	CreateSALDataSecurityBuilder() SALDataSecurityBuilder
 }
 
 // _SALDataSecurity is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSec
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataSecurityBuilder is a builder for SALDataSecurity
+type SALDataSecurityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder
+	// WithSecurityData adds SecurityData (property field)
+	WithSecurityData(SecurityData) SALDataSecurityBuilder
+	// Build builds the SALDataSecurity or returns an error if something is wrong
+	Build() (SALDataSecurity, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataSecurity
+}
+
+// NewSALDataSecurityBuilder() creates a SALDataSecurityBuilder
+func NewSALDataSecurityBuilder() SALDataSecurityBuilder {
+	return &_SALDataSecurityBuilder{_SALDataSecurity: new(_SALDataSecurity)}
+}
+
+type _SALDataSecurityBuilder struct {
+	*_SALDataSecurity
+
+	err *utils.MultiError
+}
+
+var _ (SALDataSecurityBuilder) = (*_SALDataSecurityBuilder)(nil)
+
+func (m *_SALDataSecurityBuilder) WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder {
+	return m.WithSecurityData(securityData)
+}
+
+func (m *_SALDataSecurityBuilder) WithSecurityData(securityData SecurityData) SALDataSecurityBuilder {
+	m.SecurityData = securityData
+	return m
+}
+
+func (m *_SALDataSecurityBuilder) Build() (SALDataSecurity, error) {
+	if m.SecurityData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataSecurity.deepCopy(), nil
+}
+
+func (m *_SALDataSecurityBuilder) MustBuild() SALDataSecurity {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataSecurityBuilder) DeepCopy() any {
+	return m.CreateSALDataSecurityBuilder()
+}
+
+// CreateSALDataSecurityBuilder creates a SALDataSecurityBuilder
+func (m *_SALDataSecurity) CreateSALDataSecurityBuilder() SALDataSecurityBuilder {
+	if m == nil {
+		return NewSALDataSecurityBuilder()
+	}
+	return &_SALDataSecurityBuilder{_SALDataSecurity: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

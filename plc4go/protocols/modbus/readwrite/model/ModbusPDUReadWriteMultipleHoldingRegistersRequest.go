@@ -52,6 +52,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	GetValue() []byte
 	// IsModbusPDUReadWriteMultipleHoldingRegistersRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadWriteMultipleHoldingRegistersRequest()
+	// CreateBuilder creates a ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersRequest is the data-structure of this message
@@ -80,6 +82,106 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress ui
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder is a builder for ModbusPDUReadWriteMultipleHoldingRegistersRequest
+type ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// WithReadStartingAddress adds ReadStartingAddress (property field)
+	WithReadStartingAddress(uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// WithReadQuantity adds ReadQuantity (property field)
+	WithReadQuantity(uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// WithWriteStartingAddress adds WriteStartingAddress (property field)
+	WithWriteStartingAddress(uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// WithWriteQuantity adds WriteQuantity (property field)
+	WithWriteQuantity(uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+	// Build builds the ModbusPDUReadWriteMultipleHoldingRegistersRequest or returns an error if something is wrong
+	Build() (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersRequest
+}
+
+// NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() creates a ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+func NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	return &_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersRequest: new(_ModbusPDUReadWriteMultipleHoldingRegistersRequest)}
+}
+
+type _ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder struct {
+	*_ModbusPDUReadWriteMultipleHoldingRegistersRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) = (*_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder)(nil)
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithMandatoryFields(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	return m.WithReadStartingAddress(readStartingAddress).WithReadQuantity(readQuantity).WithWriteStartingAddress(writeStartingAddress).WithWriteQuantity(writeQuantity).WithValue(value...)
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadStartingAddress(readStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	m.ReadStartingAddress = readStartingAddress
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithReadQuantity(readQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	m.ReadQuantity = readQuantity
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteStartingAddress(writeStartingAddress uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	m.WriteStartingAddress = writeStartingAddress
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithWriteQuantity(writeQuantity uint16) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	m.WriteQuantity = writeQuantity
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) WithValue(value ...byte) ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) Build() (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadWriteMultipleHoldingRegistersRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder()
+}
+
+// CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder creates a ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) CreateModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder() ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder {
+	if m == nil {
+		return NewModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder()
+	}
+	return &_ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -47,6 +47,8 @@ type BVLCBroadcastDistributionTableEntry interface {
 	GetBroadcastDistributionMap() []uint8
 	// IsBVLCBroadcastDistributionTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCBroadcastDistributionTableEntry()
+	// CreateBuilder creates a BVLCBroadcastDistributionTableEntryBuilder
+	CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder
 }
 
 // _BVLCBroadcastDistributionTableEntry is the data-structure of this message
@@ -62,6 +64,92 @@ var _ BVLCBroadcastDistributionTableEntry = (*_BVLCBroadcastDistributionTableEnt
 func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *_BVLCBroadcastDistributionTableEntry {
 	return &_BVLCBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCBroadcastDistributionTableEntryBuilder is a builder for BVLCBroadcastDistributionTableEntry
+type BVLCBroadcastDistributionTableEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// WithIp adds Ip (property field)
+	WithIp(...uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// WithPort adds Port (property field)
+	WithPort(uint16) BVLCBroadcastDistributionTableEntryBuilder
+	// WithBroadcastDistributionMap adds BroadcastDistributionMap (property field)
+	WithBroadcastDistributionMap(...uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// Build builds the BVLCBroadcastDistributionTableEntry or returns an error if something is wrong
+	Build() (BVLCBroadcastDistributionTableEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCBroadcastDistributionTableEntry
+}
+
+// NewBVLCBroadcastDistributionTableEntryBuilder() creates a BVLCBroadcastDistributionTableEntryBuilder
+func NewBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
+	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: new(_BVLCBroadcastDistributionTableEntry)}
+}
+
+type _BVLCBroadcastDistributionTableEntryBuilder struct {
+	*_BVLCBroadcastDistributionTableEntry
+
+	err *utils.MultiError
+}
+
+var _ (BVLCBroadcastDistributionTableEntryBuilder) = (*_BVLCBroadcastDistributionTableEntryBuilder)(nil)
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	return m.WithIp(ip...).WithPort(port).WithBroadcastDistributionMap(broadcastDistributionMap...)
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithIp(ip ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	m.Ip = ip
+	return m
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithPort(port uint16) BVLCBroadcastDistributionTableEntryBuilder {
+	m.Port = port
+	return m
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) WithBroadcastDistributionMap(broadcastDistributionMap ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	m.BroadcastDistributionMap = broadcastDistributionMap
+	return m
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) Build() (BVLCBroadcastDistributionTableEntry, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BVLCBroadcastDistributionTableEntry.deepCopy(), nil
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) MustBuild() BVLCBroadcastDistributionTableEntry {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BVLCBroadcastDistributionTableEntryBuilder) DeepCopy() any {
+	return m.CreateBVLCBroadcastDistributionTableEntryBuilder()
+}
+
+// CreateBVLCBroadcastDistributionTableEntryBuilder creates a BVLCBroadcastDistributionTableEntryBuilder
+func (m *_BVLCBroadcastDistributionTableEntry) CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
+	if m == nil {
+		return NewBVLCBroadcastDistributionTableEntryBuilder()
+	}
+	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

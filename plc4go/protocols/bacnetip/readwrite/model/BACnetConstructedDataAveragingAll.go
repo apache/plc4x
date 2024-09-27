@@ -40,6 +40,8 @@ type BACnetConstructedDataAveragingAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataAveragingAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAveragingAll()
+	// CreateBuilder creates a BACnetConstructedDataAveragingAllBuilder
+	CreateBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragingAllBuilder
 }
 
 // _BACnetConstructedDataAveragingAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAveragingAllBuilder is a builder for BACnetConstructedDataAveragingAll
+type BACnetConstructedDataAveragingAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataAveragingAllBuilder
+	// Build builds the BACnetConstructedDataAveragingAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataAveragingAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAveragingAll
+}
+
+// NewBACnetConstructedDataAveragingAllBuilder() creates a BACnetConstructedDataAveragingAllBuilder
+func NewBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragingAllBuilder {
+	return &_BACnetConstructedDataAveragingAllBuilder{_BACnetConstructedDataAveragingAll: new(_BACnetConstructedDataAveragingAll)}
+}
+
+type _BACnetConstructedDataAveragingAllBuilder struct {
+	*_BACnetConstructedDataAveragingAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAveragingAllBuilder) = (*_BACnetConstructedDataAveragingAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataAveragingAllBuilder) WithMandatoryFields() BACnetConstructedDataAveragingAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataAveragingAllBuilder) Build() (BACnetConstructedDataAveragingAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAveragingAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAveragingAllBuilder) MustBuild() BACnetConstructedDataAveragingAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAveragingAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAveragingAllBuilder()
+}
+
+// CreateBACnetConstructedDataAveragingAllBuilder creates a BACnetConstructedDataAveragingAllBuilder
+func (m *_BACnetConstructedDataAveragingAll) CreateBACnetConstructedDataAveragingAllBuilder() BACnetConstructedDataAveragingAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAveragingAllBuilder()
+	}
+	return &_BACnetConstructedDataAveragingAllBuilder{_BACnetConstructedDataAveragingAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

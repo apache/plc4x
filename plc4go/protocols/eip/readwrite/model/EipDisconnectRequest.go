@@ -40,6 +40,8 @@ type EipDisconnectRequest interface {
 	EipPacket
 	// IsEipDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipDisconnectRequest()
+	// CreateBuilder creates a EipDisconnectRequestBuilder
+	CreateEipDisconnectRequestBuilder() EipDisconnectRequestBuilder
 }
 
 // _EipDisconnectRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext 
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipDisconnectRequestBuilder is a builder for EipDisconnectRequest
+type EipDisconnectRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipDisconnectRequestBuilder
+	// Build builds the EipDisconnectRequest or returns an error if something is wrong
+	Build() (EipDisconnectRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipDisconnectRequest
+}
+
+// NewEipDisconnectRequestBuilder() creates a EipDisconnectRequestBuilder
+func NewEipDisconnectRequestBuilder() EipDisconnectRequestBuilder {
+	return &_EipDisconnectRequestBuilder{_EipDisconnectRequest: new(_EipDisconnectRequest)}
+}
+
+type _EipDisconnectRequestBuilder struct {
+	*_EipDisconnectRequest
+
+	err *utils.MultiError
+}
+
+var _ (EipDisconnectRequestBuilder) = (*_EipDisconnectRequestBuilder)(nil)
+
+func (m *_EipDisconnectRequestBuilder) WithMandatoryFields() EipDisconnectRequestBuilder {
+	return m
+}
+
+func (m *_EipDisconnectRequestBuilder) Build() (EipDisconnectRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipDisconnectRequest.deepCopy(), nil
+}
+
+func (m *_EipDisconnectRequestBuilder) MustBuild() EipDisconnectRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipDisconnectRequestBuilder) DeepCopy() any {
+	return m.CreateEipDisconnectRequestBuilder()
+}
+
+// CreateEipDisconnectRequestBuilder creates a EipDisconnectRequestBuilder
+func (m *_EipDisconnectRequest) CreateEipDisconnectRequestBuilder() EipDisconnectRequestBuilder {
+	if m == nil {
+		return NewEipDisconnectRequestBuilder()
+	}
+	return &_EipDisconnectRequestBuilder{_EipDisconnectRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -47,6 +47,8 @@ type BACnetSpecialEvent interface {
 	GetEventPriority() BACnetContextTagUnsignedInteger
 	// IsBACnetSpecialEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEvent()
+	// CreateBuilder creates a BACnetSpecialEventBuilder
+	CreateBACnetSpecialEventBuilder() BACnetSpecialEventBuilder
 }
 
 // _BACnetSpecialEvent is the data-structure of this message
@@ -71,6 +73,140 @@ func NewBACnetSpecialEvent(period BACnetSpecialEventPeriod, listOfTimeValues BAC
 	}
 	return &_BACnetSpecialEvent{Period: period, ListOfTimeValues: listOfTimeValues, EventPriority: eventPriority}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSpecialEventBuilder is a builder for BACnetSpecialEvent
+type BACnetSpecialEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder
+	// WithPeriod adds Period (property field)
+	WithPeriod(BACnetSpecialEventPeriod) BACnetSpecialEventBuilder
+	// WithListOfTimeValues adds ListOfTimeValues (property field)
+	WithListOfTimeValues(BACnetSpecialEventListOfTimeValues) BACnetSpecialEventBuilder
+	// WithListOfTimeValuesBuilder adds ListOfTimeValues (property field) which is build by the builder
+	WithListOfTimeValuesBuilder(func(BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventBuilder
+	// WithEventPriority adds EventPriority (property field)
+	WithEventPriority(BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder
+	// WithEventPriorityBuilder adds EventPriority (property field) which is build by the builder
+	WithEventPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSpecialEventBuilder
+	// Build builds the BACnetSpecialEvent or returns an error if something is wrong
+	Build() (BACnetSpecialEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSpecialEvent
+}
+
+// NewBACnetSpecialEventBuilder() creates a BACnetSpecialEventBuilder
+func NewBACnetSpecialEventBuilder() BACnetSpecialEventBuilder {
+	return &_BACnetSpecialEventBuilder{_BACnetSpecialEvent: new(_BACnetSpecialEvent)}
+}
+
+type _BACnetSpecialEventBuilder struct {
+	*_BACnetSpecialEvent
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSpecialEventBuilder) = (*_BACnetSpecialEventBuilder)(nil)
+
+func (m *_BACnetSpecialEventBuilder) WithMandatoryFields(period BACnetSpecialEventPeriod, listOfTimeValues BACnetSpecialEventListOfTimeValues, eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
+	return m.WithPeriod(period).WithListOfTimeValues(listOfTimeValues).WithEventPriority(eventPriority)
+}
+
+func (m *_BACnetSpecialEventBuilder) WithPeriod(period BACnetSpecialEventPeriod) BACnetSpecialEventBuilder {
+	m.Period = period
+	return m
+}
+
+func (m *_BACnetSpecialEventBuilder) WithListOfTimeValues(listOfTimeValues BACnetSpecialEventListOfTimeValues) BACnetSpecialEventBuilder {
+	m.ListOfTimeValues = listOfTimeValues
+	return m
+}
+
+func (m *_BACnetSpecialEventBuilder) WithListOfTimeValuesBuilder(builderSupplier func(BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventListOfTimeValuesBuilder) BACnetSpecialEventBuilder {
+	builder := builderSupplier(m.ListOfTimeValues.CreateBACnetSpecialEventListOfTimeValuesBuilder())
+	var err error
+	m.ListOfTimeValues, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSpecialEventListOfTimeValuesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetSpecialEventBuilder) WithEventPriority(eventPriority BACnetContextTagUnsignedInteger) BACnetSpecialEventBuilder {
+	m.EventPriority = eventPriority
+	return m
+}
+
+func (m *_BACnetSpecialEventBuilder) WithEventPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSpecialEventBuilder {
+	builder := builderSupplier(m.EventPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.EventPriority, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetSpecialEventBuilder) Build() (BACnetSpecialEvent, error) {
+	if m.Period == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'period' not set"))
+	}
+	if m.ListOfTimeValues == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'listOfTimeValues' not set"))
+	}
+	if m.EventPriority == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'eventPriority' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetSpecialEvent.deepCopy(), nil
+}
+
+func (m *_BACnetSpecialEventBuilder) MustBuild() BACnetSpecialEvent {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetSpecialEventBuilder) DeepCopy() any {
+	return m.CreateBACnetSpecialEventBuilder()
+}
+
+// CreateBACnetSpecialEventBuilder creates a BACnetSpecialEventBuilder
+func (m *_BACnetSpecialEvent) CreateBACnetSpecialEventBuilder() BACnetSpecialEventBuilder {
+	if m == nil {
+		return NewBACnetSpecialEventBuilder()
+	}
+	return &_BACnetSpecialEventBuilder{_BACnetSpecialEvent: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

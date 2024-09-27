@@ -46,6 +46,8 @@ type ApduDataGroupValueResponse interface {
 	GetData() []byte
 	// IsApduDataGroupValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataGroupValueResponse()
+	// CreateBuilder creates a ApduDataGroupValueResponseBuilder
+	CreateApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder
 }
 
 // _ApduDataGroupValueResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewApduDataGroupValueResponse(dataFirstByte int8, data []byte, dataLength u
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataGroupValueResponseBuilder is a builder for ApduDataGroupValueResponse
+type ApduDataGroupValueResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueResponseBuilder
+	// WithDataFirstByte adds DataFirstByte (property field)
+	WithDataFirstByte(int8) ApduDataGroupValueResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataGroupValueResponseBuilder
+	// Build builds the ApduDataGroupValueResponse or returns an error if something is wrong
+	Build() (ApduDataGroupValueResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataGroupValueResponse
+}
+
+// NewApduDataGroupValueResponseBuilder() creates a ApduDataGroupValueResponseBuilder
+func NewApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder {
+	return &_ApduDataGroupValueResponseBuilder{_ApduDataGroupValueResponse: new(_ApduDataGroupValueResponse)}
+}
+
+type _ApduDataGroupValueResponseBuilder struct {
+	*_ApduDataGroupValueResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataGroupValueResponseBuilder) = (*_ApduDataGroupValueResponseBuilder)(nil)
+
+func (m *_ApduDataGroupValueResponseBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueResponseBuilder {
+	return m.WithDataFirstByte(dataFirstByte).WithData(data...)
+}
+
+func (m *_ApduDataGroupValueResponseBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueResponseBuilder {
+	m.DataFirstByte = dataFirstByte
+	return m
+}
+
+func (m *_ApduDataGroupValueResponseBuilder) WithData(data ...byte) ApduDataGroupValueResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ApduDataGroupValueResponseBuilder) Build() (ApduDataGroupValueResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataGroupValueResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataGroupValueResponseBuilder) MustBuild() ApduDataGroupValueResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataGroupValueResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataGroupValueResponseBuilder()
+}
+
+// CreateApduDataGroupValueResponseBuilder creates a ApduDataGroupValueResponseBuilder
+func (m *_ApduDataGroupValueResponse) CreateApduDataGroupValueResponseBuilder() ApduDataGroupValueResponseBuilder {
+	if m == nil {
+		return NewApduDataGroupValueResponseBuilder()
+	}
+	return &_ApduDataGroupValueResponseBuilder{_ApduDataGroupValueResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

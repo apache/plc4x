@@ -69,6 +69,8 @@ type NPDU interface {
 	GetPayloadSubtraction() uint16
 	// IsNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNPDU()
+	// CreateBuilder creates a NPDUBuilder
+	CreateNPDUBuilder() NPDUBuilder
 }
 
 // _NPDU is the data-structure of this message
@@ -98,6 +100,169 @@ func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetwor
 	}
 	return &_NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NPDUBuilder is a builder for NPDU
+type NPDUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder
+	// WithProtocolVersionNumber adds ProtocolVersionNumber (property field)
+	WithProtocolVersionNumber(uint8) NPDUBuilder
+	// WithControl adds Control (property field)
+	WithControl(NPDUControl) NPDUBuilder
+	// WithControlBuilder adds Control (property field) which is build by the builder
+	WithControlBuilder(func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder
+	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
+	WithOptionalDestinationNetworkAddress(uint16) NPDUBuilder
+	// WithDestinationLength adds DestinationLength (property field)
+	WithOptionalDestinationLength(uint8) NPDUBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(...uint8) NPDUBuilder
+	// WithSourceNetworkAddress adds SourceNetworkAddress (property field)
+	WithOptionalSourceNetworkAddress(uint16) NPDUBuilder
+	// WithSourceLength adds SourceLength (property field)
+	WithOptionalSourceLength(uint8) NPDUBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(...uint8) NPDUBuilder
+	// WithHopCount adds HopCount (property field)
+	WithOptionalHopCount(uint8) NPDUBuilder
+	// WithNlm adds Nlm (property field)
+	WithOptionalNlm(NLM) NPDUBuilder
+	// WithApdu adds Apdu (property field)
+	WithOptionalApdu(APDU) NPDUBuilder
+	// Build builds the NPDU or returns an error if something is wrong
+	Build() (NPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NPDU
+}
+
+// NewNPDUBuilder() creates a NPDUBuilder
+func NewNPDUBuilder() NPDUBuilder {
+	return &_NPDUBuilder{_NPDU: new(_NPDU)}
+}
+
+type _NPDUBuilder struct {
+	*_NPDU
+
+	err *utils.MultiError
+}
+
+var _ (NPDUBuilder) = (*_NPDUBuilder)(nil)
+
+func (m *_NPDUBuilder) WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder {
+	return m.WithProtocolVersionNumber(protocolVersionNumber).WithControl(control).WithDestinationAddress(destinationAddress...).WithSourceAddress(sourceAddress...)
+}
+
+func (m *_NPDUBuilder) WithProtocolVersionNumber(protocolVersionNumber uint8) NPDUBuilder {
+	m.ProtocolVersionNumber = protocolVersionNumber
+	return m
+}
+
+func (m *_NPDUBuilder) WithControl(control NPDUControl) NPDUBuilder {
+	m.Control = control
+	return m
+}
+
+func (m *_NPDUBuilder) WithControlBuilder(builderSupplier func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder {
+	builder := builderSupplier(m.Control.CreateNPDUControlBuilder())
+	var err error
+	m.Control, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NPDUControlBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalDestinationNetworkAddress(destinationNetworkAddress uint16) NPDUBuilder {
+	m.DestinationNetworkAddress = &destinationNetworkAddress
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalDestinationLength(destinationLength uint8) NPDUBuilder {
+	m.DestinationLength = &destinationLength
+	return m
+}
+
+func (m *_NPDUBuilder) WithDestinationAddress(destinationAddress ...uint8) NPDUBuilder {
+	m.DestinationAddress = destinationAddress
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalSourceNetworkAddress(sourceNetworkAddress uint16) NPDUBuilder {
+	m.SourceNetworkAddress = &sourceNetworkAddress
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalSourceLength(sourceLength uint8) NPDUBuilder {
+	m.SourceLength = &sourceLength
+	return m
+}
+
+func (m *_NPDUBuilder) WithSourceAddress(sourceAddress ...uint8) NPDUBuilder {
+	m.SourceAddress = sourceAddress
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalHopCount(hopCount uint8) NPDUBuilder {
+	m.HopCount = &hopCount
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalNlm(nlm NLM) NPDUBuilder {
+	m.Nlm = nlm
+	return m
+}
+
+func (m *_NPDUBuilder) WithOptionalApdu(apdu APDU) NPDUBuilder {
+	m.Apdu = apdu
+	return m
+}
+
+func (m *_NPDUBuilder) Build() (NPDU, error) {
+	if m.Control == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'control' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NPDU.deepCopy(), nil
+}
+
+func (m *_NPDUBuilder) MustBuild() NPDU {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NPDUBuilder) DeepCopy() any {
+	return m.CreateNPDUBuilder()
+}
+
+// CreateNPDUBuilder creates a NPDUBuilder
+func (m *_NPDU) CreateNPDUBuilder() NPDUBuilder {
+	if m == nil {
+		return NewNPDUBuilder()
+	}
+	return &_NPDUBuilder{_NPDU: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

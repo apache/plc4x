@@ -40,6 +40,8 @@ type ModbusPDUGetComEventLogRequest interface {
 	ModbusPDU
 	// IsModbusPDUGetComEventLogRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUGetComEventLogRequest()
+	// CreateBuilder creates a ModbusPDUGetComEventLogRequestBuilder
+	CreateModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBuilder
 }
 
 // _ModbusPDUGetComEventLogRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewModbusPDUGetComEventLogRequest() *_ModbusPDUGetComEventLogRequest {
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUGetComEventLogRequestBuilder is a builder for ModbusPDUGetComEventLogRequest
+type ModbusPDUGetComEventLogRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder
+	// Build builds the ModbusPDUGetComEventLogRequest or returns an error if something is wrong
+	Build() (ModbusPDUGetComEventLogRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUGetComEventLogRequest
+}
+
+// NewModbusPDUGetComEventLogRequestBuilder() creates a ModbusPDUGetComEventLogRequestBuilder
+func NewModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBuilder {
+	return &_ModbusPDUGetComEventLogRequestBuilder{_ModbusPDUGetComEventLogRequest: new(_ModbusPDUGetComEventLogRequest)}
+}
+
+type _ModbusPDUGetComEventLogRequestBuilder struct {
+	*_ModbusPDUGetComEventLogRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUGetComEventLogRequestBuilder) = (*_ModbusPDUGetComEventLogRequestBuilder)(nil)
+
+func (m *_ModbusPDUGetComEventLogRequestBuilder) WithMandatoryFields() ModbusPDUGetComEventLogRequestBuilder {
+	return m
+}
+
+func (m *_ModbusPDUGetComEventLogRequestBuilder) Build() (ModbusPDUGetComEventLogRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUGetComEventLogRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUGetComEventLogRequestBuilder) MustBuild() ModbusPDUGetComEventLogRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUGetComEventLogRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUGetComEventLogRequestBuilder()
+}
+
+// CreateModbusPDUGetComEventLogRequestBuilder creates a ModbusPDUGetComEventLogRequestBuilder
+func (m *_ModbusPDUGetComEventLogRequest) CreateModbusPDUGetComEventLogRequestBuilder() ModbusPDUGetComEventLogRequestBuilder {
+	if m == nil {
+		return NewModbusPDUGetComEventLogRequestBuilder()
+	}
+	return &_ModbusPDUGetComEventLogRequestBuilder{_ModbusPDUGetComEventLogRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

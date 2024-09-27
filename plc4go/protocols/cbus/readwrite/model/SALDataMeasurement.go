@@ -44,6 +44,8 @@ type SALDataMeasurement interface {
 	GetMeasurementData() MeasurementData
 	// IsSALDataMeasurement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataMeasurement()
+	// CreateBuilder creates a SALDataMeasurementBuilder
+	CreateSALDataMeasurementBuilder() SALDataMeasurementBuilder
 }
 
 // _SALDataMeasurement is the data-structure of this message
@@ -67,6 +69,84 @@ func NewSALDataMeasurement(salData SALData, measurementData MeasurementData) *_S
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataMeasurementBuilder is a builder for SALDataMeasurement
+type SALDataMeasurementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(measurementData MeasurementData) SALDataMeasurementBuilder
+	// WithMeasurementData adds MeasurementData (property field)
+	WithMeasurementData(MeasurementData) SALDataMeasurementBuilder
+	// Build builds the SALDataMeasurement or returns an error if something is wrong
+	Build() (SALDataMeasurement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataMeasurement
+}
+
+// NewSALDataMeasurementBuilder() creates a SALDataMeasurementBuilder
+func NewSALDataMeasurementBuilder() SALDataMeasurementBuilder {
+	return &_SALDataMeasurementBuilder{_SALDataMeasurement: new(_SALDataMeasurement)}
+}
+
+type _SALDataMeasurementBuilder struct {
+	*_SALDataMeasurement
+
+	err *utils.MultiError
+}
+
+var _ (SALDataMeasurementBuilder) = (*_SALDataMeasurementBuilder)(nil)
+
+func (m *_SALDataMeasurementBuilder) WithMandatoryFields(measurementData MeasurementData) SALDataMeasurementBuilder {
+	return m.WithMeasurementData(measurementData)
+}
+
+func (m *_SALDataMeasurementBuilder) WithMeasurementData(measurementData MeasurementData) SALDataMeasurementBuilder {
+	m.MeasurementData = measurementData
+	return m
+}
+
+func (m *_SALDataMeasurementBuilder) Build() (SALDataMeasurement, error) {
+	if m.MeasurementData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'measurementData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataMeasurement.deepCopy(), nil
+}
+
+func (m *_SALDataMeasurementBuilder) MustBuild() SALDataMeasurement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataMeasurementBuilder) DeepCopy() any {
+	return m.CreateSALDataMeasurementBuilder()
+}
+
+// CreateSALDataMeasurementBuilder creates a SALDataMeasurementBuilder
+func (m *_SALDataMeasurement) CreateSALDataMeasurementBuilder() SALDataMeasurementBuilder {
+	if m == nil {
+		return NewSALDataMeasurementBuilder()
+	}
+	return &_SALDataMeasurementBuilder{_SALDataMeasurement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

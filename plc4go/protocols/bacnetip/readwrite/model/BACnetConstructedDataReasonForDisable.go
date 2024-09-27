@@ -44,6 +44,8 @@ type BACnetConstructedDataReasonForDisable interface {
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
 	// IsBACnetConstructedDataReasonForDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReasonForDisable()
+	// CreateBuilder creates a BACnetConstructedDataReasonForDisableBuilder
+	CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder
 }
 
 // _BACnetConstructedDataReasonForDisable is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReasonForDisableBuilder is a builder for BACnetConstructedDataReasonForDisable
+type BACnetConstructedDataReasonForDisableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
+	// WithReasonForDisable adds ReasonForDisable (property field)
+	WithReasonForDisable(...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
+	// Build builds the BACnetConstructedDataReasonForDisable or returns an error if something is wrong
+	Build() (BACnetConstructedDataReasonForDisable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReasonForDisable
+}
+
+// NewBACnetConstructedDataReasonForDisableBuilder() creates a BACnetConstructedDataReasonForDisableBuilder
+func NewBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
+	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: new(_BACnetConstructedDataReasonForDisable)}
+}
+
+type _BACnetConstructedDataReasonForDisableBuilder struct {
+	*_BACnetConstructedDataReasonForDisable
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReasonForDisableBuilder) = (*_BACnetConstructedDataReasonForDisableBuilder)(nil)
+
+func (m *_BACnetConstructedDataReasonForDisableBuilder) WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	return m.WithReasonForDisable(reasonForDisable...)
+}
+
+func (m *_BACnetConstructedDataReasonForDisableBuilder) WithReasonForDisable(reasonForDisable ...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	m.ReasonForDisable = reasonForDisable
+	return m
+}
+
+func (m *_BACnetConstructedDataReasonForDisableBuilder) Build() (BACnetConstructedDataReasonForDisable, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataReasonForDisable.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataReasonForDisableBuilder) MustBuild() BACnetConstructedDataReasonForDisable {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataReasonForDisableBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataReasonForDisableBuilder()
+}
+
+// CreateBACnetConstructedDataReasonForDisableBuilder creates a BACnetConstructedDataReasonForDisableBuilder
+func (m *_BACnetConstructedDataReasonForDisable) CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataReasonForDisableBuilder()
+	}
+	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

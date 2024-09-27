@@ -46,6 +46,8 @@ type EventNotificationList interface {
 	GetEvents() []ExtensionObjectDefinition
 	// IsEventNotificationList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEventNotificationList()
+	// CreateBuilder creates a EventNotificationListBuilder
+	CreateEventNotificationListBuilder() EventNotificationListBuilder
 }
 
 // _EventNotificationList is the data-structure of this message
@@ -68,6 +70,85 @@ func NewEventNotificationList(noOfEvents int32, events []ExtensionObjectDefiniti
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EventNotificationListBuilder is a builder for EventNotificationList
+type EventNotificationListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder
+	// WithNoOfEvents adds NoOfEvents (property field)
+	WithNoOfEvents(int32) EventNotificationListBuilder
+	// WithEvents adds Events (property field)
+	WithEvents(...ExtensionObjectDefinition) EventNotificationListBuilder
+	// Build builds the EventNotificationList or returns an error if something is wrong
+	Build() (EventNotificationList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EventNotificationList
+}
+
+// NewEventNotificationListBuilder() creates a EventNotificationListBuilder
+func NewEventNotificationListBuilder() EventNotificationListBuilder {
+	return &_EventNotificationListBuilder{_EventNotificationList: new(_EventNotificationList)}
+}
+
+type _EventNotificationListBuilder struct {
+	*_EventNotificationList
+
+	err *utils.MultiError
+}
+
+var _ (EventNotificationListBuilder) = (*_EventNotificationListBuilder)(nil)
+
+func (m *_EventNotificationListBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder {
+	return m.WithNoOfEvents(noOfEvents).WithEvents(events...)
+}
+
+func (m *_EventNotificationListBuilder) WithNoOfEvents(noOfEvents int32) EventNotificationListBuilder {
+	m.NoOfEvents = noOfEvents
+	return m
+}
+
+func (m *_EventNotificationListBuilder) WithEvents(events ...ExtensionObjectDefinition) EventNotificationListBuilder {
+	m.Events = events
+	return m
+}
+
+func (m *_EventNotificationListBuilder) Build() (EventNotificationList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EventNotificationList.deepCopy(), nil
+}
+
+func (m *_EventNotificationListBuilder) MustBuild() EventNotificationList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EventNotificationListBuilder) DeepCopy() any {
+	return m.CreateEventNotificationListBuilder()
+}
+
+// CreateEventNotificationListBuilder creates a EventNotificationListBuilder
+func (m *_EventNotificationList) CreateEventNotificationListBuilder() EventNotificationListBuilder {
+	if m == nil {
+		return NewEventNotificationListBuilder()
+	}
+	return &_EventNotificationListBuilder{_EventNotificationList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

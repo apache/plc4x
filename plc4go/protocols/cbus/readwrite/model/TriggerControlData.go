@@ -43,6 +43,8 @@ type TriggerControlData interface {
 	utils.Copyable
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
+	// CreateBuilder creates a TriggerControlDataBuilder
+	CreateTriggerControlDataBuilder() TriggerControlDataBuilder
 }
 
 // TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type TriggerControlDataContract interface {
 	GetIsUnused() bool
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
+	// CreateBuilder creates a TriggerControlDataBuilder
+	CreateTriggerControlDataBuilder() TriggerControlDataBuilder
 }
 
 // TriggerControlDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +84,85 @@ var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
 func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
 	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataBuilder is a builder for TriggerControlData
+type TriggerControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) TriggerControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(TriggerControlCommandTypeContainer) TriggerControlDataBuilder
+	// WithTriggerGroup adds TriggerGroup (property field)
+	WithTriggerGroup(byte) TriggerControlDataBuilder
+	// Build builds the TriggerControlData or returns an error if something is wrong
+	Build() (TriggerControlDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlDataContract
+}
+
+// NewTriggerControlDataBuilder() creates a TriggerControlDataBuilder
+func NewTriggerControlDataBuilder() TriggerControlDataBuilder {
+	return &_TriggerControlDataBuilder{_TriggerControlData: new(_TriggerControlData)}
+}
+
+type _TriggerControlDataBuilder struct {
+	*_TriggerControlData
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataBuilder) = (*_TriggerControlDataBuilder)(nil)
+
+func (m *_TriggerControlDataBuilder) WithMandatoryFields(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) TriggerControlDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithTriggerGroup(triggerGroup)
+}
+
+func (m *_TriggerControlDataBuilder) WithCommandTypeContainer(commandTypeContainer TriggerControlCommandTypeContainer) TriggerControlDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_TriggerControlDataBuilder) WithTriggerGroup(triggerGroup byte) TriggerControlDataBuilder {
+	m.TriggerGroup = triggerGroup
+	return m
+}
+
+func (m *_TriggerControlDataBuilder) Build() (TriggerControlDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TriggerControlData.deepCopy(), nil
+}
+
+func (m *_TriggerControlDataBuilder) MustBuild() TriggerControlDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TriggerControlDataBuilder) DeepCopy() any {
+	return m.CreateTriggerControlDataBuilder()
+}
+
+// CreateTriggerControlDataBuilder creates a TriggerControlDataBuilder
+func (m *_TriggerControlData) CreateTriggerControlDataBuilder() TriggerControlDataBuilder {
+	if m == nil {
+		return NewTriggerControlDataBuilder()
+	}
+	return &_TriggerControlDataBuilder{_TriggerControlData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

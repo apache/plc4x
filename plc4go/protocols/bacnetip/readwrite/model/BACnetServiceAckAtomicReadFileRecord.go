@@ -48,6 +48,8 @@ type BACnetServiceAckAtomicReadFileRecord interface {
 	GetFileRecordData() []BACnetApplicationTagOctetString
 	// IsBACnetServiceAckAtomicReadFileRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckAtomicReadFileRecord()
+	// CreateBuilder creates a BACnetServiceAckAtomicReadFileRecordBuilder
+	CreateBACnetServiceAckAtomicReadFileRecordBuilder() BACnetServiceAckAtomicReadFileRecordBuilder
 }
 
 // _BACnetServiceAckAtomicReadFileRecord is the data-structure of this message
@@ -78,6 +80,134 @@ func NewBACnetServiceAckAtomicReadFileRecord(peekedTagHeader BACnetTagHeader, op
 	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckAtomicReadFileRecordBuilder is a builder for BACnetServiceAckAtomicReadFileRecord
+type BACnetServiceAckAtomicReadFileRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, returnedRecordCount BACnetApplicationTagUnsignedInteger, fileRecordData []BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder
+	// WithFileStartRecord adds FileStartRecord (property field)
+	WithFileStartRecord(BACnetApplicationTagSignedInteger) BACnetServiceAckAtomicReadFileRecordBuilder
+	// WithFileStartRecordBuilder adds FileStartRecord (property field) which is build by the builder
+	WithFileStartRecordBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetServiceAckAtomicReadFileRecordBuilder
+	// WithReturnedRecordCount adds ReturnedRecordCount (property field)
+	WithReturnedRecordCount(BACnetApplicationTagUnsignedInteger) BACnetServiceAckAtomicReadFileRecordBuilder
+	// WithReturnedRecordCountBuilder adds ReturnedRecordCount (property field) which is build by the builder
+	WithReturnedRecordCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckAtomicReadFileRecordBuilder
+	// WithFileRecordData adds FileRecordData (property field)
+	WithFileRecordData(...BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder
+	// Build builds the BACnetServiceAckAtomicReadFileRecord or returns an error if something is wrong
+	Build() (BACnetServiceAckAtomicReadFileRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckAtomicReadFileRecord
+}
+
+// NewBACnetServiceAckAtomicReadFileRecordBuilder() creates a BACnetServiceAckAtomicReadFileRecordBuilder
+func NewBACnetServiceAckAtomicReadFileRecordBuilder() BACnetServiceAckAtomicReadFileRecordBuilder {
+	return &_BACnetServiceAckAtomicReadFileRecordBuilder{_BACnetServiceAckAtomicReadFileRecord: new(_BACnetServiceAckAtomicReadFileRecord)}
+}
+
+type _BACnetServiceAckAtomicReadFileRecordBuilder struct {
+	*_BACnetServiceAckAtomicReadFileRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckAtomicReadFileRecordBuilder) = (*_BACnetServiceAckAtomicReadFileRecordBuilder)(nil)
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithMandatoryFields(fileStartRecord BACnetApplicationTagSignedInteger, returnedRecordCount BACnetApplicationTagUnsignedInteger, fileRecordData []BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder {
+	return m.WithFileStartRecord(fileStartRecord).WithReturnedRecordCount(returnedRecordCount).WithFileRecordData(fileRecordData...)
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithFileStartRecord(fileStartRecord BACnetApplicationTagSignedInteger) BACnetServiceAckAtomicReadFileRecordBuilder {
+	m.FileStartRecord = fileStartRecord
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithFileStartRecordBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetServiceAckAtomicReadFileRecordBuilder {
+	builder := builderSupplier(m.FileStartRecord.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.FileStartRecord, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithReturnedRecordCount(returnedRecordCount BACnetApplicationTagUnsignedInteger) BACnetServiceAckAtomicReadFileRecordBuilder {
+	m.ReturnedRecordCount = returnedRecordCount
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithReturnedRecordCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetServiceAckAtomicReadFileRecordBuilder {
+	builder := builderSupplier(m.ReturnedRecordCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ReturnedRecordCount, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) WithFileRecordData(fileRecordData ...BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileRecordBuilder {
+	m.FileRecordData = fileRecordData
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) Build() (BACnetServiceAckAtomicReadFileRecord, error) {
+	if m.FileStartRecord == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fileStartRecord' not set"))
+	}
+	if m.ReturnedRecordCount == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'returnedRecordCount' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetServiceAckAtomicReadFileRecord.deepCopy(), nil
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) MustBuild() BACnetServiceAckAtomicReadFileRecord {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetServiceAckAtomicReadFileRecordBuilder) DeepCopy() any {
+	return m.CreateBACnetServiceAckAtomicReadFileRecordBuilder()
+}
+
+// CreateBACnetServiceAckAtomicReadFileRecordBuilder creates a BACnetServiceAckAtomicReadFileRecordBuilder
+func (m *_BACnetServiceAckAtomicReadFileRecord) CreateBACnetServiceAckAtomicReadFileRecordBuilder() BACnetServiceAckAtomicReadFileRecordBuilder {
+	if m == nil {
+		return NewBACnetServiceAckAtomicReadFileRecordBuilder()
+	}
+	return &_BACnetServiceAckAtomicReadFileRecordBuilder{_BACnetServiceAckAtomicReadFileRecord: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

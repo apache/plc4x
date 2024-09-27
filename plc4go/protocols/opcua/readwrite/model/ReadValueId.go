@@ -50,6 +50,8 @@ type ReadValueId interface {
 	GetDataEncoding() QualifiedName
 	// IsReadValueId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReadValueId()
+	// CreateBuilder creates a ReadValueIdBuilder
+	CreateReadValueIdBuilder() ReadValueIdBuilder
 }
 
 // _ReadValueId is the data-structure of this message
@@ -85,6 +87,162 @@ func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReadValueIdBuilder is a builder for ReadValueId
+type ReadValueIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) ReadValueIdBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) ReadValueIdBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) ReadValueIdBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder
+	// WithDataEncoding adds DataEncoding (property field)
+	WithDataEncoding(QualifiedName) ReadValueIdBuilder
+	// WithDataEncodingBuilder adds DataEncoding (property field) which is build by the builder
+	WithDataEncodingBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder
+	// Build builds the ReadValueId or returns an error if something is wrong
+	Build() (ReadValueId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReadValueId
+}
+
+// NewReadValueIdBuilder() creates a ReadValueIdBuilder
+func NewReadValueIdBuilder() ReadValueIdBuilder {
+	return &_ReadValueIdBuilder{_ReadValueId: new(_ReadValueId)}
+}
+
+type _ReadValueIdBuilder struct {
+	*_ReadValueId
+
+	err *utils.MultiError
+}
+
+var _ (ReadValueIdBuilder) = (*_ReadValueIdBuilder)(nil)
+
+func (m *_ReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder {
+	return m.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding)
+}
+
+func (m *_ReadValueIdBuilder) WithNodeId(nodeId NodeId) ReadValueIdBuilder {
+	m.NodeId = nodeId
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+	var err error
+	m.NodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithAttributeId(attributeId uint32) ReadValueIdBuilder {
+	m.AttributeId = attributeId
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithIndexRange(indexRange PascalString) ReadValueIdBuilder {
+	m.IndexRange = indexRange
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+	var err error
+	m.IndexRange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) ReadValueIdBuilder {
+	m.DataEncoding = dataEncoding
+	return m
+}
+
+func (m *_ReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(m.DataEncoding.CreateQualifiedNameBuilder())
+	var err error
+	m.DataEncoding, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReadValueIdBuilder) Build() (ReadValueId, error) {
+	if m.NodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if m.IndexRange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if m.DataEncoding == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReadValueId.deepCopy(), nil
+}
+
+func (m *_ReadValueIdBuilder) MustBuild() ReadValueId {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReadValueIdBuilder) DeepCopy() any {
+	return m.CreateReadValueIdBuilder()
+}
+
+// CreateReadValueIdBuilder creates a ReadValueIdBuilder
+func (m *_ReadValueId) CreateReadValueIdBuilder() ReadValueIdBuilder {
+	if m == nil {
+		return NewReadValueIdBuilder()
+	}
+	return &_ReadValueIdBuilder{_ReadValueId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

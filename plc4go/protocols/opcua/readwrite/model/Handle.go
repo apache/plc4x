@@ -39,6 +39,8 @@ type Handle interface {
 	utils.Copyable
 	// IsHandle is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHandle()
+	// CreateBuilder creates a HandleBuilder
+	CreateHandleBuilder() HandleBuilder
 }
 
 // _Handle is the data-structure of this message
@@ -51,6 +53,71 @@ var _ Handle = (*_Handle)(nil)
 func NewHandle() *_Handle {
 	return &_Handle{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HandleBuilder is a builder for Handle
+type HandleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() HandleBuilder
+	// Build builds the Handle or returns an error if something is wrong
+	Build() (Handle, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Handle
+}
+
+// NewHandleBuilder() creates a HandleBuilder
+func NewHandleBuilder() HandleBuilder {
+	return &_HandleBuilder{_Handle: new(_Handle)}
+}
+
+type _HandleBuilder struct {
+	*_Handle
+
+	err *utils.MultiError
+}
+
+var _ (HandleBuilder) = (*_HandleBuilder)(nil)
+
+func (m *_HandleBuilder) WithMandatoryFields() HandleBuilder {
+	return m
+}
+
+func (m *_HandleBuilder) Build() (Handle, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Handle.deepCopy(), nil
+}
+
+func (m *_HandleBuilder) MustBuild() Handle {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HandleBuilder) DeepCopy() any {
+	return m.CreateHandleBuilder()
+}
+
+// CreateHandleBuilder creates a HandleBuilder
+func (m *_Handle) CreateHandleBuilder() HandleBuilder {
+	if m == nil {
+		return NewHandleBuilder()
+	}
+	return &_HandleBuilder{_Handle: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastHandle(structType any) Handle {

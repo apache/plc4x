@@ -44,6 +44,8 @@ type BACnetHostAddressName interface {
 	GetName() BACnetContextTagCharacterString
 	// IsBACnetHostAddressName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddressName()
+	// CreateBuilder creates a BACnetHostAddressNameBuilder
+	CreateBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder
 }
 
 // _BACnetHostAddressName is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetHostAddressName(peekedTagHeader BACnetTagHeader, name BACnetContex
 	_result.BACnetHostAddressContract.(*_BACnetHostAddress)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostAddressNameBuilder is a builder for BACnetHostAddressName
+type BACnetHostAddressNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder
+	// WithName adds Name (property field)
+	WithName(BACnetContextTagCharacterString) BACnetHostAddressNameBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetHostAddressNameBuilder
+	// Build builds the BACnetHostAddressName or returns an error if something is wrong
+	Build() (BACnetHostAddressName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostAddressName
+}
+
+// NewBACnetHostAddressNameBuilder() creates a BACnetHostAddressNameBuilder
+func NewBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder {
+	return &_BACnetHostAddressNameBuilder{_BACnetHostAddressName: new(_BACnetHostAddressName)}
+}
+
+type _BACnetHostAddressNameBuilder struct {
+	*_BACnetHostAddressName
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostAddressNameBuilder) = (*_BACnetHostAddressNameBuilder)(nil)
+
+func (m *_BACnetHostAddressNameBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
+	return m.WithName(name)
+}
+
+func (m *_BACnetHostAddressNameBuilder) WithName(name BACnetContextTagCharacterString) BACnetHostAddressNameBuilder {
+	m.Name = name
+	return m
+}
+
+func (m *_BACnetHostAddressNameBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetHostAddressNameBuilder {
+	builder := builderSupplier(m.Name.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	m.Name, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetHostAddressNameBuilder) Build() (BACnetHostAddressName, error) {
+	if m.Name == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetHostAddressName.deepCopy(), nil
+}
+
+func (m *_BACnetHostAddressNameBuilder) MustBuild() BACnetHostAddressName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetHostAddressNameBuilder) DeepCopy() any {
+	return m.CreateBACnetHostAddressNameBuilder()
+}
+
+// CreateBACnetHostAddressNameBuilder creates a BACnetHostAddressNameBuilder
+func (m *_BACnetHostAddressName) CreateBACnetHostAddressNameBuilder() BACnetHostAddressNameBuilder {
+	if m == nil {
+		return NewBACnetHostAddressNameBuilder()
+	}
+	return &_BACnetHostAddressNameBuilder{_BACnetHostAddressName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

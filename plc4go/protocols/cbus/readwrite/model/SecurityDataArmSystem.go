@@ -56,6 +56,8 @@ type SecurityDataArmSystem interface {
 	GetIsArmToHighestLevelOfProtection() bool
 	// IsSecurityDataArmSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataArmSystem()
+	// CreateBuilder creates a SecurityDataArmSystemBuilder
+	CreateSecurityDataArmSystemBuilder() SecurityDataArmSystemBuilder
 }
 
 // _SecurityDataArmSystem is the data-structure of this message
@@ -76,6 +78,78 @@ func NewSecurityDataArmSystem(commandTypeContainer SecurityCommandTypeContainer,
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataArmSystemBuilder is a builder for SecurityDataArmSystem
+type SecurityDataArmSystemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(armMode byte) SecurityDataArmSystemBuilder
+	// WithArmMode adds ArmMode (property field)
+	WithArmMode(byte) SecurityDataArmSystemBuilder
+	// Build builds the SecurityDataArmSystem or returns an error if something is wrong
+	Build() (SecurityDataArmSystem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataArmSystem
+}
+
+// NewSecurityDataArmSystemBuilder() creates a SecurityDataArmSystemBuilder
+func NewSecurityDataArmSystemBuilder() SecurityDataArmSystemBuilder {
+	return &_SecurityDataArmSystemBuilder{_SecurityDataArmSystem: new(_SecurityDataArmSystem)}
+}
+
+type _SecurityDataArmSystemBuilder struct {
+	*_SecurityDataArmSystem
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataArmSystemBuilder) = (*_SecurityDataArmSystemBuilder)(nil)
+
+func (m *_SecurityDataArmSystemBuilder) WithMandatoryFields(armMode byte) SecurityDataArmSystemBuilder {
+	return m.WithArmMode(armMode)
+}
+
+func (m *_SecurityDataArmSystemBuilder) WithArmMode(armMode byte) SecurityDataArmSystemBuilder {
+	m.ArmMode = armMode
+	return m
+}
+
+func (m *_SecurityDataArmSystemBuilder) Build() (SecurityDataArmSystem, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataArmSystem.deepCopy(), nil
+}
+
+func (m *_SecurityDataArmSystemBuilder) MustBuild() SecurityDataArmSystem {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataArmSystemBuilder) DeepCopy() any {
+	return m.CreateSecurityDataArmSystemBuilder()
+}
+
+// CreateSecurityDataArmSystemBuilder creates a SecurityDataArmSystemBuilder
+func (m *_SecurityDataArmSystem) CreateSecurityDataArmSystemBuilder() SecurityDataArmSystemBuilder {
+	if m == nil {
+		return NewSecurityDataArmSystemBuilder()
+	}
+	return &_SecurityDataArmSystemBuilder{_SecurityDataArmSystem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

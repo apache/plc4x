@@ -46,6 +46,8 @@ type BACnetConstructedDataCredentialDataInputUpdateTime interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataCredentialDataInputUpdateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialDataInputUpdateTime()
+	// CreateBuilder creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
 }
 
 // _BACnetConstructedDataCredentialDataInputUpdateTime is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpen
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialDataInputUpdateTimeBuilder is a builder for BACnetConstructedDataCredentialDataInputUpdateTime
+type BACnetConstructedDataCredentialDataInputUpdateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// WithUpdateTime adds UpdateTime (property field)
+	WithUpdateTime(BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// Build builds the BACnetConstructedDataCredentialDataInputUpdateTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime
+}
+
+// NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+func NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: new(_BACnetConstructedDataCredentialDataInputUpdateTime)}
+}
+
+type _BACnetConstructedDataCredentialDataInputUpdateTimeBuilder struct {
+	*_BACnetConstructedDataCredentialDataInputUpdateTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) = (*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	return m.WithUpdateTime(updateTime)
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTime(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	m.UpdateTime = updateTime
+	return m
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
+	if m.UpdateTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'updateTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCredentialDataInputUpdateTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder()
+}
+
+// CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder()
+	}
+	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

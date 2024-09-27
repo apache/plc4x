@@ -39,6 +39,8 @@ type IntegerId interface {
 	utils.Copyable
 	// IsIntegerId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIntegerId()
+	// CreateBuilder creates a IntegerIdBuilder
+	CreateIntegerIdBuilder() IntegerIdBuilder
 }
 
 // _IntegerId is the data-structure of this message
@@ -51,6 +53,71 @@ var _ IntegerId = (*_IntegerId)(nil)
 func NewIntegerId() *_IntegerId {
 	return &_IntegerId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IntegerIdBuilder is a builder for IntegerId
+type IntegerIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() IntegerIdBuilder
+	// Build builds the IntegerId or returns an error if something is wrong
+	Build() (IntegerId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IntegerId
+}
+
+// NewIntegerIdBuilder() creates a IntegerIdBuilder
+func NewIntegerIdBuilder() IntegerIdBuilder {
+	return &_IntegerIdBuilder{_IntegerId: new(_IntegerId)}
+}
+
+type _IntegerIdBuilder struct {
+	*_IntegerId
+
+	err *utils.MultiError
+}
+
+var _ (IntegerIdBuilder) = (*_IntegerIdBuilder)(nil)
+
+func (m *_IntegerIdBuilder) WithMandatoryFields() IntegerIdBuilder {
+	return m
+}
+
+func (m *_IntegerIdBuilder) Build() (IntegerId, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IntegerId.deepCopy(), nil
+}
+
+func (m *_IntegerIdBuilder) MustBuild() IntegerId {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IntegerIdBuilder) DeepCopy() any {
+	return m.CreateIntegerIdBuilder()
+}
+
+// CreateIntegerIdBuilder creates a IntegerIdBuilder
+func (m *_IntegerId) CreateIntegerIdBuilder() IntegerIdBuilder {
+	if m == nil {
+		return NewIntegerIdBuilder()
+	}
+	return &_IntegerIdBuilder{_IntegerId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastIntegerId(structType any) IntegerId {

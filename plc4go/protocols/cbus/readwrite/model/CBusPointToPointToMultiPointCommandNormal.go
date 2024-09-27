@@ -46,6 +46,8 @@ type CBusPointToPointToMultiPointCommandNormal interface {
 	GetSalData() SALData
 	// IsCBusPointToPointToMultiPointCommandNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointToMultiPointCommandNormal()
+	// CreateBuilder creates a CBusPointToPointToMultiPointCommandNormalBuilder
+	CreateCBusPointToPointToMultiPointCommandNormalBuilder() CBusPointToPointToMultiPointCommandNormalBuilder
 }
 
 // _CBusPointToPointToMultiPointCommandNormal is the data-structure of this message
@@ -71,6 +73,91 @@ func NewCBusPointToPointToMultiPointCommandNormal(bridgeAddress BridgeAddress, n
 	_result.CBusPointToPointToMultiPointCommandContract.(*_CBusPointToPointToMultiPointCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToPointToMultiPointCommandNormalBuilder is a builder for CBusPointToPointToMultiPointCommandNormal
+type CBusPointToPointToMultiPointCommandNormalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(application ApplicationIdContainer, salData SALData) CBusPointToPointToMultiPointCommandNormalBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) CBusPointToPointToMultiPointCommandNormalBuilder
+	// WithSalData adds SalData (property field)
+	WithSalData(SALData) CBusPointToPointToMultiPointCommandNormalBuilder
+	// Build builds the CBusPointToPointToMultiPointCommandNormal or returns an error if something is wrong
+	Build() (CBusPointToPointToMultiPointCommandNormal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToPointToMultiPointCommandNormal
+}
+
+// NewCBusPointToPointToMultiPointCommandNormalBuilder() creates a CBusPointToPointToMultiPointCommandNormalBuilder
+func NewCBusPointToPointToMultiPointCommandNormalBuilder() CBusPointToPointToMultiPointCommandNormalBuilder {
+	return &_CBusPointToPointToMultiPointCommandNormalBuilder{_CBusPointToPointToMultiPointCommandNormal: new(_CBusPointToPointToMultiPointCommandNormal)}
+}
+
+type _CBusPointToPointToMultiPointCommandNormalBuilder struct {
+	*_CBusPointToPointToMultiPointCommandNormal
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToPointToMultiPointCommandNormalBuilder) = (*_CBusPointToPointToMultiPointCommandNormalBuilder)(nil)
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) WithMandatoryFields(application ApplicationIdContainer, salData SALData) CBusPointToPointToMultiPointCommandNormalBuilder {
+	return m.WithApplication(application).WithSalData(salData)
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) WithApplication(application ApplicationIdContainer) CBusPointToPointToMultiPointCommandNormalBuilder {
+	m.Application = application
+	return m
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) WithSalData(salData SALData) CBusPointToPointToMultiPointCommandNormalBuilder {
+	m.SalData = salData
+	return m
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) Build() (CBusPointToPointToMultiPointCommandNormal, error) {
+	if m.SalData == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'salData' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusPointToPointToMultiPointCommandNormal.deepCopy(), nil
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) MustBuild() CBusPointToPointToMultiPointCommandNormal {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusPointToPointToMultiPointCommandNormalBuilder) DeepCopy() any {
+	return m.CreateCBusPointToPointToMultiPointCommandNormalBuilder()
+}
+
+// CreateCBusPointToPointToMultiPointCommandNormalBuilder creates a CBusPointToPointToMultiPointCommandNormalBuilder
+func (m *_CBusPointToPointToMultiPointCommandNormal) CreateCBusPointToPointToMultiPointCommandNormalBuilder() CBusPointToPointToMultiPointCommandNormalBuilder {
+	if m == nil {
+		return NewCBusPointToPointToMultiPointCommandNormalBuilder()
+	}
+	return &_CBusPointToPointToMultiPointCommandNormalBuilder{_CBusPointToPointToMultiPointCommandNormal: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

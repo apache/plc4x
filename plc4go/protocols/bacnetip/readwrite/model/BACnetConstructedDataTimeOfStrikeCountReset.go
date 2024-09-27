@@ -46,6 +46,8 @@ type BACnetConstructedDataTimeOfStrikeCountReset interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataTimeOfStrikeCountReset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimeOfStrikeCountReset()
+	// CreateBuilder creates a BACnetConstructedDataTimeOfStrikeCountResetBuilder
+	CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDataTimeOfStrikeCountResetBuilder
 }
 
 // _BACnetConstructedDataTimeOfStrikeCountReset is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTimeOfStrikeCountReset(openingTag BACnetOpeningTag,
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimeOfStrikeCountResetBuilder is a builder for BACnetConstructedDataTimeOfStrikeCountReset
+type BACnetConstructedDataTimeOfStrikeCountResetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder
+	// WithTimeOfStrikeCountReset adds TimeOfStrikeCountReset (property field)
+	WithTimeOfStrikeCountReset(BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder
+	// WithTimeOfStrikeCountResetBuilder adds TimeOfStrikeCountReset (property field) which is build by the builder
+	WithTimeOfStrikeCountResetBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStrikeCountResetBuilder
+	// Build builds the BACnetConstructedDataTimeOfStrikeCountReset or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimeOfStrikeCountReset, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimeOfStrikeCountReset
+}
+
+// NewBACnetConstructedDataTimeOfStrikeCountResetBuilder() creates a BACnetConstructedDataTimeOfStrikeCountResetBuilder
+func NewBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	return &_BACnetConstructedDataTimeOfStrikeCountResetBuilder{_BACnetConstructedDataTimeOfStrikeCountReset: new(_BACnetConstructedDataTimeOfStrikeCountReset)}
+}
+
+type _BACnetConstructedDataTimeOfStrikeCountResetBuilder struct {
+	*_BACnetConstructedDataTimeOfStrikeCountReset
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimeOfStrikeCountResetBuilder) = (*_BACnetConstructedDataTimeOfStrikeCountResetBuilder)(nil)
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithMandatoryFields(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	return m.WithTimeOfStrikeCountReset(timeOfStrikeCountReset)
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountReset(timeOfStrikeCountReset BACnetDateTime) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	m.TimeOfStrikeCountReset = timeOfStrikeCountReset
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) WithTimeOfStrikeCountResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	builder := builderSupplier(m.TimeOfStrikeCountReset.CreateBACnetDateTimeBuilder())
+	var err error
+	m.TimeOfStrikeCountReset, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) Build() (BACnetConstructedDataTimeOfStrikeCountReset, error) {
+	if m.TimeOfStrikeCountReset == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeOfStrikeCountReset' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTimeOfStrikeCountReset.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) MustBuild() BACnetConstructedDataTimeOfStrikeCountReset {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTimeOfStrikeCountResetBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder()
+}
+
+// CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder creates a BACnetConstructedDataTimeOfStrikeCountResetBuilder
+func (m *_BACnetConstructedDataTimeOfStrikeCountReset) CreateBACnetConstructedDataTimeOfStrikeCountResetBuilder() BACnetConstructedDataTimeOfStrikeCountResetBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTimeOfStrikeCountResetBuilder()
+	}
+	return &_BACnetConstructedDataTimeOfStrikeCountResetBuilder{_BACnetConstructedDataTimeOfStrikeCountReset: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

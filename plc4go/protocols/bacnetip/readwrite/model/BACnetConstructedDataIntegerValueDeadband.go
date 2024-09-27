@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegerValueDeadband interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataIntegerValueDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueDeadband()
+	// CreateBuilder creates a BACnetConstructedDataIntegerValueDeadbandBuilder
+	CreateBACnetConstructedDataIntegerValueDeadbandBuilder() BACnetConstructedDataIntegerValueDeadbandBuilder
 }
 
 // _BACnetConstructedDataIntegerValueDeadband is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegerValueDeadband(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegerValueDeadbandBuilder is a builder for BACnetConstructedDataIntegerValueDeadband
+type BACnetConstructedDataIntegerValueDeadbandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder
+	// WithDeadband adds Deadband (property field)
+	WithDeadband(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder
+	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
+	WithDeadbandBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueDeadbandBuilder
+	// Build builds the BACnetConstructedDataIntegerValueDeadband or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegerValueDeadband, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegerValueDeadband
+}
+
+// NewBACnetConstructedDataIntegerValueDeadbandBuilder() creates a BACnetConstructedDataIntegerValueDeadbandBuilder
+func NewBACnetConstructedDataIntegerValueDeadbandBuilder() BACnetConstructedDataIntegerValueDeadbandBuilder {
+	return &_BACnetConstructedDataIntegerValueDeadbandBuilder{_BACnetConstructedDataIntegerValueDeadband: new(_BACnetConstructedDataIntegerValueDeadband)}
+}
+
+type _BACnetConstructedDataIntegerValueDeadbandBuilder struct {
+	*_BACnetConstructedDataIntegerValueDeadband
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegerValueDeadbandBuilder) = (*_BACnetConstructedDataIntegerValueDeadbandBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder {
+	return m.WithDeadband(deadband)
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntegerValueDeadbandBuilder {
+	m.Deadband = deadband
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntegerValueDeadbandBuilder {
+	builder := builderSupplier(m.Deadband.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.Deadband, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) Build() (BACnetConstructedDataIntegerValueDeadband, error) {
+	if m.Deadband == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deadband' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegerValueDeadband.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) MustBuild() BACnetConstructedDataIntegerValueDeadband {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegerValueDeadbandBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegerValueDeadbandBuilder()
+}
+
+// CreateBACnetConstructedDataIntegerValueDeadbandBuilder creates a BACnetConstructedDataIntegerValueDeadbandBuilder
+func (m *_BACnetConstructedDataIntegerValueDeadband) CreateBACnetConstructedDataIntegerValueDeadbandBuilder() BACnetConstructedDataIntegerValueDeadbandBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegerValueDeadbandBuilder()
+	}
+	return &_BACnetConstructedDataIntegerValueDeadbandBuilder{_BACnetConstructedDataIntegerValueDeadband: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

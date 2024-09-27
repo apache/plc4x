@@ -46,6 +46,8 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataAllWritesSuccessful is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAllWritesSuccessful()
+	// CreateBuilder creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+	CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder
 }
 
 // _BACnetConstructedDataAllWritesSuccessful is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAllWritesSuccessful(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAllWritesSuccessfulBuilder is a builder for BACnetConstructedDataAllWritesSuccessful
+type BACnetConstructedDataAllWritesSuccessfulBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// WithAllWritesSuccessful adds AllWritesSuccessful (property field)
+	WithAllWritesSuccessful(BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// WithAllWritesSuccessfulBuilder adds AllWritesSuccessful (property field) which is build by the builder
+	WithAllWritesSuccessfulBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// Build builds the BACnetConstructedDataAllWritesSuccessful or returns an error if something is wrong
+	Build() (BACnetConstructedDataAllWritesSuccessful, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAllWritesSuccessful
+}
+
+// NewBACnetConstructedDataAllWritesSuccessfulBuilder() creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+func NewBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
+	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: new(_BACnetConstructedDataAllWritesSuccessful)}
+}
+
+type _BACnetConstructedDataAllWritesSuccessfulBuilder struct {
+	*_BACnetConstructedDataAllWritesSuccessful
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAllWritesSuccessfulBuilder) = (*_BACnetConstructedDataAllWritesSuccessfulBuilder)(nil)
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	return m.WithAllWritesSuccessful(allWritesSuccessful)
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	m.AllWritesSuccessful = allWritesSuccessful
+	return m
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessfulBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	builder := builderSupplier(m.AllWritesSuccessful.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.AllWritesSuccessful, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) Build() (BACnetConstructedDataAllWritesSuccessful, error) {
+	if m.AllWritesSuccessful == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'allWritesSuccessful' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAllWritesSuccessful.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) MustBuild() BACnetConstructedDataAllWritesSuccessful {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessfulBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAllWritesSuccessfulBuilder()
+}
+
+// CreateBACnetConstructedDataAllWritesSuccessfulBuilder creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+func (m *_BACnetConstructedDataAllWritesSuccessful) CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAllWritesSuccessfulBuilder()
+	}
+	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

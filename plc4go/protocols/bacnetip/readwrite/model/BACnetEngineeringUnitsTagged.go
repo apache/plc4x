@@ -49,6 +49,8 @@ type BACnetEngineeringUnitsTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetEngineeringUnitsTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEngineeringUnitsTagged()
+	// CreateBuilder creates a BACnetEngineeringUnitsTaggedBuilder
+	CreateBACnetEngineeringUnitsTaggedBuilder() BACnetEngineeringUnitsTaggedBuilder
 }
 
 // _BACnetEngineeringUnitsTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetEngineeringUnitsTagged(header BACnetTagHeader, value BACnetEnginee
 	}
 	return &_BACnetEngineeringUnitsTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEngineeringUnitsTaggedBuilder is a builder for BACnetEngineeringUnitsTagged
+type BACnetEngineeringUnitsTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetEngineeringUnits, proprietaryValue uint32) BACnetEngineeringUnitsTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetEngineeringUnitsTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEngineeringUnitsTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetEngineeringUnits) BACnetEngineeringUnitsTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetEngineeringUnitsTaggedBuilder
+	// Build builds the BACnetEngineeringUnitsTagged or returns an error if something is wrong
+	Build() (BACnetEngineeringUnitsTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEngineeringUnitsTagged
+}
+
+// NewBACnetEngineeringUnitsTaggedBuilder() creates a BACnetEngineeringUnitsTaggedBuilder
+func NewBACnetEngineeringUnitsTaggedBuilder() BACnetEngineeringUnitsTaggedBuilder {
+	return &_BACnetEngineeringUnitsTaggedBuilder{_BACnetEngineeringUnitsTagged: new(_BACnetEngineeringUnitsTagged)}
+}
+
+type _BACnetEngineeringUnitsTaggedBuilder struct {
+	*_BACnetEngineeringUnitsTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEngineeringUnitsTaggedBuilder) = (*_BACnetEngineeringUnitsTaggedBuilder)(nil)
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetEngineeringUnits, proprietaryValue uint32) BACnetEngineeringUnitsTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetEngineeringUnitsTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEngineeringUnitsTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) WithValue(value BACnetEngineeringUnits) BACnetEngineeringUnitsTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEngineeringUnitsTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) Build() (BACnetEngineeringUnitsTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEngineeringUnitsTagged.deepCopy(), nil
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) MustBuild() BACnetEngineeringUnitsTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEngineeringUnitsTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetEngineeringUnitsTaggedBuilder()
+}
+
+// CreateBACnetEngineeringUnitsTaggedBuilder creates a BACnetEngineeringUnitsTaggedBuilder
+func (m *_BACnetEngineeringUnitsTagged) CreateBACnetEngineeringUnitsTaggedBuilder() BACnetEngineeringUnitsTaggedBuilder {
+	if m == nil {
+		return NewBACnetEngineeringUnitsTaggedBuilder()
+	}
+	return &_BACnetEngineeringUnitsTaggedBuilder{_BACnetEngineeringUnitsTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

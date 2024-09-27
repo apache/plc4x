@@ -46,6 +46,8 @@ type BACnetConstructedDataInProgress interface {
 	GetActualValue() BACnetLightingInProgressTagged
 	// IsBACnetConstructedDataInProgress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataInProgress()
+	// CreateBuilder creates a BACnetConstructedDataInProgressBuilder
+	CreateBACnetConstructedDataInProgressBuilder() BACnetConstructedDataInProgressBuilder
 }
 
 // _BACnetConstructedDataInProgress is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataInProgress(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataInProgressBuilder is a builder for BACnetConstructedDataInProgress
+type BACnetConstructedDataInProgressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(inProgress BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder
+	// WithInProgress adds InProgress (property field)
+	WithInProgress(BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder
+	// WithInProgressBuilder adds InProgress (property field) which is build by the builder
+	WithInProgressBuilder(func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetConstructedDataInProgressBuilder
+	// Build builds the BACnetConstructedDataInProgress or returns an error if something is wrong
+	Build() (BACnetConstructedDataInProgress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataInProgress
+}
+
+// NewBACnetConstructedDataInProgressBuilder() creates a BACnetConstructedDataInProgressBuilder
+func NewBACnetConstructedDataInProgressBuilder() BACnetConstructedDataInProgressBuilder {
+	return &_BACnetConstructedDataInProgressBuilder{_BACnetConstructedDataInProgress: new(_BACnetConstructedDataInProgress)}
+}
+
+type _BACnetConstructedDataInProgressBuilder struct {
+	*_BACnetConstructedDataInProgress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataInProgressBuilder) = (*_BACnetConstructedDataInProgressBuilder)(nil)
+
+func (m *_BACnetConstructedDataInProgressBuilder) WithMandatoryFields(inProgress BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder {
+	return m.WithInProgress(inProgress)
+}
+
+func (m *_BACnetConstructedDataInProgressBuilder) WithInProgress(inProgress BACnetLightingInProgressTagged) BACnetConstructedDataInProgressBuilder {
+	m.InProgress = inProgress
+	return m
+}
+
+func (m *_BACnetConstructedDataInProgressBuilder) WithInProgressBuilder(builderSupplier func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetConstructedDataInProgressBuilder {
+	builder := builderSupplier(m.InProgress.CreateBACnetLightingInProgressTaggedBuilder())
+	var err error
+	m.InProgress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLightingInProgressTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataInProgressBuilder) Build() (BACnetConstructedDataInProgress, error) {
+	if m.InProgress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'inProgress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataInProgress.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataInProgressBuilder) MustBuild() BACnetConstructedDataInProgress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataInProgressBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataInProgressBuilder()
+}
+
+// CreateBACnetConstructedDataInProgressBuilder creates a BACnetConstructedDataInProgressBuilder
+func (m *_BACnetConstructedDataInProgress) CreateBACnetConstructedDataInProgressBuilder() BACnetConstructedDataInProgressBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataInProgressBuilder()
+	}
+	return &_BACnetConstructedDataInProgressBuilder{_BACnetConstructedDataInProgress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

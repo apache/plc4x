@@ -46,6 +46,8 @@ type BACnetConstructedDataLightingOutputFeedbackValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataLightingOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLightingOutputFeedbackValue()
+	// CreateBuilder creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder
 }
 
 // _BACnetConstructedDataLightingOutputFeedbackValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpenin
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLightingOutputFeedbackValueBuilder is a builder for BACnetConstructedDataLightingOutputFeedbackValue
+type BACnetConstructedDataLightingOutputFeedbackValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// WithFeedbackValue adds FeedbackValue (property field)
+	WithFeedbackValue(BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
+	WithFeedbackValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// Build builds the BACnetConstructedDataLightingOutputFeedbackValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLightingOutputFeedbackValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLightingOutputFeedbackValue
+}
+
+// NewBACnetConstructedDataLightingOutputFeedbackValueBuilder() creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+func NewBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	return &_BACnetConstructedDataLightingOutputFeedbackValueBuilder{_BACnetConstructedDataLightingOutputFeedbackValue: new(_BACnetConstructedDataLightingOutputFeedbackValue)}
+}
+
+type _BACnetConstructedDataLightingOutputFeedbackValueBuilder struct {
+	*_BACnetConstructedDataLightingOutputFeedbackValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLightingOutputFeedbackValueBuilder) = (*_BACnetConstructedDataLightingOutputFeedbackValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	return m.WithFeedbackValue(feedbackValue)
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	m.FeedbackValue = feedbackValue
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	builder := builderSupplier(m.FeedbackValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.FeedbackValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) Build() (BACnetConstructedDataLightingOutputFeedbackValue, error) {
+	if m.FeedbackValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLightingOutputFeedbackValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataLightingOutputFeedbackValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder()
+}
+
+// CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+func (m *_BACnetConstructedDataLightingOutputFeedbackValue) CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLightingOutputFeedbackValueBuilder()
+	}
+	return &_BACnetConstructedDataLightingOutputFeedbackValueBuilder{_BACnetConstructedDataLightingOutputFeedbackValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

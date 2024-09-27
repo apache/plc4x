@@ -45,6 +45,8 @@ type EipConstants interface {
 	utils.Copyable
 	// IsEipConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConstants()
+	// CreateBuilder creates a EipConstantsBuilder
+	CreateEipConstantsBuilder() EipConstantsBuilder
 }
 
 // _EipConstants is the data-structure of this message
@@ -57,6 +59,71 @@ var _ EipConstants = (*_EipConstants)(nil)
 func NewEipConstants() *_EipConstants {
 	return &_EipConstants{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipConstantsBuilder is a builder for EipConstants
+type EipConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipConstantsBuilder
+	// Build builds the EipConstants or returns an error if something is wrong
+	Build() (EipConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipConstants
+}
+
+// NewEipConstantsBuilder() creates a EipConstantsBuilder
+func NewEipConstantsBuilder() EipConstantsBuilder {
+	return &_EipConstantsBuilder{_EipConstants: new(_EipConstants)}
+}
+
+type _EipConstantsBuilder struct {
+	*_EipConstants
+
+	err *utils.MultiError
+}
+
+var _ (EipConstantsBuilder) = (*_EipConstantsBuilder)(nil)
+
+func (m *_EipConstantsBuilder) WithMandatoryFields() EipConstantsBuilder {
+	return m
+}
+
+func (m *_EipConstantsBuilder) Build() (EipConstants, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipConstants.deepCopy(), nil
+}
+
+func (m *_EipConstantsBuilder) MustBuild() EipConstants {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipConstantsBuilder) DeepCopy() any {
+	return m.CreateEipConstantsBuilder()
+}
+
+// CreateEipConstantsBuilder creates a EipConstantsBuilder
+func (m *_EipConstants) CreateEipConstantsBuilder() EipConstantsBuilder {
+	if m == nil {
+		return NewEipConstantsBuilder()
+	}
+	return &_EipConstantsBuilder{_EipConstants: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

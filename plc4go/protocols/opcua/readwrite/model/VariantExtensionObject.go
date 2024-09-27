@@ -46,6 +46,8 @@ type VariantExtensionObject interface {
 	GetValue() []ExtensionObject
 	// IsVariantExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantExtensionObject()
+	// CreateBuilder creates a VariantExtensionObjectBuilder
+	CreateVariantExtensionObjectBuilder() VariantExtensionObjectBuilder
 }
 
 // _VariantExtensionObject is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantExtensionObject(arrayLengthSpecified bool, arrayDimensionsSpecifi
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantExtensionObjectBuilder is a builder for VariantExtensionObject
+type VariantExtensionObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []ExtensionObject) VariantExtensionObjectBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantExtensionObjectBuilder
+	// WithValue adds Value (property field)
+	WithValue(...ExtensionObject) VariantExtensionObjectBuilder
+	// Build builds the VariantExtensionObject or returns an error if something is wrong
+	Build() (VariantExtensionObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantExtensionObject
+}
+
+// NewVariantExtensionObjectBuilder() creates a VariantExtensionObjectBuilder
+func NewVariantExtensionObjectBuilder() VariantExtensionObjectBuilder {
+	return &_VariantExtensionObjectBuilder{_VariantExtensionObject: new(_VariantExtensionObject)}
+}
+
+type _VariantExtensionObjectBuilder struct {
+	*_VariantExtensionObject
+
+	err *utils.MultiError
+}
+
+var _ (VariantExtensionObjectBuilder) = (*_VariantExtensionObjectBuilder)(nil)
+
+func (m *_VariantExtensionObjectBuilder) WithMandatoryFields(value []ExtensionObject) VariantExtensionObjectBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantExtensionObjectBuilder) WithOptionalArrayLength(arrayLength int32) VariantExtensionObjectBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantExtensionObjectBuilder) WithValue(value ...ExtensionObject) VariantExtensionObjectBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantExtensionObjectBuilder) Build() (VariantExtensionObject, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantExtensionObject.deepCopy(), nil
+}
+
+func (m *_VariantExtensionObjectBuilder) MustBuild() VariantExtensionObject {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantExtensionObjectBuilder) DeepCopy() any {
+	return m.CreateVariantExtensionObjectBuilder()
+}
+
+// CreateVariantExtensionObjectBuilder creates a VariantExtensionObjectBuilder
+func (m *_VariantExtensionObject) CreateVariantExtensionObjectBuilder() VariantExtensionObjectBuilder {
+	if m == nil {
+		return NewVariantExtensionObjectBuilder()
+	}
+	return &_VariantExtensionObjectBuilder{_VariantExtensionObject: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

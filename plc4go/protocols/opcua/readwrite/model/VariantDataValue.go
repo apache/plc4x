@@ -46,6 +46,8 @@ type VariantDataValue interface {
 	GetValue() []DataValue
 	// IsVariantDataValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantDataValue()
+	// CreateBuilder creates a VariantDataValueBuilder
+	CreateVariantDataValueBuilder() VariantDataValueBuilder
 }
 
 // _VariantDataValue is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantDataValue(arrayLengthSpecified bool, arrayDimensionsSpecified boo
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantDataValueBuilder is a builder for VariantDataValue
+type VariantDataValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []DataValue) VariantDataValueBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantDataValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(...DataValue) VariantDataValueBuilder
+	// Build builds the VariantDataValue or returns an error if something is wrong
+	Build() (VariantDataValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantDataValue
+}
+
+// NewVariantDataValueBuilder() creates a VariantDataValueBuilder
+func NewVariantDataValueBuilder() VariantDataValueBuilder {
+	return &_VariantDataValueBuilder{_VariantDataValue: new(_VariantDataValue)}
+}
+
+type _VariantDataValueBuilder struct {
+	*_VariantDataValue
+
+	err *utils.MultiError
+}
+
+var _ (VariantDataValueBuilder) = (*_VariantDataValueBuilder)(nil)
+
+func (m *_VariantDataValueBuilder) WithMandatoryFields(value []DataValue) VariantDataValueBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantDataValueBuilder) WithOptionalArrayLength(arrayLength int32) VariantDataValueBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantDataValueBuilder) WithValue(value ...DataValue) VariantDataValueBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantDataValueBuilder) Build() (VariantDataValue, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantDataValue.deepCopy(), nil
+}
+
+func (m *_VariantDataValueBuilder) MustBuild() VariantDataValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantDataValueBuilder) DeepCopy() any {
+	return m.CreateVariantDataValueBuilder()
+}
+
+// CreateVariantDataValueBuilder creates a VariantDataValueBuilder
+func (m *_VariantDataValue) CreateVariantDataValueBuilder() VariantDataValueBuilder {
+	if m == nil {
+		return NewVariantDataValueBuilder()
+	}
+	return &_VariantDataValueBuilder{_VariantDataValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

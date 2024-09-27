@@ -46,6 +46,8 @@ type BACnetConstructedDataLastCredentialRemoved interface {
 	GetActualValue() BACnetDeviceObjectReference
 	// IsBACnetConstructedDataLastCredentialRemoved is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastCredentialRemoved()
+	// CreateBuilder creates a BACnetConstructedDataLastCredentialRemovedBuilder
+	CreateBACnetConstructedDataLastCredentialRemovedBuilder() BACnetConstructedDataLastCredentialRemovedBuilder
 }
 
 // _BACnetConstructedDataLastCredentialRemoved is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLastCredentialRemoved(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastCredentialRemovedBuilder is a builder for BACnetConstructedDataLastCredentialRemoved
+type BACnetConstructedDataLastCredentialRemovedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastCredentialRemoved BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialRemovedBuilder
+	// WithLastCredentialRemoved adds LastCredentialRemoved (property field)
+	WithLastCredentialRemoved(BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialRemovedBuilder
+	// WithLastCredentialRemovedBuilder adds LastCredentialRemoved (property field) which is build by the builder
+	WithLastCredentialRemovedBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastCredentialRemovedBuilder
+	// Build builds the BACnetConstructedDataLastCredentialRemoved or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastCredentialRemoved, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastCredentialRemoved
+}
+
+// NewBACnetConstructedDataLastCredentialRemovedBuilder() creates a BACnetConstructedDataLastCredentialRemovedBuilder
+func NewBACnetConstructedDataLastCredentialRemovedBuilder() BACnetConstructedDataLastCredentialRemovedBuilder {
+	return &_BACnetConstructedDataLastCredentialRemovedBuilder{_BACnetConstructedDataLastCredentialRemoved: new(_BACnetConstructedDataLastCredentialRemoved)}
+}
+
+type _BACnetConstructedDataLastCredentialRemovedBuilder struct {
+	*_BACnetConstructedDataLastCredentialRemoved
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastCredentialRemovedBuilder) = (*_BACnetConstructedDataLastCredentialRemovedBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) WithMandatoryFields(lastCredentialRemoved BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialRemovedBuilder {
+	return m.WithLastCredentialRemoved(lastCredentialRemoved)
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) WithLastCredentialRemoved(lastCredentialRemoved BACnetDeviceObjectReference) BACnetConstructedDataLastCredentialRemovedBuilder {
+	m.LastCredentialRemoved = lastCredentialRemoved
+	return m
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) WithLastCredentialRemovedBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataLastCredentialRemovedBuilder {
+	builder := builderSupplier(m.LastCredentialRemoved.CreateBACnetDeviceObjectReferenceBuilder())
+	var err error
+	m.LastCredentialRemoved, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) Build() (BACnetConstructedDataLastCredentialRemoved, error) {
+	if m.LastCredentialRemoved == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastCredentialRemoved' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastCredentialRemoved.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) MustBuild() BACnetConstructedDataLastCredentialRemoved {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastCredentialRemovedBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastCredentialRemovedBuilder()
+}
+
+// CreateBACnetConstructedDataLastCredentialRemovedBuilder creates a BACnetConstructedDataLastCredentialRemovedBuilder
+func (m *_BACnetConstructedDataLastCredentialRemoved) CreateBACnetConstructedDataLastCredentialRemovedBuilder() BACnetConstructedDataLastCredentialRemovedBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastCredentialRemovedBuilder()
+	}
+	return &_BACnetConstructedDataLastCredentialRemovedBuilder{_BACnetConstructedDataLastCredentialRemoved: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

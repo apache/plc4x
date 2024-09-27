@@ -46,6 +46,8 @@ type NLMVendorProprietaryMessage interface {
 	GetProprietaryMessage() []byte
 	// IsNLMVendorProprietaryMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMVendorProprietaryMessage()
+	// CreateBuilder creates a NLMVendorProprietaryMessageBuilder
+	CreateNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder
 }
 
 // _NLMVendorProprietaryMessage is the data-structure of this message
@@ -68,6 +70,85 @@ func NewNLMVendorProprietaryMessage(vendorId BACnetVendorId, proprietaryMessage 
 	_result.NLMContract.(*_NLM)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMVendorProprietaryMessageBuilder is a builder for NLMVendorProprietaryMessage
+type NLMVendorProprietaryMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vendorId BACnetVendorId, proprietaryMessage []byte) NLMVendorProprietaryMessageBuilder
+	// WithVendorId adds VendorId (property field)
+	WithVendorId(BACnetVendorId) NLMVendorProprietaryMessageBuilder
+	// WithProprietaryMessage adds ProprietaryMessage (property field)
+	WithProprietaryMessage(...byte) NLMVendorProprietaryMessageBuilder
+	// Build builds the NLMVendorProprietaryMessage or returns an error if something is wrong
+	Build() (NLMVendorProprietaryMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMVendorProprietaryMessage
+}
+
+// NewNLMVendorProprietaryMessageBuilder() creates a NLMVendorProprietaryMessageBuilder
+func NewNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder {
+	return &_NLMVendorProprietaryMessageBuilder{_NLMVendorProprietaryMessage: new(_NLMVendorProprietaryMessage)}
+}
+
+type _NLMVendorProprietaryMessageBuilder struct {
+	*_NLMVendorProprietaryMessage
+
+	err *utils.MultiError
+}
+
+var _ (NLMVendorProprietaryMessageBuilder) = (*_NLMVendorProprietaryMessageBuilder)(nil)
+
+func (m *_NLMVendorProprietaryMessageBuilder) WithMandatoryFields(vendorId BACnetVendorId, proprietaryMessage []byte) NLMVendorProprietaryMessageBuilder {
+	return m.WithVendorId(vendorId).WithProprietaryMessage(proprietaryMessage...)
+}
+
+func (m *_NLMVendorProprietaryMessageBuilder) WithVendorId(vendorId BACnetVendorId) NLMVendorProprietaryMessageBuilder {
+	m.VendorId = vendorId
+	return m
+}
+
+func (m *_NLMVendorProprietaryMessageBuilder) WithProprietaryMessage(proprietaryMessage ...byte) NLMVendorProprietaryMessageBuilder {
+	m.ProprietaryMessage = proprietaryMessage
+	return m
+}
+
+func (m *_NLMVendorProprietaryMessageBuilder) Build() (NLMVendorProprietaryMessage, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLMVendorProprietaryMessage.deepCopy(), nil
+}
+
+func (m *_NLMVendorProprietaryMessageBuilder) MustBuild() NLMVendorProprietaryMessage {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMVendorProprietaryMessageBuilder) DeepCopy() any {
+	return m.CreateNLMVendorProprietaryMessageBuilder()
+}
+
+// CreateNLMVendorProprietaryMessageBuilder creates a NLMVendorProprietaryMessageBuilder
+func (m *_NLMVendorProprietaryMessage) CreateNLMVendorProprietaryMessageBuilder() NLMVendorProprietaryMessageBuilder {
+	if m == nil {
+		return NewNLMVendorProprietaryMessageBuilder()
+	}
+	return &_NLMVendorProprietaryMessageBuilder{_NLMVendorProprietaryMessage: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

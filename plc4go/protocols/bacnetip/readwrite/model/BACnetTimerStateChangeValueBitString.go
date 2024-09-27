@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueBitString interface {
 	GetBitStringValue() BACnetApplicationTagBitString
 	// IsBACnetTimerStateChangeValueBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueBitString()
+	// CreateBuilder creates a BACnetTimerStateChangeValueBitStringBuilder
+	CreateBACnetTimerStateChangeValueBitStringBuilder() BACnetTimerStateChangeValueBitStringBuilder
 }
 
 // _BACnetTimerStateChangeValueBitString is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueBitString(peekedTagHeader BACnetTagHeader, bi
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueBitStringBuilder is a builder for BACnetTimerStateChangeValueBitString
+type BACnetTimerStateChangeValueBitStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder
+	// WithBitStringValue adds BitStringValue (property field)
+	WithBitStringValue(BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder
+	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
+	WithBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetTimerStateChangeValueBitStringBuilder
+	// Build builds the BACnetTimerStateChangeValueBitString or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueBitString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueBitString
+}
+
+// NewBACnetTimerStateChangeValueBitStringBuilder() creates a BACnetTimerStateChangeValueBitStringBuilder
+func NewBACnetTimerStateChangeValueBitStringBuilder() BACnetTimerStateChangeValueBitStringBuilder {
+	return &_BACnetTimerStateChangeValueBitStringBuilder{_BACnetTimerStateChangeValueBitString: new(_BACnetTimerStateChangeValueBitString)}
+}
+
+type _BACnetTimerStateChangeValueBitStringBuilder struct {
+	*_BACnetTimerStateChangeValueBitString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueBitStringBuilder) = (*_BACnetTimerStateChangeValueBitStringBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) WithMandatoryFields(bitStringValue BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder {
+	return m.WithBitStringValue(bitStringValue)
+}
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) WithBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetTimerStateChangeValueBitStringBuilder {
+	m.BitStringValue = bitStringValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetTimerStateChangeValueBitStringBuilder {
+	builder := builderSupplier(m.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+	var err error
+	m.BitStringValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) Build() (BACnetTimerStateChangeValueBitString, error) {
+	if m.BitStringValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueBitString.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) MustBuild() BACnetTimerStateChangeValueBitString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueBitStringBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueBitStringBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueBitStringBuilder creates a BACnetTimerStateChangeValueBitStringBuilder
+func (m *_BACnetTimerStateChangeValueBitString) CreateBACnetTimerStateChangeValueBitStringBuilder() BACnetTimerStateChangeValueBitStringBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueBitStringBuilder()
+	}
+	return &_BACnetTimerStateChangeValueBitStringBuilder{_BACnetTimerStateChangeValueBitString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type NodeIdTwoByte interface {
 	GetIdentifier() string
 	// IsNodeIdTwoByte is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTwoByte()
+	// CreateBuilder creates a NodeIdTwoByteBuilder
+	CreateNodeIdTwoByteBuilder() NodeIdTwoByteBuilder
 }
 
 // _NodeIdTwoByte is the data-structure of this message
@@ -66,6 +68,78 @@ func NewNodeIdTwoByte(id uint8) *_NodeIdTwoByte {
 	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdTwoByteBuilder is a builder for NodeIdTwoByte
+type NodeIdTwoByteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(id uint8) NodeIdTwoByteBuilder
+	// WithId adds Id (property field)
+	WithId(uint8) NodeIdTwoByteBuilder
+	// Build builds the NodeIdTwoByte or returns an error if something is wrong
+	Build() (NodeIdTwoByte, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdTwoByte
+}
+
+// NewNodeIdTwoByteBuilder() creates a NodeIdTwoByteBuilder
+func NewNodeIdTwoByteBuilder() NodeIdTwoByteBuilder {
+	return &_NodeIdTwoByteBuilder{_NodeIdTwoByte: new(_NodeIdTwoByte)}
+}
+
+type _NodeIdTwoByteBuilder struct {
+	*_NodeIdTwoByte
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdTwoByteBuilder) = (*_NodeIdTwoByteBuilder)(nil)
+
+func (m *_NodeIdTwoByteBuilder) WithMandatoryFields(id uint8) NodeIdTwoByteBuilder {
+	return m.WithId(id)
+}
+
+func (m *_NodeIdTwoByteBuilder) WithId(id uint8) NodeIdTwoByteBuilder {
+	m.Id = id
+	return m
+}
+
+func (m *_NodeIdTwoByteBuilder) Build() (NodeIdTwoByte, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeIdTwoByte.deepCopy(), nil
+}
+
+func (m *_NodeIdTwoByteBuilder) MustBuild() NodeIdTwoByte {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdTwoByteBuilder) DeepCopy() any {
+	return m.CreateNodeIdTwoByteBuilder()
+}
+
+// CreateNodeIdTwoByteBuilder creates a NodeIdTwoByteBuilder
+func (m *_NodeIdTwoByte) CreateNodeIdTwoByteBuilder() NodeIdTwoByteBuilder {
+	if m == nil {
+		return NewNodeIdTwoByteBuilder()
+	}
+	return &_NodeIdTwoByteBuilder{_NodeIdTwoByte: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

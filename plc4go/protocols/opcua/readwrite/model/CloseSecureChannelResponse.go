@@ -44,6 +44,8 @@ type CloseSecureChannelResponse interface {
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsCloseSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSecureChannelResponse()
+	// CreateBuilder creates a CloseSecureChannelResponseBuilder
+	CreateCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder
 }
 
 // _CloseSecureChannelResponse is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_C
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CloseSecureChannelResponseBuilder is a builder for CloseSecureChannelResponse
+type CloseSecureChannelResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	// Build builds the CloseSecureChannelResponse or returns an error if something is wrong
+	Build() (CloseSecureChannelResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CloseSecureChannelResponse
+}
+
+// NewCloseSecureChannelResponseBuilder() creates a CloseSecureChannelResponseBuilder
+func NewCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder {
+	return &_CloseSecureChannelResponseBuilder{_CloseSecureChannelResponse: new(_CloseSecureChannelResponse)}
+}
+
+type _CloseSecureChannelResponseBuilder struct {
+	*_CloseSecureChannelResponse
+
+	err *utils.MultiError
+}
+
+var _ (CloseSecureChannelResponseBuilder) = (*_CloseSecureChannelResponseBuilder)(nil)
+
+func (m *_CloseSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+	return m.WithResponseHeader(responseHeader)
+}
+
+func (m *_CloseSecureChannelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_CloseSecureChannelResponseBuilder) Build() (CloseSecureChannelResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CloseSecureChannelResponse.deepCopy(), nil
+}
+
+func (m *_CloseSecureChannelResponseBuilder) MustBuild() CloseSecureChannelResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CloseSecureChannelResponseBuilder) DeepCopy() any {
+	return m.CreateCloseSecureChannelResponseBuilder()
+}
+
+// CreateCloseSecureChannelResponseBuilder creates a CloseSecureChannelResponseBuilder
+func (m *_CloseSecureChannelResponse) CreateCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder {
+	if m == nil {
+		return NewCloseSecureChannelResponseBuilder()
+	}
+	return &_CloseSecureChannelResponseBuilder{_CloseSecureChannelResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

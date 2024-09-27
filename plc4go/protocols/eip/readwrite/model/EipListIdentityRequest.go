@@ -40,6 +40,8 @@ type EipListIdentityRequest interface {
 	EipPacket
 	// IsEipListIdentityRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipListIdentityRequest()
+	// CreateBuilder creates a EipListIdentityRequestBuilder
+	CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder
 }
 
 // _EipListIdentityRequest is the data-structure of this message
@@ -58,6 +60,71 @@ func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContex
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipListIdentityRequestBuilder is a builder for EipListIdentityRequest
+type EipListIdentityRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipListIdentityRequestBuilder
+	// Build builds the EipListIdentityRequest or returns an error if something is wrong
+	Build() (EipListIdentityRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipListIdentityRequest
+}
+
+// NewEipListIdentityRequestBuilder() creates a EipListIdentityRequestBuilder
+func NewEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
+	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: new(_EipListIdentityRequest)}
+}
+
+type _EipListIdentityRequestBuilder struct {
+	*_EipListIdentityRequest
+
+	err *utils.MultiError
+}
+
+var _ (EipListIdentityRequestBuilder) = (*_EipListIdentityRequestBuilder)(nil)
+
+func (m *_EipListIdentityRequestBuilder) WithMandatoryFields() EipListIdentityRequestBuilder {
+	return m
+}
+
+func (m *_EipListIdentityRequestBuilder) Build() (EipListIdentityRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipListIdentityRequest.deepCopy(), nil
+}
+
+func (m *_EipListIdentityRequestBuilder) MustBuild() EipListIdentityRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipListIdentityRequestBuilder) DeepCopy() any {
+	return m.CreateEipListIdentityRequestBuilder()
+}
+
+// CreateEipListIdentityRequestBuilder creates a EipListIdentityRequestBuilder
+func (m *_EipListIdentityRequest) CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
+	if m == nil {
+		return NewEipListIdentityRequestBuilder()
+	}
+	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataThreatAuthority interface {
 	GetActualValue() BACnetAccessThreatLevel
 	// IsBACnetConstructedDataThreatAuthority is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataThreatAuthority()
+	// CreateBuilder creates a BACnetConstructedDataThreatAuthorityBuilder
+	CreateBACnetConstructedDataThreatAuthorityBuilder() BACnetConstructedDataThreatAuthorityBuilder
 }
 
 // _BACnetConstructedDataThreatAuthority is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataThreatAuthority(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataThreatAuthorityBuilder is a builder for BACnetConstructedDataThreatAuthority
+type BACnetConstructedDataThreatAuthorityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(threatAuthority BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder
+	// WithThreatAuthority adds ThreatAuthority (property field)
+	WithThreatAuthority(BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder
+	// WithThreatAuthorityBuilder adds ThreatAuthority (property field) which is build by the builder
+	WithThreatAuthorityBuilder(func(BACnetAccessThreatLevelBuilder) BACnetAccessThreatLevelBuilder) BACnetConstructedDataThreatAuthorityBuilder
+	// Build builds the BACnetConstructedDataThreatAuthority or returns an error if something is wrong
+	Build() (BACnetConstructedDataThreatAuthority, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataThreatAuthority
+}
+
+// NewBACnetConstructedDataThreatAuthorityBuilder() creates a BACnetConstructedDataThreatAuthorityBuilder
+func NewBACnetConstructedDataThreatAuthorityBuilder() BACnetConstructedDataThreatAuthorityBuilder {
+	return &_BACnetConstructedDataThreatAuthorityBuilder{_BACnetConstructedDataThreatAuthority: new(_BACnetConstructedDataThreatAuthority)}
+}
+
+type _BACnetConstructedDataThreatAuthorityBuilder struct {
+	*_BACnetConstructedDataThreatAuthority
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataThreatAuthorityBuilder) = (*_BACnetConstructedDataThreatAuthorityBuilder)(nil)
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) WithMandatoryFields(threatAuthority BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder {
+	return m.WithThreatAuthority(threatAuthority)
+}
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) WithThreatAuthority(threatAuthority BACnetAccessThreatLevel) BACnetConstructedDataThreatAuthorityBuilder {
+	m.ThreatAuthority = threatAuthority
+	return m
+}
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) WithThreatAuthorityBuilder(builderSupplier func(BACnetAccessThreatLevelBuilder) BACnetAccessThreatLevelBuilder) BACnetConstructedDataThreatAuthorityBuilder {
+	builder := builderSupplier(m.ThreatAuthority.CreateBACnetAccessThreatLevelBuilder())
+	var err error
+	m.ThreatAuthority, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAccessThreatLevelBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) Build() (BACnetConstructedDataThreatAuthority, error) {
+	if m.ThreatAuthority == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'threatAuthority' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataThreatAuthority.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) MustBuild() BACnetConstructedDataThreatAuthority {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataThreatAuthorityBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataThreatAuthorityBuilder()
+}
+
+// CreateBACnetConstructedDataThreatAuthorityBuilder creates a BACnetConstructedDataThreatAuthorityBuilder
+func (m *_BACnetConstructedDataThreatAuthority) CreateBACnetConstructedDataThreatAuthorityBuilder() BACnetConstructedDataThreatAuthorityBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataThreatAuthorityBuilder()
+	}
+	return &_BACnetConstructedDataThreatAuthorityBuilder{_BACnetConstructedDataThreatAuthority: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

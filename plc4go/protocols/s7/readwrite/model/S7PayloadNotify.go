@@ -44,6 +44,8 @@ type S7PayloadNotify interface {
 	GetAlarmMessage() AlarmMessagePushType
 	// IsS7PayloadNotify is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadNotify()
+	// CreateBuilder creates a S7PayloadNotifyBuilder
+	CreateS7PayloadNotifyBuilder() S7PayloadNotifyBuilder
 }
 
 // _S7PayloadNotify is the data-structure of this message
@@ -67,6 +69,99 @@ func NewS7PayloadNotify(returnCode DataTransportErrorCode, transportSize DataTra
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadNotifyBuilder is a builder for S7PayloadNotify
+type S7PayloadNotifyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadNotifyBuilder
+	// WithAlarmMessage adds AlarmMessage (property field)
+	WithAlarmMessage(AlarmMessagePushType) S7PayloadNotifyBuilder
+	// WithAlarmMessageBuilder adds AlarmMessage (property field) which is build by the builder
+	WithAlarmMessageBuilder(func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadNotifyBuilder
+	// Build builds the S7PayloadNotify or returns an error if something is wrong
+	Build() (S7PayloadNotify, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadNotify
+}
+
+// NewS7PayloadNotifyBuilder() creates a S7PayloadNotifyBuilder
+func NewS7PayloadNotifyBuilder() S7PayloadNotifyBuilder {
+	return &_S7PayloadNotifyBuilder{_S7PayloadNotify: new(_S7PayloadNotify)}
+}
+
+type _S7PayloadNotifyBuilder struct {
+	*_S7PayloadNotify
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadNotifyBuilder) = (*_S7PayloadNotifyBuilder)(nil)
+
+func (m *_S7PayloadNotifyBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadNotifyBuilder {
+	return m.WithAlarmMessage(alarmMessage)
+}
+
+func (m *_S7PayloadNotifyBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadNotifyBuilder {
+	m.AlarmMessage = alarmMessage
+	return m
+}
+
+func (m *_S7PayloadNotifyBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadNotifyBuilder {
+	builder := builderSupplier(m.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
+	var err error
+	m.AlarmMessage, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_S7PayloadNotifyBuilder) Build() (S7PayloadNotify, error) {
+	if m.AlarmMessage == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadNotify.deepCopy(), nil
+}
+
+func (m *_S7PayloadNotifyBuilder) MustBuild() S7PayloadNotify {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadNotifyBuilder) DeepCopy() any {
+	return m.CreateS7PayloadNotifyBuilder()
+}
+
+// CreateS7PayloadNotifyBuilder creates a S7PayloadNotifyBuilder
+func (m *_S7PayloadNotify) CreateS7PayloadNotifyBuilder() S7PayloadNotifyBuilder {
+	if m == nil {
+		return NewS7PayloadNotifyBuilder()
+	}
+	return &_S7PayloadNotifyBuilder{_S7PayloadNotify: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

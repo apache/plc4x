@@ -48,6 +48,8 @@ type DisconnectResponse interface {
 	GetStatus() Status
 	// IsDisconnectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDisconnectResponse()
+	// CreateBuilder creates a DisconnectResponseBuilder
+	CreateDisconnectResponseBuilder() DisconnectResponseBuilder
 }
 
 // _DisconnectResponse is the data-structure of this message
@@ -70,6 +72,85 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status) *_Discon
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DisconnectResponseBuilder is a builder for DisconnectResponse
+type DisconnectResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, status Status) DisconnectResponseBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) DisconnectResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) DisconnectResponseBuilder
+	// Build builds the DisconnectResponse or returns an error if something is wrong
+	Build() (DisconnectResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DisconnectResponse
+}
+
+// NewDisconnectResponseBuilder() creates a DisconnectResponseBuilder
+func NewDisconnectResponseBuilder() DisconnectResponseBuilder {
+	return &_DisconnectResponseBuilder{_DisconnectResponse: new(_DisconnectResponse)}
+}
+
+type _DisconnectResponseBuilder struct {
+	*_DisconnectResponse
+
+	err *utils.MultiError
+}
+
+var _ (DisconnectResponseBuilder) = (*_DisconnectResponseBuilder)(nil)
+
+func (m *_DisconnectResponseBuilder) WithMandatoryFields(communicationChannelId uint8, status Status) DisconnectResponseBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithStatus(status)
+}
+
+func (m *_DisconnectResponseBuilder) WithCommunicationChannelId(communicationChannelId uint8) DisconnectResponseBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_DisconnectResponseBuilder) WithStatus(status Status) DisconnectResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_DisconnectResponseBuilder) Build() (DisconnectResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DisconnectResponse.deepCopy(), nil
+}
+
+func (m *_DisconnectResponseBuilder) MustBuild() DisconnectResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DisconnectResponseBuilder) DeepCopy() any {
+	return m.CreateDisconnectResponseBuilder()
+}
+
+// CreateDisconnectResponseBuilder creates a DisconnectResponseBuilder
+func (m *_DisconnectResponse) CreateDisconnectResponseBuilder() DisconnectResponseBuilder {
+	if m == nil {
+		return NewDisconnectResponseBuilder()
+	}
+	return &_DisconnectResponseBuilder{_DisconnectResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

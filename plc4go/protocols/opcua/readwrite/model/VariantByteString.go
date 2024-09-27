@@ -46,6 +46,8 @@ type VariantByteString interface {
 	GetValue() []ByteStringArray
 	// IsVariantByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantByteString()
+	// CreateBuilder creates a VariantByteStringBuilder
+	CreateVariantByteStringBuilder() VariantByteStringBuilder
 }
 
 // _VariantByteString is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantByteString(arrayLengthSpecified bool, arrayDimensionsSpecified bo
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantByteStringBuilder is a builder for VariantByteString
+type VariantByteStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []ByteStringArray) VariantByteStringBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantByteStringBuilder
+	// WithValue adds Value (property field)
+	WithValue(...ByteStringArray) VariantByteStringBuilder
+	// Build builds the VariantByteString or returns an error if something is wrong
+	Build() (VariantByteString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantByteString
+}
+
+// NewVariantByteStringBuilder() creates a VariantByteStringBuilder
+func NewVariantByteStringBuilder() VariantByteStringBuilder {
+	return &_VariantByteStringBuilder{_VariantByteString: new(_VariantByteString)}
+}
+
+type _VariantByteStringBuilder struct {
+	*_VariantByteString
+
+	err *utils.MultiError
+}
+
+var _ (VariantByteStringBuilder) = (*_VariantByteStringBuilder)(nil)
+
+func (m *_VariantByteStringBuilder) WithMandatoryFields(value []ByteStringArray) VariantByteStringBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantByteStringBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteStringBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantByteStringBuilder) WithValue(value ...ByteStringArray) VariantByteStringBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantByteStringBuilder) Build() (VariantByteString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantByteString.deepCopy(), nil
+}
+
+func (m *_VariantByteStringBuilder) MustBuild() VariantByteString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantByteStringBuilder) DeepCopy() any {
+	return m.CreateVariantByteStringBuilder()
+}
+
+// CreateVariantByteStringBuilder creates a VariantByteStringBuilder
+func (m *_VariantByteString) CreateVariantByteStringBuilder() VariantByteStringBuilder {
+	if m == nil {
+		return NewVariantByteStringBuilder()
+	}
+	return &_VariantByteStringBuilder{_VariantByteString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

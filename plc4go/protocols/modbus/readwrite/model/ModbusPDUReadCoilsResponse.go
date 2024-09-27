@@ -44,6 +44,8 @@ type ModbusPDUReadCoilsResponse interface {
 	GetValue() []byte
 	// IsModbusPDUReadCoilsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadCoilsResponse()
+	// CreateBuilder creates a ModbusPDUReadCoilsResponseBuilder
+	CreateModbusPDUReadCoilsResponseBuilder() ModbusPDUReadCoilsResponseBuilder
 }
 
 // _ModbusPDUReadCoilsResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadCoilsResponseBuilder is a builder for ModbusPDUReadCoilsResponse
+type ModbusPDUReadCoilsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []byte) ModbusPDUReadCoilsResponseBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) ModbusPDUReadCoilsResponseBuilder
+	// Build builds the ModbusPDUReadCoilsResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadCoilsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadCoilsResponse
+}
+
+// NewModbusPDUReadCoilsResponseBuilder() creates a ModbusPDUReadCoilsResponseBuilder
+func NewModbusPDUReadCoilsResponseBuilder() ModbusPDUReadCoilsResponseBuilder {
+	return &_ModbusPDUReadCoilsResponseBuilder{_ModbusPDUReadCoilsResponse: new(_ModbusPDUReadCoilsResponse)}
+}
+
+type _ModbusPDUReadCoilsResponseBuilder struct {
+	*_ModbusPDUReadCoilsResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadCoilsResponseBuilder) = (*_ModbusPDUReadCoilsResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadCoilsResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadCoilsResponseBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_ModbusPDUReadCoilsResponseBuilder) WithValue(value ...byte) ModbusPDUReadCoilsResponseBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUReadCoilsResponseBuilder) Build() (ModbusPDUReadCoilsResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadCoilsResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadCoilsResponseBuilder) MustBuild() ModbusPDUReadCoilsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadCoilsResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadCoilsResponseBuilder()
+}
+
+// CreateModbusPDUReadCoilsResponseBuilder creates a ModbusPDUReadCoilsResponseBuilder
+func (m *_ModbusPDUReadCoilsResponse) CreateModbusPDUReadCoilsResponseBuilder() ModbusPDUReadCoilsResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadCoilsResponseBuilder()
+	}
+	return &_ModbusPDUReadCoilsResponseBuilder{_ModbusPDUReadCoilsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

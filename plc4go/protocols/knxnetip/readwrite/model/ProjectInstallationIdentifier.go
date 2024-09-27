@@ -45,6 +45,8 @@ type ProjectInstallationIdentifier interface {
 	GetInstallationNumber() uint8
 	// IsProjectInstallationIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsProjectInstallationIdentifier()
+	// CreateBuilder creates a ProjectInstallationIdentifierBuilder
+	CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder
 }
 
 // _ProjectInstallationIdentifier is the data-structure of this message
@@ -59,6 +61,85 @@ var _ ProjectInstallationIdentifier = (*_ProjectInstallationIdentifier)(nil)
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *_ProjectInstallationIdentifier {
 	return &_ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ProjectInstallationIdentifierBuilder is a builder for ProjectInstallationIdentifier
+type ProjectInstallationIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder
+	// WithProjectNumber adds ProjectNumber (property field)
+	WithProjectNumber(uint8) ProjectInstallationIdentifierBuilder
+	// WithInstallationNumber adds InstallationNumber (property field)
+	WithInstallationNumber(uint8) ProjectInstallationIdentifierBuilder
+	// Build builds the ProjectInstallationIdentifier or returns an error if something is wrong
+	Build() (ProjectInstallationIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ProjectInstallationIdentifier
+}
+
+// NewProjectInstallationIdentifierBuilder() creates a ProjectInstallationIdentifierBuilder
+func NewProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
+	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: new(_ProjectInstallationIdentifier)}
+}
+
+type _ProjectInstallationIdentifierBuilder struct {
+	*_ProjectInstallationIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (ProjectInstallationIdentifierBuilder) = (*_ProjectInstallationIdentifierBuilder)(nil)
+
+func (m *_ProjectInstallationIdentifierBuilder) WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	return m.WithProjectNumber(projectNumber).WithInstallationNumber(installationNumber)
+}
+
+func (m *_ProjectInstallationIdentifierBuilder) WithProjectNumber(projectNumber uint8) ProjectInstallationIdentifierBuilder {
+	m.ProjectNumber = projectNumber
+	return m
+}
+
+func (m *_ProjectInstallationIdentifierBuilder) WithInstallationNumber(installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	m.InstallationNumber = installationNumber
+	return m
+}
+
+func (m *_ProjectInstallationIdentifierBuilder) Build() (ProjectInstallationIdentifier, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ProjectInstallationIdentifier.deepCopy(), nil
+}
+
+func (m *_ProjectInstallationIdentifierBuilder) MustBuild() ProjectInstallationIdentifier {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ProjectInstallationIdentifierBuilder) DeepCopy() any {
+	return m.CreateProjectInstallationIdentifierBuilder()
+}
+
+// CreateProjectInstallationIdentifierBuilder creates a ProjectInstallationIdentifierBuilder
+func (m *_ProjectInstallationIdentifier) CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
+	if m == nil {
+		return NewProjectInstallationIdentifierBuilder()
+	}
+	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

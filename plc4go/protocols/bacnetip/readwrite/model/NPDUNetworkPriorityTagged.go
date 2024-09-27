@@ -45,6 +45,8 @@ type NPDUNetworkPriorityTagged interface {
 	GetValue() NPDUNetworkPriority
 	// IsNPDUNetworkPriorityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNPDUNetworkPriorityTagged()
+	// CreateBuilder creates a NPDUNetworkPriorityTaggedBuilder
+	CreateNPDUNetworkPriorityTaggedBuilder() NPDUNetworkPriorityTaggedBuilder
 }
 
 // _NPDUNetworkPriorityTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPrior
 	}
 	return &_NPDUNetworkPriorityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NPDUNetworkPriorityTaggedBuilder is a builder for NPDUNetworkPriorityTagged
+type NPDUNetworkPriorityTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) NPDUNetworkPriorityTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) NPDUNetworkPriorityTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder
+	// Build builds the NPDUNetworkPriorityTagged or returns an error if something is wrong
+	Build() (NPDUNetworkPriorityTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NPDUNetworkPriorityTagged
+}
+
+// NewNPDUNetworkPriorityTaggedBuilder() creates a NPDUNetworkPriorityTaggedBuilder
+func NewNPDUNetworkPriorityTaggedBuilder() NPDUNetworkPriorityTaggedBuilder {
+	return &_NPDUNetworkPriorityTaggedBuilder{_NPDUNetworkPriorityTagged: new(_NPDUNetworkPriorityTagged)}
+}
+
+type _NPDUNetworkPriorityTaggedBuilder struct {
+	*_NPDUNetworkPriorityTagged
+
+	err *utils.MultiError
+}
+
+var _ (NPDUNetworkPriorityTaggedBuilder) = (*_NPDUNetworkPriorityTaggedBuilder)(nil)
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) WithHeader(header BACnetTagHeader) NPDUNetworkPriorityTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) NPDUNetworkPriorityTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) WithValue(value NPDUNetworkPriority) NPDUNetworkPriorityTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) Build() (NPDUNetworkPriorityTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NPDUNetworkPriorityTagged.deepCopy(), nil
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) MustBuild() NPDUNetworkPriorityTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NPDUNetworkPriorityTaggedBuilder) DeepCopy() any {
+	return m.CreateNPDUNetworkPriorityTaggedBuilder()
+}
+
+// CreateNPDUNetworkPriorityTaggedBuilder creates a NPDUNetworkPriorityTaggedBuilder
+func (m *_NPDUNetworkPriorityTagged) CreateNPDUNetworkPriorityTaggedBuilder() NPDUNetworkPriorityTaggedBuilder {
+	if m == nil {
+		return NewNPDUNetworkPriorityTaggedBuilder()
+	}
+	return &_NPDUNetworkPriorityTaggedBuilder{_NPDUNetworkPriorityTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -39,6 +39,8 @@ type TimeString interface {
 	utils.Copyable
 	// IsTimeString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTimeString()
+	// CreateBuilder creates a TimeStringBuilder
+	CreateTimeStringBuilder() TimeStringBuilder
 }
 
 // _TimeString is the data-structure of this message
@@ -51,6 +53,71 @@ var _ TimeString = (*_TimeString)(nil)
 func NewTimeString() *_TimeString {
 	return &_TimeString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TimeStringBuilder is a builder for TimeString
+type TimeStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TimeStringBuilder
+	// Build builds the TimeString or returns an error if something is wrong
+	Build() (TimeString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TimeString
+}
+
+// NewTimeStringBuilder() creates a TimeStringBuilder
+func NewTimeStringBuilder() TimeStringBuilder {
+	return &_TimeStringBuilder{_TimeString: new(_TimeString)}
+}
+
+type _TimeStringBuilder struct {
+	*_TimeString
+
+	err *utils.MultiError
+}
+
+var _ (TimeStringBuilder) = (*_TimeStringBuilder)(nil)
+
+func (m *_TimeStringBuilder) WithMandatoryFields() TimeStringBuilder {
+	return m
+}
+
+func (m *_TimeStringBuilder) Build() (TimeString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TimeString.deepCopy(), nil
+}
+
+func (m *_TimeStringBuilder) MustBuild() TimeString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TimeStringBuilder) DeepCopy() any {
+	return m.CreateTimeStringBuilder()
+}
+
+// CreateTimeStringBuilder creates a TimeStringBuilder
+func (m *_TimeString) CreateTimeStringBuilder() TimeStringBuilder {
+	if m == nil {
+		return NewTimeStringBuilder()
+	}
+	return &_TimeStringBuilder{_TimeString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastTimeString(structType any) TimeString {

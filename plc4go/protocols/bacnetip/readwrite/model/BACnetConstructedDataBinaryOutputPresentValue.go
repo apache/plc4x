@@ -46,6 +46,8 @@ type BACnetConstructedDataBinaryOutputPresentValue interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataBinaryOutputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryOutputPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+	CreateBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder
 }
 
 // _BACnetConstructedDataBinaryOutputPresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBinaryOutputPresentValue(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryOutputPresentValueBuilder is a builder for BACnetConstructedDataBinaryOutputPresentValue
+type BACnetConstructedDataBinaryOutputPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// Build builds the BACnetConstructedDataBinaryOutputPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryOutputPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryOutputPresentValue
+}
+
+// NewBACnetConstructedDataBinaryOutputPresentValueBuilder() creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+func NewBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	return &_BACnetConstructedDataBinaryOutputPresentValueBuilder{_BACnetConstructedDataBinaryOutputPresentValue: new(_BACnetConstructedDataBinaryOutputPresentValue)}
+}
+
+type _BACnetConstructedDataBinaryOutputPresentValueBuilder struct {
+	*_BACnetConstructedDataBinaryOutputPresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryOutputPresentValueBuilder) = (*_BACnetConstructedDataBinaryOutputPresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithPresentValue(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) Build() (BACnetConstructedDataBinaryOutputPresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBinaryOutputPresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) MustBuild() BACnetConstructedDataBinaryOutputPresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBinaryOutputPresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataBinaryOutputPresentValueBuilder creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+func (m *_BACnetConstructedDataBinaryOutputPresentValue) CreateBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBinaryOutputPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataBinaryOutputPresentValueBuilder{_BACnetConstructedDataBinaryOutputPresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

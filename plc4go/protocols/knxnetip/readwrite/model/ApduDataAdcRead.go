@@ -40,6 +40,8 @@ type ApduDataAdcRead interface {
 	ApduData
 	// IsApduDataAdcRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataAdcRead()
+	// CreateBuilder creates a ApduDataAdcReadBuilder
+	CreateApduDataAdcReadBuilder() ApduDataAdcReadBuilder
 }
 
 // _ApduDataAdcRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataAdcRead(dataLength uint8) *_ApduDataAdcRead {
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataAdcReadBuilder is a builder for ApduDataAdcRead
+type ApduDataAdcReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataAdcReadBuilder
+	// Build builds the ApduDataAdcRead or returns an error if something is wrong
+	Build() (ApduDataAdcRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataAdcRead
+}
+
+// NewApduDataAdcReadBuilder() creates a ApduDataAdcReadBuilder
+func NewApduDataAdcReadBuilder() ApduDataAdcReadBuilder {
+	return &_ApduDataAdcReadBuilder{_ApduDataAdcRead: new(_ApduDataAdcRead)}
+}
+
+type _ApduDataAdcReadBuilder struct {
+	*_ApduDataAdcRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataAdcReadBuilder) = (*_ApduDataAdcReadBuilder)(nil)
+
+func (m *_ApduDataAdcReadBuilder) WithMandatoryFields() ApduDataAdcReadBuilder {
+	return m
+}
+
+func (m *_ApduDataAdcReadBuilder) Build() (ApduDataAdcRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataAdcRead.deepCopy(), nil
+}
+
+func (m *_ApduDataAdcReadBuilder) MustBuild() ApduDataAdcRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataAdcReadBuilder) DeepCopy() any {
+	return m.CreateApduDataAdcReadBuilder()
+}
+
+// CreateApduDataAdcReadBuilder creates a ApduDataAdcReadBuilder
+func (m *_ApduDataAdcRead) CreateApduDataAdcReadBuilder() ApduDataAdcReadBuilder {
+	if m == nil {
+		return NewApduDataAdcReadBuilder()
+	}
+	return &_ApduDataAdcReadBuilder{_ApduDataAdcRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

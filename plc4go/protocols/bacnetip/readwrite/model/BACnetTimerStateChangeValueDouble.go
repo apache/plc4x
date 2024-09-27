@@ -44,6 +44,8 @@ type BACnetTimerStateChangeValueDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetTimerStateChangeValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueDouble()
+	// CreateBuilder creates a BACnetTimerStateChangeValueDoubleBuilder
+	CreateBACnetTimerStateChangeValueDoubleBuilder() BACnetTimerStateChangeValueDoubleBuilder
 }
 
 // _BACnetTimerStateChangeValueDouble is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetTimerStateChangeValueDouble(peekedTagHeader BACnetTagHeader, doubl
 	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueDoubleBuilder is a builder for BACnetTimerStateChangeValueDouble
+type BACnetTimerStateChangeValueDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetTimerStateChangeValueDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetTimerStateChangeValueDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetTimerStateChangeValueDoubleBuilder
+	// Build builds the BACnetTimerStateChangeValueDouble or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueDouble
+}
+
+// NewBACnetTimerStateChangeValueDoubleBuilder() creates a BACnetTimerStateChangeValueDoubleBuilder
+func NewBACnetTimerStateChangeValueDoubleBuilder() BACnetTimerStateChangeValueDoubleBuilder {
+	return &_BACnetTimerStateChangeValueDoubleBuilder{_BACnetTimerStateChangeValueDouble: new(_BACnetTimerStateChangeValueDouble)}
+}
+
+type _BACnetTimerStateChangeValueDoubleBuilder struct {
+	*_BACnetTimerStateChangeValueDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueDoubleBuilder) = (*_BACnetTimerStateChangeValueDoubleBuilder)(nil)
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetTimerStateChangeValueDoubleBuilder {
+	return m.WithDoubleValue(doubleValue)
+}
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetTimerStateChangeValueDoubleBuilder {
+	m.DoubleValue = doubleValue
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetTimerStateChangeValueDoubleBuilder {
+	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.DoubleValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) Build() (BACnetTimerStateChangeValueDouble, error) {
+	if m.DoubleValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTimerStateChangeValueDouble.deepCopy(), nil
+}
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) MustBuild() BACnetTimerStateChangeValueDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTimerStateChangeValueDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetTimerStateChangeValueDoubleBuilder()
+}
+
+// CreateBACnetTimerStateChangeValueDoubleBuilder creates a BACnetTimerStateChangeValueDoubleBuilder
+func (m *_BACnetTimerStateChangeValueDouble) CreateBACnetTimerStateChangeValueDoubleBuilder() BACnetTimerStateChangeValueDoubleBuilder {
+	if m == nil {
+		return NewBACnetTimerStateChangeValueDoubleBuilder()
+	}
+	return &_BACnetTimerStateChangeValueDoubleBuilder{_BACnetTimerStateChangeValueDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

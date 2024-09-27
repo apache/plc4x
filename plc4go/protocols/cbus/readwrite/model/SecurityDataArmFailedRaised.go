@@ -40,6 +40,8 @@ type SecurityDataArmFailedRaised interface {
 	SecurityData
 	// IsSecurityDataArmFailedRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataArmFailedRaised()
+	// CreateBuilder creates a SecurityDataArmFailedRaisedBuilder
+	CreateSecurityDataArmFailedRaisedBuilder() SecurityDataArmFailedRaisedBuilder
 }
 
 // _SecurityDataArmFailedRaised is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataArmFailedRaised(commandTypeContainer SecurityCommandTypeCont
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataArmFailedRaisedBuilder is a builder for SecurityDataArmFailedRaised
+type SecurityDataArmFailedRaisedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataArmFailedRaisedBuilder
+	// Build builds the SecurityDataArmFailedRaised or returns an error if something is wrong
+	Build() (SecurityDataArmFailedRaised, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataArmFailedRaised
+}
+
+// NewSecurityDataArmFailedRaisedBuilder() creates a SecurityDataArmFailedRaisedBuilder
+func NewSecurityDataArmFailedRaisedBuilder() SecurityDataArmFailedRaisedBuilder {
+	return &_SecurityDataArmFailedRaisedBuilder{_SecurityDataArmFailedRaised: new(_SecurityDataArmFailedRaised)}
+}
+
+type _SecurityDataArmFailedRaisedBuilder struct {
+	*_SecurityDataArmFailedRaised
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataArmFailedRaisedBuilder) = (*_SecurityDataArmFailedRaisedBuilder)(nil)
+
+func (m *_SecurityDataArmFailedRaisedBuilder) WithMandatoryFields() SecurityDataArmFailedRaisedBuilder {
+	return m
+}
+
+func (m *_SecurityDataArmFailedRaisedBuilder) Build() (SecurityDataArmFailedRaised, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataArmFailedRaised.deepCopy(), nil
+}
+
+func (m *_SecurityDataArmFailedRaisedBuilder) MustBuild() SecurityDataArmFailedRaised {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataArmFailedRaisedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataArmFailedRaisedBuilder()
+}
+
+// CreateSecurityDataArmFailedRaisedBuilder creates a SecurityDataArmFailedRaisedBuilder
+func (m *_SecurityDataArmFailedRaised) CreateSecurityDataArmFailedRaisedBuilder() SecurityDataArmFailedRaisedBuilder {
+	if m == nil {
+		return NewSecurityDataArmFailedRaisedBuilder()
+	}
+	return &_SecurityDataArmFailedRaisedBuilder{_SecurityDataArmFailedRaised: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

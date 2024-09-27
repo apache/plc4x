@@ -56,6 +56,8 @@ type SetTriggeringRequest interface {
 	GetLinksToRemove() []uint32
 	// IsSetTriggeringRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetTriggeringRequest()
+	// CreateBuilder creates a SetTriggeringRequestBuilder
+	CreateSetTriggeringRequestBuilder() SetTriggeringRequestBuilder
 }
 
 // _SetTriggeringRequest is the data-structure of this message
@@ -91,6 +93,126 @@ func NewSetTriggeringRequest(requestHeader ExtensionObjectDefinition, subscripti
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetTriggeringRequestBuilder is a builder for SetTriggeringRequest
+type SetTriggeringRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) SetTriggeringRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) SetTriggeringRequestBuilder
+	// WithSubscriptionId adds SubscriptionId (property field)
+	WithSubscriptionId(uint32) SetTriggeringRequestBuilder
+	// WithTriggeringItemId adds TriggeringItemId (property field)
+	WithTriggeringItemId(uint32) SetTriggeringRequestBuilder
+	// WithNoOfLinksToAdd adds NoOfLinksToAdd (property field)
+	WithNoOfLinksToAdd(int32) SetTriggeringRequestBuilder
+	// WithLinksToAdd adds LinksToAdd (property field)
+	WithLinksToAdd(...uint32) SetTriggeringRequestBuilder
+	// WithNoOfLinksToRemove adds NoOfLinksToRemove (property field)
+	WithNoOfLinksToRemove(int32) SetTriggeringRequestBuilder
+	// WithLinksToRemove adds LinksToRemove (property field)
+	WithLinksToRemove(...uint32) SetTriggeringRequestBuilder
+	// Build builds the SetTriggeringRequest or returns an error if something is wrong
+	Build() (SetTriggeringRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetTriggeringRequest
+}
+
+// NewSetTriggeringRequestBuilder() creates a SetTriggeringRequestBuilder
+func NewSetTriggeringRequestBuilder() SetTriggeringRequestBuilder {
+	return &_SetTriggeringRequestBuilder{_SetTriggeringRequest: new(_SetTriggeringRequest)}
+}
+
+type _SetTriggeringRequestBuilder struct {
+	*_SetTriggeringRequest
+
+	err *utils.MultiError
+}
+
+var _ (SetTriggeringRequestBuilder) = (*_SetTriggeringRequestBuilder)(nil)
+
+func (m *_SetTriggeringRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, triggeringItemId uint32, noOfLinksToAdd int32, linksToAdd []uint32, noOfLinksToRemove int32, linksToRemove []uint32) SetTriggeringRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithTriggeringItemId(triggeringItemId).WithNoOfLinksToAdd(noOfLinksToAdd).WithLinksToAdd(linksToAdd...).WithNoOfLinksToRemove(noOfLinksToRemove).WithLinksToRemove(linksToRemove...)
+}
+
+func (m *_SetTriggeringRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) SetTriggeringRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithSubscriptionId(subscriptionId uint32) SetTriggeringRequestBuilder {
+	m.SubscriptionId = subscriptionId
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithTriggeringItemId(triggeringItemId uint32) SetTriggeringRequestBuilder {
+	m.TriggeringItemId = triggeringItemId
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithNoOfLinksToAdd(noOfLinksToAdd int32) SetTriggeringRequestBuilder {
+	m.NoOfLinksToAdd = noOfLinksToAdd
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithLinksToAdd(linksToAdd ...uint32) SetTriggeringRequestBuilder {
+	m.LinksToAdd = linksToAdd
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithNoOfLinksToRemove(noOfLinksToRemove int32) SetTriggeringRequestBuilder {
+	m.NoOfLinksToRemove = noOfLinksToRemove
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) WithLinksToRemove(linksToRemove ...uint32) SetTriggeringRequestBuilder {
+	m.LinksToRemove = linksToRemove
+	return m
+}
+
+func (m *_SetTriggeringRequestBuilder) Build() (SetTriggeringRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SetTriggeringRequest.deepCopy(), nil
+}
+
+func (m *_SetTriggeringRequestBuilder) MustBuild() SetTriggeringRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SetTriggeringRequestBuilder) DeepCopy() any {
+	return m.CreateSetTriggeringRequestBuilder()
+}
+
+// CreateSetTriggeringRequestBuilder creates a SetTriggeringRequestBuilder
+func (m *_SetTriggeringRequest) CreateSetTriggeringRequestBuilder() SetTriggeringRequestBuilder {
+	if m == nil {
+		return NewSetTriggeringRequestBuilder()
+	}
+	return &_SetTriggeringRequestBuilder{_SetTriggeringRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataAccessEventTime interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataAccessEventTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessEventTime()
+	// CreateBuilder creates a BACnetConstructedDataAccessEventTimeBuilder
+	CreateBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAccessEventTimeBuilder
 }
 
 // _BACnetConstructedDataAccessEventTime is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataAccessEventTime(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessEventTimeBuilder is a builder for BACnetConstructedDataAccessEventTime
+type BACnetConstructedDataAccessEventTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder
+	// WithAccessEventTime adds AccessEventTime (property field)
+	WithAccessEventTime(BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder
+	// Build builds the BACnetConstructedDataAccessEventTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessEventTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessEventTime
+}
+
+// NewBACnetConstructedDataAccessEventTimeBuilder() creates a BACnetConstructedDataAccessEventTimeBuilder
+func NewBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAccessEventTimeBuilder {
+	return &_BACnetConstructedDataAccessEventTimeBuilder{_BACnetConstructedDataAccessEventTime: new(_BACnetConstructedDataAccessEventTime)}
+}
+
+type _BACnetConstructedDataAccessEventTimeBuilder struct {
+	*_BACnetConstructedDataAccessEventTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessEventTimeBuilder) = (*_BACnetConstructedDataAccessEventTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccessEventTimeBuilder) WithMandatoryFields(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
+	return m.WithAccessEventTime(accessEventTime)
+}
+
+func (m *_BACnetConstructedDataAccessEventTimeBuilder) WithAccessEventTime(accessEventTime BACnetTimeStamp) BACnetConstructedDataAccessEventTimeBuilder {
+	m.AccessEventTime = accessEventTime
+	return m
+}
+
+func (m *_BACnetConstructedDataAccessEventTimeBuilder) Build() (BACnetConstructedDataAccessEventTime, error) {
+	if m.AccessEventTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accessEventTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccessEventTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccessEventTimeBuilder) MustBuild() BACnetConstructedDataAccessEventTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccessEventTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccessEventTimeBuilder()
+}
+
+// CreateBACnetConstructedDataAccessEventTimeBuilder creates a BACnetConstructedDataAccessEventTimeBuilder
+func (m *_BACnetConstructedDataAccessEventTime) CreateBACnetConstructedDataAccessEventTimeBuilder() BACnetConstructedDataAccessEventTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccessEventTimeBuilder()
+	}
+	return &_BACnetConstructedDataAccessEventTimeBuilder{_BACnetConstructedDataAccessEventTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

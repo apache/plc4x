@@ -44,6 +44,8 @@ type KnxNetIpDeviceManagement interface {
 	GetVersion() uint8
 	// IsKnxNetIpDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpDeviceManagement()
+	// CreateBuilder creates a KnxNetIpDeviceManagementBuilder
+	CreateKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder
 }
 
 // _KnxNetIpDeviceManagement is the data-structure of this message
@@ -64,6 +66,78 @@ func NewKnxNetIpDeviceManagement(version uint8) *_KnxNetIpDeviceManagement {
 	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpDeviceManagementBuilder is a builder for KnxNetIpDeviceManagement
+type KnxNetIpDeviceManagementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetIpDeviceManagementBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetIpDeviceManagementBuilder
+	// Build builds the KnxNetIpDeviceManagement or returns an error if something is wrong
+	Build() (KnxNetIpDeviceManagement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpDeviceManagement
+}
+
+// NewKnxNetIpDeviceManagementBuilder() creates a KnxNetIpDeviceManagementBuilder
+func NewKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder {
+	return &_KnxNetIpDeviceManagementBuilder{_KnxNetIpDeviceManagement: new(_KnxNetIpDeviceManagement)}
+}
+
+type _KnxNetIpDeviceManagementBuilder struct {
+	*_KnxNetIpDeviceManagement
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpDeviceManagementBuilder) = (*_KnxNetIpDeviceManagementBuilder)(nil)
+
+func (m *_KnxNetIpDeviceManagementBuilder) WithMandatoryFields(version uint8) KnxNetIpDeviceManagementBuilder {
+	return m.WithVersion(version)
+}
+
+func (m *_KnxNetIpDeviceManagementBuilder) WithVersion(version uint8) KnxNetIpDeviceManagementBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_KnxNetIpDeviceManagementBuilder) Build() (KnxNetIpDeviceManagement, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxNetIpDeviceManagement.deepCopy(), nil
+}
+
+func (m *_KnxNetIpDeviceManagementBuilder) MustBuild() KnxNetIpDeviceManagement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxNetIpDeviceManagementBuilder) DeepCopy() any {
+	return m.CreateKnxNetIpDeviceManagementBuilder()
+}
+
+// CreateKnxNetIpDeviceManagementBuilder creates a KnxNetIpDeviceManagementBuilder
+func (m *_KnxNetIpDeviceManagement) CreateKnxNetIpDeviceManagementBuilder() KnxNetIpDeviceManagementBuilder {
+	if m == nil {
+		return NewKnxNetIpDeviceManagementBuilder()
+	}
+	return &_KnxNetIpDeviceManagementBuilder{_KnxNetIpDeviceManagement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

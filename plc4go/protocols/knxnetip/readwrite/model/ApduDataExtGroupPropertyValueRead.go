@@ -40,6 +40,8 @@ type ApduDataExtGroupPropertyValueRead interface {
 	ApduDataExt
 	// IsApduDataExtGroupPropertyValueRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtGroupPropertyValueRead()
+	// CreateBuilder creates a ApduDataExtGroupPropertyValueReadBuilder
+	CreateApduDataExtGroupPropertyValueReadBuilder() ApduDataExtGroupPropertyValueReadBuilder
 }
 
 // _ApduDataExtGroupPropertyValueRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtGroupPropertyValueRead(length uint8) *_ApduDataExtGroupProper
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtGroupPropertyValueReadBuilder is a builder for ApduDataExtGroupPropertyValueRead
+type ApduDataExtGroupPropertyValueReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtGroupPropertyValueReadBuilder
+	// Build builds the ApduDataExtGroupPropertyValueRead or returns an error if something is wrong
+	Build() (ApduDataExtGroupPropertyValueRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtGroupPropertyValueRead
+}
+
+// NewApduDataExtGroupPropertyValueReadBuilder() creates a ApduDataExtGroupPropertyValueReadBuilder
+func NewApduDataExtGroupPropertyValueReadBuilder() ApduDataExtGroupPropertyValueReadBuilder {
+	return &_ApduDataExtGroupPropertyValueReadBuilder{_ApduDataExtGroupPropertyValueRead: new(_ApduDataExtGroupPropertyValueRead)}
+}
+
+type _ApduDataExtGroupPropertyValueReadBuilder struct {
+	*_ApduDataExtGroupPropertyValueRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtGroupPropertyValueReadBuilder) = (*_ApduDataExtGroupPropertyValueReadBuilder)(nil)
+
+func (m *_ApduDataExtGroupPropertyValueReadBuilder) WithMandatoryFields() ApduDataExtGroupPropertyValueReadBuilder {
+	return m
+}
+
+func (m *_ApduDataExtGroupPropertyValueReadBuilder) Build() (ApduDataExtGroupPropertyValueRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtGroupPropertyValueRead.deepCopy(), nil
+}
+
+func (m *_ApduDataExtGroupPropertyValueReadBuilder) MustBuild() ApduDataExtGroupPropertyValueRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtGroupPropertyValueReadBuilder) DeepCopy() any {
+	return m.CreateApduDataExtGroupPropertyValueReadBuilder()
+}
+
+// CreateApduDataExtGroupPropertyValueReadBuilder creates a ApduDataExtGroupPropertyValueReadBuilder
+func (m *_ApduDataExtGroupPropertyValueRead) CreateApduDataExtGroupPropertyValueReadBuilder() ApduDataExtGroupPropertyValueReadBuilder {
+	if m == nil {
+		return NewApduDataExtGroupPropertyValueReadBuilder()
+	}
+	return &_ApduDataExtGroupPropertyValueReadBuilder{_ApduDataExtGroupPropertyValueRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

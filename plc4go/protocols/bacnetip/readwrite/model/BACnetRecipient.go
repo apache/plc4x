@@ -43,6 +43,8 @@ type BACnetRecipient interface {
 	utils.Copyable
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
+	// CreateBuilder creates a BACnetRecipientBuilder
+	CreateBACnetRecipientBuilder() BACnetRecipientBuilder
 }
 
 // BACnetRecipientContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetRecipientContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
+	// CreateBuilder creates a BACnetRecipientBuilder
+	CreateBACnetRecipientBuilder() BACnetRecipientBuilder
 }
 
 // BACnetRecipientRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
 	}
 	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientBuilder is a builder for BACnetRecipient
+type BACnetRecipientBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetRecipientBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder
+	// Build builds the BACnetRecipient or returns an error if something is wrong
+	Build() (BACnetRecipientContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientContract
+}
+
+// NewBACnetRecipientBuilder() creates a BACnetRecipientBuilder
+func NewBACnetRecipientBuilder() BACnetRecipientBuilder {
+	return &_BACnetRecipientBuilder{_BACnetRecipient: new(_BACnetRecipient)}
+}
+
+type _BACnetRecipientBuilder struct {
+	*_BACnetRecipient
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientBuilder) = (*_BACnetRecipientBuilder)(nil)
+
+func (m *_BACnetRecipientBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetRecipientBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetRecipientBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRecipientBuilder) Build() (BACnetRecipientContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRecipient.deepCopy(), nil
+}
+
+func (m *_BACnetRecipientBuilder) MustBuild() BACnetRecipientContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRecipientBuilder) DeepCopy() any {
+	return m.CreateBACnetRecipientBuilder()
+}
+
+// CreateBACnetRecipientBuilder creates a BACnetRecipientBuilder
+func (m *_BACnetRecipient) CreateBACnetRecipientBuilder() BACnetRecipientBuilder {
+	if m == nil {
+		return NewBACnetRecipientBuilder()
+	}
+	return &_BACnetRecipientBuilder{_BACnetRecipient: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

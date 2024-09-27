@@ -44,6 +44,8 @@ type BACnetCalendarEntryWeekNDay interface {
 	GetWeekNDay() BACnetWeekNDayTagged
 	// IsBACnetCalendarEntryWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntryWeekNDay()
+	// CreateBuilder creates a BACnetCalendarEntryWeekNDayBuilder
+	CreateBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder
 }
 
 // _BACnetCalendarEntryWeekNDay is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetCalendarEntryWeekNDay(peekedTagHeader BACnetTagHeader, weekNDay BA
 	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCalendarEntryWeekNDayBuilder is a builder for BACnetCalendarEntryWeekNDay
+type BACnetCalendarEntryWeekNDayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder
+	// WithWeekNDay adds WeekNDay (property field)
+	WithWeekNDay(BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder
+	// WithWeekNDayBuilder adds WeekNDay (property field) which is build by the builder
+	WithWeekNDayBuilder(func(BACnetWeekNDayTaggedBuilder) BACnetWeekNDayTaggedBuilder) BACnetCalendarEntryWeekNDayBuilder
+	// Build builds the BACnetCalendarEntryWeekNDay or returns an error if something is wrong
+	Build() (BACnetCalendarEntryWeekNDay, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntryWeekNDay
+}
+
+// NewBACnetCalendarEntryWeekNDayBuilder() creates a BACnetCalendarEntryWeekNDayBuilder
+func NewBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder {
+	return &_BACnetCalendarEntryWeekNDayBuilder{_BACnetCalendarEntryWeekNDay: new(_BACnetCalendarEntryWeekNDay)}
+}
+
+type _BACnetCalendarEntryWeekNDayBuilder struct {
+	*_BACnetCalendarEntryWeekNDay
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCalendarEntryWeekNDayBuilder) = (*_BACnetCalendarEntryWeekNDayBuilder)(nil)
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) WithMandatoryFields(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
+	return m.WithWeekNDay(weekNDay)
+}
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDay(weekNDay BACnetWeekNDayTagged) BACnetCalendarEntryWeekNDayBuilder {
+	m.WeekNDay = weekNDay
+	return m
+}
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) WithWeekNDayBuilder(builderSupplier func(BACnetWeekNDayTaggedBuilder) BACnetWeekNDayTaggedBuilder) BACnetCalendarEntryWeekNDayBuilder {
+	builder := builderSupplier(m.WeekNDay.CreateBACnetWeekNDayTaggedBuilder())
+	var err error
+	m.WeekNDay, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetWeekNDayTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) Build() (BACnetCalendarEntryWeekNDay, error) {
+	if m.WeekNDay == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'weekNDay' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCalendarEntryWeekNDay.deepCopy(), nil
+}
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) MustBuild() BACnetCalendarEntryWeekNDay {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCalendarEntryWeekNDayBuilder) DeepCopy() any {
+	return m.CreateBACnetCalendarEntryWeekNDayBuilder()
+}
+
+// CreateBACnetCalendarEntryWeekNDayBuilder creates a BACnetCalendarEntryWeekNDayBuilder
+func (m *_BACnetCalendarEntryWeekNDay) CreateBACnetCalendarEntryWeekNDayBuilder() BACnetCalendarEntryWeekNDayBuilder {
+	if m == nil {
+		return NewBACnetCalendarEntryWeekNDayBuilder()
+	}
+	return &_BACnetCalendarEntryWeekNDayBuilder{_BACnetCalendarEntryWeekNDay: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

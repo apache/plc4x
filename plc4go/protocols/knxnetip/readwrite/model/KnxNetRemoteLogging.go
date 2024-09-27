@@ -44,6 +44,8 @@ type KnxNetRemoteLogging interface {
 	GetVersion() uint8
 	// IsKnxNetRemoteLogging is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetRemoteLogging()
+	// CreateBuilder creates a KnxNetRemoteLoggingBuilder
+	CreateKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder
 }
 
 // _KnxNetRemoteLogging is the data-structure of this message
@@ -64,6 +66,78 @@ func NewKnxNetRemoteLogging(version uint8) *_KnxNetRemoteLogging {
 	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetRemoteLoggingBuilder is a builder for KnxNetRemoteLogging
+type KnxNetRemoteLoggingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetRemoteLoggingBuilder
+	// Build builds the KnxNetRemoteLogging or returns an error if something is wrong
+	Build() (KnxNetRemoteLogging, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetRemoteLogging
+}
+
+// NewKnxNetRemoteLoggingBuilder() creates a KnxNetRemoteLoggingBuilder
+func NewKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder {
+	return &_KnxNetRemoteLoggingBuilder{_KnxNetRemoteLogging: new(_KnxNetRemoteLogging)}
+}
+
+type _KnxNetRemoteLoggingBuilder struct {
+	*_KnxNetRemoteLogging
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetRemoteLoggingBuilder) = (*_KnxNetRemoteLoggingBuilder)(nil)
+
+func (m *_KnxNetRemoteLoggingBuilder) WithMandatoryFields(version uint8) KnxNetRemoteLoggingBuilder {
+	return m.WithVersion(version)
+}
+
+func (m *_KnxNetRemoteLoggingBuilder) WithVersion(version uint8) KnxNetRemoteLoggingBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_KnxNetRemoteLoggingBuilder) Build() (KnxNetRemoteLogging, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KnxNetRemoteLogging.deepCopy(), nil
+}
+
+func (m *_KnxNetRemoteLoggingBuilder) MustBuild() KnxNetRemoteLogging {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KnxNetRemoteLoggingBuilder) DeepCopy() any {
+	return m.CreateKnxNetRemoteLoggingBuilder()
+}
+
+// CreateKnxNetRemoteLoggingBuilder creates a KnxNetRemoteLoggingBuilder
+func (m *_KnxNetRemoteLogging) CreateKnxNetRemoteLoggingBuilder() KnxNetRemoteLoggingBuilder {
+	if m == nil {
+		return NewKnxNetRemoteLoggingBuilder()
+	}
+	return &_KnxNetRemoteLoggingBuilder{_KnxNetRemoteLogging: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

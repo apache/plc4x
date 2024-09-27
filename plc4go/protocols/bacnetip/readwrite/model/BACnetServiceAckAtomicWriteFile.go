@@ -44,6 +44,8 @@ type BACnetServiceAckAtomicWriteFile interface {
 	GetFileStartPosition() BACnetContextTagSignedInteger
 	// IsBACnetServiceAckAtomicWriteFile is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckAtomicWriteFile()
+	// CreateBuilder creates a BACnetServiceAckAtomicWriteFileBuilder
+	CreateBACnetServiceAckAtomicWriteFileBuilder() BACnetServiceAckAtomicWriteFileBuilder
 }
 
 // _BACnetServiceAckAtomicWriteFile is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSigned
 	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckAtomicWriteFileBuilder is a builder for BACnetServiceAckAtomicWriteFile
+type BACnetServiceAckAtomicWriteFileBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileStartPosition BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder
+	// WithFileStartPosition adds FileStartPosition (property field)
+	WithFileStartPosition(BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder
+	// WithFileStartPositionBuilder adds FileStartPosition (property field) which is build by the builder
+	WithFileStartPositionBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetServiceAckAtomicWriteFileBuilder
+	// Build builds the BACnetServiceAckAtomicWriteFile or returns an error if something is wrong
+	Build() (BACnetServiceAckAtomicWriteFile, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckAtomicWriteFile
+}
+
+// NewBACnetServiceAckAtomicWriteFileBuilder() creates a BACnetServiceAckAtomicWriteFileBuilder
+func NewBACnetServiceAckAtomicWriteFileBuilder() BACnetServiceAckAtomicWriteFileBuilder {
+	return &_BACnetServiceAckAtomicWriteFileBuilder{_BACnetServiceAckAtomicWriteFile: new(_BACnetServiceAckAtomicWriteFile)}
+}
+
+type _BACnetServiceAckAtomicWriteFileBuilder struct {
+	*_BACnetServiceAckAtomicWriteFile
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckAtomicWriteFileBuilder) = (*_BACnetServiceAckAtomicWriteFileBuilder)(nil)
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) WithMandatoryFields(fileStartPosition BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder {
+	return m.WithFileStartPosition(fileStartPosition)
+}
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) WithFileStartPosition(fileStartPosition BACnetContextTagSignedInteger) BACnetServiceAckAtomicWriteFileBuilder {
+	m.FileStartPosition = fileStartPosition
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) WithFileStartPositionBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetServiceAckAtomicWriteFileBuilder {
+	builder := builderSupplier(m.FileStartPosition.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	m.FileStartPosition, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) Build() (BACnetServiceAckAtomicWriteFile, error) {
+	if m.FileStartPosition == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fileStartPosition' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetServiceAckAtomicWriteFile.deepCopy(), nil
+}
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) MustBuild() BACnetServiceAckAtomicWriteFile {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetServiceAckAtomicWriteFileBuilder) DeepCopy() any {
+	return m.CreateBACnetServiceAckAtomicWriteFileBuilder()
+}
+
+// CreateBACnetServiceAckAtomicWriteFileBuilder creates a BACnetServiceAckAtomicWriteFileBuilder
+func (m *_BACnetServiceAckAtomicWriteFile) CreateBACnetServiceAckAtomicWriteFileBuilder() BACnetServiceAckAtomicWriteFileBuilder {
+	if m == nil {
+		return NewBACnetServiceAckAtomicWriteFileBuilder()
+	}
+	return &_BACnetServiceAckAtomicWriteFileBuilder{_BACnetServiceAckAtomicWriteFile: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

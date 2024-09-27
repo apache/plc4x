@@ -46,6 +46,8 @@ type BACnetConstructedDataBinaryOutputRelinquishDefault interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataBinaryOutputRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryOutputRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+	CreateBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder() BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataBinaryOutputRelinquishDefault is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBinaryOutputRelinquishDefault(openingTag BACnetOpen
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder is a builder for BACnetConstructedDataBinaryOutputRelinquishDefault
+type BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataBinaryOutputRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryOutputRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryOutputRelinquishDefault
+}
+
+// NewBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder() creates a BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+func NewBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder() BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder{_BACnetConstructedDataBinaryOutputRelinquishDefault: new(_BACnetConstructedDataBinaryOutputRelinquishDefault)}
+}
+
+type _BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataBinaryOutputRelinquishDefault
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) = (*_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder)(nil)
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder {
+	return m.WithRelinquishDefault(relinquishDefault)
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder {
+	m.RelinquishDefault = relinquishDefault
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder {
+	builder := builderSupplier(m.RelinquishDefault.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	m.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) Build() (BACnetConstructedDataBinaryOutputRelinquishDefault, error) {
+	if m.RelinquishDefault == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBinaryOutputRelinquishDefault.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataBinaryOutputRelinquishDefault {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder()
+}
+
+// CreateBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder creates a BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder
+func (m *_BACnetConstructedDataBinaryOutputRelinquishDefault) CreateBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder() BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBinaryOutputRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataBinaryOutputRelinquishDefaultBuilder{_BACnetConstructedDataBinaryOutputRelinquishDefault: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

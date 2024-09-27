@@ -48,6 +48,8 @@ type ComObjectTableRealisationType1 interface {
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType1
 	// IsComObjectTableRealisationType1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTableRealisationType1()
+	// CreateBuilder creates a ComObjectTableRealisationType1Builder
+	CreateComObjectTableRealisationType1Builder() ComObjectTableRealisationType1Builder
 }
 
 // _ComObjectTableRealisationType1 is the data-structure of this message
@@ -72,6 +74,92 @@ func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer ui
 	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ComObjectTableRealisationType1Builder is a builder for ComObjectTableRealisationType1
+type ComObjectTableRealisationType1Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder
+	// WithNumEntries adds NumEntries (property field)
+	WithNumEntries(uint8) ComObjectTableRealisationType1Builder
+	// WithRamFlagsTablePointer adds RamFlagsTablePointer (property field)
+	WithRamFlagsTablePointer(uint8) ComObjectTableRealisationType1Builder
+	// WithComObjectDescriptors adds ComObjectDescriptors (property field)
+	WithComObjectDescriptors(...GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder
+	// Build builds the ComObjectTableRealisationType1 or returns an error if something is wrong
+	Build() (ComObjectTableRealisationType1, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ComObjectTableRealisationType1
+}
+
+// NewComObjectTableRealisationType1Builder() creates a ComObjectTableRealisationType1Builder
+func NewComObjectTableRealisationType1Builder() ComObjectTableRealisationType1Builder {
+	return &_ComObjectTableRealisationType1Builder{_ComObjectTableRealisationType1: new(_ComObjectTableRealisationType1)}
+}
+
+type _ComObjectTableRealisationType1Builder struct {
+	*_ComObjectTableRealisationType1
+
+	err *utils.MultiError
+}
+
+var _ (ComObjectTableRealisationType1Builder) = (*_ComObjectTableRealisationType1Builder)(nil)
+
+func (m *_ComObjectTableRealisationType1Builder) WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder {
+	return m.WithNumEntries(numEntries).WithRamFlagsTablePointer(ramFlagsTablePointer).WithComObjectDescriptors(comObjectDescriptors...)
+}
+
+func (m *_ComObjectTableRealisationType1Builder) WithNumEntries(numEntries uint8) ComObjectTableRealisationType1Builder {
+	m.NumEntries = numEntries
+	return m
+}
+
+func (m *_ComObjectTableRealisationType1Builder) WithRamFlagsTablePointer(ramFlagsTablePointer uint8) ComObjectTableRealisationType1Builder {
+	m.RamFlagsTablePointer = ramFlagsTablePointer
+	return m
+}
+
+func (m *_ComObjectTableRealisationType1Builder) WithComObjectDescriptors(comObjectDescriptors ...GroupObjectDescriptorRealisationType1) ComObjectTableRealisationType1Builder {
+	m.ComObjectDescriptors = comObjectDescriptors
+	return m
+}
+
+func (m *_ComObjectTableRealisationType1Builder) Build() (ComObjectTableRealisationType1, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ComObjectTableRealisationType1.deepCopy(), nil
+}
+
+func (m *_ComObjectTableRealisationType1Builder) MustBuild() ComObjectTableRealisationType1 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ComObjectTableRealisationType1Builder) DeepCopy() any {
+	return m.CreateComObjectTableRealisationType1Builder()
+}
+
+// CreateComObjectTableRealisationType1Builder creates a ComObjectTableRealisationType1Builder
+func (m *_ComObjectTableRealisationType1) CreateComObjectTableRealisationType1Builder() ComObjectTableRealisationType1Builder {
+	if m == nil {
+		return NewComObjectTableRealisationType1Builder()
+	}
+	return &_ComObjectTableRealisationType1Builder{_ComObjectTableRealisationType1: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

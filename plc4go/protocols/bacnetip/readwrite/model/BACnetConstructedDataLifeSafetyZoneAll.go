@@ -40,6 +40,8 @@ type BACnetConstructedDataLifeSafetyZoneAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataLifeSafetyZoneAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyZoneAll()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+	CreateBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyZoneAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyZoneAllBuilder is a builder for BACnetConstructedDataLifeSafetyZoneAll
+type BACnetConstructedDataLifeSafetyZoneAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataLifeSafetyZoneAllBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyZoneAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyZoneAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyZoneAll
+}
+
+// NewBACnetConstructedDataLifeSafetyZoneAllBuilder() creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+func NewBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	return &_BACnetConstructedDataLifeSafetyZoneAllBuilder{_BACnetConstructedDataLifeSafetyZoneAll: new(_BACnetConstructedDataLifeSafetyZoneAll)}
+}
+
+type _BACnetConstructedDataLifeSafetyZoneAllBuilder struct {
+	*_BACnetConstructedDataLifeSafetyZoneAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyZoneAllBuilder) = (*_BACnetConstructedDataLifeSafetyZoneAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAllBuilder) WithMandatoryFields() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAllBuilder) Build() (BACnetConstructedDataLifeSafetyZoneAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLifeSafetyZoneAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAllBuilder) MustBuild() BACnetConstructedDataLifeSafetyZoneAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLifeSafetyZoneAllBuilder()
+}
+
+// CreateBACnetConstructedDataLifeSafetyZoneAllBuilder creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) CreateBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLifeSafetyZoneAllBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyZoneAllBuilder{_BACnetConstructedDataLifeSafetyZoneAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type BACnetConstructedDataCalendarAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataCalendarAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCalendarAll()
+	// CreateBuilder creates a BACnetConstructedDataCalendarAllBuilder
+	CreateBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarAllBuilder
 }
 
 // _BACnetConstructedDataCalendarAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataCalendarAll(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCalendarAllBuilder is a builder for BACnetConstructedDataCalendarAll
+type BACnetConstructedDataCalendarAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder
+	// Build builds the BACnetConstructedDataCalendarAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataCalendarAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCalendarAll
+}
+
+// NewBACnetConstructedDataCalendarAllBuilder() creates a BACnetConstructedDataCalendarAllBuilder
+func NewBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarAllBuilder {
+	return &_BACnetConstructedDataCalendarAllBuilder{_BACnetConstructedDataCalendarAll: new(_BACnetConstructedDataCalendarAll)}
+}
+
+type _BACnetConstructedDataCalendarAllBuilder struct {
+	*_BACnetConstructedDataCalendarAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCalendarAllBuilder) = (*_BACnetConstructedDataCalendarAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataCalendarAllBuilder) WithMandatoryFields() BACnetConstructedDataCalendarAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataCalendarAllBuilder) Build() (BACnetConstructedDataCalendarAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataCalendarAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataCalendarAllBuilder) MustBuild() BACnetConstructedDataCalendarAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataCalendarAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataCalendarAllBuilder()
+}
+
+// CreateBACnetConstructedDataCalendarAllBuilder creates a BACnetConstructedDataCalendarAllBuilder
+func (m *_BACnetConstructedDataCalendarAll) CreateBACnetConstructedDataCalendarAllBuilder() BACnetConstructedDataCalendarAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataCalendarAllBuilder()
+	}
+	return &_BACnetConstructedDataCalendarAllBuilder{_BACnetConstructedDataCalendarAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

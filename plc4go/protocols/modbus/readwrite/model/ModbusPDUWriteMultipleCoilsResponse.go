@@ -46,6 +46,8 @@ type ModbusPDUWriteMultipleCoilsResponse interface {
 	GetQuantity() uint16
 	// IsModbusPDUWriteMultipleCoilsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUWriteMultipleCoilsResponse()
+	// CreateBuilder creates a ModbusPDUWriteMultipleCoilsResponseBuilder
+	CreateModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoilsResponseBuilder
 }
 
 // _ModbusPDUWriteMultipleCoilsResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uin
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUWriteMultipleCoilsResponseBuilder is a builder for ModbusPDUWriteMultipleCoilsResponse
+type ModbusPDUWriteMultipleCoilsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder
+	// WithStartingAddress adds StartingAddress (property field)
+	WithStartingAddress(uint16) ModbusPDUWriteMultipleCoilsResponseBuilder
+	// WithQuantity adds Quantity (property field)
+	WithQuantity(uint16) ModbusPDUWriteMultipleCoilsResponseBuilder
+	// Build builds the ModbusPDUWriteMultipleCoilsResponse or returns an error if something is wrong
+	Build() (ModbusPDUWriteMultipleCoilsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUWriteMultipleCoilsResponse
+}
+
+// NewModbusPDUWriteMultipleCoilsResponseBuilder() creates a ModbusPDUWriteMultipleCoilsResponseBuilder
+func NewModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoilsResponseBuilder {
+	return &_ModbusPDUWriteMultipleCoilsResponseBuilder{_ModbusPDUWriteMultipleCoilsResponse: new(_ModbusPDUWriteMultipleCoilsResponse)}
+}
+
+type _ModbusPDUWriteMultipleCoilsResponseBuilder struct {
+	*_ModbusPDUWriteMultipleCoilsResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUWriteMultipleCoilsResponseBuilder) = (*_ModbusPDUWriteMultipleCoilsResponseBuilder)(nil)
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	return m.WithStartingAddress(startingAddress).WithQuantity(quantity)
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	m.StartingAddress = startingAddress
+	return m
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) WithQuantity(quantity uint16) ModbusPDUWriteMultipleCoilsResponseBuilder {
+	m.Quantity = quantity
+	return m
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) Build() (ModbusPDUWriteMultipleCoilsResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUWriteMultipleCoilsResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) MustBuild() ModbusPDUWriteMultipleCoilsResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUWriteMultipleCoilsResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUWriteMultipleCoilsResponseBuilder()
+}
+
+// CreateModbusPDUWriteMultipleCoilsResponseBuilder creates a ModbusPDUWriteMultipleCoilsResponseBuilder
+func (m *_ModbusPDUWriteMultipleCoilsResponse) CreateModbusPDUWriteMultipleCoilsResponseBuilder() ModbusPDUWriteMultipleCoilsResponseBuilder {
+	if m == nil {
+		return NewModbusPDUWriteMultipleCoilsResponseBuilder()
+	}
+	return &_ModbusPDUWriteMultipleCoilsResponseBuilder{_ModbusPDUWriteMultipleCoilsResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type ConfigurationVersionDataType interface {
 	GetMinorVersion() uint32
 	// IsConfigurationVersionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConfigurationVersionDataType()
+	// CreateBuilder creates a ConfigurationVersionDataTypeBuilder
+	CreateConfigurationVersionDataTypeBuilder() ConfigurationVersionDataTypeBuilder
 }
 
 // _ConfigurationVersionDataType is the data-structure of this message
@@ -68,6 +70,85 @@ func NewConfigurationVersionDataType(majorVersion uint32, minorVersion uint32) *
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConfigurationVersionDataTypeBuilder is a builder for ConfigurationVersionDataType
+type ConfigurationVersionDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(majorVersion uint32, minorVersion uint32) ConfigurationVersionDataTypeBuilder
+	// WithMajorVersion adds MajorVersion (property field)
+	WithMajorVersion(uint32) ConfigurationVersionDataTypeBuilder
+	// WithMinorVersion adds MinorVersion (property field)
+	WithMinorVersion(uint32) ConfigurationVersionDataTypeBuilder
+	// Build builds the ConfigurationVersionDataType or returns an error if something is wrong
+	Build() (ConfigurationVersionDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConfigurationVersionDataType
+}
+
+// NewConfigurationVersionDataTypeBuilder() creates a ConfigurationVersionDataTypeBuilder
+func NewConfigurationVersionDataTypeBuilder() ConfigurationVersionDataTypeBuilder {
+	return &_ConfigurationVersionDataTypeBuilder{_ConfigurationVersionDataType: new(_ConfigurationVersionDataType)}
+}
+
+type _ConfigurationVersionDataTypeBuilder struct {
+	*_ConfigurationVersionDataType
+
+	err *utils.MultiError
+}
+
+var _ (ConfigurationVersionDataTypeBuilder) = (*_ConfigurationVersionDataTypeBuilder)(nil)
+
+func (m *_ConfigurationVersionDataTypeBuilder) WithMandatoryFields(majorVersion uint32, minorVersion uint32) ConfigurationVersionDataTypeBuilder {
+	return m.WithMajorVersion(majorVersion).WithMinorVersion(minorVersion)
+}
+
+func (m *_ConfigurationVersionDataTypeBuilder) WithMajorVersion(majorVersion uint32) ConfigurationVersionDataTypeBuilder {
+	m.MajorVersion = majorVersion
+	return m
+}
+
+func (m *_ConfigurationVersionDataTypeBuilder) WithMinorVersion(minorVersion uint32) ConfigurationVersionDataTypeBuilder {
+	m.MinorVersion = minorVersion
+	return m
+}
+
+func (m *_ConfigurationVersionDataTypeBuilder) Build() (ConfigurationVersionDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ConfigurationVersionDataType.deepCopy(), nil
+}
+
+func (m *_ConfigurationVersionDataTypeBuilder) MustBuild() ConfigurationVersionDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ConfigurationVersionDataTypeBuilder) DeepCopy() any {
+	return m.CreateConfigurationVersionDataTypeBuilder()
+}
+
+// CreateConfigurationVersionDataTypeBuilder creates a ConfigurationVersionDataTypeBuilder
+func (m *_ConfigurationVersionDataType) CreateConfigurationVersionDataTypeBuilder() ConfigurationVersionDataTypeBuilder {
+	if m == nil {
+		return NewConfigurationVersionDataTypeBuilder()
+	}
+	return &_ConfigurationVersionDataTypeBuilder{_ConfigurationVersionDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

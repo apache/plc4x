@@ -46,6 +46,8 @@ type BACnetConstructedDataAccompanimentTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAccompanimentTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccompanimentTime()
+	// CreateBuilder creates a BACnetConstructedDataAccompanimentTimeBuilder
+	CreateBACnetConstructedDataAccompanimentTimeBuilder() BACnetConstructedDataAccompanimentTimeBuilder
 }
 
 // _BACnetConstructedDataAccompanimentTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAccompanimentTime(openingTag BACnetOpeningTag, peek
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccompanimentTimeBuilder is a builder for BACnetConstructedDataAccompanimentTime
+type BACnetConstructedDataAccompanimentTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(accompanimentTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccompanimentTimeBuilder
+	// WithAccompanimentTime adds AccompanimentTime (property field)
+	WithAccompanimentTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccompanimentTimeBuilder
+	// WithAccompanimentTimeBuilder adds AccompanimentTime (property field) which is build by the builder
+	WithAccompanimentTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccompanimentTimeBuilder
+	// Build builds the BACnetConstructedDataAccompanimentTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccompanimentTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccompanimentTime
+}
+
+// NewBACnetConstructedDataAccompanimentTimeBuilder() creates a BACnetConstructedDataAccompanimentTimeBuilder
+func NewBACnetConstructedDataAccompanimentTimeBuilder() BACnetConstructedDataAccompanimentTimeBuilder {
+	return &_BACnetConstructedDataAccompanimentTimeBuilder{_BACnetConstructedDataAccompanimentTime: new(_BACnetConstructedDataAccompanimentTime)}
+}
+
+type _BACnetConstructedDataAccompanimentTimeBuilder struct {
+	*_BACnetConstructedDataAccompanimentTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccompanimentTimeBuilder) = (*_BACnetConstructedDataAccompanimentTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) WithMandatoryFields(accompanimentTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccompanimentTimeBuilder {
+	return m.WithAccompanimentTime(accompanimentTime)
+}
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) WithAccompanimentTime(accompanimentTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccompanimentTimeBuilder {
+	m.AccompanimentTime = accompanimentTime
+	return m
+}
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) WithAccompanimentTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccompanimentTimeBuilder {
+	builder := builderSupplier(m.AccompanimentTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.AccompanimentTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) Build() (BACnetConstructedDataAccompanimentTime, error) {
+	if m.AccompanimentTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'accompanimentTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAccompanimentTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) MustBuild() BACnetConstructedDataAccompanimentTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAccompanimentTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAccompanimentTimeBuilder()
+}
+
+// CreateBACnetConstructedDataAccompanimentTimeBuilder creates a BACnetConstructedDataAccompanimentTimeBuilder
+func (m *_BACnetConstructedDataAccompanimentTime) CreateBACnetConstructedDataAccompanimentTimeBuilder() BACnetConstructedDataAccompanimentTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAccompanimentTimeBuilder()
+	}
+	return &_BACnetConstructedDataAccompanimentTimeBuilder{_BACnetConstructedDataAccompanimentTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

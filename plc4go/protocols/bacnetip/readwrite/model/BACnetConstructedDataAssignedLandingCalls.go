@@ -48,6 +48,8 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAssignedLandingCalls()
+	// CreateBuilder creates a BACnetConstructedDataAssignedLandingCallsBuilder
+	CreateBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder
 }
 
 // _BACnetConstructedDataAssignedLandingCalls is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAssignedLandingCallsBuilder is a builder for BACnetConstructedDataAssignedLandingCalls
+type BACnetConstructedDataAssignedLandingCallsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(assignedLandingCalls []BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithAssignedLandingCalls adds AssignedLandingCalls (property field)
+	WithAssignedLandingCalls(...BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder
+	// Build builds the BACnetConstructedDataAssignedLandingCalls or returns an error if something is wrong
+	Build() (BACnetConstructedDataAssignedLandingCalls, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAssignedLandingCalls
+}
+
+// NewBACnetConstructedDataAssignedLandingCallsBuilder() creates a BACnetConstructedDataAssignedLandingCallsBuilder
+func NewBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder {
+	return &_BACnetConstructedDataAssignedLandingCallsBuilder{_BACnetConstructedDataAssignedLandingCalls: new(_BACnetConstructedDataAssignedLandingCalls)}
+}
+
+type _BACnetConstructedDataAssignedLandingCallsBuilder struct {
+	*_BACnetConstructedDataAssignedLandingCalls
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAssignedLandingCallsBuilder) = (*_BACnetConstructedDataAssignedLandingCallsBuilder)(nil)
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) WithMandatoryFields(assignedLandingCalls []BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder {
+	return m.WithAssignedLandingCalls(assignedLandingCalls...)
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedLandingCallsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedLandingCallsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) WithAssignedLandingCalls(assignedLandingCalls ...BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder {
+	m.AssignedLandingCalls = assignedLandingCalls
+	return m
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) Build() (BACnetConstructedDataAssignedLandingCalls, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAssignedLandingCalls.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) MustBuild() BACnetConstructedDataAssignedLandingCalls {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCallsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAssignedLandingCallsBuilder()
+}
+
+// CreateBACnetConstructedDataAssignedLandingCallsBuilder creates a BACnetConstructedDataAssignedLandingCallsBuilder
+func (m *_BACnetConstructedDataAssignedLandingCalls) CreateBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAssignedLandingCallsBuilder()
+	}
+	return &_BACnetConstructedDataAssignedLandingCallsBuilder{_BACnetConstructedDataAssignedLandingCalls: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

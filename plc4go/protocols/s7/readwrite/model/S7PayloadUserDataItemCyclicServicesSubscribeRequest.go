@@ -50,6 +50,8 @@ type S7PayloadUserDataItemCyclicServicesSubscribeRequest interface {
 	GetItem() []CycServiceItemType
 	// IsS7PayloadUserDataItemCyclicServicesSubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesSubscribeRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	CreateS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesSubscribeRequest is the data-structure of this message
@@ -76,6 +78,99 @@ func NewS7PayloadUserDataItemCyclicServicesSubscribeRequest(returnCode DataTrans
 	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder is a builder for S7PayloadUserDataItemCyclicServicesSubscribeRequest
+type S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemsCount uint16, timeBase TimeBase, timeFactor uint8, item []CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// WithItemsCount adds ItemsCount (property field)
+	WithItemsCount(uint16) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// WithTimeBase adds TimeBase (property field)
+	WithTimeBase(TimeBase) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// WithTimeFactor adds TimeFactor (property field)
+	WithTimeFactor(uint8) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// WithItem adds Item (property field)
+	WithItem(...CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesSubscribeRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesSubscribeRequest
+}
+
+// NewS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder() creates a S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+func NewS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesSubscribeRequest: new(_S7PayloadUserDataItemCyclicServicesSubscribeRequest)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesSubscribeRequest
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) = (*_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder)(nil)
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithMandatoryFields(itemsCount uint16, timeBase TimeBase, timeFactor uint8, item []CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	return m.WithItemsCount(itemsCount).WithTimeBase(timeBase).WithTimeFactor(timeFactor).WithItem(item...)
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithItemsCount(itemsCount uint16) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	m.ItemsCount = itemsCount
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithTimeBase(timeBase TimeBase) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	m.TimeBase = timeBase
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithTimeFactor(timeFactor uint8) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	m.TimeFactor = timeFactor
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) WithItem(item ...CycServiceItemType) S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	m.Item = item
+	return m
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) Build() (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._S7PayloadUserDataItemCyclicServicesSubscribeRequest.deepCopy(), nil
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesSubscribeRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder) DeepCopy() any {
+	return m.CreateS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder()
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder creates a S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder
+func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) CreateS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder {
+	if m == nil {
+		return NewS7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesSubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesSubscribeRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryBoolean interface {
 	GetBooleanValue() BACnetApplicationTagBoolean
 	// IsBACnetFaultParameterFaultExtendedParametersEntryBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryBoolean()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryBoolean is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(peekedTagHeader 
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryBoolean
+type BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+	// WithBooleanValue adds BooleanValue (property field)
+	WithBooleanValue(BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
+	WithBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryBoolean or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBoolean
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBoolean: new(_BACnetFaultParameterFaultExtendedParametersEntryBoolean)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryBoolean
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithMandatoryFields(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	return m.WithBooleanValue(booleanValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	m.BooleanValue = booleanValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	builder := builderSupplier(m.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.BooleanValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+	if m.BooleanValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryBoolean.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) CreateBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder() BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder{_BACnetFaultParameterFaultExtendedParametersEntryBoolean: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

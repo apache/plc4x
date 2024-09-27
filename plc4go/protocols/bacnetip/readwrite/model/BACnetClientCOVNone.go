@@ -44,6 +44,8 @@ type BACnetClientCOVNone interface {
 	GetDefaultIncrement() BACnetApplicationTagNull
 	// IsBACnetClientCOVNone is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClientCOVNone()
+	// CreateBuilder creates a BACnetClientCOVNoneBuilder
+	CreateBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder
 }
 
 // _BACnetClientCOVNone is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetClientCOVNone(peekedTagHeader BACnetTagHeader, defaultIncrement BA
 	_result.BACnetClientCOVContract.(*_BACnetClientCOV)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetClientCOVNoneBuilder is a builder for BACnetClientCOVNone
+type BACnetClientCOVNoneBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder
+	// WithDefaultIncrement adds DefaultIncrement (property field)
+	WithDefaultIncrement(BACnetApplicationTagNull) BACnetClientCOVNoneBuilder
+	// WithDefaultIncrementBuilder adds DefaultIncrement (property field) which is build by the builder
+	WithDefaultIncrementBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetClientCOVNoneBuilder
+	// Build builds the BACnetClientCOVNone or returns an error if something is wrong
+	Build() (BACnetClientCOVNone, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetClientCOVNone
+}
+
+// NewBACnetClientCOVNoneBuilder() creates a BACnetClientCOVNoneBuilder
+func NewBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder {
+	return &_BACnetClientCOVNoneBuilder{_BACnetClientCOVNone: new(_BACnetClientCOVNone)}
+}
+
+type _BACnetClientCOVNoneBuilder struct {
+	*_BACnetClientCOVNone
+
+	err *utils.MultiError
+}
+
+var _ (BACnetClientCOVNoneBuilder) = (*_BACnetClientCOVNoneBuilder)(nil)
+
+func (m *_BACnetClientCOVNoneBuilder) WithMandatoryFields(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
+	return m.WithDefaultIncrement(defaultIncrement)
+}
+
+func (m *_BACnetClientCOVNoneBuilder) WithDefaultIncrement(defaultIncrement BACnetApplicationTagNull) BACnetClientCOVNoneBuilder {
+	m.DefaultIncrement = defaultIncrement
+	return m
+}
+
+func (m *_BACnetClientCOVNoneBuilder) WithDefaultIncrementBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetClientCOVNoneBuilder {
+	builder := builderSupplier(m.DefaultIncrement.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	m.DefaultIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetClientCOVNoneBuilder) Build() (BACnetClientCOVNone, error) {
+	if m.DefaultIncrement == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'defaultIncrement' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetClientCOVNone.deepCopy(), nil
+}
+
+func (m *_BACnetClientCOVNoneBuilder) MustBuild() BACnetClientCOVNone {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetClientCOVNoneBuilder) DeepCopy() any {
+	return m.CreateBACnetClientCOVNoneBuilder()
+}
+
+// CreateBACnetClientCOVNoneBuilder creates a BACnetClientCOVNoneBuilder
+func (m *_BACnetClientCOVNone) CreateBACnetClientCOVNoneBuilder() BACnetClientCOVNoneBuilder {
+	if m == nil {
+		return NewBACnetClientCOVNoneBuilder()
+	}
+	return &_BACnetClientCOVNoneBuilder{_BACnetClientCOVNone: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type ApduDataExtLinkWrite interface {
 	ApduDataExt
 	// IsApduDataExtLinkWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkWrite()
+	// CreateBuilder creates a ApduDataExtLinkWriteBuilder
+	CreateApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder
 }
 
 // _ApduDataExtLinkWrite is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtLinkWrite(length uint8) *_ApduDataExtLinkWrite {
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtLinkWriteBuilder is a builder for ApduDataExtLinkWrite
+type ApduDataExtLinkWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtLinkWriteBuilder
+	// Build builds the ApduDataExtLinkWrite or returns an error if something is wrong
+	Build() (ApduDataExtLinkWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtLinkWrite
+}
+
+// NewApduDataExtLinkWriteBuilder() creates a ApduDataExtLinkWriteBuilder
+func NewApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder {
+	return &_ApduDataExtLinkWriteBuilder{_ApduDataExtLinkWrite: new(_ApduDataExtLinkWrite)}
+}
+
+type _ApduDataExtLinkWriteBuilder struct {
+	*_ApduDataExtLinkWrite
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtLinkWriteBuilder) = (*_ApduDataExtLinkWriteBuilder)(nil)
+
+func (m *_ApduDataExtLinkWriteBuilder) WithMandatoryFields() ApduDataExtLinkWriteBuilder {
+	return m
+}
+
+func (m *_ApduDataExtLinkWriteBuilder) Build() (ApduDataExtLinkWrite, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtLinkWrite.deepCopy(), nil
+}
+
+func (m *_ApduDataExtLinkWriteBuilder) MustBuild() ApduDataExtLinkWrite {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtLinkWriteBuilder) DeepCopy() any {
+	return m.CreateApduDataExtLinkWriteBuilder()
+}
+
+// CreateApduDataExtLinkWriteBuilder creates a ApduDataExtLinkWriteBuilder
+func (m *_ApduDataExtLinkWrite) CreateApduDataExtLinkWriteBuilder() ApduDataExtLinkWriteBuilder {
+	if m == nil {
+		return NewApduDataExtLinkWriteBuilder()
+	}
+	return &_ApduDataExtLinkWriteBuilder{_ApduDataExtLinkWrite: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

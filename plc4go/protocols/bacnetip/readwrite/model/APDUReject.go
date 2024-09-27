@@ -46,6 +46,8 @@ type APDUReject interface {
 	GetRejectReason() BACnetRejectReasonTagged
 	// IsAPDUReject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUReject()
+	// CreateBuilder creates a APDURejectBuilder
+	CreateAPDURejectBuilder() APDURejectBuilder
 }
 
 // _APDUReject is the data-structure of this message
@@ -73,6 +75,106 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged
 	_result.APDUContract.(*_APDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDURejectBuilder is a builder for APDUReject
+type APDURejectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) APDURejectBuilder
+	// WithOriginalInvokeId adds OriginalInvokeId (property field)
+	WithOriginalInvokeId(uint8) APDURejectBuilder
+	// WithRejectReason adds RejectReason (property field)
+	WithRejectReason(BACnetRejectReasonTagged) APDURejectBuilder
+	// WithRejectReasonBuilder adds RejectReason (property field) which is build by the builder
+	WithRejectReasonBuilder(func(BACnetRejectReasonTaggedBuilder) BACnetRejectReasonTaggedBuilder) APDURejectBuilder
+	// Build builds the APDUReject or returns an error if something is wrong
+	Build() (APDUReject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUReject
+}
+
+// NewAPDURejectBuilder() creates a APDURejectBuilder
+func NewAPDURejectBuilder() APDURejectBuilder {
+	return &_APDURejectBuilder{_APDUReject: new(_APDUReject)}
+}
+
+type _APDURejectBuilder struct {
+	*_APDUReject
+
+	err *utils.MultiError
+}
+
+var _ (APDURejectBuilder) = (*_APDURejectBuilder)(nil)
+
+func (m *_APDURejectBuilder) WithMandatoryFields(originalInvokeId uint8, rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
+	return m.WithOriginalInvokeId(originalInvokeId).WithRejectReason(rejectReason)
+}
+
+func (m *_APDURejectBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDURejectBuilder {
+	m.OriginalInvokeId = originalInvokeId
+	return m
+}
+
+func (m *_APDURejectBuilder) WithRejectReason(rejectReason BACnetRejectReasonTagged) APDURejectBuilder {
+	m.RejectReason = rejectReason
+	return m
+}
+
+func (m *_APDURejectBuilder) WithRejectReasonBuilder(builderSupplier func(BACnetRejectReasonTaggedBuilder) BACnetRejectReasonTaggedBuilder) APDURejectBuilder {
+	builder := builderSupplier(m.RejectReason.CreateBACnetRejectReasonTaggedBuilder())
+	var err error
+	m.RejectReason, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetRejectReasonTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_APDURejectBuilder) Build() (APDUReject, error) {
+	if m.RejectReason == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'rejectReason' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._APDUReject.deepCopy(), nil
+}
+
+func (m *_APDURejectBuilder) MustBuild() APDUReject {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_APDURejectBuilder) DeepCopy() any {
+	return m.CreateAPDURejectBuilder()
+}
+
+// CreateAPDURejectBuilder creates a APDURejectBuilder
+func (m *_APDUReject) CreateAPDURejectBuilder() APDURejectBuilder {
+	if m == nil {
+		return NewAPDURejectBuilder()
+	}
+	return &_APDURejectBuilder{_APDUReject: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

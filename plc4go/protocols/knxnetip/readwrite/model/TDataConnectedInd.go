@@ -40,6 +40,8 @@ type TDataConnectedInd interface {
 	CEMI
 	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedInd()
+	// CreateBuilder creates a TDataConnectedIndBuilder
+	CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder
 }
 
 // _TDataConnectedInd is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TDataConnectedIndBuilder is a builder for TDataConnectedInd
+type TDataConnectedIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TDataConnectedIndBuilder
+	// Build builds the TDataConnectedInd or returns an error if something is wrong
+	Build() (TDataConnectedInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TDataConnectedInd
+}
+
+// NewTDataConnectedIndBuilder() creates a TDataConnectedIndBuilder
+func NewTDataConnectedIndBuilder() TDataConnectedIndBuilder {
+	return &_TDataConnectedIndBuilder{_TDataConnectedInd: new(_TDataConnectedInd)}
+}
+
+type _TDataConnectedIndBuilder struct {
+	*_TDataConnectedInd
+
+	err *utils.MultiError
+}
+
+var _ (TDataConnectedIndBuilder) = (*_TDataConnectedIndBuilder)(nil)
+
+func (m *_TDataConnectedIndBuilder) WithMandatoryFields() TDataConnectedIndBuilder {
+	return m
+}
+
+func (m *_TDataConnectedIndBuilder) Build() (TDataConnectedInd, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TDataConnectedInd.deepCopy(), nil
+}
+
+func (m *_TDataConnectedIndBuilder) MustBuild() TDataConnectedInd {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TDataConnectedIndBuilder) DeepCopy() any {
+	return m.CreateTDataConnectedIndBuilder()
+}
+
+// CreateTDataConnectedIndBuilder creates a TDataConnectedIndBuilder
+func (m *_TDataConnectedInd) CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder {
+	if m == nil {
+		return NewTDataConnectedIndBuilder()
+	}
+	return &_TDataConnectedIndBuilder{_TDataConnectedInd: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

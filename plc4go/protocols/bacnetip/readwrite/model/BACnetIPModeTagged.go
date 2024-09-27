@@ -45,6 +45,8 @@ type BACnetIPModeTagged interface {
 	GetValue() BACnetIPMode
 	// IsBACnetIPModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetIPModeTagged()
+	// CreateBuilder creates a BACnetIPModeTaggedBuilder
+	CreateBACnetIPModeTaggedBuilder() BACnetIPModeTaggedBuilder
 }
 
 // _BACnetIPModeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetIPModeTagged(header BACnetTagHeader, value BACnetIPMode, tagNumber
 	}
 	return &_BACnetIPModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetIPModeTaggedBuilder is a builder for BACnetIPModeTagged
+type BACnetIPModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetIPMode) BACnetIPModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetIPModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetIPMode) BACnetIPModeTaggedBuilder
+	// Build builds the BACnetIPModeTagged or returns an error if something is wrong
+	Build() (BACnetIPModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetIPModeTagged
+}
+
+// NewBACnetIPModeTaggedBuilder() creates a BACnetIPModeTaggedBuilder
+func NewBACnetIPModeTaggedBuilder() BACnetIPModeTaggedBuilder {
+	return &_BACnetIPModeTaggedBuilder{_BACnetIPModeTagged: new(_BACnetIPModeTagged)}
+}
+
+type _BACnetIPModeTaggedBuilder struct {
+	*_BACnetIPModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetIPModeTaggedBuilder) = (*_BACnetIPModeTaggedBuilder)(nil)
+
+func (m *_BACnetIPModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetIPMode) BACnetIPModeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetIPModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetIPModeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetIPModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetIPModeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetIPModeTaggedBuilder) WithValue(value BACnetIPMode) BACnetIPModeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetIPModeTaggedBuilder) Build() (BACnetIPModeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetIPModeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetIPModeTaggedBuilder) MustBuild() BACnetIPModeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetIPModeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetIPModeTaggedBuilder()
+}
+
+// CreateBACnetIPModeTaggedBuilder creates a BACnetIPModeTaggedBuilder
+func (m *_BACnetIPModeTagged) CreateBACnetIPModeTaggedBuilder() BACnetIPModeTaggedBuilder {
+	if m == nil {
+		return NewBACnetIPModeTaggedBuilder()
+	}
+	return &_BACnetIPModeTaggedBuilder{_BACnetIPModeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

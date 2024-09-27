@@ -60,6 +60,8 @@ type EndpointDescription interface {
 	GetSecurityLevel() uint8
 	// IsEndpointDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEndpointDescription()
+	// CreateBuilder creates a EndpointDescriptionBuilder
+	CreateEndpointDescriptionBuilder() EndpointDescriptionBuilder
 }
 
 // _EndpointDescription is the data-structure of this message
@@ -111,6 +113,224 @@ func NewEndpointDescription(endpointUrl PascalString, server ExtensionObjectDefi
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EndpointDescriptionBuilder is a builder for EndpointDescription
+type EndpointDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder
+	// WithEndpointUrl adds EndpointUrl (property field)
+	WithEndpointUrl(PascalString) EndpointDescriptionBuilder
+	// WithEndpointUrlBuilder adds EndpointUrl (property field) which is build by the builder
+	WithEndpointUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
+	// WithServer adds Server (property field)
+	WithServer(ExtensionObjectDefinition) EndpointDescriptionBuilder
+	// WithServerCertificate adds ServerCertificate (property field)
+	WithServerCertificate(PascalByteString) EndpointDescriptionBuilder
+	// WithServerCertificateBuilder adds ServerCertificate (property field) which is build by the builder
+	WithServerCertificateBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) EndpointDescriptionBuilder
+	// WithSecurityMode adds SecurityMode (property field)
+	WithSecurityMode(MessageSecurityMode) EndpointDescriptionBuilder
+	// WithSecurityPolicyUri adds SecurityPolicyUri (property field)
+	WithSecurityPolicyUri(PascalString) EndpointDescriptionBuilder
+	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
+	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
+	// WithNoOfUserIdentityTokens adds NoOfUserIdentityTokens (property field)
+	WithNoOfUserIdentityTokens(int32) EndpointDescriptionBuilder
+	// WithUserIdentityTokens adds UserIdentityTokens (property field)
+	WithUserIdentityTokens(...ExtensionObjectDefinition) EndpointDescriptionBuilder
+	// WithTransportProfileUri adds TransportProfileUri (property field)
+	WithTransportProfileUri(PascalString) EndpointDescriptionBuilder
+	// WithTransportProfileUriBuilder adds TransportProfileUri (property field) which is build by the builder
+	WithTransportProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder
+	// WithSecurityLevel adds SecurityLevel (property field)
+	WithSecurityLevel(uint8) EndpointDescriptionBuilder
+	// Build builds the EndpointDescription or returns an error if something is wrong
+	Build() (EndpointDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EndpointDescription
+}
+
+// NewEndpointDescriptionBuilder() creates a EndpointDescriptionBuilder
+func NewEndpointDescriptionBuilder() EndpointDescriptionBuilder {
+	return &_EndpointDescriptionBuilder{_EndpointDescription: new(_EndpointDescription)}
+}
+
+type _EndpointDescriptionBuilder struct {
+	*_EndpointDescription
+
+	err *utils.MultiError
+}
+
+var _ (EndpointDescriptionBuilder) = (*_EndpointDescriptionBuilder)(nil)
+
+func (m *_EndpointDescriptionBuilder) WithMandatoryFields(endpointUrl PascalString, server ExtensionObjectDefinition, serverCertificate PascalByteString, securityMode MessageSecurityMode, securityPolicyUri PascalString, noOfUserIdentityTokens int32, userIdentityTokens []ExtensionObjectDefinition, transportProfileUri PascalString, securityLevel uint8) EndpointDescriptionBuilder {
+	return m.WithEndpointUrl(endpointUrl).WithServer(server).WithServerCertificate(serverCertificate).WithSecurityMode(securityMode).WithSecurityPolicyUri(securityPolicyUri).WithNoOfUserIdentityTokens(noOfUserIdentityTokens).WithUserIdentityTokens(userIdentityTokens...).WithTransportProfileUri(transportProfileUri).WithSecurityLevel(securityLevel)
+}
+
+func (m *_EndpointDescriptionBuilder) WithEndpointUrl(endpointUrl PascalString) EndpointDescriptionBuilder {
+	m.EndpointUrl = endpointUrl
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithEndpointUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder {
+	builder := builderSupplier(m.EndpointUrl.CreatePascalStringBuilder())
+	var err error
+	m.EndpointUrl, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithServer(server ExtensionObjectDefinition) EndpointDescriptionBuilder {
+	m.Server = server
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithServerCertificate(serverCertificate PascalByteString) EndpointDescriptionBuilder {
+	m.ServerCertificate = serverCertificate
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithServerCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) EndpointDescriptionBuilder {
+	builder := builderSupplier(m.ServerCertificate.CreatePascalByteStringBuilder())
+	var err error
+	m.ServerCertificate, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithSecurityMode(securityMode MessageSecurityMode) EndpointDescriptionBuilder {
+	m.SecurityMode = securityMode
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) EndpointDescriptionBuilder {
+	m.SecurityPolicyUri = securityPolicyUri
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder {
+	builder := builderSupplier(m.SecurityPolicyUri.CreatePascalStringBuilder())
+	var err error
+	m.SecurityPolicyUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithNoOfUserIdentityTokens(noOfUserIdentityTokens int32) EndpointDescriptionBuilder {
+	m.NoOfUserIdentityTokens = noOfUserIdentityTokens
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithUserIdentityTokens(userIdentityTokens ...ExtensionObjectDefinition) EndpointDescriptionBuilder {
+	m.UserIdentityTokens = userIdentityTokens
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithTransportProfileUri(transportProfileUri PascalString) EndpointDescriptionBuilder {
+	m.TransportProfileUri = transportProfileUri
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithTransportProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) EndpointDescriptionBuilder {
+	builder := builderSupplier(m.TransportProfileUri.CreatePascalStringBuilder())
+	var err error
+	m.TransportProfileUri, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) WithSecurityLevel(securityLevel uint8) EndpointDescriptionBuilder {
+	m.SecurityLevel = securityLevel
+	return m
+}
+
+func (m *_EndpointDescriptionBuilder) Build() (EndpointDescription, error) {
+	if m.EndpointUrl == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'endpointUrl' not set"))
+	}
+	if m.Server == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'server' not set"))
+	}
+	if m.ServerCertificate == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'serverCertificate' not set"))
+	}
+	if m.SecurityPolicyUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+	}
+	if m.TransportProfileUri == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'transportProfileUri' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EndpointDescription.deepCopy(), nil
+}
+
+func (m *_EndpointDescriptionBuilder) MustBuild() EndpointDescription {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EndpointDescriptionBuilder) DeepCopy() any {
+	return m.CreateEndpointDescriptionBuilder()
+}
+
+// CreateEndpointDescriptionBuilder creates a EndpointDescriptionBuilder
+func (m *_EndpointDescription) CreateEndpointDescriptionBuilder() EndpointDescriptionBuilder {
+	if m == nil {
+		return NewEndpointDescriptionBuilder()
+	}
+	return &_EndpointDescriptionBuilder{_EndpointDescription: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

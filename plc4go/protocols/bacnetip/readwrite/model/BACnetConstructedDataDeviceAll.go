@@ -40,6 +40,8 @@ type BACnetConstructedDataDeviceAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataDeviceAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeviceAll()
+	// CreateBuilder creates a BACnetConstructedDataDeviceAllBuilder
+	CreateBACnetConstructedDataDeviceAllBuilder() BACnetConstructedDataDeviceAllBuilder
 }
 
 // _BACnetConstructedDataDeviceAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataDeviceAll(openingTag BACnetOpeningTag, peekedTagHea
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDeviceAllBuilder is a builder for BACnetConstructedDataDeviceAll
+type BACnetConstructedDataDeviceAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataDeviceAllBuilder
+	// Build builds the BACnetConstructedDataDeviceAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataDeviceAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDeviceAll
+}
+
+// NewBACnetConstructedDataDeviceAllBuilder() creates a BACnetConstructedDataDeviceAllBuilder
+func NewBACnetConstructedDataDeviceAllBuilder() BACnetConstructedDataDeviceAllBuilder {
+	return &_BACnetConstructedDataDeviceAllBuilder{_BACnetConstructedDataDeviceAll: new(_BACnetConstructedDataDeviceAll)}
+}
+
+type _BACnetConstructedDataDeviceAllBuilder struct {
+	*_BACnetConstructedDataDeviceAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDeviceAllBuilder) = (*_BACnetConstructedDataDeviceAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataDeviceAllBuilder) WithMandatoryFields() BACnetConstructedDataDeviceAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataDeviceAllBuilder) Build() (BACnetConstructedDataDeviceAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDeviceAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDeviceAllBuilder) MustBuild() BACnetConstructedDataDeviceAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDeviceAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDeviceAllBuilder()
+}
+
+// CreateBACnetConstructedDataDeviceAllBuilder creates a BACnetConstructedDataDeviceAllBuilder
+func (m *_BACnetConstructedDataDeviceAll) CreateBACnetConstructedDataDeviceAllBuilder() BACnetConstructedDataDeviceAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDeviceAllBuilder()
+	}
+	return &_BACnetConstructedDataDeviceAllBuilder{_BACnetConstructedDataDeviceAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

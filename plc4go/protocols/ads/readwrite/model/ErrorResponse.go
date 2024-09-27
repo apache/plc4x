@@ -40,6 +40,8 @@ type ErrorResponse interface {
 	AmsPacket
 	// IsErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorResponse()
+	// CreateBuilder creates a ErrorResponseBuilder
+	CreateErrorResponseBuilder() ErrorResponseBuilder
 }
 
 // _ErrorResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNe
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorResponseBuilder is a builder for ErrorResponse
+type ErrorResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ErrorResponseBuilder
+	// Build builds the ErrorResponse or returns an error if something is wrong
+	Build() (ErrorResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorResponse
+}
+
+// NewErrorResponseBuilder() creates a ErrorResponseBuilder
+func NewErrorResponseBuilder() ErrorResponseBuilder {
+	return &_ErrorResponseBuilder{_ErrorResponse: new(_ErrorResponse)}
+}
+
+type _ErrorResponseBuilder struct {
+	*_ErrorResponse
+
+	err *utils.MultiError
+}
+
+var _ (ErrorResponseBuilder) = (*_ErrorResponseBuilder)(nil)
+
+func (m *_ErrorResponseBuilder) WithMandatoryFields() ErrorResponseBuilder {
+	return m
+}
+
+func (m *_ErrorResponseBuilder) Build() (ErrorResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ErrorResponse.deepCopy(), nil
+}
+
+func (m *_ErrorResponseBuilder) MustBuild() ErrorResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorResponseBuilder) DeepCopy() any {
+	return m.CreateErrorResponseBuilder()
+}
+
+// CreateErrorResponseBuilder creates a ErrorResponseBuilder
+func (m *_ErrorResponse) CreateErrorResponseBuilder() ErrorResponseBuilder {
+	if m == nil {
+		return NewErrorResponseBuilder()
+	}
+	return &_ErrorResponseBuilder{_ErrorResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

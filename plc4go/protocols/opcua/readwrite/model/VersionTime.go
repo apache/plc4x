@@ -39,6 +39,8 @@ type VersionTime interface {
 	utils.Copyable
 	// IsVersionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVersionTime()
+	// CreateBuilder creates a VersionTimeBuilder
+	CreateVersionTimeBuilder() VersionTimeBuilder
 }
 
 // _VersionTime is the data-structure of this message
@@ -51,6 +53,71 @@ var _ VersionTime = (*_VersionTime)(nil)
 func NewVersionTime() *_VersionTime {
 	return &_VersionTime{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VersionTimeBuilder is a builder for VersionTime
+type VersionTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() VersionTimeBuilder
+	// Build builds the VersionTime or returns an error if something is wrong
+	Build() (VersionTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VersionTime
+}
+
+// NewVersionTimeBuilder() creates a VersionTimeBuilder
+func NewVersionTimeBuilder() VersionTimeBuilder {
+	return &_VersionTimeBuilder{_VersionTime: new(_VersionTime)}
+}
+
+type _VersionTimeBuilder struct {
+	*_VersionTime
+
+	err *utils.MultiError
+}
+
+var _ (VersionTimeBuilder) = (*_VersionTimeBuilder)(nil)
+
+func (m *_VersionTimeBuilder) WithMandatoryFields() VersionTimeBuilder {
+	return m
+}
+
+func (m *_VersionTimeBuilder) Build() (VersionTime, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VersionTime.deepCopy(), nil
+}
+
+func (m *_VersionTimeBuilder) MustBuild() VersionTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VersionTimeBuilder) DeepCopy() any {
+	return m.CreateVersionTimeBuilder()
+}
+
+// CreateVersionTimeBuilder creates a VersionTimeBuilder
+func (m *_VersionTime) CreateVersionTimeBuilder() VersionTimeBuilder {
+	if m == nil {
+		return NewVersionTimeBuilder()
+	}
+	return &_VersionTimeBuilder{_VersionTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastVersionTime(structType any) VersionTime {

@@ -44,6 +44,8 @@ type PowerUpReply interface {
 	GetPowerUpIndicator() PowerUp
 	// IsPowerUpReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUpReply()
+	// CreateBuilder creates a PowerUpReplyBuilder
+	CreatePowerUpReplyBuilder() PowerUpReplyBuilder
 }
 
 // _PowerUpReply is the data-structure of this message
@@ -67,6 +69,99 @@ func NewPowerUpReply(peekedByte byte, powerUpIndicator PowerUp, cBusOptions CBus
 	_result.ReplyContract.(*_Reply)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PowerUpReplyBuilder is a builder for PowerUpReply
+type PowerUpReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(powerUpIndicator PowerUp) PowerUpReplyBuilder
+	// WithPowerUpIndicator adds PowerUpIndicator (property field)
+	WithPowerUpIndicator(PowerUp) PowerUpReplyBuilder
+	// WithPowerUpIndicatorBuilder adds PowerUpIndicator (property field) which is build by the builder
+	WithPowerUpIndicatorBuilder(func(PowerUpBuilder) PowerUpBuilder) PowerUpReplyBuilder
+	// Build builds the PowerUpReply or returns an error if something is wrong
+	Build() (PowerUpReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PowerUpReply
+}
+
+// NewPowerUpReplyBuilder() creates a PowerUpReplyBuilder
+func NewPowerUpReplyBuilder() PowerUpReplyBuilder {
+	return &_PowerUpReplyBuilder{_PowerUpReply: new(_PowerUpReply)}
+}
+
+type _PowerUpReplyBuilder struct {
+	*_PowerUpReply
+
+	err *utils.MultiError
+}
+
+var _ (PowerUpReplyBuilder) = (*_PowerUpReplyBuilder)(nil)
+
+func (m *_PowerUpReplyBuilder) WithMandatoryFields(powerUpIndicator PowerUp) PowerUpReplyBuilder {
+	return m.WithPowerUpIndicator(powerUpIndicator)
+}
+
+func (m *_PowerUpReplyBuilder) WithPowerUpIndicator(powerUpIndicator PowerUp) PowerUpReplyBuilder {
+	m.PowerUpIndicator = powerUpIndicator
+	return m
+}
+
+func (m *_PowerUpReplyBuilder) WithPowerUpIndicatorBuilder(builderSupplier func(PowerUpBuilder) PowerUpBuilder) PowerUpReplyBuilder {
+	builder := builderSupplier(m.PowerUpIndicator.CreatePowerUpBuilder())
+	var err error
+	m.PowerUpIndicator, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PowerUpBuilder failed"))
+	}
+	return m
+}
+
+func (m *_PowerUpReplyBuilder) Build() (PowerUpReply, error) {
+	if m.PowerUpIndicator == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'powerUpIndicator' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PowerUpReply.deepCopy(), nil
+}
+
+func (m *_PowerUpReplyBuilder) MustBuild() PowerUpReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PowerUpReplyBuilder) DeepCopy() any {
+	return m.CreatePowerUpReplyBuilder()
+}
+
+// CreatePowerUpReplyBuilder creates a PowerUpReplyBuilder
+func (m *_PowerUpReply) CreatePowerUpReplyBuilder() PowerUpReplyBuilder {
+	if m == nil {
+		return NewPowerUpReplyBuilder()
+	}
+	return &_PowerUpReplyBuilder{_PowerUpReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

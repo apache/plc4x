@@ -48,6 +48,8 @@ type LDataReq interface {
 	GetDataFrame() LDataFrame
 	// IsLDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataReq()
+	// CreateBuilder creates a LDataReqBuilder
+	CreateLDataReqBuilder() LDataReqBuilder
 }
 
 // _LDataReq is the data-structure of this message
@@ -75,6 +77,98 @@ func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMI
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataReqBuilder is a builder for LDataReq
+type LDataReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataReqBuilder
+	// WithAdditionalInformationLength adds AdditionalInformationLength (property field)
+	WithAdditionalInformationLength(uint8) LDataReqBuilder
+	// WithAdditionalInformation adds AdditionalInformation (property field)
+	WithAdditionalInformation(...CEMIAdditionalInformation) LDataReqBuilder
+	// WithDataFrame adds DataFrame (property field)
+	WithDataFrame(LDataFrame) LDataReqBuilder
+	// Build builds the LDataReq or returns an error if something is wrong
+	Build() (LDataReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataReq
+}
+
+// NewLDataReqBuilder() creates a LDataReqBuilder
+func NewLDataReqBuilder() LDataReqBuilder {
+	return &_LDataReqBuilder{_LDataReq: new(_LDataReq)}
+}
+
+type _LDataReqBuilder struct {
+	*_LDataReq
+
+	err *utils.MultiError
+}
+
+var _ (LDataReqBuilder) = (*_LDataReqBuilder)(nil)
+
+func (m *_LDataReqBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataReqBuilder {
+	return m.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+}
+
+func (m *_LDataReqBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataReqBuilder {
+	m.AdditionalInformationLength = additionalInformationLength
+	return m
+}
+
+func (m *_LDataReqBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataReqBuilder {
+	m.AdditionalInformation = additionalInformation
+	return m
+}
+
+func (m *_LDataReqBuilder) WithDataFrame(dataFrame LDataFrame) LDataReqBuilder {
+	m.DataFrame = dataFrame
+	return m
+}
+
+func (m *_LDataReqBuilder) Build() (LDataReq, error) {
+	if m.DataFrame == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LDataReq.deepCopy(), nil
+}
+
+func (m *_LDataReqBuilder) MustBuild() LDataReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LDataReqBuilder) DeepCopy() any {
+	return m.CreateLDataReqBuilder()
+}
+
+// CreateLDataReqBuilder creates a LDataReqBuilder
+func (m *_LDataReq) CreateLDataReqBuilder() LDataReqBuilder {
+	if m == nil {
+		return NewLDataReqBuilder()
+	}
+	return &_LDataReqBuilder{_LDataReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

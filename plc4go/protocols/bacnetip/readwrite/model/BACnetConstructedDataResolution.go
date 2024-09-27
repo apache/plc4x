@@ -46,6 +46,8 @@ type BACnetConstructedDataResolution interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataResolution()
+	// CreateBuilder creates a BACnetConstructedDataResolutionBuilder
+	CreateBACnetConstructedDataResolutionBuilder() BACnetConstructedDataResolutionBuilder
 }
 
 // _BACnetConstructedDataResolution is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataResolution(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataResolutionBuilder is a builder for BACnetConstructedDataResolution
+type BACnetConstructedDataResolutionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(resolution BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder
+	// WithResolution adds Resolution (property field)
+	WithResolution(BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder
+	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
+	WithResolutionBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataResolutionBuilder
+	// Build builds the BACnetConstructedDataResolution or returns an error if something is wrong
+	Build() (BACnetConstructedDataResolution, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataResolution
+}
+
+// NewBACnetConstructedDataResolutionBuilder() creates a BACnetConstructedDataResolutionBuilder
+func NewBACnetConstructedDataResolutionBuilder() BACnetConstructedDataResolutionBuilder {
+	return &_BACnetConstructedDataResolutionBuilder{_BACnetConstructedDataResolution: new(_BACnetConstructedDataResolution)}
+}
+
+type _BACnetConstructedDataResolutionBuilder struct {
+	*_BACnetConstructedDataResolution
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataResolutionBuilder) = (*_BACnetConstructedDataResolutionBuilder)(nil)
+
+func (m *_BACnetConstructedDataResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder {
+	return m.WithResolution(resolution)
+}
+
+func (m *_BACnetConstructedDataResolutionBuilder) WithResolution(resolution BACnetApplicationTagReal) BACnetConstructedDataResolutionBuilder {
+	m.Resolution = resolution
+	return m
+}
+
+func (m *_BACnetConstructedDataResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataResolutionBuilder {
+	builder := builderSupplier(m.Resolution.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.Resolution, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataResolutionBuilder) Build() (BACnetConstructedDataResolution, error) {
+	if m.Resolution == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'resolution' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataResolution.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataResolutionBuilder) MustBuild() BACnetConstructedDataResolution {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataResolutionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataResolutionBuilder()
+}
+
+// CreateBACnetConstructedDataResolutionBuilder creates a BACnetConstructedDataResolutionBuilder
+func (m *_BACnetConstructedDataResolution) CreateBACnetConstructedDataResolutionBuilder() BACnetConstructedDataResolutionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataResolutionBuilder()
+	}
+	return &_BACnetConstructedDataResolutionBuilder{_BACnetConstructedDataResolution: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

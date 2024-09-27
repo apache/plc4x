@@ -40,6 +40,8 @@ type TDataIndividualReq interface {
 	CEMI
 	// IsTDataIndividualReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataIndividualReq()
+	// CreateBuilder creates a TDataIndividualReqBuilder
+	CreateTDataIndividualReqBuilder() TDataIndividualReqBuilder
 }
 
 // _TDataIndividualReq is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTDataIndividualReq(size uint16) *_TDataIndividualReq {
 	_result.CEMIContract.(*_CEMI)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TDataIndividualReqBuilder is a builder for TDataIndividualReq
+type TDataIndividualReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TDataIndividualReqBuilder
+	// Build builds the TDataIndividualReq or returns an error if something is wrong
+	Build() (TDataIndividualReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TDataIndividualReq
+}
+
+// NewTDataIndividualReqBuilder() creates a TDataIndividualReqBuilder
+func NewTDataIndividualReqBuilder() TDataIndividualReqBuilder {
+	return &_TDataIndividualReqBuilder{_TDataIndividualReq: new(_TDataIndividualReq)}
+}
+
+type _TDataIndividualReqBuilder struct {
+	*_TDataIndividualReq
+
+	err *utils.MultiError
+}
+
+var _ (TDataIndividualReqBuilder) = (*_TDataIndividualReqBuilder)(nil)
+
+func (m *_TDataIndividualReqBuilder) WithMandatoryFields() TDataIndividualReqBuilder {
+	return m
+}
+
+func (m *_TDataIndividualReqBuilder) Build() (TDataIndividualReq, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TDataIndividualReq.deepCopy(), nil
+}
+
+func (m *_TDataIndividualReqBuilder) MustBuild() TDataIndividualReq {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TDataIndividualReqBuilder) DeepCopy() any {
+	return m.CreateTDataIndividualReqBuilder()
+}
+
+// CreateTDataIndividualReqBuilder creates a TDataIndividualReqBuilder
+func (m *_TDataIndividualReq) CreateTDataIndividualReqBuilder() TDataIndividualReqBuilder {
+	if m == nil {
+		return NewTDataIndividualReqBuilder()
+	}
+	return &_TDataIndividualReqBuilder{_TDataIndividualReq: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -43,6 +43,8 @@ type NLM interface {
 	utils.Copyable
 	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLM()
+	// CreateBuilder creates a NLMBuilder
+	CreateNLMBuilder() NLMBuilder
 }
 
 // NLMContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type NLMContract interface {
 	GetApduLength() uint16
 	// IsNLM is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLM()
+	// CreateBuilder creates a NLMBuilder
+	CreateNLMBuilder() NLMBuilder
 }
 
 // NLMRequirements provides a set of functions which need to be implemented by a sub struct
@@ -79,6 +83,71 @@ var _ NLMContract = (*_NLM)(nil)
 func NewNLM(apduLength uint16) *_NLM {
 	return &_NLM{ApduLength: apduLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMBuilder is a builder for NLM
+type NLMBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NLMBuilder
+	// Build builds the NLM or returns an error if something is wrong
+	Build() (NLMContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMContract
+}
+
+// NewNLMBuilder() creates a NLMBuilder
+func NewNLMBuilder() NLMBuilder {
+	return &_NLMBuilder{_NLM: new(_NLM)}
+}
+
+type _NLMBuilder struct {
+	*_NLM
+
+	err *utils.MultiError
+}
+
+var _ (NLMBuilder) = (*_NLMBuilder)(nil)
+
+func (m *_NLMBuilder) WithMandatoryFields() NLMBuilder {
+	return m
+}
+
+func (m *_NLMBuilder) Build() (NLMContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NLM.deepCopy(), nil
+}
+
+func (m *_NLMBuilder) MustBuild() NLMContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NLMBuilder) DeepCopy() any {
+	return m.CreateNLMBuilder()
+}
+
+// CreateNLMBuilder creates a NLMBuilder
+func (m *_NLM) CreateNLMBuilder() NLMBuilder {
+	if m == nil {
+		return NewNLMBuilder()
+	}
+	return &_NLMBuilder{_NLM: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

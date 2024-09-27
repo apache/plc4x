@@ -46,6 +46,8 @@ type ApduDataMemoryResponse interface {
 	GetData() []byte
 	// IsApduDataMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataMemoryResponse()
+	// CreateBuilder creates a ApduDataMemoryResponseBuilder
+	CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder
 }
 
 // _ApduDataMemoryResponse is the data-structure of this message
@@ -68,6 +70,85 @@ func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_
 	_result.ApduDataContract.(*_ApduData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataMemoryResponseBuilder is a builder for ApduDataMemoryResponse
+type ApduDataMemoryResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) ApduDataMemoryResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataMemoryResponseBuilder
+	// Build builds the ApduDataMemoryResponse or returns an error if something is wrong
+	Build() (ApduDataMemoryResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataMemoryResponse
+}
+
+// NewApduDataMemoryResponseBuilder() creates a ApduDataMemoryResponseBuilder
+func NewApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
+	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: new(_ApduDataMemoryResponse)}
+}
+
+type _ApduDataMemoryResponseBuilder struct {
+	*_ApduDataMemoryResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataMemoryResponseBuilder) = (*_ApduDataMemoryResponseBuilder)(nil)
+
+func (m *_ApduDataMemoryResponseBuilder) WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder {
+	return m.WithAddress(address).WithData(data...)
+}
+
+func (m *_ApduDataMemoryResponseBuilder) WithAddress(address uint16) ApduDataMemoryResponseBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_ApduDataMemoryResponseBuilder) WithData(data ...byte) ApduDataMemoryResponseBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ApduDataMemoryResponseBuilder) Build() (ApduDataMemoryResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataMemoryResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataMemoryResponseBuilder) MustBuild() ApduDataMemoryResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataMemoryResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataMemoryResponseBuilder()
+}
+
+// CreateApduDataMemoryResponseBuilder creates a ApduDataMemoryResponseBuilder
+func (m *_ApduDataMemoryResponse) CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
+	if m == nil {
+		return NewApduDataMemoryResponseBuilder()
+	}
+	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

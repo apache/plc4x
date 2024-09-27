@@ -40,6 +40,8 @@ type SALDataReserved interface {
 	SALData
 	// IsSALDataReserved is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataReserved()
+	// CreateBuilder creates a SALDataReservedBuilder
+	CreateSALDataReservedBuilder() SALDataReservedBuilder
 }
 
 // _SALDataReserved is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSALDataReserved(salData SALData) *_SALDataReserved {
 	_result.SALDataContract.(*_SALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataReservedBuilder is a builder for SALDataReserved
+type SALDataReservedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataReservedBuilder
+	// Build builds the SALDataReserved or returns an error if something is wrong
+	Build() (SALDataReserved, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataReserved
+}
+
+// NewSALDataReservedBuilder() creates a SALDataReservedBuilder
+func NewSALDataReservedBuilder() SALDataReservedBuilder {
+	return &_SALDataReservedBuilder{_SALDataReserved: new(_SALDataReserved)}
+}
+
+type _SALDataReservedBuilder struct {
+	*_SALDataReserved
+
+	err *utils.MultiError
+}
+
+var _ (SALDataReservedBuilder) = (*_SALDataReservedBuilder)(nil)
+
+func (m *_SALDataReservedBuilder) WithMandatoryFields() SALDataReservedBuilder {
+	return m
+}
+
+func (m *_SALDataReservedBuilder) Build() (SALDataReserved, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SALDataReserved.deepCopy(), nil
+}
+
+func (m *_SALDataReservedBuilder) MustBuild() SALDataReserved {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SALDataReservedBuilder) DeepCopy() any {
+	return m.CreateSALDataReservedBuilder()
+}
+
+// CreateSALDataReservedBuilder creates a SALDataReservedBuilder
+func (m *_SALDataReserved) CreateSALDataReservedBuilder() SALDataReservedBuilder {
+	if m == nil {
+		return NewSALDataReservedBuilder()
+	}
+	return &_SALDataReservedBuilder{_SALDataReserved: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

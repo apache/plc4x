@@ -40,6 +40,8 @@ type BACnetConstructedDataEscalatorAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataEscalatorAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEscalatorAll()
+	// CreateBuilder creates a BACnetConstructedDataEscalatorAllBuilder
+	CreateBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalatorAllBuilder
 }
 
 // _BACnetConstructedDataEscalatorAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataEscalatorAll(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEscalatorAllBuilder is a builder for BACnetConstructedDataEscalatorAll
+type BACnetConstructedDataEscalatorAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataEscalatorAllBuilder
+	// Build builds the BACnetConstructedDataEscalatorAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataEscalatorAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEscalatorAll
+}
+
+// NewBACnetConstructedDataEscalatorAllBuilder() creates a BACnetConstructedDataEscalatorAllBuilder
+func NewBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalatorAllBuilder {
+	return &_BACnetConstructedDataEscalatorAllBuilder{_BACnetConstructedDataEscalatorAll: new(_BACnetConstructedDataEscalatorAll)}
+}
+
+type _BACnetConstructedDataEscalatorAllBuilder struct {
+	*_BACnetConstructedDataEscalatorAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEscalatorAllBuilder) = (*_BACnetConstructedDataEscalatorAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataEscalatorAllBuilder) WithMandatoryFields() BACnetConstructedDataEscalatorAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataEscalatorAllBuilder) Build() (BACnetConstructedDataEscalatorAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataEscalatorAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataEscalatorAllBuilder) MustBuild() BACnetConstructedDataEscalatorAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataEscalatorAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataEscalatorAllBuilder()
+}
+
+// CreateBACnetConstructedDataEscalatorAllBuilder creates a BACnetConstructedDataEscalatorAllBuilder
+func (m *_BACnetConstructedDataEscalatorAll) CreateBACnetConstructedDataEscalatorAllBuilder() BACnetConstructedDataEscalatorAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataEscalatorAllBuilder()
+	}
+	return &_BACnetConstructedDataEscalatorAllBuilder{_BACnetConstructedDataEscalatorAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -50,6 +50,8 @@ type PubSubConfigurationRefDataType interface {
 	GetGroupIndex() uint16
 	// IsPubSubConfigurationRefDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPubSubConfigurationRefDataType()
+	// CreateBuilder creates a PubSubConfigurationRefDataTypeBuilder
+	CreatePubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBuilder
 }
 
 // _PubSubConfigurationRefDataType is the data-structure of this message
@@ -76,6 +78,99 @@ func NewPubSubConfigurationRefDataType(configurationMask PubSubConfigurationRefM
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PubSubConfigurationRefDataTypeBuilder is a builder for PubSubConfigurationRefDataType
+type PubSubConfigurationRefDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) PubSubConfigurationRefDataTypeBuilder
+	// WithConfigurationMask adds ConfigurationMask (property field)
+	WithConfigurationMask(PubSubConfigurationRefMask) PubSubConfigurationRefDataTypeBuilder
+	// WithElementIndex adds ElementIndex (property field)
+	WithElementIndex(uint16) PubSubConfigurationRefDataTypeBuilder
+	// WithConnectionIndex adds ConnectionIndex (property field)
+	WithConnectionIndex(uint16) PubSubConfigurationRefDataTypeBuilder
+	// WithGroupIndex adds GroupIndex (property field)
+	WithGroupIndex(uint16) PubSubConfigurationRefDataTypeBuilder
+	// Build builds the PubSubConfigurationRefDataType or returns an error if something is wrong
+	Build() (PubSubConfigurationRefDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PubSubConfigurationRefDataType
+}
+
+// NewPubSubConfigurationRefDataTypeBuilder() creates a PubSubConfigurationRefDataTypeBuilder
+func NewPubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBuilder {
+	return &_PubSubConfigurationRefDataTypeBuilder{_PubSubConfigurationRefDataType: new(_PubSubConfigurationRefDataType)}
+}
+
+type _PubSubConfigurationRefDataTypeBuilder struct {
+	*_PubSubConfigurationRefDataType
+
+	err *utils.MultiError
+}
+
+var _ (PubSubConfigurationRefDataTypeBuilder) = (*_PubSubConfigurationRefDataTypeBuilder)(nil)
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) WithMandatoryFields(configurationMask PubSubConfigurationRefMask, elementIndex uint16, connectionIndex uint16, groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	return m.WithConfigurationMask(configurationMask).WithElementIndex(elementIndex).WithConnectionIndex(connectionIndex).WithGroupIndex(groupIndex)
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) WithConfigurationMask(configurationMask PubSubConfigurationRefMask) PubSubConfigurationRefDataTypeBuilder {
+	m.ConfigurationMask = configurationMask
+	return m
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) WithElementIndex(elementIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	m.ElementIndex = elementIndex
+	return m
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) WithConnectionIndex(connectionIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	m.ConnectionIndex = connectionIndex
+	return m
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) WithGroupIndex(groupIndex uint16) PubSubConfigurationRefDataTypeBuilder {
+	m.GroupIndex = groupIndex
+	return m
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) Build() (PubSubConfigurationRefDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._PubSubConfigurationRefDataType.deepCopy(), nil
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) MustBuild() PubSubConfigurationRefDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_PubSubConfigurationRefDataTypeBuilder) DeepCopy() any {
+	return m.CreatePubSubConfigurationRefDataTypeBuilder()
+}
+
+// CreatePubSubConfigurationRefDataTypeBuilder creates a PubSubConfigurationRefDataTypeBuilder
+func (m *_PubSubConfigurationRefDataType) CreatePubSubConfigurationRefDataTypeBuilder() PubSubConfigurationRefDataTypeBuilder {
+	if m == nil {
+		return NewPubSubConfigurationRefDataTypeBuilder()
+	}
+	return &_PubSubConfigurationRefDataTypeBuilder{_PubSubConfigurationRefDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

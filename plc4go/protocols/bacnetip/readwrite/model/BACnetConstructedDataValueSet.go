@@ -46,6 +46,8 @@ type BACnetConstructedDataValueSet interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataValueSet is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueSet()
+	// CreateBuilder creates a BACnetConstructedDataValueSetBuilder
+	CreateBACnetConstructedDataValueSetBuilder() BACnetConstructedDataValueSetBuilder
 }
 
 // _BACnetConstructedDataValueSet is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataValueSet(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueSetBuilder is a builder for BACnetConstructedDataValueSet
+type BACnetConstructedDataValueSetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(valueSet BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSetBuilder
+	// WithValueSet adds ValueSet (property field)
+	WithValueSet(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSetBuilder
+	// WithValueSetBuilder adds ValueSet (property field) which is build by the builder
+	WithValueSetBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSetBuilder
+	// Build builds the BACnetConstructedDataValueSet or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueSet, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueSet
+}
+
+// NewBACnetConstructedDataValueSetBuilder() creates a BACnetConstructedDataValueSetBuilder
+func NewBACnetConstructedDataValueSetBuilder() BACnetConstructedDataValueSetBuilder {
+	return &_BACnetConstructedDataValueSetBuilder{_BACnetConstructedDataValueSet: new(_BACnetConstructedDataValueSet)}
+}
+
+type _BACnetConstructedDataValueSetBuilder struct {
+	*_BACnetConstructedDataValueSet
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueSetBuilder) = (*_BACnetConstructedDataValueSetBuilder)(nil)
+
+func (m *_BACnetConstructedDataValueSetBuilder) WithMandatoryFields(valueSet BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSetBuilder {
+	return m.WithValueSet(valueSet)
+}
+
+func (m *_BACnetConstructedDataValueSetBuilder) WithValueSet(valueSet BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSetBuilder {
+	m.ValueSet = valueSet
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSetBuilder) WithValueSetBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSetBuilder {
+	builder := builderSupplier(m.ValueSet.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ValueSet, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataValueSetBuilder) Build() (BACnetConstructedDataValueSet, error) {
+	if m.ValueSet == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'valueSet' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataValueSet.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataValueSetBuilder) MustBuild() BACnetConstructedDataValueSet {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataValueSetBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataValueSetBuilder()
+}
+
+// CreateBACnetConstructedDataValueSetBuilder creates a BACnetConstructedDataValueSetBuilder
+func (m *_BACnetConstructedDataValueSet) CreateBACnetConstructedDataValueSetBuilder() BACnetConstructedDataValueSetBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataValueSetBuilder()
+	}
+	return &_BACnetConstructedDataValueSetBuilder{_BACnetConstructedDataValueSet: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -39,6 +39,8 @@ type DurationString interface {
 	utils.Copyable
 	// IsDurationString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDurationString()
+	// CreateBuilder creates a DurationStringBuilder
+	CreateDurationStringBuilder() DurationStringBuilder
 }
 
 // _DurationString is the data-structure of this message
@@ -51,6 +53,71 @@ var _ DurationString = (*_DurationString)(nil)
 func NewDurationString() *_DurationString {
 	return &_DurationString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DurationStringBuilder is a builder for DurationString
+type DurationStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DurationStringBuilder
+	// Build builds the DurationString or returns an error if something is wrong
+	Build() (DurationString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DurationString
+}
+
+// NewDurationStringBuilder() creates a DurationStringBuilder
+func NewDurationStringBuilder() DurationStringBuilder {
+	return &_DurationStringBuilder{_DurationString: new(_DurationString)}
+}
+
+type _DurationStringBuilder struct {
+	*_DurationString
+
+	err *utils.MultiError
+}
+
+var _ (DurationStringBuilder) = (*_DurationStringBuilder)(nil)
+
+func (m *_DurationStringBuilder) WithMandatoryFields() DurationStringBuilder {
+	return m
+}
+
+func (m *_DurationStringBuilder) Build() (DurationString, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DurationString.deepCopy(), nil
+}
+
+func (m *_DurationStringBuilder) MustBuild() DurationString {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DurationStringBuilder) DeepCopy() any {
+	return m.CreateDurationStringBuilder()
+}
+
+// CreateDurationStringBuilder creates a DurationStringBuilder
+func (m *_DurationString) CreateDurationStringBuilder() DurationStringBuilder {
+	if m == nil {
+		return NewDurationStringBuilder()
+	}
+	return &_DurationStringBuilder{_DurationString: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDurationString(structType any) DurationString {

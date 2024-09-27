@@ -43,6 +43,8 @@ type MediaTransportControlData interface {
 	utils.Copyable
 	// IsMediaTransportControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlData()
+	// CreateBuilder creates a MediaTransportControlDataBuilder
+	CreateMediaTransportControlDataBuilder() MediaTransportControlDataBuilder
 }
 
 // MediaTransportControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type MediaTransportControlDataContract interface {
 	GetCommandType() MediaTransportControlCommandType
 	// IsMediaTransportControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlData()
+	// CreateBuilder creates a MediaTransportControlDataBuilder
+	CreateMediaTransportControlDataBuilder() MediaTransportControlDataBuilder
 }
 
 // MediaTransportControlDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,85 @@ var _ MediaTransportControlDataContract = (*_MediaTransportControlData)(nil)
 func NewMediaTransportControlData(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlData {
 	return &_MediaTransportControlData{CommandTypeContainer: commandTypeContainer, MediaLinkGroup: mediaLinkGroup}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataBuilder is a builder for MediaTransportControlData
+type MediaTransportControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) MediaTransportControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(MediaTransportControlCommandTypeContainer) MediaTransportControlDataBuilder
+	// WithMediaLinkGroup adds MediaLinkGroup (property field)
+	WithMediaLinkGroup(byte) MediaTransportControlDataBuilder
+	// Build builds the MediaTransportControlData or returns an error if something is wrong
+	Build() (MediaTransportControlDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataContract
+}
+
+// NewMediaTransportControlDataBuilder() creates a MediaTransportControlDataBuilder
+func NewMediaTransportControlDataBuilder() MediaTransportControlDataBuilder {
+	return &_MediaTransportControlDataBuilder{_MediaTransportControlData: new(_MediaTransportControlData)}
+}
+
+type _MediaTransportControlDataBuilder struct {
+	*_MediaTransportControlData
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataBuilder) = (*_MediaTransportControlDataBuilder)(nil)
+
+func (m *_MediaTransportControlDataBuilder) WithMandatoryFields(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) MediaTransportControlDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithMediaLinkGroup(mediaLinkGroup)
+}
+
+func (m *_MediaTransportControlDataBuilder) WithCommandTypeContainer(commandTypeContainer MediaTransportControlCommandTypeContainer) MediaTransportControlDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_MediaTransportControlDataBuilder) WithMediaLinkGroup(mediaLinkGroup byte) MediaTransportControlDataBuilder {
+	m.MediaLinkGroup = mediaLinkGroup
+	return m
+}
+
+func (m *_MediaTransportControlDataBuilder) Build() (MediaTransportControlDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlData.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataBuilder) MustBuild() MediaTransportControlDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataBuilder()
+}
+
+// CreateMediaTransportControlDataBuilder creates a MediaTransportControlDataBuilder
+func (m *_MediaTransportControlData) CreateMediaTransportControlDataBuilder() MediaTransportControlDataBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataBuilder()
+	}
+	return &_MediaTransportControlDataBuilder{_MediaTransportControlData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

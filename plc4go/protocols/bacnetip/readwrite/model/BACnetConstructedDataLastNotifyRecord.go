@@ -46,6 +46,8 @@ type BACnetConstructedDataLastNotifyRecord interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataLastNotifyRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastNotifyRecord()
+	// CreateBuilder creates a BACnetConstructedDataLastNotifyRecordBuilder
+	CreateBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLastNotifyRecordBuilder
 }
 
 // _BACnetConstructedDataLastNotifyRecord is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLastNotifyRecord(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastNotifyRecordBuilder is a builder for BACnetConstructedDataLastNotifyRecord
+type BACnetConstructedDataLastNotifyRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder
+	// WithLastNotifyRecord adds LastNotifyRecord (property field)
+	WithLastNotifyRecord(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder
+	// WithLastNotifyRecordBuilder adds LastNotifyRecord (property field) which is build by the builder
+	WithLastNotifyRecordBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastNotifyRecordBuilder
+	// Build builds the BACnetConstructedDataLastNotifyRecord or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastNotifyRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastNotifyRecord
+}
+
+// NewBACnetConstructedDataLastNotifyRecordBuilder() creates a BACnetConstructedDataLastNotifyRecordBuilder
+func NewBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLastNotifyRecordBuilder {
+	return &_BACnetConstructedDataLastNotifyRecordBuilder{_BACnetConstructedDataLastNotifyRecord: new(_BACnetConstructedDataLastNotifyRecord)}
+}
+
+type _BACnetConstructedDataLastNotifyRecordBuilder struct {
+	*_BACnetConstructedDataLastNotifyRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastNotifyRecordBuilder) = (*_BACnetConstructedDataLastNotifyRecordBuilder)(nil)
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithMandatoryFields(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
+	return m.WithLastNotifyRecord(lastNotifyRecord)
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecord(lastNotifyRecord BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLastNotifyRecordBuilder {
+	m.LastNotifyRecord = lastNotifyRecord
+	return m
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) WithLastNotifyRecordBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLastNotifyRecordBuilder {
+	builder := builderSupplier(m.LastNotifyRecord.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.LastNotifyRecord, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) Build() (BACnetConstructedDataLastNotifyRecord, error) {
+	if m.LastNotifyRecord == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lastNotifyRecord' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLastNotifyRecord.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) MustBuild() BACnetConstructedDataLastNotifyRecord {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLastNotifyRecordBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLastNotifyRecordBuilder()
+}
+
+// CreateBACnetConstructedDataLastNotifyRecordBuilder creates a BACnetConstructedDataLastNotifyRecordBuilder
+func (m *_BACnetConstructedDataLastNotifyRecord) CreateBACnetConstructedDataLastNotifyRecordBuilder() BACnetConstructedDataLastNotifyRecordBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLastNotifyRecordBuilder()
+	}
+	return &_BACnetConstructedDataLastNotifyRecordBuilder{_BACnetConstructedDataLastNotifyRecord: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

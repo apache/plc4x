@@ -88,6 +88,11 @@ func (e *ErrorPDU) buildConfirmedRequest(bacnetError readWriteModel.BACnetError)
 	)
 }
 
+func (e *ErrorPDU) CreateAPDUErrorBuilder() readWriteModel.APDUErrorBuilder {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (e *ErrorPDU) GetSegmentedMessage() bool {
 	return e.apduSeg
 }

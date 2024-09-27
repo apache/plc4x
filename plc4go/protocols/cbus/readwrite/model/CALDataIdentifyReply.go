@@ -46,6 +46,8 @@ type CALDataIdentifyReply interface {
 	GetIdentifyReplyCommand() IdentifyReplyCommand
 	// IsCALDataIdentifyReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataIdentifyReply()
+	// CreateBuilder creates a CALDataIdentifyReplyBuilder
+	CreateCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder
 }
 
 // _CALDataIdentifyReply is the data-structure of this message
@@ -71,6 +73,91 @@ func NewCALDataIdentifyReply(commandTypeContainer CALCommandTypeContainer, addit
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataIdentifyReplyBuilder is a builder for CALDataIdentifyReply
+type CALDataIdentifyReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(attribute Attribute, identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder
+	// WithAttribute adds Attribute (property field)
+	WithAttribute(Attribute) CALDataIdentifyReplyBuilder
+	// WithIdentifyReplyCommand adds IdentifyReplyCommand (property field)
+	WithIdentifyReplyCommand(IdentifyReplyCommand) CALDataIdentifyReplyBuilder
+	// Build builds the CALDataIdentifyReply or returns an error if something is wrong
+	Build() (CALDataIdentifyReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataIdentifyReply
+}
+
+// NewCALDataIdentifyReplyBuilder() creates a CALDataIdentifyReplyBuilder
+func NewCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder {
+	return &_CALDataIdentifyReplyBuilder{_CALDataIdentifyReply: new(_CALDataIdentifyReply)}
+}
+
+type _CALDataIdentifyReplyBuilder struct {
+	*_CALDataIdentifyReply
+
+	err *utils.MultiError
+}
+
+var _ (CALDataIdentifyReplyBuilder) = (*_CALDataIdentifyReplyBuilder)(nil)
+
+func (m *_CALDataIdentifyReplyBuilder) WithMandatoryFields(attribute Attribute, identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
+	return m.WithAttribute(attribute).WithIdentifyReplyCommand(identifyReplyCommand)
+}
+
+func (m *_CALDataIdentifyReplyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyReplyBuilder {
+	m.Attribute = attribute
+	return m
+}
+
+func (m *_CALDataIdentifyReplyBuilder) WithIdentifyReplyCommand(identifyReplyCommand IdentifyReplyCommand) CALDataIdentifyReplyBuilder {
+	m.IdentifyReplyCommand = identifyReplyCommand
+	return m
+}
+
+func (m *_CALDataIdentifyReplyBuilder) Build() (CALDataIdentifyReply, error) {
+	if m.IdentifyReplyCommand == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'identifyReplyCommand' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataIdentifyReply.deepCopy(), nil
+}
+
+func (m *_CALDataIdentifyReplyBuilder) MustBuild() CALDataIdentifyReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataIdentifyReplyBuilder) DeepCopy() any {
+	return m.CreateCALDataIdentifyReplyBuilder()
+}
+
+// CreateCALDataIdentifyReplyBuilder creates a CALDataIdentifyReplyBuilder
+func (m *_CALDataIdentifyReply) CreateCALDataIdentifyReplyBuilder() CALDataIdentifyReplyBuilder {
+	if m == nil {
+		return NewCALDataIdentifyReplyBuilder()
+	}
+	return &_CALDataIdentifyReplyBuilder{_CALDataIdentifyReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

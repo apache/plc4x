@@ -45,6 +45,8 @@ type BACnetFaultTypeTagged interface {
 	GetValue() BACnetFaultType
 	// IsBACnetFaultTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultTypeTagged()
+	// CreateBuilder creates a BACnetFaultTypeTaggedBuilder
+	CreateBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder
 }
 
 // _BACnetFaultTypeTagged is the data-structure of this message
@@ -66,6 +68,106 @@ func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tag
 	}
 	return &_BACnetFaultTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultTypeTaggedBuilder is a builder for BACnetFaultTypeTagged
+type BACnetFaultTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetFaultType) BACnetFaultTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetFaultTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetFaultType) BACnetFaultTypeTaggedBuilder
+	// Build builds the BACnetFaultTypeTagged or returns an error if something is wrong
+	Build() (BACnetFaultTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultTypeTagged
+}
+
+// NewBACnetFaultTypeTaggedBuilder() creates a BACnetFaultTypeTaggedBuilder
+func NewBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder {
+	return &_BACnetFaultTypeTaggedBuilder{_BACnetFaultTypeTagged: new(_BACnetFaultTypeTagged)}
+}
+
+type _BACnetFaultTypeTaggedBuilder struct {
+	*_BACnetFaultTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultTypeTaggedBuilder) = (*_BACnetFaultTypeTaggedBuilder)(nil)
+
+func (m *_BACnetFaultTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetFaultType) BACnetFaultTypeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value)
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetFaultTypeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultTypeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) WithValue(value BACnetFaultType) BACnetFaultTypeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) Build() (BACnetFaultTypeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultTypeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) MustBuild() BACnetFaultTypeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultTypeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultTypeTaggedBuilder()
+}
+
+// CreateBACnetFaultTypeTaggedBuilder creates a BACnetFaultTypeTaggedBuilder
+func (m *_BACnetFaultTypeTagged) CreateBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder {
+	if m == nil {
+		return NewBACnetFaultTypeTaggedBuilder()
+	}
+	return &_BACnetFaultTypeTaggedBuilder{_BACnetFaultTypeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

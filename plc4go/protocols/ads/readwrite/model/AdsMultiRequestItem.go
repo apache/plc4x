@@ -41,12 +41,16 @@ type AdsMultiRequestItem interface {
 	utils.Copyable
 	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItem()
+	// CreateBuilder creates a AdsMultiRequestItemBuilder
+	CreateAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder
 }
 
 // AdsMultiRequestItemContract provides a set of functions which can be overwritten by a sub struct
 type AdsMultiRequestItemContract interface {
 	// IsAdsMultiRequestItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItem()
+	// CreateBuilder creates a AdsMultiRequestItemBuilder
+	CreateAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder
 }
 
 // AdsMultiRequestItemRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ AdsMultiRequestItemContract = (*_AdsMultiRequestItem)(nil)
 func NewAdsMultiRequestItem() *_AdsMultiRequestItem {
 	return &_AdsMultiRequestItem{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsMultiRequestItemBuilder is a builder for AdsMultiRequestItem
+type AdsMultiRequestItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsMultiRequestItemBuilder
+	// Build builds the AdsMultiRequestItem or returns an error if something is wrong
+	Build() (AdsMultiRequestItemContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsMultiRequestItemContract
+}
+
+// NewAdsMultiRequestItemBuilder() creates a AdsMultiRequestItemBuilder
+func NewAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder {
+	return &_AdsMultiRequestItemBuilder{_AdsMultiRequestItem: new(_AdsMultiRequestItem)}
+}
+
+type _AdsMultiRequestItemBuilder struct {
+	*_AdsMultiRequestItem
+
+	err *utils.MultiError
+}
+
+var _ (AdsMultiRequestItemBuilder) = (*_AdsMultiRequestItemBuilder)(nil)
+
+func (m *_AdsMultiRequestItemBuilder) WithMandatoryFields() AdsMultiRequestItemBuilder {
+	return m
+}
+
+func (m *_AdsMultiRequestItemBuilder) Build() (AdsMultiRequestItemContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsMultiRequestItem.deepCopy(), nil
+}
+
+func (m *_AdsMultiRequestItemBuilder) MustBuild() AdsMultiRequestItemContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsMultiRequestItemBuilder) DeepCopy() any {
+	return m.CreateAdsMultiRequestItemBuilder()
+}
+
+// CreateAdsMultiRequestItemBuilder creates a AdsMultiRequestItemBuilder
+func (m *_AdsMultiRequestItem) CreateAdsMultiRequestItemBuilder() AdsMultiRequestItemBuilder {
+	if m == nil {
+		return NewAdsMultiRequestItemBuilder()
+	}
+	return &_AdsMultiRequestItemBuilder{_AdsMultiRequestItem: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItem(structType any) AdsMultiRequestItem {

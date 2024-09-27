@@ -40,6 +40,8 @@ type TriggerControlDataTriggerMin interface {
 	TriggerControlData
 	// IsTriggerControlDataTriggerMin is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMin()
+	// CreateBuilder creates a TriggerControlDataTriggerMinBuilder
+	CreateTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder
 }
 
 // _TriggerControlDataTriggerMin is the data-structure of this message
@@ -58,6 +60,71 @@ func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandT
 	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataTriggerMinBuilder is a builder for TriggerControlDataTriggerMin
+type TriggerControlDataTriggerMinBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TriggerControlDataTriggerMinBuilder
+	// Build builds the TriggerControlDataTriggerMin or returns an error if something is wrong
+	Build() (TriggerControlDataTriggerMin, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlDataTriggerMin
+}
+
+// NewTriggerControlDataTriggerMinBuilder() creates a TriggerControlDataTriggerMinBuilder
+func NewTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder {
+	return &_TriggerControlDataTriggerMinBuilder{_TriggerControlDataTriggerMin: new(_TriggerControlDataTriggerMin)}
+}
+
+type _TriggerControlDataTriggerMinBuilder struct {
+	*_TriggerControlDataTriggerMin
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataTriggerMinBuilder) = (*_TriggerControlDataTriggerMinBuilder)(nil)
+
+func (m *_TriggerControlDataTriggerMinBuilder) WithMandatoryFields() TriggerControlDataTriggerMinBuilder {
+	return m
+}
+
+func (m *_TriggerControlDataTriggerMinBuilder) Build() (TriggerControlDataTriggerMin, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TriggerControlDataTriggerMin.deepCopy(), nil
+}
+
+func (m *_TriggerControlDataTriggerMinBuilder) MustBuild() TriggerControlDataTriggerMin {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TriggerControlDataTriggerMinBuilder) DeepCopy() any {
+	return m.CreateTriggerControlDataTriggerMinBuilder()
+}
+
+// CreateTriggerControlDataTriggerMinBuilder creates a TriggerControlDataTriggerMinBuilder
+func (m *_TriggerControlDataTriggerMin) CreateTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder {
+	if m == nil {
+		return NewTriggerControlDataTriggerMinBuilder()
+	}
+	return &_TriggerControlDataTriggerMinBuilder{_TriggerControlDataTriggerMin: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

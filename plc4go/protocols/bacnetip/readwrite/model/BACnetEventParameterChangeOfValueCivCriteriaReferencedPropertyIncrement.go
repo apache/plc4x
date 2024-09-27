@@ -44,6 +44,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement int
 	GetReferencedPropertyIncrement() BACnetContextTagReal
 	// IsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement()
+	// CreateBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+	CreateBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
 }
 
 // _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
 	_result.BACnetEventParameterChangeOfValueCivCriteriaContract.(*_BACnetEventParameterChangeOfValueCivCriteria)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder is a builder for BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
+type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referencedPropertyIncrement BACnetContextTagReal) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+	// WithReferencedPropertyIncrement adds ReferencedPropertyIncrement (property field)
+	WithReferencedPropertyIncrement(BACnetContextTagReal) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+	// WithReferencedPropertyIncrementBuilder adds ReferencedPropertyIncrement (property field) which is build by the builder
+	WithReferencedPropertyIncrementBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+	// Build builds the BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement or returns an error if something is wrong
+	Build() (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
+}
+
+// NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder() creates a BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	return &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder{_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement: new(_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement)}
+}
+
+type _BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder struct {
+	*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) = (*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder)(nil)
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) WithMandatoryFields(referencedPropertyIncrement BACnetContextTagReal) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	return m.WithReferencedPropertyIncrement(referencedPropertyIncrement)
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) WithReferencedPropertyIncrement(referencedPropertyIncrement BACnetContextTagReal) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	m.ReferencedPropertyIncrement = referencedPropertyIncrement
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) WithReferencedPropertyIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	builder := builderSupplier(m.ReferencedPropertyIncrement.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.ReferencedPropertyIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) Build() (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
+	if m.ReferencedPropertyIncrement == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referencedPropertyIncrement' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement.deepCopy(), nil
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) MustBuild() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder) DeepCopy() any {
+	return m.CreateBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder()
+}
+
+// CreateBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+func (m *_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement) CreateBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder() BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder {
+	if m == nil {
+		return NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder()
+	}
+	return &_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder{_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

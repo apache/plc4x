@@ -49,6 +49,8 @@ type BACnetAccessAuthenticationFactorDisableTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessAuthenticationFactorDisableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessAuthenticationFactorDisableTagged()
+	// CreateBuilder creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder
 }
 
 // _BACnetAccessAuthenticationFactorDisableTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, va
 	}
 	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessAuthenticationFactorDisableTaggedBuilder is a builder for BACnetAccessAuthenticationFactorDisableTagged
+type BACnetAccessAuthenticationFactorDisableTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessAuthenticationFactorDisable) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// Build builds the BACnetAccessAuthenticationFactorDisableTagged or returns an error if something is wrong
+	Build() (BACnetAccessAuthenticationFactorDisableTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessAuthenticationFactorDisableTagged
+}
+
+// NewBACnetAccessAuthenticationFactorDisableTaggedBuilder() creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+func NewBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	return &_BACnetAccessAuthenticationFactorDisableTaggedBuilder{_BACnetAccessAuthenticationFactorDisableTagged: new(_BACnetAccessAuthenticationFactorDisableTagged)}
+}
+
+type _BACnetAccessAuthenticationFactorDisableTaggedBuilder struct {
+	*_BACnetAccessAuthenticationFactorDisableTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessAuthenticationFactorDisableTaggedBuilder) = (*_BACnetAccessAuthenticationFactorDisableTaggedBuilder)(nil)
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithValue(value BACnetAccessAuthenticationFactorDisable) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) Build() (BACnetAccessAuthenticationFactorDisableTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccessAuthenticationFactorDisableTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) MustBuild() BACnetAccessAuthenticationFactorDisableTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder()
+}
+
+// CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccessAuthenticationFactorDisableTaggedBuilder()
+	}
+	return &_BACnetAccessAuthenticationFactorDisableTaggedBuilder{_BACnetAccessAuthenticationFactorDisableTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

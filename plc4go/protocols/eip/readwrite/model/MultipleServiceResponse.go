@@ -52,6 +52,8 @@ type MultipleServiceResponse interface {
 	GetServicesData() []byte
 	// IsMultipleServiceResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMultipleServiceResponse()
+	// CreateBuilder creates a MultipleServiceResponseBuilder
+	CreateMultipleServiceResponseBuilder() MultipleServiceResponseBuilder
 }
 
 // _MultipleServiceResponse is the data-structure of this message
@@ -82,6 +84,106 @@ func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16,
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MultipleServiceResponseBuilder is a builder for MultipleServiceResponse
+type MultipleServiceResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) MultipleServiceResponseBuilder
+	// WithExtStatus adds ExtStatus (property field)
+	WithExtStatus(uint8) MultipleServiceResponseBuilder
+	// WithServiceNb adds ServiceNb (property field)
+	WithServiceNb(uint16) MultipleServiceResponseBuilder
+	// WithOffsets adds Offsets (property field)
+	WithOffsets(...uint16) MultipleServiceResponseBuilder
+	// WithServicesData adds ServicesData (property field)
+	WithServicesData(...byte) MultipleServiceResponseBuilder
+	// Build builds the MultipleServiceResponse or returns an error if something is wrong
+	Build() (MultipleServiceResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MultipleServiceResponse
+}
+
+// NewMultipleServiceResponseBuilder() creates a MultipleServiceResponseBuilder
+func NewMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
+	return &_MultipleServiceResponseBuilder{_MultipleServiceResponse: new(_MultipleServiceResponse)}
+}
+
+type _MultipleServiceResponseBuilder struct {
+	*_MultipleServiceResponse
+
+	err *utils.MultiError
+}
+
+var _ (MultipleServiceResponseBuilder) = (*_MultipleServiceResponseBuilder)(nil)
+
+func (m *_MultipleServiceResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte) MultipleServiceResponseBuilder {
+	return m.WithStatus(status).WithExtStatus(extStatus).WithServiceNb(serviceNb).WithOffsets(offsets...).WithServicesData(servicesData...)
+}
+
+func (m *_MultipleServiceResponseBuilder) WithStatus(status uint8) MultipleServiceResponseBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_MultipleServiceResponseBuilder) WithExtStatus(extStatus uint8) MultipleServiceResponseBuilder {
+	m.ExtStatus = extStatus
+	return m
+}
+
+func (m *_MultipleServiceResponseBuilder) WithServiceNb(serviceNb uint16) MultipleServiceResponseBuilder {
+	m.ServiceNb = serviceNb
+	return m
+}
+
+func (m *_MultipleServiceResponseBuilder) WithOffsets(offsets ...uint16) MultipleServiceResponseBuilder {
+	m.Offsets = offsets
+	return m
+}
+
+func (m *_MultipleServiceResponseBuilder) WithServicesData(servicesData ...byte) MultipleServiceResponseBuilder {
+	m.ServicesData = servicesData
+	return m
+}
+
+func (m *_MultipleServiceResponseBuilder) Build() (MultipleServiceResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MultipleServiceResponse.deepCopy(), nil
+}
+
+func (m *_MultipleServiceResponseBuilder) MustBuild() MultipleServiceResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MultipleServiceResponseBuilder) DeepCopy() any {
+	return m.CreateMultipleServiceResponseBuilder()
+}
+
+// CreateMultipleServiceResponseBuilder creates a MultipleServiceResponseBuilder
+func (m *_MultipleServiceResponse) CreateMultipleServiceResponseBuilder() MultipleServiceResponseBuilder {
+	if m == nil {
+		return NewMultipleServiceResponseBuilder()
+	}
+	return &_MultipleServiceResponseBuilder{_MultipleServiceResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

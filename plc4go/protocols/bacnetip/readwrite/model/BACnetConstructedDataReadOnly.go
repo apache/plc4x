@@ -46,6 +46,8 @@ type BACnetConstructedDataReadOnly interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataReadOnly is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReadOnly()
+	// CreateBuilder creates a BACnetConstructedDataReadOnlyBuilder
+	CreateBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder
 }
 
 // _BACnetConstructedDataReadOnly is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHead
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReadOnlyBuilder is a builder for BACnetConstructedDataReadOnly
+type BACnetConstructedDataReadOnlyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder
+	// WithReadOnly adds ReadOnly (property field)
+	WithReadOnly(BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder
+	// WithReadOnlyBuilder adds ReadOnly (property field) which is build by the builder
+	WithReadOnlyBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReadOnlyBuilder
+	// Build builds the BACnetConstructedDataReadOnly or returns an error if something is wrong
+	Build() (BACnetConstructedDataReadOnly, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReadOnly
+}
+
+// NewBACnetConstructedDataReadOnlyBuilder() creates a BACnetConstructedDataReadOnlyBuilder
+func NewBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder {
+	return &_BACnetConstructedDataReadOnlyBuilder{_BACnetConstructedDataReadOnly: new(_BACnetConstructedDataReadOnly)}
+}
+
+type _BACnetConstructedDataReadOnlyBuilder struct {
+	*_BACnetConstructedDataReadOnly
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReadOnlyBuilder) = (*_BACnetConstructedDataReadOnlyBuilder)(nil)
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) WithMandatoryFields(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder {
+	return m.WithReadOnly(readOnly)
+}
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) WithReadOnly(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder {
+	m.ReadOnly = readOnly
+	return m
+}
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) WithReadOnlyBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReadOnlyBuilder {
+	builder := builderSupplier(m.ReadOnly.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.ReadOnly, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) Build() (BACnetConstructedDataReadOnly, error) {
+	if m.ReadOnly == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'readOnly' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataReadOnly.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) MustBuild() BACnetConstructedDataReadOnly {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataReadOnlyBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataReadOnlyBuilder()
+}
+
+// CreateBACnetConstructedDataReadOnlyBuilder creates a BACnetConstructedDataReadOnlyBuilder
+func (m *_BACnetConstructedDataReadOnly) CreateBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataReadOnlyBuilder()
+	}
+	return &_BACnetConstructedDataReadOnlyBuilder{_BACnetConstructedDataReadOnly: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

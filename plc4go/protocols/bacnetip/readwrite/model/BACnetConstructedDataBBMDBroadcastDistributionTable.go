@@ -44,6 +44,8 @@ type BACnetConstructedDataBBMDBroadcastDistributionTable interface {
 	GetBbmdBroadcastDistributionTable() []BACnetBDTEntry
 	// IsBACnetConstructedDataBBMDBroadcastDistributionTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBBMDBroadcastDistributionTable()
+	// CreateBuilder creates a BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+	CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
 }
 
 // _BACnetConstructedDataBBMDBroadcastDistributionTable is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataBBMDBroadcastDistributionTable(openingTag BACnetOpe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBBMDBroadcastDistributionTableBuilder is a builder for BACnetConstructedDataBBMDBroadcastDistributionTable
+type BACnetConstructedDataBBMDBroadcastDistributionTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bbmdBroadcastDistributionTable []BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+	// WithBbmdBroadcastDistributionTable adds BbmdBroadcastDistributionTable (property field)
+	WithBbmdBroadcastDistributionTable(...BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+	// Build builds the BACnetConstructedDataBBMDBroadcastDistributionTable or returns an error if something is wrong
+	Build() (BACnetConstructedDataBBMDBroadcastDistributionTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBBMDBroadcastDistributionTable
+}
+
+// NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() creates a BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+func NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	return &_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder{_BACnetConstructedDataBBMDBroadcastDistributionTable: new(_BACnetConstructedDataBBMDBroadcastDistributionTable)}
+}
+
+type _BACnetConstructedDataBBMDBroadcastDistributionTableBuilder struct {
+	*_BACnetConstructedDataBBMDBroadcastDistributionTable
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) = (*_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder)(nil)
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithMandatoryFields(bbmdBroadcastDistributionTable []BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	return m.WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable...)
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) WithBbmdBroadcastDistributionTable(bbmdBroadcastDistributionTable ...BACnetBDTEntry) BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	m.BbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable
+	return m
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) Build() (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBBMDBroadcastDistributionTable.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) MustBuild() BACnetConstructedDataBBMDBroadcastDistributionTable {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder()
+}
+
+// CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder creates a BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+func (m *_BACnetConstructedDataBBMDBroadcastDistributionTable) CreateBACnetConstructedDataBBMDBroadcastDistributionTableBuilder() BACnetConstructedDataBBMDBroadcastDistributionTableBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBBMDBroadcastDistributionTableBuilder()
+	}
+	return &_BACnetConstructedDataBBMDBroadcastDistributionTableBuilder{_BACnetConstructedDataBBMDBroadcastDistributionTable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type BACnetConstructedDataBlinkWarnEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataBlinkWarnEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBlinkWarnEnable()
+	// CreateBuilder creates a BACnetConstructedDataBlinkWarnEnableBuilder
+	CreateBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlinkWarnEnableBuilder
 }
 
 // _BACnetConstructedDataBlinkWarnEnable is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataBlinkWarnEnable(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBlinkWarnEnableBuilder is a builder for BACnetConstructedDataBlinkWarnEnable
+type BACnetConstructedDataBlinkWarnEnableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder
+	// WithBlinkWarnEnable adds BlinkWarnEnable (property field)
+	WithBlinkWarnEnable(BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder
+	// WithBlinkWarnEnableBuilder adds BlinkWarnEnable (property field) which is build by the builder
+	WithBlinkWarnEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBlinkWarnEnableBuilder
+	// Build builds the BACnetConstructedDataBlinkWarnEnable or returns an error if something is wrong
+	Build() (BACnetConstructedDataBlinkWarnEnable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBlinkWarnEnable
+}
+
+// NewBACnetConstructedDataBlinkWarnEnableBuilder() creates a BACnetConstructedDataBlinkWarnEnableBuilder
+func NewBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlinkWarnEnableBuilder {
+	return &_BACnetConstructedDataBlinkWarnEnableBuilder{_BACnetConstructedDataBlinkWarnEnable: new(_BACnetConstructedDataBlinkWarnEnable)}
+}
+
+type _BACnetConstructedDataBlinkWarnEnableBuilder struct {
+	*_BACnetConstructedDataBlinkWarnEnable
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBlinkWarnEnableBuilder) = (*_BACnetConstructedDataBlinkWarnEnableBuilder)(nil)
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithMandatoryFields(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
+	return m.WithBlinkWarnEnable(blinkWarnEnable)
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnable(blinkWarnEnable BACnetApplicationTagBoolean) BACnetConstructedDataBlinkWarnEnableBuilder {
+	m.BlinkWarnEnable = blinkWarnEnable
+	return m
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) WithBlinkWarnEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBlinkWarnEnableBuilder {
+	builder := builderSupplier(m.BlinkWarnEnable.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	m.BlinkWarnEnable, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) Build() (BACnetConstructedDataBlinkWarnEnable, error) {
+	if m.BlinkWarnEnable == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'blinkWarnEnable' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataBlinkWarnEnable.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) MustBuild() BACnetConstructedDataBlinkWarnEnable {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataBlinkWarnEnableBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataBlinkWarnEnableBuilder()
+}
+
+// CreateBACnetConstructedDataBlinkWarnEnableBuilder creates a BACnetConstructedDataBlinkWarnEnableBuilder
+func (m *_BACnetConstructedDataBlinkWarnEnable) CreateBACnetConstructedDataBlinkWarnEnableBuilder() BACnetConstructedDataBlinkWarnEnableBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataBlinkWarnEnableBuilder()
+	}
+	return &_BACnetConstructedDataBlinkWarnEnableBuilder{_BACnetConstructedDataBlinkWarnEnable: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

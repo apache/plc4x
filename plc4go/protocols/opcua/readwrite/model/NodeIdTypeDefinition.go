@@ -43,6 +43,8 @@ type NodeIdTypeDefinition interface {
 	utils.Copyable
 	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTypeDefinition()
+	// CreateBuilder creates a NodeIdTypeDefinitionBuilder
+	CreateNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder
 }
 
 // NodeIdTypeDefinitionContract provides a set of functions which can be overwritten by a sub struct
@@ -51,6 +53,8 @@ type NodeIdTypeDefinitionContract interface {
 	GetIdentifier() string
 	// IsNodeIdTypeDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdTypeDefinition()
+	// CreateBuilder creates a NodeIdTypeDefinitionBuilder
+	CreateNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder
 }
 
 // NodeIdTypeDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +78,71 @@ var _ NodeIdTypeDefinitionContract = (*_NodeIdTypeDefinition)(nil)
 func NewNodeIdTypeDefinition() *_NodeIdTypeDefinition {
 	return &_NodeIdTypeDefinition{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdTypeDefinitionBuilder is a builder for NodeIdTypeDefinition
+type NodeIdTypeDefinitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NodeIdTypeDefinitionBuilder
+	// Build builds the NodeIdTypeDefinition or returns an error if something is wrong
+	Build() (NodeIdTypeDefinitionContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdTypeDefinitionContract
+}
+
+// NewNodeIdTypeDefinitionBuilder() creates a NodeIdTypeDefinitionBuilder
+func NewNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder {
+	return &_NodeIdTypeDefinitionBuilder{_NodeIdTypeDefinition: new(_NodeIdTypeDefinition)}
+}
+
+type _NodeIdTypeDefinitionBuilder struct {
+	*_NodeIdTypeDefinition
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdTypeDefinitionBuilder) = (*_NodeIdTypeDefinitionBuilder)(nil)
+
+func (m *_NodeIdTypeDefinitionBuilder) WithMandatoryFields() NodeIdTypeDefinitionBuilder {
+	return m
+}
+
+func (m *_NodeIdTypeDefinitionBuilder) Build() (NodeIdTypeDefinitionContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeIdTypeDefinition.deepCopy(), nil
+}
+
+func (m *_NodeIdTypeDefinitionBuilder) MustBuild() NodeIdTypeDefinitionContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdTypeDefinitionBuilder) DeepCopy() any {
+	return m.CreateNodeIdTypeDefinitionBuilder()
+}
+
+// CreateNodeIdTypeDefinitionBuilder creates a NodeIdTypeDefinitionBuilder
+func (m *_NodeIdTypeDefinition) CreateNodeIdTypeDefinitionBuilder() NodeIdTypeDefinitionBuilder {
+	if m == nil {
+		return NewNodeIdTypeDefinitionBuilder()
+	}
+	return &_NodeIdTypeDefinitionBuilder{_NodeIdTypeDefinition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

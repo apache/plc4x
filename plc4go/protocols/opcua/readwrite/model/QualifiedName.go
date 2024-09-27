@@ -45,6 +45,8 @@ type QualifiedName interface {
 	GetName() PascalString
 	// IsQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQualifiedName()
+	// CreateBuilder creates a QualifiedNameBuilder
+	CreateQualifiedNameBuilder() QualifiedNameBuilder
 }
 
 // _QualifiedName is the data-structure of this message
@@ -62,6 +64,106 @@ func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName 
 	}
 	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QualifiedNameBuilder is a builder for QualifiedName
+type QualifiedNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) QualifiedNameBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) QualifiedNameBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder
+	// Build builds the QualifiedName or returns an error if something is wrong
+	Build() (QualifiedName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QualifiedName
+}
+
+// NewQualifiedNameBuilder() creates a QualifiedNameBuilder
+func NewQualifiedNameBuilder() QualifiedNameBuilder {
+	return &_QualifiedNameBuilder{_QualifiedName: new(_QualifiedName)}
+}
+
+type _QualifiedNameBuilder struct {
+	*_QualifiedName
+
+	err *utils.MultiError
+}
+
+var _ (QualifiedNameBuilder) = (*_QualifiedNameBuilder)(nil)
+
+func (m *_QualifiedNameBuilder) WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder {
+	return m.WithNamespaceIndex(namespaceIndex).WithName(name)
+}
+
+func (m *_QualifiedNameBuilder) WithNamespaceIndex(namespaceIndex uint16) QualifiedNameBuilder {
+	m.NamespaceIndex = namespaceIndex
+	return m
+}
+
+func (m *_QualifiedNameBuilder) WithName(name PascalString) QualifiedNameBuilder {
+	m.Name = name
+	return m
+}
+
+func (m *_QualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder {
+	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+	var err error
+	m.Name, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_QualifiedNameBuilder) Build() (QualifiedName, error) {
+	if m.Name == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._QualifiedName.deepCopy(), nil
+}
+
+func (m *_QualifiedNameBuilder) MustBuild() QualifiedName {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_QualifiedNameBuilder) DeepCopy() any {
+	return m.CreateQualifiedNameBuilder()
+}
+
+// CreateQualifiedNameBuilder creates a QualifiedNameBuilder
+func (m *_QualifiedName) CreateQualifiedNameBuilder() QualifiedNameBuilder {
+	if m == nil {
+		return NewQualifiedNameBuilder()
+	}
+	return &_QualifiedNameBuilder{_QualifiedName: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

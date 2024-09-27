@@ -44,6 +44,8 @@ type EncodedReplyCALReply interface {
 	GetCalReply() CALReply
 	// IsEncodedReplyCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReplyCALReply()
+	// CreateBuilder creates a EncodedReplyCALReplyBuilder
+	CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder
 }
 
 // _EncodedReplyCALReply is the data-structure of this message
@@ -67,6 +69,84 @@ func NewEncodedReplyCALReply(peekedByte byte, calReply CALReply, cBusOptions CBu
 	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EncodedReplyCALReplyBuilder is a builder for EncodedReplyCALReply
+type EncodedReplyCALReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder
+	// WithCalReply adds CalReply (property field)
+	WithCalReply(CALReply) EncodedReplyCALReplyBuilder
+	// Build builds the EncodedReplyCALReply or returns an error if something is wrong
+	Build() (EncodedReplyCALReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EncodedReplyCALReply
+}
+
+// NewEncodedReplyCALReplyBuilder() creates a EncodedReplyCALReplyBuilder
+func NewEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
+	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: new(_EncodedReplyCALReply)}
+}
+
+type _EncodedReplyCALReplyBuilder struct {
+	*_EncodedReplyCALReply
+
+	err *utils.MultiError
+}
+
+var _ (EncodedReplyCALReplyBuilder) = (*_EncodedReplyCALReplyBuilder)(nil)
+
+func (m *_EncodedReplyCALReplyBuilder) WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder {
+	return m.WithCalReply(calReply)
+}
+
+func (m *_EncodedReplyCALReplyBuilder) WithCalReply(calReply CALReply) EncodedReplyCALReplyBuilder {
+	m.CalReply = calReply
+	return m
+}
+
+func (m *_EncodedReplyCALReplyBuilder) Build() (EncodedReplyCALReply, error) {
+	if m.CalReply == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'calReply' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EncodedReplyCALReply.deepCopy(), nil
+}
+
+func (m *_EncodedReplyCALReplyBuilder) MustBuild() EncodedReplyCALReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EncodedReplyCALReplyBuilder) DeepCopy() any {
+	return m.CreateEncodedReplyCALReplyBuilder()
+}
+
+// CreateEncodedReplyCALReplyBuilder creates a EncodedReplyCALReplyBuilder
+func (m *_EncodedReplyCALReply) CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
+	if m == nil {
+		return NewEncodedReplyCALReplyBuilder()
+	}
+	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

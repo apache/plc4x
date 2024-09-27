@@ -47,6 +47,8 @@ type BACnetLogRecord interface {
 	GetStatusFlags() BACnetStatusFlagsTagged
 	// IsBACnetLogRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecord()
+	// CreateBuilder creates a BACnetLogRecordBuilder
+	CreateBACnetLogRecordBuilder() BACnetLogRecordBuilder
 }
 
 // _BACnetLogRecord is the data-structure of this message
@@ -68,6 +70,134 @@ func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogReco
 	}
 	return &_BACnetLogRecord{Timestamp: timestamp, LogDatum: logDatum, StatusFlags: statusFlags}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordBuilder is a builder for BACnetLogRecord
+type BACnetLogRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogRecordLogDatum) BACnetLogRecordBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(BACnetDateTimeEnclosed) BACnetLogRecordBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogRecordBuilder
+	// WithLogDatum adds LogDatum (property field)
+	WithLogDatum(BACnetLogRecordLogDatum) BACnetLogRecordBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithOptionalStatusFlags(BACnetStatusFlagsTagged) BACnetLogRecordBuilder
+	// WithOptionalStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithOptionalStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetLogRecordBuilder
+	// Build builds the BACnetLogRecord or returns an error if something is wrong
+	Build() (BACnetLogRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecord
+}
+
+// NewBACnetLogRecordBuilder() creates a BACnetLogRecordBuilder
+func NewBACnetLogRecordBuilder() BACnetLogRecordBuilder {
+	return &_BACnetLogRecordBuilder{_BACnetLogRecord: new(_BACnetLogRecord)}
+}
+
+type _BACnetLogRecordBuilder struct {
+	*_BACnetLogRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordBuilder) = (*_BACnetLogRecordBuilder)(nil)
+
+func (m *_BACnetLogRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogRecordLogDatum) BACnetLogRecordBuilder {
+	return m.WithTimestamp(timestamp).WithLogDatum(logDatum)
+}
+
+func (m *_BACnetLogRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetLogRecordBuilder {
+	m.Timestamp = timestamp
+	return m
+}
+
+func (m *_BACnetLogRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetLogRecordBuilder {
+	builder := builderSupplier(m.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	m.Timestamp, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogRecordBuilder) WithLogDatum(logDatum BACnetLogRecordLogDatum) BACnetLogRecordBuilder {
+	m.LogDatum = logDatum
+	return m
+}
+
+func (m *_BACnetLogRecordBuilder) WithOptionalStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetLogRecordBuilder {
+	m.StatusFlags = statusFlags
+	return m
+}
+
+func (m *_BACnetLogRecordBuilder) WithOptionalStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetLogRecordBuilder {
+	builder := builderSupplier(m.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	m.StatusFlags, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogRecordBuilder) Build() (BACnetLogRecord, error) {
+	if m.Timestamp == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if m.LogDatum == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logDatum' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogRecord.deepCopy(), nil
+}
+
+func (m *_BACnetLogRecordBuilder) MustBuild() BACnetLogRecord {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogRecordBuilder) DeepCopy() any {
+	return m.CreateBACnetLogRecordBuilder()
+}
+
+// CreateBACnetLogRecordBuilder creates a BACnetLogRecordBuilder
+func (m *_BACnetLogRecord) CreateBACnetLogRecordBuilder() BACnetLogRecordBuilder {
+	if m == nil {
+		return NewBACnetLogRecordBuilder()
+	}
+	return &_BACnetLogRecordBuilder{_BACnetLogRecord: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

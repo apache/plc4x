@@ -44,6 +44,8 @@ type CBusCommandPointToMultiPoint interface {
 	GetCommand() CBusPointToMultiPointCommand
 	// IsCBusCommandPointToMultiPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommandPointToMultiPoint()
+	// CreateBuilder creates a CBusCommandPointToMultiPointBuilder
+	CreateCBusCommandPointToMultiPointBuilder() CBusCommandPointToMultiPointBuilder
 }
 
 // _CBusCommandPointToMultiPoint is the data-structure of this message
@@ -67,6 +69,84 @@ func NewCBusCommandPointToMultiPoint(header CBusHeader, command CBusPointToMulti
 	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusCommandPointToMultiPointBuilder is a builder for CBusCommandPointToMultiPoint
+type CBusCommandPointToMultiPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder
+	// Build builds the CBusCommandPointToMultiPoint or returns an error if something is wrong
+	Build() (CBusCommandPointToMultiPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusCommandPointToMultiPoint
+}
+
+// NewCBusCommandPointToMultiPointBuilder() creates a CBusCommandPointToMultiPointBuilder
+func NewCBusCommandPointToMultiPointBuilder() CBusCommandPointToMultiPointBuilder {
+	return &_CBusCommandPointToMultiPointBuilder{_CBusCommandPointToMultiPoint: new(_CBusCommandPointToMultiPoint)}
+}
+
+type _CBusCommandPointToMultiPointBuilder struct {
+	*_CBusCommandPointToMultiPoint
+
+	err *utils.MultiError
+}
+
+var _ (CBusCommandPointToMultiPointBuilder) = (*_CBusCommandPointToMultiPointBuilder)(nil)
+
+func (m *_CBusCommandPointToMultiPointBuilder) WithMandatoryFields(command CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder {
+	return m.WithCommand(command)
+}
+
+func (m *_CBusCommandPointToMultiPointBuilder) WithCommand(command CBusPointToMultiPointCommand) CBusCommandPointToMultiPointBuilder {
+	m.Command = command
+	return m
+}
+
+func (m *_CBusCommandPointToMultiPointBuilder) Build() (CBusCommandPointToMultiPoint, error) {
+	if m.Command == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CBusCommandPointToMultiPoint.deepCopy(), nil
+}
+
+func (m *_CBusCommandPointToMultiPointBuilder) MustBuild() CBusCommandPointToMultiPoint {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CBusCommandPointToMultiPointBuilder) DeepCopy() any {
+	return m.CreateCBusCommandPointToMultiPointBuilder()
+}
+
+// CreateCBusCommandPointToMultiPointBuilder creates a CBusCommandPointToMultiPointBuilder
+func (m *_CBusCommandPointToMultiPoint) CreateCBusCommandPointToMultiPointBuilder() CBusCommandPointToMultiPointBuilder {
+	if m == nil {
+		return NewCBusCommandPointToMultiPointBuilder()
+	}
+	return &_CBusCommandPointToMultiPointBuilder{_CBusCommandPointToMultiPoint: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

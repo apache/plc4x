@@ -56,6 +56,8 @@ type CreateSubscriptionRequest interface {
 	GetPriority() uint8
 	// IsCreateSubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCreateSubscriptionRequest()
+	// CreateBuilder creates a CreateSubscriptionRequestBuilder
+	CreateCreateSubscriptionRequestBuilder() CreateSubscriptionRequestBuilder
 }
 
 // _CreateSubscriptionRequest is the data-structure of this message
@@ -93,6 +95,126 @@ func NewCreateSubscriptionRequest(requestHeader ExtensionObjectDefinition, reque
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CreateSubscriptionRequestBuilder is a builder for CreateSubscriptionRequest
+type CreateSubscriptionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CreateSubscriptionRequestBuilder
+	// WithRequestedPublishingInterval adds RequestedPublishingInterval (property field)
+	WithRequestedPublishingInterval(float64) CreateSubscriptionRequestBuilder
+	// WithRequestedLifetimeCount adds RequestedLifetimeCount (property field)
+	WithRequestedLifetimeCount(uint32) CreateSubscriptionRequestBuilder
+	// WithRequestedMaxKeepAliveCount adds RequestedMaxKeepAliveCount (property field)
+	WithRequestedMaxKeepAliveCount(uint32) CreateSubscriptionRequestBuilder
+	// WithMaxNotificationsPerPublish adds MaxNotificationsPerPublish (property field)
+	WithMaxNotificationsPerPublish(uint32) CreateSubscriptionRequestBuilder
+	// WithPublishingEnabled adds PublishingEnabled (property field)
+	WithPublishingEnabled(bool) CreateSubscriptionRequestBuilder
+	// WithPriority adds Priority (property field)
+	WithPriority(uint8) CreateSubscriptionRequestBuilder
+	// Build builds the CreateSubscriptionRequest or returns an error if something is wrong
+	Build() (CreateSubscriptionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CreateSubscriptionRequest
+}
+
+// NewCreateSubscriptionRequestBuilder() creates a CreateSubscriptionRequestBuilder
+func NewCreateSubscriptionRequestBuilder() CreateSubscriptionRequestBuilder {
+	return &_CreateSubscriptionRequestBuilder{_CreateSubscriptionRequest: new(_CreateSubscriptionRequest)}
+}
+
+type _CreateSubscriptionRequestBuilder struct {
+	*_CreateSubscriptionRequest
+
+	err *utils.MultiError
+}
+
+var _ (CreateSubscriptionRequestBuilder) = (*_CreateSubscriptionRequestBuilder)(nil)
+
+func (m *_CreateSubscriptionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestedPublishingInterval float64, requestedLifetimeCount uint32, requestedMaxKeepAliveCount uint32, maxNotificationsPerPublish uint32, publishingEnabled bool, priority uint8) CreateSubscriptionRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithRequestedPublishingInterval(requestedPublishingInterval).WithRequestedLifetimeCount(requestedLifetimeCount).WithRequestedMaxKeepAliveCount(requestedMaxKeepAliveCount).WithMaxNotificationsPerPublish(maxNotificationsPerPublish).WithPublishingEnabled(publishingEnabled).WithPriority(priority)
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateSubscriptionRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithRequestedPublishingInterval(requestedPublishingInterval float64) CreateSubscriptionRequestBuilder {
+	m.RequestedPublishingInterval = requestedPublishingInterval
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithRequestedLifetimeCount(requestedLifetimeCount uint32) CreateSubscriptionRequestBuilder {
+	m.RequestedLifetimeCount = requestedLifetimeCount
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithRequestedMaxKeepAliveCount(requestedMaxKeepAliveCount uint32) CreateSubscriptionRequestBuilder {
+	m.RequestedMaxKeepAliveCount = requestedMaxKeepAliveCount
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithMaxNotificationsPerPublish(maxNotificationsPerPublish uint32) CreateSubscriptionRequestBuilder {
+	m.MaxNotificationsPerPublish = maxNotificationsPerPublish
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithPublishingEnabled(publishingEnabled bool) CreateSubscriptionRequestBuilder {
+	m.PublishingEnabled = publishingEnabled
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) WithPriority(priority uint8) CreateSubscriptionRequestBuilder {
+	m.Priority = priority
+	return m
+}
+
+func (m *_CreateSubscriptionRequestBuilder) Build() (CreateSubscriptionRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CreateSubscriptionRequest.deepCopy(), nil
+}
+
+func (m *_CreateSubscriptionRequestBuilder) MustBuild() CreateSubscriptionRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CreateSubscriptionRequestBuilder) DeepCopy() any {
+	return m.CreateCreateSubscriptionRequestBuilder()
+}
+
+// CreateCreateSubscriptionRequestBuilder creates a CreateSubscriptionRequestBuilder
+func (m *_CreateSubscriptionRequest) CreateCreateSubscriptionRequestBuilder() CreateSubscriptionRequestBuilder {
+	if m == nil {
+		return NewCreateSubscriptionRequestBuilder()
+	}
+	return &_CreateSubscriptionRequestBuilder{_CreateSubscriptionRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

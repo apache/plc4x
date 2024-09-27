@@ -49,6 +49,8 @@ type BACnetLifeSafetyModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLifeSafetyModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLifeSafetyModeTagged()
+	// CreateBuilder creates a BACnetLifeSafetyModeTaggedBuilder
+	CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder
 }
 
 // _BACnetLifeSafetyModeTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafet
 	}
 	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLifeSafetyModeTaggedBuilder is a builder for BACnetLifeSafetyModeTagged
+type BACnetLifeSafetyModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLifeSafetyModeTaggedBuilder
+	// Build builds the BACnetLifeSafetyModeTagged or returns an error if something is wrong
+	Build() (BACnetLifeSafetyModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLifeSafetyModeTagged
+}
+
+// NewBACnetLifeSafetyModeTaggedBuilder() creates a BACnetLifeSafetyModeTaggedBuilder
+func NewBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
+	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: new(_BACnetLifeSafetyModeTagged)}
+}
+
+type _BACnetLifeSafetyModeTaggedBuilder struct {
+	*_BACnetLifeSafetyModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLifeSafetyModeTaggedBuilder) = (*_BACnetLifeSafetyModeTaggedBuilder)(nil)
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) WithValue(value BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) Build() (BACnetLifeSafetyModeTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLifeSafetyModeTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) MustBuild() BACnetLifeSafetyModeTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLifeSafetyModeTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLifeSafetyModeTaggedBuilder()
+}
+
+// CreateBACnetLifeSafetyModeTaggedBuilder creates a BACnetLifeSafetyModeTaggedBuilder
+func (m *_BACnetLifeSafetyModeTagged) CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
+	if m == nil {
+		return NewBACnetLifeSafetyModeTaggedBuilder()
+	}
+	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -45,6 +45,8 @@ type NodeId interface {
 	GetId() string
 	// IsNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeId()
+	// CreateBuilder creates a NodeIdBuilder
+	CreateNodeIdBuilder() NodeIdBuilder
 }
 
 // _NodeId is the data-structure of this message
@@ -63,6 +65,84 @@ func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
 	}
 	return &_NodeId{NodeId: nodeId}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdBuilder is a builder for NodeId
+type NodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeIdTypeDefinition) NodeIdBuilder
+	// Build builds the NodeId or returns an error if something is wrong
+	Build() (NodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeId
+}
+
+// NewNodeIdBuilder() creates a NodeIdBuilder
+func NewNodeIdBuilder() NodeIdBuilder {
+	return &_NodeIdBuilder{_NodeId: new(_NodeId)}
+}
+
+type _NodeIdBuilder struct {
+	*_NodeId
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdBuilder) = (*_NodeIdBuilder)(nil)
+
+func (m *_NodeIdBuilder) WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	return m.WithNodeId(nodeId)
+}
+
+func (m *_NodeIdBuilder) WithNodeId(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	m.NodeId = nodeId
+	return m
+}
+
+func (m *_NodeIdBuilder) Build() (NodeId, error) {
+	if m.NodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._NodeId.deepCopy(), nil
+}
+
+func (m *_NodeIdBuilder) MustBuild() NodeId {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_NodeIdBuilder) DeepCopy() any {
+	return m.CreateNodeIdBuilder()
+}
+
+// CreateNodeIdBuilder creates a NodeIdBuilder
+func (m *_NodeId) CreateNodeIdBuilder() NodeIdBuilder {
+	if m == nil {
+		return NewNodeIdBuilder()
+	}
+	return &_NodeIdBuilder{_NodeId: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

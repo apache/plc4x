@@ -46,6 +46,8 @@ type KeyValuePair interface {
 	GetValue() Variant
 	// IsKeyValuePair is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKeyValuePair()
+	// CreateBuilder creates a KeyValuePairBuilder
+	CreateKeyValuePairBuilder() KeyValuePairBuilder
 }
 
 // _KeyValuePair is the data-structure of this message
@@ -74,6 +76,112 @@ func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KeyValuePairBuilder is a builder for KeyValuePair
+type KeyValuePairBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder
+	// WithKey adds Key (property field)
+	WithKey(QualifiedName) KeyValuePairBuilder
+	// WithKeyBuilder adds Key (property field) which is build by the builder
+	WithKeyBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder
+	// WithValue adds Value (property field)
+	WithValue(Variant) KeyValuePairBuilder
+	// Build builds the KeyValuePair or returns an error if something is wrong
+	Build() (KeyValuePair, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KeyValuePair
+}
+
+// NewKeyValuePairBuilder() creates a KeyValuePairBuilder
+func NewKeyValuePairBuilder() KeyValuePairBuilder {
+	return &_KeyValuePairBuilder{_KeyValuePair: new(_KeyValuePair)}
+}
+
+type _KeyValuePairBuilder struct {
+	*_KeyValuePair
+
+	err *utils.MultiError
+}
+
+var _ (KeyValuePairBuilder) = (*_KeyValuePairBuilder)(nil)
+
+func (m *_KeyValuePairBuilder) WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder {
+	return m.WithKey(key).WithValue(value)
+}
+
+func (m *_KeyValuePairBuilder) WithKey(key QualifiedName) KeyValuePairBuilder {
+	m.Key = key
+	return m
+}
+
+func (m *_KeyValuePairBuilder) WithKeyBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder {
+	builder := builderSupplier(m.Key.CreateQualifiedNameBuilder())
+	var err error
+	m.Key, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return m
+}
+
+func (m *_KeyValuePairBuilder) WithValue(value Variant) KeyValuePairBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_KeyValuePairBuilder) Build() (KeyValuePair, error) {
+	if m.Key == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'key' not set"))
+	}
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._KeyValuePair.deepCopy(), nil
+}
+
+func (m *_KeyValuePairBuilder) MustBuild() KeyValuePair {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_KeyValuePairBuilder) DeepCopy() any {
+	return m.CreateKeyValuePairBuilder()
+}
+
+// CreateKeyValuePairBuilder creates a KeyValuePairBuilder
+func (m *_KeyValuePair) CreateKeyValuePairBuilder() KeyValuePairBuilder {
+	if m == nil {
+		return NewKeyValuePairBuilder()
+	}
+	return &_KeyValuePairBuilder{_KeyValuePair: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

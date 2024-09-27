@@ -44,6 +44,8 @@ type EipListIdentityResponse interface {
 	GetItems() []CommandSpecificDataItem
 	// IsEipListIdentityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipListIdentityResponse()
+	// CreateBuilder creates a EipListIdentityResponseBuilder
+	CreateEipListIdentityResponseBuilder() EipListIdentityResponseBuilder
 }
 
 // _EipListIdentityResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewEipListIdentityResponse(sessionHandle uint32, status uint32, senderConte
 	_result.EipPacketContract.(*_EipPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipListIdentityResponseBuilder is a builder for EipListIdentityResponse
+type EipListIdentityResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder
+	// WithItems adds Items (property field)
+	WithItems(...CommandSpecificDataItem) EipListIdentityResponseBuilder
+	// Build builds the EipListIdentityResponse or returns an error if something is wrong
+	Build() (EipListIdentityResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipListIdentityResponse
+}
+
+// NewEipListIdentityResponseBuilder() creates a EipListIdentityResponseBuilder
+func NewEipListIdentityResponseBuilder() EipListIdentityResponseBuilder {
+	return &_EipListIdentityResponseBuilder{_EipListIdentityResponse: new(_EipListIdentityResponse)}
+}
+
+type _EipListIdentityResponseBuilder struct {
+	*_EipListIdentityResponse
+
+	err *utils.MultiError
+}
+
+var _ (EipListIdentityResponseBuilder) = (*_EipListIdentityResponseBuilder)(nil)
+
+func (m *_EipListIdentityResponseBuilder) WithMandatoryFields(items []CommandSpecificDataItem) EipListIdentityResponseBuilder {
+	return m.WithItems(items...)
+}
+
+func (m *_EipListIdentityResponseBuilder) WithItems(items ...CommandSpecificDataItem) EipListIdentityResponseBuilder {
+	m.Items = items
+	return m
+}
+
+func (m *_EipListIdentityResponseBuilder) Build() (EipListIdentityResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EipListIdentityResponse.deepCopy(), nil
+}
+
+func (m *_EipListIdentityResponseBuilder) MustBuild() EipListIdentityResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EipListIdentityResponseBuilder) DeepCopy() any {
+	return m.CreateEipListIdentityResponseBuilder()
+}
+
+// CreateEipListIdentityResponseBuilder creates a EipListIdentityResponseBuilder
+func (m *_EipListIdentityResponse) CreateEipListIdentityResponseBuilder() EipListIdentityResponseBuilder {
+	if m == nil {
+		return NewEipListIdentityResponseBuilder()
+	}
+	return &_EipListIdentityResponseBuilder{_EipListIdentityResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

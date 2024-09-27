@@ -44,6 +44,8 @@ type BACnetRecipientAddress interface {
 	GetAddressValue() BACnetAddressEnclosed
 	// IsBACnetRecipientAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipientAddress()
+	// CreateBuilder creates a BACnetRecipientAddressBuilder
+	CreateBACnetRecipientAddressBuilder() BACnetRecipientAddressBuilder
 }
 
 // _BACnetRecipientAddress is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetRecipientAddress(peekedTagHeader BACnetTagHeader, addressValue BAC
 	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientAddressBuilder is a builder for BACnetRecipientAddress
+type BACnetRecipientAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(addressValue BACnetAddressEnclosed) BACnetRecipientAddressBuilder
+	// WithAddressValue adds AddressValue (property field)
+	WithAddressValue(BACnetAddressEnclosed) BACnetRecipientAddressBuilder
+	// WithAddressValueBuilder adds AddressValue (property field) which is build by the builder
+	WithAddressValueBuilder(func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetRecipientAddressBuilder
+	// Build builds the BACnetRecipientAddress or returns an error if something is wrong
+	Build() (BACnetRecipientAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientAddress
+}
+
+// NewBACnetRecipientAddressBuilder() creates a BACnetRecipientAddressBuilder
+func NewBACnetRecipientAddressBuilder() BACnetRecipientAddressBuilder {
+	return &_BACnetRecipientAddressBuilder{_BACnetRecipientAddress: new(_BACnetRecipientAddress)}
+}
+
+type _BACnetRecipientAddressBuilder struct {
+	*_BACnetRecipientAddress
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientAddressBuilder) = (*_BACnetRecipientAddressBuilder)(nil)
+
+func (m *_BACnetRecipientAddressBuilder) WithMandatoryFields(addressValue BACnetAddressEnclosed) BACnetRecipientAddressBuilder {
+	return m.WithAddressValue(addressValue)
+}
+
+func (m *_BACnetRecipientAddressBuilder) WithAddressValue(addressValue BACnetAddressEnclosed) BACnetRecipientAddressBuilder {
+	m.AddressValue = addressValue
+	return m
+}
+
+func (m *_BACnetRecipientAddressBuilder) WithAddressValueBuilder(builderSupplier func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetRecipientAddressBuilder {
+	builder := builderSupplier(m.AddressValue.CreateBACnetAddressEnclosedBuilder())
+	var err error
+	m.AddressValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAddressEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetRecipientAddressBuilder) Build() (BACnetRecipientAddress, error) {
+	if m.AddressValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'addressValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetRecipientAddress.deepCopy(), nil
+}
+
+func (m *_BACnetRecipientAddressBuilder) MustBuild() BACnetRecipientAddress {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetRecipientAddressBuilder) DeepCopy() any {
+	return m.CreateBACnetRecipientAddressBuilder()
+}
+
+// CreateBACnetRecipientAddressBuilder creates a BACnetRecipientAddressBuilder
+func (m *_BACnetRecipientAddress) CreateBACnetRecipientAddressBuilder() BACnetRecipientAddressBuilder {
+	if m == nil {
+		return NewBACnetRecipientAddressBuilder()
+	}
+	return &_BACnetRecipientAddressBuilder{_BACnetRecipientAddress: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

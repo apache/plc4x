@@ -43,6 +43,8 @@ type EncodedReply interface {
 	utils.Copyable
 	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()
+	// CreateBuilder creates a EncodedReplyBuilder
+	CreateEncodedReplyBuilder() EncodedReplyBuilder
 }
 
 // EncodedReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +59,8 @@ type EncodedReplyContract interface {
 	GetRequestContext() RequestContext
 	// IsEncodedReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReply()
+	// CreateBuilder creates a EncodedReplyBuilder
+	CreateEncodedReplyBuilder() EncodedReplyBuilder
 }
 
 // EncodedReplyRequirements provides a set of functions which need to be implemented by a sub struct
@@ -83,6 +87,78 @@ var _ EncodedReplyContract = (*_EncodedReply)(nil)
 func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReply {
 	return &_EncodedReply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EncodedReplyBuilder is a builder for EncodedReply
+type EncodedReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte byte) EncodedReplyBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(byte) EncodedReplyBuilder
+	// Build builds the EncodedReply or returns an error if something is wrong
+	Build() (EncodedReplyContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EncodedReplyContract
+}
+
+// NewEncodedReplyBuilder() creates a EncodedReplyBuilder
+func NewEncodedReplyBuilder() EncodedReplyBuilder {
+	return &_EncodedReplyBuilder{_EncodedReply: new(_EncodedReply)}
+}
+
+type _EncodedReplyBuilder struct {
+	*_EncodedReply
+
+	err *utils.MultiError
+}
+
+var _ (EncodedReplyBuilder) = (*_EncodedReplyBuilder)(nil)
+
+func (m *_EncodedReplyBuilder) WithMandatoryFields(peekedByte byte) EncodedReplyBuilder {
+	return m.WithPeekedByte(peekedByte)
+}
+
+func (m *_EncodedReplyBuilder) WithPeekedByte(peekedByte byte) EncodedReplyBuilder {
+	m.PeekedByte = peekedByte
+	return m
+}
+
+func (m *_EncodedReplyBuilder) Build() (EncodedReplyContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._EncodedReply.deepCopy(), nil
+}
+
+func (m *_EncodedReplyBuilder) MustBuild() EncodedReplyContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_EncodedReplyBuilder) DeepCopy() any {
+	return m.CreateEncodedReplyBuilder()
+}
+
+// CreateEncodedReplyBuilder creates a EncodedReplyBuilder
+func (m *_EncodedReply) CreateEncodedReplyBuilder() EncodedReplyBuilder {
+	if m == nil {
+		return NewEncodedReplyBuilder()
+	}
+	return &_EncodedReplyBuilder{_EncodedReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

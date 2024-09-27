@@ -50,6 +50,8 @@ type ModifySubscriptionResponse interface {
 	GetRevisedMaxKeepAliveCount() uint32
 	// IsModifySubscriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModifySubscriptionResponse()
+	// CreateBuilder creates a ModifySubscriptionResponseBuilder
+	CreateModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder
 }
 
 // _ModifySubscriptionResponse is the data-structure of this message
@@ -79,6 +81,105 @@ func NewModifySubscriptionResponse(responseHeader ExtensionObjectDefinition, rev
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModifySubscriptionResponseBuilder is a builder for ModifySubscriptionResponse
+type ModifySubscriptionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) ModifySubscriptionResponseBuilder
+	// WithRevisedPublishingInterval adds RevisedPublishingInterval (property field)
+	WithRevisedPublishingInterval(float64) ModifySubscriptionResponseBuilder
+	// WithRevisedLifetimeCount adds RevisedLifetimeCount (property field)
+	WithRevisedLifetimeCount(uint32) ModifySubscriptionResponseBuilder
+	// WithRevisedMaxKeepAliveCount adds RevisedMaxKeepAliveCount (property field)
+	WithRevisedMaxKeepAliveCount(uint32) ModifySubscriptionResponseBuilder
+	// Build builds the ModifySubscriptionResponse or returns an error if something is wrong
+	Build() (ModifySubscriptionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModifySubscriptionResponse
+}
+
+// NewModifySubscriptionResponseBuilder() creates a ModifySubscriptionResponseBuilder
+func NewModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder {
+	return &_ModifySubscriptionResponseBuilder{_ModifySubscriptionResponse: new(_ModifySubscriptionResponse)}
+}
+
+type _ModifySubscriptionResponseBuilder struct {
+	*_ModifySubscriptionResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModifySubscriptionResponseBuilder) = (*_ModifySubscriptionResponseBuilder)(nil)
+
+func (m *_ModifySubscriptionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, revisedPublishingInterval float64, revisedLifetimeCount uint32, revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
+	return m.WithResponseHeader(responseHeader).WithRevisedPublishingInterval(revisedPublishingInterval).WithRevisedLifetimeCount(revisedLifetimeCount).WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount)
+}
+
+func (m *_ModifySubscriptionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ModifySubscriptionResponseBuilder {
+	m.ResponseHeader = responseHeader
+	return m
+}
+
+func (m *_ModifySubscriptionResponseBuilder) WithRevisedPublishingInterval(revisedPublishingInterval float64) ModifySubscriptionResponseBuilder {
+	m.RevisedPublishingInterval = revisedPublishingInterval
+	return m
+}
+
+func (m *_ModifySubscriptionResponseBuilder) WithRevisedLifetimeCount(revisedLifetimeCount uint32) ModifySubscriptionResponseBuilder {
+	m.RevisedLifetimeCount = revisedLifetimeCount
+	return m
+}
+
+func (m *_ModifySubscriptionResponseBuilder) WithRevisedMaxKeepAliveCount(revisedMaxKeepAliveCount uint32) ModifySubscriptionResponseBuilder {
+	m.RevisedMaxKeepAliveCount = revisedMaxKeepAliveCount
+	return m
+}
+
+func (m *_ModifySubscriptionResponseBuilder) Build() (ModifySubscriptionResponse, error) {
+	if m.ResponseHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModifySubscriptionResponse.deepCopy(), nil
+}
+
+func (m *_ModifySubscriptionResponseBuilder) MustBuild() ModifySubscriptionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModifySubscriptionResponseBuilder) DeepCopy() any {
+	return m.CreateModifySubscriptionResponseBuilder()
+}
+
+// CreateModifySubscriptionResponseBuilder creates a ModifySubscriptionResponseBuilder
+func (m *_ModifySubscriptionResponse) CreateModifySubscriptionResponseBuilder() ModifySubscriptionResponseBuilder {
+	if m == nil {
+		return NewModifySubscriptionResponseBuilder()
+	}
+	return &_ModifySubscriptionResponseBuilder{_ModifySubscriptionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

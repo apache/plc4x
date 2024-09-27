@@ -78,6 +78,8 @@ type CipConnectionManagerRequest interface {
 	GetConnectionPaths() []PathSegment
 	// IsCipConnectionManagerRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerRequest()
+	// CreateBuilder creates a CipConnectionManagerRequestBuilder
+	CreateCipConnectionManagerRequestBuilder() CipConnectionManagerRequestBuilder
 }
 
 // _CipConnectionManagerRequest is the data-structure of this message
@@ -149,6 +151,272 @@ func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment Pa
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectionManagerRequestBuilder is a builder for CipConnectionManagerRequest
+type CipConnectionManagerRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) CipConnectionManagerRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) CipConnectionManagerRequestBuilder
+	// WithPriority adds Priority (property field)
+	WithPriority(uint8) CipConnectionManagerRequestBuilder
+	// WithTickTime adds TickTime (property field)
+	WithTickTime(uint8) CipConnectionManagerRequestBuilder
+	// WithTimeoutTicks adds TimeoutTicks (property field)
+	WithTimeoutTicks(uint8) CipConnectionManagerRequestBuilder
+	// WithOtConnectionId adds OtConnectionId (property field)
+	WithOtConnectionId(uint32) CipConnectionManagerRequestBuilder
+	// WithToConnectionId adds ToConnectionId (property field)
+	WithToConnectionId(uint32) CipConnectionManagerRequestBuilder
+	// WithConnectionSerialNumber adds ConnectionSerialNumber (property field)
+	WithConnectionSerialNumber(uint16) CipConnectionManagerRequestBuilder
+	// WithOriginatorVendorId adds OriginatorVendorId (property field)
+	WithOriginatorVendorId(uint16) CipConnectionManagerRequestBuilder
+	// WithOriginatorSerialNumber adds OriginatorSerialNumber (property field)
+	WithOriginatorSerialNumber(uint32) CipConnectionManagerRequestBuilder
+	// WithTimeoutMultiplier adds TimeoutMultiplier (property field)
+	WithTimeoutMultiplier(uint8) CipConnectionManagerRequestBuilder
+	// WithOtRpi adds OtRpi (property field)
+	WithOtRpi(uint32) CipConnectionManagerRequestBuilder
+	// WithOtConnectionParameters adds OtConnectionParameters (property field)
+	WithOtConnectionParameters(NetworkConnectionParameters) CipConnectionManagerRequestBuilder
+	// WithOtConnectionParametersBuilder adds OtConnectionParameters (property field) which is build by the builder
+	WithOtConnectionParametersBuilder(func(NetworkConnectionParametersBuilder) NetworkConnectionParametersBuilder) CipConnectionManagerRequestBuilder
+	// WithToRpi adds ToRpi (property field)
+	WithToRpi(uint32) CipConnectionManagerRequestBuilder
+	// WithToConnectionParameters adds ToConnectionParameters (property field)
+	WithToConnectionParameters(NetworkConnectionParameters) CipConnectionManagerRequestBuilder
+	// WithToConnectionParametersBuilder adds ToConnectionParameters (property field) which is build by the builder
+	WithToConnectionParametersBuilder(func(NetworkConnectionParametersBuilder) NetworkConnectionParametersBuilder) CipConnectionManagerRequestBuilder
+	// WithTransportType adds TransportType (property field)
+	WithTransportType(TransportType) CipConnectionManagerRequestBuilder
+	// WithTransportTypeBuilder adds TransportType (property field) which is build by the builder
+	WithTransportTypeBuilder(func(TransportTypeBuilder) TransportTypeBuilder) CipConnectionManagerRequestBuilder
+	// WithConnectionPathSize adds ConnectionPathSize (property field)
+	WithConnectionPathSize(uint8) CipConnectionManagerRequestBuilder
+	// WithConnectionPaths adds ConnectionPaths (property field)
+	WithConnectionPaths(...PathSegment) CipConnectionManagerRequestBuilder
+	// Build builds the CipConnectionManagerRequest or returns an error if something is wrong
+	Build() (CipConnectionManagerRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectionManagerRequest
+}
+
+// NewCipConnectionManagerRequestBuilder() creates a CipConnectionManagerRequestBuilder
+func NewCipConnectionManagerRequestBuilder() CipConnectionManagerRequestBuilder {
+	return &_CipConnectionManagerRequestBuilder{_CipConnectionManagerRequest: new(_CipConnectionManagerRequest)}
+}
+
+type _CipConnectionManagerRequestBuilder struct {
+	*_CipConnectionManagerRequest
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectionManagerRequestBuilder) = (*_CipConnectionManagerRequestBuilder)(nil)
+
+func (m *_CipConnectionManagerRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment) CipConnectionManagerRequestBuilder {
+	return m.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithPriority(priority).WithTickTime(tickTime).WithTimeoutTicks(timeoutTicks).WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithTimeoutMultiplier(timeoutMultiplier).WithOtRpi(otRpi).WithOtConnectionParameters(otConnectionParameters).WithToRpi(toRpi).WithToConnectionParameters(toConnectionParameters).WithTransportType(transportType).WithConnectionPathSize(connectionPathSize).WithConnectionPaths(connectionPaths...)
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithClassSegment(classSegment PathSegment) CipConnectionManagerRequestBuilder {
+	m.ClassSegment = classSegment
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipConnectionManagerRequestBuilder {
+	m.InstanceSegment = instanceSegment
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithPriority(priority uint8) CipConnectionManagerRequestBuilder {
+	m.Priority = priority
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithTickTime(tickTime uint8) CipConnectionManagerRequestBuilder {
+	m.TickTime = tickTime
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithTimeoutTicks(timeoutTicks uint8) CipConnectionManagerRequestBuilder {
+	m.TimeoutTicks = timeoutTicks
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerRequestBuilder {
+	m.OtConnectionId = otConnectionId
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithToConnectionId(toConnectionId uint32) CipConnectionManagerRequestBuilder {
+	m.ToConnectionId = toConnectionId
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerRequestBuilder {
+	m.ConnectionSerialNumber = connectionSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerRequestBuilder {
+	m.OriginatorVendorId = originatorVendorId
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerRequestBuilder {
+	m.OriginatorSerialNumber = originatorSerialNumber
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithTimeoutMultiplier(timeoutMultiplier uint8) CipConnectionManagerRequestBuilder {
+	m.TimeoutMultiplier = timeoutMultiplier
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOtRpi(otRpi uint32) CipConnectionManagerRequestBuilder {
+	m.OtRpi = otRpi
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOtConnectionParameters(otConnectionParameters NetworkConnectionParameters) CipConnectionManagerRequestBuilder {
+	m.OtConnectionParameters = otConnectionParameters
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithOtConnectionParametersBuilder(builderSupplier func(NetworkConnectionParametersBuilder) NetworkConnectionParametersBuilder) CipConnectionManagerRequestBuilder {
+	builder := builderSupplier(m.OtConnectionParameters.CreateNetworkConnectionParametersBuilder())
+	var err error
+	m.OtConnectionParameters, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithToRpi(toRpi uint32) CipConnectionManagerRequestBuilder {
+	m.ToRpi = toRpi
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithToConnectionParameters(toConnectionParameters NetworkConnectionParameters) CipConnectionManagerRequestBuilder {
+	m.ToConnectionParameters = toConnectionParameters
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithToConnectionParametersBuilder(builderSupplier func(NetworkConnectionParametersBuilder) NetworkConnectionParametersBuilder) CipConnectionManagerRequestBuilder {
+	builder := builderSupplier(m.ToConnectionParameters.CreateNetworkConnectionParametersBuilder())
+	var err error
+	m.ToConnectionParameters, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NetworkConnectionParametersBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithTransportType(transportType TransportType) CipConnectionManagerRequestBuilder {
+	m.TransportType = transportType
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithTransportTypeBuilder(builderSupplier func(TransportTypeBuilder) TransportTypeBuilder) CipConnectionManagerRequestBuilder {
+	builder := builderSupplier(m.TransportType.CreateTransportTypeBuilder())
+	var err error
+	m.TransportType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "TransportTypeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithConnectionPathSize(connectionPathSize uint8) CipConnectionManagerRequestBuilder {
+	m.ConnectionPathSize = connectionPathSize
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) WithConnectionPaths(connectionPaths ...PathSegment) CipConnectionManagerRequestBuilder {
+	m.ConnectionPaths = connectionPaths
+	return m
+}
+
+func (m *_CipConnectionManagerRequestBuilder) Build() (CipConnectionManagerRequest, error) {
+	if m.ClassSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if m.InstanceSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if m.OtConnectionParameters == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'otConnectionParameters' not set"))
+	}
+	if m.ToConnectionParameters == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'toConnectionParameters' not set"))
+	}
+	if m.TransportType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'transportType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipConnectionManagerRequest.deepCopy(), nil
+}
+
+func (m *_CipConnectionManagerRequestBuilder) MustBuild() CipConnectionManagerRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipConnectionManagerRequestBuilder) DeepCopy() any {
+	return m.CreateCipConnectionManagerRequestBuilder()
+}
+
+// CreateCipConnectionManagerRequestBuilder creates a CipConnectionManagerRequestBuilder
+func (m *_CipConnectionManagerRequest) CreateCipConnectionManagerRequestBuilder() CipConnectionManagerRequestBuilder {
+	if m == nil {
+		return NewCipConnectionManagerRequestBuilder()
+	}
+	return &_CipConnectionManagerRequestBuilder{_CipConnectionManagerRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetPropertyStatesSilencedState interface {
 	GetSilencedState() BACnetSilencedStateTagged
 	// IsBACnetPropertyStatesSilencedState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesSilencedState()
+	// CreateBuilder creates a BACnetPropertyStatesSilencedStateBuilder
+	CreateBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder
 }
 
 // _BACnetPropertyStatesSilencedState is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesSilencedState(peekedTagHeader BACnetTagHeader, silen
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesSilencedStateBuilder is a builder for BACnetPropertyStatesSilencedState
+type BACnetPropertyStatesSilencedStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder
+	// WithSilencedState adds SilencedState (property field)
+	WithSilencedState(BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder
+	// WithSilencedStateBuilder adds SilencedState (property field) which is build by the builder
+	WithSilencedStateBuilder(func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetPropertyStatesSilencedStateBuilder
+	// Build builds the BACnetPropertyStatesSilencedState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesSilencedState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesSilencedState
+}
+
+// NewBACnetPropertyStatesSilencedStateBuilder() creates a BACnetPropertyStatesSilencedStateBuilder
+func NewBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder {
+	return &_BACnetPropertyStatesSilencedStateBuilder{_BACnetPropertyStatesSilencedState: new(_BACnetPropertyStatesSilencedState)}
+}
+
+type _BACnetPropertyStatesSilencedStateBuilder struct {
+	*_BACnetPropertyStatesSilencedState
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesSilencedStateBuilder) = (*_BACnetPropertyStatesSilencedStateBuilder)(nil)
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) WithMandatoryFields(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder {
+	return m.WithSilencedState(silencedState)
+}
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) WithSilencedState(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder {
+	m.SilencedState = silencedState
+	return m
+}
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) WithSilencedStateBuilder(builderSupplier func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetPropertyStatesSilencedStateBuilder {
+	builder := builderSupplier(m.SilencedState.CreateBACnetSilencedStateTaggedBuilder())
+	var err error
+	m.SilencedState, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetSilencedStateTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) Build() (BACnetPropertyStatesSilencedState, error) {
+	if m.SilencedState == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'silencedState' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesSilencedState.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) MustBuild() BACnetPropertyStatesSilencedState {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesSilencedStateBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesSilencedStateBuilder()
+}
+
+// CreateBACnetPropertyStatesSilencedStateBuilder creates a BACnetPropertyStatesSilencedStateBuilder
+func (m *_BACnetPropertyStatesSilencedState) CreateBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesSilencedStateBuilder()
+	}
+	return &_BACnetPropertyStatesSilencedStateBuilder{_BACnetPropertyStatesSilencedState: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

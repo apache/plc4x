@@ -50,6 +50,8 @@ type IdentifyReplyCommandOutputUnitSummary interface {
 	GetTimeFromLastRecoverOfMainsInSeconds() uint8
 	// IsIdentifyReplyCommandOutputUnitSummary is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandOutputUnitSummary()
+	// CreateBuilder creates a IdentifyReplyCommandOutputUnitSummaryBuilder
+	CreateIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutputUnitSummaryBuilder
 }
 
 // _IdentifyReplyCommandOutputUnitSummary is the data-structure of this message
@@ -79,6 +81,120 @@ func NewIdentifyReplyCommandOutputUnitSummary(unitFlags IdentifyReplyCommandUnit
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandOutputUnitSummaryBuilder is a builder for IdentifyReplyCommandOutputUnitSummary
+type IdentifyReplyCommandOutputUnitSummaryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unitFlags IdentifyReplyCommandUnitSummary, timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// WithUnitFlags adds UnitFlags (property field)
+	WithUnitFlags(IdentifyReplyCommandUnitSummary) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// WithUnitFlagsBuilder adds UnitFlags (property field) which is build by the builder
+	WithUnitFlagsBuilder(func(IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// WithGavStoreEnabledByte1 adds GavStoreEnabledByte1 (property field)
+	WithOptionalGavStoreEnabledByte1(byte) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// WithGavStoreEnabledByte2 adds GavStoreEnabledByte2 (property field)
+	WithOptionalGavStoreEnabledByte2(byte) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// WithTimeFromLastRecoverOfMainsInSeconds adds TimeFromLastRecoverOfMainsInSeconds (property field)
+	WithTimeFromLastRecoverOfMainsInSeconds(uint8) IdentifyReplyCommandOutputUnitSummaryBuilder
+	// Build builds the IdentifyReplyCommandOutputUnitSummary or returns an error if something is wrong
+	Build() (IdentifyReplyCommandOutputUnitSummary, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandOutputUnitSummary
+}
+
+// NewIdentifyReplyCommandOutputUnitSummaryBuilder() creates a IdentifyReplyCommandOutputUnitSummaryBuilder
+func NewIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutputUnitSummaryBuilder {
+	return &_IdentifyReplyCommandOutputUnitSummaryBuilder{_IdentifyReplyCommandOutputUnitSummary: new(_IdentifyReplyCommandOutputUnitSummary)}
+}
+
+type _IdentifyReplyCommandOutputUnitSummaryBuilder struct {
+	*_IdentifyReplyCommandOutputUnitSummary
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandOutputUnitSummaryBuilder) = (*_IdentifyReplyCommandOutputUnitSummaryBuilder)(nil)
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithMandatoryFields(unitFlags IdentifyReplyCommandUnitSummary, timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	return m.WithUnitFlags(unitFlags).WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds)
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlags(unitFlags IdentifyReplyCommandUnitSummary) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	m.UnitFlags = unitFlags
+	return m
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithUnitFlagsBuilder(builderSupplier func(IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandUnitSummaryBuilder) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	builder := builderSupplier(m.UnitFlags.CreateIdentifyReplyCommandUnitSummaryBuilder())
+	var err error
+	m.UnitFlags, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "IdentifyReplyCommandUnitSummaryBuilder failed"))
+	}
+	return m
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte1(gavStoreEnabledByte1 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	m.GavStoreEnabledByte1 = &gavStoreEnabledByte1
+	return m
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithOptionalGavStoreEnabledByte2(gavStoreEnabledByte2 byte) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	m.GavStoreEnabledByte2 = &gavStoreEnabledByte2
+	return m
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) WithTimeFromLastRecoverOfMainsInSeconds(timeFromLastRecoverOfMainsInSeconds uint8) IdentifyReplyCommandOutputUnitSummaryBuilder {
+	m.TimeFromLastRecoverOfMainsInSeconds = timeFromLastRecoverOfMainsInSeconds
+	return m
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) Build() (IdentifyReplyCommandOutputUnitSummary, error) {
+	if m.UnitFlags == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'unitFlags' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandOutputUnitSummary.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) MustBuild() IdentifyReplyCommandOutputUnitSummary {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandOutputUnitSummaryBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandOutputUnitSummaryBuilder()
+}
+
+// CreateIdentifyReplyCommandOutputUnitSummaryBuilder creates a IdentifyReplyCommandOutputUnitSummaryBuilder
+func (m *_IdentifyReplyCommandOutputUnitSummary) CreateIdentifyReplyCommandOutputUnitSummaryBuilder() IdentifyReplyCommandOutputUnitSummaryBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandOutputUnitSummaryBuilder()
+	}
+	return &_IdentifyReplyCommandOutputUnitSummaryBuilder{_IdentifyReplyCommandOutputUnitSummary: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

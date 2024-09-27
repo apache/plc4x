@@ -67,6 +67,8 @@ type HVACModeAndFlags interface {
 	GetIsLevelRaw() bool
 	// IsHVACModeAndFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACModeAndFlags()
+	// CreateBuilder creates a HVACModeAndFlagsBuilder
+	CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder
 }
 
 // _HVACModeAndFlags is the data-structure of this message
@@ -86,6 +88,106 @@ var _ HVACModeAndFlags = (*_HVACModeAndFlags)(nil)
 func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
 	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACModeAndFlagsBuilder is a builder for HVACModeAndFlags
+type HVACModeAndFlagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder
+	// WithAuxiliaryLevel adds AuxiliaryLevel (property field)
+	WithAuxiliaryLevel(bool) HVACModeAndFlagsBuilder
+	// WithGuard adds Guard (property field)
+	WithGuard(bool) HVACModeAndFlagsBuilder
+	// WithSetback adds Setback (property field)
+	WithSetback(bool) HVACModeAndFlagsBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(bool) HVACModeAndFlagsBuilder
+	// WithMode adds Mode (property field)
+	WithMode(HVACModeAndFlagsMode) HVACModeAndFlagsBuilder
+	// Build builds the HVACModeAndFlags or returns an error if something is wrong
+	Build() (HVACModeAndFlags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACModeAndFlags
+}
+
+// NewHVACModeAndFlagsBuilder() creates a HVACModeAndFlagsBuilder
+func NewHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
+	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: new(_HVACModeAndFlags)}
+}
+
+type _HVACModeAndFlagsBuilder struct {
+	*_HVACModeAndFlags
+
+	err *utils.MultiError
+}
+
+var _ (HVACModeAndFlagsBuilder) = (*_HVACModeAndFlagsBuilder)(nil)
+
+func (m *_HVACModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	return m.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
+}
+
+func (m *_HVACModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACModeAndFlagsBuilder {
+	m.AuxiliaryLevel = auxiliaryLevel
+	return m
+}
+
+func (m *_HVACModeAndFlagsBuilder) WithGuard(guard bool) HVACModeAndFlagsBuilder {
+	m.Guard = guard
+	return m
+}
+
+func (m *_HVACModeAndFlagsBuilder) WithSetback(setback bool) HVACModeAndFlagsBuilder {
+	m.Setback = setback
+	return m
+}
+
+func (m *_HVACModeAndFlagsBuilder) WithLevel(level bool) HVACModeAndFlagsBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_HVACModeAndFlagsBuilder) WithMode(mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	m.Mode = mode
+	return m
+}
+
+func (m *_HVACModeAndFlagsBuilder) Build() (HVACModeAndFlags, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._HVACModeAndFlags.deepCopy(), nil
+}
+
+func (m *_HVACModeAndFlagsBuilder) MustBuild() HVACModeAndFlags {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_HVACModeAndFlagsBuilder) DeepCopy() any {
+	return m.CreateHVACModeAndFlagsBuilder()
+}
+
+// CreateHVACModeAndFlagsBuilder creates a HVACModeAndFlagsBuilder
+func (m *_HVACModeAndFlags) CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
+	if m == nil {
+		return NewHVACModeAndFlagsBuilder()
+	}
+	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

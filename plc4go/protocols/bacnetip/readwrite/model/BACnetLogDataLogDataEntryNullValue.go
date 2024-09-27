@@ -44,6 +44,8 @@ type BACnetLogDataLogDataEntryNullValue interface {
 	GetNullValue() BACnetContextTagNull
 	// IsBACnetLogDataLogDataEntryNullValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntryNullValue()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryNullValueBuilder
+	CreateBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNullValueBuilder
 }
 
 // _BACnetLogDataLogDataEntryNullValue is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetLogDataLogDataEntryNullValue(peekedTagHeader BACnetTagHeader, null
 	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryNullValueBuilder is a builder for BACnetLogDataLogDataEntryNullValue
+type BACnetLogDataLogDataEntryNullValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogDataLogDataEntryNullValueBuilder
+	// Build builds the BACnetLogDataLogDataEntryNullValue or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryNullValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryNullValue
+}
+
+// NewBACnetLogDataLogDataEntryNullValueBuilder() creates a BACnetLogDataLogDataEntryNullValueBuilder
+func NewBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNullValueBuilder {
+	return &_BACnetLogDataLogDataEntryNullValueBuilder{_BACnetLogDataLogDataEntryNullValue: new(_BACnetLogDataLogDataEntryNullValue)}
+}
+
+type _BACnetLogDataLogDataEntryNullValueBuilder struct {
+	*_BACnetLogDataLogDataEntryNullValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryNullValueBuilder) = (*_BACnetLogDataLogDataEntryNullValueBuilder)(nil)
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithMandatoryFields(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
+	return m.WithNullValue(nullValue)
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValue(nullValue BACnetContextTagNull) BACnetLogDataLogDataEntryNullValueBuilder {
+	m.NullValue = nullValue
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) WithNullValueBuilder(builderSupplier func(BACnetContextTagNullBuilder) BACnetContextTagNullBuilder) BACnetLogDataLogDataEntryNullValueBuilder {
+	builder := builderSupplier(m.NullValue.CreateBACnetContextTagNullBuilder())
+	var err error
+	m.NullValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagNullBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) Build() (BACnetLogDataLogDataEntryNullValue, error) {
+	if m.NullValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLogDataLogDataEntryNullValue.deepCopy(), nil
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) MustBuild() BACnetLogDataLogDataEntryNullValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLogDataLogDataEntryNullValueBuilder) DeepCopy() any {
+	return m.CreateBACnetLogDataLogDataEntryNullValueBuilder()
+}
+
+// CreateBACnetLogDataLogDataEntryNullValueBuilder creates a BACnetLogDataLogDataEntryNullValueBuilder
+func (m *_BACnetLogDataLogDataEntryNullValue) CreateBACnetLogDataLogDataEntryNullValueBuilder() BACnetLogDataLogDataEntryNullValueBuilder {
+	if m == nil {
+		return NewBACnetLogDataLogDataEntryNullValueBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryNullValueBuilder{_BACnetLogDataLogDataEntryNullValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

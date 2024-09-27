@@ -44,6 +44,8 @@ type ParameterValueRaw interface {
 	GetData() []byte
 	// IsParameterValueRaw is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueRaw()
+	// CreateBuilder creates a ParameterValueRawBuilder
+	CreateParameterValueRawBuilder() ParameterValueRawBuilder
 }
 
 // _ParameterValueRaw is the data-structure of this message
@@ -64,6 +66,78 @@ func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueRawBuilder is a builder for ParameterValueRaw
+type ParameterValueRawBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) ParameterValueRawBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueRawBuilder
+	// Build builds the ParameterValueRaw or returns an error if something is wrong
+	Build() (ParameterValueRaw, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueRaw
+}
+
+// NewParameterValueRawBuilder() creates a ParameterValueRawBuilder
+func NewParameterValueRawBuilder() ParameterValueRawBuilder {
+	return &_ParameterValueRawBuilder{_ParameterValueRaw: new(_ParameterValueRaw)}
+}
+
+type _ParameterValueRawBuilder struct {
+	*_ParameterValueRaw
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueRawBuilder) = (*_ParameterValueRawBuilder)(nil)
+
+func (m *_ParameterValueRawBuilder) WithMandatoryFields(data []byte) ParameterValueRawBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_ParameterValueRawBuilder) WithData(data ...byte) ParameterValueRawBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ParameterValueRawBuilder) Build() (ParameterValueRaw, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueRaw.deepCopy(), nil
+}
+
+func (m *_ParameterValueRawBuilder) MustBuild() ParameterValueRaw {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueRawBuilder) DeepCopy() any {
+	return m.CreateParameterValueRawBuilder()
+}
+
+// CreateParameterValueRawBuilder creates a ParameterValueRawBuilder
+func (m *_ParameterValueRaw) CreateParameterValueRawBuilder() ParameterValueRawBuilder {
+	if m == nil {
+		return NewParameterValueRawBuilder()
+	}
+	return &_ParameterValueRawBuilder{_ParameterValueRaw: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

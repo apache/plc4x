@@ -46,6 +46,8 @@ type BACnetConstructedDataProtocolLevel interface {
 	GetActualValue() BACnetProtocolLevelTagged
 	// IsBACnetConstructedDataProtocolLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProtocolLevel()
+	// CreateBuilder creates a BACnetConstructedDataProtocolLevelBuilder
+	CreateBACnetConstructedDataProtocolLevelBuilder() BACnetConstructedDataProtocolLevelBuilder
 }
 
 // _BACnetConstructedDataProtocolLevel is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataProtocolLevel(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProtocolLevelBuilder is a builder for BACnetConstructedDataProtocolLevel
+type BACnetConstructedDataProtocolLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetConstructedDataProtocolLevelBuilder
+	// WithProtocolLevel adds ProtocolLevel (property field)
+	WithProtocolLevel(BACnetProtocolLevelTagged) BACnetConstructedDataProtocolLevelBuilder
+	// WithProtocolLevelBuilder adds ProtocolLevel (property field) which is build by the builder
+	WithProtocolLevelBuilder(func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetConstructedDataProtocolLevelBuilder
+	// Build builds the BACnetConstructedDataProtocolLevel or returns an error if something is wrong
+	Build() (BACnetConstructedDataProtocolLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProtocolLevel
+}
+
+// NewBACnetConstructedDataProtocolLevelBuilder() creates a BACnetConstructedDataProtocolLevelBuilder
+func NewBACnetConstructedDataProtocolLevelBuilder() BACnetConstructedDataProtocolLevelBuilder {
+	return &_BACnetConstructedDataProtocolLevelBuilder{_BACnetConstructedDataProtocolLevel: new(_BACnetConstructedDataProtocolLevel)}
+}
+
+type _BACnetConstructedDataProtocolLevelBuilder struct {
+	*_BACnetConstructedDataProtocolLevel
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProtocolLevelBuilder) = (*_BACnetConstructedDataProtocolLevelBuilder)(nil)
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetConstructedDataProtocolLevelBuilder {
+	return m.WithProtocolLevel(protocolLevel)
+}
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) WithProtocolLevel(protocolLevel BACnetProtocolLevelTagged) BACnetConstructedDataProtocolLevelBuilder {
+	m.ProtocolLevel = protocolLevel
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) WithProtocolLevelBuilder(builderSupplier func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetConstructedDataProtocolLevelBuilder {
+	builder := builderSupplier(m.ProtocolLevel.CreateBACnetProtocolLevelTaggedBuilder())
+	var err error
+	m.ProtocolLevel, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetProtocolLevelTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) Build() (BACnetConstructedDataProtocolLevel, error) {
+	if m.ProtocolLevel == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'protocolLevel' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProtocolLevel.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) MustBuild() BACnetConstructedDataProtocolLevel {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProtocolLevelBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProtocolLevelBuilder()
+}
+
+// CreateBACnetConstructedDataProtocolLevelBuilder creates a BACnetConstructedDataProtocolLevelBuilder
+func (m *_BACnetConstructedDataProtocolLevel) CreateBACnetConstructedDataProtocolLevelBuilder() BACnetConstructedDataProtocolLevelBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProtocolLevelBuilder()
+	}
+	return &_BACnetConstructedDataProtocolLevelBuilder{_BACnetConstructedDataProtocolLevel: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

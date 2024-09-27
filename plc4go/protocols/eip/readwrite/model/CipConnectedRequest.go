@@ -44,6 +44,8 @@ type CipConnectedRequest interface {
 	GetPathSegments() []byte
 	// IsCipConnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectedRequest()
+	// CreateBuilder creates a CipConnectedRequestBuilder
+	CreateCipConnectedRequestBuilder() CipConnectedRequestBuilder
 }
 
 // _CipConnectedRequest is the data-structure of this message
@@ -67,6 +69,78 @@ func NewCipConnectedRequest(pathSegments []byte, serviceLen uint16) *_CipConnect
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectedRequestBuilder is a builder for CipConnectedRequest
+type CipConnectedRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pathSegments []byte) CipConnectedRequestBuilder
+	// WithPathSegments adds PathSegments (property field)
+	WithPathSegments(...byte) CipConnectedRequestBuilder
+	// Build builds the CipConnectedRequest or returns an error if something is wrong
+	Build() (CipConnectedRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectedRequest
+}
+
+// NewCipConnectedRequestBuilder() creates a CipConnectedRequestBuilder
+func NewCipConnectedRequestBuilder() CipConnectedRequestBuilder {
+	return &_CipConnectedRequestBuilder{_CipConnectedRequest: new(_CipConnectedRequest)}
+}
+
+type _CipConnectedRequestBuilder struct {
+	*_CipConnectedRequest
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectedRequestBuilder) = (*_CipConnectedRequestBuilder)(nil)
+
+func (m *_CipConnectedRequestBuilder) WithMandatoryFields(pathSegments []byte) CipConnectedRequestBuilder {
+	return m.WithPathSegments(pathSegments...)
+}
+
+func (m *_CipConnectedRequestBuilder) WithPathSegments(pathSegments ...byte) CipConnectedRequestBuilder {
+	m.PathSegments = pathSegments
+	return m
+}
+
+func (m *_CipConnectedRequestBuilder) Build() (CipConnectedRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CipConnectedRequest.deepCopy(), nil
+}
+
+func (m *_CipConnectedRequestBuilder) MustBuild() CipConnectedRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CipConnectedRequestBuilder) DeepCopy() any {
+	return m.CreateCipConnectedRequestBuilder()
+}
+
+// CreateCipConnectedRequestBuilder creates a CipConnectedRequestBuilder
+func (m *_CipConnectedRequest) CreateCipConnectedRequestBuilder() CipConnectedRequestBuilder {
+	if m == nil {
+		return NewCipConnectedRequestBuilder()
+	}
+	return &_CipConnectedRequestBuilder{_CipConnectedRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

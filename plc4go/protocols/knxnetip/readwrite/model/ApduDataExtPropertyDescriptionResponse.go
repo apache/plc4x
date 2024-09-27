@@ -58,6 +58,8 @@ type ApduDataExtPropertyDescriptionResponse interface {
 	GetWriteLevel() AccessLevel
 	// IsApduDataExtPropertyDescriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtPropertyDescriptionResponse()
+	// CreateBuilder creates a ApduDataExtPropertyDescriptionResponseBuilder
+	CreateApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescriptionResponseBuilder
 }
 
 // _ApduDataExtPropertyDescriptionResponse is the data-structure of this message
@@ -95,6 +97,127 @@ func NewApduDataExtPropertyDescriptionResponse(objectIndex uint8, propertyId uin
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtPropertyDescriptionResponseBuilder is a builder for ApduDataExtPropertyDescriptionResponse
+type ApduDataExtPropertyDescriptionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithObjectIndex adds ObjectIndex (property field)
+	WithObjectIndex(uint8) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(uint8) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithWriteEnabled adds WriteEnabled (property field)
+	WithWriteEnabled(bool) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithPropertyDataType adds PropertyDataType (property field)
+	WithPropertyDataType(KnxPropertyDataType) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithMaxNrOfElements adds MaxNrOfElements (property field)
+	WithMaxNrOfElements(uint16) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithReadLevel adds ReadLevel (property field)
+	WithReadLevel(AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder
+	// WithWriteLevel adds WriteLevel (property field)
+	WithWriteLevel(AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder
+	// Build builds the ApduDataExtPropertyDescriptionResponse or returns an error if something is wrong
+	Build() (ApduDataExtPropertyDescriptionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtPropertyDescriptionResponse
+}
+
+// NewApduDataExtPropertyDescriptionResponseBuilder() creates a ApduDataExtPropertyDescriptionResponseBuilder
+func NewApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescriptionResponseBuilder {
+	return &_ApduDataExtPropertyDescriptionResponseBuilder{_ApduDataExtPropertyDescriptionResponse: new(_ApduDataExtPropertyDescriptionResponse)}
+}
+
+type _ApduDataExtPropertyDescriptionResponseBuilder struct {
+	*_ApduDataExtPropertyDescriptionResponse
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtPropertyDescriptionResponseBuilder) = (*_ApduDataExtPropertyDescriptionResponseBuilder)(nil)
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8, writeEnabled bool, propertyDataType KnxPropertyDataType, maxNrOfElements uint16, readLevel AccessLevel, writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	return m.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index).WithWriteEnabled(writeEnabled).WithPropertyDataType(propertyDataType).WithMaxNrOfElements(maxNrOfElements).WithReadLevel(readLevel).WithWriteLevel(writeLevel)
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.ObjectIndex = objectIndex
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.PropertyId = propertyId
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.Index = index
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteEnabled(writeEnabled bool) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.WriteEnabled = writeEnabled
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithPropertyDataType(propertyDataType KnxPropertyDataType) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.PropertyDataType = propertyDataType
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithMaxNrOfElements(maxNrOfElements uint16) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.MaxNrOfElements = maxNrOfElements
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithReadLevel(readLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.ReadLevel = readLevel
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) WithWriteLevel(writeLevel AccessLevel) ApduDataExtPropertyDescriptionResponseBuilder {
+	m.WriteLevel = writeLevel
+	return m
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) Build() (ApduDataExtPropertyDescriptionResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtPropertyDescriptionResponse.deepCopy(), nil
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) MustBuild() ApduDataExtPropertyDescriptionResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtPropertyDescriptionResponseBuilder) DeepCopy() any {
+	return m.CreateApduDataExtPropertyDescriptionResponseBuilder()
+}
+
+// CreateApduDataExtPropertyDescriptionResponseBuilder creates a ApduDataExtPropertyDescriptionResponseBuilder
+func (m *_ApduDataExtPropertyDescriptionResponse) CreateApduDataExtPropertyDescriptionResponseBuilder() ApduDataExtPropertyDescriptionResponseBuilder {
+	if m == nil {
+		return NewApduDataExtPropertyDescriptionResponseBuilder()
+	}
+	return &_ApduDataExtPropertyDescriptionResponseBuilder{_ApduDataExtPropertyDescriptionResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

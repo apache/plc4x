@@ -46,6 +46,8 @@ type VariantStatusCode interface {
 	GetValue() []StatusCode
 	// IsVariantStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantStatusCode()
+	// CreateBuilder creates a VariantStatusCodeBuilder
+	CreateVariantStatusCodeBuilder() VariantStatusCodeBuilder
 }
 
 // _VariantStatusCode is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantStatusCode(arrayLengthSpecified bool, arrayDimensionsSpecified bo
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantStatusCodeBuilder is a builder for VariantStatusCode
+type VariantStatusCodeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []StatusCode) VariantStatusCodeBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantStatusCodeBuilder
+	// WithValue adds Value (property field)
+	WithValue(...StatusCode) VariantStatusCodeBuilder
+	// Build builds the VariantStatusCode or returns an error if something is wrong
+	Build() (VariantStatusCode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantStatusCode
+}
+
+// NewVariantStatusCodeBuilder() creates a VariantStatusCodeBuilder
+func NewVariantStatusCodeBuilder() VariantStatusCodeBuilder {
+	return &_VariantStatusCodeBuilder{_VariantStatusCode: new(_VariantStatusCode)}
+}
+
+type _VariantStatusCodeBuilder struct {
+	*_VariantStatusCode
+
+	err *utils.MultiError
+}
+
+var _ (VariantStatusCodeBuilder) = (*_VariantStatusCodeBuilder)(nil)
+
+func (m *_VariantStatusCodeBuilder) WithMandatoryFields(value []StatusCode) VariantStatusCodeBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantStatusCodeBuilder) WithOptionalArrayLength(arrayLength int32) VariantStatusCodeBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantStatusCodeBuilder) WithValue(value ...StatusCode) VariantStatusCodeBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantStatusCodeBuilder) Build() (VariantStatusCode, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantStatusCode.deepCopy(), nil
+}
+
+func (m *_VariantStatusCodeBuilder) MustBuild() VariantStatusCode {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantStatusCodeBuilder) DeepCopy() any {
+	return m.CreateVariantStatusCodeBuilder()
+}
+
+// CreateVariantStatusCodeBuilder creates a VariantStatusCodeBuilder
+func (m *_VariantStatusCode) CreateVariantStatusCodeBuilder() VariantStatusCodeBuilder {
+	if m == nil {
+		return NewVariantStatusCodeBuilder()
+	}
+	return &_VariantStatusCodeBuilder{_VariantStatusCode: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

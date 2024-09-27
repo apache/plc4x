@@ -44,6 +44,8 @@ type AirConditioningDataRefresh interface {
 	GetZoneGroup() byte
 	// IsAirConditioningDataRefresh is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataRefresh()
+	// CreateBuilder creates a AirConditioningDataRefreshBuilder
+	CreateAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder
 }
 
 // _AirConditioningDataRefresh is the data-structure of this message
@@ -64,6 +66,78 @@ func NewAirConditioningDataRefresh(commandTypeContainer AirConditioningCommandTy
 	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataRefreshBuilder is a builder for AirConditioningDataRefresh
+type AirConditioningDataRefreshBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte) AirConditioningDataRefreshBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataRefreshBuilder
+	// Build builds the AirConditioningDataRefresh or returns an error if something is wrong
+	Build() (AirConditioningDataRefresh, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataRefresh
+}
+
+// NewAirConditioningDataRefreshBuilder() creates a AirConditioningDataRefreshBuilder
+func NewAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder {
+	return &_AirConditioningDataRefreshBuilder{_AirConditioningDataRefresh: new(_AirConditioningDataRefresh)}
+}
+
+type _AirConditioningDataRefreshBuilder struct {
+	*_AirConditioningDataRefresh
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataRefreshBuilder) = (*_AirConditioningDataRefreshBuilder)(nil)
+
+func (m *_AirConditioningDataRefreshBuilder) WithMandatoryFields(zoneGroup byte) AirConditioningDataRefreshBuilder {
+	return m.WithZoneGroup(zoneGroup)
+}
+
+func (m *_AirConditioningDataRefreshBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataRefreshBuilder {
+	m.ZoneGroup = zoneGroup
+	return m
+}
+
+func (m *_AirConditioningDataRefreshBuilder) Build() (AirConditioningDataRefresh, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AirConditioningDataRefresh.deepCopy(), nil
+}
+
+func (m *_AirConditioningDataRefreshBuilder) MustBuild() AirConditioningDataRefresh {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AirConditioningDataRefreshBuilder) DeepCopy() any {
+	return m.CreateAirConditioningDataRefreshBuilder()
+}
+
+// CreateAirConditioningDataRefreshBuilder creates a AirConditioningDataRefreshBuilder
+func (m *_AirConditioningDataRefresh) CreateAirConditioningDataRefreshBuilder() AirConditioningDataRefreshBuilder {
+	if m == nil {
+		return NewAirConditioningDataRefreshBuilder()
+	}
+	return &_AirConditioningDataRefreshBuilder{_AirConditioningDataRefresh: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

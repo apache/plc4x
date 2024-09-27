@@ -48,6 +48,8 @@ type BACnetConstructedDataPositiveAccessRules interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataPositiveAccessRules is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPositiveAccessRules()
+	// CreateBuilder creates a BACnetConstructedDataPositiveAccessRulesBuilder
+	CreateBACnetConstructedDataPositiveAccessRulesBuilder() BACnetConstructedDataPositiveAccessRulesBuilder
 }
 
 // _BACnetConstructedDataPositiveAccessRules is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataPositiveAccessRules(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPositiveAccessRulesBuilder is a builder for BACnetConstructedDataPositiveAccessRules
+type BACnetConstructedDataPositiveAccessRulesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(positiveAccessRules []BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveAccessRulesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveAccessRulesBuilder
+	// WithPositiveAccessRules adds PositiveAccessRules (property field)
+	WithPositiveAccessRules(...BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder
+	// Build builds the BACnetConstructedDataPositiveAccessRules or returns an error if something is wrong
+	Build() (BACnetConstructedDataPositiveAccessRules, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPositiveAccessRules
+}
+
+// NewBACnetConstructedDataPositiveAccessRulesBuilder() creates a BACnetConstructedDataPositiveAccessRulesBuilder
+func NewBACnetConstructedDataPositiveAccessRulesBuilder() BACnetConstructedDataPositiveAccessRulesBuilder {
+	return &_BACnetConstructedDataPositiveAccessRulesBuilder{_BACnetConstructedDataPositiveAccessRules: new(_BACnetConstructedDataPositiveAccessRules)}
+}
+
+type _BACnetConstructedDataPositiveAccessRulesBuilder struct {
+	*_BACnetConstructedDataPositiveAccessRules
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPositiveAccessRulesBuilder) = (*_BACnetConstructedDataPositiveAccessRulesBuilder)(nil)
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) WithMandatoryFields(positiveAccessRules []BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder {
+	return m.WithPositiveAccessRules(positiveAccessRules...)
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveAccessRulesBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveAccessRulesBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) WithPositiveAccessRules(positiveAccessRules ...BACnetAccessRule) BACnetConstructedDataPositiveAccessRulesBuilder {
+	m.PositiveAccessRules = positiveAccessRules
+	return m
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) Build() (BACnetConstructedDataPositiveAccessRules, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPositiveAccessRules.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) MustBuild() BACnetConstructedDataPositiveAccessRules {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPositiveAccessRulesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPositiveAccessRulesBuilder()
+}
+
+// CreateBACnetConstructedDataPositiveAccessRulesBuilder creates a BACnetConstructedDataPositiveAccessRulesBuilder
+func (m *_BACnetConstructedDataPositiveAccessRules) CreateBACnetConstructedDataPositiveAccessRulesBuilder() BACnetConstructedDataPositiveAccessRulesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPositiveAccessRulesBuilder()
+	}
+	return &_BACnetConstructedDataPositiveAccessRulesBuilder{_BACnetConstructedDataPositiveAccessRules: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

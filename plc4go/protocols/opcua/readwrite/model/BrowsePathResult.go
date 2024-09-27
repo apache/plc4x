@@ -48,6 +48,8 @@ type BrowsePathResult interface {
 	GetTargets() []ExtensionObjectDefinition
 	// IsBrowsePathResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowsePathResult()
+	// CreateBuilder creates a BrowsePathResultBuilder
+	CreateBrowsePathResultBuilder() BrowsePathResultBuilder
 }
 
 // _BrowsePathResult is the data-structure of this message
@@ -75,6 +77,113 @@ func NewBrowsePathResult(statusCode StatusCode, noOfTargets int32, targets []Ext
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowsePathResultBuilder is a builder for BrowsePathResult
+type BrowsePathResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) BrowsePathResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder
+	// WithNoOfTargets adds NoOfTargets (property field)
+	WithNoOfTargets(int32) BrowsePathResultBuilder
+	// WithTargets adds Targets (property field)
+	WithTargets(...ExtensionObjectDefinition) BrowsePathResultBuilder
+	// Build builds the BrowsePathResult or returns an error if something is wrong
+	Build() (BrowsePathResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowsePathResult
+}
+
+// NewBrowsePathResultBuilder() creates a BrowsePathResultBuilder
+func NewBrowsePathResultBuilder() BrowsePathResultBuilder {
+	return &_BrowsePathResultBuilder{_BrowsePathResult: new(_BrowsePathResult)}
+}
+
+type _BrowsePathResultBuilder struct {
+	*_BrowsePathResult
+
+	err *utils.MultiError
+}
+
+var _ (BrowsePathResultBuilder) = (*_BrowsePathResultBuilder)(nil)
+
+func (m *_BrowsePathResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfTargets int32, targets []ExtensionObjectDefinition) BrowsePathResultBuilder {
+	return m.WithStatusCode(statusCode).WithNoOfTargets(noOfTargets).WithTargets(targets...)
+}
+
+func (m *_BrowsePathResultBuilder) WithStatusCode(statusCode StatusCode) BrowsePathResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_BrowsePathResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowsePathResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BrowsePathResultBuilder) WithNoOfTargets(noOfTargets int32) BrowsePathResultBuilder {
+	m.NoOfTargets = noOfTargets
+	return m
+}
+
+func (m *_BrowsePathResultBuilder) WithTargets(targets ...ExtensionObjectDefinition) BrowsePathResultBuilder {
+	m.Targets = targets
+	return m
+}
+
+func (m *_BrowsePathResultBuilder) Build() (BrowsePathResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BrowsePathResult.deepCopy(), nil
+}
+
+func (m *_BrowsePathResultBuilder) MustBuild() BrowsePathResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BrowsePathResultBuilder) DeepCopy() any {
+	return m.CreateBrowsePathResultBuilder()
+}
+
+// CreateBrowsePathResultBuilder creates a BrowsePathResultBuilder
+func (m *_BrowsePathResult) CreateBrowsePathResultBuilder() BrowsePathResultBuilder {
+	if m == nil {
+		return NewBrowsePathResultBuilder()
+	}
+	return &_BrowsePathResultBuilder{_BrowsePathResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

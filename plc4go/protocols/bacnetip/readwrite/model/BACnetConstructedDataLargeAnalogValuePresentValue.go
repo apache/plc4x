@@ -46,6 +46,8 @@ type BACnetConstructedDataLargeAnalogValuePresentValue interface {
 	GetActualValue() BACnetApplicationTagDouble
 	// IsBACnetConstructedDataLargeAnalogValuePresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValuePresentValue()
+	// CreateBuilder creates a BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+	CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstructedDataLargeAnalogValuePresentValueBuilder
 }
 
 // _BACnetConstructedDataLargeAnalogValuePresentValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLargeAnalogValuePresentValue(openingTag BACnetOpeni
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLargeAnalogValuePresentValueBuilder is a builder for BACnetConstructedDataLargeAnalogValuePresentValue
+type BACnetConstructedDataLargeAnalogValuePresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+	// Build builds the BACnetConstructedDataLargeAnalogValuePresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLargeAnalogValuePresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLargeAnalogValuePresentValue
+}
+
+// NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder() creates a BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+func NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	return &_BACnetConstructedDataLargeAnalogValuePresentValueBuilder{_BACnetConstructedDataLargeAnalogValuePresentValue: new(_BACnetConstructedDataLargeAnalogValuePresentValue)}
+}
+
+type _BACnetConstructedDataLargeAnalogValuePresentValueBuilder struct {
+	*_BACnetConstructedDataLargeAnalogValuePresentValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLargeAnalogValuePresentValueBuilder) = (*_BACnetConstructedDataLargeAnalogValuePresentValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithMandatoryFields(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	return m.WithPresentValue(presentValue)
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValue(presentValue BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	m.PresentValue = presentValue
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	builder := builderSupplier(m.PresentValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.PresentValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) Build() (BACnetConstructedDataLargeAnalogValuePresentValue, error) {
+	if m.PresentValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLargeAnalogValuePresentValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) MustBuild() BACnetConstructedDataLargeAnalogValuePresentValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder()
+}
+
+// CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder creates a BACnetConstructedDataLargeAnalogValuePresentValueBuilder
+func (m *_BACnetConstructedDataLargeAnalogValuePresentValue) CreateBACnetConstructedDataLargeAnalogValuePresentValueBuilder() BACnetConstructedDataLargeAnalogValuePresentValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLargeAnalogValuePresentValueBuilder()
+	}
+	return &_BACnetConstructedDataLargeAnalogValuePresentValueBuilder{_BACnetConstructedDataLargeAnalogValuePresentValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type IdentifyReplyCommandFirmwareVersion interface {
 	GetFirmwareVersion() string
 	// IsIdentifyReplyCommandFirmwareVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandFirmwareVersion()
+	// CreateBuilder creates a IdentifyReplyCommandFirmwareVersionBuilder
+	CreateIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwareVersionBuilder
 }
 
 // _IdentifyReplyCommandFirmwareVersion is the data-structure of this message
@@ -64,6 +66,78 @@ func NewIdentifyReplyCommandFirmwareVersion(firmwareVersion string, numBytes uin
 	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandFirmwareVersionBuilder is a builder for IdentifyReplyCommandFirmwareVersion
+type IdentifyReplyCommandFirmwareVersionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder
+	// WithFirmwareVersion adds FirmwareVersion (property field)
+	WithFirmwareVersion(string) IdentifyReplyCommandFirmwareVersionBuilder
+	// Build builds the IdentifyReplyCommandFirmwareVersion or returns an error if something is wrong
+	Build() (IdentifyReplyCommandFirmwareVersion, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandFirmwareVersion
+}
+
+// NewIdentifyReplyCommandFirmwareVersionBuilder() creates a IdentifyReplyCommandFirmwareVersionBuilder
+func NewIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwareVersionBuilder {
+	return &_IdentifyReplyCommandFirmwareVersionBuilder{_IdentifyReplyCommandFirmwareVersion: new(_IdentifyReplyCommandFirmwareVersion)}
+}
+
+type _IdentifyReplyCommandFirmwareVersionBuilder struct {
+	*_IdentifyReplyCommandFirmwareVersion
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandFirmwareVersionBuilder) = (*_IdentifyReplyCommandFirmwareVersionBuilder)(nil)
+
+func (m *_IdentifyReplyCommandFirmwareVersionBuilder) WithMandatoryFields(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
+	return m.WithFirmwareVersion(firmwareVersion)
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersionBuilder) WithFirmwareVersion(firmwareVersion string) IdentifyReplyCommandFirmwareVersionBuilder {
+	m.FirmwareVersion = firmwareVersion
+	return m
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersionBuilder) Build() (IdentifyReplyCommandFirmwareVersion, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommandFirmwareVersion.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersionBuilder) MustBuild() IdentifyReplyCommandFirmwareVersion {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandFirmwareVersionBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandFirmwareVersionBuilder()
+}
+
+// CreateIdentifyReplyCommandFirmwareVersionBuilder creates a IdentifyReplyCommandFirmwareVersionBuilder
+func (m *_IdentifyReplyCommandFirmwareVersion) CreateIdentifyReplyCommandFirmwareVersionBuilder() IdentifyReplyCommandFirmwareVersionBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandFirmwareVersionBuilder()
+	}
+	return &_IdentifyReplyCommandFirmwareVersionBuilder{_IdentifyReplyCommandFirmwareVersion: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

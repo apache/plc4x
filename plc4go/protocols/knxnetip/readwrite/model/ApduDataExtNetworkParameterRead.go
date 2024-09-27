@@ -40,6 +40,8 @@ type ApduDataExtNetworkParameterRead interface {
 	ApduDataExt
 	// IsApduDataExtNetworkParameterRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterRead()
+	// CreateBuilder creates a ApduDataExtNetworkParameterReadBuilder
+	CreateApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder
 }
 
 // _ApduDataExtNetworkParameterRead is the data-structure of this message
@@ -58,6 +60,71 @@ func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParame
 	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtNetworkParameterReadBuilder is a builder for ApduDataExtNetworkParameterRead
+type ApduDataExtNetworkParameterReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtNetworkParameterReadBuilder
+	// Build builds the ApduDataExtNetworkParameterRead or returns an error if something is wrong
+	Build() (ApduDataExtNetworkParameterRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtNetworkParameterRead
+}
+
+// NewApduDataExtNetworkParameterReadBuilder() creates a ApduDataExtNetworkParameterReadBuilder
+func NewApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder {
+	return &_ApduDataExtNetworkParameterReadBuilder{_ApduDataExtNetworkParameterRead: new(_ApduDataExtNetworkParameterRead)}
+}
+
+type _ApduDataExtNetworkParameterReadBuilder struct {
+	*_ApduDataExtNetworkParameterRead
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtNetworkParameterReadBuilder) = (*_ApduDataExtNetworkParameterReadBuilder)(nil)
+
+func (m *_ApduDataExtNetworkParameterReadBuilder) WithMandatoryFields() ApduDataExtNetworkParameterReadBuilder {
+	return m
+}
+
+func (m *_ApduDataExtNetworkParameterReadBuilder) Build() (ApduDataExtNetworkParameterRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ApduDataExtNetworkParameterRead.deepCopy(), nil
+}
+
+func (m *_ApduDataExtNetworkParameterReadBuilder) MustBuild() ApduDataExtNetworkParameterRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ApduDataExtNetworkParameterReadBuilder) DeepCopy() any {
+	return m.CreateApduDataExtNetworkParameterReadBuilder()
+}
+
+// CreateApduDataExtNetworkParameterReadBuilder creates a ApduDataExtNetworkParameterReadBuilder
+func (m *_ApduDataExtNetworkParameterRead) CreateApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder {
+	if m == nil {
+		return NewApduDataExtNetworkParameterReadBuilder()
+	}
+	return &_ApduDataExtNetworkParameterReadBuilder{_ApduDataExtNetworkParameterRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

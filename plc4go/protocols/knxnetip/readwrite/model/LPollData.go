@@ -48,6 +48,8 @@ type LPollData interface {
 	GetNumberExpectedPollData() uint8
 	// IsLPollData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollData()
+	// CreateBuilder creates a LPollDataBuilder
+	CreateLPollDataBuilder() LPollDataBuilder
 }
 
 // _LPollData is the data-structure of this message
@@ -77,6 +79,113 @@ func NewLPollData(frameType bool, notRepeated bool, priority CEMIPriority, ackno
 	_result.LDataFrameContract.(*_LDataFrame)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LPollDataBuilder is a builder for LPollData
+type LPollDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) LPollDataBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(KnxAddress) LPollDataBuilder
+	// WithSourceAddressBuilder adds SourceAddress (property field) which is build by the builder
+	WithSourceAddressBuilder(func(KnxAddressBuilder) KnxAddressBuilder) LPollDataBuilder
+	// WithTargetAddress adds TargetAddress (property field)
+	WithTargetAddress(...byte) LPollDataBuilder
+	// WithNumberExpectedPollData adds NumberExpectedPollData (property field)
+	WithNumberExpectedPollData(uint8) LPollDataBuilder
+	// Build builds the LPollData or returns an error if something is wrong
+	Build() (LPollData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LPollData
+}
+
+// NewLPollDataBuilder() creates a LPollDataBuilder
+func NewLPollDataBuilder() LPollDataBuilder {
+	return &_LPollDataBuilder{_LPollData: new(_LPollData)}
+}
+
+type _LPollDataBuilder struct {
+	*_LPollData
+
+	err *utils.MultiError
+}
+
+var _ (LPollDataBuilder) = (*_LPollDataBuilder)(nil)
+
+func (m *_LPollDataBuilder) WithMandatoryFields(sourceAddress KnxAddress, targetAddress []byte, numberExpectedPollData uint8) LPollDataBuilder {
+	return m.WithSourceAddress(sourceAddress).WithTargetAddress(targetAddress...).WithNumberExpectedPollData(numberExpectedPollData)
+}
+
+func (m *_LPollDataBuilder) WithSourceAddress(sourceAddress KnxAddress) LPollDataBuilder {
+	m.SourceAddress = sourceAddress
+	return m
+}
+
+func (m *_LPollDataBuilder) WithSourceAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) LPollDataBuilder {
+	builder := builderSupplier(m.SourceAddress.CreateKnxAddressBuilder())
+	var err error
+	m.SourceAddress, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+	}
+	return m
+}
+
+func (m *_LPollDataBuilder) WithTargetAddress(targetAddress ...byte) LPollDataBuilder {
+	m.TargetAddress = targetAddress
+	return m
+}
+
+func (m *_LPollDataBuilder) WithNumberExpectedPollData(numberExpectedPollData uint8) LPollDataBuilder {
+	m.NumberExpectedPollData = numberExpectedPollData
+	return m
+}
+
+func (m *_LPollDataBuilder) Build() (LPollData, error) {
+	if m.SourceAddress == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'sourceAddress' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._LPollData.deepCopy(), nil
+}
+
+func (m *_LPollDataBuilder) MustBuild() LPollData {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_LPollDataBuilder) DeepCopy() any {
+	return m.CreateLPollDataBuilder()
+}
+
+// CreateLPollDataBuilder creates a LPollDataBuilder
+func (m *_LPollData) CreateLPollDataBuilder() LPollDataBuilder {
+	if m == nil {
+		return NewLPollDataBuilder()
+	}
+	return &_LPollDataBuilder{_LPollData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

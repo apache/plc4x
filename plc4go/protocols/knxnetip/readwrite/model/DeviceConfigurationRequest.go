@@ -48,6 +48,8 @@ type DeviceConfigurationRequest interface {
 	GetCemi() CEMI
 	// IsDeviceConfigurationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceConfigurationRequest()
+	// CreateBuilder creates a DeviceConfigurationRequestBuilder
+	CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder
 }
 
 // _DeviceConfigurationRequest is the data-structure of this message
@@ -79,6 +81,112 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceConfigurationRequestBuilder is a builder for DeviceConfigurationRequest
+type DeviceConfigurationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder
+	// WithDeviceConfigurationRequestDataBlock adds DeviceConfigurationRequestDataBlock (property field)
+	WithDeviceConfigurationRequestDataBlock(DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder
+	// WithDeviceConfigurationRequestDataBlockBuilder adds DeviceConfigurationRequestDataBlock (property field) which is build by the builder
+	WithDeviceConfigurationRequestDataBlockBuilder(func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder
+	// WithCemi adds Cemi (property field)
+	WithCemi(CEMI) DeviceConfigurationRequestBuilder
+	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
+	Build() (DeviceConfigurationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceConfigurationRequest
+}
+
+// NewDeviceConfigurationRequestBuilder() creates a DeviceConfigurationRequestBuilder
+func NewDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
+	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: new(_DeviceConfigurationRequest)}
+}
+
+type _DeviceConfigurationRequestBuilder struct {
+	*_DeviceConfigurationRequest
+
+	err *utils.MultiError
+}
+
+var _ (DeviceConfigurationRequestBuilder) = (*_DeviceConfigurationRequestBuilder)(nil)
+
+func (m *_DeviceConfigurationRequestBuilder) WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder {
+	return m.WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock).WithCemi(cemi)
+}
+
+func (m *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder {
+	m.DeviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock
+	return m
+}
+
+func (m *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlockBuilder(builderSupplier func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder {
+	builder := builderSupplier(m.DeviceConfigurationRequestDataBlock.CreateDeviceConfigurationRequestDataBlockBuilder())
+	var err error
+	m.DeviceConfigurationRequestDataBlock, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
+	}
+	return m
+}
+
+func (m *_DeviceConfigurationRequestBuilder) WithCemi(cemi CEMI) DeviceConfigurationRequestBuilder {
+	m.Cemi = cemi
+	return m
+}
+
+func (m *_DeviceConfigurationRequestBuilder) Build() (DeviceConfigurationRequest, error) {
+	if m.DeviceConfigurationRequestDataBlock == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
+	}
+	if m.Cemi == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'cemi' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeviceConfigurationRequest.deepCopy(), nil
+}
+
+func (m *_DeviceConfigurationRequestBuilder) MustBuild() DeviceConfigurationRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeviceConfigurationRequestBuilder) DeepCopy() any {
+	return m.CreateDeviceConfigurationRequestBuilder()
+}
+
+// CreateDeviceConfigurationRequestBuilder creates a DeviceConfigurationRequestBuilder
+func (m *_DeviceConfigurationRequest) CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
+	if m == nil {
+		return NewDeviceConfigurationRequestBuilder()
+	}
+	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

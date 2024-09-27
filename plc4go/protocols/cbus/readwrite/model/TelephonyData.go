@@ -43,6 +43,8 @@ type TelephonyData interface {
 	utils.Copyable
 	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyData()
+	// CreateBuilder creates a TelephonyDataBuilder
+	CreateTelephonyDataBuilder() TelephonyDataBuilder
 }
 
 // TelephonyDataContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type TelephonyDataContract interface {
 	GetCommandType() TelephonyCommandType
 	// IsTelephonyData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyData()
+	// CreateBuilder creates a TelephonyDataBuilder
+	CreateTelephonyDataBuilder() TelephonyDataBuilder
 }
 
 // TelephonyDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +84,85 @@ var _ TelephonyDataContract = (*_TelephonyData)(nil)
 func NewTelephonyData(commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyData {
 	return &_TelephonyData{CommandTypeContainer: commandTypeContainer, Argument: argument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataBuilder is a builder for TelephonyData
+type TelephonyDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer TelephonyCommandTypeContainer, argument byte) TelephonyDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(TelephonyCommandTypeContainer) TelephonyDataBuilder
+	// WithArgument adds Argument (property field)
+	WithArgument(byte) TelephonyDataBuilder
+	// Build builds the TelephonyData or returns an error if something is wrong
+	Build() (TelephonyDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataContract
+}
+
+// NewTelephonyDataBuilder() creates a TelephonyDataBuilder
+func NewTelephonyDataBuilder() TelephonyDataBuilder {
+	return &_TelephonyDataBuilder{_TelephonyData: new(_TelephonyData)}
+}
+
+type _TelephonyDataBuilder struct {
+	*_TelephonyData
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataBuilder) = (*_TelephonyDataBuilder)(nil)
+
+func (m *_TelephonyDataBuilder) WithMandatoryFields(commandTypeContainer TelephonyCommandTypeContainer, argument byte) TelephonyDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+}
+
+func (m *_TelephonyDataBuilder) WithCommandTypeContainer(commandTypeContainer TelephonyCommandTypeContainer) TelephonyDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_TelephonyDataBuilder) WithArgument(argument byte) TelephonyDataBuilder {
+	m.Argument = argument
+	return m
+}
+
+func (m *_TelephonyDataBuilder) Build() (TelephonyDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._TelephonyData.deepCopy(), nil
+}
+
+func (m *_TelephonyDataBuilder) MustBuild() TelephonyDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_TelephonyDataBuilder) DeepCopy() any {
+	return m.CreateTelephonyDataBuilder()
+}
+
+// CreateTelephonyDataBuilder creates a TelephonyDataBuilder
+func (m *_TelephonyData) CreateTelephonyDataBuilder() TelephonyDataBuilder {
+	if m == nil {
+		return NewTelephonyDataBuilder()
+	}
+	return &_TelephonyDataBuilder{_TelephonyData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

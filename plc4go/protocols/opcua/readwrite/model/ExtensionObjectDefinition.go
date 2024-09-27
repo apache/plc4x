@@ -41,12 +41,16 @@ type ExtensionObjectDefinition interface {
 	utils.Copyable
 	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionObjectDefinition()
+	// CreateBuilder creates a ExtensionObjectDefinitionBuilder
+	CreateExtensionObjectDefinitionBuilder() ExtensionObjectDefinitionBuilder
 }
 
 // ExtensionObjectDefinitionContract provides a set of functions which can be overwritten by a sub struct
 type ExtensionObjectDefinitionContract interface {
 	// IsExtensionObjectDefinition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionObjectDefinition()
+	// CreateBuilder creates a ExtensionObjectDefinitionBuilder
+	CreateExtensionObjectDefinitionBuilder() ExtensionObjectDefinitionBuilder
 }
 
 // ExtensionObjectDefinitionRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +72,71 @@ var _ ExtensionObjectDefinitionContract = (*_ExtensionObjectDefinition)(nil)
 func NewExtensionObjectDefinition() *_ExtensionObjectDefinition {
 	return &_ExtensionObjectDefinition{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ExtensionObjectDefinitionBuilder is a builder for ExtensionObjectDefinition
+type ExtensionObjectDefinitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ExtensionObjectDefinitionBuilder
+	// Build builds the ExtensionObjectDefinition or returns an error if something is wrong
+	Build() (ExtensionObjectDefinitionContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ExtensionObjectDefinitionContract
+}
+
+// NewExtensionObjectDefinitionBuilder() creates a ExtensionObjectDefinitionBuilder
+func NewExtensionObjectDefinitionBuilder() ExtensionObjectDefinitionBuilder {
+	return &_ExtensionObjectDefinitionBuilder{_ExtensionObjectDefinition: new(_ExtensionObjectDefinition)}
+}
+
+type _ExtensionObjectDefinitionBuilder struct {
+	*_ExtensionObjectDefinition
+
+	err *utils.MultiError
+}
+
+var _ (ExtensionObjectDefinitionBuilder) = (*_ExtensionObjectDefinitionBuilder)(nil)
+
+func (m *_ExtensionObjectDefinitionBuilder) WithMandatoryFields() ExtensionObjectDefinitionBuilder {
+	return m
+}
+
+func (m *_ExtensionObjectDefinitionBuilder) Build() (ExtensionObjectDefinitionContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ExtensionObjectDefinition.deepCopy(), nil
+}
+
+func (m *_ExtensionObjectDefinitionBuilder) MustBuild() ExtensionObjectDefinitionContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ExtensionObjectDefinitionBuilder) DeepCopy() any {
+	return m.CreateExtensionObjectDefinitionBuilder()
+}
+
+// CreateExtensionObjectDefinitionBuilder creates a ExtensionObjectDefinitionBuilder
+func (m *_ExtensionObjectDefinition) CreateExtensionObjectDefinitionBuilder() ExtensionObjectDefinitionBuilder {
+	if m == nil {
+		return NewExtensionObjectDefinitionBuilder()
+	}
+	return &_ExtensionObjectDefinitionBuilder{_ExtensionObjectDefinition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObjectDefinition(structType any) ExtensionObjectDefinition {

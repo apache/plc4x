@@ -46,6 +46,8 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	GetActualValue() BACnetProcessIdSelection
 	// IsBACnetConstructedDataProcessIdentifierFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProcessIdentifierFilter()
+	// CreateBuilder creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+	CreateBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message
@@ -69,6 +71,84 @@ func NewBACnetConstructedDataProcessIdentifierFilter(openingTag BACnetOpeningTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProcessIdentifierFilterBuilder is a builder for BACnetConstructedDataProcessIdentifierFilter
+type BACnetConstructedDataProcessIdentifierFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// WithProcessIdentifierFilter adds ProcessIdentifierFilter (property field)
+	WithProcessIdentifierFilter(BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// Build builds the BACnetConstructedDataProcessIdentifierFilter or returns an error if something is wrong
+	Build() (BACnetConstructedDataProcessIdentifierFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProcessIdentifierFilter
+}
+
+// NewBACnetConstructedDataProcessIdentifierFilterBuilder() creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+func NewBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder {
+	return &_BACnetConstructedDataProcessIdentifierFilterBuilder{_BACnetConstructedDataProcessIdentifierFilter: new(_BACnetConstructedDataProcessIdentifierFilter)}
+}
+
+type _BACnetConstructedDataProcessIdentifierFilterBuilder struct {
+	*_BACnetConstructedDataProcessIdentifierFilter
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProcessIdentifierFilterBuilder) = (*_BACnetConstructedDataProcessIdentifierFilterBuilder)(nil)
+
+func (m *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithMandatoryFields(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder {
+	return m.WithProcessIdentifierFilter(processIdentifierFilter)
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithProcessIdentifierFilter(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder {
+	m.ProcessIdentifierFilter = processIdentifierFilter
+	return m
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilterBuilder) Build() (BACnetConstructedDataProcessIdentifierFilter, error) {
+	if m.ProcessIdentifierFilter == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'processIdentifierFilter' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProcessIdentifierFilter.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilterBuilder) MustBuild() BACnetConstructedDataProcessIdentifierFilter {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilterBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProcessIdentifierFilterBuilder()
+}
+
+// CreateBACnetConstructedDataProcessIdentifierFilterBuilder creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+func (m *_BACnetConstructedDataProcessIdentifierFilter) CreateBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProcessIdentifierFilterBuilder()
+	}
+	return &_BACnetConstructedDataProcessIdentifierFilterBuilder{_BACnetConstructedDataProcessIdentifierFilter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	GetData() []uint8
 	// IsDF1CommandResponseMessageProtectedTypedLogicalRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1CommandResponseMessageProtectedTypedLogicalRead()
+	// CreateBuilder creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 }
 
 // _DF1CommandResponseMessageProtectedTypedLogicalRead is the data-structure of this message
@@ -64,6 +66,78 @@ func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress ui
 	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1CommandResponseMessageProtectedTypedLogicalReadBuilder is a builder for DF1CommandResponseMessageProtectedTypedLogicalRead
+type DF1CommandResponseMessageProtectedTypedLogicalReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	// Build builds the DF1CommandResponseMessageProtectedTypedLogicalRead or returns an error if something is wrong
+	Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead
+}
+
+// NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+func NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: new(_DF1CommandResponseMessageProtectedTypedLogicalRead)}
+}
+
+type _DF1CommandResponseMessageProtectedTypedLogicalReadBuilder struct {
+	*_DF1CommandResponseMessageProtectedTypedLogicalRead
+
+	err *utils.MultiError
+}
+
+var _ (DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) = (*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)(nil)
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	return m.WithData(data...)
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithData(data ...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DF1CommandResponseMessageProtectedTypedLogicalRead.deepCopy(), nil
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) DeepCopy() any {
+	return m.CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder()
+}
+
+// CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	if m == nil {
+		return NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder()
+	}
+	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

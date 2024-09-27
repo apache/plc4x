@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryReference interface {
 	GetReference() BACnetDeviceObjectPropertyReferenceEnclosed
 	// IsBACnetFaultParameterFaultExtendedParametersEntryReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryReference()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder() BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryReference is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryReference(peekedTagHeade
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryReference
+type BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+	// WithReference adds Reference (property field)
+	WithReference(BACnetDeviceObjectPropertyReferenceEnclosed) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+	// WithReferenceBuilder adds Reference (property field) which is build by the builder
+	WithReferenceBuilder(func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryReference or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryReference
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder() BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder{_BACnetFaultParameterFaultExtendedParametersEntryReference: new(_BACnetFaultParameterFaultExtendedParametersEntryReference)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) WithMandatoryFields(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	return m.WithReference(reference)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) WithReference(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	m.Reference = reference
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) WithReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	builder := builderSupplier(m.Reference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	m.Reference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+	if m.Reference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'reference' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryReference.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryReference {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) CreateBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder() BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder{_BACnetFaultParameterFaultExtendedParametersEntryReference: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

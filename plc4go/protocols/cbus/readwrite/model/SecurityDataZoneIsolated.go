@@ -44,6 +44,8 @@ type SecurityDataZoneIsolated interface {
 	GetZoneNumber() uint8
 	// IsSecurityDataZoneIsolated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneIsolated()
+	// CreateBuilder creates a SecurityDataZoneIsolatedBuilder
+	CreateSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder
 }
 
 // _SecurityDataZoneIsolated is the data-structure of this message
@@ -64,6 +66,78 @@ func NewSecurityDataZoneIsolated(commandTypeContainer SecurityCommandTypeContain
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneIsolatedBuilder is a builder for SecurityDataZoneIsolated
+type SecurityDataZoneIsolatedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneIsolatedBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneIsolatedBuilder
+	// Build builds the SecurityDataZoneIsolated or returns an error if something is wrong
+	Build() (SecurityDataZoneIsolated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneIsolated
+}
+
+// NewSecurityDataZoneIsolatedBuilder() creates a SecurityDataZoneIsolatedBuilder
+func NewSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder {
+	return &_SecurityDataZoneIsolatedBuilder{_SecurityDataZoneIsolated: new(_SecurityDataZoneIsolated)}
+}
+
+type _SecurityDataZoneIsolatedBuilder struct {
+	*_SecurityDataZoneIsolated
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneIsolatedBuilder) = (*_SecurityDataZoneIsolatedBuilder)(nil)
+
+func (m *_SecurityDataZoneIsolatedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneIsolatedBuilder {
+	return m.WithZoneNumber(zoneNumber)
+}
+
+func (m *_SecurityDataZoneIsolatedBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneIsolatedBuilder {
+	m.ZoneNumber = zoneNumber
+	return m
+}
+
+func (m *_SecurityDataZoneIsolatedBuilder) Build() (SecurityDataZoneIsolated, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataZoneIsolated.deepCopy(), nil
+}
+
+func (m *_SecurityDataZoneIsolatedBuilder) MustBuild() SecurityDataZoneIsolated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataZoneIsolatedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataZoneIsolatedBuilder()
+}
+
+// CreateSecurityDataZoneIsolatedBuilder creates a SecurityDataZoneIsolatedBuilder
+func (m *_SecurityDataZoneIsolated) CreateSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder {
+	if m == nil {
+		return NewSecurityDataZoneIsolatedBuilder()
+	}
+	return &_SecurityDataZoneIsolatedBuilder{_SecurityDataZoneIsolated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

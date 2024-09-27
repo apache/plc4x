@@ -51,6 +51,8 @@ type BACnetCOVSubscription interface {
 	GetCovIncrement() BACnetContextTagReal
 	// IsBACnetCOVSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCOVSubscription()
+	// CreateBuilder creates a BACnetCOVSubscriptionBuilder
+	CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder
 }
 
 // _BACnetCOVSubscription is the data-structure of this message
@@ -80,6 +82,205 @@ func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitore
 	}
 	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCOVSubscriptionBuilder is a builder for BACnetCOVSubscription
+type BACnetCOVSubscriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder
+	// WithRecipient adds Recipient (property field)
+	WithRecipient(BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder
+	// WithMonitoredPropertyReference adds MonitoredPropertyReference (property field)
+	WithMonitoredPropertyReference(BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder
+	// WithMonitoredPropertyReferenceBuilder adds MonitoredPropertyReference (property field) which is build by the builder
+	WithMonitoredPropertyReferenceBuilder(func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder
+	// WithIssueConfirmedNotifications adds IssueConfirmedNotifications (property field)
+	WithIssueConfirmedNotifications(BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder
+	// WithIssueConfirmedNotificationsBuilder adds IssueConfirmedNotifications (property field) which is build by the builder
+	WithIssueConfirmedNotificationsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder
+	// WithTimeRemaining adds TimeRemaining (property field)
+	WithTimeRemaining(BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder
+	// WithTimeRemainingBuilder adds TimeRemaining (property field) which is build by the builder
+	WithTimeRemainingBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithOptionalCovIncrement(BACnetContextTagReal) BACnetCOVSubscriptionBuilder
+	// WithOptionalCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
+	WithOptionalCovIncrementBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder
+	// Build builds the BACnetCOVSubscription or returns an error if something is wrong
+	Build() (BACnetCOVSubscription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCOVSubscription
+}
+
+// NewBACnetCOVSubscriptionBuilder() creates a BACnetCOVSubscriptionBuilder
+func NewBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
+	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: new(_BACnetCOVSubscription)}
+}
+
+type _BACnetCOVSubscriptionBuilder struct {
+	*_BACnetCOVSubscription
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCOVSubscriptionBuilder) = (*_BACnetCOVSubscriptionBuilder)(nil)
+
+func (m *_BACnetCOVSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	return m.WithRecipient(recipient).WithMonitoredPropertyReference(monitoredPropertyReference).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTimeRemaining(timeRemaining)
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithRecipient(recipient BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder {
+	m.Recipient = recipient
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(m.Recipient.CreateBACnetRecipientProcessEnclosedBuilder())
+	var err error
+	m.Recipient, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder {
+	m.MonitoredPropertyReference = monitoredPropertyReference
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(m.MonitoredPropertyReference.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	m.MonitoredPropertyReference, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder {
+	m.IssueConfirmedNotifications = issueConfirmedNotifications
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(m.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	m.IssueConfirmedNotifications, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	m.TimeRemaining = timeRemaining
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(m.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	m.TimeRemaining, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrement(covIncrement BACnetContextTagReal) BACnetCOVSubscriptionBuilder {
+	m.CovIncrement = covIncrement
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(m.CovIncrement.CreateBACnetContextTagRealBuilder())
+	var err error
+	m.CovIncrement, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) Build() (BACnetCOVSubscription, error) {
+	if m.Recipient == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if m.MonitoredPropertyReference == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
+	}
+	if m.IssueConfirmedNotifications == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+	}
+	if m.TimeRemaining == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetCOVSubscription.deepCopy(), nil
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) MustBuild() BACnetCOVSubscription {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetCOVSubscriptionBuilder) DeepCopy() any {
+	return m.CreateBACnetCOVSubscriptionBuilder()
+}
+
+// CreateBACnetCOVSubscriptionBuilder creates a BACnetCOVSubscriptionBuilder
+func (m *_BACnetCOVSubscription) CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
+	if m == nil {
+		return NewBACnetCOVSubscriptionBuilder()
+	}
+	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

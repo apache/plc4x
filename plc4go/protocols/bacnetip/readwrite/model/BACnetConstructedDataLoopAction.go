@@ -46,6 +46,8 @@ type BACnetConstructedDataLoopAction interface {
 	GetActualValue() BACnetActionTagged
 	// IsBACnetConstructedDataLoopAction is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLoopAction()
+	// CreateBuilder creates a BACnetConstructedDataLoopActionBuilder
+	CreateBACnetConstructedDataLoopActionBuilder() BACnetConstructedDataLoopActionBuilder
 }
 
 // _BACnetConstructedDataLoopAction is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLoopAction(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLoopActionBuilder is a builder for BACnetConstructedDataLoopAction
+type BACnetConstructedDataLoopActionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(action BACnetActionTagged) BACnetConstructedDataLoopActionBuilder
+	// WithAction adds Action (property field)
+	WithAction(BACnetActionTagged) BACnetConstructedDataLoopActionBuilder
+	// WithActionBuilder adds Action (property field) which is build by the builder
+	WithActionBuilder(func(BACnetActionTaggedBuilder) BACnetActionTaggedBuilder) BACnetConstructedDataLoopActionBuilder
+	// Build builds the BACnetConstructedDataLoopAction or returns an error if something is wrong
+	Build() (BACnetConstructedDataLoopAction, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLoopAction
+}
+
+// NewBACnetConstructedDataLoopActionBuilder() creates a BACnetConstructedDataLoopActionBuilder
+func NewBACnetConstructedDataLoopActionBuilder() BACnetConstructedDataLoopActionBuilder {
+	return &_BACnetConstructedDataLoopActionBuilder{_BACnetConstructedDataLoopAction: new(_BACnetConstructedDataLoopAction)}
+}
+
+type _BACnetConstructedDataLoopActionBuilder struct {
+	*_BACnetConstructedDataLoopAction
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLoopActionBuilder) = (*_BACnetConstructedDataLoopActionBuilder)(nil)
+
+func (m *_BACnetConstructedDataLoopActionBuilder) WithMandatoryFields(action BACnetActionTagged) BACnetConstructedDataLoopActionBuilder {
+	return m.WithAction(action)
+}
+
+func (m *_BACnetConstructedDataLoopActionBuilder) WithAction(action BACnetActionTagged) BACnetConstructedDataLoopActionBuilder {
+	m.Action = action
+	return m
+}
+
+func (m *_BACnetConstructedDataLoopActionBuilder) WithActionBuilder(builderSupplier func(BACnetActionTaggedBuilder) BACnetActionTaggedBuilder) BACnetConstructedDataLoopActionBuilder {
+	builder := builderSupplier(m.Action.CreateBACnetActionTaggedBuilder())
+	var err error
+	m.Action, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetActionTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLoopActionBuilder) Build() (BACnetConstructedDataLoopAction, error) {
+	if m.Action == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'action' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLoopAction.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLoopActionBuilder) MustBuild() BACnetConstructedDataLoopAction {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLoopActionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLoopActionBuilder()
+}
+
+// CreateBACnetConstructedDataLoopActionBuilder creates a BACnetConstructedDataLoopActionBuilder
+func (m *_BACnetConstructedDataLoopAction) CreateBACnetConstructedDataLoopActionBuilder() BACnetConstructedDataLoopActionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLoopActionBuilder()
+	}
+	return &_BACnetConstructedDataLoopActionBuilder{_BACnetConstructedDataLoopAction: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

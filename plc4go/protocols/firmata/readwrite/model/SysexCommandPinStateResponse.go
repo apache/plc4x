@@ -48,6 +48,8 @@ type SysexCommandPinStateResponse interface {
 	GetPinState() uint8
 	// IsSysexCommandPinStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandPinStateResponse()
+	// CreateBuilder creates a SysexCommandPinStateResponseBuilder
+	CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder
 }
 
 // _SysexCommandPinStateResponse is the data-structure of this message
@@ -72,6 +74,92 @@ func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandPinStateResponseBuilder is a builder for SysexCommandPinStateResponse
+type SysexCommandPinStateResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) SysexCommandPinStateResponseBuilder
+	// WithPinMode adds PinMode (property field)
+	WithPinMode(uint8) SysexCommandPinStateResponseBuilder
+	// WithPinState adds PinState (property field)
+	WithPinState(uint8) SysexCommandPinStateResponseBuilder
+	// Build builds the SysexCommandPinStateResponse or returns an error if something is wrong
+	Build() (SysexCommandPinStateResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandPinStateResponse
+}
+
+// NewSysexCommandPinStateResponseBuilder() creates a SysexCommandPinStateResponseBuilder
+func NewSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
+	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: new(_SysexCommandPinStateResponse)}
+}
+
+type _SysexCommandPinStateResponseBuilder struct {
+	*_SysexCommandPinStateResponse
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandPinStateResponseBuilder) = (*_SysexCommandPinStateResponseBuilder)(nil)
+
+func (m *_SysexCommandPinStateResponseBuilder) WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder {
+	return m.WithPin(pin).WithPinMode(pinMode).WithPinState(pinState)
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) WithPin(pin uint8) SysexCommandPinStateResponseBuilder {
+	m.Pin = pin
+	return m
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) WithPinMode(pinMode uint8) SysexCommandPinStateResponseBuilder {
+	m.PinMode = pinMode
+	return m
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) WithPinState(pinState uint8) SysexCommandPinStateResponseBuilder {
+	m.PinState = pinState
+	return m
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) Build() (SysexCommandPinStateResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandPinStateResponse.deepCopy(), nil
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) MustBuild() SysexCommandPinStateResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandPinStateResponseBuilder) DeepCopy() any {
+	return m.CreateSysexCommandPinStateResponseBuilder()
+}
+
+// CreateSysexCommandPinStateResponseBuilder creates a SysexCommandPinStateResponseBuilder
+func (m *_SysexCommandPinStateResponse) CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
+	if m == nil {
+		return NewSysexCommandPinStateResponseBuilder()
+	}
+	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

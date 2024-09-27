@@ -51,6 +51,8 @@ type BACnetEventTransitionBitsTagged interface {
 	GetToNormal() bool
 	// IsBACnetEventTransitionBitsTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventTransitionBitsTagged()
+	// CreateBuilder creates a BACnetEventTransitionBitsTaggedBuilder
+	CreateBACnetEventTransitionBitsTaggedBuilder() BACnetEventTransitionBitsTaggedBuilder
 }
 
 // _BACnetEventTransitionBitsTagged is the data-structure of this message
@@ -75,6 +77,127 @@ func NewBACnetEventTransitionBitsTagged(header BACnetTagHeader, payload BACnetTa
 	}
 	return &_BACnetEventTransitionBitsTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventTransitionBitsTaggedBuilder is a builder for BACnetEventTransitionBitsTagged
+type BACnetEventTransitionBitsTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetEventTransitionBitsTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventTransitionBitsTaggedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetEventTransitionBitsTaggedBuilder
+	// Build builds the BACnetEventTransitionBitsTagged or returns an error if something is wrong
+	Build() (BACnetEventTransitionBitsTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventTransitionBitsTagged
+}
+
+// NewBACnetEventTransitionBitsTaggedBuilder() creates a BACnetEventTransitionBitsTaggedBuilder
+func NewBACnetEventTransitionBitsTaggedBuilder() BACnetEventTransitionBitsTaggedBuilder {
+	return &_BACnetEventTransitionBitsTaggedBuilder{_BACnetEventTransitionBitsTagged: new(_BACnetEventTransitionBitsTagged)}
+}
+
+type _BACnetEventTransitionBitsTaggedBuilder struct {
+	*_BACnetEventTransitionBitsTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventTransitionBitsTaggedBuilder) = (*_BACnetEventTransitionBitsTaggedBuilder)(nil)
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder {
+	return m.WithHeader(header).WithPayload(payload)
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetEventTransitionBitsTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventTransitionBitsTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetEventTransitionBitsTaggedBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetEventTransitionBitsTaggedBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) Build() (BACnetEventTransitionBitsTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetEventTransitionBitsTagged.deepCopy(), nil
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) MustBuild() BACnetEventTransitionBitsTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetEventTransitionBitsTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetEventTransitionBitsTaggedBuilder()
+}
+
+// CreateBACnetEventTransitionBitsTaggedBuilder creates a BACnetEventTransitionBitsTaggedBuilder
+func (m *_BACnetEventTransitionBitsTagged) CreateBACnetEventTransitionBitsTaggedBuilder() BACnetEventTransitionBitsTaggedBuilder {
+	if m == nil {
+		return NewBACnetEventTransitionBitsTaggedBuilder()
+	}
+	return &_BACnetEventTransitionBitsTaggedBuilder{_BACnetEventTransitionBitsTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

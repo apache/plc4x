@@ -52,6 +52,8 @@ type ParsingResult interface {
 	GetDataDiagnosticInfos() []DiagnosticInfo
 	// IsParsingResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParsingResult()
+	// CreateBuilder creates a ParsingResultBuilder
+	CreateParsingResultBuilder() ParsingResultBuilder
 }
 
 // _ParsingResult is the data-structure of this message
@@ -83,6 +85,127 @@ func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStat
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParsingResultBuilder is a builder for ParsingResult
+type ParsingResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) ParsingResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder
+	// WithNoOfDataStatusCodes adds NoOfDataStatusCodes (property field)
+	WithNoOfDataStatusCodes(int32) ParsingResultBuilder
+	// WithDataStatusCodes adds DataStatusCodes (property field)
+	WithDataStatusCodes(...StatusCode) ParsingResultBuilder
+	// WithNoOfDataDiagnosticInfos adds NoOfDataDiagnosticInfos (property field)
+	WithNoOfDataDiagnosticInfos(int32) ParsingResultBuilder
+	// WithDataDiagnosticInfos adds DataDiagnosticInfos (property field)
+	WithDataDiagnosticInfos(...DiagnosticInfo) ParsingResultBuilder
+	// Build builds the ParsingResult or returns an error if something is wrong
+	Build() (ParsingResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParsingResult
+}
+
+// NewParsingResultBuilder() creates a ParsingResultBuilder
+func NewParsingResultBuilder() ParsingResultBuilder {
+	return &_ParsingResultBuilder{_ParsingResult: new(_ParsingResult)}
+}
+
+type _ParsingResultBuilder struct {
+	*_ParsingResult
+
+	err *utils.MultiError
+}
+
+var _ (ParsingResultBuilder) = (*_ParsingResultBuilder)(nil)
+
+func (m *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
+	return m.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
+}
+
+func (m *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
+	m.StatusCode = statusCode
+	return m
+}
+
+func (m *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder {
+	builder := builderSupplier(m.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	m.StatusCode, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
+	m.NoOfDataStatusCodes = noOfDataStatusCodes
+	return m
+}
+
+func (m *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
+	m.DataStatusCodes = dataStatusCodes
+	return m
+}
+
+func (m *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
+	m.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
+	return m
+}
+
+func (m *_ParsingResultBuilder) WithDataDiagnosticInfos(dataDiagnosticInfos ...DiagnosticInfo) ParsingResultBuilder {
+	m.DataDiagnosticInfos = dataDiagnosticInfos
+	return m
+}
+
+func (m *_ParsingResultBuilder) Build() (ParsingResult, error) {
+	if m.StatusCode == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParsingResult.deepCopy(), nil
+}
+
+func (m *_ParsingResultBuilder) MustBuild() ParsingResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParsingResultBuilder) DeepCopy() any {
+	return m.CreateParsingResultBuilder()
+}
+
+// CreateParsingResultBuilder creates a ParsingResultBuilder
+func (m *_ParsingResult) CreateParsingResultBuilder() ParsingResultBuilder {
+	if m == nil {
+		return NewParsingResultBuilder()
+	}
+	return &_ParsingResultBuilder{_ParsingResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

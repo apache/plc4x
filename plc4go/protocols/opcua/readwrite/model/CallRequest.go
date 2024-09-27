@@ -48,6 +48,8 @@ type CallRequest interface {
 	GetMethodsToCall() []ExtensionObjectDefinition
 	// IsCallRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCallRequest()
+	// CreateBuilder creates a CallRequestBuilder
+	CreateCallRequestBuilder() CallRequestBuilder
 }
 
 // _CallRequest is the data-structure of this message
@@ -75,6 +77,98 @@ func NewCallRequest(requestHeader ExtensionObjectDefinition, noOfMethodsToCall i
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CallRequestBuilder is a builder for CallRequest
+type CallRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CallRequestBuilder
+	// WithNoOfMethodsToCall adds NoOfMethodsToCall (property field)
+	WithNoOfMethodsToCall(int32) CallRequestBuilder
+	// WithMethodsToCall adds MethodsToCall (property field)
+	WithMethodsToCall(...ExtensionObjectDefinition) CallRequestBuilder
+	// Build builds the CallRequest or returns an error if something is wrong
+	Build() (CallRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CallRequest
+}
+
+// NewCallRequestBuilder() creates a CallRequestBuilder
+func NewCallRequestBuilder() CallRequestBuilder {
+	return &_CallRequestBuilder{_CallRequest: new(_CallRequest)}
+}
+
+type _CallRequestBuilder struct {
+	*_CallRequest
+
+	err *utils.MultiError
+}
+
+var _ (CallRequestBuilder) = (*_CallRequestBuilder)(nil)
+
+func (m *_CallRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfMethodsToCall int32, methodsToCall []ExtensionObjectDefinition) CallRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithNoOfMethodsToCall(noOfMethodsToCall).WithMethodsToCall(methodsToCall...)
+}
+
+func (m *_CallRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CallRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_CallRequestBuilder) WithNoOfMethodsToCall(noOfMethodsToCall int32) CallRequestBuilder {
+	m.NoOfMethodsToCall = noOfMethodsToCall
+	return m
+}
+
+func (m *_CallRequestBuilder) WithMethodsToCall(methodsToCall ...ExtensionObjectDefinition) CallRequestBuilder {
+	m.MethodsToCall = methodsToCall
+	return m
+}
+
+func (m *_CallRequestBuilder) Build() (CallRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CallRequest.deepCopy(), nil
+}
+
+func (m *_CallRequestBuilder) MustBuild() CallRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CallRequestBuilder) DeepCopy() any {
+	return m.CreateCallRequestBuilder()
+}
+
+// CreateCallRequestBuilder creates a CallRequestBuilder
+func (m *_CallRequest) CreateCallRequestBuilder() CallRequestBuilder {
+	if m == nil {
+		return NewCallRequestBuilder()
+	}
+	return &_CallRequestBuilder{_CallRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

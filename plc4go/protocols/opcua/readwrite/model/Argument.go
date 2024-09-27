@@ -54,6 +54,8 @@ type Argument interface {
 	GetDescription() LocalizedText
 	// IsArgument is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsArgument()
+	// CreateBuilder creates a ArgumentBuilder
+	CreateArgumentBuilder() ArgumentBuilder
 }
 
 // _Argument is the data-structure of this message
@@ -93,6 +95,176 @@ func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayD
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ArgumentBuilder is a builder for Argument
+type ArgumentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) ArgumentBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(NodeId) ArgumentBuilder
+	// WithDataTypeBuilder adds DataType (property field) which is build by the builder
+	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder
+	// WithValueRank adds ValueRank (property field)
+	WithValueRank(int32) ArgumentBuilder
+	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
+	WithNoOfArrayDimensions(int32) ArgumentBuilder
+	// WithArrayDimensions adds ArrayDimensions (property field)
+	WithArrayDimensions(...uint32) ArgumentBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) ArgumentBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder
+	// Build builds the Argument or returns an error if something is wrong
+	Build() (Argument, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Argument
+}
+
+// NewArgumentBuilder() creates a ArgumentBuilder
+func NewArgumentBuilder() ArgumentBuilder {
+	return &_ArgumentBuilder{_Argument: new(_Argument)}
+}
+
+type _ArgumentBuilder struct {
+	*_Argument
+
+	err *utils.MultiError
+}
+
+var _ (ArgumentBuilder) = (*_ArgumentBuilder)(nil)
+
+func (m *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
+	return m.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithDescription(description)
+}
+
+func (m *_ArgumentBuilder) WithName(name PascalString) ArgumentBuilder {
+	m.Name = name
+	return m
+}
+
+func (m *_ArgumentBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder {
+	builder := builderSupplier(m.Name.CreatePascalStringBuilder())
+	var err error
+	m.Name, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ArgumentBuilder) WithDataType(dataType NodeId) ArgumentBuilder {
+	m.DataType = dataType
+	return m
+}
+
+func (m *_ArgumentBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder {
+	builder := builderSupplier(m.DataType.CreateNodeIdBuilder())
+	var err error
+	m.DataType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ArgumentBuilder) WithValueRank(valueRank int32) ArgumentBuilder {
+	m.ValueRank = valueRank
+	return m
+}
+
+func (m *_ArgumentBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) ArgumentBuilder {
+	m.NoOfArrayDimensions = noOfArrayDimensions
+	return m
+}
+
+func (m *_ArgumentBuilder) WithArrayDimensions(arrayDimensions ...uint32) ArgumentBuilder {
+	m.ArrayDimensions = arrayDimensions
+	return m
+}
+
+func (m *_ArgumentBuilder) WithDescription(description LocalizedText) ArgumentBuilder {
+	m.Description = description
+	return m
+}
+
+func (m *_ArgumentBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder {
+	builder := builderSupplier(m.Description.CreateLocalizedTextBuilder())
+	var err error
+	m.Description, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ArgumentBuilder) Build() (Argument, error) {
+	if m.Name == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if m.DataType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dataType' not set"))
+	}
+	if m.Description == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Argument.deepCopy(), nil
+}
+
+func (m *_ArgumentBuilder) MustBuild() Argument {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ArgumentBuilder) DeepCopy() any {
+	return m.CreateArgumentBuilder()
+}
+
+// CreateArgumentBuilder creates a ArgumentBuilder
+func (m *_Argument) CreateArgumentBuilder() ArgumentBuilder {
+	if m == nil {
+		return NewArgumentBuilder()
+	}
+	return &_ArgumentBuilder{_Argument: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

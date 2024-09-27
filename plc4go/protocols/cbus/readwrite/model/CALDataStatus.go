@@ -48,6 +48,8 @@ type CALDataStatus interface {
 	GetStatusBytes() []StatusByte
 	// IsCALDataStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataStatus()
+	// CreateBuilder creates a CALDataStatusBuilder
+	CreateCALDataStatusBuilder() CALDataStatusBuilder
 }
 
 // _CALDataStatus is the data-structure of this message
@@ -72,6 +74,92 @@ func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalDa
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataStatusBuilder is a builder for CALDataStatus
+type CALDataStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) CALDataStatusBuilder
+	// WithBlockStart adds BlockStart (property field)
+	WithBlockStart(uint8) CALDataStatusBuilder
+	// WithStatusBytes adds StatusBytes (property field)
+	WithStatusBytes(...StatusByte) CALDataStatusBuilder
+	// Build builds the CALDataStatus or returns an error if something is wrong
+	Build() (CALDataStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataStatus
+}
+
+// NewCALDataStatusBuilder() creates a CALDataStatusBuilder
+func NewCALDataStatusBuilder() CALDataStatusBuilder {
+	return &_CALDataStatusBuilder{_CALDataStatus: new(_CALDataStatus)}
+}
+
+type _CALDataStatusBuilder struct {
+	*_CALDataStatus
+
+	err *utils.MultiError
+}
+
+var _ (CALDataStatusBuilder) = (*_CALDataStatusBuilder)(nil)
+
+func (m *_CALDataStatusBuilder) WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder {
+	return m.WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...)
+}
+
+func (m *_CALDataStatusBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusBuilder {
+	m.Application = application
+	return m
+}
+
+func (m *_CALDataStatusBuilder) WithBlockStart(blockStart uint8) CALDataStatusBuilder {
+	m.BlockStart = blockStart
+	return m
+}
+
+func (m *_CALDataStatusBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusBuilder {
+	m.StatusBytes = statusBytes
+	return m
+}
+
+func (m *_CALDataStatusBuilder) Build() (CALDataStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataStatus.deepCopy(), nil
+}
+
+func (m *_CALDataStatusBuilder) MustBuild() CALDataStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataStatusBuilder) DeepCopy() any {
+	return m.CreateCALDataStatusBuilder()
+}
+
+// CreateCALDataStatusBuilder creates a CALDataStatusBuilder
+func (m *_CALDataStatus) CreateCALDataStatusBuilder() CALDataStatusBuilder {
+	if m == nil {
+		return NewCALDataStatusBuilder()
+	}
+	return &_CALDataStatusBuilder{_CALDataStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

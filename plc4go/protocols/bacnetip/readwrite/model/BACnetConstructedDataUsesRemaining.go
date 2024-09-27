@@ -46,6 +46,8 @@ type BACnetConstructedDataUsesRemaining interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataUsesRemaining is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUsesRemaining()
+	// CreateBuilder creates a BACnetConstructedDataUsesRemainingBuilder
+	CreateBACnetConstructedDataUsesRemainingBuilder() BACnetConstructedDataUsesRemainingBuilder
 }
 
 // _BACnetConstructedDataUsesRemaining is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataUsesRemaining(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUsesRemainingBuilder is a builder for BACnetConstructedDataUsesRemaining
+type BACnetConstructedDataUsesRemainingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(usesRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataUsesRemainingBuilder
+	// WithUsesRemaining adds UsesRemaining (property field)
+	WithUsesRemaining(BACnetApplicationTagSignedInteger) BACnetConstructedDataUsesRemainingBuilder
+	// WithUsesRemainingBuilder adds UsesRemaining (property field) which is build by the builder
+	WithUsesRemainingBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataUsesRemainingBuilder
+	// Build builds the BACnetConstructedDataUsesRemaining or returns an error if something is wrong
+	Build() (BACnetConstructedDataUsesRemaining, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUsesRemaining
+}
+
+// NewBACnetConstructedDataUsesRemainingBuilder() creates a BACnetConstructedDataUsesRemainingBuilder
+func NewBACnetConstructedDataUsesRemainingBuilder() BACnetConstructedDataUsesRemainingBuilder {
+	return &_BACnetConstructedDataUsesRemainingBuilder{_BACnetConstructedDataUsesRemaining: new(_BACnetConstructedDataUsesRemaining)}
+}
+
+type _BACnetConstructedDataUsesRemainingBuilder struct {
+	*_BACnetConstructedDataUsesRemaining
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUsesRemainingBuilder) = (*_BACnetConstructedDataUsesRemainingBuilder)(nil)
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) WithMandatoryFields(usesRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataUsesRemainingBuilder {
+	return m.WithUsesRemaining(usesRemaining)
+}
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) WithUsesRemaining(usesRemaining BACnetApplicationTagSignedInteger) BACnetConstructedDataUsesRemainingBuilder {
+	m.UsesRemaining = usesRemaining
+	return m
+}
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) WithUsesRemainingBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataUsesRemainingBuilder {
+	builder := builderSupplier(m.UsesRemaining.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.UsesRemaining, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) Build() (BACnetConstructedDataUsesRemaining, error) {
+	if m.UsesRemaining == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'usesRemaining' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataUsesRemaining.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) MustBuild() BACnetConstructedDataUsesRemaining {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataUsesRemainingBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataUsesRemainingBuilder()
+}
+
+// CreateBACnetConstructedDataUsesRemainingBuilder creates a BACnetConstructedDataUsesRemainingBuilder
+func (m *_BACnetConstructedDataUsesRemaining) CreateBACnetConstructedDataUsesRemainingBuilder() BACnetConstructedDataUsesRemainingBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataUsesRemainingBuilder()
+	}
+	return &_BACnetConstructedDataUsesRemainingBuilder{_BACnetConstructedDataUsesRemaining: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

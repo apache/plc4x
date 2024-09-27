@@ -49,6 +49,8 @@ type BACnetLightingOperationTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLightingOperationTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLightingOperationTagged()
+	// CreateBuilder creates a BACnetLightingOperationTaggedBuilder
+	CreateBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder
 }
 
 // _BACnetLightingOperationTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLighti
 	}
 	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLightingOperationTaggedBuilder is a builder for BACnetLightingOperationTagged
+type BACnetLightingOperationTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32) BACnetLightingOperationTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLightingOperationTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingOperationTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLightingOperation) BACnetLightingOperationTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLightingOperationTaggedBuilder
+	// Build builds the BACnetLightingOperationTagged or returns an error if something is wrong
+	Build() (BACnetLightingOperationTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLightingOperationTagged
+}
+
+// NewBACnetLightingOperationTaggedBuilder() creates a BACnetLightingOperationTaggedBuilder
+func NewBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder {
+	return &_BACnetLightingOperationTaggedBuilder{_BACnetLightingOperationTagged: new(_BACnetLightingOperationTagged)}
+}
+
+type _BACnetLightingOperationTaggedBuilder struct {
+	*_BACnetLightingOperationTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLightingOperationTaggedBuilder) = (*_BACnetLightingOperationTaggedBuilder)(nil)
+
+func (m *_BACnetLightingOperationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32) BACnetLightingOperationTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLightingOperationTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingOperationTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) WithValue(value BACnetLightingOperation) BACnetLightingOperationTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingOperationTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) Build() (BACnetLightingOperationTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetLightingOperationTagged.deepCopy(), nil
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) MustBuild() BACnetLightingOperationTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetLightingOperationTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetLightingOperationTaggedBuilder()
+}
+
+// CreateBACnetLightingOperationTaggedBuilder creates a BACnetLightingOperationTaggedBuilder
+func (m *_BACnetLightingOperationTagged) CreateBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder {
+	if m == nil {
+		return NewBACnetLightingOperationTaggedBuilder()
+	}
+	return &_BACnetLightingOperationTaggedBuilder{_BACnetLightingOperationTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

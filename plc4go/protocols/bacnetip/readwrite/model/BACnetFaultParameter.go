@@ -43,6 +43,8 @@ type BACnetFaultParameter interface {
 	utils.Copyable
 	// IsBACnetFaultParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameter()
+	// CreateBuilder creates a BACnetFaultParameterBuilder
+	CreateBACnetFaultParameterBuilder() BACnetFaultParameterBuilder
 }
 
 // BACnetFaultParameterContract provides a set of functions which can be overwritten by a sub struct
@@ -53,6 +55,8 @@ type BACnetFaultParameterContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetFaultParameter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameter()
+	// CreateBuilder creates a BACnetFaultParameterBuilder
+	CreateBACnetFaultParameterBuilder() BACnetFaultParameterBuilder
 }
 
 // BACnetFaultParameterRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +82,99 @@ func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParam
 	}
 	return &_BACnetFaultParameter{PeekedTagHeader: peekedTagHeader}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterBuilder is a builder for BACnetFaultParameter
+type BACnetFaultParameterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetFaultParameterBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetFaultParameterBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterBuilder
+	// Build builds the BACnetFaultParameter or returns an error if something is wrong
+	Build() (BACnetFaultParameterContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterContract
+}
+
+// NewBACnetFaultParameterBuilder() creates a BACnetFaultParameterBuilder
+func NewBACnetFaultParameterBuilder() BACnetFaultParameterBuilder {
+	return &_BACnetFaultParameterBuilder{_BACnetFaultParameter: new(_BACnetFaultParameter)}
+}
+
+type _BACnetFaultParameterBuilder struct {
+	*_BACnetFaultParameter
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterBuilder) = (*_BACnetFaultParameterBuilder)(nil)
+
+func (m *_BACnetFaultParameterBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetFaultParameterBuilder {
+	return m.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (m *_BACnetFaultParameterBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetFaultParameterBuilder {
+	m.PeekedTagHeader = peekedTagHeader
+	return m
+}
+
+func (m *_BACnetFaultParameterBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterBuilder {
+	builder := builderSupplier(m.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterBuilder) Build() (BACnetFaultParameterContract, error) {
+	if m.PeekedTagHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameter.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterBuilder) MustBuild() BACnetFaultParameterContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterBuilder()
+}
+
+// CreateBACnetFaultParameterBuilder creates a BACnetFaultParameterBuilder
+func (m *_BACnetFaultParameter) CreateBACnetFaultParameterBuilder() BACnetFaultParameterBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterBuilder()
+	}
+	return &_BACnetFaultParameterBuilder{_BACnetFaultParameter: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

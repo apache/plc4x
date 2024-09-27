@@ -46,6 +46,8 @@ type BACnetConstructedDataProtocolRevision interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataProtocolRevision is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProtocolRevision()
+	// CreateBuilder creates a BACnetConstructedDataProtocolRevisionBuilder
+	CreateBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProtocolRevisionBuilder
 }
 
 // _BACnetConstructedDataProtocolRevision is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataProtocolRevision(openingTag BACnetOpeningTag, peeke
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProtocolRevisionBuilder is a builder for BACnetConstructedDataProtocolRevision
+type BACnetConstructedDataProtocolRevisionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder
+	// WithProtocolRevision adds ProtocolRevision (property field)
+	WithProtocolRevision(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder
+	// WithProtocolRevisionBuilder adds ProtocolRevision (property field) which is build by the builder
+	WithProtocolRevisionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolRevisionBuilder
+	// Build builds the BACnetConstructedDataProtocolRevision or returns an error if something is wrong
+	Build() (BACnetConstructedDataProtocolRevision, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProtocolRevision
+}
+
+// NewBACnetConstructedDataProtocolRevisionBuilder() creates a BACnetConstructedDataProtocolRevisionBuilder
+func NewBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProtocolRevisionBuilder {
+	return &_BACnetConstructedDataProtocolRevisionBuilder{_BACnetConstructedDataProtocolRevision: new(_BACnetConstructedDataProtocolRevision)}
+}
+
+type _BACnetConstructedDataProtocolRevisionBuilder struct {
+	*_BACnetConstructedDataProtocolRevision
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProtocolRevisionBuilder) = (*_BACnetConstructedDataProtocolRevisionBuilder)(nil)
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithMandatoryFields(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
+	return m.WithProtocolRevision(protocolRevision)
+}
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevision(protocolRevision BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolRevisionBuilder {
+	m.ProtocolRevision = protocolRevision
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) WithProtocolRevisionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolRevisionBuilder {
+	builder := builderSupplier(m.ProtocolRevision.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ProtocolRevision, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) Build() (BACnetConstructedDataProtocolRevision, error) {
+	if m.ProtocolRevision == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'protocolRevision' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProtocolRevision.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) MustBuild() BACnetConstructedDataProtocolRevision {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProtocolRevisionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProtocolRevisionBuilder()
+}
+
+// CreateBACnetConstructedDataProtocolRevisionBuilder creates a BACnetConstructedDataProtocolRevisionBuilder
+func (m *_BACnetConstructedDataProtocolRevision) CreateBACnetConstructedDataProtocolRevisionBuilder() BACnetConstructedDataProtocolRevisionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProtocolRevisionBuilder()
+	}
+	return &_BACnetConstructedDataProtocolRevisionBuilder{_BACnetConstructedDataProtocolRevision: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

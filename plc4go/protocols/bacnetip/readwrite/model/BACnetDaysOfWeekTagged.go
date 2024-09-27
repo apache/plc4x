@@ -59,6 +59,8 @@ type BACnetDaysOfWeekTagged interface {
 	GetSunday() bool
 	// IsBACnetDaysOfWeekTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDaysOfWeekTagged()
+	// CreateBuilder creates a BACnetDaysOfWeekTaggedBuilder
+	CreateBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder
 }
 
 // _BACnetDaysOfWeekTagged is the data-structure of this message
@@ -83,6 +85,127 @@ func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadB
 	}
 	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDaysOfWeekTaggedBuilder is a builder for BACnetDaysOfWeekTagged
+type BACnetDaysOfWeekTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDaysOfWeekTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDaysOfWeekTaggedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetDaysOfWeekTaggedBuilder
+	// Build builds the BACnetDaysOfWeekTagged or returns an error if something is wrong
+	Build() (BACnetDaysOfWeekTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDaysOfWeekTagged
+}
+
+// NewBACnetDaysOfWeekTaggedBuilder() creates a BACnetDaysOfWeekTaggedBuilder
+func NewBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder {
+	return &_BACnetDaysOfWeekTaggedBuilder{_BACnetDaysOfWeekTagged: new(_BACnetDaysOfWeekTagged)}
+}
+
+type _BACnetDaysOfWeekTaggedBuilder struct {
+	*_BACnetDaysOfWeekTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDaysOfWeekTaggedBuilder) = (*_BACnetDaysOfWeekTaggedBuilder)(nil)
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder {
+	return m.WithHeader(header).WithPayload(payload)
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDaysOfWeekTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDaysOfWeekTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder {
+	m.Payload = payload
+	return m
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetDaysOfWeekTaggedBuilder {
+	builder := builderSupplier(m.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	m.Payload, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) Build() (BACnetDaysOfWeekTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.Payload == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetDaysOfWeekTagged.deepCopy(), nil
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) MustBuild() BACnetDaysOfWeekTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetDaysOfWeekTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetDaysOfWeekTaggedBuilder()
+}
+
+// CreateBACnetDaysOfWeekTaggedBuilder creates a BACnetDaysOfWeekTaggedBuilder
+func (m *_BACnetDaysOfWeekTagged) CreateBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder {
+	if m == nil {
+		return NewBACnetDaysOfWeekTaggedBuilder()
+	}
+	return &_BACnetDaysOfWeekTaggedBuilder{_BACnetDaysOfWeekTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

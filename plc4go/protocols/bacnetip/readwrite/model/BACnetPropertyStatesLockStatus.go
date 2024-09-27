@@ -44,6 +44,8 @@ type BACnetPropertyStatesLockStatus interface {
 	GetLockStatus() BACnetLockStatusTagged
 	// IsBACnetPropertyStatesLockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLockStatus()
+	// CreateBuilder creates a BACnetPropertyStatesLockStatusBuilder
+	CreateBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBuilder
 }
 
 // _BACnetPropertyStatesLockStatus is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesLockStatus(peekedTagHeader BACnetTagHeader, lockStat
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLockStatusBuilder is a builder for BACnetPropertyStatesLockStatus
+type BACnetPropertyStatesLockStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder
+	// WithLockStatus adds LockStatus (property field)
+	WithLockStatus(BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder
+	// WithLockStatusBuilder adds LockStatus (property field) which is build by the builder
+	WithLockStatusBuilder(func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetPropertyStatesLockStatusBuilder
+	// Build builds the BACnetPropertyStatesLockStatus or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLockStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLockStatus
+}
+
+// NewBACnetPropertyStatesLockStatusBuilder() creates a BACnetPropertyStatesLockStatusBuilder
+func NewBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBuilder {
+	return &_BACnetPropertyStatesLockStatusBuilder{_BACnetPropertyStatesLockStatus: new(_BACnetPropertyStatesLockStatus)}
+}
+
+type _BACnetPropertyStatesLockStatusBuilder struct {
+	*_BACnetPropertyStatesLockStatus
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLockStatusBuilder) = (*_BACnetPropertyStatesLockStatusBuilder)(nil)
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
+	return m.WithLockStatus(lockStatus)
+}
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetPropertyStatesLockStatusBuilder {
+	m.LockStatus = lockStatus
+	return m
+}
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetPropertyStatesLockStatusBuilder {
+	builder := builderSupplier(m.LockStatus.CreateBACnetLockStatusTaggedBuilder())
+	var err error
+	m.LockStatus, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) Build() (BACnetPropertyStatesLockStatus, error) {
+	if m.LockStatus == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'lockStatus' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesLockStatus.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) MustBuild() BACnetPropertyStatesLockStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesLockStatusBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesLockStatusBuilder()
+}
+
+// CreateBACnetPropertyStatesLockStatusBuilder creates a BACnetPropertyStatesLockStatusBuilder
+func (m *_BACnetPropertyStatesLockStatus) CreateBACnetPropertyStatesLockStatusBuilder() BACnetPropertyStatesLockStatusBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesLockStatusBuilder()
+	}
+	return &_BACnetPropertyStatesLockStatusBuilder{_BACnetPropertyStatesLockStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

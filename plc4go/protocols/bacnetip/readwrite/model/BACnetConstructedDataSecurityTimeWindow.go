@@ -46,6 +46,8 @@ type BACnetConstructedDataSecurityTimeWindow interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataSecurityTimeWindow is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSecurityTimeWindow()
+	// CreateBuilder creates a BACnetConstructedDataSecurityTimeWindowBuilder
+	CreateBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSecurityTimeWindowBuilder
 }
 
 // _BACnetConstructedDataSecurityTimeWindow is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataSecurityTimeWindow(openingTag BACnetOpeningTag, pee
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSecurityTimeWindowBuilder is a builder for BACnetConstructedDataSecurityTimeWindow
+type BACnetConstructedDataSecurityTimeWindowBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder
+	// WithSecurityTimeWindow adds SecurityTimeWindow (property field)
+	WithSecurityTimeWindow(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder
+	// WithSecurityTimeWindowBuilder adds SecurityTimeWindow (property field) which is build by the builder
+	WithSecurityTimeWindowBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityTimeWindowBuilder
+	// Build builds the BACnetConstructedDataSecurityTimeWindow or returns an error if something is wrong
+	Build() (BACnetConstructedDataSecurityTimeWindow, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSecurityTimeWindow
+}
+
+// NewBACnetConstructedDataSecurityTimeWindowBuilder() creates a BACnetConstructedDataSecurityTimeWindowBuilder
+func NewBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSecurityTimeWindowBuilder {
+	return &_BACnetConstructedDataSecurityTimeWindowBuilder{_BACnetConstructedDataSecurityTimeWindow: new(_BACnetConstructedDataSecurityTimeWindow)}
+}
+
+type _BACnetConstructedDataSecurityTimeWindowBuilder struct {
+	*_BACnetConstructedDataSecurityTimeWindow
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSecurityTimeWindowBuilder) = (*_BACnetConstructedDataSecurityTimeWindowBuilder)(nil)
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithMandatoryFields(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
+	return m.WithSecurityTimeWindow(securityTimeWindow)
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindow(securityTimeWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataSecurityTimeWindowBuilder {
+	m.SecurityTimeWindow = securityTimeWindow
+	return m
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) WithSecurityTimeWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataSecurityTimeWindowBuilder {
+	builder := builderSupplier(m.SecurityTimeWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.SecurityTimeWindow, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) Build() (BACnetConstructedDataSecurityTimeWindow, error) {
+	if m.SecurityTimeWindow == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityTimeWindow' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataSecurityTimeWindow.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) MustBuild() BACnetConstructedDataSecurityTimeWindow {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataSecurityTimeWindowBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataSecurityTimeWindowBuilder()
+}
+
+// CreateBACnetConstructedDataSecurityTimeWindowBuilder creates a BACnetConstructedDataSecurityTimeWindowBuilder
+func (m *_BACnetConstructedDataSecurityTimeWindow) CreateBACnetConstructedDataSecurityTimeWindowBuilder() BACnetConstructedDataSecurityTimeWindowBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataSecurityTimeWindowBuilder()
+	}
+	return &_BACnetConstructedDataSecurityTimeWindowBuilder{_BACnetConstructedDataSecurityTimeWindow: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

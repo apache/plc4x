@@ -49,6 +49,8 @@ type InstanceSegment interface {
 	GetInstance() uint8
 	// IsInstanceSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsInstanceSegment()
+	// CreateBuilder creates a InstanceSegmentBuilder
+	CreateInstanceSegmentBuilder() InstanceSegmentBuilder
 }
 
 // _InstanceSegment is the data-structure of this message
@@ -65,6 +67,99 @@ var _ InstanceSegment = (*_InstanceSegment)(nil)
 func NewInstanceSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) *_InstanceSegment {
 	return &_InstanceSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, Instance: instance}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// InstanceSegmentBuilder is a builder for InstanceSegment
+type InstanceSegmentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) InstanceSegmentBuilder
+	// WithPathSegmentType adds PathSegmentType (property field)
+	WithPathSegmentType(uint8) InstanceSegmentBuilder
+	// WithLogicalSegmentType adds LogicalSegmentType (property field)
+	WithLogicalSegmentType(uint8) InstanceSegmentBuilder
+	// WithLogicalSegmentFormat adds LogicalSegmentFormat (property field)
+	WithLogicalSegmentFormat(uint8) InstanceSegmentBuilder
+	// WithInstance adds Instance (property field)
+	WithInstance(uint8) InstanceSegmentBuilder
+	// Build builds the InstanceSegment or returns an error if something is wrong
+	Build() (InstanceSegment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() InstanceSegment
+}
+
+// NewInstanceSegmentBuilder() creates a InstanceSegmentBuilder
+func NewInstanceSegmentBuilder() InstanceSegmentBuilder {
+	return &_InstanceSegmentBuilder{_InstanceSegment: new(_InstanceSegment)}
+}
+
+type _InstanceSegmentBuilder struct {
+	*_InstanceSegment
+
+	err *utils.MultiError
+}
+
+var _ (InstanceSegmentBuilder) = (*_InstanceSegmentBuilder)(nil)
+
+func (m *_InstanceSegmentBuilder) WithMandatoryFields(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) InstanceSegmentBuilder {
+	return m.WithPathSegmentType(pathSegmentType).WithLogicalSegmentType(logicalSegmentType).WithLogicalSegmentFormat(logicalSegmentFormat).WithInstance(instance)
+}
+
+func (m *_InstanceSegmentBuilder) WithPathSegmentType(pathSegmentType uint8) InstanceSegmentBuilder {
+	m.PathSegmentType = pathSegmentType
+	return m
+}
+
+func (m *_InstanceSegmentBuilder) WithLogicalSegmentType(logicalSegmentType uint8) InstanceSegmentBuilder {
+	m.LogicalSegmentType = logicalSegmentType
+	return m
+}
+
+func (m *_InstanceSegmentBuilder) WithLogicalSegmentFormat(logicalSegmentFormat uint8) InstanceSegmentBuilder {
+	m.LogicalSegmentFormat = logicalSegmentFormat
+	return m
+}
+
+func (m *_InstanceSegmentBuilder) WithInstance(instance uint8) InstanceSegmentBuilder {
+	m.Instance = instance
+	return m
+}
+
+func (m *_InstanceSegmentBuilder) Build() (InstanceSegment, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._InstanceSegment.deepCopy(), nil
+}
+
+func (m *_InstanceSegmentBuilder) MustBuild() InstanceSegment {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_InstanceSegmentBuilder) DeepCopy() any {
+	return m.CreateInstanceSegmentBuilder()
+}
+
+// CreateInstanceSegmentBuilder creates a InstanceSegmentBuilder
+func (m *_InstanceSegment) CreateInstanceSegmentBuilder() InstanceSegmentBuilder {
+	if m == nil {
+		return NewInstanceSegmentBuilder()
+	}
+	return &_InstanceSegmentBuilder{_InstanceSegment: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

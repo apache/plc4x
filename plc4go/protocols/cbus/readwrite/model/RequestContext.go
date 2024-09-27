@@ -43,6 +43,8 @@ type RequestContext interface {
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestContext()
+	// CreateBuilder creates a RequestContextBuilder
+	CreateRequestContextBuilder() RequestContextBuilder
 }
 
 // _RequestContext is the data-structure of this message
@@ -56,6 +58,78 @@ var _ RequestContext = (*_RequestContext)(nil)
 func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
 	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestContextBuilder is a builder for RequestContext
+type RequestContextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder
+	// WithSendIdentifyRequestBefore adds SendIdentifyRequestBefore (property field)
+	WithSendIdentifyRequestBefore(bool) RequestContextBuilder
+	// Build builds the RequestContext or returns an error if something is wrong
+	Build() (RequestContext, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestContext
+}
+
+// NewRequestContextBuilder() creates a RequestContextBuilder
+func NewRequestContextBuilder() RequestContextBuilder {
+	return &_RequestContextBuilder{_RequestContext: new(_RequestContext)}
+}
+
+type _RequestContextBuilder struct {
+	*_RequestContext
+
+	err *utils.MultiError
+}
+
+var _ (RequestContextBuilder) = (*_RequestContextBuilder)(nil)
+
+func (m *_RequestContextBuilder) WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	return m.WithSendIdentifyRequestBefore(sendIdentifyRequestBefore)
+}
+
+func (m *_RequestContextBuilder) WithSendIdentifyRequestBefore(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	m.SendIdentifyRequestBefore = sendIdentifyRequestBefore
+	return m
+}
+
+func (m *_RequestContextBuilder) Build() (RequestContext, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RequestContext.deepCopy(), nil
+}
+
+func (m *_RequestContextBuilder) MustBuild() RequestContext {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RequestContextBuilder) DeepCopy() any {
+	return m.CreateRequestContextBuilder()
+}
+
+// CreateRequestContextBuilder creates a RequestContextBuilder
+func (m *_RequestContext) CreateRequestContextBuilder() RequestContextBuilder {
+	if m == nil {
+		return NewRequestContextBuilder()
+	}
+	return &_RequestContextBuilder{_RequestContext: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

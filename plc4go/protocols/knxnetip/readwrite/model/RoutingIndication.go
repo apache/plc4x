@@ -41,6 +41,8 @@ type RoutingIndication interface {
 	KnxNetIpMessage
 	// IsRoutingIndication is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRoutingIndication()
+	// CreateBuilder creates a RoutingIndicationBuilder
+	CreateRoutingIndicationBuilder() RoutingIndicationBuilder
 }
 
 // _RoutingIndication is the data-structure of this message
@@ -59,6 +61,71 @@ func NewRoutingIndication() *_RoutingIndication {
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RoutingIndicationBuilder is a builder for RoutingIndication
+type RoutingIndicationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RoutingIndicationBuilder
+	// Build builds the RoutingIndication or returns an error if something is wrong
+	Build() (RoutingIndication, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RoutingIndication
+}
+
+// NewRoutingIndicationBuilder() creates a RoutingIndicationBuilder
+func NewRoutingIndicationBuilder() RoutingIndicationBuilder {
+	return &_RoutingIndicationBuilder{_RoutingIndication: new(_RoutingIndication)}
+}
+
+type _RoutingIndicationBuilder struct {
+	*_RoutingIndication
+
+	err *utils.MultiError
+}
+
+var _ (RoutingIndicationBuilder) = (*_RoutingIndicationBuilder)(nil)
+
+func (m *_RoutingIndicationBuilder) WithMandatoryFields() RoutingIndicationBuilder {
+	return m
+}
+
+func (m *_RoutingIndicationBuilder) Build() (RoutingIndication, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RoutingIndication.deepCopy(), nil
+}
+
+func (m *_RoutingIndicationBuilder) MustBuild() RoutingIndication {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RoutingIndicationBuilder) DeepCopy() any {
+	return m.CreateRoutingIndicationBuilder()
+}
+
+// CreateRoutingIndicationBuilder creates a RoutingIndicationBuilder
+func (m *_RoutingIndication) CreateRoutingIndicationBuilder() RoutingIndicationBuilder {
+	if m == nil {
+		return NewRoutingIndicationBuilder()
+	}
+	return &_RoutingIndicationBuilder{_RoutingIndication: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

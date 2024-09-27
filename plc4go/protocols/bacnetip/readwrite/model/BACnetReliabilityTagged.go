@@ -49,6 +49,8 @@ type BACnetReliabilityTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetReliabilityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReliabilityTagged()
+	// CreateBuilder creates a BACnetReliabilityTaggedBuilder
+	CreateBACnetReliabilityTaggedBuilder() BACnetReliabilityTaggedBuilder
 }
 
 // _BACnetReliabilityTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetReliabilityTagged(header BACnetTagHeader, value BACnetReliability,
 	}
 	return &_BACnetReliabilityTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReliabilityTaggedBuilder is a builder for BACnetReliabilityTagged
+type BACnetReliabilityTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32) BACnetReliabilityTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetReliabilityTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetReliabilityTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetReliability) BACnetReliabilityTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetReliabilityTaggedBuilder
+	// Build builds the BACnetReliabilityTagged or returns an error if something is wrong
+	Build() (BACnetReliabilityTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReliabilityTagged
+}
+
+// NewBACnetReliabilityTaggedBuilder() creates a BACnetReliabilityTaggedBuilder
+func NewBACnetReliabilityTaggedBuilder() BACnetReliabilityTaggedBuilder {
+	return &_BACnetReliabilityTaggedBuilder{_BACnetReliabilityTagged: new(_BACnetReliabilityTagged)}
+}
+
+type _BACnetReliabilityTaggedBuilder struct {
+	*_BACnetReliabilityTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReliabilityTaggedBuilder) = (*_BACnetReliabilityTaggedBuilder)(nil)
+
+func (m *_BACnetReliabilityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetReliability, proprietaryValue uint32) BACnetReliabilityTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetReliabilityTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetReliabilityTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) WithValue(value BACnetReliability) BACnetReliabilityTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetReliabilityTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) Build() (BACnetReliabilityTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetReliabilityTagged.deepCopy(), nil
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) MustBuild() BACnetReliabilityTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetReliabilityTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetReliabilityTaggedBuilder()
+}
+
+// CreateBACnetReliabilityTaggedBuilder creates a BACnetReliabilityTaggedBuilder
+func (m *_BACnetReliabilityTagged) CreateBACnetReliabilityTaggedBuilder() BACnetReliabilityTaggedBuilder {
+	if m == nil {
+		return NewBACnetReliabilityTaggedBuilder()
+	}
+	return &_BACnetReliabilityTaggedBuilder{_BACnetReliabilityTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

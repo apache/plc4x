@@ -47,6 +47,8 @@ type DeviceConfigurationAckDataBlock interface {
 	GetStatus() Status
 	// IsDeviceConfigurationAckDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceConfigurationAckDataBlock()
+	// CreateBuilder creates a DeviceConfigurationAckDataBlockBuilder
+	CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder
 }
 
 // _DeviceConfigurationAckDataBlock is the data-structure of this message
@@ -62,6 +64,92 @@ var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
 func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
 	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceConfigurationAckDataBlockBuilder is a builder for DeviceConfigurationAckDataBlock
+type DeviceConfigurationAckDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) DeviceConfigurationAckDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) DeviceConfigurationAckDataBlockBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) DeviceConfigurationAckDataBlockBuilder
+	// Build builds the DeviceConfigurationAckDataBlock or returns an error if something is wrong
+	Build() (DeviceConfigurationAckDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceConfigurationAckDataBlock
+}
+
+// NewDeviceConfigurationAckDataBlockBuilder() creates a DeviceConfigurationAckDataBlockBuilder
+func NewDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
+	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: new(_DeviceConfigurationAckDataBlock)}
+}
+
+type _DeviceConfigurationAckDataBlockBuilder struct {
+	*_DeviceConfigurationAckDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (DeviceConfigurationAckDataBlockBuilder) = (*_DeviceConfigurationAckDataBlockBuilder)(nil)
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder {
+	return m.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationAckDataBlockBuilder {
+	m.CommunicationChannelId = communicationChannelId
+	return m
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationAckDataBlockBuilder {
+	m.SequenceCounter = sequenceCounter
+	return m
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) DeviceConfigurationAckDataBlockBuilder {
+	m.Status = status
+	return m
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeviceConfigurationAckDataBlock.deepCopy(), nil
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) MustBuild() DeviceConfigurationAckDataBlock {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeviceConfigurationAckDataBlockBuilder) DeepCopy() any {
+	return m.CreateDeviceConfigurationAckDataBlockBuilder()
+}
+
+// CreateDeviceConfigurationAckDataBlockBuilder creates a DeviceConfigurationAckDataBlockBuilder
+func (m *_DeviceConfigurationAckDataBlock) CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
+	if m == nil {
+		return NewDeviceConfigurationAckDataBlockBuilder()
+	}
+	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -49,6 +49,8 @@ type BACnetAccessCredentialDisableTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessCredentialDisableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessCredentialDisableTagged()
+	// CreateBuilder creates a BACnetAccessCredentialDisableTaggedBuilder
+	CreateBACnetAccessCredentialDisableTaggedBuilder() BACnetAccessCredentialDisableTaggedBuilder
 }
 
 // _BACnetAccessCredentialDisableTagged is the data-structure of this message
@@ -71,6 +73,113 @@ func NewBACnetAccessCredentialDisableTagged(header BACnetTagHeader, value BACnet
 	}
 	return &_BACnetAccessCredentialDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessCredentialDisableTaggedBuilder is a builder for BACnetAccessCredentialDisableTagged
+type BACnetAccessCredentialDisableTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32) BACnetAccessCredentialDisableTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessCredentialDisableTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessCredentialDisableTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessCredentialDisable) BACnetAccessCredentialDisableTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessCredentialDisableTaggedBuilder
+	// Build builds the BACnetAccessCredentialDisableTagged or returns an error if something is wrong
+	Build() (BACnetAccessCredentialDisableTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessCredentialDisableTagged
+}
+
+// NewBACnetAccessCredentialDisableTaggedBuilder() creates a BACnetAccessCredentialDisableTaggedBuilder
+func NewBACnetAccessCredentialDisableTaggedBuilder() BACnetAccessCredentialDisableTaggedBuilder {
+	return &_BACnetAccessCredentialDisableTaggedBuilder{_BACnetAccessCredentialDisableTagged: new(_BACnetAccessCredentialDisableTagged)}
+}
+
+type _BACnetAccessCredentialDisableTaggedBuilder struct {
+	*_BACnetAccessCredentialDisableTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessCredentialDisableTaggedBuilder) = (*_BACnetAccessCredentialDisableTaggedBuilder)(nil)
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessCredentialDisable, proprietaryValue uint32) BACnetAccessCredentialDisableTaggedBuilder {
+	return m.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessCredentialDisableTaggedBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessCredentialDisableTaggedBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) WithValue(value BACnetAccessCredentialDisable) BACnetAccessCredentialDisableTaggedBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessCredentialDisableTaggedBuilder {
+	m.ProprietaryValue = proprietaryValue
+	return m
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) Build() (BACnetAccessCredentialDisableTagged, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetAccessCredentialDisableTagged.deepCopy(), nil
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) MustBuild() BACnetAccessCredentialDisableTagged {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetAccessCredentialDisableTaggedBuilder) DeepCopy() any {
+	return m.CreateBACnetAccessCredentialDisableTaggedBuilder()
+}
+
+// CreateBACnetAccessCredentialDisableTaggedBuilder creates a BACnetAccessCredentialDisableTaggedBuilder
+func (m *_BACnetAccessCredentialDisableTagged) CreateBACnetAccessCredentialDisableTaggedBuilder() BACnetAccessCredentialDisableTaggedBuilder {
+	if m == nil {
+		return NewBACnetAccessCredentialDisableTaggedBuilder()
+	}
+	return &_BACnetAccessCredentialDisableTaggedBuilder{_BACnetAccessCredentialDisableTagged: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -40,6 +40,8 @@ type SecurityDataLowBatteryDetected interface {
 	SecurityData
 	// IsSecurityDataLowBatteryDetected is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLowBatteryDetected()
+	// CreateBuilder creates a SecurityDataLowBatteryDetectedBuilder
+	CreateSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBuilder
 }
 
 // _SecurityDataLowBatteryDetected is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataLowBatteryDetected(commandTypeContainer SecurityCommandTypeC
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataLowBatteryDetectedBuilder is a builder for SecurityDataLowBatteryDetected
+type SecurityDataLowBatteryDetectedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder
+	// Build builds the SecurityDataLowBatteryDetected or returns an error if something is wrong
+	Build() (SecurityDataLowBatteryDetected, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataLowBatteryDetected
+}
+
+// NewSecurityDataLowBatteryDetectedBuilder() creates a SecurityDataLowBatteryDetectedBuilder
+func NewSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBuilder {
+	return &_SecurityDataLowBatteryDetectedBuilder{_SecurityDataLowBatteryDetected: new(_SecurityDataLowBatteryDetected)}
+}
+
+type _SecurityDataLowBatteryDetectedBuilder struct {
+	*_SecurityDataLowBatteryDetected
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataLowBatteryDetectedBuilder) = (*_SecurityDataLowBatteryDetectedBuilder)(nil)
+
+func (m *_SecurityDataLowBatteryDetectedBuilder) WithMandatoryFields() SecurityDataLowBatteryDetectedBuilder {
+	return m
+}
+
+func (m *_SecurityDataLowBatteryDetectedBuilder) Build() (SecurityDataLowBatteryDetected, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataLowBatteryDetected.deepCopy(), nil
+}
+
+func (m *_SecurityDataLowBatteryDetectedBuilder) MustBuild() SecurityDataLowBatteryDetected {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataLowBatteryDetectedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataLowBatteryDetectedBuilder()
+}
+
+// CreateSecurityDataLowBatteryDetectedBuilder creates a SecurityDataLowBatteryDetectedBuilder
+func (m *_SecurityDataLowBatteryDetected) CreateSecurityDataLowBatteryDetectedBuilder() SecurityDataLowBatteryDetectedBuilder {
+	if m == nil {
+		return NewSecurityDataLowBatteryDetectedBuilder()
+	}
+	return &_SecurityDataLowBatteryDetectedBuilder{_SecurityDataLowBatteryDetected: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

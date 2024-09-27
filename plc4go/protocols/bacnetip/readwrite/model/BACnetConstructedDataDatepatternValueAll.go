@@ -40,6 +40,8 @@ type BACnetConstructedDataDatepatternValueAll interface {
 	BACnetConstructedData
 	// IsBACnetConstructedDataDatepatternValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDatepatternValueAll()
+	// CreateBuilder creates a BACnetConstructedDataDatepatternValueAllBuilder
+	CreateBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataDatepatternValueAllBuilder
 }
 
 // _BACnetConstructedDataDatepatternValueAll is the data-structure of this message
@@ -58,6 +60,71 @@ func NewBACnetConstructedDataDatepatternValueAll(openingTag BACnetOpeningTag, pe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDatepatternValueAllBuilder is a builder for BACnetConstructedDataDatepatternValueAll
+type BACnetConstructedDataDatepatternValueAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataDatepatternValueAllBuilder
+	// Build builds the BACnetConstructedDataDatepatternValueAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataDatepatternValueAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDatepatternValueAll
+}
+
+// NewBACnetConstructedDataDatepatternValueAllBuilder() creates a BACnetConstructedDataDatepatternValueAllBuilder
+func NewBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataDatepatternValueAllBuilder {
+	return &_BACnetConstructedDataDatepatternValueAllBuilder{_BACnetConstructedDataDatepatternValueAll: new(_BACnetConstructedDataDatepatternValueAll)}
+}
+
+type _BACnetConstructedDataDatepatternValueAllBuilder struct {
+	*_BACnetConstructedDataDatepatternValueAll
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDatepatternValueAllBuilder) = (*_BACnetConstructedDataDatepatternValueAllBuilder)(nil)
+
+func (m *_BACnetConstructedDataDatepatternValueAllBuilder) WithMandatoryFields() BACnetConstructedDataDatepatternValueAllBuilder {
+	return m
+}
+
+func (m *_BACnetConstructedDataDatepatternValueAllBuilder) Build() (BACnetConstructedDataDatepatternValueAll, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDatepatternValueAll.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDatepatternValueAllBuilder) MustBuild() BACnetConstructedDataDatepatternValueAll {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDatepatternValueAllBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDatepatternValueAllBuilder()
+}
+
+// CreateBACnetConstructedDataDatepatternValueAllBuilder creates a BACnetConstructedDataDatepatternValueAllBuilder
+func (m *_BACnetConstructedDataDatepatternValueAll) CreateBACnetConstructedDataDatepatternValueAllBuilder() BACnetConstructedDataDatepatternValueAllBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDatepatternValueAllBuilder()
+	}
+	return &_BACnetConstructedDataDatepatternValueAllBuilder{_BACnetConstructedDataDatepatternValueAll: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type ErrorReportingSystemCategoryTypeInputUnits interface {
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForInputUnits
 	// IsErrorReportingSystemCategoryTypeInputUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryTypeInputUnits()
+	// CreateBuilder creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder
 }
 
 // _ErrorReportingSystemCategoryTypeInputUnits is the data-structure of this message
@@ -64,6 +66,78 @@ func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportin
 	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingSystemCategoryTypeInputUnitsBuilder is a builder for ErrorReportingSystemCategoryTypeInputUnits
+type ErrorReportingSystemCategoryTypeInputUnitsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	// WithCategoryForType adds CategoryForType (property field)
+	WithCategoryForType(ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	// Build builds the ErrorReportingSystemCategoryTypeInputUnits or returns an error if something is wrong
+	Build() (ErrorReportingSystemCategoryTypeInputUnits, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingSystemCategoryTypeInputUnits
+}
+
+// NewErrorReportingSystemCategoryTypeInputUnitsBuilder() creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+func NewErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: new(_ErrorReportingSystemCategoryTypeInputUnits)}
+}
+
+type _ErrorReportingSystemCategoryTypeInputUnitsBuilder struct {
+	*_ErrorReportingSystemCategoryTypeInputUnits
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingSystemCategoryTypeInputUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)(nil)
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	return m.WithCategoryForType(categoryForType)
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	m.CategoryForType = categoryForType
+	return m
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeInputUnits, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ErrorReportingSystemCategoryTypeInputUnits.deepCopy(), nil
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeInputUnits {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) DeepCopy() any {
+	return m.CreateErrorReportingSystemCategoryTypeInputUnitsBuilder()
+}
+
+// CreateErrorReportingSystemCategoryTypeInputUnitsBuilder creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	if m == nil {
+		return NewErrorReportingSystemCategoryTypeInputUnitsBuilder()
+	}
+	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

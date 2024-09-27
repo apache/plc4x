@@ -40,6 +40,8 @@ type GetAttributeSingleResponse interface {
 	CipService
 	// IsGetAttributeSingleResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeSingleResponse()
+	// CreateBuilder creates a GetAttributeSingleResponseBuilder
+	CreateGetAttributeSingleResponseBuilder() GetAttributeSingleResponseBuilder
 }
 
 // _GetAttributeSingleResponse is the data-structure of this message
@@ -58,6 +60,71 @@ func NewGetAttributeSingleResponse(serviceLen uint16) *_GetAttributeSingleRespon
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeSingleResponseBuilder is a builder for GetAttributeSingleResponse
+type GetAttributeSingleResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() GetAttributeSingleResponseBuilder
+	// Build builds the GetAttributeSingleResponse or returns an error if something is wrong
+	Build() (GetAttributeSingleResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeSingleResponse
+}
+
+// NewGetAttributeSingleResponseBuilder() creates a GetAttributeSingleResponseBuilder
+func NewGetAttributeSingleResponseBuilder() GetAttributeSingleResponseBuilder {
+	return &_GetAttributeSingleResponseBuilder{_GetAttributeSingleResponse: new(_GetAttributeSingleResponse)}
+}
+
+type _GetAttributeSingleResponseBuilder struct {
+	*_GetAttributeSingleResponse
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeSingleResponseBuilder) = (*_GetAttributeSingleResponseBuilder)(nil)
+
+func (m *_GetAttributeSingleResponseBuilder) WithMandatoryFields() GetAttributeSingleResponseBuilder {
+	return m
+}
+
+func (m *_GetAttributeSingleResponseBuilder) Build() (GetAttributeSingleResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetAttributeSingleResponse.deepCopy(), nil
+}
+
+func (m *_GetAttributeSingleResponseBuilder) MustBuild() GetAttributeSingleResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetAttributeSingleResponseBuilder) DeepCopy() any {
+	return m.CreateGetAttributeSingleResponseBuilder()
+}
+
+// CreateGetAttributeSingleResponseBuilder creates a GetAttributeSingleResponseBuilder
+func (m *_GetAttributeSingleResponse) CreateGetAttributeSingleResponseBuilder() GetAttributeSingleResponseBuilder {
+	if m == nil {
+		return NewGetAttributeSingleResponseBuilder()
+	}
+	return &_GetAttributeSingleResponseBuilder{_GetAttributeSingleResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

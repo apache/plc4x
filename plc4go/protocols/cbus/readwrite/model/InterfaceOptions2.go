@@ -45,6 +45,8 @@ type InterfaceOptions2 interface {
 	GetClockGen() bool
 	// IsInterfaceOptions2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsInterfaceOptions2()
+	// CreateBuilder creates a InterfaceOptions2Builder
+	CreateInterfaceOptions2Builder() InterfaceOptions2Builder
 }
 
 // _InterfaceOptions2 is the data-structure of this message
@@ -66,6 +68,85 @@ var _ InterfaceOptions2 = (*_InterfaceOptions2)(nil)
 func NewInterfaceOptions2(burden bool, clockGen bool) *_InterfaceOptions2 {
 	return &_InterfaceOptions2{Burden: burden, ClockGen: clockGen}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// InterfaceOptions2Builder is a builder for InterfaceOptions2
+type InterfaceOptions2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(burden bool, clockGen bool) InterfaceOptions2Builder
+	// WithBurden adds Burden (property field)
+	WithBurden(bool) InterfaceOptions2Builder
+	// WithClockGen adds ClockGen (property field)
+	WithClockGen(bool) InterfaceOptions2Builder
+	// Build builds the InterfaceOptions2 or returns an error if something is wrong
+	Build() (InterfaceOptions2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() InterfaceOptions2
+}
+
+// NewInterfaceOptions2Builder() creates a InterfaceOptions2Builder
+func NewInterfaceOptions2Builder() InterfaceOptions2Builder {
+	return &_InterfaceOptions2Builder{_InterfaceOptions2: new(_InterfaceOptions2)}
+}
+
+type _InterfaceOptions2Builder struct {
+	*_InterfaceOptions2
+
+	err *utils.MultiError
+}
+
+var _ (InterfaceOptions2Builder) = (*_InterfaceOptions2Builder)(nil)
+
+func (m *_InterfaceOptions2Builder) WithMandatoryFields(burden bool, clockGen bool) InterfaceOptions2Builder {
+	return m.WithBurden(burden).WithClockGen(clockGen)
+}
+
+func (m *_InterfaceOptions2Builder) WithBurden(burden bool) InterfaceOptions2Builder {
+	m.Burden = burden
+	return m
+}
+
+func (m *_InterfaceOptions2Builder) WithClockGen(clockGen bool) InterfaceOptions2Builder {
+	m.ClockGen = clockGen
+	return m
+}
+
+func (m *_InterfaceOptions2Builder) Build() (InterfaceOptions2, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._InterfaceOptions2.deepCopy(), nil
+}
+
+func (m *_InterfaceOptions2Builder) MustBuild() InterfaceOptions2 {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_InterfaceOptions2Builder) DeepCopy() any {
+	return m.CreateInterfaceOptions2Builder()
+}
+
+// CreateInterfaceOptions2Builder creates a InterfaceOptions2Builder
+func (m *_InterfaceOptions2) CreateInterfaceOptions2Builder() InterfaceOptions2Builder {
+	if m == nil {
+		return NewInterfaceOptions2Builder()
+	}
+	return &_InterfaceOptions2Builder{_InterfaceOptions2: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

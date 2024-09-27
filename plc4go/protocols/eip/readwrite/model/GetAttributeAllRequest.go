@@ -46,6 +46,8 @@ type GetAttributeAllRequest interface {
 	GetInstanceSegment() PathSegment
 	// IsGetAttributeAllRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeAllRequest()
+	// CreateBuilder creates a GetAttributeAllRequestBuilder
+	CreateGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder
 }
 
 // _GetAttributeAllRequest is the data-structure of this message
@@ -74,6 +76,97 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 	_result.CipServiceContract.(*_CipService)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeAllRequestBuilder is a builder for GetAttributeAllRequest
+type GetAttributeAllRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) GetAttributeAllRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) GetAttributeAllRequestBuilder
+	// Build builds the GetAttributeAllRequest or returns an error if something is wrong
+	Build() (GetAttributeAllRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeAllRequest
+}
+
+// NewGetAttributeAllRequestBuilder() creates a GetAttributeAllRequestBuilder
+func NewGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
+	return &_GetAttributeAllRequestBuilder{_GetAttributeAllRequest: new(_GetAttributeAllRequest)}
+}
+
+type _GetAttributeAllRequestBuilder struct {
+	*_GetAttributeAllRequest
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeAllRequestBuilder) = (*_GetAttributeAllRequestBuilder)(nil)
+
+func (m *_GetAttributeAllRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment) GetAttributeAllRequestBuilder {
+	return m.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment)
+}
+
+func (m *_GetAttributeAllRequestBuilder) WithClassSegment(classSegment PathSegment) GetAttributeAllRequestBuilder {
+	m.ClassSegment = classSegment
+	return m
+}
+
+func (m *_GetAttributeAllRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) GetAttributeAllRequestBuilder {
+	m.InstanceSegment = instanceSegment
+	return m
+}
+
+func (m *_GetAttributeAllRequestBuilder) Build() (GetAttributeAllRequest, error) {
+	if m.ClassSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if m.InstanceSegment == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._GetAttributeAllRequest.deepCopy(), nil
+}
+
+func (m *_GetAttributeAllRequestBuilder) MustBuild() GetAttributeAllRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_GetAttributeAllRequestBuilder) DeepCopy() any {
+	return m.CreateGetAttributeAllRequestBuilder()
+}
+
+// CreateGetAttributeAllRequestBuilder creates a GetAttributeAllRequestBuilder
+func (m *_GetAttributeAllRequest) CreateGetAttributeAllRequestBuilder() GetAttributeAllRequestBuilder {
+	if m == nil {
+		return NewGetAttributeAllRequestBuilder()
+	}
+	return &_GetAttributeAllRequestBuilder{_GetAttributeAllRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

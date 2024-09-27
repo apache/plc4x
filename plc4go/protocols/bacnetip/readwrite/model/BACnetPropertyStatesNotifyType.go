@@ -44,6 +44,8 @@ type BACnetPropertyStatesNotifyType interface {
 	GetNotifyType() BACnetNotifyTypeTagged
 	// IsBACnetPropertyStatesNotifyType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesNotifyType()
+	// CreateBuilder creates a BACnetPropertyStatesNotifyTypeBuilder
+	CreateBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder
 }
 
 // _BACnetPropertyStatesNotifyType is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesNotifyType(peekedTagHeader BACnetTagHeader, notifyTy
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesNotifyTypeBuilder is a builder for BACnetPropertyStatesNotifyType
+type BACnetPropertyStatesNotifyTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder
+	// WithNotifyType adds NotifyType (property field)
+	WithNotifyType(BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder
+	// WithNotifyTypeBuilder adds NotifyType (property field) which is build by the builder
+	WithNotifyTypeBuilder(func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetPropertyStatesNotifyTypeBuilder
+	// Build builds the BACnetPropertyStatesNotifyType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesNotifyType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesNotifyType
+}
+
+// NewBACnetPropertyStatesNotifyTypeBuilder() creates a BACnetPropertyStatesNotifyTypeBuilder
+func NewBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder {
+	return &_BACnetPropertyStatesNotifyTypeBuilder{_BACnetPropertyStatesNotifyType: new(_BACnetPropertyStatesNotifyType)}
+}
+
+type _BACnetPropertyStatesNotifyTypeBuilder struct {
+	*_BACnetPropertyStatesNotifyType
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesNotifyTypeBuilder) = (*_BACnetPropertyStatesNotifyTypeBuilder)(nil)
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) WithMandatoryFields(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder {
+	return m.WithNotifyType(notifyType)
+}
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) WithNotifyType(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder {
+	m.NotifyType = notifyType
+	return m
+}
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) WithNotifyTypeBuilder(builderSupplier func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetPropertyStatesNotifyTypeBuilder {
+	builder := builderSupplier(m.NotifyType.CreateBACnetNotifyTypeTaggedBuilder())
+	var err error
+	m.NotifyType, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) Build() (BACnetPropertyStatesNotifyType, error) {
+	if m.NotifyType == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'notifyType' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesNotifyType.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) MustBuild() BACnetPropertyStatesNotifyType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesNotifyTypeBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesNotifyTypeBuilder()
+}
+
+// CreateBACnetPropertyStatesNotifyTypeBuilder creates a BACnetPropertyStatesNotifyTypeBuilder
+func (m *_BACnetPropertyStatesNotifyType) CreateBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesNotifyTypeBuilder()
+	}
+	return &_BACnetPropertyStatesNotifyTypeBuilder{_BACnetPropertyStatesNotifyType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

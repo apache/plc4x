@@ -40,6 +40,8 @@ type RequestEmpty interface {
 	Request
 	// IsRequestEmpty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestEmpty()
+	// CreateBuilder creates a RequestEmptyBuilder
+	CreateRequestEmptyBuilder() RequestEmptyBuilder
 }
 
 // _RequestEmpty is the data-structure of this message
@@ -58,6 +60,71 @@ func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode 
 	_result.RequestContract.(*_Request)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestEmptyBuilder is a builder for RequestEmpty
+type RequestEmptyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RequestEmptyBuilder
+	// Build builds the RequestEmpty or returns an error if something is wrong
+	Build() (RequestEmpty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestEmpty
+}
+
+// NewRequestEmptyBuilder() creates a RequestEmptyBuilder
+func NewRequestEmptyBuilder() RequestEmptyBuilder {
+	return &_RequestEmptyBuilder{_RequestEmpty: new(_RequestEmpty)}
+}
+
+type _RequestEmptyBuilder struct {
+	*_RequestEmpty
+
+	err *utils.MultiError
+}
+
+var _ (RequestEmptyBuilder) = (*_RequestEmptyBuilder)(nil)
+
+func (m *_RequestEmptyBuilder) WithMandatoryFields() RequestEmptyBuilder {
+	return m
+}
+
+func (m *_RequestEmptyBuilder) Build() (RequestEmpty, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RequestEmpty.deepCopy(), nil
+}
+
+func (m *_RequestEmptyBuilder) MustBuild() RequestEmpty {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RequestEmptyBuilder) DeepCopy() any {
+	return m.CreateRequestEmptyBuilder()
+}
+
+// CreateRequestEmptyBuilder creates a RequestEmptyBuilder
+func (m *_RequestEmpty) CreateRequestEmptyBuilder() RequestEmptyBuilder {
+	if m == nil {
+		return NewRequestEmptyBuilder()
+	}
+	return &_RequestEmptyBuilder{_RequestEmpty: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

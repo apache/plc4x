@@ -40,6 +40,8 @@ type SubscribedDataSetDataType interface {
 	ExtensionObjectDefinition
 	// IsSubscribedDataSetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubscribedDataSetDataType()
+	// CreateBuilder creates a SubscribedDataSetDataTypeBuilder
+	CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder
 }
 
 // _SubscribedDataSetDataType is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubscribedDataSetDataTypeBuilder is a builder for SubscribedDataSetDataType
+type SubscribedDataSetDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SubscribedDataSetDataTypeBuilder
+	// Build builds the SubscribedDataSetDataType or returns an error if something is wrong
+	Build() (SubscribedDataSetDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubscribedDataSetDataType
+}
+
+// NewSubscribedDataSetDataTypeBuilder() creates a SubscribedDataSetDataTypeBuilder
+func NewSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
+	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: new(_SubscribedDataSetDataType)}
+}
+
+type _SubscribedDataSetDataTypeBuilder struct {
+	*_SubscribedDataSetDataType
+
+	err *utils.MultiError
+}
+
+var _ (SubscribedDataSetDataTypeBuilder) = (*_SubscribedDataSetDataTypeBuilder)(nil)
+
+func (m *_SubscribedDataSetDataTypeBuilder) WithMandatoryFields() SubscribedDataSetDataTypeBuilder {
+	return m
+}
+
+func (m *_SubscribedDataSetDataTypeBuilder) Build() (SubscribedDataSetDataType, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SubscribedDataSetDataType.deepCopy(), nil
+}
+
+func (m *_SubscribedDataSetDataTypeBuilder) MustBuild() SubscribedDataSetDataType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SubscribedDataSetDataTypeBuilder) DeepCopy() any {
+	return m.CreateSubscribedDataSetDataTypeBuilder()
+}
+
+// CreateSubscribedDataSetDataTypeBuilder creates a SubscribedDataSetDataTypeBuilder
+func (m *_SubscribedDataSetDataType) CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
+	if m == nil {
+		return NewSubscribedDataSetDataTypeBuilder()
+	}
+	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type ReplyOrConfirmationReply interface {
 	GetTermination() ResponseTermination
 	// IsReplyOrConfirmationReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmationReply()
+	// CreateBuilder creates a ReplyOrConfirmationReplyBuilder
+	CreateReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder
 }
 
 // _ReplyOrConfirmationReply is the data-structure of this message
@@ -74,6 +76,112 @@ func NewReplyOrConfirmationReply(peekedByte byte, reply Reply, termination Respo
 	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyOrConfirmationReplyBuilder is a builder for ReplyOrConfirmationReply
+type ReplyOrConfirmationReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder
+	// WithReply adds Reply (property field)
+	WithReply(Reply) ReplyOrConfirmationReplyBuilder
+	// WithTermination adds Termination (property field)
+	WithTermination(ResponseTermination) ReplyOrConfirmationReplyBuilder
+	// WithTerminationBuilder adds Termination (property field) which is build by the builder
+	WithTerminationBuilder(func(ResponseTerminationBuilder) ResponseTerminationBuilder) ReplyOrConfirmationReplyBuilder
+	// Build builds the ReplyOrConfirmationReply or returns an error if something is wrong
+	Build() (ReplyOrConfirmationReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyOrConfirmationReply
+}
+
+// NewReplyOrConfirmationReplyBuilder() creates a ReplyOrConfirmationReplyBuilder
+func NewReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder {
+	return &_ReplyOrConfirmationReplyBuilder{_ReplyOrConfirmationReply: new(_ReplyOrConfirmationReply)}
+}
+
+type _ReplyOrConfirmationReplyBuilder struct {
+	*_ReplyOrConfirmationReply
+
+	err *utils.MultiError
+}
+
+var _ (ReplyOrConfirmationReplyBuilder) = (*_ReplyOrConfirmationReplyBuilder)(nil)
+
+func (m *_ReplyOrConfirmationReplyBuilder) WithMandatoryFields(reply Reply, termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
+	return m.WithReply(reply).WithTermination(termination)
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) WithReply(reply Reply) ReplyOrConfirmationReplyBuilder {
+	m.Reply = reply
+	return m
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) WithTermination(termination ResponseTermination) ReplyOrConfirmationReplyBuilder {
+	m.Termination = termination
+	return m
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) WithTerminationBuilder(builderSupplier func(ResponseTerminationBuilder) ResponseTerminationBuilder) ReplyOrConfirmationReplyBuilder {
+	builder := builderSupplier(m.Termination.CreateResponseTerminationBuilder())
+	var err error
+	m.Termination, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "ResponseTerminationBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) Build() (ReplyOrConfirmationReply, error) {
+	if m.Reply == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'reply' not set"))
+	}
+	if m.Termination == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'termination' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ReplyOrConfirmationReply.deepCopy(), nil
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) MustBuild() ReplyOrConfirmationReply {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ReplyOrConfirmationReplyBuilder) DeepCopy() any {
+	return m.CreateReplyOrConfirmationReplyBuilder()
+}
+
+// CreateReplyOrConfirmationReplyBuilder creates a ReplyOrConfirmationReplyBuilder
+func (m *_ReplyOrConfirmationReply) CreateReplyOrConfirmationReplyBuilder() ReplyOrConfirmationReplyBuilder {
+	if m == nil {
+		return NewReplyOrConfirmationReplyBuilder()
+	}
+	return &_ReplyOrConfirmationReplyBuilder{_ReplyOrConfirmationReply: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

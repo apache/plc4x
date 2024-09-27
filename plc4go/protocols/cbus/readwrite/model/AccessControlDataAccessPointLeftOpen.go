@@ -40,6 +40,8 @@ type AccessControlDataAccessPointLeftOpen interface {
 	AccessControlData
 	// IsAccessControlDataAccessPointLeftOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlDataAccessPointLeftOpen()
+	// CreateBuilder creates a AccessControlDataAccessPointLeftOpenBuilder
+	CreateAccessControlDataAccessPointLeftOpenBuilder() AccessControlDataAccessPointLeftOpenBuilder
 }
 
 // _AccessControlDataAccessPointLeftOpen is the data-structure of this message
@@ -58,6 +60,71 @@ func NewAccessControlDataAccessPointLeftOpen(commandTypeContainer AccessControlC
 	_result.AccessControlDataContract.(*_AccessControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataAccessPointLeftOpenBuilder is a builder for AccessControlDataAccessPointLeftOpen
+type AccessControlDataAccessPointLeftOpenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AccessControlDataAccessPointLeftOpenBuilder
+	// Build builds the AccessControlDataAccessPointLeftOpen or returns an error if something is wrong
+	Build() (AccessControlDataAccessPointLeftOpen, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlDataAccessPointLeftOpen
+}
+
+// NewAccessControlDataAccessPointLeftOpenBuilder() creates a AccessControlDataAccessPointLeftOpenBuilder
+func NewAccessControlDataAccessPointLeftOpenBuilder() AccessControlDataAccessPointLeftOpenBuilder {
+	return &_AccessControlDataAccessPointLeftOpenBuilder{_AccessControlDataAccessPointLeftOpen: new(_AccessControlDataAccessPointLeftOpen)}
+}
+
+type _AccessControlDataAccessPointLeftOpenBuilder struct {
+	*_AccessControlDataAccessPointLeftOpen
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataAccessPointLeftOpenBuilder) = (*_AccessControlDataAccessPointLeftOpenBuilder)(nil)
+
+func (m *_AccessControlDataAccessPointLeftOpenBuilder) WithMandatoryFields() AccessControlDataAccessPointLeftOpenBuilder {
+	return m
+}
+
+func (m *_AccessControlDataAccessPointLeftOpenBuilder) Build() (AccessControlDataAccessPointLeftOpen, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AccessControlDataAccessPointLeftOpen.deepCopy(), nil
+}
+
+func (m *_AccessControlDataAccessPointLeftOpenBuilder) MustBuild() AccessControlDataAccessPointLeftOpen {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AccessControlDataAccessPointLeftOpenBuilder) DeepCopy() any {
+	return m.CreateAccessControlDataAccessPointLeftOpenBuilder()
+}
+
+// CreateAccessControlDataAccessPointLeftOpenBuilder creates a AccessControlDataAccessPointLeftOpenBuilder
+func (m *_AccessControlDataAccessPointLeftOpen) CreateAccessControlDataAccessPointLeftOpenBuilder() AccessControlDataAccessPointLeftOpenBuilder {
+	if m == nil {
+		return NewAccessControlDataAccessPointLeftOpenBuilder()
+	}
+	return &_AccessControlDataAccessPointLeftOpenBuilder{_AccessControlDataAccessPointLeftOpen: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

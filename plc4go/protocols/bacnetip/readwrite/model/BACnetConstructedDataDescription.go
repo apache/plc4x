@@ -46,6 +46,8 @@ type BACnetConstructedDataDescription interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDescription()
+	// CreateBuilder creates a BACnetConstructedDataDescriptionBuilder
+	CreateBACnetConstructedDataDescriptionBuilder() BACnetConstructedDataDescriptionBuilder
 }
 
 // _BACnetConstructedDataDescription is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDescription(openingTag BACnetOpeningTag, peekedTagH
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDescriptionBuilder is a builder for BACnetConstructedDataDescription
+type BACnetConstructedDataDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(description BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDescriptionBuilder
+	// Build builds the BACnetConstructedDataDescription or returns an error if something is wrong
+	Build() (BACnetConstructedDataDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDescription
+}
+
+// NewBACnetConstructedDataDescriptionBuilder() creates a BACnetConstructedDataDescriptionBuilder
+func NewBACnetConstructedDataDescriptionBuilder() BACnetConstructedDataDescriptionBuilder {
+	return &_BACnetConstructedDataDescriptionBuilder{_BACnetConstructedDataDescription: new(_BACnetConstructedDataDescription)}
+}
+
+type _BACnetConstructedDataDescriptionBuilder struct {
+	*_BACnetConstructedDataDescription
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDescriptionBuilder) = (*_BACnetConstructedDataDescriptionBuilder)(nil)
+
+func (m *_BACnetConstructedDataDescriptionBuilder) WithMandatoryFields(description BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionBuilder {
+	return m.WithDescription(description)
+}
+
+func (m *_BACnetConstructedDataDescriptionBuilder) WithDescription(description BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionBuilder {
+	m.Description = description
+	return m
+}
+
+func (m *_BACnetConstructedDataDescriptionBuilder) WithDescriptionBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDescriptionBuilder {
+	builder := builderSupplier(m.Description.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	m.Description, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDescriptionBuilder) Build() (BACnetConstructedDataDescription, error) {
+	if m.Description == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDescription.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDescriptionBuilder) MustBuild() BACnetConstructedDataDescription {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDescriptionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDescriptionBuilder()
+}
+
+// CreateBACnetConstructedDataDescriptionBuilder creates a BACnetConstructedDataDescriptionBuilder
+func (m *_BACnetConstructedDataDescription) CreateBACnetConstructedDataDescriptionBuilder() BACnetConstructedDataDescriptionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDescriptionBuilder()
+	}
+	return &_BACnetConstructedDataDescriptionBuilder{_BACnetConstructedDataDescription: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

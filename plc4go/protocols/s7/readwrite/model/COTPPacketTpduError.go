@@ -46,6 +46,8 @@ type COTPPacketTpduError interface {
 	GetRejectCause() uint8
 	// IsCOTPPacketTpduError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketTpduError()
+	// CreateBuilder creates a COTPPacketTpduErrorBuilder
+	CreateCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder
 }
 
 // _COTPPacketTpduError is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCOTPPacketTpduError(parameters []COTPParameter, payload S7Message, desti
 	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketTpduErrorBuilder is a builder for COTPPacketTpduError
+type COTPPacketTpduErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationReference uint16, rejectCause uint8) COTPPacketTpduErrorBuilder
+	// WithDestinationReference adds DestinationReference (property field)
+	WithDestinationReference(uint16) COTPPacketTpduErrorBuilder
+	// WithRejectCause adds RejectCause (property field)
+	WithRejectCause(uint8) COTPPacketTpduErrorBuilder
+	// Build builds the COTPPacketTpduError or returns an error if something is wrong
+	Build() (COTPPacketTpduError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketTpduError
+}
+
+// NewCOTPPacketTpduErrorBuilder() creates a COTPPacketTpduErrorBuilder
+func NewCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder {
+	return &_COTPPacketTpduErrorBuilder{_COTPPacketTpduError: new(_COTPPacketTpduError)}
+}
+
+type _COTPPacketTpduErrorBuilder struct {
+	*_COTPPacketTpduError
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketTpduErrorBuilder) = (*_COTPPacketTpduErrorBuilder)(nil)
+
+func (m *_COTPPacketTpduErrorBuilder) WithMandatoryFields(destinationReference uint16, rejectCause uint8) COTPPacketTpduErrorBuilder {
+	return m.WithDestinationReference(destinationReference).WithRejectCause(rejectCause)
+}
+
+func (m *_COTPPacketTpduErrorBuilder) WithDestinationReference(destinationReference uint16) COTPPacketTpduErrorBuilder {
+	m.DestinationReference = destinationReference
+	return m
+}
+
+func (m *_COTPPacketTpduErrorBuilder) WithRejectCause(rejectCause uint8) COTPPacketTpduErrorBuilder {
+	m.RejectCause = rejectCause
+	return m
+}
+
+func (m *_COTPPacketTpduErrorBuilder) Build() (COTPPacketTpduError, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._COTPPacketTpduError.deepCopy(), nil
+}
+
+func (m *_COTPPacketTpduErrorBuilder) MustBuild() COTPPacketTpduError {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_COTPPacketTpduErrorBuilder) DeepCopy() any {
+	return m.CreateCOTPPacketTpduErrorBuilder()
+}
+
+// CreateCOTPPacketTpduErrorBuilder creates a COTPPacketTpduErrorBuilder
+func (m *_COTPPacketTpduError) CreateCOTPPacketTpduErrorBuilder() COTPPacketTpduErrorBuilder {
+	if m == nil {
+		return NewCOTPPacketTpduErrorBuilder()
+	}
+	return &_COTPPacketTpduErrorBuilder{_COTPPacketTpduError: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

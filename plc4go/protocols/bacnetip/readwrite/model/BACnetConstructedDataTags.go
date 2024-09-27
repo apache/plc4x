@@ -48,6 +48,8 @@ type BACnetConstructedDataTags interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataTags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTags()
+	// CreateBuilder creates a BACnetConstructedDataTagsBuilder
+	CreateBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder
 }
 
 // _BACnetConstructedDataTags is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataTags(openingTag BACnetOpeningTag, peekedTagHeader B
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTagsBuilder is a builder for BACnetConstructedDataTags
+type BACnetConstructedDataTagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tags []BACnetNameValue) BACnetConstructedDataTagsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTagsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTagsBuilder
+	// WithTags adds Tags (property field)
+	WithTags(...BACnetNameValue) BACnetConstructedDataTagsBuilder
+	// Build builds the BACnetConstructedDataTags or returns an error if something is wrong
+	Build() (BACnetConstructedDataTags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTags
+}
+
+// NewBACnetConstructedDataTagsBuilder() creates a BACnetConstructedDataTagsBuilder
+func NewBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder {
+	return &_BACnetConstructedDataTagsBuilder{_BACnetConstructedDataTags: new(_BACnetConstructedDataTags)}
+}
+
+type _BACnetConstructedDataTagsBuilder struct {
+	*_BACnetConstructedDataTags
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTagsBuilder) = (*_BACnetConstructedDataTagsBuilder)(nil)
+
+func (m *_BACnetConstructedDataTagsBuilder) WithMandatoryFields(tags []BACnetNameValue) BACnetConstructedDataTagsBuilder {
+	return m.WithTags(tags...)
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTagsBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTagsBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) WithTags(tags ...BACnetNameValue) BACnetConstructedDataTagsBuilder {
+	m.Tags = tags
+	return m
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) Build() (BACnetConstructedDataTags, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTags.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) MustBuild() BACnetConstructedDataTags {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTagsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTagsBuilder()
+}
+
+// CreateBACnetConstructedDataTagsBuilder creates a BACnetConstructedDataTagsBuilder
+func (m *_BACnetConstructedDataTags) CreateBACnetConstructedDataTagsBuilder() BACnetConstructedDataTagsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTagsBuilder()
+	}
+	return &_BACnetConstructedDataTagsBuilder{_BACnetConstructedDataTags: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

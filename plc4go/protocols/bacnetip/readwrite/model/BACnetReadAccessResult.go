@@ -45,6 +45,8 @@ type BACnetReadAccessResult interface {
 	GetListOfResults() BACnetReadAccessResultListOfResults
 	// IsBACnetReadAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReadAccessResult()
+	// CreateBuilder creates a BACnetReadAccessResultBuilder
+	CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder
 }
 
 // _BACnetReadAccessResult is the data-structure of this message
@@ -62,6 +64,121 @@ func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier
 	}
 	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReadAccessResultBuilder is a builder for BACnetReadAccessResult
+type BACnetReadAccessResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder
+	// WithListOfResults adds ListOfResults (property field)
+	WithOptionalListOfResults(BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder
+	// WithOptionalListOfResultsBuilder adds ListOfResults (property field) which is build by the builder
+	WithOptionalListOfResultsBuilder(func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder
+	// Build builds the BACnetReadAccessResult or returns an error if something is wrong
+	Build() (BACnetReadAccessResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReadAccessResult
+}
+
+// NewBACnetReadAccessResultBuilder() creates a BACnetReadAccessResultBuilder
+func NewBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
+	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: new(_BACnetReadAccessResult)}
+}
+
+type _BACnetReadAccessResultBuilder struct {
+	*_BACnetReadAccessResult
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReadAccessResultBuilder) = (*_BACnetReadAccessResultBuilder)(nil)
+
+func (m *_BACnetReadAccessResultBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	return m.WithObjectIdentifier(objectIdentifier)
+}
+
+func (m *_BACnetReadAccessResultBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	m.ObjectIdentifier = objectIdentifier
+	return m
+}
+
+func (m *_BACnetReadAccessResultBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(m.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	m.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetReadAccessResultBuilder) WithOptionalListOfResults(listOfResults BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder {
+	m.ListOfResults = listOfResults
+	return m
+}
+
+func (m *_BACnetReadAccessResultBuilder) WithOptionalListOfResultsBuilder(builderSupplier func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(m.ListOfResults.CreateBACnetReadAccessResultListOfResultsBuilder())
+	var err error
+	m.ListOfResults, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetReadAccessResultListOfResultsBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetReadAccessResultBuilder) Build() (BACnetReadAccessResult, error) {
+	if m.ObjectIdentifier == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetReadAccessResult.deepCopy(), nil
+}
+
+func (m *_BACnetReadAccessResultBuilder) MustBuild() BACnetReadAccessResult {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetReadAccessResultBuilder) DeepCopy() any {
+	return m.CreateBACnetReadAccessResultBuilder()
+}
+
+// CreateBACnetReadAccessResultBuilder creates a BACnetReadAccessResultBuilder
+func (m *_BACnetReadAccessResult) CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
+	if m == nil {
+		return NewBACnetReadAccessResultBuilder()
+	}
+	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

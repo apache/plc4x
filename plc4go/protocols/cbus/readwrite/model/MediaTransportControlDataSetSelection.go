@@ -46,6 +46,8 @@ type MediaTransportControlDataSetSelection interface {
 	GetSelectionLo() byte
 	// IsMediaTransportControlDataSetSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataSetSelection()
+	// CreateBuilder creates a MediaTransportControlDataSetSelectionBuilder
+	CreateMediaTransportControlDataSetSelectionBuilder() MediaTransportControlDataSetSelectionBuilder
 }
 
 // _MediaTransportControlDataSetSelection is the data-structure of this message
@@ -68,6 +70,85 @@ func NewMediaTransportControlDataSetSelection(commandTypeContainer MediaTranspor
 	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataSetSelectionBuilder is a builder for MediaTransportControlDataSetSelection
+type MediaTransportControlDataSetSelectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(selectionHi byte, selectionLo byte) MediaTransportControlDataSetSelectionBuilder
+	// WithSelectionHi adds SelectionHi (property field)
+	WithSelectionHi(byte) MediaTransportControlDataSetSelectionBuilder
+	// WithSelectionLo adds SelectionLo (property field)
+	WithSelectionLo(byte) MediaTransportControlDataSetSelectionBuilder
+	// Build builds the MediaTransportControlDataSetSelection or returns an error if something is wrong
+	Build() (MediaTransportControlDataSetSelection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataSetSelection
+}
+
+// NewMediaTransportControlDataSetSelectionBuilder() creates a MediaTransportControlDataSetSelectionBuilder
+func NewMediaTransportControlDataSetSelectionBuilder() MediaTransportControlDataSetSelectionBuilder {
+	return &_MediaTransportControlDataSetSelectionBuilder{_MediaTransportControlDataSetSelection: new(_MediaTransportControlDataSetSelection)}
+}
+
+type _MediaTransportControlDataSetSelectionBuilder struct {
+	*_MediaTransportControlDataSetSelection
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataSetSelectionBuilder) = (*_MediaTransportControlDataSetSelectionBuilder)(nil)
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) WithMandatoryFields(selectionHi byte, selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
+	return m.WithSelectionHi(selectionHi).WithSelectionLo(selectionLo)
+}
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) WithSelectionHi(selectionHi byte) MediaTransportControlDataSetSelectionBuilder {
+	m.SelectionHi = selectionHi
+	return m
+}
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) WithSelectionLo(selectionLo byte) MediaTransportControlDataSetSelectionBuilder {
+	m.SelectionLo = selectionLo
+	return m
+}
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) Build() (MediaTransportControlDataSetSelection, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MediaTransportControlDataSetSelection.deepCopy(), nil
+}
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) MustBuild() MediaTransportControlDataSetSelection {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MediaTransportControlDataSetSelectionBuilder) DeepCopy() any {
+	return m.CreateMediaTransportControlDataSetSelectionBuilder()
+}
+
+// CreateMediaTransportControlDataSetSelectionBuilder creates a MediaTransportControlDataSetSelectionBuilder
+func (m *_MediaTransportControlDataSetSelection) CreateMediaTransportControlDataSetSelectionBuilder() MediaTransportControlDataSetSelectionBuilder {
+	if m == nil {
+		return NewMediaTransportControlDataSetSelectionBuilder()
+	}
+	return &_MediaTransportControlDataSetSelectionBuilder{_MediaTransportControlDataSetSelection: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

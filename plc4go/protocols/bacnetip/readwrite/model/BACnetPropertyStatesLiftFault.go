@@ -44,6 +44,8 @@ type BACnetPropertyStatesLiftFault interface {
 	GetLiftFault() BACnetLiftFaultTagged
 	// IsBACnetPropertyStatesLiftFault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLiftFault()
+	// CreateBuilder creates a BACnetPropertyStatesLiftFaultBuilder
+	CreateBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuilder
 }
 
 // _BACnetPropertyStatesLiftFault is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesLiftFault(peekedTagHeader BACnetTagHeader, liftFault
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLiftFaultBuilder is a builder for BACnetPropertyStatesLiftFault
+type BACnetPropertyStatesLiftFaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder
+	// WithLiftFault adds LiftFault (property field)
+	WithLiftFault(BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder
+	// WithLiftFaultBuilder adds LiftFault (property field) which is build by the builder
+	WithLiftFaultBuilder(func(BACnetLiftFaultTaggedBuilder) BACnetLiftFaultTaggedBuilder) BACnetPropertyStatesLiftFaultBuilder
+	// Build builds the BACnetPropertyStatesLiftFault or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLiftFault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLiftFault
+}
+
+// NewBACnetPropertyStatesLiftFaultBuilder() creates a BACnetPropertyStatesLiftFaultBuilder
+func NewBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuilder {
+	return &_BACnetPropertyStatesLiftFaultBuilder{_BACnetPropertyStatesLiftFault: new(_BACnetPropertyStatesLiftFault)}
+}
+
+type _BACnetPropertyStatesLiftFaultBuilder struct {
+	*_BACnetPropertyStatesLiftFault
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLiftFaultBuilder) = (*_BACnetPropertyStatesLiftFaultBuilder)(nil)
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) WithMandatoryFields(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
+	return m.WithLiftFault(liftFault)
+}
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFault(liftFault BACnetLiftFaultTagged) BACnetPropertyStatesLiftFaultBuilder {
+	m.LiftFault = liftFault
+	return m
+}
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) WithLiftFaultBuilder(builderSupplier func(BACnetLiftFaultTaggedBuilder) BACnetLiftFaultTaggedBuilder) BACnetPropertyStatesLiftFaultBuilder {
+	builder := builderSupplier(m.LiftFault.CreateBACnetLiftFaultTaggedBuilder())
+	var err error
+	m.LiftFault, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetLiftFaultTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) Build() (BACnetPropertyStatesLiftFault, error) {
+	if m.LiftFault == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'liftFault' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesLiftFault.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) MustBuild() BACnetPropertyStatesLiftFault {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesLiftFaultBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesLiftFaultBuilder()
+}
+
+// CreateBACnetPropertyStatesLiftFaultBuilder creates a BACnetPropertyStatesLiftFaultBuilder
+func (m *_BACnetPropertyStatesLiftFault) CreateBACnetPropertyStatesLiftFaultBuilder() BACnetPropertyStatesLiftFaultBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesLiftFaultBuilder()
+	}
+	return &_BACnetPropertyStatesLiftFaultBuilder{_BACnetPropertyStatesLiftFault: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

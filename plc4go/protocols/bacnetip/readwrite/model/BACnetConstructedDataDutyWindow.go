@@ -46,6 +46,8 @@ type BACnetConstructedDataDutyWindow interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataDutyWindow is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDutyWindow()
+	// CreateBuilder creates a BACnetConstructedDataDutyWindowBuilder
+	CreateBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindowBuilder
 }
 
 // _BACnetConstructedDataDutyWindow is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataDutyWindow(openingTag BACnetOpeningTag, peekedTagHe
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDutyWindowBuilder is a builder for BACnetConstructedDataDutyWindow
+type BACnetConstructedDataDutyWindowBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder
+	// WithDutyWindow adds DutyWindow (property field)
+	WithDutyWindow(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder
+	// WithDutyWindowBuilder adds DutyWindow (property field) which is build by the builder
+	WithDutyWindowBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDutyWindowBuilder
+	// Build builds the BACnetConstructedDataDutyWindow or returns an error if something is wrong
+	Build() (BACnetConstructedDataDutyWindow, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDutyWindow
+}
+
+// NewBACnetConstructedDataDutyWindowBuilder() creates a BACnetConstructedDataDutyWindowBuilder
+func NewBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindowBuilder {
+	return &_BACnetConstructedDataDutyWindowBuilder{_BACnetConstructedDataDutyWindow: new(_BACnetConstructedDataDutyWindow)}
+}
+
+type _BACnetConstructedDataDutyWindowBuilder struct {
+	*_BACnetConstructedDataDutyWindow
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDutyWindowBuilder) = (*_BACnetConstructedDataDutyWindowBuilder)(nil)
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) WithMandatoryFields(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
+	return m.WithDutyWindow(dutyWindow)
+}
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindow(dutyWindow BACnetApplicationTagUnsignedInteger) BACnetConstructedDataDutyWindowBuilder {
+	m.DutyWindow = dutyWindow
+	return m
+}
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) WithDutyWindowBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataDutyWindowBuilder {
+	builder := builderSupplier(m.DutyWindow.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.DutyWindow, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) Build() (BACnetConstructedDataDutyWindow, error) {
+	if m.DutyWindow == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dutyWindow' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataDutyWindow.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) MustBuild() BACnetConstructedDataDutyWindow {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataDutyWindowBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataDutyWindowBuilder()
+}
+
+// CreateBACnetConstructedDataDutyWindowBuilder creates a BACnetConstructedDataDutyWindowBuilder
+func (m *_BACnetConstructedDataDutyWindow) CreateBACnetConstructedDataDutyWindowBuilder() BACnetConstructedDataDutyWindowBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataDutyWindowBuilder()
+	}
+	return &_BACnetConstructedDataDutyWindowBuilder{_BACnetConstructedDataDutyWindow: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

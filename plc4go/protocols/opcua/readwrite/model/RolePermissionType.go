@@ -46,6 +46,8 @@ type RolePermissionType interface {
 	GetPermissions() PermissionType
 	// IsRolePermissionType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRolePermissionType()
+	// CreateBuilder creates a RolePermissionTypeBuilder
+	CreateRolePermissionTypeBuilder() RolePermissionTypeBuilder
 }
 
 // _RolePermissionType is the data-structure of this message
@@ -71,6 +73,106 @@ func NewRolePermissionType(roleId NodeId, permissions PermissionType) *_RolePerm
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RolePermissionTypeBuilder is a builder for RolePermissionType
+type RolePermissionTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(roleId NodeId, permissions PermissionType) RolePermissionTypeBuilder
+	// WithRoleId adds RoleId (property field)
+	WithRoleId(NodeId) RolePermissionTypeBuilder
+	// WithRoleIdBuilder adds RoleId (property field) which is build by the builder
+	WithRoleIdBuilder(func(NodeIdBuilder) NodeIdBuilder) RolePermissionTypeBuilder
+	// WithPermissions adds Permissions (property field)
+	WithPermissions(PermissionType) RolePermissionTypeBuilder
+	// Build builds the RolePermissionType or returns an error if something is wrong
+	Build() (RolePermissionType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RolePermissionType
+}
+
+// NewRolePermissionTypeBuilder() creates a RolePermissionTypeBuilder
+func NewRolePermissionTypeBuilder() RolePermissionTypeBuilder {
+	return &_RolePermissionTypeBuilder{_RolePermissionType: new(_RolePermissionType)}
+}
+
+type _RolePermissionTypeBuilder struct {
+	*_RolePermissionType
+
+	err *utils.MultiError
+}
+
+var _ (RolePermissionTypeBuilder) = (*_RolePermissionTypeBuilder)(nil)
+
+func (m *_RolePermissionTypeBuilder) WithMandatoryFields(roleId NodeId, permissions PermissionType) RolePermissionTypeBuilder {
+	return m.WithRoleId(roleId).WithPermissions(permissions)
+}
+
+func (m *_RolePermissionTypeBuilder) WithRoleId(roleId NodeId) RolePermissionTypeBuilder {
+	m.RoleId = roleId
+	return m
+}
+
+func (m *_RolePermissionTypeBuilder) WithRoleIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RolePermissionTypeBuilder {
+	builder := builderSupplier(m.RoleId.CreateNodeIdBuilder())
+	var err error
+	m.RoleId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_RolePermissionTypeBuilder) WithPermissions(permissions PermissionType) RolePermissionTypeBuilder {
+	m.Permissions = permissions
+	return m
+}
+
+func (m *_RolePermissionTypeBuilder) Build() (RolePermissionType, error) {
+	if m.RoleId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'roleId' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._RolePermissionType.deepCopy(), nil
+}
+
+func (m *_RolePermissionTypeBuilder) MustBuild() RolePermissionType {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_RolePermissionTypeBuilder) DeepCopy() any {
+	return m.CreateRolePermissionTypeBuilder()
+}
+
+// CreateRolePermissionTypeBuilder creates a RolePermissionTypeBuilder
+func (m *_RolePermissionType) CreateRolePermissionTypeBuilder() RolePermissionTypeBuilder {
+	if m == nil {
+		return NewRolePermissionTypeBuilder()
+	}
+	return &_RolePermissionTypeBuilder{_RolePermissionType: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

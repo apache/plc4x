@@ -41,6 +41,8 @@ type IdentifyReplyCommand interface {
 	utils.Copyable
 	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommand()
+	// CreateBuilder creates a IdentifyReplyCommandBuilder
+	CreateIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder
 }
 
 // IdentifyReplyCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -49,6 +51,8 @@ type IdentifyReplyCommandContract interface {
 	GetNumBytes() uint8
 	// IsIdentifyReplyCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommand()
+	// CreateBuilder creates a IdentifyReplyCommandBuilder
+	CreateIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder
 }
 
 // IdentifyReplyCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +77,71 @@ var _ IdentifyReplyCommandContract = (*_IdentifyReplyCommand)(nil)
 func NewIdentifyReplyCommand(numBytes uint8) *_IdentifyReplyCommand {
 	return &_IdentifyReplyCommand{NumBytes: numBytes}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandBuilder is a builder for IdentifyReplyCommand
+type IdentifyReplyCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() IdentifyReplyCommandBuilder
+	// Build builds the IdentifyReplyCommand or returns an error if something is wrong
+	Build() (IdentifyReplyCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandContract
+}
+
+// NewIdentifyReplyCommandBuilder() creates a IdentifyReplyCommandBuilder
+func NewIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder {
+	return &_IdentifyReplyCommandBuilder{_IdentifyReplyCommand: new(_IdentifyReplyCommand)}
+}
+
+type _IdentifyReplyCommandBuilder struct {
+	*_IdentifyReplyCommand
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandBuilder) = (*_IdentifyReplyCommandBuilder)(nil)
+
+func (m *_IdentifyReplyCommandBuilder) WithMandatoryFields() IdentifyReplyCommandBuilder {
+	return m
+}
+
+func (m *_IdentifyReplyCommandBuilder) Build() (IdentifyReplyCommandContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._IdentifyReplyCommand.deepCopy(), nil
+}
+
+func (m *_IdentifyReplyCommandBuilder) MustBuild() IdentifyReplyCommandContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_IdentifyReplyCommandBuilder) DeepCopy() any {
+	return m.CreateIdentifyReplyCommandBuilder()
+}
+
+// CreateIdentifyReplyCommandBuilder creates a IdentifyReplyCommandBuilder
+func (m *_IdentifyReplyCommand) CreateIdentifyReplyCommandBuilder() IdentifyReplyCommandBuilder {
+	if m == nil {
+		return NewIdentifyReplyCommandBuilder()
+	}
+	return &_IdentifyReplyCommandBuilder{_IdentifyReplyCommand: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {

@@ -46,6 +46,8 @@ type BACnetConstructedDataAnalogInputFaultHighLimit interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataAnalogInputFaultHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAnalogInputFaultHighLimit()
+	// CreateBuilder creates a BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+	CreateBACnetConstructedDataAnalogInputFaultHighLimitBuilder() BACnetConstructedDataAnalogInputFaultHighLimitBuilder
 }
 
 // _BACnetConstructedDataAnalogInputFaultHighLimit is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataAnalogInputFaultHighLimit(openingTag BACnetOpeningT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAnalogInputFaultHighLimitBuilder is a builder for BACnetConstructedDataAnalogInputFaultHighLimit
+type BACnetConstructedDataAnalogInputFaultHighLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultHighLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+	// WithFaultHighLimit adds FaultHighLimit (property field)
+	WithFaultHighLimit(BACnetApplicationTagReal) BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+	// WithFaultHighLimitBuilder adds FaultHighLimit (property field) which is build by the builder
+	WithFaultHighLimitBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+	// Build builds the BACnetConstructedDataAnalogInputFaultHighLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataAnalogInputFaultHighLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAnalogInputFaultHighLimit
+}
+
+// NewBACnetConstructedDataAnalogInputFaultHighLimitBuilder() creates a BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+func NewBACnetConstructedDataAnalogInputFaultHighLimitBuilder() BACnetConstructedDataAnalogInputFaultHighLimitBuilder {
+	return &_BACnetConstructedDataAnalogInputFaultHighLimitBuilder{_BACnetConstructedDataAnalogInputFaultHighLimit: new(_BACnetConstructedDataAnalogInputFaultHighLimit)}
+}
+
+type _BACnetConstructedDataAnalogInputFaultHighLimitBuilder struct {
+	*_BACnetConstructedDataAnalogInputFaultHighLimit
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAnalogInputFaultHighLimitBuilder) = (*_BACnetConstructedDataAnalogInputFaultHighLimitBuilder)(nil)
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) WithMandatoryFields(faultHighLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogInputFaultHighLimitBuilder {
+	return m.WithFaultHighLimit(faultHighLimit)
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) WithFaultHighLimit(faultHighLimit BACnetApplicationTagReal) BACnetConstructedDataAnalogInputFaultHighLimitBuilder {
+	m.FaultHighLimit = faultHighLimit
+	return m
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) WithFaultHighLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataAnalogInputFaultHighLimitBuilder {
+	builder := builderSupplier(m.FaultHighLimit.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.FaultHighLimit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) Build() (BACnetConstructedDataAnalogInputFaultHighLimit, error) {
+	if m.FaultHighLimit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'faultHighLimit' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataAnalogInputFaultHighLimit.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) MustBuild() BACnetConstructedDataAnalogInputFaultHighLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimitBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataAnalogInputFaultHighLimitBuilder()
+}
+
+// CreateBACnetConstructedDataAnalogInputFaultHighLimitBuilder creates a BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+func (m *_BACnetConstructedDataAnalogInputFaultHighLimit) CreateBACnetConstructedDataAnalogInputFaultHighLimitBuilder() BACnetConstructedDataAnalogInputFaultHighLimitBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataAnalogInputFaultHighLimitBuilder()
+	}
+	return &_BACnetConstructedDataAnalogInputFaultHighLimitBuilder{_BACnetConstructedDataAnalogInputFaultHighLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

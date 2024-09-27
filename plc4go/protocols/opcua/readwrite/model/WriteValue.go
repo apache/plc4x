@@ -50,6 +50,8 @@ type WriteValue interface {
 	GetValue() DataValue
 	// IsWriteValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriteValue()
+	// CreateBuilder creates a WriteValueBuilder
+	CreateWriteValueBuilder() WriteValueBuilder
 }
 
 // _WriteValue is the data-structure of this message
@@ -85,6 +87,162 @@ func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, v
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WriteValueBuilder is a builder for WriteValue
+type WriteValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) WriteValueBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) WriteValueBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) WriteValueBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(DataValue) WriteValueBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(DataValueBuilder) DataValueBuilder) WriteValueBuilder
+	// Build builds the WriteValue or returns an error if something is wrong
+	Build() (WriteValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WriteValue
+}
+
+// NewWriteValueBuilder() creates a WriteValueBuilder
+func NewWriteValueBuilder() WriteValueBuilder {
+	return &_WriteValueBuilder{_WriteValue: new(_WriteValue)}
+}
+
+type _WriteValueBuilder struct {
+	*_WriteValue
+
+	err *utils.MultiError
+}
+
+var _ (WriteValueBuilder) = (*_WriteValueBuilder)(nil)
+
+func (m *_WriteValueBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder {
+	return m.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithValue(value)
+}
+
+func (m *_WriteValueBuilder) WithNodeId(nodeId NodeId) WriteValueBuilder {
+	m.NodeId = nodeId
+	return m
+}
+
+func (m *_WriteValueBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder {
+	builder := builderSupplier(m.NodeId.CreateNodeIdBuilder())
+	var err error
+	m.NodeId, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return m
+}
+
+func (m *_WriteValueBuilder) WithAttributeId(attributeId uint32) WriteValueBuilder {
+	m.AttributeId = attributeId
+	return m
+}
+
+func (m *_WriteValueBuilder) WithIndexRange(indexRange PascalString) WriteValueBuilder {
+	m.IndexRange = indexRange
+	return m
+}
+
+func (m *_WriteValueBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder {
+	builder := builderSupplier(m.IndexRange.CreatePascalStringBuilder())
+	var err error
+	m.IndexRange, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return m
+}
+
+func (m *_WriteValueBuilder) WithValue(value DataValue) WriteValueBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_WriteValueBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) WriteValueBuilder {
+	builder := builderSupplier(m.Value.CreateDataValueBuilder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
+	}
+	return m
+}
+
+func (m *_WriteValueBuilder) Build() (WriteValue, error) {
+	if m.NodeId == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if m.IndexRange == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._WriteValue.deepCopy(), nil
+}
+
+func (m *_WriteValueBuilder) MustBuild() WriteValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_WriteValueBuilder) DeepCopy() any {
+	return m.CreateWriteValueBuilder()
+}
+
+// CreateWriteValueBuilder creates a WriteValueBuilder
+func (m *_WriteValue) CreateWriteValueBuilder() WriteValueBuilder {
+	if m == nil {
+		return NewWriteValueBuilder()
+	}
+	return &_WriteValueBuilder{_WriteValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

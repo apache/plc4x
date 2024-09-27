@@ -48,6 +48,8 @@ type SysexCommandReportFirmwareResponse interface {
 	GetFileName() []byte
 	// IsSysexCommandReportFirmwareResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandReportFirmwareResponse()
+	// CreateBuilder creates a SysexCommandReportFirmwareResponseBuilder
+	CreateSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareResponseBuilder
 }
 
 // _SysexCommandReportFirmwareResponse is the data-structure of this message
@@ -72,6 +74,92 @@ func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint
 	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandReportFirmwareResponseBuilder is a builder for SysexCommandReportFirmwareResponse
+type SysexCommandReportFirmwareResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(majorVersion uint8, minorVersion uint8, fileName []byte) SysexCommandReportFirmwareResponseBuilder
+	// WithMajorVersion adds MajorVersion (property field)
+	WithMajorVersion(uint8) SysexCommandReportFirmwareResponseBuilder
+	// WithMinorVersion adds MinorVersion (property field)
+	WithMinorVersion(uint8) SysexCommandReportFirmwareResponseBuilder
+	// WithFileName adds FileName (property field)
+	WithFileName(...byte) SysexCommandReportFirmwareResponseBuilder
+	// Build builds the SysexCommandReportFirmwareResponse or returns an error if something is wrong
+	Build() (SysexCommandReportFirmwareResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandReportFirmwareResponse
+}
+
+// NewSysexCommandReportFirmwareResponseBuilder() creates a SysexCommandReportFirmwareResponseBuilder
+func NewSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareResponseBuilder {
+	return &_SysexCommandReportFirmwareResponseBuilder{_SysexCommandReportFirmwareResponse: new(_SysexCommandReportFirmwareResponse)}
+}
+
+type _SysexCommandReportFirmwareResponseBuilder struct {
+	*_SysexCommandReportFirmwareResponse
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandReportFirmwareResponseBuilder) = (*_SysexCommandReportFirmwareResponseBuilder)(nil)
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) WithMandatoryFields(majorVersion uint8, minorVersion uint8, fileName []byte) SysexCommandReportFirmwareResponseBuilder {
+	return m.WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithFileName(fileName...)
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) WithMajorVersion(majorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
+	m.MajorVersion = majorVersion
+	return m
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) WithMinorVersion(minorVersion uint8) SysexCommandReportFirmwareResponseBuilder {
+	m.MinorVersion = minorVersion
+	return m
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) WithFileName(fileName ...byte) SysexCommandReportFirmwareResponseBuilder {
+	m.FileName = fileName
+	return m
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) Build() (SysexCommandReportFirmwareResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SysexCommandReportFirmwareResponse.deepCopy(), nil
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) MustBuild() SysexCommandReportFirmwareResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SysexCommandReportFirmwareResponseBuilder) DeepCopy() any {
+	return m.CreateSysexCommandReportFirmwareResponseBuilder()
+}
+
+// CreateSysexCommandReportFirmwareResponseBuilder creates a SysexCommandReportFirmwareResponseBuilder
+func (m *_SysexCommandReportFirmwareResponse) CreateSysexCommandReportFirmwareResponseBuilder() SysexCommandReportFirmwareResponseBuilder {
+	if m == nil {
+		return NewSysexCommandReportFirmwareResponseBuilder()
+	}
+	return &_SysexCommandReportFirmwareResponseBuilder{_SysexCommandReportFirmwareResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

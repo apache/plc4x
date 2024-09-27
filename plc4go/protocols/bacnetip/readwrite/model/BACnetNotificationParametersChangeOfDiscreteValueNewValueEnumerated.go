@@ -44,6 +44,8 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated interfa
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(open
 	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder)(nil)
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder {
+	return m.WithEnumeratedValue(enumeratedValue)
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder {
+	m.EnumeratedValue = enumeratedValue
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder {
+	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	m.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated, error) {
+	if m.EnumeratedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated.deepCopy(), nil
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder) DeepCopy() any {
+	return m.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder()
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder {
+	if m == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumeratedBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

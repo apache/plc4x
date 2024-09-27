@@ -46,6 +46,8 @@ type OpcuaMessageResponse interface {
 	GetMessage() Payload
 	// IsOpcuaMessageResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaMessageResponse()
+	// CreateBuilder creates a OpcuaMessageResponseBuilder
+	CreateOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder
 }
 
 // _OpcuaMessageResponse is the data-structure of this message
@@ -77,6 +79,112 @@ func NewOpcuaMessageResponse(chunk ChunkType, securityHeader SecurityHeader, mes
 	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaMessageResponseBuilder is a builder for OpcuaMessageResponse
+type OpcuaMessageResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageResponseBuilder
+	// WithSecurityHeader adds SecurityHeader (property field)
+	WithSecurityHeader(SecurityHeader) OpcuaMessageResponseBuilder
+	// WithSecurityHeaderBuilder adds SecurityHeader (property field) which is build by the builder
+	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageResponseBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(Payload) OpcuaMessageResponseBuilder
+	// Build builds the OpcuaMessageResponse or returns an error if something is wrong
+	Build() (OpcuaMessageResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaMessageResponse
+}
+
+// NewOpcuaMessageResponseBuilder() creates a OpcuaMessageResponseBuilder
+func NewOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder {
+	return &_OpcuaMessageResponseBuilder{_OpcuaMessageResponse: new(_OpcuaMessageResponse)}
+}
+
+type _OpcuaMessageResponseBuilder struct {
+	*_OpcuaMessageResponse
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaMessageResponseBuilder) = (*_OpcuaMessageResponseBuilder)(nil)
+
+func (m *_OpcuaMessageResponseBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageResponseBuilder {
+	return m.WithSecurityHeader(securityHeader).WithMessage(message)
+}
+
+func (m *_OpcuaMessageResponseBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageResponseBuilder {
+	m.SecurityHeader = securityHeader
+	return m
+}
+
+func (m *_OpcuaMessageResponseBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageResponseBuilder {
+	builder := builderSupplier(m.SecurityHeader.CreateSecurityHeaderBuilder())
+	var err error
+	m.SecurityHeader, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_OpcuaMessageResponseBuilder) WithMessage(message Payload) OpcuaMessageResponseBuilder {
+	m.Message = message
+	return m
+}
+
+func (m *_OpcuaMessageResponseBuilder) Build() (OpcuaMessageResponse, error) {
+	if m.SecurityHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if m.Message == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._OpcuaMessageResponse.deepCopy(), nil
+}
+
+func (m *_OpcuaMessageResponseBuilder) MustBuild() OpcuaMessageResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_OpcuaMessageResponseBuilder) DeepCopy() any {
+	return m.CreateOpcuaMessageResponseBuilder()
+}
+
+// CreateOpcuaMessageResponseBuilder creates a OpcuaMessageResponseBuilder
+func (m *_OpcuaMessageResponse) CreateOpcuaMessageResponseBuilder() OpcuaMessageResponseBuilder {
+	if m == nil {
+		return NewOpcuaMessageResponseBuilder()
+	}
+	return &_OpcuaMessageResponseBuilder{_OpcuaMessageResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

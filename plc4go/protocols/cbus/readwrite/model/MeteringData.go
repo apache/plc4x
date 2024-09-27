@@ -43,6 +43,8 @@ type MeteringData interface {
 	utils.Copyable
 	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringData()
+	// CreateBuilder creates a MeteringDataBuilder
+	CreateMeteringDataBuilder() MeteringDataBuilder
 }
 
 // MeteringDataContract provides a set of functions which can be overwritten by a sub struct
@@ -55,6 +57,8 @@ type MeteringDataContract interface {
 	GetCommandType() MeteringCommandType
 	// IsMeteringData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringData()
+	// CreateBuilder creates a MeteringDataBuilder
+	CreateMeteringDataBuilder() MeteringDataBuilder
 }
 
 // MeteringDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +84,85 @@ var _ MeteringDataContract = (*_MeteringData)(nil)
 func NewMeteringData(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringData {
 	return &_MeteringData{CommandTypeContainer: commandTypeContainer, Argument: argument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataBuilder is a builder for MeteringData
+type MeteringDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer MeteringCommandTypeContainer, argument byte) MeteringDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(MeteringCommandTypeContainer) MeteringDataBuilder
+	// WithArgument adds Argument (property field)
+	WithArgument(byte) MeteringDataBuilder
+	// Build builds the MeteringData or returns an error if something is wrong
+	Build() (MeteringDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataContract
+}
+
+// NewMeteringDataBuilder() creates a MeteringDataBuilder
+func NewMeteringDataBuilder() MeteringDataBuilder {
+	return &_MeteringDataBuilder{_MeteringData: new(_MeteringData)}
+}
+
+type _MeteringDataBuilder struct {
+	*_MeteringData
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataBuilder) = (*_MeteringDataBuilder)(nil)
+
+func (m *_MeteringDataBuilder) WithMandatoryFields(commandTypeContainer MeteringCommandTypeContainer, argument byte) MeteringDataBuilder {
+	return m.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+}
+
+func (m *_MeteringDataBuilder) WithCommandTypeContainer(commandTypeContainer MeteringCommandTypeContainer) MeteringDataBuilder {
+	m.CommandTypeContainer = commandTypeContainer
+	return m
+}
+
+func (m *_MeteringDataBuilder) WithArgument(argument byte) MeteringDataBuilder {
+	m.Argument = argument
+	return m
+}
+
+func (m *_MeteringDataBuilder) Build() (MeteringDataContract, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._MeteringData.deepCopy(), nil
+}
+
+func (m *_MeteringDataBuilder) MustBuild() MeteringDataContract {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_MeteringDataBuilder) DeepCopy() any {
+	return m.CreateMeteringDataBuilder()
+}
+
+// CreateMeteringDataBuilder creates a MeteringDataBuilder
+func (m *_MeteringData) CreateMeteringDataBuilder() MeteringDataBuilder {
+	if m == nil {
+		return NewMeteringDataBuilder()
+	}
+	return &_MeteringDataBuilder{_MeteringData: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

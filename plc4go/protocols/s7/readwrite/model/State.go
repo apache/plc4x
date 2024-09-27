@@ -57,6 +57,8 @@ type State interface {
 	GetSIG_1() bool
 	// IsState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsState()
+	// CreateBuilder creates a StateBuilder
+	CreateStateBuilder() StateBuilder
 }
 
 // _State is the data-structure of this message
@@ -77,6 +79,127 @@ var _ State = (*_State)(nil)
 func NewState(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) *_State {
 	return &_State{SIG_8: SIG_8, SIG_7: SIG_7, SIG_6: SIG_6, SIG_5: SIG_5, SIG_4: SIG_4, SIG_3: SIG_3, SIG_2: SIG_2, SIG_1: SIG_1}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StateBuilder is a builder for State
+type StateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) StateBuilder
+	// WithSIG_8 adds SIG_8 (property field)
+	WithSIG_8(bool) StateBuilder
+	// WithSIG_7 adds SIG_7 (property field)
+	WithSIG_7(bool) StateBuilder
+	// WithSIG_6 adds SIG_6 (property field)
+	WithSIG_6(bool) StateBuilder
+	// WithSIG_5 adds SIG_5 (property field)
+	WithSIG_5(bool) StateBuilder
+	// WithSIG_4 adds SIG_4 (property field)
+	WithSIG_4(bool) StateBuilder
+	// WithSIG_3 adds SIG_3 (property field)
+	WithSIG_3(bool) StateBuilder
+	// WithSIG_2 adds SIG_2 (property field)
+	WithSIG_2(bool) StateBuilder
+	// WithSIG_1 adds SIG_1 (property field)
+	WithSIG_1(bool) StateBuilder
+	// Build builds the State or returns an error if something is wrong
+	Build() (State, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() State
+}
+
+// NewStateBuilder() creates a StateBuilder
+func NewStateBuilder() StateBuilder {
+	return &_StateBuilder{_State: new(_State)}
+}
+
+type _StateBuilder struct {
+	*_State
+
+	err *utils.MultiError
+}
+
+var _ (StateBuilder) = (*_StateBuilder)(nil)
+
+func (m *_StateBuilder) WithMandatoryFields(SIG_8 bool, SIG_7 bool, SIG_6 bool, SIG_5 bool, SIG_4 bool, SIG_3 bool, SIG_2 bool, SIG_1 bool) StateBuilder {
+	return m.WithSIG_8(SIG_8).WithSIG_7(SIG_7).WithSIG_6(SIG_6).WithSIG_5(SIG_5).WithSIG_4(SIG_4).WithSIG_3(SIG_3).WithSIG_2(SIG_2).WithSIG_1(SIG_1)
+}
+
+func (m *_StateBuilder) WithSIG_8(SIG_8 bool) StateBuilder {
+	m.SIG_8 = SIG_8
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_7(SIG_7 bool) StateBuilder {
+	m.SIG_7 = SIG_7
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_6(SIG_6 bool) StateBuilder {
+	m.SIG_6 = SIG_6
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_5(SIG_5 bool) StateBuilder {
+	m.SIG_5 = SIG_5
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_4(SIG_4 bool) StateBuilder {
+	m.SIG_4 = SIG_4
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_3(SIG_3 bool) StateBuilder {
+	m.SIG_3 = SIG_3
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_2(SIG_2 bool) StateBuilder {
+	m.SIG_2 = SIG_2
+	return m
+}
+
+func (m *_StateBuilder) WithSIG_1(SIG_1 bool) StateBuilder {
+	m.SIG_1 = SIG_1
+	return m
+}
+
+func (m *_StateBuilder) Build() (State, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._State.deepCopy(), nil
+}
+
+func (m *_StateBuilder) MustBuild() State {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_StateBuilder) DeepCopy() any {
+	return m.CreateStateBuilder()
+}
+
+// CreateStateBuilder creates a StateBuilder
+func (m *_State) CreateStateBuilder() StateBuilder {
+	if m == nil {
+		return NewStateBuilder()
+	}
+	return &_StateBuilder{_State: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

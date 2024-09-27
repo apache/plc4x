@@ -46,6 +46,8 @@ type BACnetConstructedDataLightingOutputRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataLightingOutputRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLightingOutputRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+	CreateBACnetConstructedDataLightingOutputRelinquishDefaultBuilder() BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataLightingOutputRelinquishDefault is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLightingOutputRelinquishDefault(openingTag BACnetOp
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLightingOutputRelinquishDefaultBuilder is a builder for BACnetConstructedDataLightingOutputRelinquishDefault
+type BACnetConstructedDataLightingOutputRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetApplicationTagReal) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataLightingOutputRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataLightingOutputRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLightingOutputRelinquishDefault
+}
+
+// NewBACnetConstructedDataLightingOutputRelinquishDefaultBuilder() creates a BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+func NewBACnetConstructedDataLightingOutputRelinquishDefaultBuilder() BACnetConstructedDataLightingOutputRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder{_BACnetConstructedDataLightingOutputRelinquishDefault: new(_BACnetConstructedDataLightingOutputRelinquishDefault)}
+}
+
+type _BACnetConstructedDataLightingOutputRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataLightingOutputRelinquishDefault
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) = (*_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder)(nil)
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder {
+	return m.WithRelinquishDefault(relinquishDefault)
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagReal) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder {
+	m.RelinquishDefault = relinquishDefault
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputRelinquishDefaultBuilder {
+	builder := builderSupplier(m.RelinquishDefault.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) Build() (BACnetConstructedDataLightingOutputRelinquishDefault, error) {
+	if m.RelinquishDefault == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLightingOutputRelinquishDefault.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataLightingOutputRelinquishDefault {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLightingOutputRelinquishDefaultBuilder()
+}
+
+// CreateBACnetConstructedDataLightingOutputRelinquishDefaultBuilder creates a BACnetConstructedDataLightingOutputRelinquishDefaultBuilder
+func (m *_BACnetConstructedDataLightingOutputRelinquishDefault) CreateBACnetConstructedDataLightingOutputRelinquishDefaultBuilder() BACnetConstructedDataLightingOutputRelinquishDefaultBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLightingOutputRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataLightingOutputRelinquishDefaultBuilder{_BACnetConstructedDataLightingOutputRelinquishDefault: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

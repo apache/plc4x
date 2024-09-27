@@ -44,6 +44,8 @@ type BACnetPropertyStatesFileAccessMethod interface {
 	GetFileAccessMethod() BACnetFileAccessMethodTagged
 	// IsBACnetPropertyStatesFileAccessMethod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesFileAccessMethod()
+	// CreateBuilder creates a BACnetPropertyStatesFileAccessMethodBuilder
+	CreateBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAccessMethodBuilder
 }
 
 // _BACnetPropertyStatesFileAccessMethod is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPropertyStatesFileAccessMethod(peekedTagHeader BACnetTagHeader, fi
 	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesFileAccessMethodBuilder is a builder for BACnetPropertyStatesFileAccessMethod
+type BACnetPropertyStatesFileAccessMethodBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder
+	// WithFileAccessMethod adds FileAccessMethod (property field)
+	WithFileAccessMethod(BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder
+	// WithFileAccessMethodBuilder adds FileAccessMethod (property field) which is build by the builder
+	WithFileAccessMethodBuilder(func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetPropertyStatesFileAccessMethodBuilder
+	// Build builds the BACnetPropertyStatesFileAccessMethod or returns an error if something is wrong
+	Build() (BACnetPropertyStatesFileAccessMethod, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesFileAccessMethod
+}
+
+// NewBACnetPropertyStatesFileAccessMethodBuilder() creates a BACnetPropertyStatesFileAccessMethodBuilder
+func NewBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAccessMethodBuilder {
+	return &_BACnetPropertyStatesFileAccessMethodBuilder{_BACnetPropertyStatesFileAccessMethod: new(_BACnetPropertyStatesFileAccessMethod)}
+}
+
+type _BACnetPropertyStatesFileAccessMethodBuilder struct {
+	*_BACnetPropertyStatesFileAccessMethod
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesFileAccessMethodBuilder) = (*_BACnetPropertyStatesFileAccessMethodBuilder)(nil)
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithMandatoryFields(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
+	return m.WithFileAccessMethod(fileAccessMethod)
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethod(fileAccessMethod BACnetFileAccessMethodTagged) BACnetPropertyStatesFileAccessMethodBuilder {
+	m.FileAccessMethod = fileAccessMethod
+	return m
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) WithFileAccessMethodBuilder(builderSupplier func(BACnetFileAccessMethodTaggedBuilder) BACnetFileAccessMethodTaggedBuilder) BACnetPropertyStatesFileAccessMethodBuilder {
+	builder := builderSupplier(m.FileAccessMethod.CreateBACnetFileAccessMethodTaggedBuilder())
+	var err error
+	m.FileAccessMethod, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetFileAccessMethodTaggedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) Build() (BACnetPropertyStatesFileAccessMethod, error) {
+	if m.FileAccessMethod == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'fileAccessMethod' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPropertyStatesFileAccessMethod.deepCopy(), nil
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) MustBuild() BACnetPropertyStatesFileAccessMethod {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPropertyStatesFileAccessMethodBuilder) DeepCopy() any {
+	return m.CreateBACnetPropertyStatesFileAccessMethodBuilder()
+}
+
+// CreateBACnetPropertyStatesFileAccessMethodBuilder creates a BACnetPropertyStatesFileAccessMethodBuilder
+func (m *_BACnetPropertyStatesFileAccessMethod) CreateBACnetPropertyStatesFileAccessMethodBuilder() BACnetPropertyStatesFileAccessMethodBuilder {
+	if m == nil {
+		return NewBACnetPropertyStatesFileAccessMethodBuilder()
+	}
+	return &_BACnetPropertyStatesFileAccessMethodBuilder{_BACnetPropertyStatesFileAccessMethod: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -46,6 +46,8 @@ type CALDataRecall interface {
 	GetCount() uint8
 	// IsCALDataRecall is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataRecall()
+	// CreateBuilder creates a CALDataRecallBuilder
+	CreateCALDataRecallBuilder() CALDataRecallBuilder
 }
 
 // _CALDataRecall is the data-structure of this message
@@ -68,6 +70,85 @@ func NewCALDataRecall(commandTypeContainer CALCommandTypeContainer, additionalDa
 	_result.CALDataContract.(*_CALData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataRecallBuilder is a builder for CALDataRecall
+type CALDataRecallBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, count uint8) CALDataRecallBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CALDataRecallBuilder
+	// WithCount adds Count (property field)
+	WithCount(uint8) CALDataRecallBuilder
+	// Build builds the CALDataRecall or returns an error if something is wrong
+	Build() (CALDataRecall, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataRecall
+}
+
+// NewCALDataRecallBuilder() creates a CALDataRecallBuilder
+func NewCALDataRecallBuilder() CALDataRecallBuilder {
+	return &_CALDataRecallBuilder{_CALDataRecall: new(_CALDataRecall)}
+}
+
+type _CALDataRecallBuilder struct {
+	*_CALDataRecall
+
+	err *utils.MultiError
+}
+
+var _ (CALDataRecallBuilder) = (*_CALDataRecallBuilder)(nil)
+
+func (m *_CALDataRecallBuilder) WithMandatoryFields(paramNo Parameter, count uint8) CALDataRecallBuilder {
+	return m.WithParamNo(paramNo).WithCount(count)
+}
+
+func (m *_CALDataRecallBuilder) WithParamNo(paramNo Parameter) CALDataRecallBuilder {
+	m.ParamNo = paramNo
+	return m
+}
+
+func (m *_CALDataRecallBuilder) WithCount(count uint8) CALDataRecallBuilder {
+	m.Count = count
+	return m
+}
+
+func (m *_CALDataRecallBuilder) Build() (CALDataRecall, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._CALDataRecall.deepCopy(), nil
+}
+
+func (m *_CALDataRecallBuilder) MustBuild() CALDataRecall {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_CALDataRecallBuilder) DeepCopy() any {
+	return m.CreateCALDataRecallBuilder()
+}
+
+// CreateCALDataRecallBuilder creates a CALDataRecallBuilder
+func (m *_CALDataRecall) CreateCALDataRecallBuilder() CALDataRecallBuilder {
+	if m == nil {
+		return NewCALDataRecallBuilder()
+	}
+	return &_CALDataRecallBuilder{_CALDataRecall: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

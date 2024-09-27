@@ -46,6 +46,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeByPosition interface {
 	GetCount() BACnetApplicationTagSignedInteger
 	// IsBACnetConfirmedServiceRequestReadRangeRangeByPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRangeByPosition()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	CreateBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder() BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeByPosition is the data-structure of this message
@@ -74,6 +76,127 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(peekedTagHeader BA
 	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder is a builder for BACnetConfirmedServiceRequestReadRangeRangeByPosition
+type BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	// WithReferenceIndex adds ReferenceIndex (property field)
+	WithReferenceIndex(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	// WithReferenceIndexBuilder adds ReferenceIndex (property field) which is build by the builder
+	WithReferenceIndexBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	// WithCount adds Count (property field)
+	WithCount(BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	// WithCountBuilder adds Count (property field) which is build by the builder
+	WithCountBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	// Build builds the BACnetConfirmedServiceRequestReadRangeRangeByPosition or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReadRangeRangeByPosition
+}
+
+// NewBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder() creates a BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+func NewBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder() BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	return &_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder{_BACnetConfirmedServiceRequestReadRangeRangeByPosition: new(_BACnetConfirmedServiceRequestReadRangeRangeByPosition)}
+}
+
+type _BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder struct {
+	*_BACnetConfirmedServiceRequestReadRangeRangeByPosition
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) = (*_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder)(nil)
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) WithMandatoryFields(referenceIndex BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	return m.WithReferenceIndex(referenceIndex).WithCount(count)
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) WithReferenceIndex(referenceIndex BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	m.ReferenceIndex = referenceIndex
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) WithReferenceIndexBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	builder := builderSupplier(m.ReferenceIndex.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ReferenceIndex, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) WithCount(count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	m.Count = count
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) WithCountBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	builder := builderSupplier(m.Count.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.Count, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) Build() (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+	if m.ReferenceIndex == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referenceIndex' not set"))
+	}
+	if m.Count == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'count' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConfirmedServiceRequestReadRangeRangeByPosition.deepCopy(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) MustBuild() BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder) DeepCopy() any {
+	return m.CreateBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder()
+}
+
+// CreateBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) CreateBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder() BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder {
+	if m == nil {
+		return NewBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder{_BACnetConfirmedServiceRequestReadRangeRangeByPosition: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersResponse interface {
 	GetValue() []byte
 	// IsModbusPDUReadWriteMultipleHoldingRegistersResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadWriteMultipleHoldingRegistersResponse()
+	// CreateBuilder creates a ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+	CreateModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
 }
 
 // _ModbusPDUReadWriteMultipleHoldingRegistersResponse is the data-structure of this message
@@ -64,6 +66,78 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []byte) *_Modbu
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder is a builder for ModbusPDUReadWriteMultipleHoldingRegistersResponse
+type ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []byte) ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+	// Build builds the ModbusPDUReadWriteMultipleHoldingRegistersResponse or returns an error if something is wrong
+	Build() (ModbusPDUReadWriteMultipleHoldingRegistersResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersResponse
+}
+
+// NewModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder() creates a ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+func NewModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder {
+	return &_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersResponse: new(_ModbusPDUReadWriteMultipleHoldingRegistersResponse)}
+}
+
+type _ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder struct {
+	*_ModbusPDUReadWriteMultipleHoldingRegistersResponse
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) = (*_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder)(nil)
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) WithMandatoryFields(value []byte) ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) WithValue(value ...byte) ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) Build() (ModbusPDUReadWriteMultipleHoldingRegistersResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadWriteMultipleHoldingRegistersResponse.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) MustBuild() ModbusPDUReadWriteMultipleHoldingRegistersResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder()
+}
+
+// CreateModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder creates a ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) CreateModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder() ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder {
+	if m == nil {
+		return NewModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder()
+	}
+	return &_ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder{_ModbusPDUReadWriteMultipleHoldingRegistersResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

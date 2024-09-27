@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryDouble interface {
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetFaultParameterFaultExtendedParametersEntryDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryDouble()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder() BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryDouble is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryDouble(peekedTagHeader B
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryDouble
+type BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryDouble or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDouble
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder() BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDouble: new(_BACnetFaultParameterFaultExtendedParametersEntryDouble)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	return m.WithDoubleValue(doubleValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	m.DoubleValue = doubleValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	builder := builderSupplier(m.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	m.DoubleValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
+	if m.DoubleValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryDouble.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) CreateBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder() BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder{_BACnetFaultParameterFaultExtendedParametersEntryDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

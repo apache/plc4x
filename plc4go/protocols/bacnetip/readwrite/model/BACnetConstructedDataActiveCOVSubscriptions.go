@@ -44,6 +44,8 @@ type BACnetConstructedDataActiveCOVSubscriptions interface {
 	GetActiveCOVSubscriptions() []BACnetCOVSubscription
 	// IsBACnetConstructedDataActiveCOVSubscriptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActiveCOVSubscriptions()
+	// CreateBuilder creates a BACnetConstructedDataActiveCOVSubscriptionsBuilder
+	CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDataActiveCOVSubscriptionsBuilder
 }
 
 // _BACnetConstructedDataActiveCOVSubscriptions is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataActiveCOVSubscriptions(openingTag BACnetOpeningTag,
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActiveCOVSubscriptionsBuilder is a builder for BACnetConstructedDataActiveCOVSubscriptions
+type BACnetConstructedDataActiveCOVSubscriptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder
+	// WithActiveCOVSubscriptions adds ActiveCOVSubscriptions (property field)
+	WithActiveCOVSubscriptions(...BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder
+	// Build builds the BACnetConstructedDataActiveCOVSubscriptions or returns an error if something is wrong
+	Build() (BACnetConstructedDataActiveCOVSubscriptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActiveCOVSubscriptions
+}
+
+// NewBACnetConstructedDataActiveCOVSubscriptionsBuilder() creates a BACnetConstructedDataActiveCOVSubscriptionsBuilder
+func NewBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	return &_BACnetConstructedDataActiveCOVSubscriptionsBuilder{_BACnetConstructedDataActiveCOVSubscriptions: new(_BACnetConstructedDataActiveCOVSubscriptions)}
+}
+
+type _BACnetConstructedDataActiveCOVSubscriptionsBuilder struct {
+	*_BACnetConstructedDataActiveCOVSubscriptions
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActiveCOVSubscriptionsBuilder) = (*_BACnetConstructedDataActiveCOVSubscriptionsBuilder)(nil)
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithMandatoryFields(activeCOVSubscriptions []BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	return m.WithActiveCOVSubscriptions(activeCOVSubscriptions...)
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) WithActiveCOVSubscriptions(activeCOVSubscriptions ...BACnetCOVSubscription) BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	m.ActiveCOVSubscriptions = activeCOVSubscriptions
+	return m
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) Build() (BACnetConstructedDataActiveCOVSubscriptions, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataActiveCOVSubscriptions.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) MustBuild() BACnetConstructedDataActiveCOVSubscriptions {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataActiveCOVSubscriptionsBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder()
+}
+
+// CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder creates a BACnetConstructedDataActiveCOVSubscriptionsBuilder
+func (m *_BACnetConstructedDataActiveCOVSubscriptions) CreateBACnetConstructedDataActiveCOVSubscriptionsBuilder() BACnetConstructedDataActiveCOVSubscriptionsBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataActiveCOVSubscriptionsBuilder()
+	}
+	return &_BACnetConstructedDataActiveCOVSubscriptionsBuilder{_BACnetConstructedDataActiveCOVSubscriptions: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

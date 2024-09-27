@@ -46,6 +46,8 @@ type BACnetConstructedDataLoggingRecord interface {
 	GetActualValue() BACnetAccumulatorRecord
 	// IsBACnetConstructedDataLoggingRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLoggingRecord()
+	// CreateBuilder creates a BACnetConstructedDataLoggingRecordBuilder
+	CreateBACnetConstructedDataLoggingRecordBuilder() BACnetConstructedDataLoggingRecordBuilder
 }
 
 // _BACnetConstructedDataLoggingRecord is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataLoggingRecord(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLoggingRecordBuilder is a builder for BACnetConstructedDataLoggingRecord
+type BACnetConstructedDataLoggingRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(loggingRecord BACnetAccumulatorRecord) BACnetConstructedDataLoggingRecordBuilder
+	// WithLoggingRecord adds LoggingRecord (property field)
+	WithLoggingRecord(BACnetAccumulatorRecord) BACnetConstructedDataLoggingRecordBuilder
+	// WithLoggingRecordBuilder adds LoggingRecord (property field) which is build by the builder
+	WithLoggingRecordBuilder(func(BACnetAccumulatorRecordBuilder) BACnetAccumulatorRecordBuilder) BACnetConstructedDataLoggingRecordBuilder
+	// Build builds the BACnetConstructedDataLoggingRecord or returns an error if something is wrong
+	Build() (BACnetConstructedDataLoggingRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLoggingRecord
+}
+
+// NewBACnetConstructedDataLoggingRecordBuilder() creates a BACnetConstructedDataLoggingRecordBuilder
+func NewBACnetConstructedDataLoggingRecordBuilder() BACnetConstructedDataLoggingRecordBuilder {
+	return &_BACnetConstructedDataLoggingRecordBuilder{_BACnetConstructedDataLoggingRecord: new(_BACnetConstructedDataLoggingRecord)}
+}
+
+type _BACnetConstructedDataLoggingRecordBuilder struct {
+	*_BACnetConstructedDataLoggingRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLoggingRecordBuilder) = (*_BACnetConstructedDataLoggingRecordBuilder)(nil)
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) WithMandatoryFields(loggingRecord BACnetAccumulatorRecord) BACnetConstructedDataLoggingRecordBuilder {
+	return m.WithLoggingRecord(loggingRecord)
+}
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) WithLoggingRecord(loggingRecord BACnetAccumulatorRecord) BACnetConstructedDataLoggingRecordBuilder {
+	m.LoggingRecord = loggingRecord
+	return m
+}
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) WithLoggingRecordBuilder(builderSupplier func(BACnetAccumulatorRecordBuilder) BACnetAccumulatorRecordBuilder) BACnetConstructedDataLoggingRecordBuilder {
+	builder := builderSupplier(m.LoggingRecord.CreateBACnetAccumulatorRecordBuilder())
+	var err error
+	m.LoggingRecord, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetAccumulatorRecordBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) Build() (BACnetConstructedDataLoggingRecord, error) {
+	if m.LoggingRecord == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'loggingRecord' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLoggingRecord.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) MustBuild() BACnetConstructedDataLoggingRecord {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLoggingRecordBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLoggingRecordBuilder()
+}
+
+// CreateBACnetConstructedDataLoggingRecordBuilder creates a BACnetConstructedDataLoggingRecordBuilder
+func (m *_BACnetConstructedDataLoggingRecord) CreateBACnetConstructedDataLoggingRecordBuilder() BACnetConstructedDataLoggingRecordBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLoggingRecordBuilder()
+	}
+	return &_BACnetConstructedDataLoggingRecordBuilder{_BACnetConstructedDataLoggingRecord: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

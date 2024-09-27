@@ -40,6 +40,8 @@ type SecurityDataLineCutAlarmCleared interface {
 	SecurityData
 	// IsSecurityDataLineCutAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmCleared()
+	// CreateBuilder creates a SecurityDataLineCutAlarmClearedBuilder
+	CreateSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder
 }
 
 // _SecurityDataLineCutAlarmCleared is the data-structure of this message
@@ -58,6 +60,71 @@ func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandType
 	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataLineCutAlarmClearedBuilder is a builder for SecurityDataLineCutAlarmCleared
+type SecurityDataLineCutAlarmClearedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataLineCutAlarmClearedBuilder
+	// Build builds the SecurityDataLineCutAlarmCleared or returns an error if something is wrong
+	Build() (SecurityDataLineCutAlarmCleared, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataLineCutAlarmCleared
+}
+
+// NewSecurityDataLineCutAlarmClearedBuilder() creates a SecurityDataLineCutAlarmClearedBuilder
+func NewSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder {
+	return &_SecurityDataLineCutAlarmClearedBuilder{_SecurityDataLineCutAlarmCleared: new(_SecurityDataLineCutAlarmCleared)}
+}
+
+type _SecurityDataLineCutAlarmClearedBuilder struct {
+	*_SecurityDataLineCutAlarmCleared
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataLineCutAlarmClearedBuilder) = (*_SecurityDataLineCutAlarmClearedBuilder)(nil)
+
+func (m *_SecurityDataLineCutAlarmClearedBuilder) WithMandatoryFields() SecurityDataLineCutAlarmClearedBuilder {
+	return m
+}
+
+func (m *_SecurityDataLineCutAlarmClearedBuilder) Build() (SecurityDataLineCutAlarmCleared, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SecurityDataLineCutAlarmCleared.deepCopy(), nil
+}
+
+func (m *_SecurityDataLineCutAlarmClearedBuilder) MustBuild() SecurityDataLineCutAlarmCleared {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SecurityDataLineCutAlarmClearedBuilder) DeepCopy() any {
+	return m.CreateSecurityDataLineCutAlarmClearedBuilder()
+}
+
+// CreateSecurityDataLineCutAlarmClearedBuilder creates a SecurityDataLineCutAlarmClearedBuilder
+func (m *_SecurityDataLineCutAlarmCleared) CreateSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder {
+	if m == nil {
+		return NewSecurityDataLineCutAlarmClearedBuilder()
+	}
+	return &_SecurityDataLineCutAlarmClearedBuilder{_SecurityDataLineCutAlarmCleared: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

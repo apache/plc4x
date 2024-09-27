@@ -46,6 +46,8 @@ type BACnetConstructedDataMinimumOffTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMinimumOffTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMinimumOffTime()
+	// CreateBuilder creates a BACnetConstructedDataMinimumOffTimeBuilder
+	CreateBACnetConstructedDataMinimumOffTimeBuilder() BACnetConstructedDataMinimumOffTimeBuilder
 }
 
 // _BACnetConstructedDataMinimumOffTime is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataMinimumOffTime(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMinimumOffTimeBuilder is a builder for BACnetConstructedDataMinimumOffTime
+type BACnetConstructedDataMinimumOffTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumOffTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOffTimeBuilder
+	// WithMinimumOffTime adds MinimumOffTime (property field)
+	WithMinimumOffTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOffTimeBuilder
+	// WithMinimumOffTimeBuilder adds MinimumOffTime (property field) which is build by the builder
+	WithMinimumOffTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMinimumOffTimeBuilder
+	// Build builds the BACnetConstructedDataMinimumOffTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataMinimumOffTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMinimumOffTime
+}
+
+// NewBACnetConstructedDataMinimumOffTimeBuilder() creates a BACnetConstructedDataMinimumOffTimeBuilder
+func NewBACnetConstructedDataMinimumOffTimeBuilder() BACnetConstructedDataMinimumOffTimeBuilder {
+	return &_BACnetConstructedDataMinimumOffTimeBuilder{_BACnetConstructedDataMinimumOffTime: new(_BACnetConstructedDataMinimumOffTime)}
+}
+
+type _BACnetConstructedDataMinimumOffTimeBuilder struct {
+	*_BACnetConstructedDataMinimumOffTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMinimumOffTimeBuilder) = (*_BACnetConstructedDataMinimumOffTimeBuilder)(nil)
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) WithMandatoryFields(minimumOffTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOffTimeBuilder {
+	return m.WithMinimumOffTime(minimumOffTime)
+}
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) WithMinimumOffTime(minimumOffTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOffTimeBuilder {
+	m.MinimumOffTime = minimumOffTime
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) WithMinimumOffTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMinimumOffTimeBuilder {
+	builder := builderSupplier(m.MinimumOffTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MinimumOffTime, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) Build() (BACnetConstructedDataMinimumOffTime, error) {
+	if m.MinimumOffTime == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'minimumOffTime' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataMinimumOffTime.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) MustBuild() BACnetConstructedDataMinimumOffTime {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataMinimumOffTimeBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataMinimumOffTimeBuilder()
+}
+
+// CreateBACnetConstructedDataMinimumOffTimeBuilder creates a BACnetConstructedDataMinimumOffTimeBuilder
+func (m *_BACnetConstructedDataMinimumOffTime) CreateBACnetConstructedDataMinimumOffTimeBuilder() BACnetConstructedDataMinimumOffTimeBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataMinimumOffTimeBuilder()
+	}
+	return &_BACnetConstructedDataMinimumOffTimeBuilder{_BACnetConstructedDataMinimumOffTime: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

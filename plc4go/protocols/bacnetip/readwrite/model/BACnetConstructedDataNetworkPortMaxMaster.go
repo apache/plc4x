@@ -46,6 +46,8 @@ type BACnetConstructedDataNetworkPortMaxMaster interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataNetworkPortMaxMaster is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkPortMaxMaster()
+	// CreateBuilder creates a BACnetConstructedDataNetworkPortMaxMasterBuilder
+	CreateBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedDataNetworkPortMaxMasterBuilder
 }
 
 // _BACnetConstructedDataNetworkPortMaxMaster is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataNetworkPortMaxMaster(openingTag BACnetOpeningTag, p
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNetworkPortMaxMasterBuilder is a builder for BACnetConstructedDataNetworkPortMaxMaster
+type BACnetConstructedDataNetworkPortMaxMasterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder
+	// WithMaxMaster adds MaxMaster (property field)
+	WithMaxMaster(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder
+	// WithMaxMasterBuilder adds MaxMaster (property field) which is build by the builder
+	WithMaxMasterBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkPortMaxMasterBuilder
+	// Build builds the BACnetConstructedDataNetworkPortMaxMaster or returns an error if something is wrong
+	Build() (BACnetConstructedDataNetworkPortMaxMaster, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNetworkPortMaxMaster
+}
+
+// NewBACnetConstructedDataNetworkPortMaxMasterBuilder() creates a BACnetConstructedDataNetworkPortMaxMasterBuilder
+func NewBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	return &_BACnetConstructedDataNetworkPortMaxMasterBuilder{_BACnetConstructedDataNetworkPortMaxMaster: new(_BACnetConstructedDataNetworkPortMaxMaster)}
+}
+
+type _BACnetConstructedDataNetworkPortMaxMasterBuilder struct {
+	*_BACnetConstructedDataNetworkPortMaxMaster
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNetworkPortMaxMasterBuilder) = (*_BACnetConstructedDataNetworkPortMaxMasterBuilder)(nil)
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	return m.WithMaxMaster(maxMaster)
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	m.MaxMaster = maxMaster
+	return m
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	builder := builderSupplier(m.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.MaxMaster, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) Build() (BACnetConstructedDataNetworkPortMaxMaster, error) {
+	if m.MaxMaster == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'maxMaster' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataNetworkPortMaxMaster.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) MustBuild() BACnetConstructedDataNetworkPortMaxMaster {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataNetworkPortMaxMasterBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataNetworkPortMaxMasterBuilder()
+}
+
+// CreateBACnetConstructedDataNetworkPortMaxMasterBuilder creates a BACnetConstructedDataNetworkPortMaxMasterBuilder
+func (m *_BACnetConstructedDataNetworkPortMaxMaster) CreateBACnetConstructedDataNetworkPortMaxMasterBuilder() BACnetConstructedDataNetworkPortMaxMasterBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataNetworkPortMaxMasterBuilder()
+	}
+	return &_BACnetConstructedDataNetworkPortMaxMasterBuilder{_BACnetConstructedDataNetworkPortMaxMaster: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

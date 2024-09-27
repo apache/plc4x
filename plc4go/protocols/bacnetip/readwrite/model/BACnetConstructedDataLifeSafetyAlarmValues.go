@@ -44,6 +44,8 @@ type BACnetConstructedDataLifeSafetyAlarmValues interface {
 	GetAlarmValues() []BACnetLifeSafetyStateTagged
 	// IsBACnetConstructedDataLifeSafetyAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+	CreateBACnetConstructedDataLifeSafetyAlarmValuesBuilder() BACnetConstructedDataLifeSafetyAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyAlarmValues is the data-structure of this message
@@ -64,6 +66,78 @@ func NewBACnetConstructedDataLifeSafetyAlarmValues(openingTag BACnetOpeningTag, 
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyAlarmValuesBuilder is a builder for BACnetConstructedDataLifeSafetyAlarmValues
+type BACnetConstructedDataLifeSafetyAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyAlarmValues
+}
+
+// NewBACnetConstructedDataLifeSafetyAlarmValuesBuilder() creates a BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+func NewBACnetConstructedDataLifeSafetyAlarmValuesBuilder() BACnetConstructedDataLifeSafetyAlarmValuesBuilder {
+	return &_BACnetConstructedDataLifeSafetyAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyAlarmValues: new(_BACnetConstructedDataLifeSafetyAlarmValues)}
+}
+
+type _BACnetConstructedDataLifeSafetyAlarmValuesBuilder struct {
+	*_BACnetConstructedDataLifeSafetyAlarmValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyAlarmValuesBuilder) = (*_BACnetConstructedDataLifeSafetyAlarmValuesBuilder)(nil)
+
+func (m *_BACnetConstructedDataLifeSafetyAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyAlarmValuesBuilder {
+	return m.WithAlarmValues(alarmValues...)
+}
+
+func (m *_BACnetConstructedDataLifeSafetyAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataLifeSafetyAlarmValuesBuilder {
+	m.AlarmValues = alarmValues
+	return m
+}
+
+func (m *_BACnetConstructedDataLifeSafetyAlarmValuesBuilder) Build() (BACnetConstructedDataLifeSafetyAlarmValues, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataLifeSafetyAlarmValues.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataLifeSafetyAlarmValuesBuilder) MustBuild() BACnetConstructedDataLifeSafetyAlarmValues {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataLifeSafetyAlarmValuesBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataLifeSafetyAlarmValuesBuilder()
+}
+
+// CreateBACnetConstructedDataLifeSafetyAlarmValuesBuilder creates a BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+func (m *_BACnetConstructedDataLifeSafetyAlarmValues) CreateBACnetConstructedDataLifeSafetyAlarmValuesBuilder() BACnetConstructedDataLifeSafetyAlarmValuesBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataLifeSafetyAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyAlarmValuesBuilder{_BACnetConstructedDataLifeSafetyAlarmValues: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

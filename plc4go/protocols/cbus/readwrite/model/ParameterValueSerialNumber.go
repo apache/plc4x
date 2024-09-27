@@ -46,6 +46,8 @@ type ParameterValueSerialNumber interface {
 	GetData() []byte
 	// IsParameterValueSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueSerialNumber()
+	// CreateBuilder creates a ParameterValueSerialNumberBuilder
+	CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder
 }
 
 // _ParameterValueSerialNumber is the data-structure of this message
@@ -71,6 +73,106 @@ func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uin
 	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueSerialNumberBuilder is a builder for ParameterValueSerialNumber
+type ParameterValueSerialNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder
+	// WithValue adds Value (property field)
+	WithValue(SerialNumber) ParameterValueSerialNumberBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueSerialNumberBuilder
+	// Build builds the ParameterValueSerialNumber or returns an error if something is wrong
+	Build() (ParameterValueSerialNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueSerialNumber
+}
+
+// NewParameterValueSerialNumberBuilder() creates a ParameterValueSerialNumberBuilder
+func NewParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
+	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: new(_ParameterValueSerialNumber)}
+}
+
+type _ParameterValueSerialNumberBuilder struct {
+	*_ParameterValueSerialNumber
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueSerialNumberBuilder) = (*_ParameterValueSerialNumberBuilder)(nil)
+
+func (m *_ParameterValueSerialNumberBuilder) WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder {
+	return m.WithValue(value).WithData(data...)
+}
+
+func (m *_ParameterValueSerialNumberBuilder) WithValue(value SerialNumber) ParameterValueSerialNumberBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ParameterValueSerialNumberBuilder) WithValueBuilder(builderSupplier func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder {
+	builder := builderSupplier(m.Value.CreateSerialNumberBuilder())
+	var err error
+	m.Value, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "SerialNumberBuilder failed"))
+	}
+	return m
+}
+
+func (m *_ParameterValueSerialNumberBuilder) WithData(data ...byte) ParameterValueSerialNumberBuilder {
+	m.Data = data
+	return m
+}
+
+func (m *_ParameterValueSerialNumberBuilder) Build() (ParameterValueSerialNumber, error) {
+	if m.Value == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ParameterValueSerialNumber.deepCopy(), nil
+}
+
+func (m *_ParameterValueSerialNumberBuilder) MustBuild() ParameterValueSerialNumber {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ParameterValueSerialNumberBuilder) DeepCopy() any {
+	return m.CreateParameterValueSerialNumberBuilder()
+}
+
+// CreateParameterValueSerialNumberBuilder creates a ParameterValueSerialNumberBuilder
+func (m *_ParameterValueSerialNumber) CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
+	if m == nil {
+		return NewParameterValueSerialNumberBuilder()
+	}
+	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

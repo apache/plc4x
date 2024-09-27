@@ -43,6 +43,8 @@ type BACnetTagPayloadDouble interface {
 	GetValue() float64
 	// IsBACnetTagPayloadDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadDouble()
+	// CreateBuilder creates a BACnetTagPayloadDoubleBuilder
+	CreateBACnetTagPayloadDoubleBuilder() BACnetTagPayloadDoubleBuilder
 }
 
 // _BACnetTagPayloadDouble is the data-structure of this message
@@ -56,6 +58,78 @@ var _ BACnetTagPayloadDouble = (*_BACnetTagPayloadDouble)(nil)
 func NewBACnetTagPayloadDouble(value float64) *_BACnetTagPayloadDouble {
 	return &_BACnetTagPayloadDouble{Value: value}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadDoubleBuilder is a builder for BACnetTagPayloadDouble
+type BACnetTagPayloadDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value float64) BACnetTagPayloadDoubleBuilder
+	// WithValue adds Value (property field)
+	WithValue(float64) BACnetTagPayloadDoubleBuilder
+	// Build builds the BACnetTagPayloadDouble or returns an error if something is wrong
+	Build() (BACnetTagPayloadDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadDouble
+}
+
+// NewBACnetTagPayloadDoubleBuilder() creates a BACnetTagPayloadDoubleBuilder
+func NewBACnetTagPayloadDoubleBuilder() BACnetTagPayloadDoubleBuilder {
+	return &_BACnetTagPayloadDoubleBuilder{_BACnetTagPayloadDouble: new(_BACnetTagPayloadDouble)}
+}
+
+type _BACnetTagPayloadDoubleBuilder struct {
+	*_BACnetTagPayloadDouble
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadDoubleBuilder) = (*_BACnetTagPayloadDoubleBuilder)(nil)
+
+func (m *_BACnetTagPayloadDoubleBuilder) WithMandatoryFields(value float64) BACnetTagPayloadDoubleBuilder {
+	return m.WithValue(value)
+}
+
+func (m *_BACnetTagPayloadDoubleBuilder) WithValue(value float64) BACnetTagPayloadDoubleBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_BACnetTagPayloadDoubleBuilder) Build() (BACnetTagPayloadDouble, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetTagPayloadDouble.deepCopy(), nil
+}
+
+func (m *_BACnetTagPayloadDoubleBuilder) MustBuild() BACnetTagPayloadDouble {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetTagPayloadDoubleBuilder) DeepCopy() any {
+	return m.CreateBACnetTagPayloadDoubleBuilder()
+}
+
+// CreateBACnetTagPayloadDoubleBuilder creates a BACnetTagPayloadDoubleBuilder
+func (m *_BACnetTagPayloadDouble) CreateBACnetTagPayloadDoubleBuilder() BACnetTagPayloadDoubleBuilder {
+	if m == nil {
+		return NewBACnetTagPayloadDoubleBuilder()
+	}
+	return &_BACnetTagPayloadDoubleBuilder{_BACnetTagPayloadDouble: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

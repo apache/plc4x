@@ -46,6 +46,8 @@ type BACnetConstructedDataIntervalOffset interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataIntervalOffset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntervalOffset()
+	// CreateBuilder creates a BACnetConstructedDataIntervalOffsetBuilder
+	CreateBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataIntervalOffsetBuilder
 }
 
 // _BACnetConstructedDataIntervalOffset is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntervalOffset(openingTag BACnetOpeningTag, peekedT
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntervalOffsetBuilder is a builder for BACnetConstructedDataIntervalOffset
+type BACnetConstructedDataIntervalOffsetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder
+	// WithIntervalOffset adds IntervalOffset (property field)
+	WithIntervalOffset(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder
+	// WithIntervalOffsetBuilder adds IntervalOffset (property field) which is build by the builder
+	WithIntervalOffsetBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntervalOffsetBuilder
+	// Build builds the BACnetConstructedDataIntervalOffset or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntervalOffset, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntervalOffset
+}
+
+// NewBACnetConstructedDataIntervalOffsetBuilder() creates a BACnetConstructedDataIntervalOffsetBuilder
+func NewBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataIntervalOffsetBuilder {
+	return &_BACnetConstructedDataIntervalOffsetBuilder{_BACnetConstructedDataIntervalOffset: new(_BACnetConstructedDataIntervalOffset)}
+}
+
+type _BACnetConstructedDataIntervalOffsetBuilder struct {
+	*_BACnetConstructedDataIntervalOffset
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntervalOffsetBuilder) = (*_BACnetConstructedDataIntervalOffsetBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithMandatoryFields(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
+	return m.WithIntervalOffset(intervalOffset)
+}
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffset(intervalOffset BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIntervalOffsetBuilder {
+	m.IntervalOffset = intervalOffset
+	return m
+}
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) WithIntervalOffsetBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIntervalOffsetBuilder {
+	builder := builderSupplier(m.IntervalOffset.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.IntervalOffset, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) Build() (BACnetConstructedDataIntervalOffset, error) {
+	if m.IntervalOffset == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'intervalOffset' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntervalOffset.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) MustBuild() BACnetConstructedDataIntervalOffset {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntervalOffsetBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntervalOffsetBuilder()
+}
+
+// CreateBACnetConstructedDataIntervalOffsetBuilder creates a BACnetConstructedDataIntervalOffsetBuilder
+func (m *_BACnetConstructedDataIntervalOffset) CreateBACnetConstructedDataIntervalOffsetBuilder() BACnetConstructedDataIntervalOffsetBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntervalOffsetBuilder()
+	}
+	return &_BACnetConstructedDataIntervalOffsetBuilder{_BACnetConstructedDataIntervalOffset: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

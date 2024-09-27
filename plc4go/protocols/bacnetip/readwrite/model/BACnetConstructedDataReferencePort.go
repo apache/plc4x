@@ -46,6 +46,8 @@ type BACnetConstructedDataReferencePort interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataReferencePort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReferencePort()
+	// CreateBuilder creates a BACnetConstructedDataReferencePortBuilder
+	CreateBACnetConstructedDataReferencePortBuilder() BACnetConstructedDataReferencePortBuilder
 }
 
 // _BACnetConstructedDataReferencePort is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataReferencePort(openingTag BACnetOpeningTag, peekedTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReferencePortBuilder is a builder for BACnetConstructedDataReferencePort
+type BACnetConstructedDataReferencePortBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referencePort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder
+	// WithReferencePort adds ReferencePort (property field)
+	WithReferencePort(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder
+	// WithReferencePortBuilder adds ReferencePort (property field) which is build by the builder
+	WithReferencePortBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataReferencePortBuilder
+	// Build builds the BACnetConstructedDataReferencePort or returns an error if something is wrong
+	Build() (BACnetConstructedDataReferencePort, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReferencePort
+}
+
+// NewBACnetConstructedDataReferencePortBuilder() creates a BACnetConstructedDataReferencePortBuilder
+func NewBACnetConstructedDataReferencePortBuilder() BACnetConstructedDataReferencePortBuilder {
+	return &_BACnetConstructedDataReferencePortBuilder{_BACnetConstructedDataReferencePort: new(_BACnetConstructedDataReferencePort)}
+}
+
+type _BACnetConstructedDataReferencePortBuilder struct {
+	*_BACnetConstructedDataReferencePort
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReferencePortBuilder) = (*_BACnetConstructedDataReferencePortBuilder)(nil)
+
+func (m *_BACnetConstructedDataReferencePortBuilder) WithMandatoryFields(referencePort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder {
+	return m.WithReferencePort(referencePort)
+}
+
+func (m *_BACnetConstructedDataReferencePortBuilder) WithReferencePort(referencePort BACnetApplicationTagUnsignedInteger) BACnetConstructedDataReferencePortBuilder {
+	m.ReferencePort = referencePort
+	return m
+}
+
+func (m *_BACnetConstructedDataReferencePortBuilder) WithReferencePortBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataReferencePortBuilder {
+	builder := builderSupplier(m.ReferencePort.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ReferencePort, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataReferencePortBuilder) Build() (BACnetConstructedDataReferencePort, error) {
+	if m.ReferencePort == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'referencePort' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataReferencePort.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataReferencePortBuilder) MustBuild() BACnetConstructedDataReferencePort {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataReferencePortBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataReferencePortBuilder()
+}
+
+// CreateBACnetConstructedDataReferencePortBuilder creates a BACnetConstructedDataReferencePortBuilder
+func (m *_BACnetConstructedDataReferencePort) CreateBACnetConstructedDataReferencePortBuilder() BACnetConstructedDataReferencePortBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataReferencePortBuilder()
+	}
+	return &_BACnetConstructedDataReferencePortBuilder{_BACnetConstructedDataReferencePort: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetPriorityValueReal interface {
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetPriorityValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueReal()
+	// CreateBuilder creates a BACnetPriorityValueRealBuilder
+	CreateBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder
 }
 
 // _BACnetPriorityValueReal is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACne
 	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueRealBuilder is a builder for BACnetPriorityValueReal
+type BACnetPriorityValueRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetPriorityValueRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetPriorityValueRealBuilder
+	// Build builds the BACnetPriorityValueReal or returns an error if something is wrong
+	Build() (BACnetPriorityValueReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueReal
+}
+
+// NewBACnetPriorityValueRealBuilder() creates a BACnetPriorityValueRealBuilder
+func NewBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder {
+	return &_BACnetPriorityValueRealBuilder{_BACnetPriorityValueReal: new(_BACnetPriorityValueReal)}
+}
+
+type _BACnetPriorityValueRealBuilder struct {
+	*_BACnetPriorityValueReal
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueRealBuilder) = (*_BACnetPriorityValueRealBuilder)(nil)
+
+func (m *_BACnetPriorityValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder {
+	return m.WithRealValue(realValue)
+}
+
+func (m *_BACnetPriorityValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder {
+	m.RealValue = realValue
+	return m
+}
+
+func (m *_BACnetPriorityValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetPriorityValueRealBuilder {
+	builder := builderSupplier(m.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	m.RealValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetPriorityValueRealBuilder) Build() (BACnetPriorityValueReal, error) {
+	if m.RealValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetPriorityValueReal.deepCopy(), nil
+}
+
+func (m *_BACnetPriorityValueRealBuilder) MustBuild() BACnetPriorityValueReal {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetPriorityValueRealBuilder) DeepCopy() any {
+	return m.CreateBACnetPriorityValueRealBuilder()
+}
+
+// CreateBACnetPriorityValueRealBuilder creates a BACnetPriorityValueRealBuilder
+func (m *_BACnetPriorityValueReal) CreateBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder {
+	if m == nil {
+		return NewBACnetPriorityValueRealBuilder()
+	}
+	return &_BACnetPriorityValueRealBuilder{_BACnetPriorityValueReal: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

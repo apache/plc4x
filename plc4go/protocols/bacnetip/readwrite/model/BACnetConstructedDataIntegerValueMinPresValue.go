@@ -46,6 +46,8 @@ type BACnetConstructedDataIntegerValueMinPresValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataIntegerValueMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegerValueMinPresValue()
+	// CreateBuilder creates a BACnetConstructedDataIntegerValueMinPresValueBuilder
+	CreateBACnetConstructedDataIntegerValueMinPresValueBuilder() BACnetConstructedDataIntegerValueMinPresValueBuilder
 }
 
 // _BACnetConstructedDataIntegerValueMinPresValue is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataIntegerValueMinPresValue(openingTag BACnetOpeningTa
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegerValueMinPresValueBuilder is a builder for BACnetConstructedDataIntegerValueMinPresValue
+type BACnetConstructedDataIntegerValueMinPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMinPresValueBuilder
+	// WithMinPresValue adds MinPresValue (property field)
+	WithMinPresValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMinPresValueBuilder
+	// WithMinPresValueBuilder adds MinPresValue (property field) which is build by the builder
+	WithMinPresValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueMinPresValueBuilder
+	// Build builds the BACnetConstructedDataIntegerValueMinPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegerValueMinPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegerValueMinPresValue
+}
+
+// NewBACnetConstructedDataIntegerValueMinPresValueBuilder() creates a BACnetConstructedDataIntegerValueMinPresValueBuilder
+func NewBACnetConstructedDataIntegerValueMinPresValueBuilder() BACnetConstructedDataIntegerValueMinPresValueBuilder {
+	return &_BACnetConstructedDataIntegerValueMinPresValueBuilder{_BACnetConstructedDataIntegerValueMinPresValue: new(_BACnetConstructedDataIntegerValueMinPresValue)}
+}
+
+type _BACnetConstructedDataIntegerValueMinPresValueBuilder struct {
+	*_BACnetConstructedDataIntegerValueMinPresValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegerValueMinPresValueBuilder) = (*_BACnetConstructedDataIntegerValueMinPresValueBuilder)(nil)
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMinPresValueBuilder {
+	return m.WithMinPresValue(minPresValue)
+}
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagSignedInteger) BACnetConstructedDataIntegerValueMinPresValueBuilder {
+	m.MinPresValue = minPresValue
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataIntegerValueMinPresValueBuilder {
+	builder := builderSupplier(m.MinPresValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	m.MinPresValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) Build() (BACnetConstructedDataIntegerValueMinPresValue, error) {
+	if m.MinPresValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataIntegerValueMinPresValue.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) MustBuild() BACnetConstructedDataIntegerValueMinPresValue {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataIntegerValueMinPresValueBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataIntegerValueMinPresValueBuilder()
+}
+
+// CreateBACnetConstructedDataIntegerValueMinPresValueBuilder creates a BACnetConstructedDataIntegerValueMinPresValueBuilder
+func (m *_BACnetConstructedDataIntegerValueMinPresValue) CreateBACnetConstructedDataIntegerValueMinPresValueBuilder() BACnetConstructedDataIntegerValueMinPresValueBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataIntegerValueMinPresValueBuilder()
+	}
+	return &_BACnetConstructedDataIntegerValueMinPresValueBuilder{_BACnetConstructedDataIntegerValueMinPresValue: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

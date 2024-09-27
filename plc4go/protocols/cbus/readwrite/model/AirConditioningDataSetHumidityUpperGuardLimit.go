@@ -50,6 +50,8 @@ type AirConditioningDataSetHumidityUpperGuardLimit interface {
 	GetHvacModeAndFlags() HVACHumidityModeAndFlags
 	// IsAirConditioningDataSetHumidityUpperGuardLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataSetHumidityUpperGuardLimit()
+	// CreateBuilder creates a AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	CreateAirConditioningDataSetHumidityUpperGuardLimitBuilder() AirConditioningDataSetHumidityUpperGuardLimitBuilder
 }
 
 // _AirConditioningDataSetHumidityUpperGuardLimit is the data-structure of this message
@@ -85,6 +87,162 @@ func NewAirConditioningDataSetHumidityUpperGuardLimit(commandTypeContainer AirCo
 	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataSetHumidityUpperGuardLimitBuilder is a builder for AirConditioningDataSetHumidityUpperGuardLimit
+type AirConditioningDataSetHumidityUpperGuardLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithZoneList adds ZoneList (property field)
+	WithZoneList(HVACZoneList) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithZoneListBuilder adds ZoneList (property field) which is build by the builder
+	WithZoneListBuilder(func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithLimit adds Limit (property field)
+	WithLimit(HVACHumidity) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithLimitBuilder adds Limit (property field) which is build by the builder
+	WithLimitBuilder(func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithHvacModeAndFlags adds HvacModeAndFlags (property field)
+	WithHvacModeAndFlags(HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// WithHvacModeAndFlagsBuilder adds HvacModeAndFlags (property field) which is build by the builder
+	WithHvacModeAndFlagsBuilder(func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder
+	// Build builds the AirConditioningDataSetHumidityUpperGuardLimit or returns an error if something is wrong
+	Build() (AirConditioningDataSetHumidityUpperGuardLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataSetHumidityUpperGuardLimit
+}
+
+// NewAirConditioningDataSetHumidityUpperGuardLimitBuilder() creates a AirConditioningDataSetHumidityUpperGuardLimitBuilder
+func NewAirConditioningDataSetHumidityUpperGuardLimitBuilder() AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	return &_AirConditioningDataSetHumidityUpperGuardLimitBuilder{_AirConditioningDataSetHumidityUpperGuardLimit: new(_AirConditioningDataSetHumidityUpperGuardLimit)}
+}
+
+type _AirConditioningDataSetHumidityUpperGuardLimitBuilder struct {
+	*_AirConditioningDataSetHumidityUpperGuardLimit
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataSetHumidityUpperGuardLimitBuilder) = (*_AirConditioningDataSetHumidityUpperGuardLimitBuilder)(nil)
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	return m.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithLimit(limit).WithHvacModeAndFlags(hvacModeAndFlags)
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	m.ZoneGroup = zoneGroup
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	m.ZoneList = zoneList
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	builder := builderSupplier(m.ZoneList.CreateHVACZoneListBuilder())
+	var err error
+	m.ZoneList, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithLimit(limit HVACHumidity) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	m.Limit = limit
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithLimitBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	builder := builderSupplier(m.Limit.CreateHVACHumidityBuilder())
+	var err error
+	m.Limit, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	m.HvacModeAndFlags = hvacModeAndFlags
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	builder := builderSupplier(m.HvacModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
+	var err error
+	m.HvacModeAndFlags, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+	}
+	return m
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) Build() (AirConditioningDataSetHumidityUpperGuardLimit, error) {
+	if m.ZoneList == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'zoneList' not set"))
+	}
+	if m.Limit == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'limit' not set"))
+	}
+	if m.HvacModeAndFlags == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AirConditioningDataSetHumidityUpperGuardLimit.deepCopy(), nil
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) MustBuild() AirConditioningDataSetHumidityUpperGuardLimit {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AirConditioningDataSetHumidityUpperGuardLimitBuilder) DeepCopy() any {
+	return m.CreateAirConditioningDataSetHumidityUpperGuardLimitBuilder()
+}
+
+// CreateAirConditioningDataSetHumidityUpperGuardLimitBuilder creates a AirConditioningDataSetHumidityUpperGuardLimitBuilder
+func (m *_AirConditioningDataSetHumidityUpperGuardLimit) CreateAirConditioningDataSetHumidityUpperGuardLimitBuilder() AirConditioningDataSetHumidityUpperGuardLimitBuilder {
+	if m == nil {
+		return NewAirConditioningDataSetHumidityUpperGuardLimitBuilder()
+	}
+	return &_AirConditioningDataSetHumidityUpperGuardLimitBuilder{_AirConditioningDataSetHumidityUpperGuardLimit: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

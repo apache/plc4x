@@ -46,6 +46,8 @@ type BACnetConstructedDataProtocolVersion interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataProtocolVersion is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProtocolVersion()
+	// CreateBuilder creates a BACnetConstructedDataProtocolVersionBuilder
+	CreateBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProtocolVersionBuilder
 }
 
 // _BACnetConstructedDataProtocolVersion is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataProtocolVersion(openingTag BACnetOpeningTag, peeked
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProtocolVersionBuilder is a builder for BACnetConstructedDataProtocolVersion
+type BACnetConstructedDataProtocolVersionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder
+	// WithProtocolVersion adds ProtocolVersion (property field)
+	WithProtocolVersion(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder
+	// WithProtocolVersionBuilder adds ProtocolVersion (property field) which is build by the builder
+	WithProtocolVersionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolVersionBuilder
+	// Build builds the BACnetConstructedDataProtocolVersion or returns an error if something is wrong
+	Build() (BACnetConstructedDataProtocolVersion, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProtocolVersion
+}
+
+// NewBACnetConstructedDataProtocolVersionBuilder() creates a BACnetConstructedDataProtocolVersionBuilder
+func NewBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProtocolVersionBuilder {
+	return &_BACnetConstructedDataProtocolVersionBuilder{_BACnetConstructedDataProtocolVersion: new(_BACnetConstructedDataProtocolVersion)}
+}
+
+type _BACnetConstructedDataProtocolVersionBuilder struct {
+	*_BACnetConstructedDataProtocolVersion
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProtocolVersionBuilder) = (*_BACnetConstructedDataProtocolVersionBuilder)(nil)
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) WithMandatoryFields(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
+	return m.WithProtocolVersion(protocolVersion)
+}
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersion(protocolVersion BACnetApplicationTagUnsignedInteger) BACnetConstructedDataProtocolVersionBuilder {
+	m.ProtocolVersion = protocolVersion
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) WithProtocolVersionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataProtocolVersionBuilder {
+	builder := builderSupplier(m.ProtocolVersion.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.ProtocolVersion, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) Build() (BACnetConstructedDataProtocolVersion, error) {
+	if m.ProtocolVersion == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'protocolVersion' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataProtocolVersion.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) MustBuild() BACnetConstructedDataProtocolVersion {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataProtocolVersionBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataProtocolVersionBuilder()
+}
+
+// CreateBACnetConstructedDataProtocolVersionBuilder creates a BACnetConstructedDataProtocolVersionBuilder
+func (m *_BACnetConstructedDataProtocolVersion) CreateBACnetConstructedDataProtocolVersionBuilder() BACnetConstructedDataProtocolVersionBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataProtocolVersionBuilder()
+	}
+	return &_BACnetConstructedDataProtocolVersionBuilder{_BACnetConstructedDataProtocolVersion: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

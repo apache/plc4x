@@ -49,6 +49,8 @@ type ModbusPDUReadDeviceIdentificationRequest interface {
 	GetObjectId() uint8
 	// IsModbusPDUReadDeviceIdentificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadDeviceIdentificationRequest()
+	// CreateBuilder creates a ModbusPDUReadDeviceIdentificationRequestBuilder
+	CreateModbusPDUReadDeviceIdentificationRequestBuilder() ModbusPDUReadDeviceIdentificationRequestBuilder
 }
 
 // _ModbusPDUReadDeviceIdentificationRequest is the data-structure of this message
@@ -71,6 +73,85 @@ func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLe
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadDeviceIdentificationRequestBuilder is a builder for ModbusPDUReadDeviceIdentificationRequest
+type ModbusPDUReadDeviceIdentificationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(level ModbusDeviceInformationLevel, objectId uint8) ModbusPDUReadDeviceIdentificationRequestBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationRequestBuilder
+	// WithObjectId adds ObjectId (property field)
+	WithObjectId(uint8) ModbusPDUReadDeviceIdentificationRequestBuilder
+	// Build builds the ModbusPDUReadDeviceIdentificationRequest or returns an error if something is wrong
+	Build() (ModbusPDUReadDeviceIdentificationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadDeviceIdentificationRequest
+}
+
+// NewModbusPDUReadDeviceIdentificationRequestBuilder() creates a ModbusPDUReadDeviceIdentificationRequestBuilder
+func NewModbusPDUReadDeviceIdentificationRequestBuilder() ModbusPDUReadDeviceIdentificationRequestBuilder {
+	return &_ModbusPDUReadDeviceIdentificationRequestBuilder{_ModbusPDUReadDeviceIdentificationRequest: new(_ModbusPDUReadDeviceIdentificationRequest)}
+}
+
+type _ModbusPDUReadDeviceIdentificationRequestBuilder struct {
+	*_ModbusPDUReadDeviceIdentificationRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadDeviceIdentificationRequestBuilder) = (*_ModbusPDUReadDeviceIdentificationRequestBuilder)(nil)
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) WithMandatoryFields(level ModbusDeviceInformationLevel, objectId uint8) ModbusPDUReadDeviceIdentificationRequestBuilder {
+	return m.WithLevel(level).WithObjectId(objectId)
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) WithLevel(level ModbusDeviceInformationLevel) ModbusPDUReadDeviceIdentificationRequestBuilder {
+	m.Level = level
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) WithObjectId(objectId uint8) ModbusPDUReadDeviceIdentificationRequestBuilder {
+	m.ObjectId = objectId
+	return m
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) Build() (ModbusPDUReadDeviceIdentificationRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUReadDeviceIdentificationRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) MustBuild() ModbusPDUReadDeviceIdentificationRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUReadDeviceIdentificationRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUReadDeviceIdentificationRequestBuilder()
+}
+
+// CreateModbusPDUReadDeviceIdentificationRequestBuilder creates a ModbusPDUReadDeviceIdentificationRequestBuilder
+func (m *_ModbusPDUReadDeviceIdentificationRequest) CreateModbusPDUReadDeviceIdentificationRequestBuilder() ModbusPDUReadDeviceIdentificationRequestBuilder {
+	if m == nil {
+		return NewModbusPDUReadDeviceIdentificationRequestBuilder()
+	}
+	return &_ModbusPDUReadDeviceIdentificationRequestBuilder{_ModbusPDUReadDeviceIdentificationRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -50,6 +50,8 @@ type SearchResponse interface {
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
 	// IsSearchResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSearchResponse()
+	// CreateBuilder creates a SearchResponseBuilder
+	CreateSearchResponseBuilder() SearchResponseBuilder
 }
 
 // _SearchResponse is the data-structure of this message
@@ -83,6 +85,155 @@ func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DI
 	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SearchResponseBuilder is a builder for SearchResponse
+type SearchResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) SearchResponseBuilder
+	// WithHpaiControlEndpoint adds HpaiControlEndpoint (property field)
+	WithHpaiControlEndpoint(HPAIControlEndpoint) SearchResponseBuilder
+	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
+	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) SearchResponseBuilder
+	// WithDibDeviceInfo adds DibDeviceInfo (property field)
+	WithDibDeviceInfo(DIBDeviceInfo) SearchResponseBuilder
+	// WithDibDeviceInfoBuilder adds DibDeviceInfo (property field) which is build by the builder
+	WithDibDeviceInfoBuilder(func(DIBDeviceInfoBuilder) DIBDeviceInfoBuilder) SearchResponseBuilder
+	// WithDibSuppSvcFamilies adds DibSuppSvcFamilies (property field)
+	WithDibSuppSvcFamilies(DIBSuppSvcFamilies) SearchResponseBuilder
+	// WithDibSuppSvcFamiliesBuilder adds DibSuppSvcFamilies (property field) which is build by the builder
+	WithDibSuppSvcFamiliesBuilder(func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) SearchResponseBuilder
+	// Build builds the SearchResponse or returns an error if something is wrong
+	Build() (SearchResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SearchResponse
+}
+
+// NewSearchResponseBuilder() creates a SearchResponseBuilder
+func NewSearchResponseBuilder() SearchResponseBuilder {
+	return &_SearchResponseBuilder{_SearchResponse: new(_SearchResponse)}
+}
+
+type _SearchResponseBuilder struct {
+	*_SearchResponse
+
+	err *utils.MultiError
+}
+
+var _ (SearchResponseBuilder) = (*_SearchResponseBuilder)(nil)
+
+func (m *_SearchResponseBuilder) WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) SearchResponseBuilder {
+	return m.WithHpaiControlEndpoint(hpaiControlEndpoint).WithDibDeviceInfo(dibDeviceInfo).WithDibSuppSvcFamilies(dibSuppSvcFamilies)
+}
+
+func (m *_SearchResponseBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) SearchResponseBuilder {
+	m.HpaiControlEndpoint = hpaiControlEndpoint
+	return m
+}
+
+func (m *_SearchResponseBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) SearchResponseBuilder {
+	builder := builderSupplier(m.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
+	var err error
+	m.HpaiControlEndpoint, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SearchResponseBuilder) WithDibDeviceInfo(dibDeviceInfo DIBDeviceInfo) SearchResponseBuilder {
+	m.DibDeviceInfo = dibDeviceInfo
+	return m
+}
+
+func (m *_SearchResponseBuilder) WithDibDeviceInfoBuilder(builderSupplier func(DIBDeviceInfoBuilder) DIBDeviceInfoBuilder) SearchResponseBuilder {
+	builder := builderSupplier(m.DibDeviceInfo.CreateDIBDeviceInfoBuilder())
+	var err error
+	m.DibDeviceInfo, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DIBDeviceInfoBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SearchResponseBuilder) WithDibSuppSvcFamilies(dibSuppSvcFamilies DIBSuppSvcFamilies) SearchResponseBuilder {
+	m.DibSuppSvcFamilies = dibSuppSvcFamilies
+	return m
+}
+
+func (m *_SearchResponseBuilder) WithDibSuppSvcFamiliesBuilder(builderSupplier func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) SearchResponseBuilder {
+	builder := builderSupplier(m.DibSuppSvcFamilies.CreateDIBSuppSvcFamiliesBuilder())
+	var err error
+	m.DibSuppSvcFamilies, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "DIBSuppSvcFamiliesBuilder failed"))
+	}
+	return m
+}
+
+func (m *_SearchResponseBuilder) Build() (SearchResponse, error) {
+	if m.HpaiControlEndpoint == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+	}
+	if m.DibDeviceInfo == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dibDeviceInfo' not set"))
+	}
+	if m.DibSuppSvcFamilies == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'dibSuppSvcFamilies' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._SearchResponse.deepCopy(), nil
+}
+
+func (m *_SearchResponseBuilder) MustBuild() SearchResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_SearchResponseBuilder) DeepCopy() any {
+	return m.CreateSearchResponseBuilder()
+}
+
+// CreateSearchResponseBuilder creates a SearchResponseBuilder
+func (m *_SearchResponse) CreateSearchResponseBuilder() SearchResponseBuilder {
+	if m == nil {
+		return NewSearchResponseBuilder()
+	}
+	return &_SearchResponseBuilder{_SearchResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

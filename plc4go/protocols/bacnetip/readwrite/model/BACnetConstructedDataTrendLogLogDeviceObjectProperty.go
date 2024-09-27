@@ -46,6 +46,8 @@ type BACnetConstructedDataTrendLogLogDeviceObjectProperty interface {
 	GetActualValue() BACnetDeviceObjectPropertyReference
 	// IsBACnetConstructedDataTrendLogLogDeviceObjectProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogLogDeviceObjectProperty()
+	// CreateBuilder creates a BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+	CreateBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder() BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
 }
 
 // _BACnetConstructedDataTrendLogLogDeviceObjectProperty is the data-structure of this message
@@ -69,6 +71,99 @@ func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(openingTag BACnetOp
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder is a builder for BACnetConstructedDataTrendLogLogDeviceObjectProperty
+type BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+	// WithLogDeviceObjectProperty adds LogDeviceObjectProperty (property field)
+	WithLogDeviceObjectProperty(BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+	// WithLogDeviceObjectPropertyBuilder adds LogDeviceObjectProperty (property field) which is build by the builder
+	WithLogDeviceObjectPropertyBuilder(func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+	// Build builds the BACnetConstructedDataTrendLogLogDeviceObjectProperty or returns an error if something is wrong
+	Build() (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTrendLogLogDeviceObjectProperty
+}
+
+// NewBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder() creates a BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+func NewBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder() BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder {
+	return &_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder{_BACnetConstructedDataTrendLogLogDeviceObjectProperty: new(_BACnetConstructedDataTrendLogLogDeviceObjectProperty)}
+}
+
+type _BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder struct {
+	*_BACnetConstructedDataTrendLogLogDeviceObjectProperty
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) = (*_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder)(nil)
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) WithMandatoryFields(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder {
+	return m.WithLogDeviceObjectProperty(logDeviceObjectProperty)
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) WithLogDeviceObjectProperty(logDeviceObjectProperty BACnetDeviceObjectPropertyReference) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder {
+	m.LogDeviceObjectProperty = logDeviceObjectProperty
+	return m
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) WithLogDeviceObjectPropertyBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder {
+	builder := builderSupplier(m.LogDeviceObjectProperty.CreateBACnetDeviceObjectPropertyReferenceBuilder())
+	var err error
+	m.LogDeviceObjectProperty, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) Build() (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
+	if m.LogDeviceObjectProperty == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'logDeviceObjectProperty' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataTrendLogLogDeviceObjectProperty.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) MustBuild() BACnetConstructedDataTrendLogLogDeviceObjectProperty {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder()
+}
+
+// CreateBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder creates a BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+func (m *_BACnetConstructedDataTrendLogLogDeviceObjectProperty) CreateBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder() BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder()
+	}
+	return &_BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder{_BACnetConstructedDataTrendLogLogDeviceObjectProperty: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

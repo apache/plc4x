@@ -43,6 +43,8 @@ type BACnetOpeningTag interface {
 	GetHeader() BACnetTagHeader
 	// IsBACnetOpeningTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOpeningTag()
+	// CreateBuilder creates a BACnetOpeningTagBuilder
+	CreateBACnetOpeningTagBuilder() BACnetOpeningTagBuilder
 }
 
 // _BACnetOpeningTag is the data-structure of this message
@@ -62,6 +64,99 @@ func NewBACnetOpeningTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACn
 	}
 	return &_BACnetOpeningTag{Header: header, TagNumberArgument: tagNumberArgument}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOpeningTagBuilder is a builder for BACnetOpeningTag
+type BACnetOpeningTagBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader) BACnetOpeningTagBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetOpeningTagBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOpeningTagBuilder
+	// Build builds the BACnetOpeningTag or returns an error if something is wrong
+	Build() (BACnetOpeningTag, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOpeningTag
+}
+
+// NewBACnetOpeningTagBuilder() creates a BACnetOpeningTagBuilder
+func NewBACnetOpeningTagBuilder() BACnetOpeningTagBuilder {
+	return &_BACnetOpeningTagBuilder{_BACnetOpeningTag: new(_BACnetOpeningTag)}
+}
+
+type _BACnetOpeningTagBuilder struct {
+	*_BACnetOpeningTag
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOpeningTagBuilder) = (*_BACnetOpeningTagBuilder)(nil)
+
+func (m *_BACnetOpeningTagBuilder) WithMandatoryFields(header BACnetTagHeader) BACnetOpeningTagBuilder {
+	return m.WithHeader(header)
+}
+
+func (m *_BACnetOpeningTagBuilder) WithHeader(header BACnetTagHeader) BACnetOpeningTagBuilder {
+	m.Header = header
+	return m
+}
+
+func (m *_BACnetOpeningTagBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOpeningTagBuilder {
+	builder := builderSupplier(m.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	m.Header, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetOpeningTagBuilder) Build() (BACnetOpeningTag, error) {
+	if m.Header == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetOpeningTag.deepCopy(), nil
+}
+
+func (m *_BACnetOpeningTagBuilder) MustBuild() BACnetOpeningTag {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetOpeningTagBuilder) DeepCopy() any {
+	return m.CreateBACnetOpeningTagBuilder()
+}
+
+// CreateBACnetOpeningTagBuilder creates a BACnetOpeningTagBuilder
+func (m *_BACnetOpeningTag) CreateBACnetOpeningTagBuilder() BACnetOpeningTagBuilder {
+	if m == nil {
+		return NewBACnetOpeningTagBuilder()
+	}
+	return &_BACnetOpeningTagBuilder{_BACnetOpeningTag: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -48,6 +48,8 @@ type BACnetConstructedDataPropertyList interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataPropertyList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPropertyList()
+	// CreateBuilder creates a BACnetConstructedDataPropertyListBuilder
+	CreateBACnetConstructedDataPropertyListBuilder() BACnetConstructedDataPropertyListBuilder
 }
 
 // _BACnetConstructedDataPropertyList is the data-structure of this message
@@ -70,6 +72,100 @@ func NewBACnetConstructedDataPropertyList(openingTag BACnetOpeningTag, peekedTag
 	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPropertyListBuilder is a builder for BACnetConstructedDataPropertyList
+type BACnetConstructedDataPropertyListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyList []BACnetPropertyIdentifierTagged) BACnetConstructedDataPropertyListBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPropertyListBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPropertyListBuilder
+	// WithPropertyList adds PropertyList (property field)
+	WithPropertyList(...BACnetPropertyIdentifierTagged) BACnetConstructedDataPropertyListBuilder
+	// Build builds the BACnetConstructedDataPropertyList or returns an error if something is wrong
+	Build() (BACnetConstructedDataPropertyList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPropertyList
+}
+
+// NewBACnetConstructedDataPropertyListBuilder() creates a BACnetConstructedDataPropertyListBuilder
+func NewBACnetConstructedDataPropertyListBuilder() BACnetConstructedDataPropertyListBuilder {
+	return &_BACnetConstructedDataPropertyListBuilder{_BACnetConstructedDataPropertyList: new(_BACnetConstructedDataPropertyList)}
+}
+
+type _BACnetConstructedDataPropertyListBuilder struct {
+	*_BACnetConstructedDataPropertyList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPropertyListBuilder) = (*_BACnetConstructedDataPropertyListBuilder)(nil)
+
+func (m *_BACnetConstructedDataPropertyListBuilder) WithMandatoryFields(propertyList []BACnetPropertyIdentifierTagged) BACnetConstructedDataPropertyListBuilder {
+	return m.WithPropertyList(propertyList...)
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPropertyListBuilder {
+	m.NumberOfDataElements = numberOfDataElements
+	return m
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPropertyListBuilder {
+	builder := builderSupplier(m.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	m.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) WithPropertyList(propertyList ...BACnetPropertyIdentifierTagged) BACnetConstructedDataPropertyListBuilder {
+	m.PropertyList = propertyList
+	return m
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) Build() (BACnetConstructedDataPropertyList, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetConstructedDataPropertyList.deepCopy(), nil
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) MustBuild() BACnetConstructedDataPropertyList {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetConstructedDataPropertyListBuilder) DeepCopy() any {
+	return m.CreateBACnetConstructedDataPropertyListBuilder()
+}
+
+// CreateBACnetConstructedDataPropertyListBuilder creates a BACnetConstructedDataPropertyListBuilder
+func (m *_BACnetConstructedDataPropertyList) CreateBACnetConstructedDataPropertyListBuilder() BACnetConstructedDataPropertyListBuilder {
+	if m == nil {
+		return NewBACnetConstructedDataPropertyListBuilder()
+	}
+	return &_BACnetConstructedDataPropertyListBuilder{_BACnetConstructedDataPropertyList: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

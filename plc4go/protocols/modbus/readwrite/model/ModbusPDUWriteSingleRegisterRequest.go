@@ -46,6 +46,8 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 	GetValue() uint16
 	// IsModbusPDUWriteSingleRegisterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUWriteSingleRegisterRequest()
+	// CreateBuilder creates a ModbusPDUWriteSingleRegisterRequestBuilder
+	CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder
 }
 
 // _ModbusPDUWriteSingleRegisterRequest is the data-structure of this message
@@ -68,6 +70,85 @@ func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_Modb
 	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUWriteSingleRegisterRequestBuilder is a builder for ModbusPDUWriteSingleRegisterRequest
+type ModbusPDUWriteSingleRegisterRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// Build builds the ModbusPDUWriteSingleRegisterRequest or returns an error if something is wrong
+	Build() (ModbusPDUWriteSingleRegisterRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUWriteSingleRegisterRequest
+}
+
+// NewModbusPDUWriteSingleRegisterRequestBuilder() creates a ModbusPDUWriteSingleRegisterRequestBuilder
+func NewModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
+	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: new(_ModbusPDUWriteSingleRegisterRequest)}
+}
+
+type _ModbusPDUWriteSingleRegisterRequestBuilder struct {
+	*_ModbusPDUWriteSingleRegisterRequest
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUWriteSingleRegisterRequestBuilder) = (*_ModbusPDUWriteSingleRegisterRequestBuilder)(nil)
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	return m.WithAddress(address).WithValue(value)
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	m.Address = address
+	return m
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) Build() (ModbusPDUWriteSingleRegisterRequest, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._ModbusPDUWriteSingleRegisterRequest.deepCopy(), nil
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) MustBuild() ModbusPDUWriteSingleRegisterRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequestBuilder) DeepCopy() any {
+	return m.CreateModbusPDUWriteSingleRegisterRequestBuilder()
+}
+
+// CreateModbusPDUWriteSingleRegisterRequestBuilder creates a ModbusPDUWriteSingleRegisterRequestBuilder
+func (m *_ModbusPDUWriteSingleRegisterRequest) CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
+	if m == nil {
+		return NewModbusPDUWriteSingleRegisterRequestBuilder()
+	}
+	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

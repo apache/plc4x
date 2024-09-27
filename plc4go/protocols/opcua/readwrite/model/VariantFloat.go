@@ -46,6 +46,8 @@ type VariantFloat interface {
 	GetValue() []float32
 	// IsVariantFloat is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantFloat()
+	// CreateBuilder creates a VariantFloatBuilder
+	CreateVariantFloatBuilder() VariantFloatBuilder
 }
 
 // _VariantFloat is the data-structure of this message
@@ -68,6 +70,85 @@ func NewVariantFloat(arrayLengthSpecified bool, arrayDimensionsSpecified bool, n
 	_result.VariantContract.(*_Variant)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantFloatBuilder is a builder for VariantFloat
+type VariantFloatBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []float32) VariantFloatBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantFloatBuilder
+	// WithValue adds Value (property field)
+	WithValue(...float32) VariantFloatBuilder
+	// Build builds the VariantFloat or returns an error if something is wrong
+	Build() (VariantFloat, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantFloat
+}
+
+// NewVariantFloatBuilder() creates a VariantFloatBuilder
+func NewVariantFloatBuilder() VariantFloatBuilder {
+	return &_VariantFloatBuilder{_VariantFloat: new(_VariantFloat)}
+}
+
+type _VariantFloatBuilder struct {
+	*_VariantFloat
+
+	err *utils.MultiError
+}
+
+var _ (VariantFloatBuilder) = (*_VariantFloatBuilder)(nil)
+
+func (m *_VariantFloatBuilder) WithMandatoryFields(value []float32) VariantFloatBuilder {
+	return m.WithValue(value...)
+}
+
+func (m *_VariantFloatBuilder) WithOptionalArrayLength(arrayLength int32) VariantFloatBuilder {
+	m.ArrayLength = &arrayLength
+	return m
+}
+
+func (m *_VariantFloatBuilder) WithValue(value ...float32) VariantFloatBuilder {
+	m.Value = value
+	return m
+}
+
+func (m *_VariantFloatBuilder) Build() (VariantFloat, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._VariantFloat.deepCopy(), nil
+}
+
+func (m *_VariantFloatBuilder) MustBuild() VariantFloat {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_VariantFloatBuilder) DeepCopy() any {
+	return m.CreateVariantFloatBuilder()
+}
+
+// CreateVariantFloatBuilder creates a VariantFloatBuilder
+func (m *_VariantFloat) CreateVariantFloatBuilder() VariantFloatBuilder {
+	if m == nil {
+		return NewVariantFloatBuilder()
+	}
+	return &_VariantFloatBuilder{_VariantFloat: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

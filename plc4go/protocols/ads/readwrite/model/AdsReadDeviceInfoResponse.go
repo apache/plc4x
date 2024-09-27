@@ -52,6 +52,8 @@ type AdsReadDeviceInfoResponse interface {
 	GetDevice() []byte
 	// IsAdsReadDeviceInfoResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadDeviceInfoResponse()
+	// CreateBuilder creates a AdsReadDeviceInfoResponseBuilder
+	CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder
 }
 
 // _AdsReadDeviceInfoResponse is the data-structure of this message
@@ -80,6 +82,106 @@ func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16,
 	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadDeviceInfoResponseBuilder is a builder for AdsReadDeviceInfoResponse
+type AdsReadDeviceInfoResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsReadDeviceInfoResponseBuilder
+	// WithMajorVersion adds MajorVersion (property field)
+	WithMajorVersion(uint8) AdsReadDeviceInfoResponseBuilder
+	// WithMinorVersion adds MinorVersion (property field)
+	WithMinorVersion(uint8) AdsReadDeviceInfoResponseBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint16) AdsReadDeviceInfoResponseBuilder
+	// WithDevice adds Device (property field)
+	WithDevice(...byte) AdsReadDeviceInfoResponseBuilder
+	// Build builds the AdsReadDeviceInfoResponse or returns an error if something is wrong
+	Build() (AdsReadDeviceInfoResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadDeviceInfoResponse
+}
+
+// NewAdsReadDeviceInfoResponseBuilder() creates a AdsReadDeviceInfoResponseBuilder
+func NewAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
+	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: new(_AdsReadDeviceInfoResponse)}
+}
+
+type _AdsReadDeviceInfoResponseBuilder struct {
+	*_AdsReadDeviceInfoResponse
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadDeviceInfoResponseBuilder) = (*_AdsReadDeviceInfoResponseBuilder)(nil)
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder {
+	return m.WithResult(result).WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithVersion(version).WithDevice(device...)
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithResult(result ReturnCode) AdsReadDeviceInfoResponseBuilder {
+	m.Result = result
+	return m
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithMajorVersion(majorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	m.MajorVersion = majorVersion
+	return m
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithMinorVersion(minorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	m.MinorVersion = minorVersion
+	return m
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithVersion(version uint16) AdsReadDeviceInfoResponseBuilder {
+	m.Version = version
+	return m
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) WithDevice(device ...byte) AdsReadDeviceInfoResponseBuilder {
+	m.Device = device
+	return m
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) Build() (AdsReadDeviceInfoResponse, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._AdsReadDeviceInfoResponse.deepCopy(), nil
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) MustBuild() AdsReadDeviceInfoResponse {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_AdsReadDeviceInfoResponseBuilder) DeepCopy() any {
+	return m.CreateAdsReadDeviceInfoResponseBuilder()
+}
+
+// CreateAdsReadDeviceInfoResponseBuilder creates a AdsReadDeviceInfoResponseBuilder
+func (m *_AdsReadDeviceInfoResponse) CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
+	if m == nil {
+		return NewAdsReadDeviceInfoResponseBuilder()
+	}
+	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

@@ -44,6 +44,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryEnumerated interface {
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 	// IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntryEnumerated()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder() BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
 }
 
 // _BACnetFaultParameterFaultExtendedParametersEntryEnumerated is the data-structure of this message
@@ -67,6 +69,99 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryEnumerated(peekedTagHead
 	_result.BACnetFaultParameterFaultExtendedParametersEntryContract.(*_BACnetFaultParameterFaultExtendedParametersEntry)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+type BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntryEnumerated or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder() BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder{_BACnetFaultParameterFaultExtendedParametersEntryEnumerated: new(_BACnetFaultParameterFaultExtendedParametersEntryEnumerated)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntryEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder)(nil)
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	return m.WithEnumeratedValue(enumeratedValue)
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	m.EnumeratedValue = enumeratedValue
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	builder := builderSupplier(m.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	m.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if m.err == nil {
+			m.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		m.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return m
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
+	if m.EnumeratedValue == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BACnetFaultParameterFaultExtendedParametersEntryEnumerated.deepCopy(), nil
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntryEnumerated {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder) DeepCopy() any {
+	return m.CreateBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder()
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryEnumerated) CreateBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder() BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder {
+	if m == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder{_BACnetFaultParameterFaultExtendedParametersEntryEnumerated: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

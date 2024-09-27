@@ -45,6 +45,8 @@ type Dummy interface {
 	GetDummy() uint16
 	// IsDummy is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDummy()
+	// CreateBuilder creates a DummyBuilder
+	CreateDummyBuilder() DummyBuilder
 }
 
 // _Dummy is the data-structure of this message
@@ -58,6 +60,78 @@ var _ Dummy = (*_Dummy)(nil)
 func NewDummy(dummy uint16) *_Dummy {
 	return &_Dummy{Dummy: dummy}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DummyBuilder is a builder for Dummy
+type DummyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dummy uint16) DummyBuilder
+	// WithDummy adds Dummy (property field)
+	WithDummy(uint16) DummyBuilder
+	// Build builds the Dummy or returns an error if something is wrong
+	Build() (Dummy, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Dummy
+}
+
+// NewDummyBuilder() creates a DummyBuilder
+func NewDummyBuilder() DummyBuilder {
+	return &_DummyBuilder{_Dummy: new(_Dummy)}
+}
+
+type _DummyBuilder struct {
+	*_Dummy
+
+	err *utils.MultiError
+}
+
+var _ (DummyBuilder) = (*_DummyBuilder)(nil)
+
+func (m *_DummyBuilder) WithMandatoryFields(dummy uint16) DummyBuilder {
+	return m.WithDummy(dummy)
+}
+
+func (m *_DummyBuilder) WithDummy(dummy uint16) DummyBuilder {
+	m.Dummy = dummy
+	return m
+}
+
+func (m *_DummyBuilder) Build() (Dummy, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._Dummy.deepCopy(), nil
+}
+
+func (m *_DummyBuilder) MustBuild() Dummy {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DummyBuilder) DeepCopy() any {
+	return m.CreateDummyBuilder()
+}
+
+// CreateDummyBuilder creates a DummyBuilder
+func (m *_Dummy) CreateDummyBuilder() DummyBuilder {
+	if m == nil {
+		return NewDummyBuilder()
+	}
+	return &_DummyBuilder{_Dummy: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

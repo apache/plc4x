@@ -50,6 +50,8 @@ type BrowseNextRequest interface {
 	GetContinuationPoints() []PascalByteString
 	// IsBrowseNextRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseNextRequest()
+	// CreateBuilder creates a BrowseNextRequestBuilder
+	CreateBrowseNextRequestBuilder() BrowseNextRequestBuilder
 }
 
 // _BrowseNextRequest is the data-structure of this message
@@ -81,6 +83,105 @@ func NewBrowseNextRequest(requestHeader ExtensionObjectDefinition, releaseContin
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowseNextRequestBuilder is a builder for BrowseNextRequest
+type BrowseNextRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) BrowseNextRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) BrowseNextRequestBuilder
+	// WithReleaseContinuationPoints adds ReleaseContinuationPoints (property field)
+	WithReleaseContinuationPoints(bool) BrowseNextRequestBuilder
+	// WithNoOfContinuationPoints adds NoOfContinuationPoints (property field)
+	WithNoOfContinuationPoints(int32) BrowseNextRequestBuilder
+	// WithContinuationPoints adds ContinuationPoints (property field)
+	WithContinuationPoints(...PascalByteString) BrowseNextRequestBuilder
+	// Build builds the BrowseNextRequest or returns an error if something is wrong
+	Build() (BrowseNextRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowseNextRequest
+}
+
+// NewBrowseNextRequestBuilder() creates a BrowseNextRequestBuilder
+func NewBrowseNextRequestBuilder() BrowseNextRequestBuilder {
+	return &_BrowseNextRequestBuilder{_BrowseNextRequest: new(_BrowseNextRequest)}
+}
+
+type _BrowseNextRequestBuilder struct {
+	*_BrowseNextRequest
+
+	err *utils.MultiError
+}
+
+var _ (BrowseNextRequestBuilder) = (*_BrowseNextRequestBuilder)(nil)
+
+func (m *_BrowseNextRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoints bool, noOfContinuationPoints int32, continuationPoints []PascalByteString) BrowseNextRequestBuilder {
+	return m.WithRequestHeader(requestHeader).WithReleaseContinuationPoints(releaseContinuationPoints).WithNoOfContinuationPoints(noOfContinuationPoints).WithContinuationPoints(continuationPoints...)
+}
+
+func (m *_BrowseNextRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) BrowseNextRequestBuilder {
+	m.RequestHeader = requestHeader
+	return m
+}
+
+func (m *_BrowseNextRequestBuilder) WithReleaseContinuationPoints(releaseContinuationPoints bool) BrowseNextRequestBuilder {
+	m.ReleaseContinuationPoints = releaseContinuationPoints
+	return m
+}
+
+func (m *_BrowseNextRequestBuilder) WithNoOfContinuationPoints(noOfContinuationPoints int32) BrowseNextRequestBuilder {
+	m.NoOfContinuationPoints = noOfContinuationPoints
+	return m
+}
+
+func (m *_BrowseNextRequestBuilder) WithContinuationPoints(continuationPoints ...PascalByteString) BrowseNextRequestBuilder {
+	m.ContinuationPoints = continuationPoints
+	return m
+}
+
+func (m *_BrowseNextRequestBuilder) Build() (BrowseNextRequest, error) {
+	if m.RequestHeader == nil {
+		if m.err == nil {
+			m.err = new(utils.MultiError)
+		}
+		m.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._BrowseNextRequest.deepCopy(), nil
+}
+
+func (m *_BrowseNextRequestBuilder) MustBuild() BrowseNextRequest {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_BrowseNextRequestBuilder) DeepCopy() any {
+	return m.CreateBrowseNextRequestBuilder()
+}
+
+// CreateBrowseNextRequestBuilder creates a BrowseNextRequestBuilder
+func (m *_BrowseNextRequest) CreateBrowseNextRequestBuilder() BrowseNextRequestBuilder {
+	if m == nil {
+		return NewBrowseNextRequestBuilder()
+	}
+	return &_BrowseNextRequestBuilder{_BrowseNextRequest: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

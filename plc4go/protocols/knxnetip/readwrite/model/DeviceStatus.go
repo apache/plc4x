@@ -43,6 +43,8 @@ type DeviceStatus interface {
 	GetProgramMode() bool
 	// IsDeviceStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceStatus()
+	// CreateBuilder creates a DeviceStatusBuilder
+	CreateDeviceStatusBuilder() DeviceStatusBuilder
 }
 
 // _DeviceStatus is the data-structure of this message
@@ -58,6 +60,78 @@ var _ DeviceStatus = (*_DeviceStatus)(nil)
 func NewDeviceStatus(programMode bool) *_DeviceStatus {
 	return &_DeviceStatus{ProgramMode: programMode}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceStatusBuilder is a builder for DeviceStatus
+type DeviceStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(programMode bool) DeviceStatusBuilder
+	// WithProgramMode adds ProgramMode (property field)
+	WithProgramMode(bool) DeviceStatusBuilder
+	// Build builds the DeviceStatus or returns an error if something is wrong
+	Build() (DeviceStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceStatus
+}
+
+// NewDeviceStatusBuilder() creates a DeviceStatusBuilder
+func NewDeviceStatusBuilder() DeviceStatusBuilder {
+	return &_DeviceStatusBuilder{_DeviceStatus: new(_DeviceStatus)}
+}
+
+type _DeviceStatusBuilder struct {
+	*_DeviceStatus
+
+	err *utils.MultiError
+}
+
+var _ (DeviceStatusBuilder) = (*_DeviceStatusBuilder)(nil)
+
+func (m *_DeviceStatusBuilder) WithMandatoryFields(programMode bool) DeviceStatusBuilder {
+	return m.WithProgramMode(programMode)
+}
+
+func (m *_DeviceStatusBuilder) WithProgramMode(programMode bool) DeviceStatusBuilder {
+	m.ProgramMode = programMode
+	return m
+}
+
+func (m *_DeviceStatusBuilder) Build() (DeviceStatus, error) {
+	if m.err != nil {
+		return nil, errors.Wrap(m.err, "error occurred during build")
+	}
+	return m._DeviceStatus.deepCopy(), nil
+}
+
+func (m *_DeviceStatusBuilder) MustBuild() DeviceStatus {
+	build, err := m.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (m *_DeviceStatusBuilder) DeepCopy() any {
+	return m.CreateDeviceStatusBuilder()
+}
+
+// CreateDeviceStatusBuilder creates a DeviceStatusBuilder
+func (m *_DeviceStatus) CreateDeviceStatusBuilder() DeviceStatusBuilder {
+	if m == nil {
+		return NewDeviceStatusBuilder()
+	}
+	return &_DeviceStatusBuilder{_DeviceStatus: m.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
