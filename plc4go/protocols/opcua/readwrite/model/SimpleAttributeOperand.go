@@ -38,6 +38,7 @@ type SimpleAttributeOperand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetTypeDefinitionId returns TypeDefinitionId (property field)
 	GetTypeDefinitionId() NodeId
@@ -49,6 +50,8 @@ type SimpleAttributeOperand interface {
 	GetIndexRange() PascalString
 	// IsSimpleAttributeOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSimpleAttributeOperand()
+	// CreateBuilder creates a SimpleAttributeOperandBuilder
+	CreateSimpleAttributeOperandBuilder() SimpleAttributeOperandBuilder
 }
 
 // _SimpleAttributeOperand is the data-structure of this message
@@ -81,6 +84,160 @@ func NewSimpleAttributeOperand(typeDefinitionId NodeId, browsePath []QualifiedNa
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SimpleAttributeOperandBuilder is a builder for SimpleAttributeOperand
+type SimpleAttributeOperandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(typeDefinitionId NodeId, browsePath []QualifiedName, attributeId uint32, indexRange PascalString) SimpleAttributeOperandBuilder
+	// WithTypeDefinitionId adds TypeDefinitionId (property field)
+	WithTypeDefinitionId(NodeId) SimpleAttributeOperandBuilder
+	// WithTypeDefinitionIdBuilder adds TypeDefinitionId (property field) which is build by the builder
+	WithTypeDefinitionIdBuilder(func(NodeIdBuilder) NodeIdBuilder) SimpleAttributeOperandBuilder
+	// WithBrowsePath adds BrowsePath (property field)
+	WithBrowsePath(...QualifiedName) SimpleAttributeOperandBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) SimpleAttributeOperandBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) SimpleAttributeOperandBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) SimpleAttributeOperandBuilder
+	// Build builds the SimpleAttributeOperand or returns an error if something is wrong
+	Build() (SimpleAttributeOperand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SimpleAttributeOperand
+}
+
+// NewSimpleAttributeOperandBuilder() creates a SimpleAttributeOperandBuilder
+func NewSimpleAttributeOperandBuilder() SimpleAttributeOperandBuilder {
+	return &_SimpleAttributeOperandBuilder{_SimpleAttributeOperand: new(_SimpleAttributeOperand)}
+}
+
+type _SimpleAttributeOperandBuilder struct {
+	*_SimpleAttributeOperand
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SimpleAttributeOperandBuilder) = (*_SimpleAttributeOperandBuilder)(nil)
+
+func (b *_SimpleAttributeOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithMandatoryFields(typeDefinitionId NodeId, browsePath []QualifiedName, attributeId uint32, indexRange PascalString) SimpleAttributeOperandBuilder {
+	return b.WithTypeDefinitionId(typeDefinitionId).WithBrowsePath(browsePath...).WithAttributeId(attributeId).WithIndexRange(indexRange)
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithTypeDefinitionId(typeDefinitionId NodeId) SimpleAttributeOperandBuilder {
+	b.TypeDefinitionId = typeDefinitionId
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithTypeDefinitionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SimpleAttributeOperandBuilder {
+	builder := builderSupplier(b.TypeDefinitionId.CreateNodeIdBuilder())
+	var err error
+	b.TypeDefinitionId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithBrowsePath(browsePath ...QualifiedName) SimpleAttributeOperandBuilder {
+	b.BrowsePath = browsePath
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithAttributeId(attributeId uint32) SimpleAttributeOperandBuilder {
+	b.AttributeId = attributeId
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithIndexRange(indexRange PascalString) SimpleAttributeOperandBuilder {
+	b.IndexRange = indexRange
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SimpleAttributeOperandBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
+	var err error
+	b.IndexRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SimpleAttributeOperandBuilder) Build() (SimpleAttributeOperand, error) {
+	if b.TypeDefinitionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'typeDefinitionId' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SimpleAttributeOperand.deepCopy(), nil
+}
+
+func (b *_SimpleAttributeOperandBuilder) MustBuild() SimpleAttributeOperand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SimpleAttributeOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SimpleAttributeOperandBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SimpleAttributeOperandBuilder) DeepCopy() any {
+	_copy := b.CreateSimpleAttributeOperandBuilder().(*_SimpleAttributeOperandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSimpleAttributeOperandBuilder creates a SimpleAttributeOperandBuilder
+func (b *_SimpleAttributeOperand) CreateSimpleAttributeOperandBuilder() SimpleAttributeOperandBuilder {
+	if b == nil {
+		return NewSimpleAttributeOperandBuilder()
+	}
+	return &_SimpleAttributeOperandBuilder{_SimpleAttributeOperand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -268,6 +425,25 @@ func (m *_SimpleAttributeOperand) SerializeWithWriteBuffer(ctx context.Context, 
 }
 
 func (m *_SimpleAttributeOperand) IsSimpleAttributeOperand() {}
+
+func (m *_SimpleAttributeOperand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SimpleAttributeOperand) deepCopy() *_SimpleAttributeOperand {
+	if m == nil {
+		return nil
+	}
+	_SimpleAttributeOperandCopy := &_SimpleAttributeOperand{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.TypeDefinitionId.DeepCopy().(NodeId),
+		utils.DeepCopySlice[QualifiedName, QualifiedName](m.BrowsePath),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SimpleAttributeOperandCopy
+}
 
 func (m *_SimpleAttributeOperand) String() string {
 	if m == nil {

@@ -87,17 +87,13 @@ func NewDeleteReferencesResponse(responseHeader ResponseHeader, results []Status
 type DeleteReferencesResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) DeleteReferencesResponseBuilder
+	WithResponseHeader(ResponseHeader) DeleteReferencesResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) DeleteReferencesResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteReferencesResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) DeleteReferencesResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) DeleteReferencesResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) DeleteReferencesResponseBuilder
 	// Build builds the DeleteReferencesResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_DeleteReferencesResponseBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_DeleteReferencesResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) DeleteReferencesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteReferencesResponseBuilder {
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) DeleteReferencesResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_DeleteReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteReferencesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) DeleteReferencesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_DeleteReferencesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteReferencesResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_DeleteReferencesResponseBuilder) WithResults(results ...StatusCode) DeleteReferencesResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_DeleteReferencesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteReferencesResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_DeleteReferencesResponse) deepCopy() *_DeleteReferencesResponse {
 	}
 	_DeleteReferencesResponseCopy := &_DeleteReferencesResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

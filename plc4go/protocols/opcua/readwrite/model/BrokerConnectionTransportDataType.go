@@ -38,6 +38,7 @@ type BrokerConnectionTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResourceUri returns ResourceUri (property field)
 	GetResourceUri() PascalString
@@ -45,6 +46,8 @@ type BrokerConnectionTransportDataType interface {
 	GetAuthenticationProfileUri() PascalString
 	// IsBrokerConnectionTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrokerConnectionTransportDataType()
+	// CreateBuilder creates a BrokerConnectionTransportDataTypeBuilder
+	CreateBrokerConnectionTransportDataTypeBuilder() BrokerConnectionTransportDataTypeBuilder
 }
 
 // _BrokerConnectionTransportDataType is the data-structure of this message
@@ -73,6 +76,146 @@ func NewBrokerConnectionTransportDataType(resourceUri PascalString, authenticati
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrokerConnectionTransportDataTypeBuilder is a builder for BrokerConnectionTransportDataType
+type BrokerConnectionTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(resourceUri PascalString, authenticationProfileUri PascalString) BrokerConnectionTransportDataTypeBuilder
+	// WithResourceUri adds ResourceUri (property field)
+	WithResourceUri(PascalString) BrokerConnectionTransportDataTypeBuilder
+	// WithResourceUriBuilder adds ResourceUri (property field) which is build by the builder
+	WithResourceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerConnectionTransportDataTypeBuilder
+	// WithAuthenticationProfileUri adds AuthenticationProfileUri (property field)
+	WithAuthenticationProfileUri(PascalString) BrokerConnectionTransportDataTypeBuilder
+	// WithAuthenticationProfileUriBuilder adds AuthenticationProfileUri (property field) which is build by the builder
+	WithAuthenticationProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerConnectionTransportDataTypeBuilder
+	// Build builds the BrokerConnectionTransportDataType or returns an error if something is wrong
+	Build() (BrokerConnectionTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrokerConnectionTransportDataType
+}
+
+// NewBrokerConnectionTransportDataTypeBuilder() creates a BrokerConnectionTransportDataTypeBuilder
+func NewBrokerConnectionTransportDataTypeBuilder() BrokerConnectionTransportDataTypeBuilder {
+	return &_BrokerConnectionTransportDataTypeBuilder{_BrokerConnectionTransportDataType: new(_BrokerConnectionTransportDataType)}
+}
+
+type _BrokerConnectionTransportDataTypeBuilder struct {
+	*_BrokerConnectionTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrokerConnectionTransportDataTypeBuilder) = (*_BrokerConnectionTransportDataTypeBuilder)(nil)
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) WithMandatoryFields(resourceUri PascalString, authenticationProfileUri PascalString) BrokerConnectionTransportDataTypeBuilder {
+	return b.WithResourceUri(resourceUri).WithAuthenticationProfileUri(authenticationProfileUri)
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) WithResourceUri(resourceUri PascalString) BrokerConnectionTransportDataTypeBuilder {
+	b.ResourceUri = resourceUri
+	return b
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) WithResourceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerConnectionTransportDataTypeBuilder {
+	builder := builderSupplier(b.ResourceUri.CreatePascalStringBuilder())
+	var err error
+	b.ResourceUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) WithAuthenticationProfileUri(authenticationProfileUri PascalString) BrokerConnectionTransportDataTypeBuilder {
+	b.AuthenticationProfileUri = authenticationProfileUri
+	return b
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) WithAuthenticationProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerConnectionTransportDataTypeBuilder {
+	builder := builderSupplier(b.AuthenticationProfileUri.CreatePascalStringBuilder())
+	var err error
+	b.AuthenticationProfileUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) Build() (BrokerConnectionTransportDataType, error) {
+	if b.ResourceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'resourceUri' not set"))
+	}
+	if b.AuthenticationProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'authenticationProfileUri' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrokerConnectionTransportDataType.deepCopy(), nil
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) MustBuild() BrokerConnectionTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrokerConnectionTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrokerConnectionTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBrokerConnectionTransportDataTypeBuilder().(*_BrokerConnectionTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrokerConnectionTransportDataTypeBuilder creates a BrokerConnectionTransportDataTypeBuilder
+func (b *_BrokerConnectionTransportDataType) CreateBrokerConnectionTransportDataTypeBuilder() BrokerConnectionTransportDataTypeBuilder {
+	if b == nil {
+		return NewBrokerConnectionTransportDataTypeBuilder()
+	}
+	return &_BrokerConnectionTransportDataTypeBuilder{_BrokerConnectionTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -206,6 +349,23 @@ func (m *_BrokerConnectionTransportDataType) SerializeWithWriteBuffer(ctx contex
 }
 
 func (m *_BrokerConnectionTransportDataType) IsBrokerConnectionTransportDataType() {}
+
+func (m *_BrokerConnectionTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrokerConnectionTransportDataType) deepCopy() *_BrokerConnectionTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_BrokerConnectionTransportDataTypeCopy := &_BrokerConnectionTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResourceUri.DeepCopy().(PascalString),
+		m.AuthenticationProfileUri.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrokerConnectionTransportDataTypeCopy
+}
 
 func (m *_BrokerConnectionTransportDataType) String() string {
 	if m == nil {

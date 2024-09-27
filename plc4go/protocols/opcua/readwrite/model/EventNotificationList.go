@@ -76,11 +76,9 @@ func NewEventNotificationList(events []EventFieldList) *_EventNotificationList {
 type EventNotificationListBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder
-	// WithNoOfEvents adds NoOfEvents (property field)
-	WithNoOfEvents(int32) EventNotificationListBuilder
+	WithMandatoryFields(events []EventFieldList) EventNotificationListBuilder
 	// WithEvents adds Events (property field)
-	WithEvents(...ExtensionObjectDefinition) EventNotificationListBuilder
+	WithEvents(...EventFieldList) EventNotificationListBuilder
 	// Build builds the EventNotificationList or returns an error if something is wrong
 	Build() (EventNotificationList, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +104,11 @@ func (b *_EventNotificationListBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EventNotificationListBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) EventNotificationListBuilder {
-	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_EventNotificationListBuilder) WithMandatoryFields(events []EventFieldList) EventNotificationListBuilder {
+	return b.WithEvents(events...)
 }
 
-func (b *_EventNotificationListBuilder) WithNoOfEvents(noOfEvents int32) EventNotificationListBuilder {
-	b.NoOfEvents = noOfEvents
-	return b
-}
-
-func (b *_EventNotificationListBuilder) WithEvents(events ...ExtensionObjectDefinition) EventNotificationListBuilder {
+func (b *_EventNotificationListBuilder) WithEvents(events ...EventFieldList) EventNotificationListBuilder {
 	b.Events = events
 	return b
 }
@@ -311,8 +304,7 @@ func (m *_EventNotificationList) deepCopy() *_EventNotificationList {
 	}
 	_EventNotificationListCopy := &_EventNotificationList{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEvents,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+		utils.DeepCopySlice[EventFieldList, EventFieldList](m.Events),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _EventNotificationListCopy

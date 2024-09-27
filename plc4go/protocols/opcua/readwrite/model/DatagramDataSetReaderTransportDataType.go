@@ -38,6 +38,7 @@ type DatagramDataSetReaderTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAddress returns Address (property field)
 	GetAddress() ExtensionObject
@@ -49,6 +50,8 @@ type DatagramDataSetReaderTransportDataType interface {
 	GetTopic() PascalString
 	// IsDatagramDataSetReaderTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDatagramDataSetReaderTransportDataType()
+	// CreateBuilder creates a DatagramDataSetReaderTransportDataTypeBuilder
+	CreateDatagramDataSetReaderTransportDataTypeBuilder() DatagramDataSetReaderTransportDataTypeBuilder
 }
 
 // _DatagramDataSetReaderTransportDataType is the data-structure of this message
@@ -84,6 +87,181 @@ func NewDatagramDataSetReaderTransportDataType(address ExtensionObject, qosCateg
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DatagramDataSetReaderTransportDataTypeBuilder is a builder for DatagramDataSetReaderTransportDataType
+type DatagramDataSetReaderTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, topic PascalString) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(ExtensionObject) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithAddressBuilder adds Address (property field) which is build by the builder
+	WithAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithQosCategory adds QosCategory (property field)
+	WithQosCategory(PascalString) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithQosCategoryBuilder adds QosCategory (property field) which is build by the builder
+	WithQosCategoryBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithDatagramQos adds DatagramQos (property field)
+	WithDatagramQos(...ExtensionObject) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithTopic adds Topic (property field)
+	WithTopic(PascalString) DatagramDataSetReaderTransportDataTypeBuilder
+	// WithTopicBuilder adds Topic (property field) which is build by the builder
+	WithTopicBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramDataSetReaderTransportDataTypeBuilder
+	// Build builds the DatagramDataSetReaderTransportDataType or returns an error if something is wrong
+	Build() (DatagramDataSetReaderTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DatagramDataSetReaderTransportDataType
+}
+
+// NewDatagramDataSetReaderTransportDataTypeBuilder() creates a DatagramDataSetReaderTransportDataTypeBuilder
+func NewDatagramDataSetReaderTransportDataTypeBuilder() DatagramDataSetReaderTransportDataTypeBuilder {
+	return &_DatagramDataSetReaderTransportDataTypeBuilder{_DatagramDataSetReaderTransportDataType: new(_DatagramDataSetReaderTransportDataType)}
+}
+
+type _DatagramDataSetReaderTransportDataTypeBuilder struct {
+	*_DatagramDataSetReaderTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DatagramDataSetReaderTransportDataTypeBuilder) = (*_DatagramDataSetReaderTransportDataTypeBuilder)(nil)
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithMandatoryFields(address ExtensionObject, qosCategory PascalString, datagramQos []ExtensionObject, topic PascalString) DatagramDataSetReaderTransportDataTypeBuilder {
+	return b.WithAddress(address).WithQosCategory(qosCategory).WithDatagramQos(datagramQos...).WithTopic(topic)
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithAddress(address ExtensionObject) DatagramDataSetReaderTransportDataTypeBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.Address.CreateExtensionObjectBuilder())
+	var err error
+	b.Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithQosCategory(qosCategory PascalString) DatagramDataSetReaderTransportDataTypeBuilder {
+	b.QosCategory = qosCategory
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithQosCategoryBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DatagramDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.QosCategory.CreatePascalStringBuilder())
+	var err error
+	b.QosCategory, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithDatagramQos(datagramQos ...ExtensionObject) DatagramDataSetReaderTransportDataTypeBuilder {
+	b.DatagramQos = datagramQos
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithTopic(topic PascalString) DatagramDataSetReaderTransportDataTypeBuilder {
+	b.Topic = topic
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) WithTopicBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DatagramDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.Topic.CreatePascalStringBuilder())
+	var err error
+	b.Topic, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) Build() (DatagramDataSetReaderTransportDataType, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.QosCategory == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'qosCategory' not set"))
+	}
+	if b.Topic == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'topic' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DatagramDataSetReaderTransportDataType.deepCopy(), nil
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) MustBuild() DatagramDataSetReaderTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DatagramDataSetReaderTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDatagramDataSetReaderTransportDataTypeBuilder().(*_DatagramDataSetReaderTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDatagramDataSetReaderTransportDataTypeBuilder creates a DatagramDataSetReaderTransportDataTypeBuilder
+func (b *_DatagramDataSetReaderTransportDataType) CreateDatagramDataSetReaderTransportDataTypeBuilder() DatagramDataSetReaderTransportDataTypeBuilder {
+	if b == nil {
+		return NewDatagramDataSetReaderTransportDataTypeBuilder()
+	}
+	return &_DatagramDataSetReaderTransportDataTypeBuilder{_DatagramDataSetReaderTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -271,6 +449,25 @@ func (m *_DatagramDataSetReaderTransportDataType) SerializeWithWriteBuffer(ctx c
 }
 
 func (m *_DatagramDataSetReaderTransportDataType) IsDatagramDataSetReaderTransportDataType() {}
+
+func (m *_DatagramDataSetReaderTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DatagramDataSetReaderTransportDataType) deepCopy() *_DatagramDataSetReaderTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_DatagramDataSetReaderTransportDataTypeCopy := &_DatagramDataSetReaderTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Address.DeepCopy().(ExtensionObject),
+		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
+		m.Topic.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DatagramDataSetReaderTransportDataTypeCopy
+}
 
 func (m *_DatagramDataSetReaderTransportDataType) String() string {
 	if m == nil {

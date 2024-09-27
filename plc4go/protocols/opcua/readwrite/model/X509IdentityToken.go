@@ -38,6 +38,7 @@ type X509IdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetPolicyId returns PolicyId (property field)
 	GetPolicyId() PascalString
@@ -45,6 +46,8 @@ type X509IdentityToken interface {
 	GetCertificateData() PascalByteString
 	// IsX509IdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsX509IdentityToken()
+	// CreateBuilder creates a X509IdentityTokenBuilder
+	CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder
 }
 
 // _X509IdentityToken is the data-structure of this message
@@ -73,6 +76,146 @@ func NewX509IdentityToken(policyId PascalString, certificateData PascalByteStrin
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// X509IdentityTokenBuilder is a builder for X509IdentityToken
+type X509IdentityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(policyId PascalString, certificateData PascalByteString) X509IdentityTokenBuilder
+	// WithPolicyId adds PolicyId (property field)
+	WithPolicyId(PascalString) X509IdentityTokenBuilder
+	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
+	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) X509IdentityTokenBuilder
+	// WithCertificateData adds CertificateData (property field)
+	WithCertificateData(PascalByteString) X509IdentityTokenBuilder
+	// WithCertificateDataBuilder adds CertificateData (property field) which is build by the builder
+	WithCertificateDataBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder
+	// Build builds the X509IdentityToken or returns an error if something is wrong
+	Build() (X509IdentityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() X509IdentityToken
+}
+
+// NewX509IdentityTokenBuilder() creates a X509IdentityTokenBuilder
+func NewX509IdentityTokenBuilder() X509IdentityTokenBuilder {
+	return &_X509IdentityTokenBuilder{_X509IdentityToken: new(_X509IdentityToken)}
+}
+
+type _X509IdentityTokenBuilder struct {
+	*_X509IdentityToken
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (X509IdentityTokenBuilder) = (*_X509IdentityTokenBuilder)(nil)
+
+func (b *_X509IdentityTokenBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_X509IdentityTokenBuilder) WithMandatoryFields(policyId PascalString, certificateData PascalByteString) X509IdentityTokenBuilder {
+	return b.WithPolicyId(policyId).WithCertificateData(certificateData)
+}
+
+func (b *_X509IdentityTokenBuilder) WithPolicyId(policyId PascalString) X509IdentityTokenBuilder {
+	b.PolicyId = policyId
+	return b
+}
+
+func (b *_X509IdentityTokenBuilder) WithPolicyIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) X509IdentityTokenBuilder {
+	builder := builderSupplier(b.PolicyId.CreatePascalStringBuilder())
+	var err error
+	b.PolicyId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_X509IdentityTokenBuilder) WithCertificateData(certificateData PascalByteString) X509IdentityTokenBuilder {
+	b.CertificateData = certificateData
+	return b
+}
+
+func (b *_X509IdentityTokenBuilder) WithCertificateDataBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) X509IdentityTokenBuilder {
+	builder := builderSupplier(b.CertificateData.CreatePascalByteStringBuilder())
+	var err error
+	b.CertificateData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_X509IdentityTokenBuilder) Build() (X509IdentityToken, error) {
+	if b.PolicyId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'policyId' not set"))
+	}
+	if b.CertificateData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'certificateData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._X509IdentityToken.deepCopy(), nil
+}
+
+func (b *_X509IdentityTokenBuilder) MustBuild() X509IdentityToken {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_X509IdentityTokenBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_X509IdentityTokenBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_X509IdentityTokenBuilder) DeepCopy() any {
+	_copy := b.CreateX509IdentityTokenBuilder().(*_X509IdentityTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateX509IdentityTokenBuilder creates a X509IdentityTokenBuilder
+func (b *_X509IdentityToken) CreateX509IdentityTokenBuilder() X509IdentityTokenBuilder {
+	if b == nil {
+		return NewX509IdentityTokenBuilder()
+	}
+	return &_X509IdentityTokenBuilder{_X509IdentityToken: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -206,6 +349,23 @@ func (m *_X509IdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 }
 
 func (m *_X509IdentityToken) IsX509IdentityToken() {}
+
+func (m *_X509IdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_X509IdentityToken) deepCopy() *_X509IdentityToken {
+	if m == nil {
+		return nil
+	}
+	_X509IdentityTokenCopy := &_X509IdentityToken{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.PolicyId.DeepCopy().(PascalString),
+		m.CertificateData.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _X509IdentityTokenCopy
+}
 
 func (m *_X509IdentityToken) String() string {
 	if m == nil {

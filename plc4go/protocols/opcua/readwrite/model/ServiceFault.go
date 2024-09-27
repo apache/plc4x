@@ -79,11 +79,11 @@ func NewServiceFault(responseHeader ResponseHeader) *_ServiceFault {
 type ServiceFaultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) ServiceFaultBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) ServiceFaultBuilder
+	WithResponseHeader(ResponseHeader) ServiceFaultBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServiceFaultBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) ServiceFaultBuilder
 	// Build builds the ServiceFault or returns an error if something is wrong
 	Build() (ServiceFault, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_ServiceFaultBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ServiceFaultBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
+func (b *_ServiceFaultBuilder) WithMandatoryFields(responseHeader ResponseHeader) ServiceFaultBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_ServiceFaultBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ServiceFaultBuilder {
+func (b *_ServiceFaultBuilder) WithResponseHeader(responseHeader ResponseHeader) ServiceFaultBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_ServiceFaultBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ServiceFaultBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ServiceFaultBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) ServiceFaultBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_ServiceFault) deepCopy() *_ServiceFault {
 	}
 	_ServiceFaultCopy := &_ServiceFault{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ServiceFaultCopy

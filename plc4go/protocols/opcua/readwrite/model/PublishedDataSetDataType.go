@@ -38,6 +38,7 @@ type PublishedDataSetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -51,6 +52,8 @@ type PublishedDataSetDataType interface {
 	GetDataSetSource() ExtensionObject
 	// IsPublishedDataSetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedDataSetDataType()
+	// CreateBuilder creates a PublishedDataSetDataTypeBuilder
+	CreatePublishedDataSetDataTypeBuilder() PublishedDataSetDataTypeBuilder
 }
 
 // _PublishedDataSetDataType is the data-structure of this message
@@ -88,6 +91,188 @@ func NewPublishedDataSetDataType(name PascalString, dataSetFolder []PascalString
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishedDataSetDataTypeBuilder is a builder for PublishedDataSetDataType
+type PublishedDataSetDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, dataSetFolder []PascalString, dataSetMetaData DataSetMetaDataType, extensionFields []KeyValuePair, dataSetSource ExtensionObject) PublishedDataSetDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) PublishedDataSetDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) PublishedDataSetDataTypeBuilder
+	// WithDataSetFolder adds DataSetFolder (property field)
+	WithDataSetFolder(...PascalString) PublishedDataSetDataTypeBuilder
+	// WithDataSetMetaData adds DataSetMetaData (property field)
+	WithDataSetMetaData(DataSetMetaDataType) PublishedDataSetDataTypeBuilder
+	// WithDataSetMetaDataBuilder adds DataSetMetaData (property field) which is build by the builder
+	WithDataSetMetaDataBuilder(func(DataSetMetaDataTypeBuilder) DataSetMetaDataTypeBuilder) PublishedDataSetDataTypeBuilder
+	// WithExtensionFields adds ExtensionFields (property field)
+	WithExtensionFields(...KeyValuePair) PublishedDataSetDataTypeBuilder
+	// WithDataSetSource adds DataSetSource (property field)
+	WithDataSetSource(ExtensionObject) PublishedDataSetDataTypeBuilder
+	// WithDataSetSourceBuilder adds DataSetSource (property field) which is build by the builder
+	WithDataSetSourceBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) PublishedDataSetDataTypeBuilder
+	// Build builds the PublishedDataSetDataType or returns an error if something is wrong
+	Build() (PublishedDataSetDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishedDataSetDataType
+}
+
+// NewPublishedDataSetDataTypeBuilder() creates a PublishedDataSetDataTypeBuilder
+func NewPublishedDataSetDataTypeBuilder() PublishedDataSetDataTypeBuilder {
+	return &_PublishedDataSetDataTypeBuilder{_PublishedDataSetDataType: new(_PublishedDataSetDataType)}
+}
+
+type _PublishedDataSetDataTypeBuilder struct {
+	*_PublishedDataSetDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PublishedDataSetDataTypeBuilder) = (*_PublishedDataSetDataTypeBuilder)(nil)
+
+func (b *_PublishedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithMandatoryFields(name PascalString, dataSetFolder []PascalString, dataSetMetaData DataSetMetaDataType, extensionFields []KeyValuePair, dataSetSource ExtensionObject) PublishedDataSetDataTypeBuilder {
+	return b.WithName(name).WithDataSetFolder(dataSetFolder...).WithDataSetMetaData(dataSetMetaData).WithExtensionFields(extensionFields...).WithDataSetSource(dataSetSource)
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithName(name PascalString) PublishedDataSetDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) PublishedDataSetDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithDataSetFolder(dataSetFolder ...PascalString) PublishedDataSetDataTypeBuilder {
+	b.DataSetFolder = dataSetFolder
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithDataSetMetaData(dataSetMetaData DataSetMetaDataType) PublishedDataSetDataTypeBuilder {
+	b.DataSetMetaData = dataSetMetaData
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithDataSetMetaDataBuilder(builderSupplier func(DataSetMetaDataTypeBuilder) DataSetMetaDataTypeBuilder) PublishedDataSetDataTypeBuilder {
+	builder := builderSupplier(b.DataSetMetaData.CreateDataSetMetaDataTypeBuilder())
+	var err error
+	b.DataSetMetaData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithExtensionFields(extensionFields ...KeyValuePair) PublishedDataSetDataTypeBuilder {
+	b.ExtensionFields = extensionFields
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithDataSetSource(dataSetSource ExtensionObject) PublishedDataSetDataTypeBuilder {
+	b.DataSetSource = dataSetSource
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) WithDataSetSourceBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) PublishedDataSetDataTypeBuilder {
+	builder := builderSupplier(b.DataSetSource.CreateExtensionObjectBuilder())
+	var err error
+	b.DataSetSource, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) Build() (PublishedDataSetDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.DataSetMetaData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetMetaData' not set"))
+	}
+	if b.DataSetSource == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetSource' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishedDataSetDataType.deepCopy(), nil
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) MustBuild() PublishedDataSetDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedDataSetDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedDataSetDataTypeBuilder().(*_PublishedDataSetDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePublishedDataSetDataTypeBuilder creates a PublishedDataSetDataTypeBuilder
+func (b *_PublishedDataSetDataType) CreatePublishedDataSetDataTypeBuilder() PublishedDataSetDataTypeBuilder {
+	if b == nil {
+		return NewPublishedDataSetDataTypeBuilder()
+	}
+	return &_PublishedDataSetDataTypeBuilder{_PublishedDataSetDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -312,6 +497,26 @@ func (m *_PublishedDataSetDataType) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_PublishedDataSetDataType) IsPublishedDataSetDataType() {}
+
+func (m *_PublishedDataSetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedDataSetDataType) deepCopy() *_PublishedDataSetDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedDataSetDataTypeCopy := &_PublishedDataSetDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		utils.DeepCopySlice[PascalString, PascalString](m.DataSetFolder),
+		m.DataSetMetaData.DeepCopy().(DataSetMetaDataType),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.ExtensionFields),
+		m.DataSetSource.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedDataSetDataTypeCopy
+}
 
 func (m *_PublishedDataSetDataType) String() string {
 	if m == nil {

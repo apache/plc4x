@@ -96,7 +96,7 @@ func NewNodeReference(nodeId NodeId, referenceTypeId NodeId, isForward bool, ref
 type NodeReferenceBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) NodeReferenceBuilder
+	WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, referencedNodeIds []NodeId) NodeReferenceBuilder
 	// WithNodeId adds NodeId (property field)
 	WithNodeId(NodeId) NodeReferenceBuilder
 	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
@@ -107,8 +107,6 @@ type NodeReferenceBuilder interface {
 	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) NodeReferenceBuilder
 	// WithIsForward adds IsForward (property field)
 	WithIsForward(bool) NodeReferenceBuilder
-	// WithNoOfReferencedNodeIds adds NoOfReferencedNodeIds (property field)
-	WithNoOfReferencedNodeIds(int32) NodeReferenceBuilder
 	// WithReferencedNodeIds adds ReferencedNodeIds (property field)
 	WithReferencedNodeIds(...NodeId) NodeReferenceBuilder
 	// Build builds the NodeReference or returns an error if something is wrong
@@ -136,8 +134,8 @@ func (b *_NodeReferenceBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_NodeReferenceBuilder) WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, noOfReferencedNodeIds int32, referencedNodeIds []NodeId) NodeReferenceBuilder {
-	return b.WithNodeId(nodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithNoOfReferencedNodeIds(noOfReferencedNodeIds).WithReferencedNodeIds(referencedNodeIds...)
+func (b *_NodeReferenceBuilder) WithMandatoryFields(nodeId NodeId, referenceTypeId NodeId, isForward bool, referencedNodeIds []NodeId) NodeReferenceBuilder {
+	return b.WithNodeId(nodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithReferencedNodeIds(referencedNodeIds...)
 }
 
 func (b *_NodeReferenceBuilder) WithNodeId(nodeId NodeId) NodeReferenceBuilder {
@@ -178,11 +176,6 @@ func (b *_NodeReferenceBuilder) WithReferenceTypeIdBuilder(builderSupplier func(
 
 func (b *_NodeReferenceBuilder) WithIsForward(isForward bool) NodeReferenceBuilder {
 	b.IsForward = isForward
-	return b
-}
-
-func (b *_NodeReferenceBuilder) WithNoOfReferencedNodeIds(noOfReferencedNodeIds int32) NodeReferenceBuilder {
-	b.NoOfReferencedNodeIds = noOfReferencedNodeIds
 	return b
 }
 
@@ -461,7 +454,6 @@ func (m *_NodeReference) deepCopy() *_NodeReference {
 		m.NodeId.DeepCopy().(NodeId),
 		m.ReferenceTypeId.DeepCopy().(NodeId),
 		m.IsForward,
-		m.NoOfReferencedNodeIds,
 		utils.DeepCopySlice[NodeId, NodeId](m.ReferencedNodeIds),
 		m.reservedField0,
 	}

@@ -83,13 +83,13 @@ func NewMonitoredItemModifyRequest(monitoredItemId uint32, requestedParameters M
 type MonitoredItemModifyRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder
+	WithMandatoryFields(monitoredItemId uint32, requestedParameters MonitoringParameters) MonitoredItemModifyRequestBuilder
 	// WithMonitoredItemId adds MonitoredItemId (property field)
 	WithMonitoredItemId(uint32) MonitoredItemModifyRequestBuilder
 	// WithRequestedParameters adds RequestedParameters (property field)
-	WithRequestedParameters(ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder
+	WithRequestedParameters(MonitoringParameters) MonitoredItemModifyRequestBuilder
 	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
-	WithRequestedParametersBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemModifyRequestBuilder
+	WithRequestedParametersBuilder(func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemModifyRequestBuilder
 	// Build builds the MonitoredItemModifyRequest or returns an error if something is wrong
 	Build() (MonitoredItemModifyRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -115,7 +115,7 @@ func (b *_MonitoredItemModifyRequestBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_MonitoredItemModifyRequestBuilder) WithMandatoryFields(monitoredItemId uint32, requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder {
+func (b *_MonitoredItemModifyRequestBuilder) WithMandatoryFields(monitoredItemId uint32, requestedParameters MonitoringParameters) MonitoredItemModifyRequestBuilder {
 	return b.WithMonitoredItemId(monitoredItemId).WithRequestedParameters(requestedParameters)
 }
 
@@ -124,20 +124,20 @@ func (b *_MonitoredItemModifyRequestBuilder) WithMonitoredItemId(monitoredItemId
 	return b
 }
 
-func (b *_MonitoredItemModifyRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemModifyRequestBuilder {
+func (b *_MonitoredItemModifyRequestBuilder) WithRequestedParameters(requestedParameters MonitoringParameters) MonitoredItemModifyRequestBuilder {
 	b.RequestedParameters = requestedParameters
 	return b
 }
 
-func (b *_MonitoredItemModifyRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemModifyRequestBuilder {
-	builder := builderSupplier(b.RequestedParameters.CreateExtensionObjectDefinitionBuilder())
+func (b *_MonitoredItemModifyRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(MonitoringParametersBuilder) MonitoringParametersBuilder) MonitoredItemModifyRequestBuilder {
+	builder := builderSupplier(b.RequestedParameters.CreateMonitoringParametersBuilder())
 	var err error
 	b.RequestedParameters, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "MonitoringParametersBuilder failed"))
 	}
 	return b
 }
@@ -337,7 +337,7 @@ func (m *_MonitoredItemModifyRequest) deepCopy() *_MonitoredItemModifyRequest {
 	_MonitoredItemModifyRequestCopy := &_MonitoredItemModifyRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.MonitoredItemId,
-		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedParameters.DeepCopy().(MonitoringParameters),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _MonitoredItemModifyRequestCopy

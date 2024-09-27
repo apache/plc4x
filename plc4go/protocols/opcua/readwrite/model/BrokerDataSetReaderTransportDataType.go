@@ -38,6 +38,7 @@ type BrokerDataSetReaderTransportDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetQueueName returns QueueName (property field)
 	GetQueueName() PascalString
@@ -51,6 +52,8 @@ type BrokerDataSetReaderTransportDataType interface {
 	GetMetaDataQueueName() PascalString
 	// IsBrokerDataSetReaderTransportDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrokerDataSetReaderTransportDataType()
+	// CreateBuilder creates a BrokerDataSetReaderTransportDataTypeBuilder
+	CreateBrokerDataSetReaderTransportDataTypeBuilder() BrokerDataSetReaderTransportDataTypeBuilder
 }
 
 // _BrokerDataSetReaderTransportDataType is the data-structure of this message
@@ -91,6 +94,209 @@ func NewBrokerDataSetReaderTransportDataType(queueName PascalString, resourceUri
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrokerDataSetReaderTransportDataTypeBuilder is a builder for BrokerDataSetReaderTransportDataType
+type BrokerDataSetReaderTransportDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(queueName PascalString, resourceUri PascalString, authenticationProfileUri PascalString, requestedDeliveryGuarantee BrokerTransportQualityOfService, metaDataQueueName PascalString) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithQueueName adds QueueName (property field)
+	WithQueueName(PascalString) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithQueueNameBuilder adds QueueName (property field) which is build by the builder
+	WithQueueNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithResourceUri adds ResourceUri (property field)
+	WithResourceUri(PascalString) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithResourceUriBuilder adds ResourceUri (property field) which is build by the builder
+	WithResourceUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithAuthenticationProfileUri adds AuthenticationProfileUri (property field)
+	WithAuthenticationProfileUri(PascalString) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithAuthenticationProfileUriBuilder adds AuthenticationProfileUri (property field) which is build by the builder
+	WithAuthenticationProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithRequestedDeliveryGuarantee adds RequestedDeliveryGuarantee (property field)
+	WithRequestedDeliveryGuarantee(BrokerTransportQualityOfService) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithMetaDataQueueName adds MetaDataQueueName (property field)
+	WithMetaDataQueueName(PascalString) BrokerDataSetReaderTransportDataTypeBuilder
+	// WithMetaDataQueueNameBuilder adds MetaDataQueueName (property field) which is build by the builder
+	WithMetaDataQueueNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder
+	// Build builds the BrokerDataSetReaderTransportDataType or returns an error if something is wrong
+	Build() (BrokerDataSetReaderTransportDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrokerDataSetReaderTransportDataType
+}
+
+// NewBrokerDataSetReaderTransportDataTypeBuilder() creates a BrokerDataSetReaderTransportDataTypeBuilder
+func NewBrokerDataSetReaderTransportDataTypeBuilder() BrokerDataSetReaderTransportDataTypeBuilder {
+	return &_BrokerDataSetReaderTransportDataTypeBuilder{_BrokerDataSetReaderTransportDataType: new(_BrokerDataSetReaderTransportDataType)}
+}
+
+type _BrokerDataSetReaderTransportDataTypeBuilder struct {
+	*_BrokerDataSetReaderTransportDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrokerDataSetReaderTransportDataTypeBuilder) = (*_BrokerDataSetReaderTransportDataTypeBuilder)(nil)
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithMandatoryFields(queueName PascalString, resourceUri PascalString, authenticationProfileUri PascalString, requestedDeliveryGuarantee BrokerTransportQualityOfService, metaDataQueueName PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
+	return b.WithQueueName(queueName).WithResourceUri(resourceUri).WithAuthenticationProfileUri(authenticationProfileUri).WithRequestedDeliveryGuarantee(requestedDeliveryGuarantee).WithMetaDataQueueName(metaDataQueueName)
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithQueueName(queueName PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
+	b.QueueName = queueName
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithQueueNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.QueueName.CreatePascalStringBuilder())
+	var err error
+	b.QueueName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithResourceUri(resourceUri PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
+	b.ResourceUri = resourceUri
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithResourceUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.ResourceUri.CreatePascalStringBuilder())
+	var err error
+	b.ResourceUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithAuthenticationProfileUri(authenticationProfileUri PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
+	b.AuthenticationProfileUri = authenticationProfileUri
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithAuthenticationProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.AuthenticationProfileUri.CreatePascalStringBuilder())
+	var err error
+	b.AuthenticationProfileUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithRequestedDeliveryGuarantee(requestedDeliveryGuarantee BrokerTransportQualityOfService) BrokerDataSetReaderTransportDataTypeBuilder {
+	b.RequestedDeliveryGuarantee = requestedDeliveryGuarantee
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithMetaDataQueueName(metaDataQueueName PascalString) BrokerDataSetReaderTransportDataTypeBuilder {
+	b.MetaDataQueueName = metaDataQueueName
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) WithMetaDataQueueNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BrokerDataSetReaderTransportDataTypeBuilder {
+	builder := builderSupplier(b.MetaDataQueueName.CreatePascalStringBuilder())
+	var err error
+	b.MetaDataQueueName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) Build() (BrokerDataSetReaderTransportDataType, error) {
+	if b.QueueName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'queueName' not set"))
+	}
+	if b.ResourceUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'resourceUri' not set"))
+	}
+	if b.AuthenticationProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'authenticationProfileUri' not set"))
+	}
+	if b.MetaDataQueueName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'metaDataQueueName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrokerDataSetReaderTransportDataType.deepCopy(), nil
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) MustBuild() BrokerDataSetReaderTransportDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrokerDataSetReaderTransportDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBrokerDataSetReaderTransportDataTypeBuilder().(*_BrokerDataSetReaderTransportDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrokerDataSetReaderTransportDataTypeBuilder creates a BrokerDataSetReaderTransportDataTypeBuilder
+func (b *_BrokerDataSetReaderTransportDataType) CreateBrokerDataSetReaderTransportDataTypeBuilder() BrokerDataSetReaderTransportDataTypeBuilder {
+	if b == nil {
+		return NewBrokerDataSetReaderTransportDataTypeBuilder()
+	}
+	return &_BrokerDataSetReaderTransportDataTypeBuilder{_BrokerDataSetReaderTransportDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -275,6 +481,26 @@ func (m *_BrokerDataSetReaderTransportDataType) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_BrokerDataSetReaderTransportDataType) IsBrokerDataSetReaderTransportDataType() {}
+
+func (m *_BrokerDataSetReaderTransportDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrokerDataSetReaderTransportDataType) deepCopy() *_BrokerDataSetReaderTransportDataType {
+	if m == nil {
+		return nil
+	}
+	_BrokerDataSetReaderTransportDataTypeCopy := &_BrokerDataSetReaderTransportDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.QueueName.DeepCopy().(PascalString),
+		m.ResourceUri.DeepCopy().(PascalString),
+		m.AuthenticationProfileUri.DeepCopy().(PascalString),
+		m.RequestedDeliveryGuarantee,
+		m.MetaDataQueueName.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrokerDataSetReaderTransportDataTypeCopy
+}
 
 func (m *_BrokerDataSetReaderTransportDataType) String() string {
 	if m == nil {

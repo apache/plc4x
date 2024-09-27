@@ -38,6 +38,7 @@ type DataSetReaderDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -75,6 +76,8 @@ type DataSetReaderDataType interface {
 	GetSubscribedDataSet() ExtensionObject
 	// IsDataSetReaderDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetReaderDataType()
+	// CreateBuilder creates a DataSetReaderDataTypeBuilder
+	CreateDataSetReaderDataTypeBuilder() DataSetReaderDataTypeBuilder
 }
 
 // _DataSetReaderDataType is the data-structure of this message
@@ -153,6 +156,377 @@ func NewDataSetReaderDataType(name PascalString, enabled bool, publisherId Varia
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataSetReaderDataTypeBuilder is a builder for DataSetReaderDataType
+type DataSetReaderDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, writerGroupId uint16, dataSetWriterId uint16, dataSetMetaData DataSetMetaDataType, dataSetFieldContentMask DataSetFieldContentMask, messageReceiveTimeout float64, keyFrameCount uint32, headerLayoutUri PascalString, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, dataSetReaderProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, subscribedDataSet ExtensionObject) DataSetReaderDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) DataSetReaderDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder
+	// WithEnabled adds Enabled (property field)
+	WithEnabled(bool) DataSetReaderDataTypeBuilder
+	// WithPublisherId adds PublisherId (property field)
+	WithPublisherId(Variant) DataSetReaderDataTypeBuilder
+	// WithPublisherIdBuilder adds PublisherId (property field) which is build by the builder
+	WithPublisherIdBuilder(func(VariantBuilder) VariantBuilder) DataSetReaderDataTypeBuilder
+	// WithWriterGroupId adds WriterGroupId (property field)
+	WithWriterGroupId(uint16) DataSetReaderDataTypeBuilder
+	// WithDataSetWriterId adds DataSetWriterId (property field)
+	WithDataSetWriterId(uint16) DataSetReaderDataTypeBuilder
+	// WithDataSetMetaData adds DataSetMetaData (property field)
+	WithDataSetMetaData(DataSetMetaDataType) DataSetReaderDataTypeBuilder
+	// WithDataSetMetaDataBuilder adds DataSetMetaData (property field) which is build by the builder
+	WithDataSetMetaDataBuilder(func(DataSetMetaDataTypeBuilder) DataSetMetaDataTypeBuilder) DataSetReaderDataTypeBuilder
+	// WithDataSetFieldContentMask adds DataSetFieldContentMask (property field)
+	WithDataSetFieldContentMask(DataSetFieldContentMask) DataSetReaderDataTypeBuilder
+	// WithMessageReceiveTimeout adds MessageReceiveTimeout (property field)
+	WithMessageReceiveTimeout(float64) DataSetReaderDataTypeBuilder
+	// WithKeyFrameCount adds KeyFrameCount (property field)
+	WithKeyFrameCount(uint32) DataSetReaderDataTypeBuilder
+	// WithHeaderLayoutUri adds HeaderLayoutUri (property field)
+	WithHeaderLayoutUri(PascalString) DataSetReaderDataTypeBuilder
+	// WithHeaderLayoutUriBuilder adds HeaderLayoutUri (property field) which is build by the builder
+	WithHeaderLayoutUriBuilder(func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder
+	// WithSecurityMode adds SecurityMode (property field)
+	WithSecurityMode(MessageSecurityMode) DataSetReaderDataTypeBuilder
+	// WithSecurityGroupId adds SecurityGroupId (property field)
+	WithSecurityGroupId(PascalString) DataSetReaderDataTypeBuilder
+	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
+	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder
+	// WithSecurityKeyServices adds SecurityKeyServices (property field)
+	WithSecurityKeyServices(...EndpointDescription) DataSetReaderDataTypeBuilder
+	// WithDataSetReaderProperties adds DataSetReaderProperties (property field)
+	WithDataSetReaderProperties(...KeyValuePair) DataSetReaderDataTypeBuilder
+	// WithTransportSettings adds TransportSettings (property field)
+	WithTransportSettings(ExtensionObject) DataSetReaderDataTypeBuilder
+	// WithTransportSettingsBuilder adds TransportSettings (property field) which is build by the builder
+	WithTransportSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder
+	// WithMessageSettings adds MessageSettings (property field)
+	WithMessageSettings(ExtensionObject) DataSetReaderDataTypeBuilder
+	// WithMessageSettingsBuilder adds MessageSettings (property field) which is build by the builder
+	WithMessageSettingsBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder
+	// WithSubscribedDataSet adds SubscribedDataSet (property field)
+	WithSubscribedDataSet(ExtensionObject) DataSetReaderDataTypeBuilder
+	// WithSubscribedDataSetBuilder adds SubscribedDataSet (property field) which is build by the builder
+	WithSubscribedDataSetBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder
+	// Build builds the DataSetReaderDataType or returns an error if something is wrong
+	Build() (DataSetReaderDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataSetReaderDataType
+}
+
+// NewDataSetReaderDataTypeBuilder() creates a DataSetReaderDataTypeBuilder
+func NewDataSetReaderDataTypeBuilder() DataSetReaderDataTypeBuilder {
+	return &_DataSetReaderDataTypeBuilder{_DataSetReaderDataType: new(_DataSetReaderDataType)}
+}
+
+type _DataSetReaderDataTypeBuilder struct {
+	*_DataSetReaderDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DataSetReaderDataTypeBuilder) = (*_DataSetReaderDataTypeBuilder)(nil)
+
+func (b *_DataSetReaderDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, publisherId Variant, writerGroupId uint16, dataSetWriterId uint16, dataSetMetaData DataSetMetaDataType, dataSetFieldContentMask DataSetFieldContentMask, messageReceiveTimeout float64, keyFrameCount uint32, headerLayoutUri PascalString, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, dataSetReaderProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject, subscribedDataSet ExtensionObject) DataSetReaderDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithPublisherId(publisherId).WithWriterGroupId(writerGroupId).WithDataSetWriterId(dataSetWriterId).WithDataSetMetaData(dataSetMetaData).WithDataSetFieldContentMask(dataSetFieldContentMask).WithMessageReceiveTimeout(messageReceiveTimeout).WithKeyFrameCount(keyFrameCount).WithHeaderLayoutUri(headerLayoutUri).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithSecurityKeyServices(securityKeyServices...).WithDataSetReaderProperties(dataSetReaderProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings).WithSubscribedDataSet(subscribedDataSet)
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithName(name PascalString) DataSetReaderDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithEnabled(enabled bool) DataSetReaderDataTypeBuilder {
+	b.Enabled = enabled
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithPublisherId(publisherId Variant) DataSetReaderDataTypeBuilder {
+	b.PublisherId = publisherId
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithPublisherIdBuilder(builderSupplier func(VariantBuilder) VariantBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.PublisherId.CreateVariantBuilder())
+	var err error
+	b.PublisherId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithWriterGroupId(writerGroupId uint16) DataSetReaderDataTypeBuilder {
+	b.WriterGroupId = writerGroupId
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithDataSetWriterId(dataSetWriterId uint16) DataSetReaderDataTypeBuilder {
+	b.DataSetWriterId = dataSetWriterId
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithDataSetMetaData(dataSetMetaData DataSetMetaDataType) DataSetReaderDataTypeBuilder {
+	b.DataSetMetaData = dataSetMetaData
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithDataSetMetaDataBuilder(builderSupplier func(DataSetMetaDataTypeBuilder) DataSetMetaDataTypeBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.DataSetMetaData.CreateDataSetMetaDataTypeBuilder())
+	var err error
+	b.DataSetMetaData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DataSetMetaDataTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithDataSetFieldContentMask(dataSetFieldContentMask DataSetFieldContentMask) DataSetReaderDataTypeBuilder {
+	b.DataSetFieldContentMask = dataSetFieldContentMask
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithMessageReceiveTimeout(messageReceiveTimeout float64) DataSetReaderDataTypeBuilder {
+	b.MessageReceiveTimeout = messageReceiveTimeout
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithKeyFrameCount(keyFrameCount uint32) DataSetReaderDataTypeBuilder {
+	b.KeyFrameCount = keyFrameCount
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithHeaderLayoutUri(headerLayoutUri PascalString) DataSetReaderDataTypeBuilder {
+	b.HeaderLayoutUri = headerLayoutUri
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithHeaderLayoutUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.HeaderLayoutUri.CreatePascalStringBuilder())
+	var err error
+	b.HeaderLayoutUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSecurityMode(securityMode MessageSecurityMode) DataSetReaderDataTypeBuilder {
+	b.SecurityMode = securityMode
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) DataSetReaderDataTypeBuilder {
+	b.SecurityGroupId = securityGroupId
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.SecurityGroupId.CreatePascalStringBuilder())
+	var err error
+	b.SecurityGroupId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...EndpointDescription) DataSetReaderDataTypeBuilder {
+	b.SecurityKeyServices = securityKeyServices
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithDataSetReaderProperties(dataSetReaderProperties ...KeyValuePair) DataSetReaderDataTypeBuilder {
+	b.DataSetReaderProperties = dataSetReaderProperties
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithTransportSettings(transportSettings ExtensionObject) DataSetReaderDataTypeBuilder {
+	b.TransportSettings = transportSettings
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithTransportSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.TransportSettings.CreateExtensionObjectBuilder())
+	var err error
+	b.TransportSettings, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithMessageSettings(messageSettings ExtensionObject) DataSetReaderDataTypeBuilder {
+	b.MessageSettings = messageSettings
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithMessageSettingsBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.MessageSettings.CreateExtensionObjectBuilder())
+	var err error
+	b.MessageSettings, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSubscribedDataSet(subscribedDataSet ExtensionObject) DataSetReaderDataTypeBuilder {
+	b.SubscribedDataSet = subscribedDataSet
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) WithSubscribedDataSetBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DataSetReaderDataTypeBuilder {
+	builder := builderSupplier(b.SubscribedDataSet.CreateExtensionObjectBuilder())
+	var err error
+	b.SubscribedDataSet, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetReaderDataTypeBuilder) Build() (DataSetReaderDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.PublisherId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'publisherId' not set"))
+	}
+	if b.DataSetMetaData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetMetaData' not set"))
+	}
+	if b.HeaderLayoutUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'headerLayoutUri' not set"))
+	}
+	if b.SecurityGroupId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+	}
+	if b.TransportSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transportSettings' not set"))
+	}
+	if b.MessageSettings == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'messageSettings' not set"))
+	}
+	if b.SubscribedDataSet == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'subscribedDataSet' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataSetReaderDataType.deepCopy(), nil
+}
+
+func (b *_DataSetReaderDataTypeBuilder) MustBuild() DataSetReaderDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSetReaderDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSetReaderDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataSetReaderDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSetReaderDataTypeBuilder().(*_DataSetReaderDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDataSetReaderDataTypeBuilder creates a DataSetReaderDataTypeBuilder
+func (b *_DataSetReaderDataType) CreateDataSetReaderDataTypeBuilder() DataSetReaderDataTypeBuilder {
+	if b == nil {
+		return NewDataSetReaderDataTypeBuilder()
+	}
+	return &_DataSetReaderDataTypeBuilder{_DataSetReaderDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -594,6 +968,39 @@ func (m *_DataSetReaderDataType) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_DataSetReaderDataType) IsDataSetReaderDataType() {}
+
+func (m *_DataSetReaderDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetReaderDataType) deepCopy() *_DataSetReaderDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetReaderDataTypeCopy := &_DataSetReaderDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.Enabled,
+		m.PublisherId.DeepCopy().(Variant),
+		m.WriterGroupId,
+		m.DataSetWriterId,
+		m.DataSetMetaData.DeepCopy().(DataSetMetaDataType),
+		m.DataSetFieldContentMask,
+		m.MessageReceiveTimeout,
+		m.KeyFrameCount,
+		m.HeaderLayoutUri.DeepCopy().(PascalString),
+		m.SecurityMode,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.DataSetReaderProperties),
+		m.TransportSettings.DeepCopy().(ExtensionObject),
+		m.MessageSettings.DeepCopy().(ExtensionObject),
+		m.SubscribedDataSet.DeepCopy().(ExtensionObject),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetReaderDataTypeCopy
+}
 
 func (m *_DataSetReaderDataType) String() string {
 	if m == nil {

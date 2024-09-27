@@ -80,11 +80,9 @@ func NewEventFieldList(clientHandle uint32, eventFields []Variant) *_EventFieldL
 type EventFieldListBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder
+	WithMandatoryFields(clientHandle uint32, eventFields []Variant) EventFieldListBuilder
 	// WithClientHandle adds ClientHandle (property field)
 	WithClientHandle(uint32) EventFieldListBuilder
-	// WithNoOfEventFields adds NoOfEventFields (property field)
-	WithNoOfEventFields(int32) EventFieldListBuilder
 	// WithEventFields adds EventFields (property field)
 	WithEventFields(...Variant) EventFieldListBuilder
 	// Build builds the EventFieldList or returns an error if something is wrong
@@ -112,17 +110,12 @@ func (b *_EventFieldListBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
-	return b.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, eventFields []Variant) EventFieldListBuilder {
+	return b.WithClientHandle(clientHandle).WithEventFields(eventFields...)
 }
 
 func (b *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
 	b.ClientHandle = clientHandle
-	return b
-}
-
-func (b *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
-	b.NoOfEventFields = noOfEventFields
 	return b
 }
 
@@ -340,7 +333,6 @@ func (m *_EventFieldList) deepCopy() *_EventFieldList {
 	_EventFieldListCopy := &_EventFieldList{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ClientHandle,
-		m.NoOfEventFields,
 		utils.DeepCopySlice[Variant, Variant](m.EventFields),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

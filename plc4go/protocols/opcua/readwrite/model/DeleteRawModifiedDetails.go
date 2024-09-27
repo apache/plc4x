@@ -38,6 +38,7 @@ type DeleteRawModifiedDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -49,6 +50,8 @@ type DeleteRawModifiedDetails interface {
 	GetEndTime() int64
 	// IsDeleteRawModifiedDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteRawModifiedDetails()
+	// CreateBuilder creates a DeleteRawModifiedDetailsBuilder
+	CreateDeleteRawModifiedDetailsBuilder() DeleteRawModifiedDetailsBuilder
 }
 
 // _DeleteRawModifiedDetails is the data-structure of this message
@@ -80,6 +83,139 @@ func NewDeleteRawModifiedDetails(nodeId NodeId, isDeleteModified bool, startTime
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteRawModifiedDetailsBuilder is a builder for DeleteRawModifiedDetails
+type DeleteRawModifiedDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, isDeleteModified bool, startTime int64, endTime int64) DeleteRawModifiedDetailsBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) DeleteRawModifiedDetailsBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) DeleteRawModifiedDetailsBuilder
+	// WithIsDeleteModified adds IsDeleteModified (property field)
+	WithIsDeleteModified(bool) DeleteRawModifiedDetailsBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(int64) DeleteRawModifiedDetailsBuilder
+	// WithEndTime adds EndTime (property field)
+	WithEndTime(int64) DeleteRawModifiedDetailsBuilder
+	// Build builds the DeleteRawModifiedDetails or returns an error if something is wrong
+	Build() (DeleteRawModifiedDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteRawModifiedDetails
+}
+
+// NewDeleteRawModifiedDetailsBuilder() creates a DeleteRawModifiedDetailsBuilder
+func NewDeleteRawModifiedDetailsBuilder() DeleteRawModifiedDetailsBuilder {
+	return &_DeleteRawModifiedDetailsBuilder{_DeleteRawModifiedDetails: new(_DeleteRawModifiedDetails)}
+}
+
+type _DeleteRawModifiedDetailsBuilder struct {
+	*_DeleteRawModifiedDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteRawModifiedDetailsBuilder) = (*_DeleteRawModifiedDetailsBuilder)(nil)
+
+func (b *_DeleteRawModifiedDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithMandatoryFields(nodeId NodeId, isDeleteModified bool, startTime int64, endTime int64) DeleteRawModifiedDetailsBuilder {
+	return b.WithNodeId(nodeId).WithIsDeleteModified(isDeleteModified).WithStartTime(startTime).WithEndTime(endTime)
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithNodeId(nodeId NodeId) DeleteRawModifiedDetailsBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) DeleteRawModifiedDetailsBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithIsDeleteModified(isDeleteModified bool) DeleteRawModifiedDetailsBuilder {
+	b.IsDeleteModified = isDeleteModified
+	return b
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithStartTime(startTime int64) DeleteRawModifiedDetailsBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) WithEndTime(endTime int64) DeleteRawModifiedDetailsBuilder {
+	b.EndTime = endTime
+	return b
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) Build() (DeleteRawModifiedDetails, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteRawModifiedDetails.deepCopy(), nil
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) MustBuild() DeleteRawModifiedDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteRawModifiedDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteRawModifiedDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteRawModifiedDetailsBuilder().(*_DeleteRawModifiedDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteRawModifiedDetailsBuilder creates a DeleteRawModifiedDetailsBuilder
+func (b *_DeleteRawModifiedDetails) CreateDeleteRawModifiedDetailsBuilder() DeleteRawModifiedDetailsBuilder {
+	if b == nil {
+		return NewDeleteRawModifiedDetailsBuilder()
+	}
+	return &_DeleteRawModifiedDetailsBuilder{_DeleteRawModifiedDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -260,6 +396,26 @@ func (m *_DeleteRawModifiedDetails) SerializeWithWriteBuffer(ctx context.Context
 }
 
 func (m *_DeleteRawModifiedDetails) IsDeleteRawModifiedDetails() {}
+
+func (m *_DeleteRawModifiedDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteRawModifiedDetails) deepCopy() *_DeleteRawModifiedDetails {
+	if m == nil {
+		return nil
+	}
+	_DeleteRawModifiedDetailsCopy := &_DeleteRawModifiedDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.IsDeleteModified,
+		m.StartTime,
+		m.EndTime,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteRawModifiedDetailsCopy
+}
 
 func (m *_DeleteRawModifiedDetails) String() string {
 	if m == nil {

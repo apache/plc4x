@@ -79,11 +79,11 @@ func NewCloseSecureChannelResponse(responseHeader ResponseHeader) *_CloseSecureC
 type CloseSecureChannelResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader) CloseSecureChannelResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	WithResponseHeader(ResponseHeader) CloseSecureChannelResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSecureChannelResponseBuilder
 	// Build builds the CloseSecureChannelResponse or returns an error if something is wrong
 	Build() (CloseSecureChannelResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -109,24 +109,24 @@ func (b *_CloseSecureChannelResponseBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CloseSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+func (b *_CloseSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader) CloseSecureChannelResponseBuilder {
 	return b.WithResponseHeader(responseHeader)
 }
 
-func (b *_CloseSecureChannelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+func (b *_CloseSecureChannelResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CloseSecureChannelResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CloseSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CloseSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CloseSecureChannelResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -308,7 +308,7 @@ func (m *_CloseSecureChannelResponse) deepCopy() *_CloseSecureChannelResponse {
 	}
 	_CloseSecureChannelResponseCopy := &_CloseSecureChannelResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _CloseSecureChannelResponseCopy

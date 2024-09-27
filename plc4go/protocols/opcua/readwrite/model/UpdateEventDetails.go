@@ -38,6 +38,7 @@ type UpdateEventDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -49,6 +50,8 @@ type UpdateEventDetails interface {
 	GetEventData() []HistoryEventFieldList
 	// IsUpdateEventDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUpdateEventDetails()
+	// CreateBuilder creates a UpdateEventDetailsBuilder
+	CreateUpdateEventDetailsBuilder() UpdateEventDetailsBuilder
 }
 
 // _UpdateEventDetails is the data-structure of this message
@@ -81,6 +84,160 @@ func NewUpdateEventDetails(nodeId NodeId, performInsertReplace PerformUpdateType
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UpdateEventDetailsBuilder is a builder for UpdateEventDetails
+type UpdateEventDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, filter EventFilter, eventData []HistoryEventFieldList) UpdateEventDetailsBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) UpdateEventDetailsBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) UpdateEventDetailsBuilder
+	// WithPerformInsertReplace adds PerformInsertReplace (property field)
+	WithPerformInsertReplace(PerformUpdateType) UpdateEventDetailsBuilder
+	// WithFilter adds Filter (property field)
+	WithFilter(EventFilter) UpdateEventDetailsBuilder
+	// WithFilterBuilder adds Filter (property field) which is build by the builder
+	WithFilterBuilder(func(EventFilterBuilder) EventFilterBuilder) UpdateEventDetailsBuilder
+	// WithEventData adds EventData (property field)
+	WithEventData(...HistoryEventFieldList) UpdateEventDetailsBuilder
+	// Build builds the UpdateEventDetails or returns an error if something is wrong
+	Build() (UpdateEventDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UpdateEventDetails
+}
+
+// NewUpdateEventDetailsBuilder() creates a UpdateEventDetailsBuilder
+func NewUpdateEventDetailsBuilder() UpdateEventDetailsBuilder {
+	return &_UpdateEventDetailsBuilder{_UpdateEventDetails: new(_UpdateEventDetails)}
+}
+
+type _UpdateEventDetailsBuilder struct {
+	*_UpdateEventDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UpdateEventDetailsBuilder) = (*_UpdateEventDetailsBuilder)(nil)
+
+func (b *_UpdateEventDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UpdateEventDetailsBuilder) WithMandatoryFields(nodeId NodeId, performInsertReplace PerformUpdateType, filter EventFilter, eventData []HistoryEventFieldList) UpdateEventDetailsBuilder {
+	return b.WithNodeId(nodeId).WithPerformInsertReplace(performInsertReplace).WithFilter(filter).WithEventData(eventData...)
+}
+
+func (b *_UpdateEventDetailsBuilder) WithNodeId(nodeId NodeId) UpdateEventDetailsBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) UpdateEventDetailsBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) WithPerformInsertReplace(performInsertReplace PerformUpdateType) UpdateEventDetailsBuilder {
+	b.PerformInsertReplace = performInsertReplace
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) WithFilter(filter EventFilter) UpdateEventDetailsBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) WithFilterBuilder(builderSupplier func(EventFilterBuilder) EventFilterBuilder) UpdateEventDetailsBuilder {
+	builder := builderSupplier(b.Filter.CreateEventFilterBuilder())
+	var err error
+	b.Filter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "EventFilterBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) WithEventData(eventData ...HistoryEventFieldList) UpdateEventDetailsBuilder {
+	b.EventData = eventData
+	return b
+}
+
+func (b *_UpdateEventDetailsBuilder) Build() (UpdateEventDetails, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UpdateEventDetails.deepCopy(), nil
+}
+
+func (b *_UpdateEventDetailsBuilder) MustBuild() UpdateEventDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UpdateEventDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UpdateEventDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UpdateEventDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateUpdateEventDetailsBuilder().(*_UpdateEventDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUpdateEventDetailsBuilder creates a UpdateEventDetailsBuilder
+func (b *_UpdateEventDetails) CreateUpdateEventDetailsBuilder() UpdateEventDetailsBuilder {
+	if b == nil {
+		return NewUpdateEventDetailsBuilder()
+	}
+	return &_UpdateEventDetailsBuilder{_UpdateEventDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -268,6 +425,25 @@ func (m *_UpdateEventDetails) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_UpdateEventDetails) IsUpdateEventDetails() {}
+
+func (m *_UpdateEventDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UpdateEventDetails) deepCopy() *_UpdateEventDetails {
+	if m == nil {
+		return nil
+	}
+	_UpdateEventDetailsCopy := &_UpdateEventDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.PerformInsertReplace,
+		m.Filter.DeepCopy().(EventFilter),
+		utils.DeepCopySlice[HistoryEventFieldList, HistoryEventFieldList](m.EventData),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UpdateEventDetailsCopy
+}
 
 func (m *_UpdateEventDetails) String() string {
 	if m == nil {

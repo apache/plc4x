@@ -90,17 +90,15 @@ func NewRegisterServer2Request(requestHeader RequestHeader, server RegisteredSer
 type RegisterServer2RequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	WithRequestHeader(RequestHeader) RegisterServer2RequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServer2RequestBuilder
 	// WithServer adds Server (property field)
-	WithServer(ExtensionObjectDefinition) RegisterServer2RequestBuilder
+	WithServer(RegisteredServer) RegisterServer2RequestBuilder
 	// WithServerBuilder adds Server (property field) which is build by the builder
-	WithServerBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder
-	// WithNoOfDiscoveryConfiguration adds NoOfDiscoveryConfiguration (property field)
-	WithNoOfDiscoveryConfiguration(int32) RegisterServer2RequestBuilder
+	WithServerBuilder(func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServer2RequestBuilder
 	// WithDiscoveryConfiguration adds DiscoveryConfiguration (property field)
 	WithDiscoveryConfiguration(...ExtensionObject) RegisterServer2RequestBuilder
 	// Build builds the RegisterServer2Request or returns an error if something is wrong
@@ -128,48 +126,43 @@ func (b *_RegisterServer2RequestBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition, noOfDiscoveryConfiguration int32, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithServer(server).WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration).WithDiscoveryConfiguration(discoveryConfiguration...)
+func (b *_RegisterServer2RequestBuilder) WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer, discoveryConfiguration []ExtensionObject) RegisterServer2RequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithServer(server).WithDiscoveryConfiguration(discoveryConfiguration...)
 }
 
-func (b *_RegisterServer2RequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+func (b *_RegisterServer2RequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterServer2RequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2RequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServer2RequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServer2RequestBuilder {
+func (b *_RegisterServer2RequestBuilder) WithServer(server RegisteredServer) RegisterServer2RequestBuilder {
 	b.Server = server
 	return b
 }
 
-func (b *_RegisterServer2RequestBuilder) WithServerBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServer2RequestBuilder {
-	builder := builderSupplier(b.Server.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServer2RequestBuilder) WithServerBuilder(builderSupplier func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServer2RequestBuilder {
+	builder := builderSupplier(b.Server.CreateRegisteredServerBuilder())
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RegisteredServerBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisterServer2RequestBuilder) WithNoOfDiscoveryConfiguration(noOfDiscoveryConfiguration int32) RegisterServer2RequestBuilder {
-	b.NoOfDiscoveryConfiguration = noOfDiscoveryConfiguration
 	return b
 }
 
@@ -415,9 +408,8 @@ func (m *_RegisterServer2Request) deepCopy() *_RegisterServer2Request {
 	}
 	_RegisterServer2RequestCopy := &_RegisterServer2Request{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.Server.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfDiscoveryConfiguration,
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.Server.DeepCopy().(RegisteredServer),
 		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DiscoveryConfiguration),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

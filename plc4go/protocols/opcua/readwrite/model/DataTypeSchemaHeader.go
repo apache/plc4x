@@ -88,23 +88,15 @@ func NewDataTypeSchemaHeader(namespaces []PascalString, structureDataTypes []Str
 type DataTypeSchemaHeaderBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfNamespaces adds NoOfNamespaces (property field)
-	WithNoOfNamespaces(int32) DataTypeSchemaHeaderBuilder
+	WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) DataTypeSchemaHeaderBuilder
 	// WithNamespaces adds Namespaces (property field)
 	WithNamespaces(...PascalString) DataTypeSchemaHeaderBuilder
-	// WithNoOfStructureDataTypes adds NoOfStructureDataTypes (property field)
-	WithNoOfStructureDataTypes(int32) DataTypeSchemaHeaderBuilder
 	// WithStructureDataTypes adds StructureDataTypes (property field)
-	WithStructureDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfEnumDataTypes adds NoOfEnumDataTypes (property field)
-	WithNoOfEnumDataTypes(int32) DataTypeSchemaHeaderBuilder
+	WithStructureDataTypes(...StructureDescription) DataTypeSchemaHeaderBuilder
 	// WithEnumDataTypes adds EnumDataTypes (property field)
-	WithEnumDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
-	// WithNoOfSimpleDataTypes adds NoOfSimpleDataTypes (property field)
-	WithNoOfSimpleDataTypes(int32) DataTypeSchemaHeaderBuilder
+	WithEnumDataTypes(...EnumDescription) DataTypeSchemaHeaderBuilder
 	// WithSimpleDataTypes adds SimpleDataTypes (property field)
-	WithSimpleDataTypes(...DataTypeDescription) DataTypeSchemaHeaderBuilder
+	WithSimpleDataTypes(...SimpleTypeDescription) DataTypeSchemaHeaderBuilder
 	// Build builds the DataTypeSchemaHeader or returns an error if something is wrong
 	Build() (DataTypeSchemaHeader, error)
 	// MustBuild does the same as Build but panics on error
@@ -130,13 +122,8 @@ func (b *_DataTypeSchemaHeaderBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(noOfNamespaces int32, namespaces []PascalString, noOfStructureDataTypes int32, structureDataTypes []DataTypeDescription, noOfEnumDataTypes int32, enumDataTypes []DataTypeDescription, noOfSimpleDataTypes int32, simpleDataTypes []DataTypeDescription) DataTypeSchemaHeaderBuilder {
-	return b.WithNoOfNamespaces(noOfNamespaces).WithNamespaces(namespaces...).WithNoOfStructureDataTypes(noOfStructureDataTypes).WithStructureDataTypes(structureDataTypes...).WithNoOfEnumDataTypes(noOfEnumDataTypes).WithEnumDataTypes(enumDataTypes...).WithNoOfSimpleDataTypes(noOfSimpleDataTypes).WithSimpleDataTypes(simpleDataTypes...)
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfNamespaces(noOfNamespaces int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfNamespaces = noOfNamespaces
-	return b
+func (b *_DataTypeSchemaHeaderBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription) DataTypeSchemaHeaderBuilder {
+	return b.WithNamespaces(namespaces...).WithStructureDataTypes(structureDataTypes...).WithEnumDataTypes(enumDataTypes...).WithSimpleDataTypes(simpleDataTypes...)
 }
 
 func (b *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString) DataTypeSchemaHeaderBuilder {
@@ -144,32 +131,17 @@ func (b *_DataTypeSchemaHeaderBuilder) WithNamespaces(namespaces ...PascalString
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfStructureDataTypes(noOfStructureDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfStructureDataTypes = noOfStructureDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithStructureDataTypes(structureDataTypes ...StructureDescription) DataTypeSchemaHeaderBuilder {
 	b.StructureDataTypes = structureDataTypes
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfEnumDataTypes(noOfEnumDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfEnumDataTypes = noOfEnumDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithEnumDataTypes(enumDataTypes ...EnumDescription) DataTypeSchemaHeaderBuilder {
 	b.EnumDataTypes = enumDataTypes
 	return b
 }
 
-func (b *_DataTypeSchemaHeaderBuilder) WithNoOfSimpleDataTypes(noOfSimpleDataTypes int32) DataTypeSchemaHeaderBuilder {
-	b.NoOfSimpleDataTypes = noOfSimpleDataTypes
-	return b
-}
-
-func (b *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...DataTypeDescription) DataTypeSchemaHeaderBuilder {
+func (b *_DataTypeSchemaHeaderBuilder) WithSimpleDataTypes(simpleDataTypes ...SimpleTypeDescription) DataTypeSchemaHeaderBuilder {
 	b.SimpleDataTypes = simpleDataTypes
 	return b
 }
@@ -476,14 +448,10 @@ func (m *_DataTypeSchemaHeader) deepCopy() *_DataTypeSchemaHeader {
 	}
 	_DataTypeSchemaHeaderCopy := &_DataTypeSchemaHeader{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfNamespaces,
 		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
-		m.NoOfStructureDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.StructureDataTypes),
-		m.NoOfEnumDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.EnumDataTypes),
-		m.NoOfSimpleDataTypes,
-		utils.DeepCopySlice[DataTypeDescription, DataTypeDescription](m.SimpleDataTypes),
+		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
+		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
+		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DataTypeSchemaHeaderCopy

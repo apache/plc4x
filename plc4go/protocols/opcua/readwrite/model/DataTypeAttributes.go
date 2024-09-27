@@ -38,6 +38,7 @@ type DataTypeAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -53,6 +54,8 @@ type DataTypeAttributes interface {
 	GetIsAbstract() bool
 	// IsDataTypeAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataTypeAttributes()
+	// CreateBuilder creates a DataTypeAttributesBuilder
+	CreateDataTypeAttributesBuilder() DataTypeAttributesBuilder
 }
 
 // _DataTypeAttributes is the data-structure of this message
@@ -91,6 +94,174 @@ func NewDataTypeAttributes(specifiedAttributes uint32, displayName LocalizedText
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataTypeAttributesBuilder is a builder for DataTypeAttributes
+type DataTypeAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, isAbstract bool) DataTypeAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) DataTypeAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) DataTypeAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) DataTypeAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) DataTypeAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) DataTypeAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) DataTypeAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) DataTypeAttributesBuilder
+	// WithIsAbstract adds IsAbstract (property field)
+	WithIsAbstract(bool) DataTypeAttributesBuilder
+	// Build builds the DataTypeAttributes or returns an error if something is wrong
+	Build() (DataTypeAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataTypeAttributes
+}
+
+// NewDataTypeAttributesBuilder() creates a DataTypeAttributesBuilder
+func NewDataTypeAttributesBuilder() DataTypeAttributesBuilder {
+	return &_DataTypeAttributesBuilder{_DataTypeAttributes: new(_DataTypeAttributes)}
+}
+
+type _DataTypeAttributesBuilder struct {
+	*_DataTypeAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DataTypeAttributesBuilder) = (*_DataTypeAttributesBuilder)(nil)
+
+func (b *_DataTypeAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DataTypeAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, isAbstract bool) DataTypeAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithIsAbstract(isAbstract)
+}
+
+func (b *_DataTypeAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) DataTypeAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithDisplayName(displayName LocalizedText) DataTypeAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) DataTypeAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithDescription(description LocalizedText) DataTypeAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) DataTypeAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithWriteMask(writeMask uint32) DataTypeAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithUserWriteMask(userWriteMask uint32) DataTypeAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) WithIsAbstract(isAbstract bool) DataTypeAttributesBuilder {
+	b.IsAbstract = isAbstract
+	return b
+}
+
+func (b *_DataTypeAttributesBuilder) Build() (DataTypeAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataTypeAttributes.deepCopy(), nil
+}
+
+func (b *_DataTypeAttributesBuilder) MustBuild() DataTypeAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataTypeAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataTypeAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataTypeAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateDataTypeAttributesBuilder().(*_DataTypeAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDataTypeAttributesBuilder creates a DataTypeAttributesBuilder
+func (b *_DataTypeAttributes) CreateDataTypeAttributesBuilder() DataTypeAttributesBuilder {
+	if b == nil {
+		return NewDataTypeAttributesBuilder()
+	}
+	return &_DataTypeAttributesBuilder{_DataTypeAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -305,6 +476,28 @@ func (m *_DataTypeAttributes) SerializeWithWriteBuffer(ctx context.Context, writ
 }
 
 func (m *_DataTypeAttributes) IsDataTypeAttributes() {}
+
+func (m *_DataTypeAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataTypeAttributes) deepCopy() *_DataTypeAttributes {
+	if m == nil {
+		return nil
+	}
+	_DataTypeAttributesCopy := &_DataTypeAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.IsAbstract,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataTypeAttributesCopy
+}
 
 func (m *_DataTypeAttributes) String() string {
 	if m == nil {

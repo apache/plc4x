@@ -87,17 +87,13 @@ func NewParsingResult(statusCode StatusCode, dataStatusCodes []StatusCode, dataD
 type ParsingResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
+	WithMandatoryFields(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) ParsingResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder
-	// WithNoOfDataStatusCodes adds NoOfDataStatusCodes (property field)
-	WithNoOfDataStatusCodes(int32) ParsingResultBuilder
 	// WithDataStatusCodes adds DataStatusCodes (property field)
 	WithDataStatusCodes(...StatusCode) ParsingResultBuilder
-	// WithNoOfDataDiagnosticInfos adds NoOfDataDiagnosticInfos (property field)
-	WithNoOfDataDiagnosticInfos(int32) ParsingResultBuilder
 	// WithDataDiagnosticInfos adds DataDiagnosticInfos (property field)
 	WithDataDiagnosticInfos(...DiagnosticInfo) ParsingResultBuilder
 	// Build builds the ParsingResult or returns an error if something is wrong
@@ -125,8 +121,8 @@ func (b *_ParsingResultBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
+func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, dataStatusCodes []StatusCode, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
+	return b.WithStatusCode(statusCode).WithDataStatusCodes(dataStatusCodes...).WithDataDiagnosticInfos(dataDiagnosticInfos...)
 }
 
 func (b *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
@@ -147,18 +143,8 @@ func (b *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(Statu
 	return b
 }
 
-func (b *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
-	b.NoOfDataStatusCodes = noOfDataStatusCodes
-	return b
-}
-
 func (b *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
 	b.DataStatusCodes = dataStatusCodes
-	return b
-}
-
-func (b *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
-	b.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
 	return b
 }
 
@@ -419,9 +405,7 @@ func (m *_ParsingResult) deepCopy() *_ParsingResult {
 	_ParsingResultCopy := &_ParsingResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfDataStatusCodes,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
-		m.NoOfDataDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

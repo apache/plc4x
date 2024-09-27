@@ -115,7 +115,7 @@ func NewApplicationDescription(applicationUri PascalString, productUri PascalStr
 type ApplicationDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) ApplicationDescriptionBuilder
+	WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, discoveryUrls []PascalString) ApplicationDescriptionBuilder
 	// WithApplicationUri adds ApplicationUri (property field)
 	WithApplicationUri(PascalString) ApplicationDescriptionBuilder
 	// WithApplicationUriBuilder adds ApplicationUri (property field) which is build by the builder
@@ -138,8 +138,6 @@ type ApplicationDescriptionBuilder interface {
 	WithDiscoveryProfileUri(PascalString) ApplicationDescriptionBuilder
 	// WithDiscoveryProfileUriBuilder adds DiscoveryProfileUri (property field) which is build by the builder
 	WithDiscoveryProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
-	// WithNoOfDiscoveryUrls adds NoOfDiscoveryUrls (property field)
-	WithNoOfDiscoveryUrls(int32) ApplicationDescriptionBuilder
 	// WithDiscoveryUrls adds DiscoveryUrls (property field)
 	WithDiscoveryUrls(...PascalString) ApplicationDescriptionBuilder
 	// Build builds the ApplicationDescription or returns an error if something is wrong
@@ -167,8 +165,8 @@ func (b *_ApplicationDescriptionBuilder) setParent(contract ExtensionObjectDefin
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ApplicationDescriptionBuilder) WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) ApplicationDescriptionBuilder {
-	return b.WithApplicationUri(applicationUri).WithProductUri(productUri).WithApplicationName(applicationName).WithApplicationType(applicationType).WithGatewayServerUri(gatewayServerUri).WithDiscoveryProfileUri(discoveryProfileUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...)
+func (b *_ApplicationDescriptionBuilder) WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, discoveryUrls []PascalString) ApplicationDescriptionBuilder {
+	return b.WithApplicationUri(applicationUri).WithProductUri(productUri).WithApplicationName(applicationName).WithApplicationType(applicationType).WithGatewayServerUri(gatewayServerUri).WithDiscoveryProfileUri(discoveryProfileUri).WithDiscoveryUrls(discoveryUrls...)
 }
 
 func (b *_ApplicationDescriptionBuilder) WithApplicationUri(applicationUri PascalString) ApplicationDescriptionBuilder {
@@ -263,11 +261,6 @@ func (b *_ApplicationDescriptionBuilder) WithDiscoveryProfileUriBuilder(builderS
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ApplicationDescriptionBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) ApplicationDescriptionBuilder {
-	b.NoOfDiscoveryUrls = noOfDiscoveryUrls
 	return b
 }
 
@@ -605,7 +598,6 @@ func (m *_ApplicationDescription) deepCopy() *_ApplicationDescription {
 		m.ApplicationType,
 		m.GatewayServerUri.DeepCopy().(PascalString),
 		m.DiscoveryProfileUri.DeepCopy().(PascalString),
-		m.NoOfDiscoveryUrls,
 		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

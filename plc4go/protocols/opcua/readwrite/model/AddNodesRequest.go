@@ -83,15 +83,13 @@ func NewAddNodesRequest(requestHeader RequestHeader, nodesToAdd []AddNodesItem) 
 type AddNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) AddNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToAdd []AddNodesItem) AddNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) AddNodesRequestBuilder
+	WithRequestHeader(RequestHeader) AddNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesRequestBuilder
-	// WithNoOfNodesToAdd adds NoOfNodesToAdd (property field)
-	WithNoOfNodesToAdd(int32) AddNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) AddNodesRequestBuilder
 	// WithNodesToAdd adds NodesToAdd (property field)
-	WithNodesToAdd(...ExtensionObjectDefinition) AddNodesRequestBuilder
+	WithNodesToAdd(...AddNodesItem) AddNodesRequestBuilder
 	// Build builds the AddNodesRequest or returns an error if something is wrong
 	Build() (AddNodesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_AddNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionCo
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AddNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToAdd int32, nodesToAdd []ExtensionObjectDefinition) AddNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToAdd(noOfNodesToAdd).WithNodesToAdd(nodesToAdd...)
+func (b *_AddNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToAdd []AddNodesItem) AddNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToAdd(nodesToAdd...)
 }
 
-func (b *_AddNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddNodesRequestBuilder {
+func (b *_AddNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) AddNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_AddNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_AddNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) AddNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_AddNodesRequestBuilder) WithNoOfNodesToAdd(noOfNodesToAdd int32) AddNodesRequestBuilder {
-	b.NoOfNodesToAdd = noOfNodesToAdd
-	return b
-}
-
-func (b *_AddNodesRequestBuilder) WithNodesToAdd(nodesToAdd ...ExtensionObjectDefinition) AddNodesRequestBuilder {
+func (b *_AddNodesRequestBuilder) WithNodesToAdd(nodesToAdd ...AddNodesItem) AddNodesRequestBuilder {
 	b.NodesToAdd = nodesToAdd
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_AddNodesRequest) deepCopy() *_AddNodesRequest {
 	}
 	_AddNodesRequestCopy := &_AddNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToAdd,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToAdd),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[AddNodesItem, AddNodesItem](m.NodesToAdd),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AddNodesRequestCopy

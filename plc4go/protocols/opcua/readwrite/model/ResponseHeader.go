@@ -105,7 +105,7 @@ func NewResponseHeader(timestamp int64, requestHandle uint32, serviceResult Stat
 type ResponseHeaderBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder
+	WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder
 	// WithTimestamp adds Timestamp (property field)
 	WithTimestamp(int64) ResponseHeaderBuilder
 	// WithRequestHandle adds RequestHandle (property field)
@@ -118,8 +118,6 @@ type ResponseHeaderBuilder interface {
 	WithServiceDiagnostics(DiagnosticInfo) ResponseHeaderBuilder
 	// WithServiceDiagnosticsBuilder adds ServiceDiagnostics (property field) which is build by the builder
 	WithServiceDiagnosticsBuilder(func(DiagnosticInfoBuilder) DiagnosticInfoBuilder) ResponseHeaderBuilder
-	// WithNoOfStringTable adds NoOfStringTable (property field)
-	WithNoOfStringTable(int32) ResponseHeaderBuilder
 	// WithStringTable adds StringTable (property field)
 	WithStringTable(...PascalString) ResponseHeaderBuilder
 	// WithAdditionalHeader adds AdditionalHeader (property field)
@@ -151,8 +149,8 @@ func (b *_ResponseHeaderBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, noOfStringTable int32, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
-	return b.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithNoOfStringTable(noOfStringTable).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
+func (b *_ResponseHeaderBuilder) WithMandatoryFields(timestamp int64, requestHandle uint32, serviceResult StatusCode, serviceDiagnostics DiagnosticInfo, stringTable []PascalString, additionalHeader ExtensionObject) ResponseHeaderBuilder {
+	return b.WithTimestamp(timestamp).WithRequestHandle(requestHandle).WithServiceResult(serviceResult).WithServiceDiagnostics(serviceDiagnostics).WithStringTable(stringTable...).WithAdditionalHeader(additionalHeader)
 }
 
 func (b *_ResponseHeaderBuilder) WithTimestamp(timestamp int64) ResponseHeaderBuilder {
@@ -198,11 +196,6 @@ func (b *_ResponseHeaderBuilder) WithServiceDiagnosticsBuilder(builderSupplier f
 		}
 		b.err.Append(errors.Wrap(err, "DiagnosticInfoBuilder failed"))
 	}
-	return b
-}
-
-func (b *_ResponseHeaderBuilder) WithNoOfStringTable(noOfStringTable int32) ResponseHeaderBuilder {
-	b.NoOfStringTable = noOfStringTable
 	return b
 }
 
@@ -527,7 +520,6 @@ func (m *_ResponseHeader) deepCopy() *_ResponseHeader {
 		m.RequestHandle,
 		m.ServiceResult.DeepCopy().(StatusCode),
 		m.ServiceDiagnostics.DeepCopy().(DiagnosticInfo),
-		m.NoOfStringTable,
 		utils.DeepCopySlice[PascalString, PascalString](m.StringTable),
 		m.AdditionalHeader.DeepCopy().(ExtensionObject),
 	}

@@ -86,15 +86,15 @@ func NewRegisterServerRequest(requestHeader RequestHeader, server RegisteredServ
 type RegisterServerRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer) RegisterServerRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithRequestHeader(RequestHeader) RegisterServerRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServerRequestBuilder
 	// WithServer adds Server (property field)
-	WithServer(ExtensionObjectDefinition) RegisterServerRequestBuilder
+	WithServer(RegisteredServer) RegisterServerRequestBuilder
 	// WithServerBuilder adds Server (property field) which is build by the builder
-	WithServerBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder
+	WithServerBuilder(func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServerRequestBuilder
 	// Build builds the RegisterServerRequest or returns an error if something is wrong
 	Build() (RegisterServerRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -120,42 +120,42 @@ func (b *_RegisterServerRequestBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisterServerRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, server RegisteredServer) RegisterServerRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithServer(server)
 }
 
-func (b *_RegisterServerRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithRequestHeader(requestHeader RequestHeader) RegisterServerRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) RegisterServerRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithServer(server ExtensionObjectDefinition) RegisterServerRequestBuilder {
+func (b *_RegisterServerRequestBuilder) WithServer(server RegisteredServer) RegisterServerRequestBuilder {
 	b.Server = server
 	return b
 }
 
-func (b *_RegisterServerRequestBuilder) WithServerBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerRequestBuilder {
-	builder := builderSupplier(b.Server.CreateExtensionObjectDefinitionBuilder())
+func (b *_RegisterServerRequestBuilder) WithServerBuilder(builderSupplier func(RegisteredServerBuilder) RegisteredServerBuilder) RegisterServerRequestBuilder {
+	builder := builderSupplier(b.Server.CreateRegisteredServerBuilder())
 	var err error
 	b.Server, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RegisteredServerBuilder failed"))
 	}
 	return b
 }
@@ -360,8 +360,8 @@ func (m *_RegisterServerRequest) deepCopy() *_RegisterServerRequest {
 	}
 	_RegisterServerRequestCopy := &_RegisterServerRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.Server.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.Server.DeepCopy().(RegisteredServer),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _RegisterServerRequestCopy

@@ -38,11 +38,14 @@ type PublishedDataSetCustomSourceDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetCyclicDataSet returns CyclicDataSet (property field)
 	GetCyclicDataSet() bool
 	// IsPublishedDataSetCustomSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedDataSetCustomSourceDataType()
+	// CreateBuilder creates a PublishedDataSetCustomSourceDataTypeBuilder
+	CreatePublishedDataSetCustomSourceDataTypeBuilder() PublishedDataSetCustomSourceDataTypeBuilder
 }
 
 // _PublishedDataSetCustomSourceDataType is the data-structure of this message
@@ -65,6 +68,97 @@ func NewPublishedDataSetCustomSourceDataType(cyclicDataSet bool) *_PublishedData
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishedDataSetCustomSourceDataTypeBuilder is a builder for PublishedDataSetCustomSourceDataType
+type PublishedDataSetCustomSourceDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(cyclicDataSet bool) PublishedDataSetCustomSourceDataTypeBuilder
+	// WithCyclicDataSet adds CyclicDataSet (property field)
+	WithCyclicDataSet(bool) PublishedDataSetCustomSourceDataTypeBuilder
+	// Build builds the PublishedDataSetCustomSourceDataType or returns an error if something is wrong
+	Build() (PublishedDataSetCustomSourceDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishedDataSetCustomSourceDataType
+}
+
+// NewPublishedDataSetCustomSourceDataTypeBuilder() creates a PublishedDataSetCustomSourceDataTypeBuilder
+func NewPublishedDataSetCustomSourceDataTypeBuilder() PublishedDataSetCustomSourceDataTypeBuilder {
+	return &_PublishedDataSetCustomSourceDataTypeBuilder{_PublishedDataSetCustomSourceDataType: new(_PublishedDataSetCustomSourceDataType)}
+}
+
+type _PublishedDataSetCustomSourceDataTypeBuilder struct {
+	*_PublishedDataSetCustomSourceDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PublishedDataSetCustomSourceDataTypeBuilder) = (*_PublishedDataSetCustomSourceDataTypeBuilder)(nil)
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) WithMandatoryFields(cyclicDataSet bool) PublishedDataSetCustomSourceDataTypeBuilder {
+	return b.WithCyclicDataSet(cyclicDataSet)
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) WithCyclicDataSet(cyclicDataSet bool) PublishedDataSetCustomSourceDataTypeBuilder {
+	b.CyclicDataSet = cyclicDataSet
+	return b
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) Build() (PublishedDataSetCustomSourceDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishedDataSetCustomSourceDataType.deepCopy(), nil
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) MustBuild() PublishedDataSetCustomSourceDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedDataSetCustomSourceDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedDataSetCustomSourceDataTypeBuilder().(*_PublishedDataSetCustomSourceDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePublishedDataSetCustomSourceDataTypeBuilder creates a PublishedDataSetCustomSourceDataTypeBuilder
+func (b *_PublishedDataSetCustomSourceDataType) CreatePublishedDataSetCustomSourceDataTypeBuilder() PublishedDataSetCustomSourceDataTypeBuilder {
+	if b == nil {
+		return NewPublishedDataSetCustomSourceDataTypeBuilder()
+	}
+	return &_PublishedDataSetCustomSourceDataTypeBuilder{_PublishedDataSetCustomSourceDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -194,6 +288,23 @@ func (m *_PublishedDataSetCustomSourceDataType) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_PublishedDataSetCustomSourceDataType) IsPublishedDataSetCustomSourceDataType() {}
+
+func (m *_PublishedDataSetCustomSourceDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedDataSetCustomSourceDataType) deepCopy() *_PublishedDataSetCustomSourceDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedDataSetCustomSourceDataTypeCopy := &_PublishedDataSetCustomSourceDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.CyclicDataSet,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedDataSetCustomSourceDataTypeCopy
+}
 
 func (m *_PublishedDataSetCustomSourceDataType) String() string {
 	if m == nil {

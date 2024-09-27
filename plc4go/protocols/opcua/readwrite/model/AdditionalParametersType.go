@@ -76,11 +76,9 @@ func NewAdditionalParametersType(parameters []KeyValuePair) *_AdditionalParamete
 type AdditionalParametersTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder
-	// WithNoOfParameters adds NoOfParameters (property field)
-	WithNoOfParameters(int32) AdditionalParametersTypeBuilder
+	WithMandatoryFields(parameters []KeyValuePair) AdditionalParametersTypeBuilder
 	// WithParameters adds Parameters (property field)
-	WithParameters(...ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	WithParameters(...KeyValuePair) AdditionalParametersTypeBuilder
 	// Build builds the AdditionalParametersType or returns an error if something is wrong
 	Build() (AdditionalParametersType, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +104,11 @@ func (b *_AdditionalParametersTypeBuilder) setParent(contract ExtensionObjectDef
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_AdditionalParametersTypeBuilder) WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
-	return b.WithNoOfParameters(noOfParameters).WithParameters(parameters...)
+func (b *_AdditionalParametersTypeBuilder) WithMandatoryFields(parameters []KeyValuePair) AdditionalParametersTypeBuilder {
+	return b.WithParameters(parameters...)
 }
 
-func (b *_AdditionalParametersTypeBuilder) WithNoOfParameters(noOfParameters int32) AdditionalParametersTypeBuilder {
-	b.NoOfParameters = noOfParameters
-	return b
-}
-
-func (b *_AdditionalParametersTypeBuilder) WithParameters(parameters ...ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+func (b *_AdditionalParametersTypeBuilder) WithParameters(parameters ...KeyValuePair) AdditionalParametersTypeBuilder {
 	b.Parameters = parameters
 	return b
 }
@@ -311,8 +304,7 @@ func (m *_AdditionalParametersType) deepCopy() *_AdditionalParametersType {
 	}
 	_AdditionalParametersTypeCopy := &_AdditionalParametersType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfParameters,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Parameters),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.Parameters),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _AdditionalParametersTypeCopy

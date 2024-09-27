@@ -83,15 +83,13 @@ func NewGetEndpointsResponse(responseHeader ResponseHeader, endpoints []Endpoint
 type GetEndpointsResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, endpoints []EndpointDescription) GetEndpointsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithResponseHeader(ResponseHeader) GetEndpointsResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder
-	// WithNoOfEndpoints adds NoOfEndpoints (property field)
-	WithNoOfEndpoints(int32) GetEndpointsResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) GetEndpointsResponseBuilder
 	// WithEndpoints adds Endpoints (property field)
-	WithEndpoints(...ExtensionObjectDefinition) GetEndpointsResponseBuilder
+	WithEndpoints(...EndpointDescription) GetEndpointsResponseBuilder
 	// Build builds the GetEndpointsResponse or returns an error if something is wrong
 	Build() (GetEndpointsResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_GetEndpointsResponseBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfEndpoints int32, endpoints []ExtensionObjectDefinition) GetEndpointsResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfEndpoints(noOfEndpoints).WithEndpoints(endpoints...)
+func (b *_GetEndpointsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, endpoints []EndpointDescription) GetEndpointsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithEndpoints(endpoints...)
 }
 
-func (b *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+func (b *_GetEndpointsResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) GetEndpointsResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_GetEndpointsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) GetEndpointsResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_GetEndpointsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) GetEndpointsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_GetEndpointsResponseBuilder) WithNoOfEndpoints(noOfEndpoints int32) GetEndpointsResponseBuilder {
-	b.NoOfEndpoints = noOfEndpoints
-	return b
-}
-
-func (b *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...ExtensionObjectDefinition) GetEndpointsResponseBuilder {
+func (b *_GetEndpointsResponseBuilder) WithEndpoints(endpoints ...EndpointDescription) GetEndpointsResponseBuilder {
 	b.Endpoints = endpoints
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_GetEndpointsResponse) deepCopy() *_GetEndpointsResponse {
 	}
 	_GetEndpointsResponseCopy := &_GetEndpointsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfEndpoints,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Endpoints),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.Endpoints),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _GetEndpointsResponseCopy

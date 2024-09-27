@@ -87,17 +87,15 @@ func NewFindServersOnNetworkResponse(responseHeader ResponseHeader, lastCounterR
 type FindServersOnNetworkResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, lastCounterResetTime int64, servers []ServerOnNetwork) FindServersOnNetworkResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	WithResponseHeader(ResponseHeader) FindServersOnNetworkResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersOnNetworkResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) FindServersOnNetworkResponseBuilder
 	// WithLastCounterResetTime adds LastCounterResetTime (property field)
 	WithLastCounterResetTime(int64) FindServersOnNetworkResponseBuilder
-	// WithNoOfServers adds NoOfServers (property field)
-	WithNoOfServers(int32) FindServersOnNetworkResponseBuilder
 	// WithServers adds Servers (property field)
-	WithServers(...ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder
+	WithServers(...ServerOnNetwork) FindServersOnNetworkResponseBuilder
 	// Build builds the FindServersOnNetworkResponse or returns an error if something is wrong
 	Build() (FindServersOnNetworkResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -123,24 +121,24 @@ func (b *_FindServersOnNetworkResponseBuilder) setParent(contract ExtensionObjec
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_FindServersOnNetworkResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, lastCounterResetTime int64, noOfServers int32, servers []ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithLastCounterResetTime(lastCounterResetTime).WithNoOfServers(noOfServers).WithServers(servers...)
+func (b *_FindServersOnNetworkResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, lastCounterResetTime int64, servers []ServerOnNetwork) FindServersOnNetworkResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithLastCounterResetTime(lastCounterResetTime).WithServers(servers...)
 }
 
-func (b *_FindServersOnNetworkResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
+func (b *_FindServersOnNetworkResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) FindServersOnNetworkResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_FindServersOnNetworkResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersOnNetworkResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_FindServersOnNetworkResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) FindServersOnNetworkResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -150,12 +148,7 @@ func (b *_FindServersOnNetworkResponseBuilder) WithLastCounterResetTime(lastCoun
 	return b
 }
 
-func (b *_FindServersOnNetworkResponseBuilder) WithNoOfServers(noOfServers int32) FindServersOnNetworkResponseBuilder {
-	b.NoOfServers = noOfServers
-	return b
-}
-
-func (b *_FindServersOnNetworkResponseBuilder) WithServers(servers ...ExtensionObjectDefinition) FindServersOnNetworkResponseBuilder {
+func (b *_FindServersOnNetworkResponseBuilder) WithServers(servers ...ServerOnNetwork) FindServersOnNetworkResponseBuilder {
 	b.Servers = servers
 	return b
 }
@@ -391,10 +384,9 @@ func (m *_FindServersOnNetworkResponse) deepCopy() *_FindServersOnNetworkRespons
 	}
 	_FindServersOnNetworkResponseCopy := &_FindServersOnNetworkResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.LastCounterResetTime,
-		m.NoOfServers,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Servers),
+		utils.DeepCopySlice[ServerOnNetwork, ServerOnNetwork](m.Servers),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FindServersOnNetworkResponseCopy

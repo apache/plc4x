@@ -94,21 +94,19 @@ func NewBrowseRequest(requestHeader RequestHeader, view ViewDescription, request
 type BrowseRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) BrowseRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, view ViewDescription, requestedMaxReferencesPerNode uint32, nodesToBrowse []BrowseDescription) BrowseRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) BrowseRequestBuilder
+	WithRequestHeader(RequestHeader) BrowseRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) BrowseRequestBuilder
 	// WithView adds View (property field)
-	WithView(ExtensionObjectDefinition) BrowseRequestBuilder
+	WithView(ViewDescription) BrowseRequestBuilder
 	// WithViewBuilder adds View (property field) which is build by the builder
-	WithViewBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder
+	WithViewBuilder(func(ViewDescriptionBuilder) ViewDescriptionBuilder) BrowseRequestBuilder
 	// WithRequestedMaxReferencesPerNode adds RequestedMaxReferencesPerNode (property field)
 	WithRequestedMaxReferencesPerNode(uint32) BrowseRequestBuilder
-	// WithNoOfNodesToBrowse adds NoOfNodesToBrowse (property field)
-	WithNoOfNodesToBrowse(int32) BrowseRequestBuilder
 	// WithNodesToBrowse adds NodesToBrowse (property field)
-	WithNodesToBrowse(...ExtensionObjectDefinition) BrowseRequestBuilder
+	WithNodesToBrowse(...BrowseDescription) BrowseRequestBuilder
 	// Build builds the BrowseRequest or returns an error if something is wrong
 	Build() (BrowseRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -134,42 +132,42 @@ func (b *_BrowseRequestBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowseRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) BrowseRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithView(view).WithRequestedMaxReferencesPerNode(requestedMaxReferencesPerNode).WithNoOfNodesToBrowse(noOfNodesToBrowse).WithNodesToBrowse(nodesToBrowse...)
+func (b *_BrowseRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, view ViewDescription, requestedMaxReferencesPerNode uint32, nodesToBrowse []BrowseDescription) BrowseRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithView(view).WithRequestedMaxReferencesPerNode(requestedMaxReferencesPerNode).WithNodesToBrowse(nodesToBrowse...)
 }
 
-func (b *_BrowseRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) BrowseRequestBuilder {
+func (b *_BrowseRequestBuilder) WithRequestHeader(requestHeader RequestHeader) BrowseRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_BrowseRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_BrowseRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) BrowseRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_BrowseRequestBuilder) WithView(view ExtensionObjectDefinition) BrowseRequestBuilder {
+func (b *_BrowseRequestBuilder) WithView(view ViewDescription) BrowseRequestBuilder {
 	b.View = view
 	return b
 }
 
-func (b *_BrowseRequestBuilder) WithViewBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder {
-	builder := builderSupplier(b.View.CreateExtensionObjectDefinitionBuilder())
+func (b *_BrowseRequestBuilder) WithViewBuilder(builderSupplier func(ViewDescriptionBuilder) ViewDescriptionBuilder) BrowseRequestBuilder {
+	builder := builderSupplier(b.View.CreateViewDescriptionBuilder())
 	var err error
 	b.View, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ViewDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -179,12 +177,7 @@ func (b *_BrowseRequestBuilder) WithRequestedMaxReferencesPerNode(requestedMaxRe
 	return b
 }
 
-func (b *_BrowseRequestBuilder) WithNoOfNodesToBrowse(noOfNodesToBrowse int32) BrowseRequestBuilder {
-	b.NoOfNodesToBrowse = noOfNodesToBrowse
-	return b
-}
-
-func (b *_BrowseRequestBuilder) WithNodesToBrowse(nodesToBrowse ...ExtensionObjectDefinition) BrowseRequestBuilder {
+func (b *_BrowseRequestBuilder) WithNodesToBrowse(nodesToBrowse ...BrowseDescription) BrowseRequestBuilder {
 	b.NodesToBrowse = nodesToBrowse
 	return b
 }
@@ -443,11 +436,10 @@ func (m *_BrowseRequest) deepCopy() *_BrowseRequest {
 	}
 	_BrowseRequestCopy := &_BrowseRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.View.DeepCopy().(ViewDescription),
 		m.RequestedMaxReferencesPerNode,
-		m.NoOfNodesToBrowse,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToBrowse),
+		utils.DeepCopySlice[BrowseDescription, BrowseDescription](m.NodesToBrowse),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseRequestCopy

@@ -38,6 +38,7 @@ type DataSetMetaDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaces returns Namespaces (property field)
 	GetNamespaces() []PascalString
@@ -59,6 +60,8 @@ type DataSetMetaDataType interface {
 	GetConfigurationVersion() ConfigurationVersionDataType
 	// IsDataSetMetaDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataSetMetaDataType()
+	// CreateBuilder creates a DataSetMetaDataTypeBuilder
+	CreateDataSetMetaDataTypeBuilder() DataSetMetaDataTypeBuilder
 }
 
 // _DataSetMetaDataType is the data-structure of this message
@@ -107,6 +110,237 @@ func NewDataSetMetaDataType(namespaces []PascalString, structureDataTypes []Stru
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataSetMetaDataTypeBuilder is a builder for DataSetMetaDataType
+type DataSetMetaDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, name PascalString, description LocalizedText, fields []FieldMetaData, dataSetClassId GuidValue, configurationVersion ConfigurationVersionDataType) DataSetMetaDataTypeBuilder
+	// WithNamespaces adds Namespaces (property field)
+	WithNamespaces(...PascalString) DataSetMetaDataTypeBuilder
+	// WithStructureDataTypes adds StructureDataTypes (property field)
+	WithStructureDataTypes(...StructureDescription) DataSetMetaDataTypeBuilder
+	// WithEnumDataTypes adds EnumDataTypes (property field)
+	WithEnumDataTypes(...EnumDescription) DataSetMetaDataTypeBuilder
+	// WithSimpleDataTypes adds SimpleDataTypes (property field)
+	WithSimpleDataTypes(...SimpleTypeDescription) DataSetMetaDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) DataSetMetaDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) DataSetMetaDataTypeBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) DataSetMetaDataTypeBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) DataSetMetaDataTypeBuilder
+	// WithFields adds Fields (property field)
+	WithFields(...FieldMetaData) DataSetMetaDataTypeBuilder
+	// WithDataSetClassId adds DataSetClassId (property field)
+	WithDataSetClassId(GuidValue) DataSetMetaDataTypeBuilder
+	// WithDataSetClassIdBuilder adds DataSetClassId (property field) which is build by the builder
+	WithDataSetClassIdBuilder(func(GuidValueBuilder) GuidValueBuilder) DataSetMetaDataTypeBuilder
+	// WithConfigurationVersion adds ConfigurationVersion (property field)
+	WithConfigurationVersion(ConfigurationVersionDataType) DataSetMetaDataTypeBuilder
+	// WithConfigurationVersionBuilder adds ConfigurationVersion (property field) which is build by the builder
+	WithConfigurationVersionBuilder(func(ConfigurationVersionDataTypeBuilder) ConfigurationVersionDataTypeBuilder) DataSetMetaDataTypeBuilder
+	// Build builds the DataSetMetaDataType or returns an error if something is wrong
+	Build() (DataSetMetaDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataSetMetaDataType
+}
+
+// NewDataSetMetaDataTypeBuilder() creates a DataSetMetaDataTypeBuilder
+func NewDataSetMetaDataTypeBuilder() DataSetMetaDataTypeBuilder {
+	return &_DataSetMetaDataTypeBuilder{_DataSetMetaDataType: new(_DataSetMetaDataType)}
+}
+
+type _DataSetMetaDataTypeBuilder struct {
+	*_DataSetMetaDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DataSetMetaDataTypeBuilder) = (*_DataSetMetaDataTypeBuilder)(nil)
+
+func (b *_DataSetMetaDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, name PascalString, description LocalizedText, fields []FieldMetaData, dataSetClassId GuidValue, configurationVersion ConfigurationVersionDataType) DataSetMetaDataTypeBuilder {
+	return b.WithNamespaces(namespaces...).WithStructureDataTypes(structureDataTypes...).WithEnumDataTypes(enumDataTypes...).WithSimpleDataTypes(simpleDataTypes...).WithName(name).WithDescription(description).WithFields(fields...).WithDataSetClassId(dataSetClassId).WithConfigurationVersion(configurationVersion)
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithNamespaces(namespaces ...PascalString) DataSetMetaDataTypeBuilder {
+	b.Namespaces = namespaces
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithStructureDataTypes(structureDataTypes ...StructureDescription) DataSetMetaDataTypeBuilder {
+	b.StructureDataTypes = structureDataTypes
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithEnumDataTypes(enumDataTypes ...EnumDescription) DataSetMetaDataTypeBuilder {
+	b.EnumDataTypes = enumDataTypes
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithSimpleDataTypes(simpleDataTypes ...SimpleTypeDescription) DataSetMetaDataTypeBuilder {
+	b.SimpleDataTypes = simpleDataTypes
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithName(name PascalString) DataSetMetaDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DataSetMetaDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithDescription(description LocalizedText) DataSetMetaDataTypeBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) DataSetMetaDataTypeBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithFields(fields ...FieldMetaData) DataSetMetaDataTypeBuilder {
+	b.Fields = fields
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithDataSetClassId(dataSetClassId GuidValue) DataSetMetaDataTypeBuilder {
+	b.DataSetClassId = dataSetClassId
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithDataSetClassIdBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) DataSetMetaDataTypeBuilder {
+	builder := builderSupplier(b.DataSetClassId.CreateGuidValueBuilder())
+	var err error
+	b.DataSetClassId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithConfigurationVersion(configurationVersion ConfigurationVersionDataType) DataSetMetaDataTypeBuilder {
+	b.ConfigurationVersion = configurationVersion
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) WithConfigurationVersionBuilder(builderSupplier func(ConfigurationVersionDataTypeBuilder) ConfigurationVersionDataTypeBuilder) DataSetMetaDataTypeBuilder {
+	builder := builderSupplier(b.ConfigurationVersion.CreateConfigurationVersionDataTypeBuilder())
+	var err error
+	b.ConfigurationVersion, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ConfigurationVersionDataTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DataSetMetaDataTypeBuilder) Build() (DataSetMetaDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.DataSetClassId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetClassId' not set"))
+	}
+	if b.ConfigurationVersion == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'configurationVersion' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataSetMetaDataType.deepCopy(), nil
+}
+
+func (b *_DataSetMetaDataTypeBuilder) MustBuild() DataSetMetaDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataSetMetaDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataSetMetaDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataSetMetaDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDataSetMetaDataTypeBuilder().(*_DataSetMetaDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDataSetMetaDataTypeBuilder creates a DataSetMetaDataTypeBuilder
+func (b *_DataSetMetaDataType) CreateDataSetMetaDataTypeBuilder() DataSetMetaDataTypeBuilder {
+	if b == nil {
+		return NewDataSetMetaDataTypeBuilder()
+	}
+	return &_DataSetMetaDataTypeBuilder{_DataSetMetaDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -459,6 +693,30 @@ func (m *_DataSetMetaDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 }
 
 func (m *_DataSetMetaDataType) IsDataSetMetaDataType() {}
+
+func (m *_DataSetMetaDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataSetMetaDataType) deepCopy() *_DataSetMetaDataType {
+	if m == nil {
+		return nil
+	}
+	_DataSetMetaDataTypeCopy := &_DataSetMetaDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
+		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
+		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
+		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
+		m.Name.DeepCopy().(PascalString),
+		m.Description.DeepCopy().(LocalizedText),
+		utils.DeepCopySlice[FieldMetaData, FieldMetaData](m.Fields),
+		m.DataSetClassId.DeepCopy().(GuidValue),
+		m.ConfigurationVersion.DeepCopy().(ConfigurationVersionDataType),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataSetMetaDataTypeCopy
+}
 
 func (m *_DataSetMetaDataType) String() string {
 	if m == nil {

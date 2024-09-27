@@ -87,17 +87,13 @@ func NewCreateMonitoredItemsResponse(responseHeader ResponseHeader, results []Mo
 type CreateMonitoredItemsResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CreateMonitoredItemsResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []MonitoredItemCreateResult, diagnosticInfos []DiagnosticInfo) CreateMonitoredItemsResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CreateMonitoredItemsResponseBuilder
+	WithResponseHeader(ResponseHeader) CreateMonitoredItemsResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateMonitoredItemsResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) CreateMonitoredItemsResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CreateMonitoredItemsResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) CreateMonitoredItemsResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) CreateMonitoredItemsResponseBuilder
+	WithResults(...MonitoredItemCreateResult) CreateMonitoredItemsResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) CreateMonitoredItemsResponseBuilder
 	// Build builds the CreateMonitoredItemsResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_CreateMonitoredItemsResponseBuilder) setParent(contract ExtensionObjec
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CreateMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CreateMonitoredItemsResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_CreateMonitoredItemsResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []MonitoredItemCreateResult, diagnosticInfos []DiagnosticInfo) CreateMonitoredItemsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_CreateMonitoredItemsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CreateMonitoredItemsResponseBuilder {
+func (b *_CreateMonitoredItemsResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CreateMonitoredItemsResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CreateMonitoredItemsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateMonitoredItemsResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateMonitoredItemsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CreateMonitoredItemsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_CreateMonitoredItemsResponseBuilder) WithNoOfResults(noOfResults int32) CreateMonitoredItemsResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_CreateMonitoredItemsResponseBuilder) WithResults(results ...ExtensionObjectDefinition) CreateMonitoredItemsResponseBuilder {
+func (b *_CreateMonitoredItemsResponseBuilder) WithResults(results ...MonitoredItemCreateResult) CreateMonitoredItemsResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_CreateMonitoredItemsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) CreateMonitoredItemsResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_CreateMonitoredItemsResponse) deepCopy() *_CreateMonitoredItemsRespons
 	}
 	_CreateMonitoredItemsResponseCopy := &_CreateMonitoredItemsResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[MonitoredItemCreateResult, MonitoredItemCreateResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

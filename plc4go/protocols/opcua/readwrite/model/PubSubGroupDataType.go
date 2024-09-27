@@ -108,7 +108,7 @@ func NewPubSubGroupDataType(name PascalString, enabled bool, securityMode Messag
 type PubSubGroupDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) PubSubGroupDataTypeBuilder
+	WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair) PubSubGroupDataTypeBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) PubSubGroupDataTypeBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -121,16 +121,12 @@ type PubSubGroupDataTypeBuilder interface {
 	WithSecurityGroupId(PascalString) PubSubGroupDataTypeBuilder
 	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
 	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) PubSubGroupDataTypeBuilder
-	// WithNoOfSecurityKeyServices adds NoOfSecurityKeyServices (property field)
-	WithNoOfSecurityKeyServices(int32) PubSubGroupDataTypeBuilder
 	// WithSecurityKeyServices adds SecurityKeyServices (property field)
-	WithSecurityKeyServices(...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder
+	WithSecurityKeyServices(...EndpointDescription) PubSubGroupDataTypeBuilder
 	// WithMaxNetworkMessageSize adds MaxNetworkMessageSize (property field)
 	WithMaxNetworkMessageSize(uint32) PubSubGroupDataTypeBuilder
-	// WithNoOfGroupProperties adds NoOfGroupProperties (property field)
-	WithNoOfGroupProperties(int32) PubSubGroupDataTypeBuilder
 	// WithGroupProperties adds GroupProperties (property field)
-	WithGroupProperties(...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder
+	WithGroupProperties(...KeyValuePair) PubSubGroupDataTypeBuilder
 	// Build builds the PubSubGroupDataType or returns an error if something is wrong
 	Build() (PubSubGroupDataType, error)
 	// MustBuild does the same as Build but panics on error
@@ -156,8 +152,8 @@ func (b *_PubSubGroupDataTypeBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PubSubGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, noOfSecurityKeyServices int32, securityKeyServices []ExtensionObjectDefinition, maxNetworkMessageSize uint32, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
-	return b.WithName(name).WithEnabled(enabled).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithNoOfSecurityKeyServices(noOfSecurityKeyServices).WithSecurityKeyServices(securityKeyServices...).WithMaxNetworkMessageSize(maxNetworkMessageSize).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
+func (b *_PubSubGroupDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, securityMode MessageSecurityMode, securityGroupId PascalString, securityKeyServices []EndpointDescription, maxNetworkMessageSize uint32, groupProperties []KeyValuePair) PubSubGroupDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithSecurityMode(securityMode).WithSecurityGroupId(securityGroupId).WithSecurityKeyServices(securityKeyServices...).WithMaxNetworkMessageSize(maxNetworkMessageSize).WithGroupProperties(groupProperties...)
 }
 
 func (b *_PubSubGroupDataTypeBuilder) WithName(name PascalString) PubSubGroupDataTypeBuilder {
@@ -206,12 +202,7 @@ func (b *_PubSubGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier
 	return b
 }
 
-func (b *_PubSubGroupDataTypeBuilder) WithNoOfSecurityKeyServices(noOfSecurityKeyServices int32) PubSubGroupDataTypeBuilder {
-	b.NoOfSecurityKeyServices = noOfSecurityKeyServices
-	return b
-}
-
-func (b *_PubSubGroupDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
+func (b *_PubSubGroupDataTypeBuilder) WithSecurityKeyServices(securityKeyServices ...EndpointDescription) PubSubGroupDataTypeBuilder {
 	b.SecurityKeyServices = securityKeyServices
 	return b
 }
@@ -221,12 +212,7 @@ func (b *_PubSubGroupDataTypeBuilder) WithMaxNetworkMessageSize(maxNetworkMessag
 	return b
 }
 
-func (b *_PubSubGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) PubSubGroupDataTypeBuilder {
-	b.NoOfGroupProperties = noOfGroupProperties
-	return b
-}
-
-func (b *_PubSubGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) PubSubGroupDataTypeBuilder {
+func (b *_PubSubGroupDataTypeBuilder) WithGroupProperties(groupProperties ...KeyValuePair) PubSubGroupDataTypeBuilder {
 	b.GroupProperties = groupProperties
 	return b
 }
@@ -573,11 +559,9 @@ func (m *_PubSubGroupDataType) deepCopy() *_PubSubGroupDataType {
 		m.Enabled,
 		m.SecurityMode,
 		m.SecurityGroupId.DeepCopy().(PascalString),
-		m.NoOfSecurityKeyServices,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SecurityKeyServices),
+		utils.DeepCopySlice[EndpointDescription, EndpointDescription](m.SecurityKeyServices),
 		m.MaxNetworkMessageSize,
-		m.NoOfGroupProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.GroupProperties),
 		m.reservedField0,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -38,6 +38,7 @@ type AggregateFilterResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRevisedStartTime returns RevisedStartTime (property field)
 	GetRevisedStartTime() int64
@@ -47,6 +48,8 @@ type AggregateFilterResult interface {
 	GetRevisedAggregateConfiguration() AggregateConfiguration
 	// IsAggregateFilterResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAggregateFilterResult()
+	// CreateBuilder creates a AggregateFilterResultBuilder
+	CreateAggregateFilterResultBuilder() AggregateFilterResultBuilder
 }
 
 // _AggregateFilterResult is the data-structure of this message
@@ -74,6 +77,132 @@ func NewAggregateFilterResult(revisedStartTime int64, revisedProcessingInterval 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AggregateFilterResultBuilder is a builder for AggregateFilterResult
+type AggregateFilterResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(revisedStartTime int64, revisedProcessingInterval float64, revisedAggregateConfiguration AggregateConfiguration) AggregateFilterResultBuilder
+	// WithRevisedStartTime adds RevisedStartTime (property field)
+	WithRevisedStartTime(int64) AggregateFilterResultBuilder
+	// WithRevisedProcessingInterval adds RevisedProcessingInterval (property field)
+	WithRevisedProcessingInterval(float64) AggregateFilterResultBuilder
+	// WithRevisedAggregateConfiguration adds RevisedAggregateConfiguration (property field)
+	WithRevisedAggregateConfiguration(AggregateConfiguration) AggregateFilterResultBuilder
+	// WithRevisedAggregateConfigurationBuilder adds RevisedAggregateConfiguration (property field) which is build by the builder
+	WithRevisedAggregateConfigurationBuilder(func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) AggregateFilterResultBuilder
+	// Build builds the AggregateFilterResult or returns an error if something is wrong
+	Build() (AggregateFilterResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AggregateFilterResult
+}
+
+// NewAggregateFilterResultBuilder() creates a AggregateFilterResultBuilder
+func NewAggregateFilterResultBuilder() AggregateFilterResultBuilder {
+	return &_AggregateFilterResultBuilder{_AggregateFilterResult: new(_AggregateFilterResult)}
+}
+
+type _AggregateFilterResultBuilder struct {
+	*_AggregateFilterResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AggregateFilterResultBuilder) = (*_AggregateFilterResultBuilder)(nil)
+
+func (b *_AggregateFilterResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AggregateFilterResultBuilder) WithMandatoryFields(revisedStartTime int64, revisedProcessingInterval float64, revisedAggregateConfiguration AggregateConfiguration) AggregateFilterResultBuilder {
+	return b.WithRevisedStartTime(revisedStartTime).WithRevisedProcessingInterval(revisedProcessingInterval).WithRevisedAggregateConfiguration(revisedAggregateConfiguration)
+}
+
+func (b *_AggregateFilterResultBuilder) WithRevisedStartTime(revisedStartTime int64) AggregateFilterResultBuilder {
+	b.RevisedStartTime = revisedStartTime
+	return b
+}
+
+func (b *_AggregateFilterResultBuilder) WithRevisedProcessingInterval(revisedProcessingInterval float64) AggregateFilterResultBuilder {
+	b.RevisedProcessingInterval = revisedProcessingInterval
+	return b
+}
+
+func (b *_AggregateFilterResultBuilder) WithRevisedAggregateConfiguration(revisedAggregateConfiguration AggregateConfiguration) AggregateFilterResultBuilder {
+	b.RevisedAggregateConfiguration = revisedAggregateConfiguration
+	return b
+}
+
+func (b *_AggregateFilterResultBuilder) WithRevisedAggregateConfigurationBuilder(builderSupplier func(AggregateConfigurationBuilder) AggregateConfigurationBuilder) AggregateFilterResultBuilder {
+	builder := builderSupplier(b.RevisedAggregateConfiguration.CreateAggregateConfigurationBuilder())
+	var err error
+	b.RevisedAggregateConfiguration, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AggregateConfigurationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AggregateFilterResultBuilder) Build() (AggregateFilterResult, error) {
+	if b.RevisedAggregateConfiguration == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'revisedAggregateConfiguration' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AggregateFilterResult.deepCopy(), nil
+}
+
+func (b *_AggregateFilterResultBuilder) MustBuild() AggregateFilterResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AggregateFilterResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AggregateFilterResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AggregateFilterResultBuilder) DeepCopy() any {
+	_copy := b.CreateAggregateFilterResultBuilder().(*_AggregateFilterResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAggregateFilterResultBuilder creates a AggregateFilterResultBuilder
+func (b *_AggregateFilterResult) CreateAggregateFilterResultBuilder() AggregateFilterResultBuilder {
+	if b == nil {
+		return NewAggregateFilterResultBuilder()
+	}
+	return &_AggregateFilterResultBuilder{_AggregateFilterResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -224,6 +353,24 @@ func (m *_AggregateFilterResult) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_AggregateFilterResult) IsAggregateFilterResult() {}
+
+func (m *_AggregateFilterResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AggregateFilterResult) deepCopy() *_AggregateFilterResult {
+	if m == nil {
+		return nil
+	}
+	_AggregateFilterResultCopy := &_AggregateFilterResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RevisedStartTime,
+		m.RevisedProcessingInterval,
+		m.RevisedAggregateConfiguration.DeepCopy().(AggregateConfiguration),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AggregateFilterResultCopy
+}
 
 func (m *_AggregateFilterResult) String() string {
 	if m == nil {

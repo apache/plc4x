@@ -90,11 +90,11 @@ func NewQueryDataDescription(relativePath RelativePath, attributeId uint32, inde
 type QueryDataDescriptionBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder
+	WithMandatoryFields(relativePath RelativePath, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder
 	// WithRelativePath adds RelativePath (property field)
-	WithRelativePath(ExtensionObjectDefinition) QueryDataDescriptionBuilder
+	WithRelativePath(RelativePath) QueryDataDescriptionBuilder
 	// WithRelativePathBuilder adds RelativePath (property field) which is build by the builder
-	WithRelativePathBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder
+	WithRelativePathBuilder(func(RelativePathBuilder) RelativePathBuilder) QueryDataDescriptionBuilder
 	// WithAttributeId adds AttributeId (property field)
 	WithAttributeId(uint32) QueryDataDescriptionBuilder
 	// WithIndexRange adds IndexRange (property field)
@@ -126,24 +126,24 @@ func (b *_QueryDataDescriptionBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath ExtensionObjectDefinition, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
+func (b *_QueryDataDescriptionBuilder) WithMandatoryFields(relativePath RelativePath, attributeId uint32, indexRange PascalString) QueryDataDescriptionBuilder {
 	return b.WithRelativePath(relativePath).WithAttributeId(attributeId).WithIndexRange(indexRange)
 }
 
-func (b *_QueryDataDescriptionBuilder) WithRelativePath(relativePath ExtensionObjectDefinition) QueryDataDescriptionBuilder {
+func (b *_QueryDataDescriptionBuilder) WithRelativePath(relativePath RelativePath) QueryDataDescriptionBuilder {
 	b.RelativePath = relativePath
 	return b
 }
 
-func (b *_QueryDataDescriptionBuilder) WithRelativePathBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryDataDescriptionBuilder {
-	builder := builderSupplier(b.RelativePath.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryDataDescriptionBuilder) WithRelativePathBuilder(builderSupplier func(RelativePathBuilder) RelativePathBuilder) QueryDataDescriptionBuilder {
+	builder := builderSupplier(b.RelativePath.CreateRelativePathBuilder())
 	var err error
 	b.RelativePath, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RelativePathBuilder failed"))
 	}
 	return b
 }
@@ -388,7 +388,7 @@ func (m *_QueryDataDescription) deepCopy() *_QueryDataDescription {
 	}
 	_QueryDataDescriptionCopy := &_QueryDataDescription{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RelativePath.DeepCopy().(ExtensionObjectDefinition),
+		m.RelativePath.DeepCopy().(RelativePath),
 		m.AttributeId,
 		m.IndexRange.DeepCopy().(PascalString),
 	}

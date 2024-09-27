@@ -87,17 +87,13 @@ func NewHistoryUpdateResult(statusCode StatusCode, operationResults []StatusCode
 type HistoryUpdateResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder
+	WithMandatoryFields(statusCode StatusCode, operationResults []StatusCode, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) HistoryUpdateResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
 	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) HistoryUpdateResultBuilder
-	// WithNoOfOperationResults adds NoOfOperationResults (property field)
-	WithNoOfOperationResults(int32) HistoryUpdateResultBuilder
 	// WithOperationResults adds OperationResults (property field)
 	WithOperationResults(...StatusCode) HistoryUpdateResultBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) HistoryUpdateResultBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) HistoryUpdateResultBuilder
 	// Build builds the HistoryUpdateResult or returns an error if something is wrong
@@ -125,8 +121,8 @@ func (b *_HistoryUpdateResultBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfOperationResults int32, operationResults []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
-	return b.WithStatusCode(statusCode).WithNoOfOperationResults(noOfOperationResults).WithOperationResults(operationResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_HistoryUpdateResultBuilder) WithMandatoryFields(statusCode StatusCode, operationResults []StatusCode, diagnosticInfos []DiagnosticInfo) HistoryUpdateResultBuilder {
+	return b.WithStatusCode(statusCode).WithOperationResults(operationResults...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
 func (b *_HistoryUpdateResultBuilder) WithStatusCode(statusCode StatusCode) HistoryUpdateResultBuilder {
@@ -147,18 +143,8 @@ func (b *_HistoryUpdateResultBuilder) WithStatusCodeBuilder(builderSupplier func
 	return b
 }
 
-func (b *_HistoryUpdateResultBuilder) WithNoOfOperationResults(noOfOperationResults int32) HistoryUpdateResultBuilder {
-	b.NoOfOperationResults = noOfOperationResults
-	return b
-}
-
 func (b *_HistoryUpdateResultBuilder) WithOperationResults(operationResults ...StatusCode) HistoryUpdateResultBuilder {
 	b.OperationResults = operationResults
-	return b
-}
-
-func (b *_HistoryUpdateResultBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryUpdateResultBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -419,9 +405,7 @@ func (m *_HistoryUpdateResult) deepCopy() *_HistoryUpdateResult {
 	_HistoryUpdateResultCopy := &_HistoryUpdateResult{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
-		m.NoOfOperationResults,
 		utils.DeepCopySlice[StatusCode, StatusCode](m.OperationResults),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -76,11 +76,9 @@ func NewHistoryEvent(events []HistoryEventFieldList) *_HistoryEvent {
 type HistoryEventBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder
-	// WithNoOfEvents adds NoOfEvents (property field)
-	WithNoOfEvents(int32) HistoryEventBuilder
+	WithMandatoryFields(events []HistoryEventFieldList) HistoryEventBuilder
 	// WithEvents adds Events (property field)
-	WithEvents(...ExtensionObjectDefinition) HistoryEventBuilder
+	WithEvents(...HistoryEventFieldList) HistoryEventBuilder
 	// Build builds the HistoryEvent or returns an error if something is wrong
 	Build() (HistoryEvent, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +104,11 @@ func (b *_HistoryEventBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
-	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
+func (b *_HistoryEventBuilder) WithMandatoryFields(events []HistoryEventFieldList) HistoryEventBuilder {
+	return b.WithEvents(events...)
 }
 
-func (b *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
-	b.NoOfEvents = noOfEvents
-	return b
-}
-
-func (b *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
+func (b *_HistoryEventBuilder) WithEvents(events ...HistoryEventFieldList) HistoryEventBuilder {
 	b.Events = events
 	return b
 }
@@ -311,8 +304,7 @@ func (m *_HistoryEvent) deepCopy() *_HistoryEvent {
 	}
 	_HistoryEventCopy := &_HistoryEvent{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEvents,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+		utils.DeepCopySlice[HistoryEventFieldList, HistoryEventFieldList](m.Events),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _HistoryEventCopy

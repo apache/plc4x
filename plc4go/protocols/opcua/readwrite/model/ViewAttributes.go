@@ -38,6 +38,7 @@ type ViewAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -55,6 +56,8 @@ type ViewAttributes interface {
 	GetEventNotifier() uint8
 	// IsViewAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsViewAttributes()
+	// CreateBuilder creates a ViewAttributesBuilder
+	CreateViewAttributesBuilder() ViewAttributesBuilder
 }
 
 // _ViewAttributes is the data-structure of this message
@@ -95,6 +98,181 @@ func NewViewAttributes(specifiedAttributes uint32, displayName LocalizedText, de
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ViewAttributesBuilder is a builder for ViewAttributes
+type ViewAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, containsNoLoops bool, eventNotifier uint8) ViewAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) ViewAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) ViewAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ViewAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) ViewAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ViewAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) ViewAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) ViewAttributesBuilder
+	// WithContainsNoLoops adds ContainsNoLoops (property field)
+	WithContainsNoLoops(bool) ViewAttributesBuilder
+	// WithEventNotifier adds EventNotifier (property field)
+	WithEventNotifier(uint8) ViewAttributesBuilder
+	// Build builds the ViewAttributes or returns an error if something is wrong
+	Build() (ViewAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ViewAttributes
+}
+
+// NewViewAttributesBuilder() creates a ViewAttributesBuilder
+func NewViewAttributesBuilder() ViewAttributesBuilder {
+	return &_ViewAttributesBuilder{_ViewAttributes: new(_ViewAttributes)}
+}
+
+type _ViewAttributesBuilder struct {
+	*_ViewAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ViewAttributesBuilder) = (*_ViewAttributesBuilder)(nil)
+
+func (b *_ViewAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ViewAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, containsNoLoops bool, eventNotifier uint8) ViewAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithContainsNoLoops(containsNoLoops).WithEventNotifier(eventNotifier)
+}
+
+func (b *_ViewAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) ViewAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithDisplayName(displayName LocalizedText) ViewAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ViewAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithDescription(description LocalizedText) ViewAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ViewAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithWriteMask(writeMask uint32) ViewAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithUserWriteMask(userWriteMask uint32) ViewAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithContainsNoLoops(containsNoLoops bool) ViewAttributesBuilder {
+	b.ContainsNoLoops = containsNoLoops
+	return b
+}
+
+func (b *_ViewAttributesBuilder) WithEventNotifier(eventNotifier uint8) ViewAttributesBuilder {
+	b.EventNotifier = eventNotifier
+	return b
+}
+
+func (b *_ViewAttributesBuilder) Build() (ViewAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ViewAttributes.deepCopy(), nil
+}
+
+func (b *_ViewAttributesBuilder) MustBuild() ViewAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ViewAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ViewAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ViewAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateViewAttributesBuilder().(*_ViewAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateViewAttributesBuilder creates a ViewAttributesBuilder
+func (b *_ViewAttributes) CreateViewAttributesBuilder() ViewAttributesBuilder {
+	if b == nil {
+		return NewViewAttributesBuilder()
+	}
+	return &_ViewAttributesBuilder{_ViewAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -326,6 +504,29 @@ func (m *_ViewAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_ViewAttributes) IsViewAttributes() {}
+
+func (m *_ViewAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ViewAttributes) deepCopy() *_ViewAttributes {
+	if m == nil {
+		return nil
+	}
+	_ViewAttributesCopy := &_ViewAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.ContainsNoLoops,
+		m.EventNotifier,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ViewAttributesCopy
+}
 
 func (m *_ViewAttributes) String() string {
 	if m == nil {

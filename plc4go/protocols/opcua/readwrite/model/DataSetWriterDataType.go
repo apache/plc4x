@@ -122,7 +122,7 @@ func NewDataSetWriterDataType(name PascalString, enabled bool, dataSetWriterId u
 type DataSetWriterDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder
+	WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, dataSetWriterProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder
 	// WithName adds Name (property field)
 	WithName(PascalString) DataSetWriterDataTypeBuilder
 	// WithNameBuilder adds Name (property field) which is build by the builder
@@ -139,10 +139,8 @@ type DataSetWriterDataTypeBuilder interface {
 	WithDataSetName(PascalString) DataSetWriterDataTypeBuilder
 	// WithDataSetNameBuilder adds DataSetName (property field) which is build by the builder
 	WithDataSetNameBuilder(func(PascalStringBuilder) PascalStringBuilder) DataSetWriterDataTypeBuilder
-	// WithNoOfDataSetWriterProperties adds NoOfDataSetWriterProperties (property field)
-	WithNoOfDataSetWriterProperties(int32) DataSetWriterDataTypeBuilder
 	// WithDataSetWriterProperties adds DataSetWriterProperties (property field)
-	WithDataSetWriterProperties(...ExtensionObjectDefinition) DataSetWriterDataTypeBuilder
+	WithDataSetWriterProperties(...KeyValuePair) DataSetWriterDataTypeBuilder
 	// WithTransportSettings adds TransportSettings (property field)
 	WithTransportSettings(ExtensionObject) DataSetWriterDataTypeBuilder
 	// WithTransportSettingsBuilder adds TransportSettings (property field) which is build by the builder
@@ -176,8 +174,8 @@ func (b *_DataSetWriterDataTypeBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DataSetWriterDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, noOfDataSetWriterProperties int32, dataSetWriterProperties []ExtensionObjectDefinition, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
-	return b.WithName(name).WithEnabled(enabled).WithDataSetWriterId(dataSetWriterId).WithDataSetFieldContentMask(dataSetFieldContentMask).WithKeyFrameCount(keyFrameCount).WithDataSetName(dataSetName).WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties).WithDataSetWriterProperties(dataSetWriterProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings)
+func (b *_DataSetWriterDataTypeBuilder) WithMandatoryFields(name PascalString, enabled bool, dataSetWriterId uint16, dataSetFieldContentMask DataSetFieldContentMask, keyFrameCount uint32, dataSetName PascalString, dataSetWriterProperties []KeyValuePair, transportSettings ExtensionObject, messageSettings ExtensionObject) DataSetWriterDataTypeBuilder {
+	return b.WithName(name).WithEnabled(enabled).WithDataSetWriterId(dataSetWriterId).WithDataSetFieldContentMask(dataSetFieldContentMask).WithKeyFrameCount(keyFrameCount).WithDataSetName(dataSetName).WithDataSetWriterProperties(dataSetWriterProperties...).WithTransportSettings(transportSettings).WithMessageSettings(messageSettings)
 }
 
 func (b *_DataSetWriterDataTypeBuilder) WithName(name PascalString) DataSetWriterDataTypeBuilder {
@@ -236,12 +234,7 @@ func (b *_DataSetWriterDataTypeBuilder) WithDataSetNameBuilder(builderSupplier f
 	return b
 }
 
-func (b *_DataSetWriterDataTypeBuilder) WithNoOfDataSetWriterProperties(noOfDataSetWriterProperties int32) DataSetWriterDataTypeBuilder {
-	b.NoOfDataSetWriterProperties = noOfDataSetWriterProperties
-	return b
-}
-
-func (b *_DataSetWriterDataTypeBuilder) WithDataSetWriterProperties(dataSetWriterProperties ...ExtensionObjectDefinition) DataSetWriterDataTypeBuilder {
+func (b *_DataSetWriterDataTypeBuilder) WithDataSetWriterProperties(dataSetWriterProperties ...KeyValuePair) DataSetWriterDataTypeBuilder {
 	b.DataSetWriterProperties = dataSetWriterProperties
 	return b
 }
@@ -652,8 +645,7 @@ func (m *_DataSetWriterDataType) deepCopy() *_DataSetWriterDataType {
 		m.DataSetFieldContentMask,
 		m.KeyFrameCount,
 		m.DataSetName.DeepCopy().(PascalString),
-		m.NoOfDataSetWriterProperties,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.DataSetWriterProperties),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.DataSetWriterProperties),
 		m.TransportSettings.DeepCopy().(ExtensionObject),
 		m.MessageSettings.DeepCopy().(ExtensionObject),
 		m.reservedField0,

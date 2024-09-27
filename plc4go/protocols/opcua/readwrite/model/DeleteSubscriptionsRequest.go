@@ -83,13 +83,11 @@ func NewDeleteSubscriptionsRequest(requestHeader RequestHeader, subscriptionIds 
 type DeleteSubscriptionsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder
+	WithRequestHeader(RequestHeader) DeleteSubscriptionsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsRequestBuilder
-	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
-	WithNoOfSubscriptionIds(int32) DeleteSubscriptionsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteSubscriptionsRequestBuilder
 	// WithSubscriptionIds adds SubscriptionIds (property field)
 	WithSubscriptionIds(...uint32) DeleteSubscriptionsRequestBuilder
 	// Build builds the DeleteSubscriptionsRequest or returns an error if something is wrong
@@ -117,30 +115,25 @@ func (b *_DeleteSubscriptionsRequestBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
+func (b *_DeleteSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionIds []uint32) DeleteSubscriptionsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionIds(subscriptionIds...)
 }
 
-func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteSubscriptionsRequestBuilder {
+func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) DeleteSubscriptionsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteSubscriptionsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_DeleteSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) DeleteSubscriptionsRequestBuilder {
-	b.NoOfSubscriptionIds = noOfSubscriptionIds
 	return b
 }
 
@@ -358,8 +351,7 @@ func (m *_DeleteSubscriptionsRequest) deepCopy() *_DeleteSubscriptionsRequest {
 	}
 	_DeleteSubscriptionsRequestCopy := &_DeleteSubscriptionsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfSubscriptionIds,
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -76,11 +76,9 @@ func NewContentFilter(elements []ContentFilterElement) *_ContentFilter {
 type ContentFilterBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder
-	// WithNoOfElements adds NoOfElements (property field)
-	WithNoOfElements(int32) ContentFilterBuilder
+	WithMandatoryFields(elements []ContentFilterElement) ContentFilterBuilder
 	// WithElements adds Elements (property field)
-	WithElements(...ExtensionObjectDefinition) ContentFilterBuilder
+	WithElements(...ContentFilterElement) ContentFilterBuilder
 	// Build builds the ContentFilter or returns an error if something is wrong
 	Build() (ContentFilter, error)
 	// MustBuild does the same as Build but panics on error
@@ -106,16 +104,11 @@ func (b *_ContentFilterBuilder) setParent(contract ExtensionObjectDefinitionCont
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ContentFilterBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder {
-	return b.WithNoOfElements(noOfElements).WithElements(elements...)
+func (b *_ContentFilterBuilder) WithMandatoryFields(elements []ContentFilterElement) ContentFilterBuilder {
+	return b.WithElements(elements...)
 }
 
-func (b *_ContentFilterBuilder) WithNoOfElements(noOfElements int32) ContentFilterBuilder {
-	b.NoOfElements = noOfElements
-	return b
-}
-
-func (b *_ContentFilterBuilder) WithElements(elements ...ExtensionObjectDefinition) ContentFilterBuilder {
+func (b *_ContentFilterBuilder) WithElements(elements ...ContentFilterElement) ContentFilterBuilder {
 	b.Elements = elements
 	return b
 }
@@ -311,8 +304,7 @@ func (m *_ContentFilter) deepCopy() *_ContentFilter {
 	}
 	_ContentFilterCopy := &_ContentFilter{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfElements,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+		utils.DeepCopySlice[ContentFilterElement, ContentFilterElement](m.Elements),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ContentFilterCopy

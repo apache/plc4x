@@ -105,31 +105,25 @@ func NewQueryFirstResponse(responseHeader ResponseHeader, queryDataSets []QueryD
 type QueryFirstResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, continuationPoint PascalByteString, noOfParsingResults int32, parsingResults []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo, filterResult ExtensionObjectDefinition) QueryFirstResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, queryDataSets []QueryDataSet, continuationPoint PascalByteString, parsingResults []ParsingResult, diagnosticInfos []DiagnosticInfo, filterResult ContentFilterResult) QueryFirstResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) QueryFirstResponseBuilder
+	WithResponseHeader(ResponseHeader) QueryFirstResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstResponseBuilder
-	// WithNoOfQueryDataSets adds NoOfQueryDataSets (property field)
-	WithNoOfQueryDataSets(int32) QueryFirstResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) QueryFirstResponseBuilder
 	// WithQueryDataSets adds QueryDataSets (property field)
-	WithQueryDataSets(...ExtensionObjectDefinition) QueryFirstResponseBuilder
+	WithQueryDataSets(...QueryDataSet) QueryFirstResponseBuilder
 	// WithContinuationPoint adds ContinuationPoint (property field)
 	WithContinuationPoint(PascalByteString) QueryFirstResponseBuilder
 	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
 	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) QueryFirstResponseBuilder
-	// WithNoOfParsingResults adds NoOfParsingResults (property field)
-	WithNoOfParsingResults(int32) QueryFirstResponseBuilder
 	// WithParsingResults adds ParsingResults (property field)
-	WithParsingResults(...ExtensionObjectDefinition) QueryFirstResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) QueryFirstResponseBuilder
+	WithParsingResults(...ParsingResult) QueryFirstResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) QueryFirstResponseBuilder
 	// WithFilterResult adds FilterResult (property field)
-	WithFilterResult(ExtensionObjectDefinition) QueryFirstResponseBuilder
+	WithFilterResult(ContentFilterResult) QueryFirstResponseBuilder
 	// WithFilterResultBuilder adds FilterResult (property field) which is build by the builder
-	WithFilterResultBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstResponseBuilder
+	WithFilterResultBuilder(func(ContentFilterResultBuilder) ContentFilterResultBuilder) QueryFirstResponseBuilder
 	// Build builds the QueryFirstResponse or returns an error if something is wrong
 	Build() (QueryFirstResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -155,34 +149,29 @@ func (b *_QueryFirstResponseBuilder) setParent(contract ExtensionObjectDefinitio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryFirstResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfQueryDataSets int32, queryDataSets []ExtensionObjectDefinition, continuationPoint PascalByteString, noOfParsingResults int32, parsingResults []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo, filterResult ExtensionObjectDefinition) QueryFirstResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfQueryDataSets(noOfQueryDataSets).WithQueryDataSets(queryDataSets...).WithContinuationPoint(continuationPoint).WithNoOfParsingResults(noOfParsingResults).WithParsingResults(parsingResults...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...).WithFilterResult(filterResult)
+func (b *_QueryFirstResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, queryDataSets []QueryDataSet, continuationPoint PascalByteString, parsingResults []ParsingResult, diagnosticInfos []DiagnosticInfo, filterResult ContentFilterResult) QueryFirstResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithQueryDataSets(queryDataSets...).WithContinuationPoint(continuationPoint).WithParsingResults(parsingResults...).WithDiagnosticInfos(diagnosticInfos...).WithFilterResult(filterResult)
 }
 
-func (b *_QueryFirstResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) QueryFirstResponseBuilder {
+func (b *_QueryFirstResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) QueryFirstResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_QueryFirstResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryFirstResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) QueryFirstResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_QueryFirstResponseBuilder) WithNoOfQueryDataSets(noOfQueryDataSets int32) QueryFirstResponseBuilder {
-	b.NoOfQueryDataSets = noOfQueryDataSets
-	return b
-}
-
-func (b *_QueryFirstResponseBuilder) WithQueryDataSets(queryDataSets ...ExtensionObjectDefinition) QueryFirstResponseBuilder {
+func (b *_QueryFirstResponseBuilder) WithQueryDataSets(queryDataSets ...QueryDataSet) QueryFirstResponseBuilder {
 	b.QueryDataSets = queryDataSets
 	return b
 }
@@ -205,18 +194,8 @@ func (b *_QueryFirstResponseBuilder) WithContinuationPointBuilder(builderSupplie
 	return b
 }
 
-func (b *_QueryFirstResponseBuilder) WithNoOfParsingResults(noOfParsingResults int32) QueryFirstResponseBuilder {
-	b.NoOfParsingResults = noOfParsingResults
-	return b
-}
-
-func (b *_QueryFirstResponseBuilder) WithParsingResults(parsingResults ...ExtensionObjectDefinition) QueryFirstResponseBuilder {
+func (b *_QueryFirstResponseBuilder) WithParsingResults(parsingResults ...ParsingResult) QueryFirstResponseBuilder {
 	b.ParsingResults = parsingResults
-	return b
-}
-
-func (b *_QueryFirstResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) QueryFirstResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -225,20 +204,20 @@ func (b *_QueryFirstResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...Diag
 	return b
 }
 
-func (b *_QueryFirstResponseBuilder) WithFilterResult(filterResult ExtensionObjectDefinition) QueryFirstResponseBuilder {
+func (b *_QueryFirstResponseBuilder) WithFilterResult(filterResult ContentFilterResult) QueryFirstResponseBuilder {
 	b.FilterResult = filterResult
 	return b
 }
 
-func (b *_QueryFirstResponseBuilder) WithFilterResultBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstResponseBuilder {
-	builder := builderSupplier(b.FilterResult.CreateExtensionObjectDefinitionBuilder())
+func (b *_QueryFirstResponseBuilder) WithFilterResultBuilder(builderSupplier func(ContentFilterResultBuilder) ContentFilterResultBuilder) QueryFirstResponseBuilder {
+	builder := builderSupplier(b.FilterResult.CreateContentFilterResultBuilder())
 	var err error
 	b.FilterResult, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ContentFilterResultBuilder failed"))
 	}
 	return b
 }
@@ -577,15 +556,12 @@ func (m *_QueryFirstResponse) deepCopy() *_QueryFirstResponse {
 	}
 	_QueryFirstResponseCopy := &_QueryFirstResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfQueryDataSets,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.QueryDataSets),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[QueryDataSet, QueryDataSet](m.QueryDataSets),
 		m.ContinuationPoint.DeepCopy().(PascalByteString),
-		m.NoOfParsingResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ParsingResults),
-		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[ParsingResult, ParsingResult](m.ParsingResults),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
-		m.FilterResult.DeepCopy().(ExtensionObjectDefinition),
+		m.FilterResult.DeepCopy().(ContentFilterResult),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _QueryFirstResponseCopy

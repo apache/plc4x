@@ -79,15 +79,11 @@ func NewUserIdentityToken(policyId PascalString) *_UserIdentityToken {
 type UserIdentityTokenBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder
+	WithMandatoryFields(policyId PascalString) UserIdentityTokenBuilder
 	// WithPolicyId adds PolicyId (property field)
 	WithPolicyId(PascalString) UserIdentityTokenBuilder
 	// WithPolicyIdBuilder adds PolicyId (property field) which is build by the builder
 	WithPolicyIdBuilder(func(PascalStringBuilder) PascalStringBuilder) UserIdentityTokenBuilder
-	// WithUserIdentityTokenDefinition adds UserIdentityTokenDefinition (property field)
-	WithUserIdentityTokenDefinition(UserIdentityTokenDefinition) UserIdentityTokenBuilder
-	// WithUserIdentityTokenDefinitionBuilder adds UserIdentityTokenDefinition (property field) which is build by the builder
-	WithUserIdentityTokenDefinitionBuilder(func(UserIdentityTokenDefinitionBuilder) UserIdentityTokenDefinitionBuilder) UserIdentityTokenBuilder
 	// Build builds the UserIdentityToken or returns an error if something is wrong
 	Build() (UserIdentityToken, error)
 	// MustBuild does the same as Build but panics on error
@@ -113,8 +109,8 @@ func (b *_UserIdentityTokenBuilder) setParent(contract ExtensionObjectDefinition
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_UserIdentityTokenBuilder) WithMandatoryFields(policyId PascalString, userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder {
-	return b.WithPolicyId(policyId).WithUserIdentityTokenDefinition(userIdentityTokenDefinition)
+func (b *_UserIdentityTokenBuilder) WithMandatoryFields(policyId PascalString) UserIdentityTokenBuilder {
+	return b.WithPolicyId(policyId)
 }
 
 func (b *_UserIdentityTokenBuilder) WithPolicyId(policyId PascalString) UserIdentityTokenBuilder {
@@ -135,36 +131,12 @@ func (b *_UserIdentityTokenBuilder) WithPolicyIdBuilder(builderSupplier func(Pas
 	return b
 }
 
-func (b *_UserIdentityTokenBuilder) WithUserIdentityTokenDefinition(userIdentityTokenDefinition UserIdentityTokenDefinition) UserIdentityTokenBuilder {
-	b.UserIdentityTokenDefinition = userIdentityTokenDefinition
-	return b
-}
-
-func (b *_UserIdentityTokenBuilder) WithUserIdentityTokenDefinitionBuilder(builderSupplier func(UserIdentityTokenDefinitionBuilder) UserIdentityTokenDefinitionBuilder) UserIdentityTokenBuilder {
-	builder := builderSupplier(b.UserIdentityTokenDefinition.CreateUserIdentityTokenDefinitionBuilder())
-	var err error
-	b.UserIdentityTokenDefinition, err = builder.Build()
-	if err != nil {
-		if b.err == nil {
-			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
-		}
-		b.err.Append(errors.Wrap(err, "UserIdentityTokenDefinitionBuilder failed"))
-	}
-	return b
-}
-
 func (b *_UserIdentityTokenBuilder) Build() (UserIdentityToken, error) {
 	if b.PolicyId == nil {
 		if b.err == nil {
 			b.err = new(utils.MultiError)
 		}
 		b.err.Append(errors.New("mandatory field 'policyId' not set"))
-	}
-	if b.UserIdentityTokenDefinition == nil {
-		if b.err == nil {
-			b.err = new(utils.MultiError)
-		}
-		b.err.Append(errors.New("mandatory field 'userIdentityTokenDefinition' not set"))
 	}
 	if b.err != nil {
 		return nil, errors.Wrap(b.err, "error occurred during build")
@@ -337,7 +309,6 @@ func (m *_UserIdentityToken) deepCopy() *_UserIdentityToken {
 	_UserIdentityTokenCopy := &_UserIdentityToken{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.PolicyId.DeepCopy().(PascalString),
-		m.UserIdentityTokenDefinition.DeepCopy().(UserIdentityTokenDefinition),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _UserIdentityTokenCopy

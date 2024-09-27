@@ -38,6 +38,7 @@ type DatagramConnectionTransport2DataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDiscoveryAddress returns DiscoveryAddress (property field)
 	GetDiscoveryAddress() ExtensionObject
@@ -51,6 +52,8 @@ type DatagramConnectionTransport2DataType interface {
 	GetDatagramQos() []ExtensionObject
 	// IsDatagramConnectionTransport2DataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDatagramConnectionTransport2DataType()
+	// CreateBuilder creates a DatagramConnectionTransport2DataTypeBuilder
+	CreateDatagramConnectionTransport2DataTypeBuilder() DatagramConnectionTransport2DataTypeBuilder
 }
 
 // _DatagramConnectionTransport2DataType is the data-structure of this message
@@ -85,6 +88,167 @@ func NewDatagramConnectionTransport2DataType(discoveryAddress ExtensionObject, d
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DatagramConnectionTransport2DataTypeBuilder is a builder for DatagramConnectionTransport2DataType
+type DatagramConnectionTransport2DataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(discoveryAddress ExtensionObject, discoveryAnnounceRate uint32, discoveryMaxMessageSize uint32, qosCategory PascalString, datagramQos []ExtensionObject) DatagramConnectionTransport2DataTypeBuilder
+	// WithDiscoveryAddress adds DiscoveryAddress (property field)
+	WithDiscoveryAddress(ExtensionObject) DatagramConnectionTransport2DataTypeBuilder
+	// WithDiscoveryAddressBuilder adds DiscoveryAddress (property field) which is build by the builder
+	WithDiscoveryAddressBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramConnectionTransport2DataTypeBuilder
+	// WithDiscoveryAnnounceRate adds DiscoveryAnnounceRate (property field)
+	WithDiscoveryAnnounceRate(uint32) DatagramConnectionTransport2DataTypeBuilder
+	// WithDiscoveryMaxMessageSize adds DiscoveryMaxMessageSize (property field)
+	WithDiscoveryMaxMessageSize(uint32) DatagramConnectionTransport2DataTypeBuilder
+	// WithQosCategory adds QosCategory (property field)
+	WithQosCategory(PascalString) DatagramConnectionTransport2DataTypeBuilder
+	// WithQosCategoryBuilder adds QosCategory (property field) which is build by the builder
+	WithQosCategoryBuilder(func(PascalStringBuilder) PascalStringBuilder) DatagramConnectionTransport2DataTypeBuilder
+	// WithDatagramQos adds DatagramQos (property field)
+	WithDatagramQos(...ExtensionObject) DatagramConnectionTransport2DataTypeBuilder
+	// Build builds the DatagramConnectionTransport2DataType or returns an error if something is wrong
+	Build() (DatagramConnectionTransport2DataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DatagramConnectionTransport2DataType
+}
+
+// NewDatagramConnectionTransport2DataTypeBuilder() creates a DatagramConnectionTransport2DataTypeBuilder
+func NewDatagramConnectionTransport2DataTypeBuilder() DatagramConnectionTransport2DataTypeBuilder {
+	return &_DatagramConnectionTransport2DataTypeBuilder{_DatagramConnectionTransport2DataType: new(_DatagramConnectionTransport2DataType)}
+}
+
+type _DatagramConnectionTransport2DataTypeBuilder struct {
+	*_DatagramConnectionTransport2DataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DatagramConnectionTransport2DataTypeBuilder) = (*_DatagramConnectionTransport2DataTypeBuilder)(nil)
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithMandatoryFields(discoveryAddress ExtensionObject, discoveryAnnounceRate uint32, discoveryMaxMessageSize uint32, qosCategory PascalString, datagramQos []ExtensionObject) DatagramConnectionTransport2DataTypeBuilder {
+	return b.WithDiscoveryAddress(discoveryAddress).WithDiscoveryAnnounceRate(discoveryAnnounceRate).WithDiscoveryMaxMessageSize(discoveryMaxMessageSize).WithQosCategory(qosCategory).WithDatagramQos(datagramQos...)
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDiscoveryAddress(discoveryAddress ExtensionObject) DatagramConnectionTransport2DataTypeBuilder {
+	b.DiscoveryAddress = discoveryAddress
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDiscoveryAddressBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) DatagramConnectionTransport2DataTypeBuilder {
+	builder := builderSupplier(b.DiscoveryAddress.CreateExtensionObjectBuilder())
+	var err error
+	b.DiscoveryAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDiscoveryAnnounceRate(discoveryAnnounceRate uint32) DatagramConnectionTransport2DataTypeBuilder {
+	b.DiscoveryAnnounceRate = discoveryAnnounceRate
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDiscoveryMaxMessageSize(discoveryMaxMessageSize uint32) DatagramConnectionTransport2DataTypeBuilder {
+	b.DiscoveryMaxMessageSize = discoveryMaxMessageSize
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithQosCategory(qosCategory PascalString) DatagramConnectionTransport2DataTypeBuilder {
+	b.QosCategory = qosCategory
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithQosCategoryBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) DatagramConnectionTransport2DataTypeBuilder {
+	builder := builderSupplier(b.QosCategory.CreatePascalStringBuilder())
+	var err error
+	b.QosCategory, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) WithDatagramQos(datagramQos ...ExtensionObject) DatagramConnectionTransport2DataTypeBuilder {
+	b.DatagramQos = datagramQos
+	return b
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) Build() (DatagramConnectionTransport2DataType, error) {
+	if b.DiscoveryAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'discoveryAddress' not set"))
+	}
+	if b.QosCategory == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'qosCategory' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DatagramConnectionTransport2DataType.deepCopy(), nil
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) MustBuild() DatagramConnectionTransport2DataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DatagramConnectionTransport2DataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DatagramConnectionTransport2DataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDatagramConnectionTransport2DataTypeBuilder().(*_DatagramConnectionTransport2DataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDatagramConnectionTransport2DataTypeBuilder creates a DatagramConnectionTransport2DataTypeBuilder
+func (b *_DatagramConnectionTransport2DataType) CreateDatagramConnectionTransport2DataTypeBuilder() DatagramConnectionTransport2DataTypeBuilder {
+	if b == nil {
+		return NewDatagramConnectionTransport2DataTypeBuilder()
+	}
+	return &_DatagramConnectionTransport2DataTypeBuilder{_DatagramConnectionTransport2DataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -289,6 +453,26 @@ func (m *_DatagramConnectionTransport2DataType) SerializeWithWriteBuffer(ctx con
 }
 
 func (m *_DatagramConnectionTransport2DataType) IsDatagramConnectionTransport2DataType() {}
+
+func (m *_DatagramConnectionTransport2DataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DatagramConnectionTransport2DataType) deepCopy() *_DatagramConnectionTransport2DataType {
+	if m == nil {
+		return nil
+	}
+	_DatagramConnectionTransport2DataTypeCopy := &_DatagramConnectionTransport2DataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DiscoveryAddress.DeepCopy().(ExtensionObject),
+		m.DiscoveryAnnounceRate,
+		m.DiscoveryMaxMessageSize,
+		m.QosCategory.DeepCopy().(PascalString),
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.DatagramQos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DatagramConnectionTransport2DataTypeCopy
+}
 
 func (m *_DatagramConnectionTransport2DataType) String() string {
 	if m == nil {

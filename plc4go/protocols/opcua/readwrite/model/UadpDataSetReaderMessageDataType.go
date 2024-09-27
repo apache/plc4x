@@ -38,6 +38,7 @@ type UadpDataSetReaderMessageDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetGroupVersion returns GroupVersion (property field)
 	GetGroupVersion() uint32
@@ -59,6 +60,8 @@ type UadpDataSetReaderMessageDataType interface {
 	GetProcessingOffset() float64
 	// IsUadpDataSetReaderMessageDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUadpDataSetReaderMessageDataType()
+	// CreateBuilder creates a UadpDataSetReaderMessageDataTypeBuilder
+	CreateUadpDataSetReaderMessageDataTypeBuilder() UadpDataSetReaderMessageDataTypeBuilder
 }
 
 // _UadpDataSetReaderMessageDataType is the data-structure of this message
@@ -98,6 +101,174 @@ func NewUadpDataSetReaderMessageDataType(groupVersion uint32, networkMessageNumb
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UadpDataSetReaderMessageDataTypeBuilder is a builder for UadpDataSetReaderMessageDataType
+type UadpDataSetReaderMessageDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupVersion uint32, networkMessageNumber uint16, dataSetOffset uint16, dataSetClassId GuidValue, networkMessageContentMask UadpNetworkMessageContentMask, dataSetMessageContentMask UadpDataSetMessageContentMask, publishingInterval float64, receiveOffset float64, processingOffset float64) UadpDataSetReaderMessageDataTypeBuilder
+	// WithGroupVersion adds GroupVersion (property field)
+	WithGroupVersion(uint32) UadpDataSetReaderMessageDataTypeBuilder
+	// WithNetworkMessageNumber adds NetworkMessageNumber (property field)
+	WithNetworkMessageNumber(uint16) UadpDataSetReaderMessageDataTypeBuilder
+	// WithDataSetOffset adds DataSetOffset (property field)
+	WithDataSetOffset(uint16) UadpDataSetReaderMessageDataTypeBuilder
+	// WithDataSetClassId adds DataSetClassId (property field)
+	WithDataSetClassId(GuidValue) UadpDataSetReaderMessageDataTypeBuilder
+	// WithDataSetClassIdBuilder adds DataSetClassId (property field) which is build by the builder
+	WithDataSetClassIdBuilder(func(GuidValueBuilder) GuidValueBuilder) UadpDataSetReaderMessageDataTypeBuilder
+	// WithNetworkMessageContentMask adds NetworkMessageContentMask (property field)
+	WithNetworkMessageContentMask(UadpNetworkMessageContentMask) UadpDataSetReaderMessageDataTypeBuilder
+	// WithDataSetMessageContentMask adds DataSetMessageContentMask (property field)
+	WithDataSetMessageContentMask(UadpDataSetMessageContentMask) UadpDataSetReaderMessageDataTypeBuilder
+	// WithPublishingInterval adds PublishingInterval (property field)
+	WithPublishingInterval(float64) UadpDataSetReaderMessageDataTypeBuilder
+	// WithReceiveOffset adds ReceiveOffset (property field)
+	WithReceiveOffset(float64) UadpDataSetReaderMessageDataTypeBuilder
+	// WithProcessingOffset adds ProcessingOffset (property field)
+	WithProcessingOffset(float64) UadpDataSetReaderMessageDataTypeBuilder
+	// Build builds the UadpDataSetReaderMessageDataType or returns an error if something is wrong
+	Build() (UadpDataSetReaderMessageDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UadpDataSetReaderMessageDataType
+}
+
+// NewUadpDataSetReaderMessageDataTypeBuilder() creates a UadpDataSetReaderMessageDataTypeBuilder
+func NewUadpDataSetReaderMessageDataTypeBuilder() UadpDataSetReaderMessageDataTypeBuilder {
+	return &_UadpDataSetReaderMessageDataTypeBuilder{_UadpDataSetReaderMessageDataType: new(_UadpDataSetReaderMessageDataType)}
+}
+
+type _UadpDataSetReaderMessageDataTypeBuilder struct {
+	*_UadpDataSetReaderMessageDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UadpDataSetReaderMessageDataTypeBuilder) = (*_UadpDataSetReaderMessageDataTypeBuilder)(nil)
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithMandatoryFields(groupVersion uint32, networkMessageNumber uint16, dataSetOffset uint16, dataSetClassId GuidValue, networkMessageContentMask UadpNetworkMessageContentMask, dataSetMessageContentMask UadpDataSetMessageContentMask, publishingInterval float64, receiveOffset float64, processingOffset float64) UadpDataSetReaderMessageDataTypeBuilder {
+	return b.WithGroupVersion(groupVersion).WithNetworkMessageNumber(networkMessageNumber).WithDataSetOffset(dataSetOffset).WithDataSetClassId(dataSetClassId).WithNetworkMessageContentMask(networkMessageContentMask).WithDataSetMessageContentMask(dataSetMessageContentMask).WithPublishingInterval(publishingInterval).WithReceiveOffset(receiveOffset).WithProcessingOffset(processingOffset)
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithGroupVersion(groupVersion uint32) UadpDataSetReaderMessageDataTypeBuilder {
+	b.GroupVersion = groupVersion
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithNetworkMessageNumber(networkMessageNumber uint16) UadpDataSetReaderMessageDataTypeBuilder {
+	b.NetworkMessageNumber = networkMessageNumber
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithDataSetOffset(dataSetOffset uint16) UadpDataSetReaderMessageDataTypeBuilder {
+	b.DataSetOffset = dataSetOffset
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithDataSetClassId(dataSetClassId GuidValue) UadpDataSetReaderMessageDataTypeBuilder {
+	b.DataSetClassId = dataSetClassId
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithDataSetClassIdBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) UadpDataSetReaderMessageDataTypeBuilder {
+	builder := builderSupplier(b.DataSetClassId.CreateGuidValueBuilder())
+	var err error
+	b.DataSetClassId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithNetworkMessageContentMask(networkMessageContentMask UadpNetworkMessageContentMask) UadpDataSetReaderMessageDataTypeBuilder {
+	b.NetworkMessageContentMask = networkMessageContentMask
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithDataSetMessageContentMask(dataSetMessageContentMask UadpDataSetMessageContentMask) UadpDataSetReaderMessageDataTypeBuilder {
+	b.DataSetMessageContentMask = dataSetMessageContentMask
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithPublishingInterval(publishingInterval float64) UadpDataSetReaderMessageDataTypeBuilder {
+	b.PublishingInterval = publishingInterval
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithReceiveOffset(receiveOffset float64) UadpDataSetReaderMessageDataTypeBuilder {
+	b.ReceiveOffset = receiveOffset
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) WithProcessingOffset(processingOffset float64) UadpDataSetReaderMessageDataTypeBuilder {
+	b.ProcessingOffset = processingOffset
+	return b
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) Build() (UadpDataSetReaderMessageDataType, error) {
+	if b.DataSetClassId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataSetClassId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UadpDataSetReaderMessageDataType.deepCopy(), nil
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) MustBuild() UadpDataSetReaderMessageDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UadpDataSetReaderMessageDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateUadpDataSetReaderMessageDataTypeBuilder().(*_UadpDataSetReaderMessageDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUadpDataSetReaderMessageDataTypeBuilder creates a UadpDataSetReaderMessageDataTypeBuilder
+func (b *_UadpDataSetReaderMessageDataType) CreateUadpDataSetReaderMessageDataTypeBuilder() UadpDataSetReaderMessageDataTypeBuilder {
+	if b == nil {
+		return NewUadpDataSetReaderMessageDataTypeBuilder()
+	}
+	return &_UadpDataSetReaderMessageDataTypeBuilder{_UadpDataSetReaderMessageDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -350,6 +521,30 @@ func (m *_UadpDataSetReaderMessageDataType) SerializeWithWriteBuffer(ctx context
 }
 
 func (m *_UadpDataSetReaderMessageDataType) IsUadpDataSetReaderMessageDataType() {}
+
+func (m *_UadpDataSetReaderMessageDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UadpDataSetReaderMessageDataType) deepCopy() *_UadpDataSetReaderMessageDataType {
+	if m == nil {
+		return nil
+	}
+	_UadpDataSetReaderMessageDataTypeCopy := &_UadpDataSetReaderMessageDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.GroupVersion,
+		m.NetworkMessageNumber,
+		m.DataSetOffset,
+		m.DataSetClassId.DeepCopy().(GuidValue),
+		m.NetworkMessageContentMask,
+		m.DataSetMessageContentMask,
+		m.PublishingInterval,
+		m.ReceiveOffset,
+		m.ProcessingOffset,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UadpDataSetReaderMessageDataTypeCopy
+}
 
 func (m *_UadpDataSetReaderMessageDataType) String() string {
 	if m == nil {

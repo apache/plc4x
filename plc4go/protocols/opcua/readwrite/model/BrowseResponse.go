@@ -87,17 +87,13 @@ func NewBrowseResponse(responseHeader ResponseHeader, results []BrowseResult, di
 type BrowseResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []BrowseResult, diagnosticInfos []DiagnosticInfo) BrowseResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) BrowseResponseBuilder
+	WithResponseHeader(ResponseHeader) BrowseResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) BrowseResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) BrowseResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) BrowseResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) BrowseResponseBuilder
+	WithResults(...BrowseResult) BrowseResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) BrowseResponseBuilder
 	// Build builds the BrowseResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_BrowseResponseBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowseResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) BrowseResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_BrowseResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []BrowseResult, diagnosticInfos []DiagnosticInfo) BrowseResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_BrowseResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) BrowseResponseBuilder {
+func (b *_BrowseResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) BrowseResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_BrowseResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_BrowseResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) BrowseResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_BrowseResponseBuilder) WithNoOfResults(noOfResults int32) BrowseResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_BrowseResponseBuilder) WithResults(results ...ExtensionObjectDefinition) BrowseResponseBuilder {
+func (b *_BrowseResponseBuilder) WithResults(results ...BrowseResult) BrowseResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_BrowseResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) BrowseResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_BrowseResponse) deepCopy() *_BrowseResponse {
 	}
 	_BrowseResponseCopy := &_BrowseResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[BrowseResult, BrowseResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

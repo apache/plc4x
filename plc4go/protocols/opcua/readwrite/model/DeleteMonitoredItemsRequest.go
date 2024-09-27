@@ -87,15 +87,13 @@ func NewDeleteMonitoredItemsRequest(requestHeader RequestHeader, subscriptionId 
 type DeleteMonitoredItemsRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) DeleteMonitoredItemsRequestBuilder
+	WithRequestHeader(RequestHeader) DeleteMonitoredItemsRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteMonitoredItemsRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteMonitoredItemsRequestBuilder
 	// WithSubscriptionId adds SubscriptionId (property field)
 	WithSubscriptionId(uint32) DeleteMonitoredItemsRequestBuilder
-	// WithNoOfMonitoredItemIds adds NoOfMonitoredItemIds (property field)
-	WithNoOfMonitoredItemIds(int32) DeleteMonitoredItemsRequestBuilder
 	// WithMonitoredItemIds adds MonitoredItemIds (property field)
 	WithMonitoredItemIds(...uint32) DeleteMonitoredItemsRequestBuilder
 	// Build builds the DeleteMonitoredItemsRequest or returns an error if something is wrong
@@ -123,35 +121,30 @@ func (b *_DeleteMonitoredItemsRequestBuilder) setParent(contract ExtensionObject
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, subscriptionId uint32, noOfMonitoredItemIds int32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithNoOfMonitoredItemIds(noOfMonitoredItemIds).WithMonitoredItemIds(monitoredItemIds...)
+func (b *_DeleteMonitoredItemsRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, subscriptionId uint32, monitoredItemIds []uint32) DeleteMonitoredItemsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithSubscriptionId(subscriptionId).WithMonitoredItemIds(monitoredItemIds...)
 }
 
-func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteMonitoredItemsRequestBuilder {
+func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeader(requestHeader RequestHeader) DeleteMonitoredItemsRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteMonitoredItemsRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteMonitoredItemsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteMonitoredItemsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
 func (b *_DeleteMonitoredItemsRequestBuilder) WithSubscriptionId(subscriptionId uint32) DeleteMonitoredItemsRequestBuilder {
 	b.SubscriptionId = subscriptionId
-	return b
-}
-
-func (b *_DeleteMonitoredItemsRequestBuilder) WithNoOfMonitoredItemIds(noOfMonitoredItemIds int32) DeleteMonitoredItemsRequestBuilder {
-	b.NoOfMonitoredItemIds = noOfMonitoredItemIds
 	return b
 }
 
@@ -386,9 +379,8 @@ func (m *_DeleteMonitoredItemsRequest) deepCopy() *_DeleteMonitoredItemsRequest 
 	}
 	_DeleteMonitoredItemsRequestCopy := &_DeleteMonitoredItemsRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.SubscriptionId,
-		m.NoOfMonitoredItemIds,
 		utils.DeepCopySlice[uint32, uint32](m.MonitoredItemIds),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

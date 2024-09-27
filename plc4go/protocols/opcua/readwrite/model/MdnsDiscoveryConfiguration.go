@@ -38,6 +38,7 @@ type MdnsDiscoveryConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMdnsServerName returns MdnsServerName (property field)
 	GetMdnsServerName() PascalString
@@ -45,6 +46,8 @@ type MdnsDiscoveryConfiguration interface {
 	GetServerCapabilities() []PascalString
 	// IsMdnsDiscoveryConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMdnsDiscoveryConfiguration()
+	// CreateBuilder creates a MdnsDiscoveryConfigurationBuilder
+	CreateMdnsDiscoveryConfigurationBuilder() MdnsDiscoveryConfigurationBuilder
 }
 
 // _MdnsDiscoveryConfiguration is the data-structure of this message
@@ -70,6 +73,125 @@ func NewMdnsDiscoveryConfiguration(mdnsServerName PascalString, serverCapabiliti
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MdnsDiscoveryConfigurationBuilder is a builder for MdnsDiscoveryConfiguration
+type MdnsDiscoveryConfigurationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(mdnsServerName PascalString, serverCapabilities []PascalString) MdnsDiscoveryConfigurationBuilder
+	// WithMdnsServerName adds MdnsServerName (property field)
+	WithMdnsServerName(PascalString) MdnsDiscoveryConfigurationBuilder
+	// WithMdnsServerNameBuilder adds MdnsServerName (property field) which is build by the builder
+	WithMdnsServerNameBuilder(func(PascalStringBuilder) PascalStringBuilder) MdnsDiscoveryConfigurationBuilder
+	// WithServerCapabilities adds ServerCapabilities (property field)
+	WithServerCapabilities(...PascalString) MdnsDiscoveryConfigurationBuilder
+	// Build builds the MdnsDiscoveryConfiguration or returns an error if something is wrong
+	Build() (MdnsDiscoveryConfiguration, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MdnsDiscoveryConfiguration
+}
+
+// NewMdnsDiscoveryConfigurationBuilder() creates a MdnsDiscoveryConfigurationBuilder
+func NewMdnsDiscoveryConfigurationBuilder() MdnsDiscoveryConfigurationBuilder {
+	return &_MdnsDiscoveryConfigurationBuilder{_MdnsDiscoveryConfiguration: new(_MdnsDiscoveryConfiguration)}
+}
+
+type _MdnsDiscoveryConfigurationBuilder struct {
+	*_MdnsDiscoveryConfiguration
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MdnsDiscoveryConfigurationBuilder) = (*_MdnsDiscoveryConfigurationBuilder)(nil)
+
+func (b *_MdnsDiscoveryConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) WithMandatoryFields(mdnsServerName PascalString, serverCapabilities []PascalString) MdnsDiscoveryConfigurationBuilder {
+	return b.WithMdnsServerName(mdnsServerName).WithServerCapabilities(serverCapabilities...)
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) WithMdnsServerName(mdnsServerName PascalString) MdnsDiscoveryConfigurationBuilder {
+	b.MdnsServerName = mdnsServerName
+	return b
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) WithMdnsServerNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) MdnsDiscoveryConfigurationBuilder {
+	builder := builderSupplier(b.MdnsServerName.CreatePascalStringBuilder())
+	var err error
+	b.MdnsServerName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) WithServerCapabilities(serverCapabilities ...PascalString) MdnsDiscoveryConfigurationBuilder {
+	b.ServerCapabilities = serverCapabilities
+	return b
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) Build() (MdnsDiscoveryConfiguration, error) {
+	if b.MdnsServerName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'mdnsServerName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MdnsDiscoveryConfiguration.deepCopy(), nil
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) MustBuild() MdnsDiscoveryConfiguration {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MdnsDiscoveryConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MdnsDiscoveryConfigurationBuilder) DeepCopy() any {
+	_copy := b.CreateMdnsDiscoveryConfigurationBuilder().(*_MdnsDiscoveryConfigurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMdnsDiscoveryConfigurationBuilder creates a MdnsDiscoveryConfigurationBuilder
+func (b *_MdnsDiscoveryConfiguration) CreateMdnsDiscoveryConfigurationBuilder() MdnsDiscoveryConfigurationBuilder {
+	if b == nil {
+		return NewMdnsDiscoveryConfigurationBuilder()
+	}
+	return &_MdnsDiscoveryConfigurationBuilder{_MdnsDiscoveryConfiguration: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -223,6 +345,23 @@ func (m *_MdnsDiscoveryConfiguration) SerializeWithWriteBuffer(ctx context.Conte
 }
 
 func (m *_MdnsDiscoveryConfiguration) IsMdnsDiscoveryConfiguration() {}
+
+func (m *_MdnsDiscoveryConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MdnsDiscoveryConfiguration) deepCopy() *_MdnsDiscoveryConfiguration {
+	if m == nil {
+		return nil
+	}
+	_MdnsDiscoveryConfigurationCopy := &_MdnsDiscoveryConfiguration{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MdnsServerName.DeepCopy().(PascalString),
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MdnsDiscoveryConfigurationCopy
+}
 
 func (m *_MdnsDiscoveryConfiguration) String() string {
 	if m == nil {

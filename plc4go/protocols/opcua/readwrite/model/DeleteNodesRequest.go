@@ -83,15 +83,13 @@ func NewDeleteNodesRequest(requestHeader RequestHeader, nodesToDelete []DeleteNo
 type DeleteNodesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToDelete []DeleteNodesItem) DeleteNodesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithRequestHeader(RequestHeader) DeleteNodesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder
-	// WithNoOfNodesToDelete adds NoOfNodesToDelete (property field)
-	WithNoOfNodesToDelete(int32) DeleteNodesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteNodesRequestBuilder
 	// WithNodesToDelete adds NodesToDelete (property field)
-	WithNodesToDelete(...ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	WithNodesToDelete(...DeleteNodesItem) DeleteNodesRequestBuilder
 	// Build builds the DeleteNodesRequest or returns an error if something is wrong
 	Build() (DeleteNodesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_DeleteNodesRequestBuilder) setParent(contract ExtensionObjectDefinitio
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
+func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToDelete []DeleteNodesItem) DeleteNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToDelete(nodesToDelete...)
 }
 
-func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) DeleteNodesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
-	b.NoOfNodesToDelete = noOfNodesToDelete
-	return b
-}
-
-func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...DeleteNodesItem) DeleteNodesRequestBuilder {
 	b.NodesToDelete = nodesToDelete
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_DeleteNodesRequest) deepCopy() *_DeleteNodesRequest {
 	}
 	_DeleteNodesRequestCopy := &_DeleteNodesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToDelete,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToDelete),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[DeleteNodesItem, DeleteNodesItem](m.NodesToDelete),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteNodesRequestCopy

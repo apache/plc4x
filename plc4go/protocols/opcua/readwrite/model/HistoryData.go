@@ -76,9 +76,7 @@ func NewHistoryData(dataValues []DataValue) *_HistoryData {
 type HistoryDataBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder
-	// WithNoOfDataValues adds NoOfDataValues (property field)
-	WithNoOfDataValues(int32) HistoryDataBuilder
+	WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder
 	// WithDataValues adds DataValues (property field)
 	WithDataValues(...DataValue) HistoryDataBuilder
 	// Build builds the HistoryData or returns an error if something is wrong
@@ -106,13 +104,8 @@ func (b *_HistoryDataBuilder) setParent(contract ExtensionObjectDefinitionContra
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryDataBuilder) WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder {
-	return b.WithNoOfDataValues(noOfDataValues).WithDataValues(dataValues...)
-}
-
-func (b *_HistoryDataBuilder) WithNoOfDataValues(noOfDataValues int32) HistoryDataBuilder {
-	b.NoOfDataValues = noOfDataValues
-	return b
+func (b *_HistoryDataBuilder) WithMandatoryFields(dataValues []DataValue) HistoryDataBuilder {
+	return b.WithDataValues(dataValues...)
 }
 
 func (b *_HistoryDataBuilder) WithDataValues(dataValues ...DataValue) HistoryDataBuilder {
@@ -311,7 +304,6 @@ func (m *_HistoryData) deepCopy() *_HistoryData {
 	}
 	_HistoryDataCopy := &_HistoryData{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfDataValues,
 		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

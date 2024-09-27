@@ -90,7 +90,7 @@ func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, 
 type BrowseResultBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder
+	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) BrowseResultBuilder
 	// WithStatusCode adds StatusCode (property field)
 	WithStatusCode(StatusCode) BrowseResultBuilder
 	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
@@ -99,10 +99,8 @@ type BrowseResultBuilder interface {
 	WithContinuationPoint(PascalByteString) BrowseResultBuilder
 	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
 	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder
-	// WithNoOfReferences adds NoOfReferences (property field)
-	WithNoOfReferences(int32) BrowseResultBuilder
 	// WithReferences adds References (property field)
-	WithReferences(...ExtensionObjectDefinition) BrowseResultBuilder
+	WithReferences(...ReferenceDescription) BrowseResultBuilder
 	// Build builds the BrowseResult or returns an error if something is wrong
 	Build() (BrowseResult, error)
 	// MustBuild does the same as Build but panics on error
@@ -128,8 +126,8 @@ func (b *_BrowseResultBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder {
-	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithNoOfReferences(noOfReferences).WithReferences(references...)
+func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, references []ReferenceDescription) BrowseResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithReferences(references...)
 }
 
 func (b *_BrowseResultBuilder) WithStatusCode(statusCode StatusCode) BrowseResultBuilder {
@@ -168,12 +166,7 @@ func (b *_BrowseResultBuilder) WithContinuationPointBuilder(builderSupplier func
 	return b
 }
 
-func (b *_BrowseResultBuilder) WithNoOfReferences(noOfReferences int32) BrowseResultBuilder {
-	b.NoOfReferences = noOfReferences
-	return b
-}
-
-func (b *_BrowseResultBuilder) WithReferences(references ...ExtensionObjectDefinition) BrowseResultBuilder {
+func (b *_BrowseResultBuilder) WithReferences(references ...ReferenceDescription) BrowseResultBuilder {
 	b.References = references
 	return b
 }
@@ -417,8 +410,7 @@ func (m *_BrowseResult) deepCopy() *_BrowseResult {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.StatusCode.DeepCopy().(StatusCode),
 		m.ContinuationPoint.DeepCopy().(PascalByteString),
-		m.NoOfReferences,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.References),
+		utils.DeepCopySlice[ReferenceDescription, ReferenceDescription](m.References),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _BrowseResultCopy

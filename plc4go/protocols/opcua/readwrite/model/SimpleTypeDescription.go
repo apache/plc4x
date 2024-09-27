@@ -38,6 +38,7 @@ type SimpleTypeDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataTypeId returns DataTypeId (property field)
 	GetDataTypeId() NodeId
@@ -49,6 +50,8 @@ type SimpleTypeDescription interface {
 	GetBuiltInType() uint8
 	// IsSimpleTypeDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSimpleTypeDescription()
+	// CreateBuilder creates a SimpleTypeDescriptionBuilder
+	CreateSimpleTypeDescriptionBuilder() SimpleTypeDescriptionBuilder
 }
 
 // _SimpleTypeDescription is the data-structure of this message
@@ -84,6 +87,181 @@ func NewSimpleTypeDescription(dataTypeId NodeId, name QualifiedName, baseDataTyp
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SimpleTypeDescriptionBuilder is a builder for SimpleTypeDescription
+type SimpleTypeDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataTypeId NodeId, name QualifiedName, baseDataType NodeId, builtInType uint8) SimpleTypeDescriptionBuilder
+	// WithDataTypeId adds DataTypeId (property field)
+	WithDataTypeId(NodeId) SimpleTypeDescriptionBuilder
+	// WithDataTypeIdBuilder adds DataTypeId (property field) which is build by the builder
+	WithDataTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) SimpleTypeDescriptionBuilder
+	// WithName adds Name (property field)
+	WithName(QualifiedName) SimpleTypeDescriptionBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) SimpleTypeDescriptionBuilder
+	// WithBaseDataType adds BaseDataType (property field)
+	WithBaseDataType(NodeId) SimpleTypeDescriptionBuilder
+	// WithBaseDataTypeBuilder adds BaseDataType (property field) which is build by the builder
+	WithBaseDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) SimpleTypeDescriptionBuilder
+	// WithBuiltInType adds BuiltInType (property field)
+	WithBuiltInType(uint8) SimpleTypeDescriptionBuilder
+	// Build builds the SimpleTypeDescription or returns an error if something is wrong
+	Build() (SimpleTypeDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SimpleTypeDescription
+}
+
+// NewSimpleTypeDescriptionBuilder() creates a SimpleTypeDescriptionBuilder
+func NewSimpleTypeDescriptionBuilder() SimpleTypeDescriptionBuilder {
+	return &_SimpleTypeDescriptionBuilder{_SimpleTypeDescription: new(_SimpleTypeDescription)}
+}
+
+type _SimpleTypeDescriptionBuilder struct {
+	*_SimpleTypeDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SimpleTypeDescriptionBuilder) = (*_SimpleTypeDescriptionBuilder)(nil)
+
+func (b *_SimpleTypeDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName, baseDataType NodeId, builtInType uint8) SimpleTypeDescriptionBuilder {
+	return b.WithDataTypeId(dataTypeId).WithName(name).WithBaseDataType(baseDataType).WithBuiltInType(builtInType)
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithDataTypeId(dataTypeId NodeId) SimpleTypeDescriptionBuilder {
+	b.DataTypeId = dataTypeId
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithDataTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SimpleTypeDescriptionBuilder {
+	builder := builderSupplier(b.DataTypeId.CreateNodeIdBuilder())
+	var err error
+	b.DataTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithName(name QualifiedName) SimpleTypeDescriptionBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) SimpleTypeDescriptionBuilder {
+	builder := builderSupplier(b.Name.CreateQualifiedNameBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithBaseDataType(baseDataType NodeId) SimpleTypeDescriptionBuilder {
+	b.BaseDataType = baseDataType
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithBaseDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) SimpleTypeDescriptionBuilder {
+	builder := builderSupplier(b.BaseDataType.CreateNodeIdBuilder())
+	var err error
+	b.BaseDataType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) WithBuiltInType(builtInType uint8) SimpleTypeDescriptionBuilder {
+	b.BuiltInType = builtInType
+	return b
+}
+
+func (b *_SimpleTypeDescriptionBuilder) Build() (SimpleTypeDescription, error) {
+	if b.DataTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataTypeId' not set"))
+	}
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.BaseDataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'baseDataType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SimpleTypeDescription.deepCopy(), nil
+}
+
+func (b *_SimpleTypeDescriptionBuilder) MustBuild() SimpleTypeDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SimpleTypeDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SimpleTypeDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SimpleTypeDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateSimpleTypeDescriptionBuilder().(*_SimpleTypeDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSimpleTypeDescriptionBuilder creates a SimpleTypeDescriptionBuilder
+func (b *_SimpleTypeDescription) CreateSimpleTypeDescriptionBuilder() SimpleTypeDescriptionBuilder {
+	if b == nil {
+		return NewSimpleTypeDescriptionBuilder()
+	}
+	return &_SimpleTypeDescriptionBuilder{_SimpleTypeDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -251,6 +429,25 @@ func (m *_SimpleTypeDescription) SerializeWithWriteBuffer(ctx context.Context, w
 }
 
 func (m *_SimpleTypeDescription) IsSimpleTypeDescription() {}
+
+func (m *_SimpleTypeDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SimpleTypeDescription) deepCopy() *_SimpleTypeDescription {
+	if m == nil {
+		return nil
+	}
+	_SimpleTypeDescriptionCopy := &_SimpleTypeDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataTypeId.DeepCopy().(NodeId),
+		m.Name.DeepCopy().(QualifiedName),
+		m.BaseDataType.DeepCopy().(NodeId),
+		m.BuiltInType,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SimpleTypeDescriptionCopy
+}
 
 func (m *_SimpleTypeDescription) String() string {
 	if m == nil {

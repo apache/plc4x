@@ -38,11 +38,14 @@ type LiteralOperand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() Variant
 	// IsLiteralOperand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLiteralOperand()
+	// CreateBuilder creates a LiteralOperandBuilder
+	CreateLiteralOperandBuilder() LiteralOperandBuilder
 }
 
 // _LiteralOperand is the data-structure of this message
@@ -66,6 +69,118 @@ func NewLiteralOperand(value Variant) *_LiteralOperand {
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LiteralOperandBuilder is a builder for LiteralOperand
+type LiteralOperandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value Variant) LiteralOperandBuilder
+	// WithValue adds Value (property field)
+	WithValue(Variant) LiteralOperandBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(VariantBuilder) VariantBuilder) LiteralOperandBuilder
+	// Build builds the LiteralOperand or returns an error if something is wrong
+	Build() (LiteralOperand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LiteralOperand
+}
+
+// NewLiteralOperandBuilder() creates a LiteralOperandBuilder
+func NewLiteralOperandBuilder() LiteralOperandBuilder {
+	return &_LiteralOperandBuilder{_LiteralOperand: new(_LiteralOperand)}
+}
+
+type _LiteralOperandBuilder struct {
+	*_LiteralOperand
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LiteralOperandBuilder) = (*_LiteralOperandBuilder)(nil)
+
+func (b *_LiteralOperandBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_LiteralOperandBuilder) WithMandatoryFields(value Variant) LiteralOperandBuilder {
+	return b.WithValue(value)
+}
+
+func (b *_LiteralOperandBuilder) WithValue(value Variant) LiteralOperandBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_LiteralOperandBuilder) WithValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) LiteralOperandBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_LiteralOperandBuilder) Build() (LiteralOperand, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LiteralOperand.deepCopy(), nil
+}
+
+func (b *_LiteralOperandBuilder) MustBuild() LiteralOperand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LiteralOperandBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LiteralOperandBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_LiteralOperandBuilder) DeepCopy() any {
+	_copy := b.CreateLiteralOperandBuilder().(*_LiteralOperandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLiteralOperandBuilder creates a LiteralOperandBuilder
+func (b *_LiteralOperand) CreateLiteralOperandBuilder() LiteralOperandBuilder {
+	if b == nil {
+		return NewLiteralOperandBuilder()
+	}
+	return &_LiteralOperandBuilder{_LiteralOperand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -182,6 +297,22 @@ func (m *_LiteralOperand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 }
 
 func (m *_LiteralOperand) IsLiteralOperand() {}
+
+func (m *_LiteralOperand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LiteralOperand) deepCopy() *_LiteralOperand {
+	if m == nil {
+		return nil
+	}
+	_LiteralOperandCopy := &_LiteralOperand{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _LiteralOperandCopy
+}
 
 func (m *_LiteralOperand) String() string {
 	if m == nil {

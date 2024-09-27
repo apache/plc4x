@@ -38,6 +38,7 @@ type ObjectAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSpecifiedAttributes returns SpecifiedAttributes (property field)
 	GetSpecifiedAttributes() uint32
@@ -53,6 +54,8 @@ type ObjectAttributes interface {
 	GetEventNotifier() uint8
 	// IsObjectAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsObjectAttributes()
+	// CreateBuilder creates a ObjectAttributesBuilder
+	CreateObjectAttributesBuilder() ObjectAttributesBuilder
 }
 
 // _ObjectAttributes is the data-structure of this message
@@ -89,6 +92,174 @@ func NewObjectAttributes(specifiedAttributes uint32, displayName LocalizedText, 
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ObjectAttributesBuilder is a builder for ObjectAttributes
+type ObjectAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, eventNotifier uint8) ObjectAttributesBuilder
+	// WithSpecifiedAttributes adds SpecifiedAttributes (property field)
+	WithSpecifiedAttributes(uint32) ObjectAttributesBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) ObjectAttributesBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ObjectAttributesBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) ObjectAttributesBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ObjectAttributesBuilder
+	// WithWriteMask adds WriteMask (property field)
+	WithWriteMask(uint32) ObjectAttributesBuilder
+	// WithUserWriteMask adds UserWriteMask (property field)
+	WithUserWriteMask(uint32) ObjectAttributesBuilder
+	// WithEventNotifier adds EventNotifier (property field)
+	WithEventNotifier(uint8) ObjectAttributesBuilder
+	// Build builds the ObjectAttributes or returns an error if something is wrong
+	Build() (ObjectAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ObjectAttributes
+}
+
+// NewObjectAttributesBuilder() creates a ObjectAttributesBuilder
+func NewObjectAttributesBuilder() ObjectAttributesBuilder {
+	return &_ObjectAttributesBuilder{_ObjectAttributes: new(_ObjectAttributes)}
+}
+
+type _ObjectAttributesBuilder struct {
+	*_ObjectAttributes
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ObjectAttributesBuilder) = (*_ObjectAttributesBuilder)(nil)
+
+func (b *_ObjectAttributesBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ObjectAttributesBuilder) WithMandatoryFields(specifiedAttributes uint32, displayName LocalizedText, description LocalizedText, writeMask uint32, userWriteMask uint32, eventNotifier uint8) ObjectAttributesBuilder {
+	return b.WithSpecifiedAttributes(specifiedAttributes).WithDisplayName(displayName).WithDescription(description).WithWriteMask(writeMask).WithUserWriteMask(userWriteMask).WithEventNotifier(eventNotifier)
+}
+
+func (b *_ObjectAttributesBuilder) WithSpecifiedAttributes(specifiedAttributes uint32) ObjectAttributesBuilder {
+	b.SpecifiedAttributes = specifiedAttributes
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithDisplayName(displayName LocalizedText) ObjectAttributesBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ObjectAttributesBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithDescription(description LocalizedText) ObjectAttributesBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ObjectAttributesBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithWriteMask(writeMask uint32) ObjectAttributesBuilder {
+	b.WriteMask = writeMask
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithUserWriteMask(userWriteMask uint32) ObjectAttributesBuilder {
+	b.UserWriteMask = userWriteMask
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) WithEventNotifier(eventNotifier uint8) ObjectAttributesBuilder {
+	b.EventNotifier = eventNotifier
+	return b
+}
+
+func (b *_ObjectAttributesBuilder) Build() (ObjectAttributes, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ObjectAttributes.deepCopy(), nil
+}
+
+func (b *_ObjectAttributesBuilder) MustBuild() ObjectAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ObjectAttributesBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ObjectAttributesBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ObjectAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateObjectAttributesBuilder().(*_ObjectAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateObjectAttributesBuilder creates a ObjectAttributesBuilder
+func (b *_ObjectAttributes) CreateObjectAttributesBuilder() ObjectAttributesBuilder {
+	if b == nil {
+		return NewObjectAttributesBuilder()
+	}
+	return &_ObjectAttributesBuilder{_ObjectAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -290,6 +461,27 @@ func (m *_ObjectAttributes) SerializeWithWriteBuffer(ctx context.Context, writeB
 }
 
 func (m *_ObjectAttributes) IsObjectAttributes() {}
+
+func (m *_ObjectAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ObjectAttributes) deepCopy() *_ObjectAttributes {
+	if m == nil {
+		return nil
+	}
+	_ObjectAttributesCopy := &_ObjectAttributes{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SpecifiedAttributes,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+		m.WriteMask,
+		m.UserWriteMask,
+		m.EventNotifier,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ObjectAttributesCopy
+}
 
 func (m *_ObjectAttributes) String() string {
 	if m == nil {

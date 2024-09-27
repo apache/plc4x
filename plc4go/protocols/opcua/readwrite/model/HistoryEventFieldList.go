@@ -76,9 +76,7 @@ func NewHistoryEventFieldList(eventFields []Variant) *_HistoryEventFieldList {
 type HistoryEventFieldListBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(noOfEventFields int32, eventFields []Variant) HistoryEventFieldListBuilder
-	// WithNoOfEventFields adds NoOfEventFields (property field)
-	WithNoOfEventFields(int32) HistoryEventFieldListBuilder
+	WithMandatoryFields(eventFields []Variant) HistoryEventFieldListBuilder
 	// WithEventFields adds EventFields (property field)
 	WithEventFields(...Variant) HistoryEventFieldListBuilder
 	// Build builds the HistoryEventFieldList or returns an error if something is wrong
@@ -106,13 +104,8 @@ func (b *_HistoryEventFieldListBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryEventFieldListBuilder) WithMandatoryFields(noOfEventFields int32, eventFields []Variant) HistoryEventFieldListBuilder {
-	return b.WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
-}
-
-func (b *_HistoryEventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) HistoryEventFieldListBuilder {
-	b.NoOfEventFields = noOfEventFields
-	return b
+func (b *_HistoryEventFieldListBuilder) WithMandatoryFields(eventFields []Variant) HistoryEventFieldListBuilder {
+	return b.WithEventFields(eventFields...)
 }
 
 func (b *_HistoryEventFieldListBuilder) WithEventFields(eventFields ...Variant) HistoryEventFieldListBuilder {
@@ -311,7 +304,6 @@ func (m *_HistoryEventFieldList) deepCopy() *_HistoryEventFieldList {
 	}
 	_HistoryEventFieldListCopy := &_HistoryEventFieldList{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.NoOfEventFields,
 		utils.DeepCopySlice[Variant, Variant](m.EventFields),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

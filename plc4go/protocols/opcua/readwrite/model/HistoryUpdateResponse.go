@@ -87,17 +87,13 @@ func NewHistoryUpdateResponse(responseHeader ResponseHeader, results []HistoryUp
 type HistoryUpdateResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []HistoryUpdateResult, diagnosticInfos []DiagnosticInfo) HistoryUpdateResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) HistoryUpdateResponseBuilder
+	WithResponseHeader(ResponseHeader) HistoryUpdateResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) HistoryUpdateResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) HistoryUpdateResponseBuilder
 	// WithResults adds Results (property field)
-	WithResults(...ExtensionObjectDefinition) HistoryUpdateResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) HistoryUpdateResponseBuilder
+	WithResults(...HistoryUpdateResult) HistoryUpdateResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) HistoryUpdateResponseBuilder
 	// Build builds the HistoryUpdateResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_HistoryUpdateResponseBuilder) setParent(contract ExtensionObjectDefini
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_HistoryUpdateResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryUpdateResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_HistoryUpdateResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []HistoryUpdateResult, diagnosticInfos []DiagnosticInfo) HistoryUpdateResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_HistoryUpdateResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) HistoryUpdateResponseBuilder {
+func (b *_HistoryUpdateResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) HistoryUpdateResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_HistoryUpdateResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryUpdateResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_HistoryUpdateResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) HistoryUpdateResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_HistoryUpdateResponseBuilder) WithNoOfResults(noOfResults int32) HistoryUpdateResponseBuilder {
-	b.NoOfResults = noOfResults
-	return b
-}
-
-func (b *_HistoryUpdateResponseBuilder) WithResults(results ...ExtensionObjectDefinition) HistoryUpdateResponseBuilder {
+func (b *_HistoryUpdateResponseBuilder) WithResults(results ...HistoryUpdateResult) HistoryUpdateResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_HistoryUpdateResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryUpdateResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_HistoryUpdateResponse) deepCopy() *_HistoryUpdateResponse {
 	}
 	_HistoryUpdateResponseCopy := &_HistoryUpdateResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
-		m.NoOfDiagnosticInfos,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[HistoryUpdateResult, HistoryUpdateResult](m.Results),
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

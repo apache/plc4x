@@ -83,11 +83,11 @@ func NewCancelResponse(responseHeader ResponseHeader, cancelCount uint32) *_Canc
 type CancelResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, cancelCount uint32) CancelResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, cancelCount uint32) CancelResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) CancelResponseBuilder
+	WithResponseHeader(ResponseHeader) CancelResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) CancelResponseBuilder
 	// WithCancelCount adds CancelCount (property field)
 	WithCancelCount(uint32) CancelResponseBuilder
 	// Build builds the CancelResponse or returns an error if something is wrong
@@ -115,24 +115,24 @@ func (b *_CancelResponseBuilder) setParent(contract ExtensionObjectDefinitionCon
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CancelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, cancelCount uint32) CancelResponseBuilder {
+func (b *_CancelResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, cancelCount uint32) CancelResponseBuilder {
 	return b.WithResponseHeader(responseHeader).WithCancelCount(cancelCount)
 }
 
-func (b *_CancelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CancelResponseBuilder {
+func (b *_CancelResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) CancelResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_CancelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CancelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) CancelResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
@@ -336,7 +336,7 @@ func (m *_CancelResponse) deepCopy() *_CancelResponse {
 	}
 	_CancelResponseCopy := &_CancelResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		m.CancelCount,
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

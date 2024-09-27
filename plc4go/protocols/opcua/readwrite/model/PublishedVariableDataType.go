@@ -113,7 +113,7 @@ func NewPublishedVariableDataType(publishedVariable NodeId, attributeId uint32, 
 type PublishedVariableDataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder
+	WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder
 	// WithPublishedVariable adds PublishedVariable (property field)
 	WithPublishedVariable(NodeId) PublishedVariableDataTypeBuilder
 	// WithPublishedVariableBuilder adds PublishedVariable (property field) which is build by the builder
@@ -134,8 +134,6 @@ type PublishedVariableDataTypeBuilder interface {
 	WithSubstituteValue(Variant) PublishedVariableDataTypeBuilder
 	// WithSubstituteValueBuilder adds SubstituteValue (property field) which is build by the builder
 	WithSubstituteValueBuilder(func(VariantBuilder) VariantBuilder) PublishedVariableDataTypeBuilder
-	// WithNoOfMetaDataProperties adds NoOfMetaDataProperties (property field)
-	WithNoOfMetaDataProperties(int32) PublishedVariableDataTypeBuilder
 	// WithMetaDataProperties adds MetaDataProperties (property field)
 	WithMetaDataProperties(...QualifiedName) PublishedVariableDataTypeBuilder
 	// Build builds the PublishedVariableDataType or returns an error if something is wrong
@@ -163,8 +161,8 @@ func (b *_PublishedVariableDataTypeBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, noOfMetaDataProperties int32, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
-	return b.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithNoOfMetaDataProperties(noOfMetaDataProperties).WithMetaDataProperties(metaDataProperties...)
+func (b *_PublishedVariableDataTypeBuilder) WithMandatoryFields(publishedVariable NodeId, attributeId uint32, samplingIntervalHint float64, deadbandType uint32, deadbandValue float64, indexRange PascalString, substituteValue Variant, metaDataProperties []QualifiedName) PublishedVariableDataTypeBuilder {
+	return b.WithPublishedVariable(publishedVariable).WithAttributeId(attributeId).WithSamplingIntervalHint(samplingIntervalHint).WithDeadbandType(deadbandType).WithDeadbandValue(deadbandValue).WithIndexRange(indexRange).WithSubstituteValue(substituteValue).WithMetaDataProperties(metaDataProperties...)
 }
 
 func (b *_PublishedVariableDataTypeBuilder) WithPublishedVariable(publishedVariable NodeId) PublishedVariableDataTypeBuilder {
@@ -238,11 +236,6 @@ func (b *_PublishedVariableDataTypeBuilder) WithSubstituteValueBuilder(builderSu
 		}
 		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
 	}
-	return b
-}
-
-func (b *_PublishedVariableDataTypeBuilder) WithNoOfMetaDataProperties(noOfMetaDataProperties int32) PublishedVariableDataTypeBuilder {
-	b.NoOfMetaDataProperties = noOfMetaDataProperties
 	return b
 }
 
@@ -586,7 +579,6 @@ func (m *_PublishedVariableDataType) deepCopy() *_PublishedVariableDataType {
 		m.DeadbandValue,
 		m.IndexRange.DeepCopy().(PascalString),
 		m.SubstituteValue.DeepCopy().(Variant),
-		m.NoOfMetaDataProperties,
 		utils.DeepCopySlice[QualifiedName, QualifiedName](m.MetaDataProperties),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -38,6 +38,7 @@ type SubscribedDataSetMirrorDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetParentNodeName returns ParentNodeName (property field)
 	GetParentNodeName() PascalString
@@ -45,6 +46,8 @@ type SubscribedDataSetMirrorDataType interface {
 	GetRolePermissions() []RolePermissionType
 	// IsSubscribedDataSetMirrorDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubscribedDataSetMirrorDataType()
+	// CreateBuilder creates a SubscribedDataSetMirrorDataTypeBuilder
+	CreateSubscribedDataSetMirrorDataTypeBuilder() SubscribedDataSetMirrorDataTypeBuilder
 }
 
 // _SubscribedDataSetMirrorDataType is the data-structure of this message
@@ -70,6 +73,125 @@ func NewSubscribedDataSetMirrorDataType(parentNodeName PascalString, rolePermiss
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubscribedDataSetMirrorDataTypeBuilder is a builder for SubscribedDataSetMirrorDataType
+type SubscribedDataSetMirrorDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(parentNodeName PascalString, rolePermissions []RolePermissionType) SubscribedDataSetMirrorDataTypeBuilder
+	// WithParentNodeName adds ParentNodeName (property field)
+	WithParentNodeName(PascalString) SubscribedDataSetMirrorDataTypeBuilder
+	// WithParentNodeNameBuilder adds ParentNodeName (property field) which is build by the builder
+	WithParentNodeNameBuilder(func(PascalStringBuilder) PascalStringBuilder) SubscribedDataSetMirrorDataTypeBuilder
+	// WithRolePermissions adds RolePermissions (property field)
+	WithRolePermissions(...RolePermissionType) SubscribedDataSetMirrorDataTypeBuilder
+	// Build builds the SubscribedDataSetMirrorDataType or returns an error if something is wrong
+	Build() (SubscribedDataSetMirrorDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubscribedDataSetMirrorDataType
+}
+
+// NewSubscribedDataSetMirrorDataTypeBuilder() creates a SubscribedDataSetMirrorDataTypeBuilder
+func NewSubscribedDataSetMirrorDataTypeBuilder() SubscribedDataSetMirrorDataTypeBuilder {
+	return &_SubscribedDataSetMirrorDataTypeBuilder{_SubscribedDataSetMirrorDataType: new(_SubscribedDataSetMirrorDataType)}
+}
+
+type _SubscribedDataSetMirrorDataTypeBuilder struct {
+	*_SubscribedDataSetMirrorDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SubscribedDataSetMirrorDataTypeBuilder) = (*_SubscribedDataSetMirrorDataTypeBuilder)(nil)
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) WithMandatoryFields(parentNodeName PascalString, rolePermissions []RolePermissionType) SubscribedDataSetMirrorDataTypeBuilder {
+	return b.WithParentNodeName(parentNodeName).WithRolePermissions(rolePermissions...)
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) WithParentNodeName(parentNodeName PascalString) SubscribedDataSetMirrorDataTypeBuilder {
+	b.ParentNodeName = parentNodeName
+	return b
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) WithParentNodeNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SubscribedDataSetMirrorDataTypeBuilder {
+	builder := builderSupplier(b.ParentNodeName.CreatePascalStringBuilder())
+	var err error
+	b.ParentNodeName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) WithRolePermissions(rolePermissions ...RolePermissionType) SubscribedDataSetMirrorDataTypeBuilder {
+	b.RolePermissions = rolePermissions
+	return b
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) Build() (SubscribedDataSetMirrorDataType, error) {
+	if b.ParentNodeName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'parentNodeName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SubscribedDataSetMirrorDataType.deepCopy(), nil
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) MustBuild() SubscribedDataSetMirrorDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SubscribedDataSetMirrorDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSubscribedDataSetMirrorDataTypeBuilder().(*_SubscribedDataSetMirrorDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSubscribedDataSetMirrorDataTypeBuilder creates a SubscribedDataSetMirrorDataTypeBuilder
+func (b *_SubscribedDataSetMirrorDataType) CreateSubscribedDataSetMirrorDataTypeBuilder() SubscribedDataSetMirrorDataTypeBuilder {
+	if b == nil {
+		return NewSubscribedDataSetMirrorDataTypeBuilder()
+	}
+	return &_SubscribedDataSetMirrorDataTypeBuilder{_SubscribedDataSetMirrorDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -223,6 +345,23 @@ func (m *_SubscribedDataSetMirrorDataType) SerializeWithWriteBuffer(ctx context.
 }
 
 func (m *_SubscribedDataSetMirrorDataType) IsSubscribedDataSetMirrorDataType() {}
+
+func (m *_SubscribedDataSetMirrorDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribedDataSetMirrorDataType) deepCopy() *_SubscribedDataSetMirrorDataType {
+	if m == nil {
+		return nil
+	}
+	_SubscribedDataSetMirrorDataTypeCopy := &_SubscribedDataSetMirrorDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ParentNodeName.DeepCopy().(PascalString),
+		utils.DeepCopySlice[RolePermissionType, RolePermissionType](m.RolePermissions),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscribedDataSetMirrorDataTypeCopy
+}
 
 func (m *_SubscribedDataSetMirrorDataType) String() string {
 	if m == nil {

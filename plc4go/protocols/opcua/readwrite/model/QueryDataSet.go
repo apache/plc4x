@@ -90,7 +90,7 @@ func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, v
 type QueryDataSetBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder
+	WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) QueryDataSetBuilder
 	// WithNodeId adds NodeId (property field)
 	WithNodeId(ExpandedNodeId) QueryDataSetBuilder
 	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
@@ -99,8 +99,6 @@ type QueryDataSetBuilder interface {
 	WithTypeDefinitionNode(ExpandedNodeId) QueryDataSetBuilder
 	// WithTypeDefinitionNodeBuilder adds TypeDefinitionNode (property field) which is build by the builder
 	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder
-	// WithNoOfValues adds NoOfValues (property field)
-	WithNoOfValues(int32) QueryDataSetBuilder
 	// WithValues adds Values (property field)
 	WithValues(...Variant) QueryDataSetBuilder
 	// Build builds the QueryDataSet or returns an error if something is wrong
@@ -128,8 +126,8 @@ func (b *_QueryDataSetBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder {
-	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithNoOfValues(noOfValues).WithValues(values...)
+func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, values []Variant) QueryDataSetBuilder {
+	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithValues(values...)
 }
 
 func (b *_QueryDataSetBuilder) WithNodeId(nodeId ExpandedNodeId) QueryDataSetBuilder {
@@ -165,11 +163,6 @@ func (b *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier fun
 		}
 		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
 	}
-	return b
-}
-
-func (b *_QueryDataSetBuilder) WithNoOfValues(noOfValues int32) QueryDataSetBuilder {
-	b.NoOfValues = noOfValues
 	return b
 }
 
@@ -417,7 +410,6 @@ func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.NodeId.DeepCopy().(ExpandedNodeId),
 		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
-		m.NoOfValues,
 		utils.DeepCopySlice[Variant, Variant](m.Values),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

@@ -83,15 +83,13 @@ func NewFindServersResponse(responseHeader ResponseHeader, servers []Application
 type FindServersResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) FindServersResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, servers []ApplicationDescription) FindServersResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) FindServersResponseBuilder
+	WithResponseHeader(ResponseHeader) FindServersResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersResponseBuilder
-	// WithNoOfServers adds NoOfServers (property field)
-	WithNoOfServers(int32) FindServersResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) FindServersResponseBuilder
 	// WithServers adds Servers (property field)
-	WithServers(...ExtensionObjectDefinition) FindServersResponseBuilder
+	WithServers(...ApplicationDescription) FindServersResponseBuilder
 	// Build builds the FindServersResponse or returns an error if something is wrong
 	Build() (FindServersResponse, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_FindServersResponseBuilder) setParent(contract ExtensionObjectDefiniti
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_FindServersResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfServers int32, servers []ExtensionObjectDefinition) FindServersResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfServers(noOfServers).WithServers(servers...)
+func (b *_FindServersResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, servers []ApplicationDescription) FindServersResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithServers(servers...)
 }
 
-func (b *_FindServersResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) FindServersResponseBuilder {
+func (b *_FindServersResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) FindServersResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_FindServersResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) FindServersResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_FindServersResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) FindServersResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_FindServersResponseBuilder) WithNoOfServers(noOfServers int32) FindServersResponseBuilder {
-	b.NoOfServers = noOfServers
-	return b
-}
-
-func (b *_FindServersResponseBuilder) WithServers(servers ...ExtensionObjectDefinition) FindServersResponseBuilder {
+func (b *_FindServersResponseBuilder) WithServers(servers ...ApplicationDescription) FindServersResponseBuilder {
 	b.Servers = servers
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_FindServersResponse) deepCopy() *_FindServersResponse {
 	}
 	_FindServersResponseCopy := &_FindServersResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfServers,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Servers),
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
+		utils.DeepCopySlice[ApplicationDescription, ApplicationDescription](m.Servers),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _FindServersResponseCopy

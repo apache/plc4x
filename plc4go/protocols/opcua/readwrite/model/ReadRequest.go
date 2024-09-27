@@ -91,19 +91,17 @@ func NewReadRequest(requestHeader RequestHeader, maxAge float64, timestampsToRet
 type ReadRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) ReadRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, maxAge float64, timestampsToReturn TimestampsToReturn, nodesToRead []ReadValueId) ReadRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) ReadRequestBuilder
+	WithRequestHeader(RequestHeader) ReadRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ReadRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) ReadRequestBuilder
 	// WithMaxAge adds MaxAge (property field)
 	WithMaxAge(float64) ReadRequestBuilder
 	// WithTimestampsToReturn adds TimestampsToReturn (property field)
 	WithTimestampsToReturn(TimestampsToReturn) ReadRequestBuilder
-	// WithNoOfNodesToRead adds NoOfNodesToRead (property field)
-	WithNoOfNodesToRead(int32) ReadRequestBuilder
 	// WithNodesToRead adds NodesToRead (property field)
-	WithNodesToRead(...ExtensionObjectDefinition) ReadRequestBuilder
+	WithNodesToRead(...ReadValueId) ReadRequestBuilder
 	// Build builds the ReadRequest or returns an error if something is wrong
 	Build() (ReadRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -129,24 +127,24 @@ func (b *_ReadRequestBuilder) setParent(contract ExtensionObjectDefinitionContra
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ReadRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, maxAge float64, timestampsToReturn TimestampsToReturn, noOfNodesToRead int32, nodesToRead []ExtensionObjectDefinition) ReadRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithMaxAge(maxAge).WithTimestampsToReturn(timestampsToReturn).WithNoOfNodesToRead(noOfNodesToRead).WithNodesToRead(nodesToRead...)
+func (b *_ReadRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, maxAge float64, timestampsToReturn TimestampsToReturn, nodesToRead []ReadValueId) ReadRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithMaxAge(maxAge).WithTimestampsToReturn(timestampsToReturn).WithNodesToRead(nodesToRead...)
 }
 
-func (b *_ReadRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) ReadRequestBuilder {
+func (b *_ReadRequestBuilder) WithRequestHeader(requestHeader RequestHeader) ReadRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_ReadRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ReadRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_ReadRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) ReadRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
@@ -161,12 +159,7 @@ func (b *_ReadRequestBuilder) WithTimestampsToReturn(timestampsToReturn Timestam
 	return b
 }
 
-func (b *_ReadRequestBuilder) WithNoOfNodesToRead(noOfNodesToRead int32) ReadRequestBuilder {
-	b.NoOfNodesToRead = noOfNodesToRead
-	return b
-}
-
-func (b *_ReadRequestBuilder) WithNodesToRead(nodesToRead ...ExtensionObjectDefinition) ReadRequestBuilder {
+func (b *_ReadRequestBuilder) WithNodesToRead(nodesToRead ...ReadValueId) ReadRequestBuilder {
 	b.NodesToRead = nodesToRead
 	return b
 }
@@ -419,11 +412,10 @@ func (m *_ReadRequest) deepCopy() *_ReadRequest {
 	}
 	_ReadRequestCopy := &_ReadRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
 		m.MaxAge,
 		m.TimestampsToReturn,
-		m.NoOfNodesToRead,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToRead),
+		utils.DeepCopySlice[ReadValueId, ReadValueId](m.NodesToRead),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _ReadRequestCopy

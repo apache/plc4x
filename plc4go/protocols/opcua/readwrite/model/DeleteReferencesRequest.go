@@ -83,15 +83,13 @@ func NewDeleteReferencesRequest(requestHeader RequestHeader, referencesToDelete 
 type DeleteReferencesRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) DeleteReferencesRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, referencesToDelete []DeleteReferencesItem) DeleteReferencesRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) DeleteReferencesRequestBuilder
+	WithRequestHeader(RequestHeader) DeleteReferencesRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesRequestBuilder
-	// WithNoOfReferencesToDelete adds NoOfReferencesToDelete (property field)
-	WithNoOfReferencesToDelete(int32) DeleteReferencesRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteReferencesRequestBuilder
 	// WithReferencesToDelete adds ReferencesToDelete (property field)
-	WithReferencesToDelete(...ExtensionObjectDefinition) DeleteReferencesRequestBuilder
+	WithReferencesToDelete(...DeleteReferencesItem) DeleteReferencesRequestBuilder
 	// Build builds the DeleteReferencesRequest or returns an error if something is wrong
 	Build() (DeleteReferencesRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_DeleteReferencesRequestBuilder) setParent(contract ExtensionObjectDefi
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_DeleteReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToDelete int32, referencesToDelete []ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfReferencesToDelete(noOfReferencesToDelete).WithReferencesToDelete(referencesToDelete...)
+func (b *_DeleteReferencesRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, referencesToDelete []DeleteReferencesItem) DeleteReferencesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithReferencesToDelete(referencesToDelete...)
 }
 
-func (b *_DeleteReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
+func (b *_DeleteReferencesRequestBuilder) WithRequestHeader(requestHeader RequestHeader) DeleteReferencesRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_DeleteReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteReferencesRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_DeleteReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) DeleteReferencesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_DeleteReferencesRequestBuilder) WithNoOfReferencesToDelete(noOfReferencesToDelete int32) DeleteReferencesRequestBuilder {
-	b.NoOfReferencesToDelete = noOfReferencesToDelete
-	return b
-}
-
-func (b *_DeleteReferencesRequestBuilder) WithReferencesToDelete(referencesToDelete ...ExtensionObjectDefinition) DeleteReferencesRequestBuilder {
+func (b *_DeleteReferencesRequestBuilder) WithReferencesToDelete(referencesToDelete ...DeleteReferencesItem) DeleteReferencesRequestBuilder {
 	b.ReferencesToDelete = referencesToDelete
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_DeleteReferencesRequest) deepCopy() *_DeleteReferencesRequest {
 	}
 	_DeleteReferencesRequestCopy := &_DeleteReferencesRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfReferencesToDelete,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToDelete),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[DeleteReferencesItem, DeleteReferencesItem](m.ReferencesToDelete),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _DeleteReferencesRequestCopy

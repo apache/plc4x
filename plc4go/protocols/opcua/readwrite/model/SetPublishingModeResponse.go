@@ -87,17 +87,13 @@ func NewSetPublishingModeResponse(responseHeader ResponseHeader, results []Statu
 type SetPublishingModeResponseBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder
+	WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder
 	// WithResponseHeader adds ResponseHeader (property field)
-	WithResponseHeader(ExtensionObjectDefinition) SetPublishingModeResponseBuilder
+	WithResponseHeader(ResponseHeader) SetPublishingModeResponseBuilder
 	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
-	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeResponseBuilder
-	// WithNoOfResults adds NoOfResults (property field)
-	WithNoOfResults(int32) SetPublishingModeResponseBuilder
+	WithResponseHeaderBuilder(func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetPublishingModeResponseBuilder
 	// WithResults adds Results (property field)
 	WithResults(...StatusCode) SetPublishingModeResponseBuilder
-	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
-	WithNoOfDiagnosticInfos(int32) SetPublishingModeResponseBuilder
 	// WithDiagnosticInfos adds DiagnosticInfos (property field)
 	WithDiagnosticInfos(...DiagnosticInfo) SetPublishingModeResponseBuilder
 	// Build builds the SetPublishingModeResponse or returns an error if something is wrong
@@ -125,40 +121,30 @@ func (b *_SetPublishingModeResponseBuilder) setParent(contract ExtensionObjectDe
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SetPublishingModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder {
-	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+func (b *_SetPublishingModeResponseBuilder) WithMandatoryFields(responseHeader ResponseHeader, results []StatusCode, diagnosticInfos []DiagnosticInfo) SetPublishingModeResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithResults(results...).WithDiagnosticInfos(diagnosticInfos...)
 }
 
-func (b *_SetPublishingModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetPublishingModeResponseBuilder {
+func (b *_SetPublishingModeResponseBuilder) WithResponseHeader(responseHeader ResponseHeader) SetPublishingModeResponseBuilder {
 	b.ResponseHeader = responseHeader
 	return b
 }
 
-func (b *_SetPublishingModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeResponseBuilder {
-	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_SetPublishingModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ResponseHeaderBuilder) ResponseHeaderBuilder) SetPublishingModeResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateResponseHeaderBuilder())
 	var err error
 	b.ResponseHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ResponseHeaderBuilder failed"))
 	}
-	return b
-}
-
-func (b *_SetPublishingModeResponseBuilder) WithNoOfResults(noOfResults int32) SetPublishingModeResponseBuilder {
-	b.NoOfResults = noOfResults
 	return b
 }
 
 func (b *_SetPublishingModeResponseBuilder) WithResults(results ...StatusCode) SetPublishingModeResponseBuilder {
 	b.Results = results
-	return b
-}
-
-func (b *_SetPublishingModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetPublishingModeResponseBuilder {
-	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
 	return b
 }
 
@@ -418,10 +404,8 @@ func (m *_SetPublishingModeResponse) deepCopy() *_SetPublishingModeResponse {
 	}
 	_SetPublishingModeResponseCopy := &_SetPublishingModeResponse{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfResults,
+		m.ResponseHeader.DeepCopy().(ResponseHeader),
 		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
-		m.NoOfDiagnosticInfos,
 		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m

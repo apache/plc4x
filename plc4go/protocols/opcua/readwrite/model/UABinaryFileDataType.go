@@ -38,6 +38,7 @@ type UABinaryFileDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNamespaces returns Namespaces (property field)
 	GetNamespaces() []PascalString
@@ -55,6 +56,8 @@ type UABinaryFileDataType interface {
 	GetBody() Variant
 	// IsUABinaryFileDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUABinaryFileDataType()
+	// CreateBuilder creates a UABinaryFileDataTypeBuilder
+	CreateUABinaryFileDataTypeBuilder() UABinaryFileDataTypeBuilder
 }
 
 // _UABinaryFileDataType is the data-structure of this message
@@ -93,6 +96,181 @@ func NewUABinaryFileDataType(namespaces []PascalString, structureDataTypes []Str
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UABinaryFileDataTypeBuilder is a builder for UABinaryFileDataType
+type UABinaryFileDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, schemaLocation PascalString, fileHeader []KeyValuePair, body Variant) UABinaryFileDataTypeBuilder
+	// WithNamespaces adds Namespaces (property field)
+	WithNamespaces(...PascalString) UABinaryFileDataTypeBuilder
+	// WithStructureDataTypes adds StructureDataTypes (property field)
+	WithStructureDataTypes(...StructureDescription) UABinaryFileDataTypeBuilder
+	// WithEnumDataTypes adds EnumDataTypes (property field)
+	WithEnumDataTypes(...EnumDescription) UABinaryFileDataTypeBuilder
+	// WithSimpleDataTypes adds SimpleDataTypes (property field)
+	WithSimpleDataTypes(...SimpleTypeDescription) UABinaryFileDataTypeBuilder
+	// WithSchemaLocation adds SchemaLocation (property field)
+	WithSchemaLocation(PascalString) UABinaryFileDataTypeBuilder
+	// WithSchemaLocationBuilder adds SchemaLocation (property field) which is build by the builder
+	WithSchemaLocationBuilder(func(PascalStringBuilder) PascalStringBuilder) UABinaryFileDataTypeBuilder
+	// WithFileHeader adds FileHeader (property field)
+	WithFileHeader(...KeyValuePair) UABinaryFileDataTypeBuilder
+	// WithBody adds Body (property field)
+	WithBody(Variant) UABinaryFileDataTypeBuilder
+	// WithBodyBuilder adds Body (property field) which is build by the builder
+	WithBodyBuilder(func(VariantBuilder) VariantBuilder) UABinaryFileDataTypeBuilder
+	// Build builds the UABinaryFileDataType or returns an error if something is wrong
+	Build() (UABinaryFileDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UABinaryFileDataType
+}
+
+// NewUABinaryFileDataTypeBuilder() creates a UABinaryFileDataTypeBuilder
+func NewUABinaryFileDataTypeBuilder() UABinaryFileDataTypeBuilder {
+	return &_UABinaryFileDataTypeBuilder{_UABinaryFileDataType: new(_UABinaryFileDataType)}
+}
+
+type _UABinaryFileDataTypeBuilder struct {
+	*_UABinaryFileDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UABinaryFileDataTypeBuilder) = (*_UABinaryFileDataTypeBuilder)(nil)
+
+func (b *_UABinaryFileDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithMandatoryFields(namespaces []PascalString, structureDataTypes []StructureDescription, enumDataTypes []EnumDescription, simpleDataTypes []SimpleTypeDescription, schemaLocation PascalString, fileHeader []KeyValuePair, body Variant) UABinaryFileDataTypeBuilder {
+	return b.WithNamespaces(namespaces...).WithStructureDataTypes(structureDataTypes...).WithEnumDataTypes(enumDataTypes...).WithSimpleDataTypes(simpleDataTypes...).WithSchemaLocation(schemaLocation).WithFileHeader(fileHeader...).WithBody(body)
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithNamespaces(namespaces ...PascalString) UABinaryFileDataTypeBuilder {
+	b.Namespaces = namespaces
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithStructureDataTypes(structureDataTypes ...StructureDescription) UABinaryFileDataTypeBuilder {
+	b.StructureDataTypes = structureDataTypes
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithEnumDataTypes(enumDataTypes ...EnumDescription) UABinaryFileDataTypeBuilder {
+	b.EnumDataTypes = enumDataTypes
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithSimpleDataTypes(simpleDataTypes ...SimpleTypeDescription) UABinaryFileDataTypeBuilder {
+	b.SimpleDataTypes = simpleDataTypes
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithSchemaLocation(schemaLocation PascalString) UABinaryFileDataTypeBuilder {
+	b.SchemaLocation = schemaLocation
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithSchemaLocationBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) UABinaryFileDataTypeBuilder {
+	builder := builderSupplier(b.SchemaLocation.CreatePascalStringBuilder())
+	var err error
+	b.SchemaLocation, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithFileHeader(fileHeader ...KeyValuePair) UABinaryFileDataTypeBuilder {
+	b.FileHeader = fileHeader
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithBody(body Variant) UABinaryFileDataTypeBuilder {
+	b.Body = body
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) WithBodyBuilder(builderSupplier func(VariantBuilder) VariantBuilder) UABinaryFileDataTypeBuilder {
+	builder := builderSupplier(b.Body.CreateVariantBuilder())
+	var err error
+	b.Body, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UABinaryFileDataTypeBuilder) Build() (UABinaryFileDataType, error) {
+	if b.SchemaLocation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'schemaLocation' not set"))
+	}
+	if b.Body == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'body' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UABinaryFileDataType.deepCopy(), nil
+}
+
+func (b *_UABinaryFileDataTypeBuilder) MustBuild() UABinaryFileDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UABinaryFileDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UABinaryFileDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UABinaryFileDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateUABinaryFileDataTypeBuilder().(*_UABinaryFileDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUABinaryFileDataTypeBuilder creates a UABinaryFileDataTypeBuilder
+func (b *_UABinaryFileDataType) CreateUABinaryFileDataTypeBuilder() UABinaryFileDataTypeBuilder {
+	if b == nil {
+		return NewUABinaryFileDataTypeBuilder()
+	}
+	return &_UABinaryFileDataTypeBuilder{_UABinaryFileDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -411,6 +589,28 @@ func (m *_UABinaryFileDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 }
 
 func (m *_UABinaryFileDataType) IsUABinaryFileDataType() {}
+
+func (m *_UABinaryFileDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UABinaryFileDataType) deepCopy() *_UABinaryFileDataType {
+	if m == nil {
+		return nil
+	}
+	_UABinaryFileDataTypeCopy := &_UABinaryFileDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		utils.DeepCopySlice[PascalString, PascalString](m.Namespaces),
+		utils.DeepCopySlice[StructureDescription, StructureDescription](m.StructureDataTypes),
+		utils.DeepCopySlice[EnumDescription, EnumDescription](m.EnumDataTypes),
+		utils.DeepCopySlice[SimpleTypeDescription, SimpleTypeDescription](m.SimpleDataTypes),
+		m.SchemaLocation.DeepCopy().(PascalString),
+		utils.DeepCopySlice[KeyValuePair, KeyValuePair](m.FileHeader),
+		m.Body.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UABinaryFileDataTypeCopy
+}
 
 func (m *_UABinaryFileDataType) String() string {
 	if m == nil {

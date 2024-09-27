@@ -118,7 +118,7 @@ func NewRegisteredServer(serverUri PascalString, productUri PascalString, server
 type RegisteredServerBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder
+	WithMandatoryFields(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) RegisteredServerBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
@@ -127,8 +127,6 @@ type RegisteredServerBuilder interface {
 	WithProductUri(PascalString) RegisteredServerBuilder
 	// WithProductUriBuilder adds ProductUri (property field) which is build by the builder
 	WithProductUriBuilder(func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder
-	// WithNoOfServerNames adds NoOfServerNames (property field)
-	WithNoOfServerNames(int32) RegisteredServerBuilder
 	// WithServerNames adds ServerNames (property field)
 	WithServerNames(...LocalizedText) RegisteredServerBuilder
 	// WithServerType adds ServerType (property field)
@@ -137,8 +135,6 @@ type RegisteredServerBuilder interface {
 	WithGatewayServerUri(PascalString) RegisteredServerBuilder
 	// WithGatewayServerUriBuilder adds GatewayServerUri (property field) which is build by the builder
 	WithGatewayServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) RegisteredServerBuilder
-	// WithNoOfDiscoveryUrls adds NoOfDiscoveryUrls (property field)
-	WithNoOfDiscoveryUrls(int32) RegisteredServerBuilder
 	// WithDiscoveryUrls adds DiscoveryUrls (property field)
 	WithDiscoveryUrls(...PascalString) RegisteredServerBuilder
 	// WithSemaphoreFilePath adds SemaphoreFilePath (property field)
@@ -172,8 +168,8 @@ func (b *_RegisteredServerBuilder) setParent(contract ExtensionObjectDefinitionC
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, noOfServerNames int32, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
-	return b.WithServerUri(serverUri).WithProductUri(productUri).WithNoOfServerNames(noOfServerNames).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
+func (b *_RegisteredServerBuilder) WithMandatoryFields(serverUri PascalString, productUri PascalString, serverNames []LocalizedText, serverType ApplicationType, gatewayServerUri PascalString, discoveryUrls []PascalString, semaphoreFilePath PascalString, isOnline bool) RegisteredServerBuilder {
+	return b.WithServerUri(serverUri).WithProductUri(productUri).WithServerNames(serverNames...).WithServerType(serverType).WithGatewayServerUri(gatewayServerUri).WithDiscoveryUrls(discoveryUrls...).WithSemaphoreFilePath(semaphoreFilePath).WithIsOnline(isOnline)
 }
 
 func (b *_RegisteredServerBuilder) WithServerUri(serverUri PascalString) RegisteredServerBuilder {
@@ -212,11 +208,6 @@ func (b *_RegisteredServerBuilder) WithProductUriBuilder(builderSupplier func(Pa
 	return b
 }
 
-func (b *_RegisteredServerBuilder) WithNoOfServerNames(noOfServerNames int32) RegisteredServerBuilder {
-	b.NoOfServerNames = noOfServerNames
-	return b
-}
-
 func (b *_RegisteredServerBuilder) WithServerNames(serverNames ...LocalizedText) RegisteredServerBuilder {
 	b.ServerNames = serverNames
 	return b
@@ -242,11 +233,6 @@ func (b *_RegisteredServerBuilder) WithGatewayServerUriBuilder(builderSupplier f
 		}
 		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
 	}
-	return b
-}
-
-func (b *_RegisteredServerBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) RegisteredServerBuilder {
-	b.NoOfDiscoveryUrls = noOfDiscoveryUrls
 	return b
 }
 
@@ -647,11 +633,9 @@ func (m *_RegisteredServer) deepCopy() *_RegisteredServer {
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.ServerUri.DeepCopy().(PascalString),
 		m.ProductUri.DeepCopy().(PascalString),
-		m.NoOfServerNames,
 		utils.DeepCopySlice[LocalizedText, LocalizedText](m.ServerNames),
 		m.ServerType,
 		m.GatewayServerUri.DeepCopy().(PascalString),
-		m.NoOfDiscoveryUrls,
 		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
 		m.SemaphoreFilePath.DeepCopy().(PascalString),
 		m.IsOnline,

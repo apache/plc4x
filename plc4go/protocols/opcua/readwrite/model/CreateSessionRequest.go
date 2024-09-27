@@ -129,15 +129,15 @@ func NewCreateSessionRequest(requestHeader RequestHeader, clientDescription Appl
 type CreateSessionRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) CreateSessionRequestBuilder
+	WithRequestHeader(RequestHeader) CreateSessionRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) CreateSessionRequestBuilder
 	// WithClientDescription adds ClientDescription (property field)
-	WithClientDescription(ExtensionObjectDefinition) CreateSessionRequestBuilder
+	WithClientDescription(ApplicationDescription) CreateSessionRequestBuilder
 	// WithClientDescriptionBuilder adds ClientDescription (property field) which is build by the builder
-	WithClientDescriptionBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder
+	WithClientDescriptionBuilder(func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) CreateSessionRequestBuilder
 	// WithServerUri adds ServerUri (property field)
 	WithServerUri(PascalString) CreateSessionRequestBuilder
 	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
@@ -187,42 +187,42 @@ func (b *_CreateSessionRequestBuilder) setParent(contract ExtensionObjectDefinit
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_CreateSessionRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, clientDescription ExtensionObjectDefinition, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder {
+func (b *_CreateSessionRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, clientDescription ApplicationDescription, serverUri PascalString, endpointUrl PascalString, sessionName PascalString, clientNonce PascalByteString, clientCertificate PascalByteString, requestedSessionTimeout float64, maxResponseMessageSize uint32) CreateSessionRequestBuilder {
 	return b.WithRequestHeader(requestHeader).WithClientDescription(clientDescription).WithServerUri(serverUri).WithEndpointUrl(endpointUrl).WithSessionName(sessionName).WithClientNonce(clientNonce).WithClientCertificate(clientCertificate).WithRequestedSessionTimeout(requestedSessionTimeout).WithMaxResponseMessageSize(maxResponseMessageSize)
 }
 
-func (b *_CreateSessionRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CreateSessionRequestBuilder {
+func (b *_CreateSessionRequestBuilder) WithRequestHeader(requestHeader RequestHeader) CreateSessionRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_CreateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateSessionRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_CreateSessionRequestBuilder) WithClientDescription(clientDescription ExtensionObjectDefinition) CreateSessionRequestBuilder {
+func (b *_CreateSessionRequestBuilder) WithClientDescription(clientDescription ApplicationDescription) CreateSessionRequestBuilder {
 	b.ClientDescription = clientDescription
 	return b
 }
 
-func (b *_CreateSessionRequestBuilder) WithClientDescriptionBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionRequestBuilder {
-	builder := builderSupplier(b.ClientDescription.CreateExtensionObjectDefinitionBuilder())
+func (b *_CreateSessionRequestBuilder) WithClientDescriptionBuilder(builderSupplier func(ApplicationDescriptionBuilder) ApplicationDescriptionBuilder) CreateSessionRequestBuilder {
+	builder := builderSupplier(b.ClientDescription.CreateApplicationDescriptionBuilder())
 	var err error
 	b.ClientDescription, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "ApplicationDescriptionBuilder failed"))
 	}
 	return b
 }
@@ -676,8 +676,8 @@ func (m *_CreateSessionRequest) deepCopy() *_CreateSessionRequest {
 	}
 	_CreateSessionRequestCopy := &_CreateSessionRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.ClientDescription.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		m.ClientDescription.DeepCopy().(ApplicationDescription),
 		m.ServerUri.DeepCopy().(PascalString),
 		m.EndpointUrl.DeepCopy().(PascalString),
 		m.SessionName.DeepCopy().(PascalString),

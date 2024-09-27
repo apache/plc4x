@@ -83,15 +83,13 @@ func NewWriteRequest(requestHeader RequestHeader, nodesToWrite []WriteValue) *_W
 type WriteRequestBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder
+	WithMandatoryFields(requestHeader RequestHeader, nodesToWrite []WriteValue) WriteRequestBuilder
 	// WithRequestHeader adds RequestHeader (property field)
-	WithRequestHeader(ExtensionObjectDefinition) WriteRequestBuilder
+	WithRequestHeader(RequestHeader) WriteRequestBuilder
 	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
-	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteRequestBuilder
-	// WithNoOfNodesToWrite adds NoOfNodesToWrite (property field)
-	WithNoOfNodesToWrite(int32) WriteRequestBuilder
+	WithRequestHeaderBuilder(func(RequestHeaderBuilder) RequestHeaderBuilder) WriteRequestBuilder
 	// WithNodesToWrite adds NodesToWrite (property field)
-	WithNodesToWrite(...ExtensionObjectDefinition) WriteRequestBuilder
+	WithNodesToWrite(...WriteValue) WriteRequestBuilder
 	// Build builds the WriteRequest or returns an error if something is wrong
 	Build() (WriteRequest, error)
 	// MustBuild does the same as Build but panics on error
@@ -117,34 +115,29 @@ func (b *_WriteRequestBuilder) setParent(contract ExtensionObjectDefinitionContr
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_WriteRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToWrite int32, nodesToWrite []ExtensionObjectDefinition) WriteRequestBuilder {
-	return b.WithRequestHeader(requestHeader).WithNoOfNodesToWrite(noOfNodesToWrite).WithNodesToWrite(nodesToWrite...)
+func (b *_WriteRequestBuilder) WithMandatoryFields(requestHeader RequestHeader, nodesToWrite []WriteValue) WriteRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNodesToWrite(nodesToWrite...)
 }
 
-func (b *_WriteRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) WriteRequestBuilder {
+func (b *_WriteRequestBuilder) WithRequestHeader(requestHeader RequestHeader) WriteRequestBuilder {
 	b.RequestHeader = requestHeader
 	return b
 }
 
-func (b *_WriteRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) WriteRequestBuilder {
-	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+func (b *_WriteRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(RequestHeaderBuilder) RequestHeaderBuilder) WriteRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateRequestHeaderBuilder())
 	var err error
 	b.RequestHeader, err = builder.Build()
 	if err != nil {
 		if b.err == nil {
 			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
 		}
-		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+		b.err.Append(errors.Wrap(err, "RequestHeaderBuilder failed"))
 	}
 	return b
 }
 
-func (b *_WriteRequestBuilder) WithNoOfNodesToWrite(noOfNodesToWrite int32) WriteRequestBuilder {
-	b.NoOfNodesToWrite = noOfNodesToWrite
-	return b
-}
-
-func (b *_WriteRequestBuilder) WithNodesToWrite(nodesToWrite ...ExtensionObjectDefinition) WriteRequestBuilder {
+func (b *_WriteRequestBuilder) WithNodesToWrite(nodesToWrite ...WriteValue) WriteRequestBuilder {
 	b.NodesToWrite = nodesToWrite
 	return b
 }
@@ -363,9 +356,8 @@ func (m *_WriteRequest) deepCopy() *_WriteRequest {
 	}
 	_WriteRequestCopy := &_WriteRequest{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
-		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
-		m.NoOfNodesToWrite,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToWrite),
+		m.RequestHeader.DeepCopy().(RequestHeader),
+		utils.DeepCopySlice[WriteValue, WriteValue](m.NodesToWrite),
 	}
 	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
 	return _WriteRequestCopy

@@ -92,19 +92,13 @@ func NewSessionlessInvokeRequestType(urisVersion uint32, namespaceUris []PascalS
 type SessionlessInvokeRequestTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder
+	WithMandatoryFields(urisVersion uint32, namespaceUris []PascalString, serverUris []PascalString, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder
 	// WithUrisVersion adds UrisVersion (property field)
 	WithUrisVersion(uint32) SessionlessInvokeRequestTypeBuilder
-	// WithNoOfNamespaceUris adds NoOfNamespaceUris (property field)
-	WithNoOfNamespaceUris(int32) SessionlessInvokeRequestTypeBuilder
 	// WithNamespaceUris adds NamespaceUris (property field)
 	WithNamespaceUris(...PascalString) SessionlessInvokeRequestTypeBuilder
-	// WithNoOfServerUris adds NoOfServerUris (property field)
-	WithNoOfServerUris(int32) SessionlessInvokeRequestTypeBuilder
 	// WithServerUris adds ServerUris (property field)
 	WithServerUris(...PascalString) SessionlessInvokeRequestTypeBuilder
-	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
-	WithNoOfLocaleIds(int32) SessionlessInvokeRequestTypeBuilder
 	// WithLocaleIds adds LocaleIds (property field)
 	WithLocaleIds(...PascalString) SessionlessInvokeRequestTypeBuilder
 	// WithServiceId adds ServiceId (property field)
@@ -134,17 +128,12 @@ func (b *_SessionlessInvokeRequestTypeBuilder) setParent(contract ExtensionObjec
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_SessionlessInvokeRequestTypeBuilder) WithMandatoryFields(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder {
-	return b.WithUrisVersion(urisVersion).WithNoOfNamespaceUris(noOfNamespaceUris).WithNamespaceUris(namespaceUris...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithServiceId(serviceId)
+func (b *_SessionlessInvokeRequestTypeBuilder) WithMandatoryFields(urisVersion uint32, namespaceUris []PascalString, serverUris []PascalString, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder {
+	return b.WithUrisVersion(urisVersion).WithNamespaceUris(namespaceUris...).WithServerUris(serverUris...).WithLocaleIds(localeIds...).WithServiceId(serviceId)
 }
 
 func (b *_SessionlessInvokeRequestTypeBuilder) WithUrisVersion(urisVersion uint32) SessionlessInvokeRequestTypeBuilder {
 	b.UrisVersion = urisVersion
-	return b
-}
-
-func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfNamespaceUris(noOfNamespaceUris int32) SessionlessInvokeRequestTypeBuilder {
-	b.NoOfNamespaceUris = noOfNamespaceUris
 	return b
 }
 
@@ -153,18 +142,8 @@ func (b *_SessionlessInvokeRequestTypeBuilder) WithNamespaceUris(namespaceUris .
 	return b
 }
 
-func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfServerUris(noOfServerUris int32) SessionlessInvokeRequestTypeBuilder {
-	b.NoOfServerUris = noOfServerUris
-	return b
-}
-
 func (b *_SessionlessInvokeRequestTypeBuilder) WithServerUris(serverUris ...PascalString) SessionlessInvokeRequestTypeBuilder {
 	b.ServerUris = serverUris
-	return b
-}
-
-func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) SessionlessInvokeRequestTypeBuilder {
-	b.NoOfLocaleIds = noOfLocaleIds
 	return b
 }
 
@@ -478,11 +457,8 @@ func (m *_SessionlessInvokeRequestType) deepCopy() *_SessionlessInvokeRequestTyp
 	_SessionlessInvokeRequestTypeCopy := &_SessionlessInvokeRequestType{
 		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
 		m.UrisVersion,
-		m.NoOfNamespaceUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
-		m.NoOfServerUris,
 		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
-		m.NoOfLocaleIds,
 		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
 		m.ServiceId,
 	}

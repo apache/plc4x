@@ -38,6 +38,7 @@ type EnumDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetDataTypeId returns DataTypeId (property field)
 	GetDataTypeId() NodeId
@@ -49,6 +50,8 @@ type EnumDescription interface {
 	GetBuiltInType() uint8
 	// IsEnumDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEnumDescription()
+	// CreateBuilder creates a EnumDescriptionBuilder
+	CreateEnumDescriptionBuilder() EnumDescriptionBuilder
 }
 
 // _EnumDescription is the data-structure of this message
@@ -84,6 +87,181 @@ func NewEnumDescription(dataTypeId NodeId, name QualifiedName, enumDefinition En
 	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
 	return _result
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EnumDescriptionBuilder is a builder for EnumDescription
+type EnumDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataTypeId NodeId, name QualifiedName, enumDefinition EnumDefinition, builtInType uint8) EnumDescriptionBuilder
+	// WithDataTypeId adds DataTypeId (property field)
+	WithDataTypeId(NodeId) EnumDescriptionBuilder
+	// WithDataTypeIdBuilder adds DataTypeId (property field) which is build by the builder
+	WithDataTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) EnumDescriptionBuilder
+	// WithName adds Name (property field)
+	WithName(QualifiedName) EnumDescriptionBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) EnumDescriptionBuilder
+	// WithEnumDefinition adds EnumDefinition (property field)
+	WithEnumDefinition(EnumDefinition) EnumDescriptionBuilder
+	// WithEnumDefinitionBuilder adds EnumDefinition (property field) which is build by the builder
+	WithEnumDefinitionBuilder(func(EnumDefinitionBuilder) EnumDefinitionBuilder) EnumDescriptionBuilder
+	// WithBuiltInType adds BuiltInType (property field)
+	WithBuiltInType(uint8) EnumDescriptionBuilder
+	// Build builds the EnumDescription or returns an error if something is wrong
+	Build() (EnumDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EnumDescription
+}
+
+// NewEnumDescriptionBuilder() creates a EnumDescriptionBuilder
+func NewEnumDescriptionBuilder() EnumDescriptionBuilder {
+	return &_EnumDescriptionBuilder{_EnumDescription: new(_EnumDescription)}
+}
+
+type _EnumDescriptionBuilder struct {
+	*_EnumDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EnumDescriptionBuilder) = (*_EnumDescriptionBuilder)(nil)
+
+func (b *_EnumDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EnumDescriptionBuilder) WithMandatoryFields(dataTypeId NodeId, name QualifiedName, enumDefinition EnumDefinition, builtInType uint8) EnumDescriptionBuilder {
+	return b.WithDataTypeId(dataTypeId).WithName(name).WithEnumDefinition(enumDefinition).WithBuiltInType(builtInType)
+}
+
+func (b *_EnumDescriptionBuilder) WithDataTypeId(dataTypeId NodeId) EnumDescriptionBuilder {
+	b.DataTypeId = dataTypeId
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithDataTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) EnumDescriptionBuilder {
+	builder := builderSupplier(b.DataTypeId.CreateNodeIdBuilder())
+	var err error
+	b.DataTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithName(name QualifiedName) EnumDescriptionBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) EnumDescriptionBuilder {
+	builder := builderSupplier(b.Name.CreateQualifiedNameBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithEnumDefinition(enumDefinition EnumDefinition) EnumDescriptionBuilder {
+	b.EnumDefinition = enumDefinition
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithEnumDefinitionBuilder(builderSupplier func(EnumDefinitionBuilder) EnumDefinitionBuilder) EnumDescriptionBuilder {
+	builder := builderSupplier(b.EnumDefinition.CreateEnumDefinitionBuilder())
+	var err error
+	b.EnumDefinition, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "EnumDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) WithBuiltInType(builtInType uint8) EnumDescriptionBuilder {
+	b.BuiltInType = builtInType
+	return b
+}
+
+func (b *_EnumDescriptionBuilder) Build() (EnumDescription, error) {
+	if b.DataTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataTypeId' not set"))
+	}
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.EnumDefinition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'enumDefinition' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EnumDescription.deepCopy(), nil
+}
+
+func (b *_EnumDescriptionBuilder) MustBuild() EnumDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EnumDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EnumDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EnumDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateEnumDescriptionBuilder().(*_EnumDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEnumDescriptionBuilder creates a EnumDescriptionBuilder
+func (b *_EnumDescription) CreateEnumDescriptionBuilder() EnumDescriptionBuilder {
+	if b == nil {
+		return NewEnumDescriptionBuilder()
+	}
+	return &_EnumDescriptionBuilder{_EnumDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -251,6 +429,25 @@ func (m *_EnumDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 }
 
 func (m *_EnumDescription) IsEnumDescription() {}
+
+func (m *_EnumDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnumDescription) deepCopy() *_EnumDescription {
+	if m == nil {
+		return nil
+	}
+	_EnumDescriptionCopy := &_EnumDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.DataTypeId.DeepCopy().(NodeId),
+		m.Name.DeepCopy().(QualifiedName),
+		m.EnumDefinition.DeepCopy().(EnumDefinition),
+		m.BuiltInType,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EnumDescriptionCopy
+}
 
 func (m *_EnumDescription) String() string {
 	if m == nil {

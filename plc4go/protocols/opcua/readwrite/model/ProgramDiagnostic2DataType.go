@@ -135,7 +135,7 @@ func NewProgramDiagnostic2DataType(createSessionId NodeId, createClientName Pasc
 type ProgramDiagnostic2DataTypeBuilder interface {
 	utils.Copyable
 	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
-	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder
+	WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder
 	// WithCreateSessionId adds CreateSessionId (property field)
 	WithCreateSessionId(NodeId) ProgramDiagnostic2DataTypeBuilder
 	// WithCreateSessionIdBuilder adds CreateSessionId (property field) which is build by the builder
@@ -156,20 +156,12 @@ type ProgramDiagnostic2DataTypeBuilder interface {
 	WithLastMethodSessionId(NodeId) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodSessionIdBuilder adds LastMethodSessionId (property field) which is build by the builder
 	WithLastMethodSessionIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodInputArguments adds NoOfLastMethodInputArguments (property field)
-	WithNoOfLastMethodInputArguments(int32) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodInputArguments adds LastMethodInputArguments (property field)
-	WithLastMethodInputArguments(...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodOutputArguments adds NoOfLastMethodOutputArguments (property field)
-	WithNoOfLastMethodOutputArguments(int32) ProgramDiagnostic2DataTypeBuilder
+	WithLastMethodInputArguments(...Argument) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodOutputArguments adds LastMethodOutputArguments (property field)
-	WithLastMethodOutputArguments(...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodInputValues adds NoOfLastMethodInputValues (property field)
-	WithNoOfLastMethodInputValues(int32) ProgramDiagnostic2DataTypeBuilder
+	WithLastMethodOutputArguments(...Argument) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodInputValues adds LastMethodInputValues (property field)
 	WithLastMethodInputValues(...Variant) ProgramDiagnostic2DataTypeBuilder
-	// WithNoOfLastMethodOutputValues adds NoOfLastMethodOutputValues (property field)
-	WithNoOfLastMethodOutputValues(int32) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodOutputValues adds LastMethodOutputValues (property field)
 	WithLastMethodOutputValues(...Variant) ProgramDiagnostic2DataTypeBuilder
 	// WithLastMethodCallTime adds LastMethodCallTime (property field)
@@ -203,8 +195,8 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) setParent(contract ExtensionObjectD
 	b.ExtensionObjectDefinitionContract = contract
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, noOfLastMethodInputArguments int32, lastMethodInputArguments []ExtensionObjectDefinition, noOfLastMethodOutputArguments int32, lastMethodOutputArguments []ExtensionObjectDefinition, noOfLastMethodInputValues int32, lastMethodInputValues []Variant, noOfLastMethodOutputValues int32, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
-	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments).WithLastMethodInputArguments(lastMethodInputArguments...).WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithNoOfLastMethodInputValues(noOfLastMethodInputValues).WithLastMethodInputValues(lastMethodInputValues...).WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithMandatoryFields(createSessionId NodeId, createClientName PascalString, invocationCreationTime int64, lastTransitionTime int64, lastMethodCall PascalString, lastMethodSessionId NodeId, lastMethodInputArguments []Argument, lastMethodOutputArguments []Argument, lastMethodInputValues []Variant, lastMethodOutputValues []Variant, lastMethodCallTime int64, lastMethodReturnStatus StatusCode) ProgramDiagnostic2DataTypeBuilder {
+	return b.WithCreateSessionId(createSessionId).WithCreateClientName(createClientName).WithInvocationCreationTime(invocationCreationTime).WithLastTransitionTime(lastTransitionTime).WithLastMethodCall(lastMethodCall).WithLastMethodSessionId(lastMethodSessionId).WithLastMethodInputArguments(lastMethodInputArguments...).WithLastMethodOutputArguments(lastMethodOutputArguments...).WithLastMethodInputValues(lastMethodInputValues...).WithLastMethodOutputValues(lastMethodOutputValues...).WithLastMethodCallTime(lastMethodCallTime).WithLastMethodReturnStatus(lastMethodReturnStatus)
 }
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) WithCreateSessionId(createSessionId NodeId) ProgramDiagnostic2DataTypeBuilder {
@@ -289,38 +281,18 @@ func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodSessionIdBuilder(buil
 	return b
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputArguments(noOfLastMethodInputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodInputArguments = noOfLastMethodInputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputArguments(lastMethodInputArguments ...Argument) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodInputArguments = lastMethodInputArguments
 	return b
 }
 
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputArguments(noOfLastMethodOutputArguments int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodOutputArguments = noOfLastMethodOutputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...ExtensionObjectDefinition) ProgramDiagnostic2DataTypeBuilder {
+func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodOutputArguments(lastMethodOutputArguments ...Argument) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodOutputArguments = lastMethodOutputArguments
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodInputValues(noOfLastMethodInputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodInputValues = noOfLastMethodInputValues
 	return b
 }
 
 func (b *_ProgramDiagnostic2DataTypeBuilder) WithLastMethodInputValues(lastMethodInputValues ...Variant) ProgramDiagnostic2DataTypeBuilder {
 	b.LastMethodInputValues = lastMethodInputValues
-	return b
-}
-
-func (b *_ProgramDiagnostic2DataTypeBuilder) WithNoOfLastMethodOutputValues(noOfLastMethodOutputValues int32) ProgramDiagnostic2DataTypeBuilder {
-	b.NoOfLastMethodOutputValues = noOfLastMethodOutputValues
 	return b
 }
 
@@ -826,13 +798,9 @@ func (m *_ProgramDiagnostic2DataType) deepCopy() *_ProgramDiagnostic2DataType {
 		m.LastTransitionTime,
 		m.LastMethodCall.DeepCopy().(PascalString),
 		m.LastMethodSessionId.DeepCopy().(NodeId),
-		m.NoOfLastMethodInputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodInputArguments),
-		m.NoOfLastMethodOutputArguments,
-		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.LastMethodOutputArguments),
-		m.NoOfLastMethodInputValues,
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodInputArguments),
+		utils.DeepCopySlice[Argument, Argument](m.LastMethodOutputArguments),
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodInputValues),
-		m.NoOfLastMethodOutputValues,
 		utils.DeepCopySlice[Variant, Variant](m.LastMethodOutputValues),
 		m.LastMethodCallTime,
 		m.LastMethodReturnStatus.DeepCopy().(StatusCode),
