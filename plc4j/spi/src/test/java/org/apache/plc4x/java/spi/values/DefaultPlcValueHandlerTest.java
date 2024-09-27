@@ -415,7 +415,16 @@ class DefaultPlcValueHandlerTest {
             Arguments.of(new MockTag("mock", PlcValueType.DATE_AND_LTIME), "1978-03-28T01:02:03", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T01:02:03"))),
 
             // LDATE_AND_TIME values
-            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), 1, new PlcLDATE_AND_TIME(LocalDateTime.of(2015, 10,21, 7, 28))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), LocalDateTime.ofEpochSecond(1234, 5678, OffsetDateTime.now().getOffset()), new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T02:20:34.000005678"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (byte) 123, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:00:00.123"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (short) 12345, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:00:12.345"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), 1234567890, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-15T06:56:07.890"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), 12345678901L, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (float) 123456.56, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T00:02:03.456"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), (double) 12345678.9, new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-01-01T03:25:45.678"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), BigInteger.valueOf(12345678901L), new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), BigDecimal.valueOf(12345678901L), new PlcLDATE_AND_TIME(LocalDateTime.parse("1970-05-23T21:21:18.901"))),
+            Arguments.of(new MockTag("mock", PlcValueType.LDATE_AND_TIME), "1978-03-28T01:02:03", new PlcLDATE_AND_TIME(LocalDateTime.parse("1978-03-28T01:02:03"))),
 
             // RAW_BYTE_ARRAY values
             Arguments.of(new MockTag("mock", PlcValueType.RAW_BYTE_ARRAY), new byte[]{(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6}, new PlcRawByteArray(new byte[]{(byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6}))

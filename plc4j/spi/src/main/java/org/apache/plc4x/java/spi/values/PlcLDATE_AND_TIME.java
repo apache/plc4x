@@ -24,12 +24,14 @@ import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
@@ -37,29 +39,92 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
     public static PlcLDATE_AND_TIME of(Object value) {
         if (value instanceof LocalDateTime) {
             return new PlcLDATE_AND_TIME((LocalDateTime) value);
+        } else if (value instanceof Byte) {
+            return new PlcLDATE_AND_TIME((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcLDATE_AND_TIME((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcLDATE_AND_TIME((Integer) value);
         } else if (value instanceof Long) {
-            return new PlcLDATE_AND_TIME(LocalDateTime.ofInstant(
-                Instant.ofEpochSecond((long) value), ZoneOffset.UTC));
+            return new PlcLDATE_AND_TIME((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcLDATE_AND_TIME((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcLDATE_AND_TIME((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcLDATE_AND_TIME((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLDATE_AND_TIME((BigDecimal) value);
+        } else {
+            return new PlcLDATE_AND_TIME(LocalDateTime.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcLDATE_AND_TIME ofNanosecondsSinceEpoch(BigInteger nanosecondsSinceEpoch) {
         BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
         BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
         return new PlcLDATE_AND_TIME(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId())));
+            OffsetDateTime.now().getOffset()));
+    }
+
+    public PlcLDATE_AND_TIME(Byte millisecondsSinceEpoch) {
+        long daysSinceEpoch = 0;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue();
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(Short millisecondsSinceEpoch) {
+        long daysSinceEpoch = 0;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue();
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(Integer millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch.longValue() / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue() % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(Long millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(Float millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch.longValue() / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue() % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(Double millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch.longValue() / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue() % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(BigInteger millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch.longValue() / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue() % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
+    }
+
+    public PlcLDATE_AND_TIME(BigDecimal millisecondsSinceEpoch) {
+        long daysSinceEpoch = millisecondsSinceEpoch.longValue() / 86400000;
+        long millisecondsOfDay = millisecondsSinceEpoch.longValue() % 86400000;
+        this.value = LocalDateTime.of(LocalDate.ofEpochDay(daysSinceEpoch), LocalTime.ofNanoOfDay(millisecondsOfDay * 1000000));
+        this.isNullable = false;
     }
 
     public PlcLDATE_AND_TIME(LocalDateTime value) {
         this.value = value;
-        this.isNullable = false;
-    }
-
-    public PlcLDATE_AND_TIME(BigInteger nanosecondsSinceEpoch) {
-        this.value = LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000)).longValue(),
-            nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000)).intValue(),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId()));
         this.isNullable = false;
     }
 
@@ -69,7 +134,7 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
@@ -80,7 +145,7 @@ public class PlcLDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atZone(ZoneOffset.UTC).toInstant();
+        Instant instant = value.atZone(OffsetDateTime.now().getOffset()).toInstant();
         return instant.getEpochSecond();
     }
 

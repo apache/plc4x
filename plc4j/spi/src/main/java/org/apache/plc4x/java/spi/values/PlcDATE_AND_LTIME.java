@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 public class PlcDATE_AND_LTIME extends PlcIECValue<LocalDateTime> {
@@ -133,7 +134,7 @@ public class PlcDATE_AND_LTIME extends PlcIECValue<LocalDateTime> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.UTC);
+        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
@@ -144,7 +145,7 @@ public class PlcDATE_AND_LTIME extends PlcIECValue<LocalDateTime> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atZone(ZoneOffset.UTC).toInstant();
+        Instant instant = value.atZone(OffsetDateTime.now().getOffset()).toInstant();
         return instant.getEpochSecond();
     }
 

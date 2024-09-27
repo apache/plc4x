@@ -62,7 +62,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
         BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000));
         BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000));
         return new PlcLDATE(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate());
+            OffsetDateTime.now().getOffset()).toLocalDate());
     }
 
     public PlcLDATE(LocalDate value) {
@@ -132,7 +132,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
     }
 
     public BigInteger getNanosecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId()));
+        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
         return BigInteger.valueOf(instant.getEpochSecond()).multiply(BigInteger.valueOf(1000_000_000)).add(BigInteger.valueOf(instant.getNano()));
     }
 
@@ -143,7 +143,7 @@ public class PlcLDATE extends PlcIECValue<LocalDate> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant instant = value.atStartOfDay(OffsetDateTime.now().getOffset()).toInstant();
         return (instant.toEpochMilli() / 1000);
     }
 

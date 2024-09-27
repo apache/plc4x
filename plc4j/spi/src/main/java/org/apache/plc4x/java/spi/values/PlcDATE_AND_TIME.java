@@ -132,7 +132,7 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
     }
 
     public long getSecondsSinceEpoch() {
-        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.UTC.getId()));
+        Instant instant = getDateTime().toInstant(OffsetDateTime.now().getOffset());
         return instant.getEpochSecond();
     }
 
@@ -175,7 +175,7 @@ public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     @Override
     public long getLong() {
-        Instant instant = value.atZone(ZoneOffset.UTC).toInstant();
+        Instant instant = value.atZone(OffsetDateTime.now().getOffset()).toInstant();
         return instant.getEpochSecond();
     }
 
