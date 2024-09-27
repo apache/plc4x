@@ -20,6 +20,8 @@
 package basetypes
 
 import (
+	"github.com/pkg/errors"
+
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -42,6 +44,10 @@ func NewErrorClass(arg Arg) (*ErrorClass, error) {
 			"communication": 7,
 		},
 	}
-	panic("enumeratedimplementme")
+	var err error
+	s.Enumerated, err = NewEnumerated(NoArgs)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating enumerated")
+	}
 	return s, nil
 }

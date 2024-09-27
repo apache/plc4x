@@ -66,7 +66,7 @@ func NewEnumerated(args Args) (*Enumerated, error) {
 	e.EnumeratedContract = e
 	e.Atomic = NewAtomic[uint64](e)
 
-	if args == nil {
+	if args == nil || len(args) < 1 {
 		return e, nil
 	}
 	var arg any
@@ -82,7 +82,7 @@ func NewEnumerated(args Args) (*Enumerated, error) {
 		e.EnumeratedContract.SetEnumerated(e)
 		arg = args[1]
 	default:
-		return nil, errors.Errorf("invalid arguments %T", args)
+		return nil, errors.Errorf("invalid arguments %T. %[1]v", args)
 	}
 	if len(e.EnumeratedContract.GetXlateTable()) == 0 {
 		expandEnumerations(e.EnumeratedContract)

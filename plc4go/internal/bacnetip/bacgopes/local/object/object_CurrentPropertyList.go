@@ -20,6 +20,7 @@
 package object
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -36,12 +37,12 @@ func NewCurrentPropertyList() *CurrentPropertyList {
 
 // TODO: implement readproperty
 
-func (p *CurrentPropertyList) ReadProperty() error {
+func (p *CurrentPropertyList) ReadProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (p *CurrentPropertyList) WriteProperty() error {
+func (p *CurrentPropertyList) WriteProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }

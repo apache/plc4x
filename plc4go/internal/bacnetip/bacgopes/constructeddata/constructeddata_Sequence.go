@@ -131,10 +131,10 @@ func (a *Sequence) Encode(arg Arg) error {
 		}
 		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
-			return errors.New("can't get zero object")
+			return errors.Wrap(err, "can't get zero object")
 		}
-		_, elementInSequenceOfClasses := _sequenceOfClasses[elementKlass]
-		_, elementInListOfClasses := _listOfClasses[elementKlass]
+		_, elementInSequenceOfClasses := _sequenceOfClasses[fmt.Sprintf("%T", elementKlass)]
+		_, elementInListOfClasses := _listOfClasses[fmt.Sprintf("%T", elementKlass)]
 		isAtomic := false
 		switch elementKlass.(type) {
 		case IsAtomic, IsAnyAtomic:
@@ -239,7 +239,7 @@ func (a *Sequence) Decode(arg Arg) error {
 
 		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
-			return errors.New("can't get zero object")
+			return errors.Wrap(err, "can't get zero object")
 		}
 		_, elementInSequenceOfClasses := _sequenceOfClasses[elementKlass]
 		_, elementInListOfClasses := _listOfClasses[elementKlass]
@@ -338,7 +338,7 @@ func (a *Sequence) PrintDebugContents(indent int, file io.Writer, _ids []uintptr
 		elementKlass, err := element.GetKlass()(Nothing())
 		if err != nil {
 			if _debug != nil {
-				_debug("can't get zero object")
+				_debug("can't get zero object. %w", err)
 			}
 			return
 		}

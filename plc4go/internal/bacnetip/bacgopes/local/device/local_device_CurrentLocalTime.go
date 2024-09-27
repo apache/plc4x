@@ -20,6 +20,7 @@
 package device
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -36,12 +37,12 @@ func NewCurrentLocalTime() *CurrentLocalTime {
 
 // TODO: implement readproperty
 
-func (p *CurrentLocalTime) ReadProperty() error {
+func (p *CurrentLocalTime) ReadProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (p *CurrentLocalTime) WriteProperty() error {
+func (p *CurrentLocalTime) WriteProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }

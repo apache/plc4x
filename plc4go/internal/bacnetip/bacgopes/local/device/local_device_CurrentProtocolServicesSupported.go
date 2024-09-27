@@ -20,6 +20,7 @@
 package device
 
 import (
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/object"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/primitivedata"
 )
@@ -36,12 +37,12 @@ func NewCurrentProtocolServicesSupported() *CurrentProtocolServicesSupported {
 
 // TODO: implement readproperty
 
-func (p *CurrentProtocolServicesSupported) ReadProperty() error {
+func (p *CurrentProtocolServicesSupported) ReadProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (p *CurrentProtocolServicesSupported) WriteProperty() error {
+func (p *CurrentProtocolServicesSupported) WriteProperty(comp.Args, comp.KWArgs) error {
 	//TODO implement me
 	panic("implement me")
 }
